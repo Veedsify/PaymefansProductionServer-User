@@ -1,0 +1,359 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  fan
+  model
+}
+
+model User {
+  id                Int       @id @default(autoincrement())
+  email             String    @unique
+  name              String
+  password          String
+  fullname          String
+  user_id           String    @unique
+  username          String    @unique
+  admin             Boolean   @default(false)
+  role              UserRole  @default(fan)
+  is_active         Boolean   @default(true)
+  is_verified       Boolean   @default(false)
+  is_email_verified Boolean   @default(false)
+  is_model          Boolean   @default(false)
+  email_verify_code String?
+  email_verify_time DateTime?
+  is_phone_verified Boolean   @default(false)
+  phone             String    @unique
+  profile_image     String?   @default("/site/avatar.png")
+  profile_banner    String?   @default("/site/banner.png")
+  bio               String?
+  location          String?
+  website           String?
+  country           String?
+  state             String?
+  city              String?
+  zip               String?
+  post_watermark    String?
+  total_followers   Int       @default(0)
+  total_following   Int       @default(0)
+  total_subscribers Int       @default(0)
+  admin_status      Boolean   @default(true)
+  created_at        DateTime  @default(now())
+  updated_at        DateTime  @updatedAt
+}
+
+model UserMedia {
+  id            Int      @id @default(autoincrement())
+  media_id      String
+  user_id       String
+  media_type    String
+  media         Json
+  post_image    Json
+  locked        Boolean  @default(false)
+  accessible_to String
+  created_at    DateTime @default(now())
+  updated_at    DateTime @updatedAt
+}
+
+model UserRepost {
+  id         Int      @id @default(autoincrement())
+  repost_id  String
+  user_id    String
+  post_id    String
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+}
+
+model UserLockedMedia {
+  id         Int      @id @default(autoincrement())
+  user_id    String
+  media_id   String
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+}
+
+model UserStory {
+  id           Int      @id @default(autoincrement())
+  story_id     String
+  user_id      String
+  story        Json
+  story_type   String
+  posted_at    DateTime @default(now())
+  expected_end DateTime
+  created_at   DateTime @default(now())
+  updated_at   DateTime @updatedAt
+}
+
+model Post {
+  id              Int      @id @default(autoincrement())
+  post_id         String
+  was_repost      Boolean  @default(false)
+  user_id         String
+  title           String
+  description     String
+  post_type       String
+  image           Json
+  video           Json
+  post_status     String
+  post_is_visible Boolean  @default(true)
+  created_at      DateTime @default(now())
+  updated_at      DateTime @updatedAt
+}
+
+model PostComment {
+  id         Int      @id @default(autoincrement())
+  comment_id String
+  user_id    String
+  post_id    String
+  comment    String
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+}
+
+model PostLike {
+  id         Int      @id @default(autoincrement())
+  like_id    String
+  user_id    String
+  post_id    String
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+}
+
+model PostShared {
+  id         Int      @id @default(autoincrement())
+  shared_id  String
+  user_id    String?
+  post_id    String
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+}
+
+model Follow {
+  id          Int      @id @default(autoincrement())
+  follow_id   String
+  user_id     String
+  follower_id String
+  created_at  DateTime @default(now())
+  updated_at  DateTime @updatedAt
+}
+
+model Subscribers {
+  id            Int      @id @default(autoincrement())
+  sub_id        String
+  user_id       String
+  subscriber_id String
+  created_at    DateTime @default(now())
+  updated_at    DateTime @updatedAt
+}
+
+model LiveStream {
+  id          Int       @id @default(autoincrement())
+  user_id     String
+  live_id     String
+  title       String
+  description String
+  image       Json
+  video       Json
+  live_status String
+  live_start  DateTime  @default(now())
+  live_end    DateTime?
+  created_at  DateTime  @default(now())
+  updated_at  DateTime  @updatedAt
+}
+
+model LiveStreamComment {
+  id              Int      @id @default(autoincrement())
+  live_comment_id String
+  user_id         String
+  live_id         String
+  comment         String
+  created_at      DateTime @default(now())
+  updated_at      DateTime @updatedAt
+}
+
+model LiveStreamLike {
+  id           Int      @id @default(autoincrement())
+  live_like_id String
+  user_id      String
+  live_id      String
+  created_at   DateTime @default(now())
+  updated_at   DateTime @updatedAt
+}
+
+model LiveStreamView {
+  id         Int      @id @default(autoincrement())
+  user_id    String
+  live_id    String
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+}
+
+model Settings {
+  id                    Int      @id @default(autoincrement())
+  user_id               String
+  price_per_message     Float
+  enable_free_message   Boolean
+  subscription_price    Float
+  subscription_type     String
+  subscription_duration String
+  created_at            DateTime @default(now())
+  updated_at            DateTime @updatedAt
+}
+
+model Messages {
+  id          Int      @id @default(autoincrement())
+  message_id  String
+  sender_id   String
+  receiver_id String
+  status      String
+  seen        Boolean  @default(false)
+  message     String
+  attachment  Json
+  created_at  DateTime @default(now())
+  updated_at  DateTime @updatedAt
+}
+
+model Notifications {
+  id              Int      @id @default(autoincrement())
+  notification_id String
+  user_id         String
+  message         String
+  created_at      DateTime @default(now())
+  updated_at      DateTime @updatedAt
+}
+
+model ReportUser {
+  id          Int      @id @default(autoincrement())
+  report_id   String
+  user_id     String
+  reported_id String
+  report_type String
+  report      String
+  created_at  DateTime @default(now())
+  updated_at  DateTime @updatedAt
+}
+
+model ReportPost {
+  id          Int      @id @default(autoincrement())
+  report_id   String
+  user_id     String
+  post_id     String
+  report_type String
+  report      String
+  created_at  DateTime @default(now())
+  updated_at  DateTime @updatedAt
+}
+
+model ReportComment {
+  id          Int      @id @default(autoincrement())
+  report_id   String
+  user_id     String
+  comment_id  String
+  report_type String
+  report      String
+  created_at  DateTime @default(now())
+  updated_at  DateTime @updatedAt
+}
+
+model ReportLive {
+  id          Int      @id @default(autoincrement())
+  report_id   String
+  user_id     String
+  live_id     String
+  report_type String
+  report      String
+  created_at  DateTime @default(now())
+  updated_at  DateTime @updatedAt
+}
+
+model ReportMessage {
+  id          Int      @id @default(autoincrement())
+  report_id   String
+  user_id     String
+  message_id  String
+  report_type String
+  report      String
+  created_at  DateTime @default(now())
+  updated_at  DateTime @updatedAt
+}
+
+model UserPoints {
+  id              Int      @id @default(autoincrement())
+  user_id         String
+  points          Int
+  conversion_rate Float
+  created_at      DateTime @default(now())
+  updated_at      DateTime @updatedAt
+}
+
+model UserWallet {
+  id         Int      @id @default(autoincrement())
+  user_id    String
+  wallet_id  String
+  balance    Float
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+}
+
+model UserTransaction {
+  id             Int      @id @default(autoincrement())
+  transaction_id String
+  user_id        String
+  wallet_id      String
+  amount         Float
+  transaction    String
+  created_at     DateTime @default(now())
+  updated_at     DateTime @updatedAt
+}
+
+model UserSubscriptionCurrent {
+  id              Int      @id @default(autoincrement())
+  subscription_id String
+  user_id         String
+  subscription    String
+  created_at      DateTime @default(now())
+  updated_at      DateTime @updatedAt
+}
+
+model UserSubscriptionHistory {
+  id              Int      @id @default(autoincrement())
+  subscription_id String
+  user_id         String
+  subscription    String
+  created_at      DateTime @default(now())
+  updated_at      DateTime @updatedAt
+}
+
+model GlobalPointsBuy {
+  id              Int      @id @default(autoincrement())
+  points_buy_id   String
+  user_id         String
+  points          Int
+  amount          Float
+  conversion_rate Float
+  currency        String
+  created_at      DateTime @default(now())
+  updated_at      DateTime @updatedAt
+}
+
+model UserWithdrawalBankAccount {
+  id              Int      @id @default(autoincrement())
+  user_id         String
+  bank_account_id String
+  bank_name       String
+  account_name    String
+  account_number  String
+  routing_number  String
+  bank_country    String
+  created_at      DateTime @default(now())
+  updated_at      DateTime @updatedAt
+}
