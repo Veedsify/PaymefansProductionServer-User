@@ -126,7 +126,7 @@ export const ReplyPostComponent = ({ options }: ReplyPostProps) => {
                     <p className="mb-3 p-3 text-sm font-semibold">
                         Replying to <span className="font-bold text-primary-dark-pink">{options.author_username}</span>
                     </p>
-                    <div className={`h-56`}>
+                    <div className={`h-auto`}>
                         <textarea
                             onBlur={(e) => !e.target.value && setReplyPostOpen(false)}
                             onFocus={handleTextAreaFocus}
@@ -134,7 +134,7 @@ export const ReplyPostComponent = ({ options }: ReplyPostProps) => {
                             disabled={commentSending}
                             value={typedComment}
                             placeholder="Type a reply"
-                            className={`block w-full outline-none p-3 resize-none duration-300 transition-all ${replyPostOpen ? "h-full" : "h-1/3"} dark:text-white dark:bg-slate-800 rounded-md`}
+                            className={`block border w-full outline-none p-3 resize-none duration-300 transition-all ${replyPostOpen ? "h-full" : "h-1/3"} dark:text-white dark:bg-slate-800 rounded-md`}
                         />
                     </div>
                     <div className="flex gap-3 flex-wrap mb-3">
