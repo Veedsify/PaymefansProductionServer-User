@@ -8,7 +8,6 @@ import { useRouter } from "next/navigation";
 const CommentsAndReply = ({ post }: { post: PostData }) => {
     const [postComments, setPostComments] = useState<Comment[]>([])
     const router = useRouter()
-
     const setNewComment = (comment: Comment) => {
         setPostComments((prev) => {
             return [...new Set([comment, ...prev])]
