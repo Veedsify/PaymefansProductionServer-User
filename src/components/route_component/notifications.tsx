@@ -71,7 +71,7 @@ export function NotificationBody() {
                         `}>
                         <div role="img"
                             style={{ color: types.find((type) => type.type === notification.action)?.color }}
-                            className="focus:outline-none w-14 h-14 rounded-full border border-gray-200 flex items-center justify-center">
+                        className="focus:outline-none w-14 h-14 aspect-square rounded-full border border-gray-200 flex items-center justify-center">
                             {
                                 notification.action && types.find((type) => type.type === notification.action)?.icon
                             }
