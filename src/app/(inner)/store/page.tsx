@@ -1,3 +1,4 @@
+import CartIcon from "@/components/sub_components/cart-icon";
 import { ShoppingCart } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -12,12 +13,7 @@ const Store = () => {
                         <h2 className="text-xl font-bold text-gray-900 dark:text-white sm:text-3xl">
                             All Products
                         </h2>
-                        <Link href="/store/cart" className="relative">
-                            <ShoppingCart className="w-7 h-7 ml-auto text-gray-900 dark:text-white" strokeWidth={2} />
-                            <div className="absolute -top-2 -right-2 inline-flex items-center justify-center px-1 py-1 text-xs font-bold leading-none text-white bg-primary-dark-pink rounded-full">
-                                0
-                            </div>
-                        </Link>
+                        <CartIcon />
                     </div>
 
                     <p className="mt-4 max-w-md text-gray-500 dark:text-white">
@@ -49,7 +45,7 @@ const Store = () => {
 
                                 <p className="mb-2">
                                     <span className="tracking-wider text-2xl text-gray-900 dark:text-white">
-                                    Basic White T Shirt
+                                        Basic White T Shirt
                                     </span>
                                 </p>
                                 <h3 className="dark:text-white text-gray-700 group-hover:underline group-hover:underline-offset-4">

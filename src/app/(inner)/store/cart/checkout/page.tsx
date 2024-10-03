@@ -9,7 +9,7 @@ import { useState } from "react";
 const page = () => {
      const [paymentMethod, setPaymentMethod] = useState<"points" | "paystack">("points");
      return (
-          <div className="relative p-2 md:p-5">
+          <div className="mx-auto max-w-screen-xl px-4 py-8 sm:px-6 lg:px-8">
                <div className="flex items-center justify-between mb-3">
                     <h2 className="font-bold text-sm text-gray-600">
                          Customer Details

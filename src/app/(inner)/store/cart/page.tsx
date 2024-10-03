@@ -3,7 +3,7 @@ import Link from "next/link";
 
 const page = () => {
     return (
-        <div className="relative p-2 md:p-5">
+        <div className="mx-auto max-w-screen-xl px-4 py-8 sm:px-6 lg:px-8">
             <div className="flex items-center justify-between mb-3">
                 <h1 className="md:text-lg font-bold mb-3">
                     Cart
