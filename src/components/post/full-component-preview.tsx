@@ -65,6 +65,7 @@ const PostComponentPreview = () => {
             spaceBetween={0}
             slidesPerView={1}
             className=""
+            loop={true}
             modules={[Navigation, Thumbs, Pagination]}
             navigation
             onSwiper={(swiper) => (swiperRef.current = swiper)}

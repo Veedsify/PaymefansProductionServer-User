@@ -12,7 +12,7 @@ const CartComponent = () => {
           <>
                <div className="grid grid-cols-1">
                     {cart.map(item => (
-                         <div className="grid p-4 grid-cols-4 gap-4 rounded-lg bg-white shadow-md hover:shadow duration-200 mb-4">
+                         <div className="grid p-4 grid-cols-4 gap-4 rounded bg-white shadow duration-200 mb-4">
                               <Image
                                    src="https://images.pexels.com/photos/28302550/pexels-photo-28302550/free-photo-of-a-woman-sitting-on-a-stool-with-her-hair-in-a-bun.jpeg?auto=compress&cs=tinysrgb&w=600&lazy=load"
                                    alt="placeholder"
@@ -71,7 +71,7 @@ const CartComponent = () => {
                     ))}
                </div>
                <div>
-                    <div className="flex items-center justify-between bg-white p-2 rounded shadow-md hover:shadow">
+                    <div className="flex items-center justify-between bg-white rounded">
                          <h1 className="text-lg font-semibold">
                               Total: ₦ {calculateTotalPrice().toLocaleString()}
                          </h1>

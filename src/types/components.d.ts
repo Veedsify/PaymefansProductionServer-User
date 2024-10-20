@@ -1,5 +1,5 @@
-import {Call} from "@stream-io/video-react-sdk";
-import {ChangeEvent} from "react";
+import { Call } from "@stream-io/video-react-sdk";
+import { ChangeEvent } from "react";
 
 // POST COMPONET PROPS
 export type PostEditorProps = {
@@ -200,7 +200,7 @@ export interface Message {
 }
 
 export interface MessageInputProps {
-    sendMessage: ({}: Message) => void;
+    sendMessage: ({ }: Message) => void;
     sendTyping: (value: string) => void;
     receiver: any;
     isFirstMessage: boolean;
@@ -383,6 +383,8 @@ type StoryPreviewControlProps = {
     clickToPlay: () => void;
     playVideoOnLoad: (canplay: boolean) => void
     moveToPrevSlide: () => void;
+    stories: Story[];
+    index: number;
 }
 
 interface StoryMediaFetchProps {

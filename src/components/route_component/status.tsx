@@ -174,7 +174,7 @@ export const StatusModal = ({ open, setStoriesOpen }: {
                 <div className='max-w-screen-md min-h-screen flex flex-col mx-auto'
                     onClick={(e) => e.stopPropagation()}>
                     <StoryPreviewComponent
-                        className={"object-contain flex-1 h-full aspect-[9/16] relative"}
+                        className={"object-contain flex-1 h-full relative"}
                         onAllStoriesEnd={closeStoryModal}
                         width="auto"
                         height={String(height + 'px')}

@@ -1,13 +1,13 @@
-import {StoryPreviewProps} from "@/types/components";
-import {Swiper, SwiperClass, SwiperSlide} from 'swiper/react';
-import {Navigation, Thumbs, Pagination} from 'swiper/modules';
+import { StoryPreviewProps } from "@/types/components";
+import { Swiper, SwiperClass, SwiperSlide } from 'swiper/react';
+import { Navigation, Thumbs, Pagination } from 'swiper/modules';
 import 'swiper/css/bundle';
 import Image from "next/image";
 import StoryPreviewControlls from "./story-preview-controls";
-import {useEffect, useRef} from "react";
+import { useEffect, useRef } from "react";
 
 
-const StoryPreviewComponent = ({className, width, height, onAllStoriesEnd, stories}: StoryPreviewProps) => {
+const StoryPreviewComponent = ({ className, width, height, onAllStoriesEnd, stories }: StoryPreviewProps) => {
     const swiperRef = useRef<SwiperClass | null>(null);
     const videoRef = useRef<HTMLVideoElement | null>(null);
     const moveToNextSlide = () => {
@@ -57,11 +57,10 @@ const StoryPreviewComponent = ({className, width, height, onAllStoriesEnd, stori
             }}
             className={`${className}`}
         >
-
             <Swiper
                 spaceBetween={0}
                 slidesPerView={1}
-                className="relative h-full bg-black"
+                className="h-full bg-black"
                 onSwiper={(swiper) => (swiperRef.current = swiper)}
             >
                 {stories.map((story, index) => (
@@ -72,12 +71,14 @@ const StoryPreviewComponent = ({className, width, height, onAllStoriesEnd, stori
                                 moveToNextSlide={moveToNextSlide}
                                 playVideoOnLoad={PlayIfVideo}
                                 clickToPlay={() => PlayVideo(story.type === "video")}
+                                stories={stories}
+                                index={index}
                                 moveToPrevSlide={moveToPrevSlide}
                             />
                             {story.type === "image" && (
                                 <Image src={story.url} alt={story?.caption ? story.caption : ""} width="1000"
-                                       height="10000"
-                                       className="object-contain w-full h-full"
+                                    height="10000"
+                                    className="object-contain w-full h-full"
                                 />
                             )}
                             {story.type === "video" && (
@@ -89,7 +90,7 @@ const StoryPreviewComponent = ({className, width, height, onAllStoriesEnd, stori
                                     preload={'video'}
                                     className="w-full object-contain h-full"
                                 >
-                                    <source src={story.url}/>
+                                    <source src={story.url} />
                                     Your browser does not support the video tag.
                                 </video>
                             )}

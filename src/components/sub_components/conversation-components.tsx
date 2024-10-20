@@ -6,16 +6,28 @@ import { LucideLink2, LucideVerified } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { MouseEvent, useEffect } from "react";
+import { MouseEvent, useEffect, useState } from "react";
 import ActiveProfileTag from "./sub/active-profile-tag";
 import { socket } from "./sub/socket";
 const ConversationComponent = () => {
+    const [loading, setLoading] = useState(true);
     const { conversations } = useConversationsContext();
+
+    useEffect(() => {
+        if (conversations) {
+            setLoading(false);
+        }
+    }, [conversations]);
+
+    if (loading) {
+        return <ConversationCardLoader />;
+    }
+
     if (conversations.length === null) {
         return <ConversationCardLoader />;
     }
-    if (conversations.length === 0) {
-        return <div className="text-center">No conversations yet</div>;
+    if (!conversations) {
+        return <div className="text-center">No conversations yet</div>
     }
     return (
         <>
@@ -27,7 +39,7 @@ const ConversationComponent = () => {
 };
 const ConversationCardLoader = () => (
     <div>
-        {[...Array(2)].map((_, i) => (
+        {[...Array(3)].map((_, i) => (
             <div key={i} className="animate-pulse flex items-center gap-2 md:gap-5 p-3">
                 <div className="flex items-center gap-2">
                     <div className="w-12 h-12 md:w-16 md:h-16 aspect-square bg-gray-300 rounded-full"></div>
