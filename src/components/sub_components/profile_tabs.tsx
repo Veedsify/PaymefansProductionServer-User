@@ -4,6 +4,7 @@ import { Tab, Tabs, TabList, TabPanel } from "react-tabs";
 import PostPanel from "./postpanel";
 import MediaPanel from "./mediapanel";
 import LoadingPost from "./loading_post";
+import RepostPanel from "./repost_panel";
 const ProfileTabs = () => {
   const [selectedTab, setSelectedTab] = useState(0);
   return (
@@ -52,9 +53,7 @@ const ProfileTabs = () => {
           <MediaPanel />
         </TabPanel>
         <TabPanel>
-          <div className="py-8">
-            <p>three!</p>
-          </div>
+          <RepostPanel />
         </TabPanel>
         <TabPanel>
           <div className="py-8">

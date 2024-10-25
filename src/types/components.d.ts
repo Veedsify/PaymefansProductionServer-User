@@ -1,5 +1,7 @@
 import { Call } from "@stream-io/video-react-sdk";
 import { ChangeEvent } from "react";
+import { ProfileUserProps } from "./user";
+
 
 // POST COMPONET PROPS
 export type PostEditorProps = {
@@ -177,6 +179,15 @@ type UserPostPropsOther = {
         }[]
     }
     created_at: Date;
+}
+
+export type RespostPanelProps = {
+    userdata?: ProfileUserProps
+}
+
+export type RespotPanelFetchProps = {
+    isForViewer: boolean;
+    pageNumber: number;
 }
 
 // MESSAGE INPUT PROPS

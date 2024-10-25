@@ -1,8 +1,8 @@
 "use client"
-import { useEffect, useState } from "react";
-import axios from "axios";
-import { getToken } from "@/utils/cookie.get";
-import { PostData, UserPostProps } from "@/types/components";
+import {useEffect, useState} from "react";
+import axios, {AxiosResponse} from "axios";
+import {getToken} from "@/utils/cookie.get";
+import {PostData, UserPostProps} from "@/types/components";
 
 const getUniqueItems = (arr: UserPostProps[]) => {
     const uniqueMap = new Map();
@@ -23,9 +23,9 @@ export default function PostPanelFetch(pageNumber: number) {
         setError(false)
         const token = getToken()
         const api = `${process.env.NEXT_PUBLIC_EXPRESS_URL}/user/posts`
-        const postPerPage = process.env.NEXT_PUBLIC_POST_PER_PAGE
+        const postPerPage = process.env.NEXT_PUBLIC_POST_PER_PAGE as string;
 
-        axios(api, {
+        axios<any, AxiosResponse>(api, {
             method: 'GET',
             params: {
                 page: pageNumber,
@@ -50,5 +50,5 @@ export default function PostPanelFetch(pageNumber: number) {
         })
     }, [pageNumber])
 
-    return { posts, loading, error, hasMore, totalResults }
+    return {posts, loading, error, hasMore, totalResults}
 }

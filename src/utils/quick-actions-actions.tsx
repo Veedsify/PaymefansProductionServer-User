@@ -1,16 +1,17 @@
-import { LucideEye, LucideEyeOff, LucidePen, LucideTrash } from "lucide-react"
+import {LucideEye, LucideEyeOff, LucidePen, LucideTrash, Repeat2} from "lucide-react"
 import axiosInstance from "./axios";
-import { MouseEvent } from "react";
-import { OwnerOption, QuickPostActionsProps } from "@/types/components";
-import { getToken } from "./cookie.get";
+import {MouseEvent} from "react";
+import {OwnerOption, QuickPostActionsProps} from "@/types/components";
+import {getToken} from "./cookie.get";
 import toast from "react-hot-toast";
-import { useRouter } from "next/navigation";
+import {useRouter} from "next/navigation";
 import swal from "sweetalert"
-import { useUserAuthContext } from "@/lib/userUseContext";
+import {useUserAuthContext} from "@/lib/userUseContext";
+
 const token = getToken();
 
-const QuickPostActionHooks = ({ options }: QuickPostActionsProps) => {
-    const { user } = useUserAuthContext();
+const QuickPostActionHooks = ({options}: QuickPostActionsProps) => {
+    const {user} = useUserAuthContext();
     const router = useRouter();
     const handleDelete = (e: MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
@@ -72,7 +73,7 @@ const QuickPostActionHooks = ({ options }: QuickPostActionsProps) => {
         })
         visibility.addEventListener("change", async (e) => {
             try {
-                const setVisibility = await axiosInstance.put(`/post/${options.post_id}`, {
+                const setVisibility = await axiosInstance.post(`/repost/${options.post_id}`, {
                     visibility: visibility.value
                 }, {
                     headers: {
@@ -100,39 +101,65 @@ const QuickPostActionHooks = ({ options }: QuickPostActionsProps) => {
         })
     }
 
+    const repostThisPost = async () => {
+        try {
+            const repost = await axiosInstance.post(`/post/repost/${options.post_id}`, {}, {
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`
+                }
+            });
+            if (repost.status === 200) {
+                toast.success(repost.data.message);
+                // router.push("/profile");
+                router.refresh();
+            }
+        } catch (error) {
+            console.log(error);
+            swal("Something went wrong!", {
+                icon: "error",
+            });
+        }
+    }
+
 
     const ownerOptions: (OwnerOption | null)[] = [
         user?.is_model ? {
             name: "Edit Post",
-            icon: <LucidePen className="mr-2" size={14} />,
+            icon: <LucidePen className="mr-2" size={14}/>,
             link: new URL(`/posts/edit/${options.post_id}`, window.location.href),
         } : null,
         {
             name: "Set visibility",
-            icon: <LucideEye className="mr-2" size={16} />,
+            icon: <LucideEye className="mr-2" size={16}/>,
             func: handleSetvisibility,
         },
         {
             name: "Delete",
-            icon: <LucideTrash className="mr-2" size={16} />,
+            icon: <LucideTrash className="mr-2" size={16}/>,
             func: handleDelete,
         }
     ].filter((option) => option !== null);
 
     const publicOptions = [
         {
+            name: "Repost",
+            icon: <Repeat2 className="mr-2" size={16}/>,
+            func: repostThisPost
+        },
+        {
             name: "Report",
-            icon: <LucideTrash className="mr-2" size={16} />,
+            icon: <LucideTrash className="mr-2" size={16}/>,
             link: "/edit-post"
         },
         {
             name: "Hide",
-            icon: <LucideEyeOff className="mr-2" size={16} />,
+            icon: <LucideEyeOff className="mr-2" size={16}/>,
             link: "/edit-post"
         }
     ]
 
-    return { ownerOptions, publicOptions }
+    return {ownerOptions, publicOptions}
 }
 
 export default QuickPostActionHooks;
