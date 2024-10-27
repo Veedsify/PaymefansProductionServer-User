@@ -7,10 +7,11 @@ import { useUserAuthContext } from "@/lib/userUseContext";
 import RepostPanelFetch from "../custom-hooks/repost-panel-fetch";
 import { LucideLoader } from "lucide-react";
 
-const RepostPanel = ({ }: RespostPanelProps) => {
-     const { user } = useUserAuthContext();
+const RepostPanel = ({ userdata }: RespostPanelProps) => {
+     // const { user } = useUserAuthContext();
      const [page, setPage] = useState(1);
-     const { posts, loading, hasMore } = RepostPanelFetch({ isForViewer: false, pageNumber: page });
+     const { posts, loading, hasMore } = RepostPanelFetch({ isForViewer: false, pageNumber: page, userdata });
+
      const { ref, inView } = useInView({
           threshold: 0.5
      })
@@ -38,13 +39,16 @@ const RepostPanel = ({ }: RespostPanelProps) => {
                          ref={index === posts.length - 1 ? ref : null}
                     >
                          <PostComponent
+                              was_repost={true}
+                              repost_id={post.post_id}
+                              repost_username={post.user?.username}
                               user={{
-                                   id: user?.id!,
-                                   user_id: user?.user_id!,
-                                   name: user?.name!,
-                                   link: `/${user?.username}`,
-                                   username: user?.username!,
-                                   image: user?.profile_image!
+                                   id: post.user?.id,
+                                   user_id: post.user?.user_id,
+                                   name: post.user?.name,
+                                   link: `/${post.user?.username}`,
+                                   username: post.user?.username,
+                                   image: post.user?.profile_image
                               }}
                               isSubscriber={true}
                               data={{

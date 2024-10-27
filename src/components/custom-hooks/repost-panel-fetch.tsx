@@ -9,7 +9,7 @@ const getUniqueItems = (arr: UserPostProps[]) => {
      return Array.from(uniqueMap.values());
 };
 
-const RepostPanelFetch = ({ isForViewer, pageNumber }: RespotPanelFetchProps) => {
+const RepostPanelFetch = ({ isForViewer, pageNumber, userdata }: RespotPanelFetchProps) => {
      const [posts, setPosts] = useState<UserPostProps[]>([]);
      const [totalResults, setTotalResults] = useState(0);
      const [loading, setLoading] = useState(true);
@@ -21,7 +21,7 @@ const RepostPanelFetch = ({ isForViewer, pageNumber }: RespotPanelFetchProps) =>
           setLoading(true)
           setError(false)
           const token = getToken()
-          const api = `${process.env.NEXT_PUBLIC_EXPRESS_URL}/user/reposts`
+          const api = userdata && userdata.id ? `${process.env.NEXT_PUBLIC_EXPRESS_URL}/user/reposts/${userdata.id}` : `${process.env.NEXT_PUBLIC_EXPRESS_URL}/user/reposts`
           const postPerPage = process.env.NEXT_PUBLIC_POST_PER_PAGE as string;
 
           axios<any, AxiosResponse>(api, {
@@ -36,16 +36,15 @@ const RepostPanelFetch = ({ isForViewer, pageNumber }: RespotPanelFetchProps) =>
                },
                cancelToken: new axios.CancelToken(c => cancel = c)
           }).then(res => {
+               setLoading(false)
                setPosts((prev) => {
                     const newPosts = [...prev, ...res.data.data];
                     return getUniqueItems(newPosts);
                });
                setTotalResults(res.data.total)
                setHasMore(res.data.data.length > 0)
-               setLoading(false)
           }).catch(e => {
                if (axios.isCancel(e)) return
-               setError(true)
           })
      }, [pageNumber])
 

@@ -24,7 +24,7 @@ import {PostCompInteractions} from './post-interactions';
 import {ImageCompProps, PostComponentProps, UserMediaProps, VideoComponentProps} from '@/types/components';
 
 
-const PostComponent: React.FC<PostComponentProps> = ({user, data, isSubscriber}) => {
+const PostComponent: React.FC<PostComponentProps> = ({user, data, isSubscriber, was_repost, repost_username, repost_id}) => {
     const imageLength = data.media.length;
     const {fullScreenPreview} = usePostComponent();
     // const [isSubscriber, setIsSubscriber] = useState<boolean>(false);
@@ -109,10 +109,10 @@ const PostComponent: React.FC<PostComponentProps> = ({user, data, isSubscriber})
     return (
         <div className='hover:bg-gray-100 dark:hover:bg-slate-900 py-6 px-2 md:px-5 duration-300'>
             <div className="cursor-pointer" onClick={redirectToPost}>
-                {data.was_repost && <div className="mb-3">
-                    <Link href={`/posts/${data.repost_id}`}
+                {was_repost && <div className="mb-3">
+                    <Link href={`/posts/${repost_id}`}
                           className={"text-purple-700 bg-purple-200 inline-block text-xs rounded-md px-2 font-bold py-1"}>
-                        Reposted from {data.repost_username}
+                        Reposted from {repost_username}
                     </Link>
                 </div>}
                 <div className="flex items-center justify-between text-gray-500 text-sm mb-2">

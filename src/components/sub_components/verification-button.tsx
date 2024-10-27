@@ -23,7 +23,7 @@ const VerificationPageButton = () => {
                     buttons: ["Cancel", "Continue"],
                }).then((value) => {
                     if (value) {
-                         window.location.href = `${process.env.NEXT_PUBLIC_META_MAP_VERIFICATION_URL}`
+                         window.location.href = `${process.env.NEXT_PUBLIC_VERIFICATION_URL}/${res.data.token}`
                     }
                })
           }).catch(err => {

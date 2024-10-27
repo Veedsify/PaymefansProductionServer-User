@@ -7,6 +7,7 @@ import LoadingPost from "./loading_post";
 import PostPanelOther from "./postpanelother";
 import MediaPanelOther from "./mediapanelother";
 import { ProfileUserProps } from "@/types/user";
+import RepostPanel from "./repost_panel";
 const ProfileTabsOther = ({ userdata }: { userdata: ProfileUserProps }) => {
   const [selectedTab, setSelectedTab] = useState(0);
   return (
@@ -59,9 +60,7 @@ const ProfileTabsOther = ({ userdata }: { userdata: ProfileUserProps }) => {
           />
         </TabPanel>
         <TabPanel>
-          <div className="py-8">
-            <p>three!</p>
-          </div>
+          <RepostPanel userdata={userdata} />
         </TabPanel>
         <TabPanel>
           <div className="py-8">

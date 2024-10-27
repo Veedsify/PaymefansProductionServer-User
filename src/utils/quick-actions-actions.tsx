@@ -111,13 +111,12 @@ const QuickPostActionHooks = ({options}: QuickPostActionsProps) => {
             });
             if (repost.status === 200) {
                 toast.success(repost.data.message);
-                // router.push("/profile");
+                router.push("/profile");
                 router.refresh();
             }
-        } catch (error) {
-            console.log(error);
-            swal("Something went wrong!", {
-                icon: "error",
+        } catch (error:any) {
+            swal(error.response.data.message, {
+                icon: "info",
             });
         }
     }

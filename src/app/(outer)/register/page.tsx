@@ -9,7 +9,7 @@ import { ChangeEvent, FormEvent, MouseEvent, useEffect, useState } from "react";
 import toast from "react-hot-toast";
 
 const Register = () => {
-    const [country, setCountry] = useState<string>("Nigeria");
+    const [country, setCountry] = useState<string>(" -- Select a country -- ");
     const [countryList, setCountryList] = useState<boolean>(false);
     const [userData, setUserData] = useState<UserRegisterType | null>(null);
     const { setUser, user } = useUser();

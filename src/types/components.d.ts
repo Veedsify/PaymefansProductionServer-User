@@ -91,6 +91,9 @@ export interface UserMediaProps {
 }
 
 interface PostComponentProps {
+    was_repost?: boolean;
+    repost_username?: string;
+    repost_id?: string;
     user: {
         id: number;
         user_id: string;
@@ -148,6 +151,16 @@ export type UserPostProps = {
     post_reposts: number;
     UserMedia: UserMediaProps[];
     created_at: Date;
+    user: {
+        id: number;
+        user_id: string;
+        name: string;
+        username: string;
+        profile_image: string;
+        Subscribers: {
+            subscriber_id: number;
+        }[]
+    }
     PostLike: {
         post_id: string;
         user_id: number;
@@ -188,6 +201,7 @@ export type RespostPanelProps = {
 export type RespotPanelFetchProps = {
     isForViewer: boolean;
     pageNumber: number;
+    userdata? : ProfileUserProps
 }
 
 // MESSAGE INPUT PROPS
