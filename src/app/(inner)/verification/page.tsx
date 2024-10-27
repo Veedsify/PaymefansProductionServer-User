@@ -4,7 +4,6 @@ import VideoVerification from "@/components/sub_components/videoverification";
 import { LucideInfo } from "lucide-react";
 import { Metadata } from "next";
 import Image from "next/image";
-import Link from "next/link";
 
 export const metadata: Metadata = {
     title: "Verification",
