@@ -36,13 +36,18 @@ const RepostPanelFetch = ({ isForViewer, pageNumber, userdata }: RespotPanelFetc
                },
                cancelToken: new axios.CancelToken(c => cancel = c)
           }).then(res => {
-               setLoading(false)
-               setPosts((prev) => {
-                    const newPosts = [...prev, ...res.data.data];
-                    return getUniqueItems(newPosts);
-               });
-               setTotalResults(res.data.total)
-               setHasMore(res.data.data.length > 0)
+               const { data } = res.data;
+               if (data.length === 0) {
+                   setHasMore(false);
+                   setLoading(false);
+                   setTotalResults(0);
+                   setPosts([]);
+                   return;
+               }
+               setPosts((prev) => getUniqueItems([...prev, ...data]));
+               setTotalResults(res.data.total);
+               setHasMore(data.length > 0);
+               setLoading(false);
           }).catch(e => {
                if (axios.isCancel(e)) return
           })
