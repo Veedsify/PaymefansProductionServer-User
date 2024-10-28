@@ -19,7 +19,12 @@ type StoryState = {
     addToStory: (story: StoryType) => void;
     removeFromStory: (id: number) => void;
     addcCaptionToStory: (id: number, caption: string) => void;
-    updateCaptionStyle: (id: number, captionStyle: any) => void;
+    updateCaptionStyle: (id: number, captionStyle: {
+        fontFamily: string;
+        fontSize: string;
+        fontWeight: string;
+        color: string;
+    }) => void;
     clearStory: () => void;
 };
 

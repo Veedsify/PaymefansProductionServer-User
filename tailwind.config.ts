@@ -8,6 +8,16 @@ const config: Config = {
   ],
   theme: {
     extend: {
+      fontFamily: {
+        crete: ["var(--font-crete-round)", "serif"],
+        unbounded: ["var(--font-unbounded)", "sans-serif"],
+        kablammo: ["var(--font-kablammo)", "sans-serif"],
+        dynapuff: ["var(--font-dynapuff)", "sans-serif"],
+        instrument: ["var(--font-instrument-sans)", "sans-serif"],
+        ebgaramond: ["var(--font-eb-garamond)", "serif"],
+        shadowsintolight: ["var(--font-shadows-into-light)", "sans-serif"],
+        delagothicone: ["var(--font-delagothicone)", "sans-serif"],
+      },
       colors: {
         white: "#ffffff",
         black: "#000000",
