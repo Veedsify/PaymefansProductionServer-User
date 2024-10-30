@@ -1,30 +1,36 @@
+"use client"
 import { StoryPreviewProps } from "@/types/components";
 import { Swiper, SwiperClass, SwiperSlide } from 'swiper/react';
 import { Navigation, Thumbs, Pagination } from 'swiper/modules';
 import 'swiper/css/bundle';
 import Image from "next/image";
-import StoryPreviewControlls from "./story-preview-controls";
-import { useEffect, useRef } from "react";
+import StoryPreviewControlls from "./status-preview-controls";
+import { useEffect, useRef, useState } from "react";
 
-
-const StoryPreviewComponent = ({ className, width, height, onAllStoriesEnd, stories }: StoryPreviewProps) => {
+const StoryPreviewComponent = ({ className, onAllStoriesEnd, stories }: StoryPreviewProps) => {
     const swiperRef = useRef<SwiperClass | null>(null);
     const videoRef = useRef<HTMLVideoElement | null>(null);
+    const [resetSwiper, setResetSwiper] = useState(false);
+
     const moveToNextSlide = () => {
         if (swiperRef.current) {
             if (swiperRef.current?.isEnd) {
-                onAllStoriesEnd()
-                // swiperRef.current.slideTo(0, 0, false)
+                onAllStoriesEnd().then(() => {
+                    swiperRef?.current?.slideTo(0, 0, false)
+                })
+                setResetSwiper(true); 
             } else {
                 swiperRef.current.slideNext(0, false)
             }
         }
     }
+
     const moveToPrevSlide = () => {
         if (swiperRef.current) {
             swiperRef.current.slidePrev(0, false)
         }
     }
+
     const PlayVideo = (isVideo: boolean) => {
         if (videoRef.current && isVideo) {
             const playPromise = videoRef.current.play();
@@ -46,26 +52,25 @@ const StoryPreviewComponent = ({ className, width, height, onAllStoriesEnd, stor
     }
 
     useEffect(() => {
-
-    }, []);
+        if (resetSwiper) {
+            setResetSwiper(false); // Reset the flag after rendering
+        }
+    }, [resetSwiper]);
 
     return (
-        <div
-            style={{
-                width,
-                height
-            }}
-            className={`${className}`}
-        >
+        <div className={`${className}`}>
             <Swiper
+                key={stories.map(story => story.id).join(',')} // Add key to force re-render
                 spaceBetween={0}
                 slidesPerView={1}
-                className="h-full bg-black"
+                className="h-full bg-black w-full"
                 onSwiper={(swiper) => (swiperRef.current = swiper)}
             >
                 {stories.map((story, index) => (
-                    <SwiperSlide key={index}>
-                        <div className="flex items-center justify-center flex-col h-full relative">
+                    <SwiperSlide
+                        className="swiper-status-class"
+                        key={index}>
+                        <div className="flex items-center justify-center flex-col w-full h-screen object-contain relative">
                             <StoryPreviewControlls
                                 type={story.type}
                                 moveToNextSlide={moveToNextSlide}
@@ -78,7 +83,7 @@ const StoryPreviewComponent = ({ className, width, height, onAllStoriesEnd, stor
                             {story.type === "image" && (
                                 <Image src={story.url} alt={story?.caption ? story.caption : ""} width="1000"
                                     height="10000"
-                                    className="object-contain w-full h-full"
+                                    className="object-contain w-full"
                                 />
                             )}
                             {story.type === "video" && (
@@ -88,7 +93,7 @@ const StoryPreviewComponent = ({ className, width, height, onAllStoriesEnd, stor
                                     autoPlay={true}
                                     loop={true}
                                     preload={'video'}
-                                    className="w-full object-contain h-full"
+                                    className="object-contain h-full w-fit"
                                 >
                                     <source src={story.url} />
                                     Your browser does not support the video tag.

@@ -3,6 +3,7 @@
 import axiosInstance from "@/utils/axios";
 import { getToken } from "@/utils/cookie.get";
 import axios from "axios";
+import swal from "sweetalert"
 import toast from "react-hot-toast";
 
 const VerificationPageButton = () => {

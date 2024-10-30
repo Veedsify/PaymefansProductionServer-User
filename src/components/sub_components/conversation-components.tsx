@@ -98,10 +98,10 @@ const ConversationCard = ({ conversation }: { conversation: { conversation: Conv
                     <div className="flex flex-1 text-sm gap-4 mb-2 w-full">
                         <Link onClick={(e) => e.stopPropagation()} href={`/${conversation.receiver.username}`}>
                             <h1 className="font-bold flex gap-1">
+                                {conversation.receiver.name}
                                 {conversation.receiver.username === '@paymefans' && (
                                     <LucideVerified size={20} className="text-yellow-600" />
                                 )}
-                                {conversation.receiver.name}
                             </h1>
                         </Link>
                         <Link onClick={(e) => e.stopPropagation()} href={`/${conversation.receiver.username}`}>

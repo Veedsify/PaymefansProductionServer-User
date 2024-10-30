@@ -39,7 +39,7 @@ const PostComponentPreview = () => {
     <>
       {open && (
         <div
-          className={`fixed inset-0 w-full min-h-screen z-50 smooth-opacity select-none ${open ? "active" : ""}`}>
+          className={`fixed inset-0 w-full min-h-screen z-[999] smooth-opacity select-none ${open ? "active" : ""}`}>
           <button
             onClick={close}
             className="absolute top-4 right-4 p-2 bg-white rounded-full text-black shadow-md z-50"
@@ -47,7 +47,7 @@ const PostComponentPreview = () => {
             <X size={40} />
           </button>
 
-          {withOptions && (
+          {/* {withOptions && (
             <div
               onClick={(e) => e.stopPropagation()}
               className="absolute flex items-center gap-3 z-50 bottom-0 md:w-2/3 w-full left-1/2 -translate-x-1/2 p-4 bg-white bg-opacity-15 backdrop-blur-lg"
@@ -59,7 +59,7 @@ const PostComponentPreview = () => {
                 <LucideShare2 size={20} />
               </button>
             </div>
-          )}
+          )} */}
 
           <Swiper
             spaceBetween={0}
@@ -122,7 +122,7 @@ const VideoPreview = ({ url, playAction }: { url: string, playAction: boolean })
     } else {
       setShowPlay(true)
     }
-  }, [videoRef.current]);
+  }, []);
 
   const handleClickFunction = () => {
     if (videoRef.current) {

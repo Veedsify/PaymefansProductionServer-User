@@ -396,9 +396,7 @@ type Story = {
 
 type StoryPreviewProps = {
     className: string;
-    onAllStoriesEnd: () => void;
-    width: number | string;
-    height: number | string;
+    onAllStoriesEnd: () => Promise<void>;
     stories: Story[];
 }
 
@@ -409,7 +407,7 @@ type StoryPreviewControlProps = {
     playVideoOnLoad: (canplay: boolean) => void
     moveToPrevSlide: () => void;
     stories: Story[];
-    index: number;
+    index: number 
 }
 
 interface StoryMediaFetchProps {

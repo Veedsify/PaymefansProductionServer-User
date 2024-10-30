@@ -65,7 +65,7 @@ const SlideComponent = ({ story, close }: { story: StoryType; index: number; clo
           setFontIndex((fontIndex + 1) % fontFamilies.length); // Cycle through the fonts
           updateCaptionStyle(story.id, {
                fontFamily: nextFont,
-               fontSize: "1.4rem",
+               fontSize: "1.875rem",
                fontWeight: "bold",
                color: "#fff"
           });
@@ -87,7 +87,7 @@ const SlideComponent = ({ story, close }: { story: StoryType; index: number; clo
                <div className='absolute flex items-center justify-between top-0 left-0 w-full z-50 px-5 py-3 backdrop-blur-sm bg-white bg-opacity-10'>
                     <button
                          onClick={changeFont}
-                         className='p-3 rounded-full bg-primary-dark-pink'>
+                         className='p-3 rounded-full bg-primary-dark-pink cursor-pointer'>
                          <FileSignature stroke='#fff' />
                     </button>
                     <button

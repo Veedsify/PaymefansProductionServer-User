@@ -53,7 +53,7 @@ const UploadMediaComponent: React.FC<UploadMediaCompProps> = ({ open, close, set
     }, [setFiles, close])
 
     return (
-        <div className={`fixed bg-white inset-0  w-full min-h-screen z-[999] ${open ? "block" : "hidden"}`}>
+        <div className={`fixed bg-white inset-0  w-full min-h-screen ${open ? "block" : "hidden"}`}>
             <div className="flex items-center justify-center h-full w-full p-2 relative">
                 <div className="absolute top-[3%] rounded-full bg-white p-3 shadow-lg cursor-pointer" onClick={closeModal}>
                     <X size={30} stroke='#000' className='p-0 m-0' />

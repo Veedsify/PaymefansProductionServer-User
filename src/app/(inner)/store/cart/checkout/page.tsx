@@ -5,8 +5,7 @@ import Link from "next/link";
 import { useState } from "react";
 
 
-
-const page = () => {
+const Page = () => {
      const [paymentMethod, setPaymentMethod] = useState<"points" | "paystack">("points");
      return (
           <div className="mx-auto max-w-screen-xl px-4 py-8 sm:px-6 lg:px-8">
@@ -114,4 +113,4 @@ const page = () => {
      );
 }
 
-export default page;
+export default Page;

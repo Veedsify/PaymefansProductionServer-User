@@ -224,8 +224,8 @@ const Chats = ({
                 href={`/${receiver.username}`}
                 className="flex gap-1 duration-300 items-center"
               >
-                {receiver.username === '@paymefans' && (<LucideVerified className="text-yellow-600"/>)}
                 <span>{receiver ? receiver.name : ""}</span>
+                {receiver.username === '@paymefans' && (<LucideVerified className="text-yellow-600"/>)}
                 <span className="text-xs fw-bold text-primary-dark-pink inline-block ml-3">
                   {typing.length > 0 ? "typing..." : ""}
                 </span>
@@ -258,7 +258,7 @@ const Chats = ({
           </div>
         ))}
       </div>
-      <div className="fixed bottom-0 z-30 lg:w-[43.7%] w-full bg-white dark:bg-gray-800">
+      <div className="fixed bottom-0 z-[50] md:z-[65] lg:w-[43.7%] w-full bg-white dark:bg-gray-800">
         <MessageInput
           receiver={receiver}
           isFirstMessage={messages.length === 0}

@@ -1,7 +1,7 @@
 "use client"
 import Stories from 'stories-react';
 import 'stories-react/dist/index.css';
-import { LucideMoveLeft, LucideMoveRight, LucidePlus } from "lucide-react";
+import { Loader2, LucideMoveLeft, LucideMoveRight, LucidePlus } from "lucide-react";
 import Image from "next/image";
 import { SetStateAction, useEffect, useState } from 'react';
 import Loader from './loader';
@@ -9,27 +9,43 @@ import swal from 'sweetalert';
 import StoriesHeader from './stories_header';
 import { useUserAuthContext } from '@/lib/userUseContext';
 import Link from "next/link";
-import StoryPreviewComponent from './story-preview-component';
+import StoryPreviewComponent from './status-preview-component';
+import useFetchStories from '../custom-hooks/fetch-stories';
+import { Story } from '@/types/story';
+import { duration } from 'moment';
 
 const StatusComponent = () => {
+    const { stories, loading } = useFetchStories();
+    const { user } = useUserAuthContext()
+    const prioritizedStories = stories
+        ? [...stories].sort((a, b) => (a.user.id === user?.id ? -1 : b.user.id === user?.id ? 1 : 0))
+        : [];
     return (
         <div className="select-none border-b">
             <div
                 className="flex items-center gap-4 overflow-x-auto lg:overflow-hidden lg:hover:overflow-x-auto w-screen md:w-full p-4 py-6 pb-9 clean-sidebar">
                 <UserStatus />
-                <Status islive={true}
-                    data={{ image: "/images/login_image.png", story: "", name: "the_artgetteedfrw4escsdcsfer", username: "@dikewisdom" }} />
-                <Status
-                    data={{ image: "/images/login_image.png", story: "", name: "thora", username: "@thora"}} />
-                <Status
-                    islive={true} data={{ image: "/images/profilecover.png", story: "", name: "bridgette", username: "@bridgette" }} />
-                {/* <Status islive={false} data={{ image: "/images/profilecover.png", story: "", name: "kimberly" }} />
-                <Status islive={false} data={{ image: "/images/profilecover.png", story: "", name: "bridgette" }} />
-                <Status islive={true} data={{ image: "/images/register_image.png", story: "", name: "focbos" }} />
-                <Status islive={false} data={{ image: "/images/register_image.png", story: "", name: "jennermarbles" }} />
-                <Status islive={true} data={{ image: "/images/register_image.png", story: "", name: "tysoncreamte" }} />
-                <Status islive={false} data={{ image: "/images/register_image.png", story: "", name: "mitchell" }} />
-                <Status islive={true} data={{ image: "/images/register_image.png", story: "", name: "crymson_tims" }} /> */}
+                {loading && <>
+                    {Array.from({ length: 5 }).map((_, index) => (
+                        <div key={index} className='mr-5'>
+                            <Loader2 size={30} className='animate-spin text-gray-200' />
+                        </div>
+                    ))}
+                </>}
+                {prioritizedStories && !loading && (
+                    prioritizedStories.map((story, index) => (
+                        <Status
+                            key={index}
+                            // islive={story.user.LiveStream.find()}
+                            data={{
+                                stories: story.stories,
+                                image: story.user.profile_image,
+                                name: story.user.name,
+                                username: story.user.username,
+                            }}
+                        />
+                    ))
+                )}
             </div>
         </div>
     );
@@ -40,12 +56,13 @@ export const Status = ({ islive, data }: {
     islive?: boolean;
     data: {
         image: string;
-        story: string;
+        stories: Story[];
         name: string;
         username: string;
     }
 }) => {
     const [storiesOpen, setStoriesOpen] = useState(false)
+    const [username, setUsername] = useState<string>("")
     const OpenThisStory = () => {
         if (islive) {
             return swal({
@@ -56,7 +73,8 @@ export const Status = ({ islive, data }: {
             }).then((value) => {
                 if (value) {
                     window.location.href = `/redirect-to-live/${data.username}`
-                }else{
+                } else {
+                    setUsername(data.username)
                     setStoriesOpen(true)
                 }
             })
@@ -86,14 +104,16 @@ export const Status = ({ islive, data }: {
                     )}
                 </div>
                 <div
-                    className="text-xs md:text-sm left-1/2 -translate-x-1/2 absolute font-medium text-gray-600 text-center text-truncate max-w-20 overflow-hidden">
+                    className="text-xs md:text-sm left-1/2 -translate-x-1/2 whitespace-pre absolute font-medium text-gray-600 text-center text-truncate max-w-20 overflow-hidden">
                     {data.name}
                 </div>
             </div>
-            <StatusModal
+            {setStoriesOpen && <StatusModal
+                username={username}
+                stories={data.stories}
                 open={storiesOpen}
                 setStoriesOpen={setStoriesOpen}
-            />
+            />}
         </div>
     );
 }
@@ -127,63 +147,44 @@ export const UserStatus = () => {
     );
 }
 
-export const StatusModal = ({ open, setStoriesOpen }: {
-    open: boolean,
-    setStoriesOpen: React.Dispatch<React.SetStateAction<boolean>>
+export const StatusModal = ({ open, setStoriesOpen, stories: userStories, username}: { 
+    open: boolean, 
+    stories: Story[], 
+    username: string,
+    setStoriesOpen: React.Dispatch<React.SetStateAction<boolean>> 
 }) => {
-    const [height, setHeight] = useState(0)
-    useEffect(() => {
-        setHeight(window.innerHeight)
-    }, [])
-    const stories = [
-        {
-            header: <StoriesHeader />,
-            type: 'video',
-            url: 'https://videos.pexels.com/video-files/9968176/9968176-sd_640_360_25fps.mp4',
-            duration: 10000,
-        },
-        {
-            header: <StoriesHeader />,
-            type: 'image',
-            duration: 6000,
-            url: 'https://images.pexels.com/photos/9733197/pexels-photo-9733197.jpeg?w=300',
-        },
-        {
-            header: <StoriesHeader />,
-            duration: 6000,
-            type: 'image',
-            url: 'https://images.pexels.com/photos/1758144/pexels-photo-1758144.jpeg?auto=compress&cs=tinysrgb&w=600',
-        },
-        {
-            header: <StoriesHeader />,
-            duration: 6000,
-            type: 'video',
-            url: 'https://videos.pexels.com/video-files/5739886/5739886-sd_360_640_30fps.mp4',
-        },
-    ];
-    const closeStoryModal = () => {
-        setStoriesOpen(false)
+    const stories = userStories.flatMap(story => 
+        story.StoryMedia.map(media => ({ 
+            header: <StoriesHeader />, 
+            type: media.media_type, 
+            url: media.url, 
+            duration: media.duration ? media.duration : 5000,
+        })) 
+    );
+
+    const closeStoryModal = async () => { 
+        setStoriesOpen(false); 
     }
 
-    return (
-        <>
-            <div
-                className={`fixed bg-black inset-0 bg-opacity-90 z-50 w-full h-dvh md:h-screen p-3 flex items-center justify-center duration-300 ${open ? "pointer-events-auto visible" : "opacity-0 pointer-events-none invisible"}`}
-                onClick={closeStoryModal}
-           >
-                <div className='max-w-screen-md min-h-screen flex flex-col mx-auto'
-                    onClick={(e) => e.stopPropagation()}>
-                    <StoryPreviewComponent
-                        className={"object-contain flex-1 h-full relative"}
-                        onAllStoriesEnd={closeStoryModal}
-                        width="auto"
-                        height={String(height + 'px')}
-                        stories={stories}
-                    />
-                </div>
-            </div>
-        </>
-    )
+    return ( 
+        <> 
+            <div 
+                className={`fixed bg-black inset-0 bg-opacity-90 z-50 w-full h-dvh md:h-screen p-3 flex items-center justify-center ${open ? "pointer-events-auto opacity-100 visible" : "opacity-0 pointer-events-none invisible"}`} 
+                onClick={closeStoryModal} 
+            > 
+                <div className='max-w-screen-md min-h-screen flex flex-col mx-auto' 
+                    onClick={(e) => e.stopPropagation()}> 
+                    <StoryPreviewComponent 
+                        className={"object-contain w-full h-full relative"} 
+                        onAllStoriesEnd={closeStoryModal} 
+                        stories={stories} 
+                        key={stories.map(story => story.url).join(',')} // Adding a unique key to force re-render
+                    /> 
+                </div> 
+            </div> 
+        </> 
+    ); 
 }
+
 
 export default StatusComponent;

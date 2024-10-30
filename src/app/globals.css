@@ -410,3 +410,7 @@ img {
 .notification_message_container strong {
   color: #CC0DF8;
 }
+
+.swiper-status-class {
+  width: fit-content !important;
+}

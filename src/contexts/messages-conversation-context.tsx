@@ -6,11 +6,7 @@ import { Conversation, LastMessage } from "@/types/conversations";
 import { ReactNode, createContext, useContext, useEffect, useMemo, useState } from "react";
 import { Notification, useNotificationStore } from "./notification-context";
 import axios from "axios";
-import { headers } from "next/headers";
 import { getToken } from "@/utils/cookie.get";
-
-
-
 
 const MessagesConversationContext = createContext<MessagesConversationContextValue | null>(
     null

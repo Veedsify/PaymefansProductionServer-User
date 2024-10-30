@@ -28,8 +28,8 @@ const StoryUploadForm = () => {
                         "Authorization": `Bearer ${token}`
                     }
                 }), {
-                    loading: "Uploading images...",
-                    success: "Images uploaded successfully",
+                    loading: "Uploading Media...",
+                    success: "Media uploaded successfully",
                     error: (err: AxiosError) => {
                         console.error("Error while uploading images", err)
                         return "Error while uploading images"

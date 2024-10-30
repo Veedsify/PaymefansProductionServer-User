@@ -11,8 +11,8 @@ const CartComponent = () => {
      return (
           <>
                <div className="grid grid-cols-1">
-                    {cart.map(item => (
-                         <div className="grid p-4 grid-cols-4 gap-4 rounded bg-white shadow duration-200 mb-4">
+                    {cart.map((item, index) => (
+                         <div key={index} className="grid p-4 grid-cols-4 gap-4 rounded bg-white shadow duration-200 mb-4">
                               <Image
                                    src="https://images.pexels.com/photos/28302550/pexels-photo-28302550/free-photo-of-a-woman-sitting-on-a-stool-with-her-hair-in-a-bun.jpeg?auto=compress&cs=tinysrgb&w=600&lazy=load"
                                    alt="placeholder"
@@ -40,7 +40,9 @@ const CartComponent = () => {
                                              className="border-gray-300 rounded-md border outline-none p-1 px-4 text-sm mr-2"
                                         >
                                              {sizes.map(s => (
-                                                  <option value={s.id} selected={item.sizes.id === s.id}>
+                                                  <option 
+                                                  key={s.id}
+                                                  value={s.id} selected={item.sizes.id === s.id}>
                                                        {String(s.name).toUpperCase()}
                                                   </option>
                                              ))}

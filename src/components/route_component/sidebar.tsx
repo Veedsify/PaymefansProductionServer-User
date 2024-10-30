@@ -51,7 +51,7 @@ const SideBar = () => {
     return (
         <>
             <div
-                className={`lg:ml-auto dark:bg-gray-950 bg-white h-screen lg:h-screen fixed lg:sticky top-0 overflow-auto smart-width p-4 z-50 shadow-xl lg:shadow-none lg:border-r duration-300 ease-in-out dark:text-white dark:border-slate-800 ${sideBarState ? "left-0" : "-left-full"}`
+                className={`lg:ml-auto dark:bg-gray-950 bg-white h-screen lg:h-screen fixed lg:sticky top-0  z-[65] md:z-[50] overflow-auto smart-width p-4 shadow-xl lg:shadow-none lg:border-r duration-300 ease-in-out dark:text-white dark:border-slate-800 ${sideBarState ? "left-0" : "-left-full"}`
                 }>
                 <div className="mt-8 mb-16 ">
                     <Image className="block h-8 w-36" width={150} height={30} priority
@@ -174,7 +174,7 @@ const SideBar = () => {
             </div>
             <div
                 onClick={() => setSideBar(false)}
-                className={`lg:hidden block fixed inset-0 z-40 w-full bg-opacity-50 duration-300 ease-in-out bg-black ${sideBarState ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"}`}>
+                className={`lg:hidden block fixed inset-0 z-[64] md:z-[49]  w-full bg-opacity-50 duration-300 ease-in-out bg-black ${sideBarState ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"}`}>
             </div>
 
         </>
