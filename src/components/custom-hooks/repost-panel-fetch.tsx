@@ -60,7 +60,7 @@ const RepostPanelFetch = ({ isForViewer, pageNumber, userdata }: RespotPanelFetc
         // Cleanup function to cancel ongoing request
         return () => cancel();
 
-    }, [pageNumber, userdata]);
+    }, [pageNumber, userdata, posts.length]);
 
     return { posts, loading, error, hasMore, totalResults };
 };

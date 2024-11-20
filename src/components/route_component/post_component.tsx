@@ -56,7 +56,7 @@ const PostComponent: React.FC<PostComponentProps> = ({user, data, isSubscriber, 
     }, [isSubscriber, data.post_audience, data.media, fullScreenPreview]);
 
     const redirectToPost = useCallback((e: MouseEvent) => {
-        const target = e.target as HTMLElement;
+        const target = e.target as HTMLDivElement;
         if (!(target instanceof HTMLAnchorElement) && !(target instanceof HTMLButtonElement)) {
             e.preventDefault();
             if (data.post_audience === "subscribers" && !isSubscriber) {
@@ -117,7 +117,7 @@ const PostComponent: React.FC<PostComponentProps> = ({user, data, isSubscriber, 
                 </div>}
                 <div className="flex items-center justify-between text-gray-500 text-sm mb-2">
                     <div className="flex items-center gap-1 md:gap-3 dark:text-white">
-                        <Image width={50} height={50} priority src={user?.image} alt=""
+                        <Image width={50} height={50} priority src={user?.image.trimEnd()} alt=""
                                className="w-8 md:w-10 rounded-full aspect-square object-cover"/>
                         <Link href={user?.link} className="md:flex items-center gap-1">
                             <p className="text-black dark:text-white font-bold">{user.name}</p>{user.username}
@@ -141,7 +141,7 @@ const PostComponent: React.FC<PostComponentProps> = ({user, data, isSubscriber, 
                             {(!isSubscriber && data.post_audience === "subscribers") && (
                                 <div
                                     className="absolute inset-0 bg-black bg-opacity-20 rounded-lg overflow-hidden flex items-center justify-center z-10">
-                                    <Image src={media.blur ? media.blur : "/site/blur.jpg"} alt="" width={300}
+                                    <Image src={media.blur ? media.blur.trimEnd() : "/site/blur.jpg"} alt="" width={300}
                                            height={300}
                                            className="w-full aspect-[3/4] md:aspect-square object-cover absolute inset-0"/>
                                     <Link href="/subscribe" className="text-white absolute text-lg font-bold">
@@ -196,7 +196,7 @@ const PostComponent: React.FC<PostComponentProps> = ({user, data, isSubscriber, 
 const ImageComponent: React.FC<ImageCompProps> = ({media, data, clickImageEvent}) => {
     return (
         <>
-            <Image src={media.url} alt={data.post} width={900} height={900} unselectable="on"
+            <Image src={media.url.trimEnd()} alt={data.post} width={900} height={900} unselectable="on"
                    blurDataURL={media.poster ? media.poster : ""} onClick={() => clickImageEvent(media)}
                    className="w-full h-full rounded-lg aspect-[3/4] md:aspect-square object-cover cursor-pointer"/>
         </>

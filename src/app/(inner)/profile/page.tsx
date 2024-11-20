@@ -38,7 +38,7 @@ const ProfilePage = async () => {
                 </div>
                 <div className="relative flex w-full px-2 md:px-5">
                     <Image
-                        src={user ? user.profile_image : "/site/avatar.png"}
+                        src={user ? user.profile_image.trim() : "/site/avatar.png"}
                         alt="proile image"
                         height={100}
                         width={100}

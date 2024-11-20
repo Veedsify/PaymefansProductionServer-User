@@ -12,7 +12,6 @@ export default async function GetConversationMessages(conversationId: string) {
     })
     if (response.ok) {
         const result = await response.json()
-
         return result
     }
     return null

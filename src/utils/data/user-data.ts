@@ -1,3 +1,4 @@
+"use server"
 import { AuthUserProps } from "@/types/user";
 import axiosInstance from "../axios";
 import { cookies } from "next/headers";
@@ -5,11 +6,7 @@ import { redirect } from "next/navigation";
 import { AxiosResponse } from "axios";
 
 const getUserData = async (): Promise<AuthUserProps | null> => {
-  const token = cookies().get("token")?.value;
-
-  const removeToken = () => {
-    redirect("/login");
-  }
+  const token = (await cookies()).get("token");
 
   if (!token) {
     redirect("/login");
@@ -21,7 +18,7 @@ const getUserData = async (): Promise<AuthUserProps | null> => {
       {
         headers: {
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`,
+          "Authorization": `Bearer ${token.value}`,
         }
       }
     );
@@ -33,7 +30,8 @@ const getUserData = async (): Promise<AuthUserProps | null> => {
     return null;
 
   } catch (error) {
-    // console.error('Error fetching user data:', error);
+    console.error('Error fetching user data:', error);
+    redirect("/login");
     return null;
   }
 };

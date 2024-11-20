@@ -94,7 +94,7 @@ const PostComponentPreview = () => {
                       height={2000}
                       quality={100}
                       draggable={false}
-                      src={item.url}
+                      src={item.url.trimEnd()}
                       className={`h-screen object-contain mx-auto w-auto transition-all duration-200 border-none animate-in z-10`}
                       alt="Media Preview"
                     />

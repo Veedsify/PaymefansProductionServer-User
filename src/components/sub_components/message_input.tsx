@@ -224,7 +224,7 @@ const MessageInput = ({
           <span className="cursor-pointer" onClick={openAttachmentModal}>
             <LucidePlus stroke="#CC0DF8" size={25} />
           </span>
-          <span className="cursor-pointer">
+          <span className="cursor-pointer" onClick={openAttachmentModal}>
             <LucideCamera stroke="#CC0DF8" size={25} />
           </span>
           <span className="cursor-pointer" onClick={() => sendNewMessage([])}>

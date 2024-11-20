@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import { Instrument_Sans, Crete_Round, Unbounded, Kablammo, DynaPuff, EB_Garamond, Shadows_Into_Light, Dela_Gothic_One } from "next/font/google"
+import { GeistSans } from 'geist/font/sans';
+
 
 const font = Instrument_Sans({
     subsets: ["latin", "latin-ext"],
@@ -8,56 +10,56 @@ const font = Instrument_Sans({
 
 const creteFont = Crete_Round({
     subsets: ["latin", "latin-ext"],
-    display: "swap",
+    display: "auto",
     weight: ["400"],
     variable: '--font-crete-round',
 })
 
 const unboundedFont = Unbounded({
     subsets: ["latin", "latin-ext"],
-    display: "swap",
+    display: "auto",
     weight: ["400", "500", "600", "700"],
     variable: '--font-unbounded',
 })
 
 const kablammoFont = Kablammo({
     subsets: ["latin", "latin-ext"],
-    display: "swap",
+    display: "auto",
     weight: ["400"],
     variable: '--font-kablammo',
 })
 
 const dynapuffFont = DynaPuff({
     subsets: ["latin", "latin-ext"],
-    display: "swap",
+    display: "auto",
     weight: ["400", "500", "600", "700"],
     variable: '--font-dynapuff',
 })
 
 const instrumentFont = Instrument_Sans({
     subsets: ["latin", "latin-ext"],
-    display: "swap",
+    display: "auto",
     weight: ["400", "500", "600", "700"],
     variable: '--font-instrument-sans',
 })
 
 const ebgaramondFont = EB_Garamond({
     subsets: ["latin", "latin-ext"],
-    display: "swap",
+    display: "auto",
     weight: ["400", "500", "600", "700"],
     variable: '--font-eb-garamond',
 })
 
 const shadowsintolightFont = Shadows_Into_Light({
     subsets: ["latin"],
-    display: "swap",
+    display: "auto",
     weight: ["400"],
     variable: '--font-shadows-into-light',
 })
 
 const delagothiconeFont = Dela_Gothic_One({
     subsets: ["latin"],
-    display: "swap",
+    display: "auto",
     weight: ["400"],
     variable: '--font-delagothicone',
 })
