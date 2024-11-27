@@ -14,7 +14,12 @@ export const useNewPostStore = create<NewPostState>(
         postText: "",
         visibility: "Public",
         clearAll: () => set({ postText: "", visibility: "Public" }),
-        setPostText: (text: string) => set({ postText: text }),
+        setPostText: (text: string) =>{
+            set((state) => {
+              // Only update if the text is actually different
+              return state.postText !== text ? { postText: text } : state;
+            });
+          },
         setVisibility: (visibility: "Public" | "Subscribers" | "Private") => set({ visibility }),
     })
 )

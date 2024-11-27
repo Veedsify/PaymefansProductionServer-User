@@ -46,14 +46,14 @@ const SettingsTab = ({ user }: { user: AuthUserProps | null }) => {
                             data-tab="security"
                             className="text-black font-bold py-2">Security</button>
                     </Tab>
-                    {(authuser?.is_model && authuser.Model?.verification_status === true) && (
+                    {/* {(authuser?.is_model && authuser.Model?.verification_status === true) && ( */}
                         <Tab>
                             <button
                                 onClick={handleClick}
                                 data-tab="billing"
                                 className="text-black font-bold py-2">Billing</button>
                         </Tab>
-                    )}
+                    {/* )} */}
                 </TabList>
                 <TabPanel >
                     <ProfileSettings user={user} />

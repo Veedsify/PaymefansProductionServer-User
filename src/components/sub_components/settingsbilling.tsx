@@ -55,12 +55,12 @@ const Settingsbilling = () => {
                 Free message enabled
             </span>
 
-            {user?.is_model && <SubscriptionState />}
             <button
                 onClick={handleSave}
                 className="text-center text-white bg-primary-dark-pink w-full p-4 rounded-xl">
                 SAVE
             </button>
+            {user?.is_model && <SubscriptionState />}
         </div>
     );
 }

@@ -1,3 +1,4 @@
+"use client"
 import { useState } from "react"
 import CommentsHolder from "./comments"
 import ReplyPostComponent from "./reply-post-textarea"

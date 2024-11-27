@@ -19,6 +19,7 @@ const PostEditor = ({ posts }: PostEditorProps) => {
     const router = useRouter();
     const [dropdown, setDropdown] = useState(false);
     const [wordLimit, setWordLimit] = useState(1000);
+    const [content, setContent] = useState<string>('')
     const { user } = useUserAuthContext();
     const { setVisibility, visibility, setPostText, postText } = useNewPostStore();
     const [editedMedia, setEditedMedia] = useState<UserMediaProps[]>([])
@@ -112,7 +113,7 @@ const PostEditor = ({ posts }: PostEditorProps) => {
         } else {
             setWordLimit(limit - count);
         }
-        setPostText(e.target.value);
+        setContent(e.target.value);
     };
 
     const handleMediaAttachment = useCallback((files: File[] | null) => {
@@ -120,7 +121,8 @@ const PostEditor = ({ posts }: PostEditorProps) => {
     }, [setMedia]);
 
     const handlePostSubmit = async () => {
-        if (!postText || postText.trim() === "") {
+        setPostText(content)
+        if (!content || content.trim() === "") {
             toast.error("Post is empty, Please write something.");
             return;
         }
@@ -143,6 +145,7 @@ const PostEditor = ({ posts }: PostEditorProps) => {
                 toast.dismiss();
                 window.location.href = `/posts/${res.data.post_id}`;
                 setPostText("");
+                setPostText("")
                 setVisibility("Public");
                 toast.success("Post created successfully");
             } else if (res && res.status === false) {

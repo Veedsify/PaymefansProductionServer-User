@@ -1,11 +1,11 @@
-"use server"
 import { AuthUserProps } from "@/types/user";
 import axiosInstance from "../axios";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { AxiosResponse } from "axios";
+import { cache } from "react";
 
-const getUserData = async (): Promise<AuthUserProps | null> => {
+const getUserData = cache(async (): Promise<AuthUserProps | null> => {
   const token = (await cookies()).get("token");
 
   if (!token) {
@@ -34,6 +34,6 @@ const getUserData = async (): Promise<AuthUserProps | null> => {
     redirect("/login");
     return null;
   }
-};
+});
 
 export default getUserData;
