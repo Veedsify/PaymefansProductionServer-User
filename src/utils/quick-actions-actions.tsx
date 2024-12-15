@@ -101,8 +101,8 @@ const QuickPostActionHooks = ({ options }: QuickPostActionsProps) => {
     });
     visibility.addEventListener("change", async (e) => {
       try {
-        const setVisibility = await axiosInstance.post(
-          `/repost/${options.post_id}`,
+        const setVisibility = await axiosInstance.put(
+          `/post/${options.post_id}`,
           {
             visibility: visibility.value,
           },

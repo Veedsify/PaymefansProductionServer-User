@@ -1,16 +1,18 @@
 "use client"
-import { socket } from "@/components/sub_components/sub/socket"
-import { useUserPointsContext } from "@/contexts/user-points-context"
-import { useUserAuthContext } from "@/lib/userUseContext"
-import { getToken } from "@/utils/cookie.get"
-import { SubscribeToUser } from "@/utils/data/subscribe-to-user"
+import {socket} from "@/components/sub_components/sub/socket"
+import {useUserPointsContext} from "@/contexts/user-points-context"
+import {useUserAuthContext} from "@/lib/userUseContext"
+import {getToken} from "@/utils/cookie.get"
+import {SubscribeToUser} from "@/utils/data/subscribe-to-user"
 import axios from "axios"
 import Image from "next/image"
 import Link from "next/link"
-import { useRouter } from "next/navigation"
-import { useEffect, useState } from "react"
+import {useParams, useRouter} from "next/navigation"
+import {useEffect, useState} from "react"
 import toast from "react-hot-toast"
 import swal from "sweetalert"
+import numeral from "numeral";
+import getFormattedStringFromDays from "@/utils/data/calculate-days";
 
 type SubscribeProps = {
     params: {
@@ -26,20 +28,28 @@ type ProfileUser = {
     Model: {
         gender: string
     },
+    ModelSubscriptionPack: {
+        ModelSubscriptionTier: {
+            tier_name: string
+            tier_price: number
+            tier_duration: number
+            tier_description: string
+        }[]
+    }
     Settings: {
         subscription_price: number
         subscription_duration: number
     }
 }
 
-const Subscribe = ({ params }: SubscribeProps) => {
-    const { user } = useUserAuthContext()
-    const user_id = params.user_id
+const Subscribe = () => {
+    const {user} = useUserAuthContext()
+    const params = useParams();
     const token = getToken()
     const [profileUser, setProfileUser] = useState<ProfileUser>()
     const router = useRouter()
-    const { points } = useUserPointsContext()
-    if (user?.user_id === user_id) {
+    const {points} = useUserPointsContext()
+    if (user?.user_id === params.user_id) {
         router.push("/profile")
     }
 
@@ -47,8 +57,7 @@ const Subscribe = ({ params }: SubscribeProps) => {
         document.title = "Subscribe"
         const fetchUserSubscription = async () => {
             try {
-                const response = await axios.post(`${process.env.NEXT_PUBLIC_EXPRESS_URL}/user/subscription-data/${user_id}`, {
-                }, {
+                const response = await axios.post(`${process.env.NEXT_PUBLIC_EXPRESS_URL}/user/subscription-data/${params.user_id}`, {}, {
                     headers: {
                         "Content-Type": "application/json",
                         Authorization: `Bearer ${token}`
@@ -68,7 +77,7 @@ const Subscribe = ({ params }: SubscribeProps) => {
         }
         fetchUserSubscription()
 
-    }, [user_id, router, token])
+    }, [params.user_id, router, token])
 
     useEffect(() => {
         socket.on("subscription_added", () => {
@@ -80,7 +89,7 @@ const Subscribe = ({ params }: SubscribeProps) => {
         }
     }, [])
 
-    const subscribeToUser = () => {
+    const subscribeToUser = (id: string) => {
         if (user && profileUser) {
             const subscribeUser = async () => {
                 return await SubscribeToUser(profileUser.user_id)
@@ -88,7 +97,7 @@ const Subscribe = ({ params }: SubscribeProps) => {
             subscribeUser().then((res) => {
                 if (res.status === true) {
                     swal("Success", `You have successfully subscribed to this ${profileUser.name}`, "success")
-                    socket.emit("subscription_added", { user_id: profileUser.user_id })
+                    socket.emit("subscription_added", {user_id: profileUser.user_id})
                     router.push(`/${profileUser.username}`)
                 } else {
                     swal("Error", res.message, "error")
@@ -97,6 +106,7 @@ const Subscribe = ({ params }: SubscribeProps) => {
             })
         }
     }
+
     return (
         <div className="p-4 lg:mb-4 mb-20 flex justify-center flex-col items-center">
             <div className="text-center border p-5 rounded-lg py-8">
@@ -110,27 +120,45 @@ const Subscribe = ({ params }: SubscribeProps) => {
                         className="object-cover w-20 h-20 rounded-full lg:w-24 lg:h-24 aspect-square "
                     />
                 </div>
-                <h1 className="text-xl font-bold mb-8">Subscribe To  <br /><span className="text-2xl font-bold text-primary-dark-pink"> {profileUser?.name}</span></h1>
+                <h1 className="text-xl font-bold mb-8">Subscribe To <br/><span
+                    className="text-2xl font-bold text-primary-dark-pink"> {profileUser?.name}</span></h1>
                 <p className="text-gray-500 mb-8 leading-loose">
-                    Subscribe to {profileUser?.name} to get access to {profileUser?.Model?.gender == "female" ? "her" : "his"} exclusive content,
-                    <br />
+                    Subscribe to {profileUser?.name} to get access
+                    to {profileUser?.Model?.gender == "female" ? "her" : "his"} exclusive content,
+                    <br/>
                     and get notified when he goes live.
                 </p>
-                {profileUser && profileUser?.Settings?.subscription_price > 0 ? (
-                    <div>
-                        <span className=" font-bold mb-5 inline-block">Subscription Price:</span>
-                        <div className="flex justify-center gap-2 items-center">
-                            <Image width={20} height={20} src="/site/coin.svg"
-                                className="w-auto h-5 aspect-square" alt="" />
-                            <span className=" font-bold text-primary-dark-pink text-2xl ">
-                                {Number(profileUser?.Settings?.subscription_price).toLocaleString()}
-                            </span>
-                        </div>
-                        <button
-                            onClick={subscribeToUser}
-                            className="block bg-primary-dark-pink p-3 mx-auto  font-bold text-white rounded-lg cursor-pointer w-52 mt-5">
-                            Subscribe
-                        </button>
+                {(profileUser && profileUser?.ModelSubscriptionPack) ? (
+                    <div className="flex items-center flex-wrap gap-4 mt-10">
+                        {profileUser?.ModelSubscriptionPack?.ModelSubscriptionTier?.map((tier, index) => (
+                            <div
+                                key={index}
+                                className="p-6 border rounded-lg shadow-sm w-72 flex-1 md:aspect-[3/4] flex flex-col justify-center">
+                                <div className="flex justify-center gap-2 items-center mb-4">
+                                    <Image width={20} height={20} src="/site/coin.svg"
+                                           className="w-auto h-5 aspect-square"
+                                           alt=""/>
+                                    <span className="font-bold text-primary-dark-pink text-2xl">
+                                        {numeral(tier.tier_price).format("0,0.")}
+                                    </span>
+                                </div>
+
+                                <h3 className="font-bold text-xl lg:text-2xl mb-4">
+                                    {tier.tier_name}
+                                </h3>
+                                <p className="text-sm text-gray-500 font-bold mb-4">
+                                    {getFormattedStringFromDays(tier.tier_duration as number)}
+                                </p>
+                                <p className="text-sm text-gray-500">
+                                    {tier.tier_description}
+                                </p>
+                                <button
+                                    onClick={() => subscribeToUser("basic")}
+                                    className="block bg-primary-dark-pink p-3 mx-auto font-bold text-white rounded-lg cursor-pointer w-52 mt-4">
+                                    Subscribe
+                                </button>
+                            </div>
+                        ))}
                     </div>
                 ) : (
                     <div

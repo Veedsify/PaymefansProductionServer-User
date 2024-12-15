@@ -24,7 +24,14 @@ import {PostCompInteractions} from './post-interactions';
 import {ImageCompProps, PostComponentProps, UserMediaProps, VideoComponentProps} from '@/types/components';
 
 
-const PostComponent: React.FC<PostComponentProps> = ({user, data, isSubscriber, was_repost, repost_username, repost_id}) => {
+const PostComponent: React.FC<PostComponentProps> = ({
+                                                         user,
+                                                         data,
+                                                         isSubscriber,
+                                                         was_repost,
+                                                         repost_username,
+                                                         repost_id
+                                                     }) => {
     const imageLength = data.media.length;
     const {fullScreenPreview} = usePostComponent();
     // const [isSubscriber, setIsSubscriber] = useState<boolean>(false);
@@ -144,9 +151,9 @@ const PostComponent: React.FC<PostComponentProps> = ({user, data, isSubscriber, 
                                     <Image src={media.blur ? media.blur.trimEnd() : "/site/blur.jpg"} alt="" width={300}
                                            height={300}
                                            className="w-full aspect-[3/4] md:aspect-square object-cover absolute inset-0"/>
-                                    <Link href="/subscribe" className="text-white absolute text-lg font-bold">
+                                    <button className="text-white absolute text-lg font-bold">
                                         <LucideLock/>
-                                    </Link>
+                                    </button>
                                 </div>
                             )}
                             {media.media_type === 'video' && (

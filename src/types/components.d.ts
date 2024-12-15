@@ -1,6 +1,6 @@
-import { Call } from "@stream-io/video-react-sdk";
-import { ChangeEvent } from "react";
-import { ProfileUserProps } from "./user";
+import {Call} from "@stream-io/video-react-sdk";
+import {ChangeEvent} from "react";
+import {ProfileUserProps} from "./user";
 
 
 // POST COMPONET PROPS
@@ -201,7 +201,7 @@ export type RespostPanelProps = {
 export type RespotPanelFetchProps = {
     isForViewer: boolean;
     pageNumber: number;
-    userdata? : ProfileUserProps
+    userdata?: ProfileUserProps
 }
 
 // MESSAGE INPUT PROPS
@@ -225,7 +225,7 @@ export interface Message {
 }
 
 export interface MessageInputProps {
-    sendMessage: ({ }: Message) => void;
+    sendMessage: ({}: Message) => void;
     sendTyping: (value: string) => void;
     receiver: any;
     isFirstMessage: boolean;
@@ -407,7 +407,7 @@ type StoryPreviewControlProps = {
     playVideoOnLoad: (canplay: boolean) => void
     moveToPrevSlide: () => void;
     stories: Story[];
-    index: number 
+    index: number
 }
 
 interface StoryMediaFetchProps {
@@ -483,3 +483,14 @@ export type QuickPostActionsProps = {
 }
 
 type ImageCompProps = { media: UserMediaProps, data: PostData, clickImageEvent: (media: UserMediaProps) => void }
+
+
+//Subscriptions Tiers
+
+type SubscriptionTiersProps = {
+    tier_name: string;
+    tier_price: number;
+    tier_description: string;
+    tier_duration: string;
+    subscription_id?: string;
+}

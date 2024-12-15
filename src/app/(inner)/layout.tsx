@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Instrument_Sans, Crete_Round, Unbounded, Kablammo, DynaPuff, EB_Garamond, Shadows_Into_Light, Dela_Gothic_One } from "next/font/google"
+import { Instrument_Sans, Crete_Round, Unbounded, Kablammo, DynaPuff } from "next/font/google"
 import { GeistSans } from 'geist/font/sans';
 
 
@@ -43,26 +43,6 @@ const instrumentFont = Instrument_Sans({
     variable: '--font-instrument-sans',
 })
 
-const ebgaramondFont = EB_Garamond({
-    subsets: ["latin", "latin-ext"],
-    display: "auto",
-    weight: ["400", "500", "600", "700"],
-    variable: '--font-eb-garamond',
-})
-
-const shadowsintolightFont = Shadows_Into_Light({
-    subsets: ["latin"],
-    display: "auto",
-    weight: ["400"],
-    variable: '--font-shadows-into-light',
-})
-
-const delagothiconeFont = Dela_Gothic_One({
-    subsets: ["latin"],
-    display: "auto",
-    weight: ["400"],
-    variable: '--font-delagothicone',
-})
 
 // import { GeistSans } from 'geist/font/sans';
 // import { GeistSans } from 'geist/font/sans';
@@ -105,9 +85,6 @@ export default async function RootLayout({
                 ${kablammoFont.variable}
                 ${dynapuffFont.variable}
                 ${instrumentFont.variable}
-                ${ebgaramondFont.variable}
-                ${shadowsintolightFont.variable}
-                ${delagothiconeFont.variable}
                  dark:bg-gray-950 min-h-screen`}>
                 <UserContextProvider user={user}>
                     <QueryProvider>

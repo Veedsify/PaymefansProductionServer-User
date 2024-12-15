@@ -120,7 +120,8 @@ const VideoPreview = ({ url, playAction }: { url: string, playAction: boolean })
     } else if (videoRef.current?.ended) {
       setShowPlay(true)
     } else {
-      setShowPlay(true)
+      setShowPlay(false)
+      videoRef.current?.play();
     }
   }, []);
 
