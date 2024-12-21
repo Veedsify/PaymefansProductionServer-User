@@ -5,6 +5,7 @@ export const checkUserIsFollowing = async (
   user: any,
   thisuser: any
 ) => {
+  const token = (await cookies()).get('token')
   return fetch(`${process.env.NEXT_PUBLIC_EXPRESS_URL}/follow/check`, {
     method: "POST",
     body: JSON.stringify({
@@ -13,7 +14,7 @@ export const checkUserIsFollowing = async (
     }),
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${cookies().get("token")?.value}`,
+      Authorization: `Bearer ${token?.value}`,
     },
   }).then((res) => res.json());
 };

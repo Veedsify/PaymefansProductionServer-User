@@ -7,7 +7,8 @@
   color: #000000;
 }
 
-@media (prefers-color-scheme: light) {}
+@media (prefers-color-scheme: light) {
+}
 
 img {
   max-width: 100%;
@@ -25,7 +26,6 @@ img {
     opacity: 0;
   }
 }
-
 
 .slide-down {
   overflow: hidden;
@@ -191,7 +191,6 @@ img {
   scale: 2;
 }
 
-
 @media screen and (min-width: 1024px) {
   .clean-sidebar::-webkit-scrollbar {
     width: 0px;
@@ -252,15 +251,12 @@ img {
   /* height: 100vh; */
 }
 
-
 .str-video {
-  --str-video__primary-color: #78158E;
+  --str-video__primary-color: #78158e;
   --str-video__secondary-color: #90ee02;
   --str-video__text-color1: #282b2b;
   --str-video__border-radius-circle: 15px;
 }
-
-
 
 .stream-style .str-video__participant-view {
   border-radius: 0px;
@@ -294,7 +290,7 @@ img {
 }
 
 /* 1 child: full size of the container */
-.str-video__livestream-layout__wrapper>div:only-child {
+.str-video__livestream-layout__wrapper > div:only-child {
   grid-template-columns: 1fr !important;
   grid-template-rows: 1fr !important;
   width: 100%;
@@ -314,13 +310,13 @@ img {
   grid-template-columns: 1fr;
 }
 
-.str-video__livestream-layout__wrapper>div:nth-child(1) {
+.str-video__livestream-layout__wrapper > div:nth-child(1) {
   grid-column: 1 / -1 !important;
   /* Span across all columns */
 }
 
-.str-video__livestream-layout__wrapper>div:nth-child(2),
-.str-video__livestream-layout__wrapper>div:nth-child(3) {
+.str-video__livestream-layout__wrapper > div:nth-child(2),
+.str-video__livestream-layout__wrapper > div:nth-child(3) {
   grid-template-rows: 1fr !important;
   /* Adjust for 3 children */
 }
@@ -330,7 +326,6 @@ img {
   grid-template-columns: repeat(2, 1fr);
   grid-template-rows: repeat(2, 1fr);
 }
-
 
 /* SWAL */
 .swal-modal {
@@ -360,7 +355,7 @@ img {
 
 .swal-title,
 .swal-text {
-  color: #78158E !important;
+  color: #78158e !important;
   margin: 1rem;
 }
 
@@ -371,7 +366,7 @@ img {
 }
 
 .swal-button {
-  background-color: #78158E !important;
+  background-color: #78158e !important;
   border: none !important;
   border-radius: 0px !important;
 }
@@ -397,9 +392,8 @@ img {
 }
 
 .swal-button:hover {
-  background-color: #78158E !important;
+  background-color: #78158e !important;
 }
-
 
 .swal-modal {
   max-width: 600px !important;
@@ -408,9 +402,17 @@ img {
 }
 
 .notification_message_container strong {
-  color: #CC0DF8;
+  color: #cc0df8;
 }
 
 .swiper-status-class {
   width: fit-content !important;
+}
+
+.livestream-view > div > div {
+  min-height: 100vh;
+}
+
+.livestream-view > div > div video {
+  object-fit: cover;
 }

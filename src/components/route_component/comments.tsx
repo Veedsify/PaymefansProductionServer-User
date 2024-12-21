@@ -57,38 +57,38 @@ const CommentsHolder = ({ post, postComments: AttachedComments }: { post: PostDa
 
     return (
         <div className={`${(postComment.length > 0 || AttachedComments.length > 0) && "border-y"}  dark:text-gray-100 dark:border-slate-800 p-0 md:p-3 py-5`}>
-            {
-                AttachedComments.map((comment, index) => (
-                    <div className="flex gap-1 md:gap-3 items-start relative w-full" key={index}>
-                        {(index !== AttachedComments.length! - 1) && (<div className="absolute border-r dark:border-slate-700 h-full top-0 left-4 md:left-7 -z-10 -translate-1/2">
-                        </div>)}
-                        <Link href={`/${comment.author_username}`}>
-                            <Image src={comment.profile_image} width="50" height="50" className="h-auto aspect-square rounded-full w-8 md:w-14" alt="" />
-                        </Link>
-                        <div className="w-full">
-                            <h3 className="mb-2">
-                                <Link href={`/${comment.author_username}`} className="md:text-lg text-sm font-bold">{comment.name}</Link>  &nbsp;<Link href={`/${comment.author_username}`} className="md:text-lg text-sm">{comment.author_username}</Link>  &nbsp; . &nbsp; <span className="md:text-lg text-xs">{formatDate(comment.time.toString())}</span>
-                            </h3>
-                            <div className="md:text-lg text-sm mb-2">
-                                <div className="mb-3"
-                                    dangerouslySetInnerHTML={{ __html: comment.text }}
-                                >
-                                </div>
-                                <div className="grid grid-cols-3 gap-2">
-                                    {comment.files.map((media, index) => (
-                                        <div key={index} onClick={() => previewImage(URL.createObjectURL(media))}>
-                                            <Image
-                                                priority
-                                                src={URL.createObjectURL(media)} width="500" height="500" className="h-auto aspect-square rounded-lg object-cover cursor-pointer" alt="" />
-                                        </div>
-                                    ))}
-                                </div>
-                            </div>
-                            <ReplyInteractions />
-                        </div>
-                    </div>
-                ))
-            }
+            {/*{*/}
+            {/*    AttachedComments.map((comment, index) => (*/}
+            {/*        <div className="flex gap-1 md:gap-3 items-start relative w-full" key={index}>*/}
+            {/*            {(index !== AttachedComments.length! - 1) && (<div className="absolute border-r dark:border-slate-700 h-full top-0 left-4 md:left-7 -z-10 -translate-1/2">*/}
+            {/*            </div>)}*/}
+            {/*            <Link href={`/${comment.author_username}`}>*/}
+            {/*                <Image src={comment.profile_image} width="50" height="50" className="h-auto aspect-square rounded-full w-8 md:w-14" alt="" />*/}
+            {/*            </Link>*/}
+            {/*            <div className="w-full">*/}
+            {/*                <h3 className="mb-2">*/}
+            {/*                    <Link href={`/${comment.author_username}`} className="md:text-lg text-sm font-bold">{comment.name}</Link>  &nbsp;<Link href={`/${comment.author_username}`} className="md:text-lg text-sm">{comment.author_username}</Link>  &nbsp; . &nbsp; <span className="md:text-lg text-xs">{formatDate(comment.time.toString())}</span>*/}
+            {/*                </h3>*/}
+            {/*                <div className="md:text-lg text-sm mb-2">*/}
+            {/*                    <div className="mb-3"*/}
+            {/*                        dangerouslySetInnerHTML={{ __html: comment.text }}*/}
+            {/*                    >*/}
+            {/*                    </div>*/}
+            {/*                    <div className="grid grid-cols-3 gap-2">*/}
+            {/*                        {comment.files.map((media, index) => (*/}
+            {/*                            <div key={index} onClick={() => previewImage(URL.createObjectURL(media))}>*/}
+            {/*                                <Image*/}
+            {/*                                    priority*/}
+            {/*                                    src={URL.createObjectURL(media)} width="500" height="500" className="h-auto aspect-square rounded-lg object-cover cursor-pointer" alt="" />*/}
+            {/*                            </div>*/}
+            {/*                        ))}*/}
+            {/*                    </div>*/}
+            {/*                </div>*/}
+            {/*                <ReplyInteractions />*/}
+            {/*            </div>*/}
+            {/*        </div>*/}
+            {/*    ))*/}
+            {/*}*/}
             {postComment?.map((comment, index) => (
                 <div className="flex gap-1 md:gap-3 items-start relative w-full" key={index}>
                     {(index !== postComment?.length! - 1) && (<div className="absolute border-r h-full top-0 left-4 md:left-7 dark:border-slate-700  -z-10 -translate-1/2">
@@ -119,7 +119,6 @@ const CommentsHolder = ({ post, postComments: AttachedComments }: { post: PostDa
                     </div>
                 </div>
             ))}
-
         </div>
     )
 }

@@ -471,7 +471,7 @@ type streamDataProps = {
 }
 
 type LiveStreamSocketProps = {
-    streamId: string;
+    streamId: string | string[];
 }
 
 export type QuickPostActionsProps = {

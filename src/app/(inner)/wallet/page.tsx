@@ -15,13 +15,14 @@ export const metadata: Metadata = {
 };
 
 const WalletPage = async () => {
+    const token = (await cookies()).get('token')
     const user = await getUserData() as AuthUserProps
     const { data } = await getTransactionsData()
     const { wallet } = await axiosInstance.post(`${process.env.NEXT_PUBLIC_EXPRESS_URL}/auth/wallet`, {
     }, {
         headers: {
             "Content-Type": "application/json",
-            "Authorization": `Bearer ${cookies().get("token")?.value}`
+            "Authorization": `Bearer ${token?.value}`
         }
     }).then(res => res.data as { wallet: number })
 
@@ -29,7 +30,7 @@ const WalletPage = async () => {
     }, {
         headers: {
             "Content-Type": "application/json",
-            "Authorization": `Bearer ${cookies().get("token")?.value}`
+            "Authorization": `Bearer ${token?.value}`
         }
     }).then(res => res.data as { points: number })
 

@@ -1,19 +1,14 @@
 "use client"
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import axios from 'axios';
 import StreamDeck from '@/components/route_component/stream-deck';
-import { streamDataProps } from '@/types/components';
-import { useRouter } from 'next/navigation';
-import { getToken } from '@/utils/cookie.get';
+import {streamDataProps} from '@/types/components';
+import {useParams, useRouter} from 'next/navigation';
+import {getToken} from '@/utils/cookie.get';
 
-type StreamProps = {
-    params: {
-        stream_id: string;
-    };
-};
-
-const Stream: React.FC<StreamProps> = ({params}) => {
-    const { stream_id } = params
+const Stream = () => {
+    const params = useParams();
+    const stream_id = params.stream_id;
     const router = useRouter();
     const [streamData, setStreamData] = useState<streamDataProps | null>(null);
     const [loading, setLoading] = useState(true);
@@ -61,7 +56,7 @@ const Stream: React.FC<StreamProps> = ({params}) => {
     return (
         <>
             {streamData ? (
-                <StreamDeck streamData={streamData} />
+                <StreamDeck streamData={streamData}/>
             ) : (
                 <div className="flex justify-center items-center h-screen">
                     <p className="text-2xl">No stream data available.</p>

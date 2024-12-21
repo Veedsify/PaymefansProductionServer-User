@@ -6,6 +6,7 @@ import {
     User,
     StreamCall,
     StreamTheme,
+    EgressResponse
 } from "@stream-io/video-react-sdk";
 import StreamDeckCamera from "./stream-deck-camera";
 import useLivestreamStore from "@/contexts/livestream-context";

@@ -33,7 +33,7 @@ export default function ModelsPageSearch() {
     const handleSearch = useDebounce((value: string) => {
         setSearch(value);
         setPageNumber(1);
-    }, 500);
+    }, 1000);
 
     return (
         <>
@@ -48,8 +48,8 @@ export default function ModelsPageSearch() {
                     <LucideSearch className="self-center pr-2 cursor-pointer" size={30} />
                 </label>
             </div>
-            <div className="py-6">
-                <div className="grid grid-cols-3 gap-4 lg:gap-6">
+            <div className={`${models.length>0 && "py-6"}`}>
+                <div className="grid grid-cols-3 gap-4 ">
                     {models.map((model, index) => (
                         <ModelsSubscription model={model} key={index} />
                     ))}

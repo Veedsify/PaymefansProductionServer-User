@@ -1,43 +1,36 @@
-"use client"
-import { Call, LivestreamLayout, useCallStateHooks } from "@stream-io/video-react-sdk";
-import { LucideHeart, LucideSend, LucideShare2 } from "lucide-react";
-import Image from "next/image";
-import Link from "next/link";
+"use client";
+import { LivestreamLayout, LivestreamPlayer } from "@stream-io/video-react-sdk";
 import LiveStreamSockets from "../custom-hooks/live-stream-sockets";
 import VideoStreamStats from "../sub_components/video-stream-stats";
 
 interface VideoStreamerProps {
-    className?: string;
-    call?: Call;
-    streamId: string;
-    streamUser?: any;
+  callId: string;
+  streamId: string | string[];
 }
 
-const VideoStreamer: React.FC<VideoStreamerProps> = ({ className, call, streamId, streamUser }) => {
-    const { useCallCallingState } = useCallStateHooks();
-    const callingState = useCallCallingState();
-
-    return (
-        <>
-            <LivestreamLayout
-                muted={false}
-                enableFullScreen={false}
-                floatingParticipantProps={{
-                    enableFullScreen: false,
-                    showParticipantCount: false,
-                    showLiveBadge: false,
-                    showSpeakerName: true,
-                }}
-                showParticipantCount={false}
-                showLiveBadge={false}
-                showDuration={false}
-            />
-            <VideoStreamStats  streamId={streamId} />
-        </>
-    )
+const VideoStreamer: React.FC<VideoStreamerProps> = ({ callId, streamId }) => {
+  return (
+    <div className="relative h-screen">
+      <div className="absolute inset-0 h-full w-full livestream-view">
+        <LivestreamLayout
+          muted={false}
+          showParticipantCount={false}
+          showDuration={false}
+          showLiveBadge={false}
+          showSpeakerName={false}
+          floatingParticipantProps={{
+            muted: false,
+            showParticipantCount: false,
+            showDuration: false,
+            showLiveBadge: false,
+            showSpeakerName: false,
+            position: "top-right",
+          }}
+        />
+      </div>
+      <VideoStreamStats streamId={streamId} />
+    </div>
+  );
 };
-
-
-
 
 export default VideoStreamer;

@@ -19,28 +19,28 @@ const ProfileTabsOther = ({ userdata }: { userdata: ProfileUserProps }) => {
       >
         <TabList className="flex items-center text-center border-b">
           <Tab className="flex-1 outline-none cursor-pointer">
-            <span className="block mb-2 text-sm font-medium">Post</span>
+            <span className="block mb-2 text-sm font-medium dark:text-white">Post</span>
             <span
               className={` block h-[2px] w-full rounded-lg ${selectedTab === 0 ? "bg-primary-dark-pink" : ""
                 }`}
             ></span>
           </Tab>
           <Tab className="flex-1 text-center outline-none cursor-pointer">
-            <span className="block mb-2 text-sm font-medium">Media</span>
+            <span className="block mb-2 text-sm font-medium dark:text-white">Media</span>
             <span
               className={` block h-[2px] w-full rounded-lg ${selectedTab === 1 ? "bg-primary-dark-pink" : ""
                 }`}
             ></span>
           </Tab>
           <Tab className="flex-1 text-center outline-none cursor-pointer">
-            <span className="block mb-2 text-sm font-medium">Reposts</span>
+            <span className="block mb-2 text-sm font-medium dark:text-white">Reposts</span>
             <span
               className={` block h-[2px] w-full rounded-lg ${selectedTab === 2 ? "bg-primary-dark-pink" : ""
                 }`}
             ></span>
           </Tab>
           <Tab className="flex-1 outline-none cursor-pointer">
-            <span className="block mb-2 text-sm font-medium whitespace-nowrap">
+            <span className="block mb-2 text-sm font-medium dark:text-white whitespace-nowrap">
               Locked Media
             </span>
             <span

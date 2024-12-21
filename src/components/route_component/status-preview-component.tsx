@@ -18,10 +18,10 @@ const StoryPreviewComponent = ({ className, onAllStoriesEnd, stories }: StoryPre
                 onAllStoriesEnd().then(() => {
                     swiperRef?.current?.slideTo(0, 0, false)
                 })
-                setResetSwiper(true); 
-            } else {
-                swiperRef.current.slideNext(0, false)
+                setResetSwiper(true);
+                return
             }
+            swiperRef.current.slideNext(0, false)
         }
     }
 
