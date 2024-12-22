@@ -23,9 +23,10 @@ const Header = () => {
     }
   };
 
-  const hideOn = (thisPathname: string) => {
-    return pathname.startsWith(thisPathname) ? false : true;
+  const hideOn = (thisPathname: string[], originPath: string): boolean => {
+    return !thisPathname?.some(path => originPath.startsWith(path));
   };
+
 
   useEffect(() => {
     document.addEventListener("mousedown", handleClick);
@@ -37,11 +38,11 @@ const Header = () => {
   return (
     <header
       className={`${
-        hideOn(pathname) && "px-4 lg:px-8 py-3"
+        hideOn(['/live'], pathname) && "px-4 lg:px-8 py-3"
       }  bg-primary-dark-pink lg:bg-white dark:bg-gray-950 dark:text-white border-b dark:border-slate-800`}
     >
       <div className="flex items-center">
-        {hideOn(pathname) && <HeaderTitle />}
+        {hideOn(['/live'], pathname) && <HeaderTitle />}
         <Link href={"/"}>
           <Image
             width={150}

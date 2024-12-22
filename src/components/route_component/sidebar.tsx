@@ -183,7 +183,7 @@ const SideBar = () => {
             )}
             <hr className="mt-8 mb-8 dark:border-slate-800" />
             <Link
-              href="/"
+              href="/help"
               className="flex items-center gap-5 p-2 mb-2 transition-all duration-200 hover:bg-gray-200 dark:hover:bg-gray-900 rounded-xl"
             >
               <LucideHelpCircle />

@@ -129,11 +129,11 @@ const Subscribe = () => {
                     and get notified when he goes live.
                 </p>
                 {(profileUser && profileUser?.ModelSubscriptionPack) ? (
-                    <div className="flex items-center flex-wrap gap-4 mt-10">
+                    <div className="grid items-center xl:grid-cols-2 gap-4 mt-10">
                         {profileUser?.ModelSubscriptionPack?.ModelSubscriptionTier?.map((tier, index) => (
                             <div
                                 key={index}
-                                className="p-6 border rounded-lg shadow-sm w-72 flex-1 md:aspect-[3/4] flex flex-col justify-center">
+                                className="p-6 border rounded-lg shadow-sm flex-1 xl:aspect-[3/4] flex flex-col justify-center">
                                 <div className="flex justify-center gap-2 items-center mb-4">
                                     <Image width={20} height={20} src="/site/coin.svg"
                                            className="w-auto h-5 aspect-square"

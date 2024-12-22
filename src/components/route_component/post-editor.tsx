@@ -13,6 +13,7 @@ import { useRouter } from "next/navigation";
 import swal from "sweetalert";
 import { postAudienceDataProps, PostEditorProps, UserMediaProps } from "@/types/components";
 import PostUserMedia from "./post-user-media";
+import {POST_CONFIG} from "@/config/config";
 
 
 const PostEditor = ({ posts }: PostEditorProps) => {
@@ -147,7 +148,7 @@ const PostEditor = ({ posts }: PostEditorProps) => {
                 setPostText("");
                 setPostText("")
                 setVisibility("Public");
-                toast.success("Post created successfully");
+                toast.success(POST_CONFIG.POST_CREATED_SUCCESS_MSG);
             } else if (res && res.status === false) {
                 toast.error(res.message);
             }

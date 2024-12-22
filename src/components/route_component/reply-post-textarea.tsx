@@ -9,6 +9,7 @@ import { getToken } from "../../utils/cookie.get";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import { FileHolderProps, ReplyPostProps } from "@/types/components";
+import {POST_CONFIG} from "@/config/config";
 
 
 
@@ -95,7 +96,7 @@ export const ReplyPostComponent = ({ options }: ReplyPostProps) => {
             const data = res.data;
             console.log(data)
             if (data.status) {
-                toast.success("Comment posted successfully");
+                toast.success(POST_CONFIG.COMMENT.COMMENT_CREATED_SUCCESS_MSG);
                 setCommentSending(false);
                 options.setNewComment?.({
                     text: data.data.comment,
