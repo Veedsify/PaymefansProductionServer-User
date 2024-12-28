@@ -17,4 +17,14 @@ const LOGIN_CONFIG = {
     LOGIN_SUCCESSFUL_MSG: `Login successfully.`,
 }
 
-export {POST_CONFIG, LOGIN_CONFIG}
+const PROFILE_CONFIG = {
+    PROFILE_UPDATED_SUCCESS_MSG: `Profile updated successfully.`,
+    PROFILE_UPDATED_ERROR_MSG: `Failed to update profile.`,
+    PROFILE_UPDATING_MSG: `Updating profile...`,
+    PROFILE_IMAGE_CHANGE_SUCCESS_MSG: `Profile image changed successfully.`,
+    PROFILE_IMAGE_CHANGE_ERROR_MSG: `Failed to change profile image.`,
+    PROFILE_IMAGE_CHANGE_LIMIT_ERROR_MSG: `Profile image change limit reached.`,
+    PROFILE_IMAGE_CHANGE_LIMIT: 5,
+}
+
+export {POST_CONFIG, LOGIN_CONFIG, PROFILE_CONFIG}

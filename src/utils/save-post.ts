@@ -1,10 +1,11 @@
 import axios from "axios";
 import { getToken } from "./cookie.get";
+import ROUTE from "@/config/routes";
 
 export const SavePost = async (data: FormData, action: string, post_id: string) => {
     try {
         const token = getToken();
-        const url = action === 'create' ? `${process.env.NEXT_PUBLIC_EXPRESS_URL}/post/create` : `${process.env.NEXT_PUBLIC_EXPRESS_URL}/post/update/${post_id}`;
+        const url = action === 'create' ? ROUTE.POST_CREATE : `${process.env.NEXT_PUBLIC_EXPRESS_URL}/post/update/${post_id}`;
         const res = await axios.post(url, data, {
             headers: {
                 'Content-Type': 'multipart/form-data',

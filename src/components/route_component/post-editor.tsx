@@ -114,6 +114,7 @@ const PostEditor = ({ posts }: PostEditorProps) => {
         } else {
             setWordLimit(limit - count);
         }
+        setPostText(e.target.value);
         setContent(e.target.value);
     };
 

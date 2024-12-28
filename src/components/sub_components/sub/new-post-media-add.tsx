@@ -23,7 +23,7 @@ const NewPostMediaAdd = ({
 
             Array.from(files).forEach((file) => {
                 // File size validation
-                if (file.size > 10000000) { // 10MB = 10,000,000 bytes
+                if (file.size > 10000000 && file.type.startsWith("image/")) { // 10MB = 10,000,000 bytes
                     toast.error("File size should not exceed 10MB");
                     return; // Skip further processing for this file
                 }
