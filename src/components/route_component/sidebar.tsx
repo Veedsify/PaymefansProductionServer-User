@@ -79,7 +79,7 @@ const SideBar = () => {
               className="object-cover w-12 h-12 rounded-full"
               alt=""
             />
-            <div>
+            <div className="overflow-hidden">
               <h2 className="mb-0 text-sm font-bold leading-none">
                 {user?.name ? (
                   user.name
@@ -87,7 +87,7 @@ const SideBar = () => {
                   <p className="w-32 rounded-sm mb-1 h-5 bg-gray-300 animate-pulse"></p>
                 )}
               </h2>
-              <span className="text-sm dark:text-white text-gray-600">
+              <span className="text-sm dark:text-white text-gray-600 text-wrap max-w-8">
                 {user ? (
                   user.username
                 ) : (
