@@ -1,89 +1,106 @@
-"use client"
-import {useNewPostStore} from "@/contexts/new-post-context";
-import {FileVideo2, Image, ImageIcon, LucidePaperclip} from "lucide-react";
+"use client";
+import { useNewPostStore } from "@/contexts/new-post-context";
+import { FileVideo2, Image, ImageIcon, LucidePaperclip } from "lucide-react";
 import toast from "react-hot-toast";
-import {HiCamera, HiUser, HiVideoCamera} from "react-icons/hi"
+import { HiCamera, HiUser, HiVideoCamera } from "react-icons/hi";
 import Toggle from "../checked";
-import {imageTypes, videoTypes} from "@/lib/filetypes";
-import {useUserAuthContext} from "@/lib/userUseContext";
+import { imageTypes, videoTypes } from "@/lib/filetypes";
+import { useUserAuthContext } from "@/lib/userUseContext";
 import { POST_CONFIG } from "@/config/config";
-const { MODEL_POST_LIMIT, USER_POST_LIMIT } = POST_CONFIG;
-
+const {
+  MODEL_POST_LIMIT,
+  IMAGE_FILE_SIZE_LIMIT,
+  IMAGE_FILE_SIZE_LIMIT_ERROR_MSG,
+  USER_POST_LIMIT,
+  MODEL_POST_LIMIT_ERROR_MSG,
+  USER_POST_LIMIT_ERROR_MSG,
+} = POST_CONFIG;
 
 const NewPostMediaAdd = ({
-                             handleFileSelect
-                         }: {
-    handleFileSelect: (files: File[]) => void
+  handleFileSelect,
+}: {
+  handleFileSelect: (files: File[]) => void;
 }) => {
-    const {user} = useUserAuthContext()
-    const handleImageSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
-        const files = e.target.files as FileList
-        if (files) {
-            let validFiles: File[] = [];
+  const { user } = useUserAuthContext();
+  const handleImageSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files as FileList;
+    if (files) {
+      let validFiles: File[] = [];
 
-            Array.from(files).forEach((file) => {
-                // File size validation
-                if (file.size > 10000000 && file.type.startsWith("image/")) { // 10MB = 10,000,000 bytes
-                    toast.error("File size should not exceed 10MB");
-                    return; // Skip further processing for this file
-                }
-
-                // File type validation
-                if (!imageTypes.includes(file.type) && !videoTypes.includes(file.type)) {
-                    toast.error("Invalid file type");
-                    return; // Skip further processing for this file
-                }
-
-                // If file passes both checks, add it to the valid files array
-                validFiles.push(file);
-            });
-
-            // Check if the number of valid files exceeds the limit of 5
-            if (validFiles.length > USER_POST_LIMIT && !user?.is_model) {
-                toast.error("You cant upload more than 5 images at a time.");
-                validFiles = validFiles.slice(0, 5); // Keep only the first 5 valid files
-            }
-
-            if (validFiles.length > MODEL_POST_LIMIT && user?.is_model) {
-                toast.error("Models are limited to 30 media files per post");
-                validFiles = validFiles.slice(0, 30); // Keep only the first 20 valid files
-            }
-
-            // Process valid files if any
-            if (validFiles.length > 0) {
-                handleFileSelect(validFiles);
-            }
+      Array.from(files).forEach((file) => {
+        // File size validation
+        if (
+          file.size > IMAGE_FILE_SIZE_LIMIT &&
+          file.type.startsWith("image/")
+        ) {
+          // 10MB = 10,000,000 bytes
+          toast.error(IMAGE_FILE_SIZE_LIMIT_ERROR_MSG);
+          return; // Skip further processing for this file
         }
-    }
-    return (
-        <>
-            <div className="md:px-8 px-4 w-full dark:text-white flex md:justify-start gap-3 items-center">
-                <label htmlFor="attachments" className='cursor-pointer'>
-                    <ImageIcon
-                        size={45}
-                        className='border border-gray-400 dark:border-slate-800 p-2 rounded-lg'
-                    />
-                </label>
-                <input type="file" accept="image/*, video/*" multiple
-                       onChange={handleImageSelect}
-                       id="attachments" className="hidden" name="attachments"/>
-                <input type="file" className="hidden" id="flie" capture="environment"/>
-                <label htmlFor="flie" className='cursor-pointer'>
-                    <FileVideo2 size={45} strokeWidth={2}
-                                className="border border-gray-400 dark:border-slate-800 p-2 rounded-lg"
-                    />
-                </label>
-                <div className="flex items-center gap-3">
-                    <Toggle
-                        state={false}
-                    />
-                    <small>
-                        enable watermark
-                    </small>
-                </div>
-            </div>
-        </>
-    )
-}
 
-export default NewPostMediaAdd
+        // File type validation
+        if (
+          !imageTypes.includes(file.type) &&
+          !videoTypes.includes(file.type)
+        ) {
+          toast.error("Invalid file type");
+          return; // Skip further processing for this file
+        }
+
+        // If file passes both checks, add it to the valid files array
+        validFiles.push(file);
+      });
+
+      // Check if the number of valid files exceeds the limit of 5
+      if (validFiles.length > USER_POST_LIMIT && !user?.is_model) {
+        toast.error(USER_POST_LIMIT_ERROR_MSG);
+        validFiles = validFiles.slice(0, 5); // Keep only the first 5 valid files
+      }
+
+      if (validFiles.length > MODEL_POST_LIMIT && user?.is_model) {
+        toast.error(MODEL_POST_LIMIT_ERROR_MSG);
+        validFiles = validFiles.slice(0, 30); // Keep only the first 20 valid files
+      }
+
+      // Process valid files if any
+      if (validFiles.length > 0) {
+        handleFileSelect(validFiles);
+      }
+    }
+  };
+  return (
+    <>
+      <div className="md:px-8 px-4 w-full dark:text-white flex md:justify-start gap-3 items-center">
+        <label htmlFor="attachments" className="cursor-pointer">
+          <ImageIcon
+            size={45}
+            className="border border-gray-400 dark:border-slate-800 p-2 rounded-lg"
+          />
+        </label>
+        <input
+          type="file"
+          accept="image/*, video/*"
+          multiple
+          onChange={handleImageSelect}
+          id="attachments"
+          className="hidden"
+          name="attachments"
+        />
+        <input type="file" className="hidden" id="flie" capture="environment" />
+        <label htmlFor="flie" className="cursor-pointer">
+          <FileVideo2
+            size={45}
+            strokeWidth={2}
+            className="border border-gray-400 dark:border-slate-800 p-2 rounded-lg"
+          />
+        </label>
+        <div className="flex items-center gap-3">
+          <Toggle state={false} />
+          <small>enable watermark</small>
+        </div>
+      </div>
+    </>
+  );
+};
+
+export default NewPostMediaAdd;

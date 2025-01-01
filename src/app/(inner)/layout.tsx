@@ -1,9 +1,10 @@
 import type {Metadata} from "next";
-import {Sora, Instrument_Sans,   Crete_Round, Unbounded, Kablammo, DynaPuff} from "next/font/google"
+import {Sora, Instrument_Sans, Be_Vietnam_Pro , Epilogue, Crete_Round, Unbounded, Kablammo, DynaPuff} from "next/font/google"
 import {GeistSans} from 'geist/font/sans';
 
 
-const font = Sora({
+const font = Be_Vietnam_Pro({
+    weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
     subsets: ["latin", "latin-ext"],
     display: "swap",
 })
