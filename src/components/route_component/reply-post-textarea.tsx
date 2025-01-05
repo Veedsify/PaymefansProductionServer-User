@@ -127,7 +127,7 @@ export const ReplyPostComponent = ({ options }: ReplyPostProps) => {
                     <p className="mb-3 p-3 text-sm font-semibold">
                         Replying to <span className="font-bold text-primary-dark-pink">{options.author_username}</span>
                     </p>
-                    <div className={`h-auto`}>
+                    <div className={`h-auto mb-3`}>
                         <textarea
                             onBlur={(e) => !e.target.value && setReplyPostOpen(false)}
                             onFocus={handleTextAreaFocus}
