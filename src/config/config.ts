@@ -2,7 +2,7 @@ const POST_CONFIG = {
     MODEL_POST_LIMIT: 30,
     MODEL_POST_LIMIT_ERROR_MSG: `Models can only upload 30 files per post`,  // Fixed typo here
     USER_POST_LIMIT: 5,
-    USER_POST_LIMIT_ERROR_MSG: "Models can only upload 5 files per post",
+    USER_POST_LIMIT_ERROR_MSG: "Users can only upload 5 files per post",
     QUICK_ACTION_CONFIG: {
         VISIBILITY_SUCCESSFUL: "Post Visibility Has Been Set Successfully"
     },
@@ -10,7 +10,9 @@ const POST_CONFIG = {
     POST_DELETED_SUCCESS_MSG: "Post Deleted Successfully",
     COMMENT: {
         COMMENT_CREATED_SUCCESS_MSG: "Post Comment Created Successfully",
-    }
+    },
+    IMAGE_FILE_SIZE_LIMIT: 10000000,
+    IMAGE_FILE_SIZE_LIMIT_ERROR_MSG: "File size should not exceed 10MB",
 }
 
 const LOGIN_CONFIG = {

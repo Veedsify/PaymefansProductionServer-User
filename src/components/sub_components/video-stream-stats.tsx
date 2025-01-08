@@ -1,10 +1,45 @@
+"use cleint";
 import { LucideHeart, LucideSend, LucideShare2 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import LiveStreamSockets from "../custom-hooks/live-stream-sockets";
+import { useEffect } from "react";
+import { useUserAuthContext } from "@/lib/userUseContext";
+import { socket2 } from "./sub/socket";
 
 const VideoStreamStats = ({ streamId }: { streamId: string | string[] }) => {
+  const { user } = useUserAuthContext();
   const { views, likes } = LiveStreamSockets({ streamId });
+
+  useEffect(() => {
+    socket2.on("stream-connected", (data) => {
+      console.log(data);
+    });
+
+    const handleUserIsActive = () => {
+      socket2.emit("connect-stream", {
+        userId: user?.user_id,
+        streamId: streamId,
+      });
+    };
+
+    const handleUserIsNotActive = () => {
+      socket2.emit("disconnect-stream", {});
+    };
+
+    window.addEventListener("focus", handleUserIsActive);
+    window.addEventListener("beforeunload", handleUserIsNotActive);
+    window.addEventListener("blur", handleUserIsNotActive);
+
+    return () => {
+      socket2.off("stream-connected");
+      socket2.emit("disconnect-stream", {});
+      window.removeEventListener("focus", handleUserIsActive);
+      window.removeEventListener("beforeunload", handleUserIsNotActive);
+      window.removeEventListener("blur", handleUserIsNotActive);
+    };
+  }, [user]);
+
   return (
     <>
       <div className="absolute bottom-0 flex-1 left-0 w-full bg-video-stream-gradient">

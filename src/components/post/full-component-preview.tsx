@@ -1,22 +1,23 @@
-﻿"use client";
+"use client";
 import usePostComponent from "@/contexts/post-component-preview";
-import '@vidstack/react/player/styles/base.css';
-import {
-  Captions, Controls, MediaPlayer, MediaProvider, MuteButton, PlayButton,
-  TimeSlider, VolumeSlider, useMediaState
-} from '@vidstack/react';
-import { PlayIcon } from '@vidstack/react/icons';
 import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
 import Image from "next/image";
 import Loader from "../lib_components/loading-animation";
-import { LucideShare2, Play, X } from "lucide-react";
-import { Swiper, SwiperClass, SwiperSlide } from 'swiper/react';
-import { Navigation, Thumbs, Pagination } from 'swiper/modules';
-import 'swiper/css/bundle';
-import { InView, useInView } from "react-intersection-observer";
+import { Play, X } from "lucide-react";
+import { Swiper, SwiperClass, SwiperSlide } from "swiper/react";
+import { Navigation, Thumbs, Pagination } from "swiper/modules";
+import "swiper/css/bundle";
+import ReactHlsPlayer from "react-hls-player";
 
 const PostComponentPreview = () => {
-  const { ref: objectRef, otherUrl, type, open, close, withOptions } = usePostComponent();
+  const {
+    ref: objectRef,
+    otherUrl,
+    type,
+    open,
+    close,
+    withOptions,
+  } = usePostComponent();
   const [loaded, setLoaded] = useState<boolean>(false);
   const swiperRef = useRef<SwiperClass | null>(null);
 
@@ -39,7 +40,10 @@ const PostComponentPreview = () => {
     <>
       {open && (
         <div
-          className={`fixed inset-0 w-full min-h-screen z-[999] smooth-opacity select-none ${open ? "active" : ""}`}>
+          className={`fixed inset-0 w-full min-h-screen z-[999] smooth-opacity select-none ${
+            open ? "active" : ""
+          }`}
+        >
           <button
             onClick={close}
             className="absolute top-4 right-4 p-2 bg-white rounded-full text-black shadow-md z-50"
@@ -78,9 +82,13 @@ const PostComponentPreview = () => {
                 onDoubleClick={close}
               >
                 {item.type === "video" ? (
-                  <VideoPreview url={item.url} playAction={
-                    swiperRef.current?.realIndex === index && item.type === "video"
-                  } />
+                  <VideoPreview
+                    url={item.url}
+                    playAction={
+                      swiperRef.current?.realIndex === index &&
+                      item.type === "video"
+                    }
+                  />
                 ) : (
                   <>
                     {!loaded && (
@@ -109,58 +117,69 @@ const PostComponentPreview = () => {
   );
 };
 
-
-const VideoPreview = ({ url, playAction }: { url: string, playAction: boolean }) => {
-  const [showPlay, setShowPlay] = useState<boolean>(true);
+const VideoPreview = ({
+  url,
+  playAction,
+}: {
+  url: string;
+  playAction: boolean;
+}) => {
   const videoRef = useRef<HTMLVideoElement>(null);
 
+  // Single useEffect to handle playAction prop changes
   useEffect(() => {
-    if (videoRef.current && !videoRef.current.paused) {
-      setShowPlay(false)
-    } else if (videoRef.current?.ended) {
-      setShowPlay(true)
-    } else {
-      setShowPlay(false)
-      videoRef.current?.play();
-    }
-  }, []);
+    if (!videoRef.current) return;
 
-  const handleClickFunction = () => {
-    if (videoRef.current) {
-      if (videoRef.current.paused) {
-        videoRef.current.play();
-        setShowPlay(false);
-      } else {
-        videoRef.current.pause();
-        setShowPlay(true);
-      }
+    if (playAction) {
+      videoRef.current.play().catch((error) => {
+        console.error("Error playing video:", error);
+      });
+    } else {
+      videoRef.current.pause();
     }
-  };
+  }, [playAction]);
+
+  // Single useEffect to handle video state changes
+  useEffect(() => {
+    if (!videoRef.current) return;
+
+    const video = videoRef.current;
+
+    const handleStateChange = () => {
+      if (video.ended) {
+        video.currentTime = 0;
+        video.play();
+      }
+    };
+
+    // Add event listeners for all relevant state changes
+    video.addEventListener("play", handleStateChange);
+    video.addEventListener("pause", handleStateChange);
+    video.addEventListener("ended", handleStateChange);
+
+    return () => {
+      video.removeEventListener("play", handleStateChange);
+      video.removeEventListener("pause", handleStateChange);
+      video.removeEventListener("ended", handleStateChange);
+    };
+  }, []); // Only run once on mount
 
   return (
     <div className="relative">
-      <div
-        onClick={handleClickFunction}
-        className={`absolute bg-black bg-opacity-20 inset-0 w-full h-full flex items-center justify-center z-50
-        ${showPlay ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"} transition-all duration-200 cursor-pointer
-        `}>
-        <Play
-          className="text-white cursor-pointer"
-          size={30}
-        />
-      </div>
-      <video
+      <ReactHlsPlayer
+        hlsConfig={{
+          maxLoadingDelay: 4,
+          minAutoBitrate: 0,
+          lowLatencyMode: true,
+        }}
         controls
         title="Video Preview"
-        ref={videoRef}
+        playerRef={videoRef}
+        src={url}
         className="h-screen object-contain mx-auto w-auto transition-all duration-200 border-none animate-in scale-100 fullscreen-video"
-      >
-        <source src={url} />
-      </video>
+      ></ReactHlsPlayer>
     </div>
   );
-}
-
-
+};
 
 export default PostComponentPreview;

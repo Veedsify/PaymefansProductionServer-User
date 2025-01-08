@@ -1,6 +1,6 @@
-import {Call} from "@stream-io/video-react-sdk";
-import {ChangeEvent} from "react";
-import {ProfileUserProps} from "./user";
+import { Call } from "@stream-io/video-react-sdk";
+import { ChangeEvent } from "react";
+import { ProfileUserProps } from "./user";
 
 
 // POST COMPONET PROPS
@@ -225,7 +225,7 @@ export interface Message {
 }
 
 export interface MessageInputProps {
-    sendMessage: ({}: Message) => void;
+    sendMessage: ({ }: Message) => void;
     sendTyping: (value: string) => void;
     receiver: any;
     isFirstMessage: boolean;
@@ -493,4 +493,41 @@ type SubscriptionTiersProps = {
     tier_description: string;
     tier_duration: string;
     subscription_id?: string;
+}
+
+
+// Store Types
+
+export type Product = {
+    id: number;
+    product_id: string;
+    name: string;
+    description: string;
+    price: number;
+    instock: number;
+    category: {
+        name: string;
+    };
+    images: {
+        id: number;
+        image_url: string;
+    }[];
+    sizes: {
+        size: {
+            name: string;
+        };
+    }[];
+}
+
+
+export type fetstoreProps = {
+    error: boolean,
+    message?: string,
+    data?: Product[]
+}
+
+export type fetchSingleProps = {
+    error: boolean,
+    message?: string,
+    data?: Product
 }
