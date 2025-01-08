@@ -9,10 +9,11 @@ import {
   Unbounded,
   Kablammo,
   DynaPuff,
+  Geist,
 } from "next/font/google";
 import { GeistSans } from "geist/font/sans";
 
-const font = Inter({
+const font = Geist({
   weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
   subsets: ["latin", "latin-ext"],
   display: "swap",

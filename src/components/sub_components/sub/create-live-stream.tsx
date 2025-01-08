@@ -44,7 +44,7 @@ const CreateLiveStream = () => {
                     })
                     setIsLive(false);
                     toast.success('Live session created successfully');
-                    window.location.href = (`/stream/${res.data.data.stream_id}`);
+                    window.open(`${process.env.NEXT_PUBLIC_LIVE_SERVER}/stream/${res.data.data.stream_id}`, '_blank');
                } else {
                     swal({
                          title: "Failed to create live stream",
@@ -52,7 +52,6 @@ const CreateLiveStream = () => {
                          text: res.data.message
                     })
                }
-
           } catch (error) {
                toast.error('Failed to create live stream');
                console.log(error);
