@@ -55,7 +55,7 @@ const WalletPage = async () => {
             </div>
             <div className="mb-5 flex align-middle justify-between bg-primary-dark-pink text-white p-5 rounded-xl">
                 <div className="grid gap-3">
-                    <small className="text-md">Your Ballance</small>
+                    <small className="text-md">Your Balance</small>
                     <h1 className="text-xl md:text-3xl font-bold">₦ {(points * 100).toLocaleString()}</h1>
                 </div>
                 <div className="flex self-center">
@@ -71,7 +71,7 @@ const WalletPage = async () => {
             {user?.is_model && user?.Model?.verification_status && (
                 <>
                     <div className=" bg-black text-white p-5 rounded-xl">
-                        <small className="text-md">Your Ballance</small>
+                        <small className="text-md">Your Balance</small>
                         <h1 className="text-xl md:text-3xl font-bold mb-4">₦ {(points * 100).toLocaleString()}</h1>
                         <Link href="/wallet/withdraw"
                             className="block text-sm text-center bg-coins-card-bottom px-6 py-3 rounded-md w-full text-primary-dark-pink font-semibold">WITHDRAW

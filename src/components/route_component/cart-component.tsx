@@ -1,91 +1,94 @@
-"use client"
+"use client";
 import { useCartStore } from "@/contexts/store-context";
-import { LucideMinus, LucidePlus, X } from "lucide-react";
+import { LucideMinus, LucidePlus, LucideTrash, X } from "lucide-react";
 import Image from "next/image";
 import CustomCartPageHooks from "../custom-hooks/custom-cart-hooks";
+import { ChangeEvent } from "react";
 
 const CartComponent = () => {
-     const { calculateTotalPrice, cart } = useCartStore()
-     const { sizes, addToCart, removeFromCart } = CustomCartPageHooks()
+  const { calculateTotalPrice, addProduct, cart } = useCartStore();
+  const { sizes, addToCart, removeFromCart } = CustomCartPageHooks();
 
-     return (
-          <>
-               <div className="grid grid-cols-1">
-                    {cart.map((item, index) => (
-                         <div key={index} className="grid p-4 grid-cols-4 gap-4 rounded bg-white shadow duration-200 mb-4">
-                              <Image
-                                   src="https://images.pexels.com/photos/28302550/pexels-photo-28302550/free-photo-of-a-woman-sitting-on-a-stool-with-her-hair-in-a-bun.jpeg?auto=compress&cs=tinysrgb&w=600&lazy=load"
-                                   alt="placeholder"
-                                   width={100}
-                                   height={100}
-                                   className="rounded-lg col-span-1 w-full block aspect-square object-cover"
-                              />
-                              <div className="col-span-3">
-                                   <div className="flex items-center mb-2">
-                                        <h1
-                                             className="text-lg font-semibold"
-                                        >
-                                             {item.name} - ₦ {item.price}
-                                        </h1>
-                                        <button
-                                             className="text-white rounded-lg p-1 ml-2">
-                                             <X size={20} />
-                                        </button>
-                                   </div>
-                                   <p className="text-xs mb-2">
-                                        {item.description}
-                                   </p>
-                                   <div className="flex items-center justify-between">
-                                        <select name="" id=""
-                                             className="border-gray-300 rounded-md border outline-none p-1 px-4 text-sm mr-2"
-                                        >
-                                             {sizes.map(s => (
-                                                  <option 
-                                                  key={s.id}
-                                                  value={s.id} selected={item.sizes.id === s.id}>
-                                                       {String(s.name).toUpperCase()}
-                                                  </option>
-                                             ))}
-                                        </select>
-                                        <div className="flex items-center border rounded">
-                                             <button
-                                                  onClick={() => addToCart(item)}
-                                                  className="border-r border-gray-300 px-2 py-1 text-sm"
-                                             >
-                                                  <LucideMinus size={15} />
-                                             </button>
-                                             <input
-                                                  type="text"
-                                                  readOnly
-                                                  defaultValue={item.quantity}
-                                                  className="border-gray-300 text-center w-12 py-1 text-sm"
-                                             />
-                                             <button
-                                                  onClick={() => removeFromCart(item.id)}
-                                                  className="border-l border-gray-300 px-2 py-1 text-sm"
-                                             >
-                                                  <LucidePlus size={15} />
-                                             </button>
-                                        </div>
-                                   </div>
-                              </div>
-                         </div>
-                    ))}
-               </div>
-               <div>
-                    <div className="flex items-center justify-between bg-white rounded">
-                         <h1 className="text-lg font-semibold">
-                              Total: ₦ {calculateTotalPrice().toLocaleString()}
-                         </h1>
-                         <button
-                              className="bg-primary-dark-pink hover:bg-primary-text-dark-pink duration-200 text-white text-sm font-bold py-2 px-4 rounded-lg"
-                         >
-                              Checkout
-                         </button>
-                    </div>
-               </div>
-          </>
-     );
-}
+  const handleSizeChange = (e: ChangeEvent<HTMLSelectElement>, id: number) => {
+    const product = cart.find((p) => p.id === id);
+    const size = sizes.find((s) => s.name === e.target.value);
+    if (product && size) {
+      addProduct({ ...product, size });
+    }
+  };
+  return (
+    <>
+      <div className="grid grid-cols-1">
+        {cart.map((item, index) => (
+          <div
+            key={index}
+            className="flex items-start gap-6 p-6 bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200 mb-4"
+          >
+            <Image
+              src={item.images[0].image_url.trimEnd()}
+              alt={item.name}
+              width={120}
+              height={120}
+              className="rounded-lg object-cover aspect-square flex-shrink-0"
+            />
+            <div className="flex-1">
+              <div className="flex items-start justify-between mb-3">
+                <div>
+                  <h1 className="text-xl font-semibold text-gray-800">
+                    {item.name}
+                  </h1>
+                  <p className="text-primary-dark-pink font-medium">
+                    ₦ {item.price.toLocaleString()}
+                  </p>
+                </div>
+                <button className="text-gray-400 hover:text-red-500 transition-colors p-1 rounded-full hover:bg-red-50">
+                  <X size={20} />
+                </button>
+              </div>
+              <p className="text-sm text-gray-600 mb-4">{item.description}</p>
+              <div className="flex items-center justify-between">
+                <select
+                  onChange={(e) => handleSizeChange(e, item.id)}
+                  defaultValue={item.size.name}
+                  className="px-4 py-2 border border-gray-200 rounded-lg text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-primary-dark-pink/20"
+                >
+                  {sizes.map((s) => (
+                    <option key={s.name} value={s.name}>
+                      {String(s.name).toUpperCase()}
+                    </option>
+                  ))}
+                </select>
+                <div className="flex items-center border border-gray-200 rounded-lg">
+                  <button
+                    onClick={() => removeFromCart(item.id)}
+                    className="px-3 py-2 hover:bg-gray-50 transition-colors"
+                  >
+                    <LucideTrash size={16} className="text-red-600" />
+                  </button>
+                  <input
+                    type="text"
+                    readOnly
+                    defaultValue={item.quantity}
+                    className="w-12 text-center py-2 text-gray-700 font-medium"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+      <div>
+        <div className="flex items-center justify-between bg-white rounded">
+          <h1 className="text-lg font-semibold">
+            Total: ₦ {calculateTotalPrice().toLocaleString()}
+          </h1>
+          <button className="bg-primary-dark-pink hover:bg-primary-text-dark-pink duration-200 text-white text-sm font-bold py-2 px-4 rounded-lg">
+            Checkout
+          </button>
+        </div>
+      </div>
+    </>
+  );
+};
 
 export default CartComponent;

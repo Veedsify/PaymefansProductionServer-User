@@ -1,16 +1,9 @@
 "use client";
-import "@stream-io/video-react-sdk/dist/css/styles.css";
 import "@/app/globals.css";
-import {
-  useCallStateHooks,
-  ParticipantView,
-  useCall,
-} from "@stream-io/video-react-sdk";
 import Image from "next/image";
-import { useLivestreamStore } from "@/contexts/livestream-context";
 import { LucidePin, LucideSend } from "lucide-react";
 import Link from "next/link";
-import { ChangeEvent, useEffect } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import StreamStats from "../sub_components/stream-stats";
 import { AuthUserProps } from "@/types/user";
@@ -27,35 +20,17 @@ const StreamDeckCamera = ({
   thisUser: AuthUserProps | null;
   streamData: streamDataProps;
 }) => {
-  const {
-    useCameraState,
-    useMicrophoneState,
-    useParticipantCount,
-    useIsCallLive,
-    useParticipants,
-    useLocalParticipant,
-    useCallEgress,
-  } = useCallStateHooks();
-  const call = useCall();
-  const { camera: cam, isEnabled: isCamEnabled, devices } = useCameraState();
-  const { microphone: mic, isEnabled: isMicEnabled } = useMicrophoneState();
-  const participantCount = useParticipantCount();
-  const me = useLocalParticipant();
-  const isLive = useIsCallLive();
-  const [_, ...participants] = useParticipants();
   const token = getToken();
   const router = useRouter();
-  const egress = useCallEgress();
-
-  useEffect(() => {
-    if (isLive) {
-      console.log(egress);
-    }
-  }, [isLive]);
+  const [isLive, setIsLive] = useState(false);
+  const [isCamEnabled, setIsCamEnabled] = useState(true);
+  const [isMicEnabled, setIsMicEnabled] = useState(true);
+  const [participantCount, setParticipantCount] = useState(0);
+  const [devices, setDevices] = useState<any[]>([]);
 
   const handleLiveStreamEnd = () => {
     const endStream = async () => {
-      if (isLive && streamData.user_id === thisUser?.user_id) {
+      if (streamData.user_id === thisUser?.user_id) {
         swal({
           title: "End Stream",
           text: "Are you sure you want to end the stream?",
@@ -71,7 +46,6 @@ const StreamDeckCamera = ({
           },
         }).then((confirmed) => {
           if (confirmed) {
-            call?.stopLive();
             axiosInstance
               .post(
                 `/stream/${streamData.stream_id}/go-live`,
@@ -86,7 +60,6 @@ const StreamDeckCamera = ({
               )
               .then((res) => {
                 if (res.status === 200) {
-                  call?.goLive();
                 }
               })
               .catch((err) => {
@@ -96,7 +69,6 @@ const StreamDeckCamera = ({
             toast.success("Stream has ended");
             router.push("/profile");
           } else {
-            call?.leave();
             router.push("/");
           }
         });
@@ -116,7 +88,6 @@ const StreamDeckCamera = ({
           },
         }).then((confirmed) => {
           if (confirmed) {
-            call?.leave();
             router.push("/");
           }
         });
@@ -125,33 +96,28 @@ const StreamDeckCamera = ({
     endStream();
   };
   const toggleMic = async () => {
-    if (isMicEnabled) {
-      await mic.disable();
+    if (true) {
       toast.success("Microphone is muted");
     } else {
-      await mic.enable();
       toast.success("Microphone is unmuted");
     }
   };
 
   const toggleCamera = async () => {
-    if (isCamEnabled) {
-      await cam.disable();
+    if (true) {
       toast.success("Camera is disabled");
     } else {
-      await cam.enable();
       toast.success("Camera is enabled");
     }
   };
 
   const handleCameraChange = async (e: ChangeEvent<HTMLSelectElement>) => {
     const selectedDeviceId = e.target.value;
-    await cam.select(selectedDeviceId);
     toast.success("Camera changed");
   };
 
   const handleCreateStream = async () => {
-    if (streamData.user_id === thisUser?.user_id && !isLive) {
+    if (streamData.user_id === thisUser?.user_id) {
       axiosInstance
         .post(
           `/stream/${streamData.stream_id}/go-live`,
@@ -166,10 +132,6 @@ const StreamDeckCamera = ({
         )
         .then((res) => {
           if (res.status === 200) {
-            call?.goLive({
-              start_recording: true,
-              start_hls: true,
-            });
             toast.success("You are now live");
           }
         })
@@ -177,8 +139,7 @@ const StreamDeckCamera = ({
           console.log(err);
           toast.error("You are not authorized to go live");
         });
-    } else if (isLive) {
-      call?.join();
+    } else if (true) {
     } else {
       toast.error("You are not authorized to go live");
     }
@@ -210,13 +171,7 @@ const StreamDeckCamera = ({
               gridTemplateRows: "1fr",
             }}
           >
-            {me && (
-              <ParticipantView
-                participant={me}
-                ParticipantViewUI={null}
-                className="overflow-hidden h-full"
-              />
-            )}
+            {true && <></>}
             {/* {participants.map((participant) => (
                                    <div className="h-full row-span-1 w-full object-cover" key={participant.userId}>
                                         <ParticipantView participant={participant} />

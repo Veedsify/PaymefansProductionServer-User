@@ -468,6 +468,7 @@ type streamDataProps = {
         name: string;
     }
     user_stream_id: string;
+    authToken: string;
 }
 
 type LiveStreamSocketProps = {

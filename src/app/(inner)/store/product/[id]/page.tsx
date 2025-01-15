@@ -8,23 +8,31 @@ import {
   ChevronRight,
   Loader2,
 } from "lucide-react";
-import { useParams } from "next/navigation";
+import { useParams, useSearchParams } from "next/navigation";
 import { Product } from "@/types/components";
 import fetchSingleProduct from "@/utils/data/fetch-single-product";
 import CartIcon from "@/components/sub_components/cart-icon";
 import numeral from "numeral";
 import Loader from "@/components/lib_components/loading-animation";
 import Link from "next/link";
+import { useCartStore } from "@/contexts/store-context";
+import toast from "react-hot-toast";
 
 const ProductPreview = () => {
   const params = useParams();
+  const { addProduct, cart } = useCartStore();
   const [selectedImage, setSelectedImage] = useState(0);
-  const [selectedSize, setSelectedSize] = useState<string | null>(null);
-  const [selectedColor, setSelectedColor] = useState(null);
-  const [selectedQuantity, setSelectedQuantity] = useState(1);
+  // const [selectedSize, setSelectedSize] = useState<string | null>(null);
+  // const [selectedColor, setSelectedColor] = useState(null);
+  // const [selectedQuantity, setSelectedQuantity] = useState(1);
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const searchParams = useSearchParams();
+
+  const selectedSize = searchParams.get("size") ?? null;
+  const selectedColor = searchParams.get("color") ?? null;
+  const selectedQuantity = searchParams.get("quantity") ?? 1;
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -45,6 +53,32 @@ const ProductPreview = () => {
 
     fetchProduct();
   }, []);
+
+  const AddItemToCart = () => {
+    if (!product) return;
+
+    const findProductIncart = cart.find((p) => p.id === product.id);
+    if (findProductIncart) {
+      toast.error("Product already in cart");
+      return
+    }
+
+    addProduct({
+      id: product!.id,
+      name: product!.name,
+      price: product!.price,
+      images: product!.images,
+      size: {
+        name: selectedSize as string,
+      },
+      quantity: Number(selectedQuantity),
+      description: product!.description,
+      instock: product!.instock,
+      category: product!.category,
+      product_id: product!.product_id,
+    });
+    toast.success("Product added to cart");
+  };
 
   if (loading)
     return (
@@ -154,17 +188,20 @@ const ProductPreview = () => {
               </h3>
               <div className="grid grid-cols-5 gap-2">
                 {product.sizes.map((size, index) => (
-                  <button
+                  <Link
                     key={index}
-                    onClick={() => setSelectedSize(size.size.name)}
-                    className={`py-2 text-sm font-medium rounded-md ${
+                    href={`?${new URLSearchParams({
+                      ...Object.fromEntries(searchParams.entries()),
+                      size: size.size.name,
+                    }).toString()}`}
+                    className={`py-2 text-center block text-sm font-medium rounded-md ${
                       selectedSize === size.size.name
                         ? "bg-primary-dark-pink text-white"
                         : "bg-slate-100 dark:bg-slate-700 text-slate-900 dark:text-white hover:bg-slate-200 dark:hover:bg-slate-600"
                     }`}
                   >
                     {size.size.name}
-                  </button>
+                  </Link>
                 ))}
               </div>
             </div>
@@ -175,29 +212,43 @@ const ProductPreview = () => {
                 Quantity
               </h3>
               <div className="flex items-center gap-4">
-                <button
-                  onClick={() =>
-                    setSelectedQuantity((prev) => Math.max(prev - 1, 1))
-                  }
+                <Link
+                  href={`?${new URLSearchParams({
+                    ...Object.fromEntries(searchParams.entries()),
+                    quantity:
+                      Number(selectedQuantity) > 1
+                        ? String(Number(selectedQuantity) - 1)
+                        : "1",
+                  }).toString()}`}
+                  // onClick={() =>
+                  //   setSelectedQuantity((prev) => Math.max(prev - 1, 1))
+                  // }
                   className="px-4 py-2 border border-slate-300 dark:border-slate-600 rounded-md dark:text-white"
                 >
                   -
-                </button>
+                </Link>
                 <span className="text-lg font-semibold dark:text-white">
                   {selectedQuantity}
                 </span>
-                <button
-                  onClick={() => setSelectedQuantity((prev) => prev + 1)}
+                <Link
+                  href={`?${new URLSearchParams({
+                    ...Object.fromEntries(searchParams.entries()),
+                    quantity: String(Number(selectedQuantity) + 1),
+                  }).toString()}`}
+                  // onClick={() => setSelectedQuantity((prev) => prev + 1)}
                   className="px-4 py-2 border border-slate-300 dark:border-slate-600 rounded-md dark:text-white"
                 >
                   +
-                </button>
+                </Link>
               </div>
             </div>
 
             {/* Action Buttons */}
             <div className="flex items-center gap-4 flex-wrap pt-6">
-              <button className="flex items-center text-nowrap justify-center gap-2 bg-primary-dark-pink text-white px-6 py-3 rounded-lg hover:bg-slate-800 dark:hover:bg-slate-700">
+              <button
+                onClick={AddItemToCart}
+                className="flex items-center text-nowrap justify-center gap-2 bg-primary-dark-pink text-white px-6 py-3 rounded-lg hover:bg-slate-800 dark:hover:bg-slate-700"
+              >
                 <ShoppingCart className="w-5 h-5" />
                 Add to Cart
               </button>

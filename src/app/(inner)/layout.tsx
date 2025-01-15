@@ -5,6 +5,8 @@ import {
   Be_Vietnam_Pro,
   Epilogue,
   Inter,
+  Public_Sans,
+  Source_Sans_3,
   Crete_Round,
   Unbounded,
   Kablammo,
@@ -13,7 +15,7 @@ import {
 } from "next/font/google";
 import { GeistSans } from "geist/font/sans";
 
-const font = Geist({
+const font = Inter({
   weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
   subsets: ["latin", "latin-ext"],
   display: "swap",

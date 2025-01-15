@@ -16,7 +16,6 @@ import Image from "next/image";
 import { use, useState } from "react";
 import LiveStreamSockets from "@/components/custom-hooks/live-stream-sockets";
 import numeral from "numeral";
-import { useCallStateHooks } from "@stream-io/video-react-sdk";
 
 const StreamStats = ({
     streamData,
