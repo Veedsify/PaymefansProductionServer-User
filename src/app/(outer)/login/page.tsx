@@ -28,7 +28,7 @@ const Login = () => {
         e.preventDefault();
         try {
             const loginThisUser = await axiosServer.post("/auth/login", {
-                data: loginCredentials
+                ...loginCredentials
             });
 
             if (loginThisUser?.data?.status === true) {

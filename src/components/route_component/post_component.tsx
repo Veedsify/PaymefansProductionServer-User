@@ -31,7 +31,8 @@ import {
   UserMediaProps,
   VideoComponentProps,
 } from "@/types/components";
-import ReactHlsPlayer from "react-hls-player";
+import Hls from "hls.js";
+import HLSVideoPlayer from "../sub_components/videoplayer";
 
 const PostComponent: React.FC<PostComponentProps> = ({
   user,
@@ -74,7 +75,7 @@ const PostComponent: React.FC<PostComponentProps> = ({
         })),
       });
     },
-    [isSubscriber, data.post_audience, data.media, fullScreenPreview]
+    [isSubscriber, data.post_audience, data.media, fullScreenPreview],
   );
 
   const redirectToPost = useCallback(
@@ -109,7 +110,7 @@ const PostComponent: React.FC<PostComponentProps> = ({
         }
       }
     },
-    [router, data.post_id, data.post_audience, isSubscriber, user.user_id]
+    [router, data.post_id, data.post_audience, isSubscriber, user.user_id],
   );
 
   const handleNonSubscriberClick = (e: MouseEvent) => {
@@ -193,8 +194,8 @@ const PostComponent: React.FC<PostComponentProps> = ({
             data.media.length === 2
               ? "grid-cols-2"
               : data.media.length >= 3
-              ? "grid-cols-3"
-              : "grid-cols-1"
+                ? "grid-cols-3"
+                : "grid-cols-1"
           }`}
         >
           {data.media.slice(0, 3).map((media: UserMediaProps, i) => (
@@ -322,8 +323,8 @@ const VideoComponent: React.FC<VideoComponentProps> = ({
   isSubscriber,
 }) => {
   const [playing, setPlaying] = useState<boolean>(false);
-  const videoRef = useRef<HTMLVideoElement | null>(null);
   const [canplay, setCanplay] = useState<boolean>(false);
+
   const playPauseVideo = useCallback(
     (e: React.MouseEvent) => {
       e.stopPropagation();
@@ -331,12 +332,16 @@ const VideoComponent: React.FC<VideoComponentProps> = ({
         toast.error("You need to be a subscriber to view this post");
         return;
       }
-      if (videoRef.current) {
+      const videoElement = document.getElementById(
+        "video_player_post",
+      ) as HTMLVideoElement | null;
+
+      if (videoElement) {
         if (playing) {
-          videoRef.current.pause();
+          videoElement.pause();
         } else {
           if (canplay) {
-            videoRef.current.play();
+            videoElement.play();
             setPlaying(true);
           } else {
             swal({
@@ -349,11 +354,13 @@ const VideoComponent: React.FC<VideoComponentProps> = ({
         setPlaying(!playing);
       }
     },
-    [isSubscriber, data.post_audience, playing, canplay]
+    [isSubscriber, data.post_audience, playing, canplay],
   );
 
   useEffect(() => {
-    const videoElement = videoRef.current;
+    const videoElement = document.getElementById(
+      "video_player_post",
+    ) as HTMLVideoElement | null;
 
     if (!videoElement) return;
 
@@ -374,27 +381,26 @@ const VideoComponent: React.FC<VideoComponentProps> = ({
 
   return (
     <>
-      <ReactHlsPlayer
-        playerRef={videoRef}
-        playsInline
+      <HLSVideoPlayer
+        streamUrl={media.url}
+        allOthers={{
+          id: "video_player_post",
+          playsInline: true,
+          onClick: (e: MouseEvent<HTMLVideoElement>) => {
+            e.currentTarget.muted = true;
+            clickImageEvent(media);
+          },
+          onCanPlay: () => {
+            setCanplay(true);
+            setPlaying(true);
+          },
+          onEnded: () => setPlaying(false),
+          poster: media.poster ? media.poster : "",
+          muted: true,
+          autoPlay: true,
+        }}
         className="h-full shadow-md aspect-square w-full object-cover"
-        onClick={(e: MouseEvent<HTMLVideoElement>) => {
-          e.currentTarget.muted = true;
-          clickImageEvent(media);
-        }}
-        onCanPlay={() => {
-          setCanplay(true);
-          setPlaying(true);
-        }}
-        onEnded={() => setPlaying(false)}
-        poster={media.poster ? media.poster : ""}
-        title={data.post}
-        muted
-        autoPlay={true}
-        src={media.url}
-        // controls={playing}
-      >
-      </ReactHlsPlayer>
+      />
       {!playing && (
         <div
           onClick={playPauseVideo}

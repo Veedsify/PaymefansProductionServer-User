@@ -1,6 +1,6 @@
 "use client";
 import React from "react";
-// import { DyteProvider, useDyteClient } from "@dytesdk/react-web-core";
+import { DyteProvider, useDyteClient } from "@dytesdk/react-web-core";
 import StreamDeckCamera from "./stream-deck-camera";
 import useLivestreamStore from "@/contexts/livestream-context";
 import { useUserAuthContext } from "@/lib/userUseContext";
@@ -24,7 +24,7 @@ const StreamDeck = ({ streamData }: { streamData: streamDataProps }) => {
         video: false,
       },
     });
-  }, []);
+  }, [initMeeting, streamData.authToken]);
   return (
     <>
       <DyteProvider value={meeting}>

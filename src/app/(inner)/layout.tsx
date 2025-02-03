@@ -15,7 +15,7 @@ import {
 } from "next/font/google";
 import { GeistSans } from "geist/font/sans";
 
-const font = Inter({
+const font = Epilogue({
   weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
   subsets: ["latin", "latin-ext"],
   display: "swap",

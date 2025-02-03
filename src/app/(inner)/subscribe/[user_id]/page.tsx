@@ -30,6 +30,7 @@ type ProfileUser = {
     },
     ModelSubscriptionPack: {
         ModelSubscriptionTier: {
+            id: number;
             tier_name: string
             tier_price: number
             tier_duration: number
@@ -89,10 +90,10 @@ const Subscribe = () => {
         }
     }, [])
 
-    const subscribeToUser = (id: string) => {
+    const subscribeToUser = (id: number) => {
         if (user && profileUser) {
             const subscribeUser = async () => {
-                return await SubscribeToUser(profileUser.user_id)
+                return await SubscribeToUser(profileUser.user_id, id)
             }
             subscribeUser().then((res) => {
                 if (res.status === true) {
@@ -109,7 +110,7 @@ const Subscribe = () => {
 
     return (
         <div className="p-4 lg:mb-4 mb-20 flex justify-center flex-col items-center">
-            <div className="text-center border p-5 rounded-lg py-8">
+            <div className="text-center rounded-lg py-8 w-full flex-1">
                 <div className="border-[3px] mb-5 inline-block p-2 rounded-full border-dotted">
                     <Image
                         src={`${profileUser?.profile_image || "/site/avatar.png"}`}
@@ -129,11 +130,11 @@ const Subscribe = () => {
                     and get notified when he goes live.
                 </p>
                 {(profileUser && profileUser?.ModelSubscriptionPack) ? (
-                    <div className="grid items-center xl:grid-cols-2 gap-4 mt-10">
+                    <div className="grid items-center xl:grid-cols-2 2xl:grid-cols-3 gap-4 mt-10">
                         {profileUser?.ModelSubscriptionPack?.ModelSubscriptionTier?.map((tier, index) => (
                             <div
                                 key={index}
-                                className="p-6 border rounded-lg shadow-sm flex-1 xl:aspect-[3/4] flex flex-col justify-center">
+                                className="p-4 pt-8 border rounded-lg shadow-sm flex-1 xl:aspect-[3/4] flex flex-col justify-center">
                                 <div className="flex justify-center gap-2 items-center mb-4">
                                     <Image width={20} height={20} src="/site/coin.svg"
                                            className="w-auto h-5 aspect-square"
@@ -153,8 +154,8 @@ const Subscribe = () => {
                                     {tier.tier_description}
                                 </p>
                                 <button
-                                    onClick={() => subscribeToUser("basic")}
-                                    className="block bg-primary-dark-pink p-3 mx-auto font-bold text-white rounded-lg cursor-pointer w-52 mt-4">
+                                    onClick={() => subscribeToUser(tier.id)}
+                                    className="block bg-primary-dark-pink p-3 mx-auto font-bold text-white rounded-lg cursor-pointer w-full mt-4">
                                     Subscribe
                                 </button>
                             </div>

@@ -106,7 +106,7 @@ const MediaPreviewer: React.FC<MediaPreviewProps> = ({ files, setMessage, sendNe
                         <SwiperSlide key={index} className='cursor-pointer'>
                             <div onClick={() => handleMainTabSelect(files[index])}>
                                 <Image
-                                    src={file.poster ? file.poster : file.src}
+                                    src={file.poster ? file.poster.trimEnd() : file.src.trimEnd()}
                                     alt="image"
                                     width={300}
                                     height={300}
@@ -157,7 +157,7 @@ const MainTabPreview = ({ mainTab }: { mainTab: File | null }) => {
                     />
                 </>
             ) : (
-                <Image src={preview} alt="image" width={1000} height={1000} className="object-cover rounded-lg lg:rounded-2xl w-full aspect-[9/9]" />
+                <Image src={preview.trimEnd()} alt="image" width={1000} height={1000} className="object-cover rounded-lg lg:rounded-2xl w-full aspect-[9/9]" />
             )}
         </>
     )

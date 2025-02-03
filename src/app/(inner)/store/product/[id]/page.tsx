@@ -17,6 +17,7 @@ import Loader from "@/components/lib_components/loading-animation";
 import Link from "next/link";
 import { useCartStore } from "@/contexts/store-context";
 import toast from "react-hot-toast";
+import Image from "next/image";
 
 const ProductPreview = () => {
   const params = useParams();
@@ -52,7 +53,7 @@ const ProductPreview = () => {
     };
 
     fetchProduct();
-  }, []);
+  }, [params.id]);
 
   const AddItemToCart = () => {
     if (!product) return;
@@ -60,7 +61,7 @@ const ProductPreview = () => {
     const findProductIncart = cart.find((p) => p.id === product.id);
     if (findProductIncart) {
       toast.error("Product already in cart");
-      return
+      return;
     }
 
     addProduct({
@@ -121,7 +122,9 @@ const ProductPreview = () => {
           <div className="space-y-4">
             {/* Main Image */}
             <div className="relative aspect-[3/4] bg-slate-100 dark:bg-slate-800 rounded-lg overflow-hidden">
-              <img
+              <Image
+                width={640}
+                height={480}
                 src={product.images[selectedImage]?.image_url}
                 alt={`Product view ${selectedImage + 1}`}
                 className="w-full h-full object-cover"
@@ -154,7 +157,9 @@ const ProductPreview = () => {
                       : ""
                   }`}
                 >
-                  <img
+                  <Image
+                    width={200}
+                    height={200}
                     src={image.image_url}
                     alt={`Thumbnail ${index + 1}`}
                     className="w-full h-full object-cover"

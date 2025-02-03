@@ -8,7 +8,7 @@ import { UserMediaProps } from "@/types/components";
 import Link from "next/link";
 import { LucideLock } from "lucide-react";
 import { useRouter } from "next/navigation";
-import ReactHlsPlayer from "react-hls-player";
+import HLSVideoPlayer from "./videoplayer";
 
 // Define props type for the component
 interface PostPageImageProps {
@@ -101,14 +101,15 @@ const PostPageImage: React.FC<PostPageImageProps> = ({
       )}
       {media.media_type === "video" ? (
         <div className="relative">
-          <ReactHlsPlayer
-            playerRef={useRef(null)}
-            onClick={handleClick}
-            autoPlay={true}
+          <HLSVideoPlayer
+            streamUrl={isSubscriber ? media.url : "/site/blur.jpg"}
+            allOthers={{
+              onClick: handleClick,
+              autoPlay: true,
+              poster: isSubscriber ? media.url : "/site/blur.jpg",
+            }}
             className="w-full rounded-lg mt-3 block aspect-square object-cover cursor-pointer"
-            poster={isSubscriber ? media.url : "/site/blur.jpg"}
-            src={isSubscriber ? media.url : "/site/blur.jpg"}
-          ></ReactHlsPlayer>
+          ></HLSVideoPlayer>
           <div
             onClick={handleClick}
             className="absolute inset-0 text-white bg-black bg-opacity-50 rounded-lg flex items-center justify-center cursor-pointer"

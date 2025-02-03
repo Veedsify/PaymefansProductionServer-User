@@ -38,7 +38,7 @@ const VideoStreamStats = ({ streamId }: { streamId: string | string[] }) => {
       window.removeEventListener("beforeunload", handleUserIsNotActive);
       window.removeEventListener("blur", handleUserIsNotActive);
     };
-  }, [user]);
+  }, [user, streamId]);
 
   return (
     <>

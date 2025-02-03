@@ -45,6 +45,7 @@ export type StoryMedia = {
      user_id: number;
      created_at: string;
      updated_at: string;
+     user: User
 };
 
 export type CaptionStyle = {

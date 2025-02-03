@@ -26,7 +26,7 @@ const CommentsAndReply = ({ post }: { post: PostData }) => {
                 setNewComment: setNewComment
             }} />
             <div>
-                {post && <CommentsHolder post={post} postComments={postComments} />}
+                {post && <CommentsHolder post={post} />}
             </div>
         </>
     )

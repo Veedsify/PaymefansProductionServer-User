@@ -7,7 +7,8 @@ import { Play, X } from "lucide-react";
 import { Swiper, SwiperClass, SwiperSlide } from "swiper/react";
 import { Navigation, Thumbs, Pagination } from "swiper/modules";
 import "swiper/css/bundle";
-import ReactHlsPlayer from "react-hls-player";
+import Hls from "hls.js";
+import HLSVideoPlayer from "../sub_components/videoplayer";
 
 const PostComponentPreview = () => {
   const {
@@ -20,6 +21,18 @@ const PostComponentPreview = () => {
   } = usePostComponent();
   const [loaded, setLoaded] = useState<boolean>(false);
   const swiperRef = useRef<SwiperClass | null>(null);
+
+  useEffect(() => {
+    const handleEscKeyPress = (e: KeyboardEvent) => {
+      if (e.key === "Escape" && open) {
+        close();
+      }
+    };
+    window.addEventListener("keydown", handleEscKeyPress);
+    return () => {
+      window.removeEventListener("keydown", handleEscKeyPress);
+    };
+  }, [close, open]);
 
   // Scroll to the specific slide when objectRef changes
   useEffect(() => {
@@ -124,60 +137,60 @@ const VideoPreview = ({
   url: string;
   playAction: boolean;
 }) => {
-  const videoRef = useRef<HTMLVideoElement>(null);
-
-  // Single useEffect to handle playAction prop changes
+  // Handle play/pause action using video element with id
   useEffect(() => {
-    if (!videoRef.current) return;
+    const videoElement = document.getElementById(
+      "video_player_full",
+    ) as HTMLVideoElement | null;
+
+    if (!videoElement) return;
 
     if (playAction) {
-      videoRef.current.play().catch((error) => {
+      videoElement.play().catch((error) => {
         console.error("Error playing video:", error);
       });
     } else {
-      videoRef.current.pause();
+      videoElement.pause();
     }
   }, [playAction]);
 
-  // Single useEffect to handle video state changes
+  // Handle video state changes (play, pause, ended) using video element with id
   useEffect(() => {
-    if (!videoRef.current) return;
+    const videoElement = document.getElementById(
+      "video_player_full",
+    ) as HTMLVideoElement | null;
 
-    const video = videoRef.current;
+    if (!videoElement) return;
 
     const handleStateChange = () => {
-      if (video.ended) {
-        video.currentTime = 0;
-        video.play();
+      if (videoElement.ended) {
+        videoElement.currentTime = 0;
+        videoElement.play();
       }
     };
 
-    // Add event listeners for all relevant state changes
-    video.addEventListener("play", handleStateChange);
-    video.addEventListener("pause", handleStateChange);
-    video.addEventListener("ended", handleStateChange);
+    // Add event listeners for play, pause, and ended states
+    videoElement.addEventListener("play", handleStateChange);
+    videoElement.addEventListener("pause", handleStateChange);
+    videoElement.addEventListener("ended", handleStateChange);
 
     return () => {
-      video.removeEventListener("play", handleStateChange);
-      video.removeEventListener("pause", handleStateChange);
-      video.removeEventListener("ended", handleStateChange);
+      videoElement.removeEventListener("play", handleStateChange);
+      videoElement.removeEventListener("pause", handleStateChange);
+      videoElement.removeEventListener("ended", handleStateChange);
     };
-  }, []); // Only run once on mount
+  }, []);
 
   return (
     <div className="relative">
-      <ReactHlsPlayer
-        hlsConfig={{
-          maxLoadingDelay: 4,
-          minAutoBitrate: 0,
-          lowLatencyMode: true,
+      <HLSVideoPlayer
+        streamUrl={url}
+        allOthers={{
+          controls: true,
+          id: "video_player_full",
         }}
-        controls
-        title="Video Preview"
-        playerRef={videoRef}
-        src={url}
         className="h-screen object-contain mx-auto w-auto transition-all duration-200 border-none animate-in scale-100 fullscreen-video"
-      ></ReactHlsPlayer>
+      />
     </div>
   );
 };

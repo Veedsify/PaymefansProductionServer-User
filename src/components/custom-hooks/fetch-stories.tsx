@@ -16,6 +16,7 @@ const useFetchStories = () => {
                     }         
                });
                const data = await res.json();
+               console.log(data.data);
                setStories(data.data);
                setLoading(false);
           };

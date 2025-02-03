@@ -34,8 +34,8 @@ function StoryComponent() {
 
     return (
         <>
-            <div className=" max-w-[550px] mx-auto border overflow-hidden py-5 rounded-lg">
-                {media.length <= 0 ? (<div className="flex items-center justify-center gap-3 pb-4">
+            <div className=" max-w-[550px] mx-auto border dark:border-gray-600 overflow-hidden py-5 rounded-lg">
+                {media.length <= 0 ? (<div className="flex items-center justify-center dark:text-white gap-3 pb-4">
                     No media selected
                 </div>) : (
                     <div className="p-3 md:p-5">
@@ -92,13 +92,13 @@ function StoryComponent() {
 export const SelectMoreItems = ({ openMore, handleOpenMore }: SelectMoreProps) => {
     const [tabIndex, setTabIndex] = useState(0);
     return (
-        <div className={`border-t max-w-[550px] relative mx-auto bottom-0 left-0 z-20 bg-white w-full transition-all duration-300 ease-in-out flex-1 h-[60vh]`}>
+        <div className={`border-t dark:border-gray-700 max-w-[550px] relative mx-auto bottom-0 left-0 z-20 dark:bg-gray-900 bg-white w-full transition-all duration-300 ease-in-out flex-1 h-[60vh]`}>
             {/* <div className="flex justify-end items-center pb-6 p-3 md:p-5">
             <button onClick={handleOpenMore}>
                     <X size={30} strokeWidth={2} />
                 </button>
             </div> */}
-            <Tabs selectedIndex={tabIndex} onSelect={index => setTabIndex(index)} className="flex flex-col h-[560px] relative" selectedTabClassName="bg-coins-card-bottom">
+            <Tabs selectedIndex={tabIndex} onSelect={index => setTabIndex(index)} className="flex flex-col h-[560px] relative dark:bg-gray-900 dark:text-white" selectedTabClassName="bg-coins-card-bottom dark:text-black ">
                 <TabList className="flex items-center text-center border-bx">
                     <Tab className="flex-1 outline-none cursor-pointer duration-300 transition-all">
                         <span className="block p-1 md:p-2 text-sm font-medium">New</span>

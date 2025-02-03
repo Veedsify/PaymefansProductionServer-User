@@ -1,18 +1,14 @@
 "use client"
-import Stories from 'stories-react';
 import 'stories-react/dist/index.css';
-import { Loader2, LucideMoveLeft, LucideMoveRight, LucidePlus } from "lucide-react";
+import { Loader2, LucidePlus } from "lucide-react";
 import Image from "next/image";
-import { SetStateAction, useEffect, useState } from 'react';
-import Loader from './loader';
+import { useState } from 'react';
 import swal from 'sweetalert';
-import StoriesHeader from './stories_header';
 import { useUserAuthContext } from '@/lib/userUseContext';
 import Link from "next/link";
 import StoryPreviewComponent from './status-preview-component';
 import useFetchStories from '../custom-hooks/fetch-stories';
 import { Story } from '@/types/story';
-import { duration } from 'moment';
 
 const StatusComponent = () => {
     const { stories, loading } = useFetchStories();
@@ -104,12 +100,11 @@ export const Status = ({ islive, data }: {
                     )}
                 </div>
                 <div
-                    className="text-xs md:text-sm left-1/2 -translate-x-1/2 whitespace-pre absolute font-medium text-gray-600 text-center text-truncate max-w-20 overflow-hidden">
+                    className="text-xs md:text-sm left-1/2 -translate-x-1/2 whitespace-pre absolute font-medium dark:text-gray-200 text-gray-600 text-center text-truncate max-w-20 overflow-hidden">
                     {data.name}
                 </div>
             </div>
             {setStoriesOpen && <StatusModal
-                username={username}
                 stories={data.stories}
                 open={storiesOpen}
                 setStoriesOpen={setStoriesOpen}
@@ -140,25 +135,25 @@ export const UserStatus = () => {
                 </div>
             </div>
             <div
-                className="text-xs md:text-sm left-1/2 -translate-x-1/2 font-medium absolute text-gray-600 text-center text-truncate whitespace-pre w-20 overflow-hidden">
+                className="text-xs md:text-sm left-1/2 -translate-x-1/2 font-medium absolute dark:text-gray-200 text-gray-600 text-center text-truncate whitespace-pre w-20 overflow-hidden">
                 Your status
             </div>
         </div>
     );
 }
 
-export const StatusModal = ({ open, setStoriesOpen, stories: userStories, username}: { 
+export const StatusModal = ({ open, setStoriesOpen, stories: userStories}: { 
     open: boolean, 
     stories: Story[], 
-    username: string,
     setStoriesOpen: React.Dispatch<React.SetStateAction<boolean>> 
 }) => {
     const stories = userStories.flatMap(story => 
         story.StoryMedia.map(media => ({ 
-            header: <StoriesHeader />, 
             type: media.media_type, 
             url: media.url, 
             duration: media.duration ? media.duration : 5000,
+            created_at: media.created_at,
+            user: story.user
         })) 
     );
 
