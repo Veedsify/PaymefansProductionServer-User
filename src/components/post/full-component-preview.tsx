@@ -3,7 +3,7 @@ import usePostComponent from "@/contexts/post-component-preview";
 import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
 import Image from "next/image";
 import Loader from "../lib_components/loading-animation";
-import { Play, X } from "lucide-react";
+import { ChevronLeft, ChevronRight, Play, X } from "lucide-react";
 import { Swiper, SwiperClass, SwiperSlide } from "swiper/react";
 import { Navigation, Thumbs, Pagination } from "swiper/modules";
 import "swiper/css/bundle";
@@ -19,6 +19,7 @@ const PostComponentPreview = () => {
     close,
     withOptions,
   } = usePostComponent();
+
   const [loaded, setLoaded] = useState<boolean>(false);
   const swiperRef = useRef<SwiperClass | null>(null);
 
@@ -49,6 +50,8 @@ const PostComponentPreview = () => {
   // Toggle loaded state on image load
   const handleLoaded = () => setLoaded(true);
 
+  if (open === false) return null;
+
   return (
     <>
       {open && (
@@ -61,30 +64,14 @@ const PostComponentPreview = () => {
             onClick={close}
             className="absolute top-4 right-4 p-2 bg-white rounded-full text-black shadow-md z-50"
           >
-            <X size={40} />
+            <X className="md:h-[30px] h-[20px] md:w-[30px] w-[20px]" />
           </button>
-
-          {/* {withOptions && (
-            <div
-              onClick={(e) => e.stopPropagation()}
-              className="absolute flex items-center gap-3 z-50 bottom-0 md:w-2/3 w-full left-1/2 -translate-x-1/2 p-4 bg-white bg-opacity-15 backdrop-blur-lg"
-            >
-              <button className="p-2 px-4 text-sm font-bold bg-white rounded-md text-black shadow-md">
-                Download
-              </button>
-              <button className="p-2 px-4 text-sm font-bold bg-white rounded-md text-black shadow-md">
-                <LucideShare2 size={20} />
-              </button>
-            </div>
-          )} */}
 
           <Swiper
             spaceBetween={0}
             slidesPerView={1}
             className=""
-            loop={true}
-            modules={[Navigation, Thumbs, Pagination]}
-            navigation
+            modules={[Navigation, Pagination]}
             onSwiper={(swiper) => (swiperRef.current = swiper)}
           >
             {otherUrl.map((item, index) => (
@@ -123,6 +110,21 @@ const PostComponentPreview = () => {
                 )}
               </SwiperSlide>
             ))}
+            {/* Custom Navigation */}
+            <div className="absolute top-1/2 transform pointer-events-none md:pointer-events-auto -translate-y-1/2 z-10 w-full flex justify-between p-4">
+              <button
+                onClick={() => swiperRef.current?.slidePrev()}
+                className="bg-gray-200 p-2 opacity-0 md:opacity-20 pointer-events-none md:pointer-events-auto hover:opacity-100 rounded-full hover:bg-gray-300"
+              >
+                <ChevronLeft className="md:h-[30px] h-[20px] md:w-[30px] w-[20px]" />
+              </button>
+              <button
+                onClick={() => swiperRef.current?.slideNext()}
+                className="bg-gray-200 p-2 opacity-0 md:opacity-20 pointer-events-none md:pointer-events-auto hover:opacity-100  rounded-full hover:bg-gray-300"
+              >
+                <ChevronRight className="md:h-[30px] h-[20px] md:w-[30px] w-[20px]" />
+              </button>
+            </div>
           </Swiper>
         </div>
       )}
@@ -140,7 +142,7 @@ const VideoPreview = ({
   // Handle play/pause action using video element with id
   useEffect(() => {
     const videoElement = document.getElementById(
-      "video_player_full",
+      "video_player_full"
     ) as HTMLVideoElement | null;
 
     if (!videoElement) return;
@@ -157,7 +159,7 @@ const VideoPreview = ({
   // Handle video state changes (play, pause, ended) using video element with id
   useEffect(() => {
     const videoElement = document.getElementById(
-      "video_player_full",
+      "video_player_full"
     ) as HTMLVideoElement | null;
 
     if (!videoElement) return;

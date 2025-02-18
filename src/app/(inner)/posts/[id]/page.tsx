@@ -12,6 +12,9 @@ import Image from "next/image";
 import Link from "next/link";
 import getUserData from "@/utils/data/user-data";
 import {AuthUserProps} from "@/types/user";
+import React from "react";
+import {getToken} from "@/utils/cookie.get";
+import {cookies} from "next/headers";
 // import { useRouter } from "next/navigation";
 // import { useEffect, useState } from "react";
 
@@ -21,31 +24,30 @@ interface PostPageprops {
     }>;
 }
 
-const Post = async ({params}: PostPageprops) => {
-    const secure_id = (await params).id;
-    const user: AuthUserProps | null = await getUserData()
-    let isSubscriber: boolean = false;
-
-    async function getPost() {
-        try {
-            const request = await axios.get(
-                `${process.env.NEXT_PUBLIC_EXPRESS_URL}/posts/${secure_id}`,
-                {
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                }
-            );
-            return request.data.data;
-        } catch (error) {
-            console.log(error);
-            redirect("/404");
-        }
+export const getPost = async (secure_id: string) => {
+    try {
+        const token = (await cookies()).get("token")?.value;
+        const request = await axios.get(
+            `${process.env.NEXT_PUBLIC_EXPRESS_URL}/posts/${secure_id}`,
+            {
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`,
+                },
+            }
+        );
+        return request.data.data;
+    } catch (error) {
+        console.log(error);
+        redirect("/404");
     }
+}
 
-    const post = await getPost();
-
-
+const Post = React.memo(async ({params}: PostPageprops) => {
+    const secure_id = (await params).id;
+    const user: AuthUserProps | null = await getUserData();
+    let isSubscriber: boolean = false;
+    const post = await getPost(secure_id);
     const content = {
         __html: `${post?.content.replace(/(?:\r\n|\r|\n)/g, "<br>")}`,
     };
@@ -53,17 +55,16 @@ const Post = async ({params}: PostPageprops) => {
     if (post?.post_audience === "subscribers") {
         if (user?.user_id !== null) {
             const isOwner = post?.user_id == user?.id;
-            const findSubscriber = post?.user?.Subscribers?.some((subscriber: any) =>
-                subscriber.subscriber_id === user?.id
+            const findSubscriber = post?.user?.Subscribers?.some(
+                (subscriber: any) => subscriber.subscriber_id === user?.id
             );
-            isSubscriber = findSubscriber ? true : isOwner;  // Set to true if found, false otherwise
+            isSubscriber = findSubscriber ? true : isOwner; // Set to true if found, false otherwise
         } else {
             isSubscriber = false;
         }
     } else {
-        isSubscriber = true;  // If the audience is not "subscribers", assume the user is a subscriber
+        isSubscriber = true; // If the audience is not "subscribers", assume the user is a subscriber
     }
-
 
     return (
         <div className="p-4 mt-8">
@@ -112,7 +113,7 @@ const Post = async ({params}: PostPageprops) => {
                     className="text-sm font-medium py-2 leading-loose dark:text-white text-gray-700"
                     dangerouslySetInnerHTML={content}
                 ></div>
-                <div className={`grid gap-3 grid-cols-1 sm:grid-cols-2 xl:grid-cols-3`}>
+                <div className={`grid gap-1 grid-cols-2 xl:grid-cols-3 overflow-hidden rounded-xl`}>
                     {post?.UserMedia.map((media: any, index: number) => (
                         <PostPageImage
                             key={index}
@@ -129,6 +130,7 @@ const Post = async ({params}: PostPageprops) => {
             </div>
         </div>
     );
-};
+});
 
+Post.displayName = "Post";
 export default Post;

@@ -15,7 +15,7 @@ const getUniqueItems = (arr: MediaDataTypeOtherProps[]) => {
   return Array.from(uniqueMap.values());
 };
 
-const MediaPanelImageCardOther = ({
+const MediaPanelImageCardOther = React.memo(({
   sort,
   userdata,
 }: {
@@ -70,6 +70,7 @@ const MediaPanelImageCardOther = ({
       `${process.env.NEXT_PUBLIC_EXPRESS_URL}/profile/media/${userdata.id}?page=${page}`,
       {
         method: "GET",
+        next: { revalidate: 30 },
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
@@ -141,7 +142,7 @@ const MediaPanelImageCardOther = ({
       </div>
     </div>
   );
-};
+});
 
 const LockedMediaOverlay = () => {
   return (
@@ -247,5 +248,7 @@ const MediaPanelMediaCard = ({
     </>
   );
 };
+
+MediaPanelImageCardOther.displayName = "MediaPanelImageCardOther";
 
 export default MediaPanelImageCardOther;

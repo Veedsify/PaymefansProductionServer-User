@@ -51,7 +51,7 @@ const Page = async () => {
                     </div>
                 </div>
             </div>
-            <WithDrawInput points={points} />
+            <WithDrawInput />
         </div>
     );
 }

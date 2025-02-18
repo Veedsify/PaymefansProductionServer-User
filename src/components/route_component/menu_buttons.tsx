@@ -29,9 +29,11 @@ const NavigationBar = () => {
                     className="cursor-pointer">
                     <LucideSearch />
                 </Link>
-                <span className="cursor-pointer" onClick={() => setModal()} >
+                <Link
+                    href="/posts/new"
+                    className="cursor-pointer">
                     <LucidePlus />
-                </span>
+                </Link>
                 <Link href="/models" className="cursor-pointer">
                     <LucideUser2 />
                 </Link>

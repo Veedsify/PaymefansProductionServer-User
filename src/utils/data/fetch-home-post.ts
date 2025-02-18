@@ -10,12 +10,19 @@ interface ApiResponse<T> {
 export const fetchHomePosts = async (API_URL: string) => {
      try {
           const token = getToken()
-          const response = await axios.get<ApiResponse<any[]>>(API_URL, {
+          const response = await fetch(API_URL, {
+               cache: 'default',
                headers: {
                     "Authorization": `Bearer ${token}`
                }
           });
-          return response.data;
+          
+          if (!response.ok) {
+               throw new Error('Failed to fetch posts');
+          }
+
+          const data = await response.json();
+          return data as ApiResponse<any>;
      } catch (error) {
           if (error instanceof AxiosError) {
                if (error.response) {

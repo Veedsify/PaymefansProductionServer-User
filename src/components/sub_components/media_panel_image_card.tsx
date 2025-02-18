@@ -13,7 +13,7 @@ const getUniqueItems = (arr: MediaDataType[]) => {
   return Array.from(uniqueMap.values());
 };
 
-const MediaPanelImageCard = ({ sort }: { sort: string }) => {
+const MediaPanelImageCard = React.memo(({ sort }: { sort: string }) => {
   const [arData, setData] = useState<MediaDataType[]>([]);
   const [sorted, setSorted] = useState<MediaDataType[]>([]);
   const [page, setPage] = useState(1);
@@ -36,7 +36,7 @@ const MediaPanelImageCard = ({ sort }: { sort: string }) => {
     media: string,
     type: string,
     isSubscriber: boolean,
-    indexId: number,
+    indexId: number
   ) => {
     if (!isSubscriber) return;
     const medias = sorted.map((media) => ({
@@ -63,7 +63,7 @@ const MediaPanelImageCard = ({ sort }: { sort: string }) => {
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
           },
-        },
+        }
       );
       const data = await res.json();
       setData(data.data);
@@ -93,7 +93,7 @@ const MediaPanelImageCard = ({ sort }: { sort: string }) => {
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
           },
-        },
+        }
       );
       const data = await res.json();
       setData((prev) => getUniqueItems([...prev, ...data.data]));
@@ -141,7 +141,7 @@ const MediaPanelImageCard = ({ sort }: { sort: string }) => {
       </div>
     </div>
   );
-};
+});
 
 const LockedMediaOverlay = () => {
   return (
@@ -157,7 +157,7 @@ interface MediaPanelMediaCardProps {
     media: string,
     type: string,
     isSubscriber: boolean,
-    indexId: number,
+    indexId: number
   ) => void;
   isSubscriber: boolean;
   indexId: number;
@@ -182,7 +182,7 @@ const MediaPanelMediaCard = ({
                   media.url,
                   media.media_type,
                   isSubscriber,
-                  indexId,
+                  indexId
                 ),
             }}
           />
@@ -192,7 +192,7 @@ const MediaPanelMediaCard = ({
                 media.url,
                 media.media_type,
                 isSubscriber,
-                indexId,
+                indexId
               )
             }
             className="absolute bg-black w-full h-full inset-0 bg-opacity-20 cursor-pointer flex items-center justify-center"
@@ -210,7 +210,7 @@ const MediaPanelMediaCard = ({
               media.url,
               media.media_type,
               isSubscriber,
-              indexId,
+              indexId
             )
           }
           src={isSubscriber ? media.url : media.blur}
@@ -222,5 +222,7 @@ const MediaPanelMediaCard = ({
     </>
   );
 };
+
+MediaPanelImageCard.displayName = "MediaPanelImageCard";
 
 export default MediaPanelImageCard;

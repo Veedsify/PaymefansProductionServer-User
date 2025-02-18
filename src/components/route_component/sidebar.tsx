@@ -15,9 +15,9 @@ import {
   MessageCircle,
   User,
   LucideShield,
-  LucideShieldCheck,
+  LucideShieldCheck, LucideGroup,
 } from "lucide-react";
-import { useContext, useEffect } from "react";
+import React, { useContext, useEffect } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import Image from "next/image";
@@ -28,7 +28,7 @@ import { useConversationsContext } from "@/contexts/messages-conversation-contex
 import { useNotificationStore } from "@/contexts/notification-context";
 import NotificationSidebarLink from "../sub_components/sub/notification-sidebar-link";
 
-const SideBar = () => {
+const SideBar = React.memo(() => {
   const router = useRouter();
   const { sideBarState, setSideBar } = useSideBarContext();
   const pathname = usePathname();
@@ -154,13 +154,22 @@ const SideBar = () => {
             </Link>
 
             {user?.is_model && (
-              <Link
-                href="/live"
-                className="flex items-center gap-5 p-2 mb-2 transition-all duration-200 hover:bg-gray-200 dark:hover:bg-gray-900 rounded-xl"
-              >
-                <LucideAirplay />
-                <p>Go Live</p>
-              </Link>
+                <>
+              {/*<Link*/}
+              {/*  href="/live"*/}
+              {/*  className="flex items-center gap-5 p-2 mb-2 transition-all duration-200 hover:bg-gray-200 dark:hover:bg-gray-900 rounded-xl"*/}
+              {/*>*/}
+              {/*  <LucideAirplay />*/}
+              {/*  <p>Go Live</p>*/}
+              {/*</Link>*/}
+                  <Link
+                    href="/groups"
+                    className="flex items-center gap-5 p-2 mb-2 transition-all duration-200 hover:bg-gray-200 dark:hover:bg-gray-900 rounded-xl"
+                  >
+                    <LucideGroup />
+                    <p>Creator&apos;s Group</p>
+                  </Link>
+                </>
             )}
             <NotificationSidebarLink />
             {user?.is_model && user.Model?.verification_status == false && (
@@ -228,6 +237,8 @@ const SideBar = () => {
       ></div>
     </>
   );
-};
+});
+
+SideBar.displayName = "SideBar";
 
 export default SideBar;

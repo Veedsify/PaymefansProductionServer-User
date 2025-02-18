@@ -1,20 +1,5 @@
 "use client";
-// import '@vidstack/react/player/styles/base.css';
-import {
-  MediaPlayer,
-  MediaPlayerInstance,
-  MediaProvider,
-} from "@vidstack/react";
-import {
-  LucideEye,
-  LucideHeart,
-  LucideLock,
-  LucideMessageSquare,
-  LucidePlus,
-  LucideRepeat2,
-  LucideShare,
-  LucideUsers,
-} from "lucide-react";
+import { LucideEye, LucideLock, LucidePlus, LucideUsers } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 import usePostComponent from "@/contexts/post-component-preview";
@@ -46,8 +31,7 @@ const PostComponent: React.FC<PostComponentProps> = ({
   const { fullScreenPreview } = usePostComponent();
   // const [isSubscriber, setIsSubscriber] = useState<boolean>(false);
   const router = useRouter();
-  const videoRef = useRef<MediaPlayerInstance>(null);
-  const formattedText = () => {
+  const formattedText = useCallback(() => {
     const text = data.post.replace(/\r?\n/g, "<br/>");
     if (data.post_audience === "subscribers" && !isSubscriber) {
       return "<p class='text-sm text-emerald-500'>This post is only available to subscribers</p>";
@@ -56,7 +40,7 @@ const PostComponent: React.FC<PostComponentProps> = ({
     } else {
       return text;
     }
-  };
+  }, [data.post, data.post_audience, isSubscriber]);
 
   const clickImageEvent = useCallback(
     (media: { url: string; media_type: string; index: number }) => {
@@ -75,7 +59,7 @@ const PostComponent: React.FC<PostComponentProps> = ({
         })),
       });
     },
-    [isSubscriber, data.post_audience, data.media, fullScreenPreview],
+    [isSubscriber, data.post_audience, data.media, fullScreenPreview]
   );
 
   const redirectToPost = useCallback(
@@ -104,13 +88,13 @@ const PostComponent: React.FC<PostComponentProps> = ({
           });
           return;
         } else if (data.post_audience === "private") {
-          return;
+          return router.push(`/posts/${data.post_id}`);
         } else {
           router.push(`/posts/${data.post_id}`);
         }
       }
     },
-    [router, data.post_id, data.post_audience, isSubscriber, user.user_id],
+    [router, data.post_id, data.post_audience, isSubscriber, user.user_id]
   );
 
   const handleNonSubscriberClick = (e: MouseEvent) => {
@@ -136,7 +120,7 @@ const PostComponent: React.FC<PostComponentProps> = ({
   };
 
   return (
-    <div className="hover:bg-gray-100 dark:hover:bg-slate-900 py-6 px-2 md:px-5 duration-300">
+    <div className=" py-6 px-2 md:px-5 duration-300">
       <div className="cursor-pointer" onClick={redirectToPost}>
         {was_repost && (
           <div className="mb-3">
@@ -160,7 +144,10 @@ const PostComponent: React.FC<PostComponentProps> = ({
               alt=""
               className="w-8 md:w-10 rounded-full aspect-square object-cover"
             />
-            <Link href={user?.link} className="md:flex items-center gap-1">
+            <Link
+              href={user?.link}
+              className="flex items-center gap-1 text-xs md:text-sm"
+            >
               <p className="text-black dark:text-white font-bold">
                 {user.name}
               </p>
@@ -194,8 +181,8 @@ const PostComponent: React.FC<PostComponentProps> = ({
             data.media.length === 2
               ? "grid-cols-2"
               : data.media.length >= 3
-                ? "grid-cols-3"
-                : "grid-cols-1"
+              ? "grid-cols-3"
+              : "grid-cols-1"
           }`}
         >
           {data.media.slice(0, 3).map((media: UserMediaProps, i) => (
@@ -333,7 +320,7 @@ const VideoComponent: React.FC<VideoComponentProps> = ({
         return;
       }
       const videoElement = document.getElementById(
-        "video_player_post",
+        "video_player_post"
       ) as HTMLVideoElement | null;
 
       if (videoElement) {
@@ -354,12 +341,12 @@ const VideoComponent: React.FC<VideoComponentProps> = ({
         setPlaying(!playing);
       }
     },
-    [isSubscriber, data.post_audience, playing, canplay],
+    [isSubscriber, data.post_audience, playing, canplay]
   );
 
   useEffect(() => {
     const videoElement = document.getElementById(
-      "video_player_post",
+      "video_player_post"
     ) as HTMLVideoElement | null;
 
     if (!videoElement) return;

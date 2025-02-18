@@ -1,32 +1,30 @@
 "use client";
+import { PiCurrencyDollarSimple } from "react-icons/pi";
 import {
   LucideHeart,
   LucideMessageSquare,
   LucideRepeat2,
   LucideShare,
 } from "lucide-react";
-import ReplyPostComponent from "@/components/route_component/reply-post-textarea";
 import { useEffect, useState } from "react";
 import { useUserAuthContext } from "@/lib/userUseContext";
-import { useRouter } from "next/navigation";
-import swal from "sweetalert";
 import { LikeThisPost } from "@/utils/postinteractions";
 import numeral from "numeral";
 import { PostData } from "@/types/components";
 import PostShareModal from "../sub_components/post-share-component";
+import Link from "next/link";
 
-export const PostCompInteractions = ({
-  data,
-}: {
+type PostCompInteractionsProps = {
   data: PostData | undefined;
-}) => {
+};
+
+export const PostCompInteractions = ({ data }: PostCompInteractionsProps) => {
   const [isShareModalOpen, setIsShareModalOpen] = useState(false);
   const formattedNumber = (number: number) =>
     numeral(number).format("0a").toUpperCase(); // Converts the suffix to uppercase
   const [like, setLike] = useState<boolean>(false);
   const [likesCount, setLikesCount] = useState<number>(0);
   const { user } = useUserAuthContext();
-  const router = useRouter();
 
   useEffect(() => {
     if (data?.post_likes) {
@@ -51,7 +49,7 @@ export const PostCompInteractions = ({
       <PostShareModal
         isOpen={isShareModalOpen}
         onClose={() => setIsShareModalOpen(false)}
-        url={`${process.env.NEXT_SERVER_URL}/posts/${data?.post_id}`}
+        url={`${process.env.NEXT_PUBLIC_SERVER_URL}/posts/${data?.post_id}`}
         title={data?.content}
       />
       <div className="flex mt-6 justify-around text-sm w-full text-gray-600 py-6 dark:border-slate-700 border-b">
@@ -70,17 +68,24 @@ export const PostCompInteractions = ({
           <LucideMessageSquare size={25} />
           {data?.post_comments}
         </span>
-        {data?.user?.user_id !== user?.user_id && (
-          <span className="flex items-center gap-1 text-sm cursor-pointer font-medium">
-            <LucideRepeat2 size={25} />
-            {data?.post_reposts}
-          </span>
+        <span className="flex items-center gap-1 text-sm cursor-pointer font-medium">
+          <LucideRepeat2 size={25} />
+          {data?.post_reposts}
+        </span>
+
+        {(data?.post_audience != "private" || data?.user?.is_model) && (
+          <Link
+            href={`/posts/points/${data?.post_id}/`}
+            className="flex items-center gap-1 text-sm cursor-pointer font-medium"
+          >
+            <PiCurrencyDollarSimple size={25} />
+          </Link>
         )}
         <span
           onClick={() => setIsShareModalOpen(true)}
           className="flex items-center gap-1 text-sm cursor-pointer font-medium"
         >
-          <LucideShare size={25} />
+          <LucideShare size={23} />
         </span>
       </div>
     </>

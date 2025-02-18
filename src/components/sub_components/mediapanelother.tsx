@@ -12,7 +12,7 @@ const MediaPanelOther = ({ userdata }: { userdata: ProfileUserProps }) => {
 
     return (
         <div className="py-4">
-            <div className="py-3 mb-2 flex items-center gap-4">
+            {/* <div className="py-3 mb-2 flex items-center gap-4">
                 <button
                     onClick={() => toggleThisSort("all")}
                     className={`${arraySort === "all" ? "bg-messages-unread text-primary-dark-pink" : "bg-gray-200"}
@@ -29,7 +29,7 @@ const MediaPanelOther = ({ userdata }: { userdata: ProfileUserProps }) => {
                     className={` px-5 leading-none py-2 rounded-lg text-xs font-bold ${arraySort === "video" ? "bg-messages-unread text-primary-dark-pink" : "bg-gray-200"}`}>
                     Videos
                 </button>
-            </div>
+            </div> */}
             <MediaPanelImageCardOther sort={arraySort} userdata={userdata} />
         </div>
     );

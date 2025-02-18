@@ -8,14 +8,11 @@ import NewPostMediaAdd from "../sub_components/sub/new-post-media-add";
 import toast from "react-hot-toast";
 import {useUserAuthContext} from "@/lib/userUseContext";
 import {POST_CONFIG} from "@/config/config";
-
-function PostMediaPreview({
-                              submitPost,
-                              medias,
-                          }: {
+type PostMediaPreviewProps = {
     submitPost: (files: File[] | null) => void,
     medias?: File[] | null
-}) {
+}
+function PostMediaPreview({ submitPost, medias,}: PostMediaPreviewProps) {
     const [media, setMedia] = React.useState<File[] | null>(null)
     const {user} = useUserAuthContext()
     useEffect(() => {

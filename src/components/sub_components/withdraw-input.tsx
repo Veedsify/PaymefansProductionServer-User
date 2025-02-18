@@ -2,7 +2,7 @@
 
 import { ChangeEvent, useState } from "react";
 
-const WithDrawInput = ({ points }: { points: number }) => {
+const WithDrawInput = () => {
     const [value, setValue] = useState('');
 
     // Format the input value with commas

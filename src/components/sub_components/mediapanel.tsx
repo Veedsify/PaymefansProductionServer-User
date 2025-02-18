@@ -11,7 +11,7 @@ const MediaPanel = () => {
 
     return (
         <div className="py-4">
-            <div className="py-3 mb-2 flex items-center gap-4">
+            {/* <div className="py-3 mb-2 flex items-center gap-4">
                 <button
                     onClick={() => toggleThisSort("all")}
                     className={`${arraySort === "all" ? "bg-messages-unread text-primary-dark-pink" : "bg-gray-200"}
@@ -28,7 +28,7 @@ const MediaPanel = () => {
                     className={` px-5 leading-none py-2 rounded-lg text-xs font-bold ${arraySort === "video" ? "bg-messages-unread text-primary-dark-pink" : "bg-gray-200"}`}>
                     Videos
                 </button>
-            </div>
+            </div> */}
             <MediaPanelImageCard sort={arraySort} />
         </div>
     );

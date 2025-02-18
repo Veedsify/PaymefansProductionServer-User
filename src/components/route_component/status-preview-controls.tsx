@@ -35,7 +35,7 @@ const StoryPreviewControlls = ({
           display: "grid",
           gridTemplateColumns: `repeat(${stories.length}, 1fr)`,
         }}
-        className="z-10 absolute top-1 left-0 w-full items-center justify-evenly gap-1"
+        className="z-10 absolute top-0 left-0 w-full items-center justify-evenly gap-1"
       >
         {stories.map((story, i) => (
           <ProgressBar

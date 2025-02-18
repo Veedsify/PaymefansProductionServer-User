@@ -4,11 +4,14 @@ import { useToggleWishList } from "@/contexts/toggle-wishlist";
 import { X } from "lucide-react";
 
 const WishList = () => {
-  const { wishList, toggleWishList } = useToggleWishList();
+  const { wishList = false, toggleWishList } = useToggleWishList();
+
+  if (!wishList) return null;
+
   return (
     <div
       onClick={toggleWishList}
-      className={`bg-black  fixed h-screen w-full top 0 z-50 left-0 duration-500 ${
+      className={`bg-black fixed h-screen w-full top-0 z-50 left-0 duration-500 ${
         wishList
           ? "bg-opacity-60 pointer-events-auto"
           : "bg-opacity-0 pointer-events-none"

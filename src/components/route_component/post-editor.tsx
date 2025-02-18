@@ -8,7 +8,7 @@ import {
   LucideUsers,
 } from "lucide-react";
 import Image from "next/image";
-import {
+import React, {
   MouseEvent,
   useCallback,
   useEffect,
@@ -31,7 +31,7 @@ import {
 import PostUserMedia from "./post-user-media";
 import { POST_CONFIG } from "@/config/config";
 
-const PostEditor = ({ posts }: PostEditorProps) => {
+const PostEditor = React.memo(({ posts }: PostEditorProps) => {
   const router = useRouter();
   const [dropdown, setDropdown] = useState(false);
   const [wordLimit, setWordLimit] = useState(1000);
@@ -258,12 +258,12 @@ const PostEditor = ({ posts }: PostEditorProps) => {
           </button>
         </div>
         <textarea
-          className="block border border-gray-500  dark:bg-gray-950 dark:text-white   rounded-md mb-3 leading-relaxed text-gray-700 font-medium w-full resize-none p-3 outline-none mt-3 overflow-auto h-[40vh]"
+          className="block dark:bg-gray-950 dark:text-white   rounded-md mb-3 leading-relaxed text-gray-700 font-medium w-full resize-none outline-none mt-3 overflow-auto"
           placeholder="What’s on your mind?"
           defaultValue={postText}
           onChange={checkLimit}
         ></textarea>
-        <div>
+        <div className="mt-10">
           <p className="text-xs text-gray-400 font-medium">
             {wordLimit} characters remaining
           </p>
@@ -273,6 +273,8 @@ const PostEditor = ({ posts }: PostEditorProps) => {
       <PostMediaPreview medias={media} submitPost={handleMediaAttachment} />
     </>
   );
-};
+});
+
+PostEditor.displayName = "PostEditor";
 
 export default PostEditor;

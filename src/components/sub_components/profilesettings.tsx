@@ -79,12 +79,14 @@ const ProfileSettings = ({ user }: ProfileSettingsProps) => {
         <input
           type="email"
           name="email"
-          onChange={(e) => {
-            setEmailCheck(e.target.value);
-            handleInputChange(e);
-          }}
+          disabled={true}
+          readOnly={true}
+          // onChange={(e) => {
+          //   setEmailCheck(e.target.value);
+          //   handleInputChange(e);
+          // }}
           defaultValue={user?.email}
-          className="w-full block border mb-3 border-gray-300 p-4 outline-none text-black rounded-xl"
+          className="w-full block select-none border mb-3 border-gray-300 p-4 outline-none text-black rounded-xl"
           placeholder="Email "
         />
         {message && (

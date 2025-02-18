@@ -1,4 +1,6 @@
-export function formatDate(date: any): string {
+import React, { useCallback } from "react";
+
+export const formatDate = (date: any): string => {
     if (!(date instanceof Date)) {
         date = new Date(date);
     }
@@ -26,4 +28,4 @@ export function formatDate(date: any): string {
 
         return `${dayDiff} day${dayDiff !== 1 ? 's' : ''} ago`;
     }
-}
+};

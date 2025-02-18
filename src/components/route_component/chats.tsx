@@ -1,10 +1,10 @@
 "use client";
 import React, {
-  useCallback,
-  useEffect,
-  useLayoutEffect,
-  useRef,
-  useState,
+    useCallback,
+    useEffect,
+    useLayoutEffect, useMemo,
+    useRef,
+    useState,
 } from "react";
 import Link from "next/link";
 import Image from "next/image";
@@ -17,7 +17,7 @@ import swal from "sweetalert";
 import { Message } from "@/types/components";
 import ActiveProfileTag from "../sub_components/sub/active-profile-tag";
 
-const Chats = ({
+const Chats = React.memo(({
   allmessages,
   lastMessage,
   conversationId,
@@ -167,16 +167,9 @@ const Chats = ({
     });
   };
   useEffect(() => {
-
     const height_ref = heightRef.current;
     if (height_ref) {
       height_ref.scrollTop = height_ref.scrollHeight;
-    }
-
-    return () => {
-      if (height_ref) {
-        height_ref.scrollTo(0, height_ref.scrollHeight)
-      }
     }
   }, [heightRef, messages]);
 
@@ -194,7 +187,7 @@ const Chats = ({
     };
     handleSeen();
   }, [lastMessage, user, conversationId, receiver.user_id]);
-
+const profilePicture = useMemo(()=> (receiver.profile_image ? receiver.profile_image : "/site/avatar.png"), [receiver.profile_image])
   return (
     <div className="relative chat_height">
       <div className="flex items-center border-b dark:border-gray-800 py-6 px-5 pb-6">
@@ -210,11 +203,7 @@ const Chats = ({
               width={50}
               height={50}
               priority
-              src={
-                receiver.profile_image
-                  ? receiver.profile_image
-                  : "/site/avatar.png"
-              }
+              src={profilePicture}
               alt=""
             />
           </div>
@@ -268,6 +257,8 @@ const Chats = ({
       </div>
     </div>
   );
-};
+});
+
+Chats.displayName = "Chats";
 
 export default Chats;

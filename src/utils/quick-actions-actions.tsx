@@ -38,7 +38,7 @@ const QuickPostActionHooks = ({ options }: QuickPostActionsProps) => {
               headers: {
                 Authorization: `Bearer ${token}`,
               },
-            },
+            }
           );
           if (deletePost.status === 200) {
             toast.success(POST_CONFIG.POST_DELETED_SUCCESS_MSG);
@@ -92,7 +92,7 @@ const QuickPostActionHooks = ({ options }: QuickPostActionsProps) => {
         `;
     document.body.appendChild(modal);
     const visibility = document.getElementById(
-      "visibility",
+      "visibility"
     ) as HTMLSelectElement;
     modal.addEventListener("click", (e) => {
       const modalBg = document.getElementById("modal-bg");
@@ -111,7 +111,7 @@ const QuickPostActionHooks = ({ options }: QuickPostActionsProps) => {
             headers: {
               Authorization: `Bearer ${token}`,
             },
-          },
+          }
         );
         if (setVisibility.status === 200) {
           toast.success(POST_CONFIG.QUICK_ACTION_CONFIG.VISIBILITY_SUCCESSFUL);
@@ -144,7 +144,7 @@ const QuickPostActionHooks = ({ options }: QuickPostActionsProps) => {
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
           },
-        },
+        }
       );
       if (repost.status === 200) {
         toast.success(repost.data.message);
@@ -170,6 +170,11 @@ const QuickPostActionHooks = ({ options }: QuickPostActionsProps) => {
       name: "Set visibility",
       icon: <LucideEye className="mr-2" size={16} />,
       func: handleSetvisibility,
+    },
+    {
+      name: "Repost",
+      icon: <Repeat2 className="mr-2" size={16} />,
+      func: repostThisPost,
     },
     {
       name: "Delete",

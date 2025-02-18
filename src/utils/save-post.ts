@@ -1,6 +1,7 @@
 import axios, { AxiosProgressEvent } from "axios";
 import { getToken } from "./cookie.get";
 import ROUTE from "@/config/routes";
+import toast from "react-hot-toast";
 
 type SavePostType = {
     data: FormData;
@@ -31,6 +32,7 @@ export const SavePost = async ({ data, action, post_id, onProgress }: SavePostTy
 
         return res.data;
     } catch (error: any) {
+        toast.dismiss();
         return {
             status: false,
             message: error.response.data.message,

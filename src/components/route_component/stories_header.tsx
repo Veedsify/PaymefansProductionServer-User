@@ -23,9 +23,9 @@ const StoriesHeader = ({
     );
   };
   return (
-    <div className="absolute top-3 w-full left-0 z-50">
-      <div className="bg-white w-full">
-        <div className="flex items-center justify-between px-4 py-3 md:py-5 bg-gray-900 text-white">
+    <div className="absolute top-1 w-full left-0 z-50">
+      <div className="w-full bg-gradient-to-b from-[rgba(0,0,0,0.2)] to-[rgba(0,0,0,0.0)]">
+        <div className="flex items-center justify-between px-4 py-3 md:py-5 bg-transparent bg-opacity-0">
           {/* Left side - Profile info */}
           <div className="flex items-center space-x-3">
             {/* Back button */}
@@ -47,7 +47,7 @@ const StoriesHeader = ({
             </button> */}
 
             {/* Profile image */}
-            <div className="h-12 w-12 rounded-full overflow-hidden">
+            <div className="h-12 w-12 rounded-full overflow-hidden shadow">
               <Link href={`/${username}`}>
                 <Image
                   height={48}
@@ -61,8 +61,13 @@ const StoriesHeader = ({
 
             {/* User info */}
             <div className="flex flex-col">
-              <Link href={username} className="font-medium">{username}</Link>
-              <span className="text-xs text-gray-300">
+              <Link
+                href={username}
+                className="font-medium drop-shadow-sm invert"
+              >
+                {username}
+              </Link>
+              <span className="text-xs drop-shadow-sm invert">
                 <DateFormat />
               </span>
             </div>

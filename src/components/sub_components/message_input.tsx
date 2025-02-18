@@ -22,11 +22,11 @@ import { getToken } from "@/utils/cookie.get";
 const escapeHtml = (str: string) => {
   return str.replace(/[&<>"']/g, (match) => {
     const escapeMap: any = {
-      '&': '&amp;',
-      '<': '&lt;',
-      '>': '&gt;',
-      '"': '&quot;',
-      "'": '&#39;',
+      "&": "&amp;",
+      "<": "&lt;",
+      ">": "&gt;",
+      '"': "&quot;",
+      "'": "&#39;",
     };
     return escapeMap[match];
   });
@@ -37,7 +37,8 @@ export const linkify = (text: string) => {
 
   return text.replace(urlRegex, (url) => {
     const escapedUrl = escapeHtml(url);
-    const displayUrl = escapedUrl.length > 35 ? `${escapedUrl.substring(0, 35)}...` : escapedUrl;
+    const displayUrl =
+      escapedUrl.length > 35 ? `${escapedUrl.substring(0, 35)}...` : escapedUrl;
     return `<a href="${escapedUrl}" class="link-style" target="_blank">${displayUrl}</a>`;
   });
 };
@@ -46,7 +47,7 @@ const MessageInput = ({
   sendMessage,
   sendTyping,
   receiver,
-  isFirstMessage
+  isFirstMessage,
 }: MessageInputProps) => {
   const [message, setMessage] = useState("");
   const [attachmentModal, setAttachmentModal] = useState(false);
@@ -56,87 +57,108 @@ const MessageInput = ({
   const { lastMessage } = useConversationsContext();
   const [isTyping, setIsTyping] = useState(false);
   const typingTimeout = useRef<number | null>(null);
-  const token = getToken()
-  const sendMessageWithAttachment = useCallback((message: string, attachment: Attachment[]) => {
-    const id = Math.floor(Math.random() * 100000 + 1) + Date.now();
-    sendMessage({
-      message_id: id,
-      message: linkify(message.trim()),
-      attachment: attachment,
-      sender_id: user?.user_id as string,
-      seen: false,
-      created_at: new Date().toString(),
-    });
-  }, [sendMessage, user]);
+  const token = getToken();
+  const sendMessageWithAttachment = useCallback(
+    (message: string, attachment: Attachment[]) => {
+      const id = Math.floor(Math.random() * 100000 + 1) + Date.now();
+      sendMessage({
+        message_id: id,
+        message: linkify(message.trim()),
+        attachment: attachment,
+        sender_id: user?.user_id as string,
+        seen: false,
+        created_at: new Date().toString(),
+      });
+    },
+    [sendMessage, user],
+  );
 
-  const sendNewMessage = useCallback(async (attachment: Attachment[]) => {
-    if (!user) return;
+  const sendNewMessage = useCallback(
+    async (attachment: Attachment[]) => {
+      if (!user) return;
 
-    const pricePerMessage = await axiosInstance.post(`/price-per-message`, { user_id: receiver.user_id }, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    }).then((res) => res.data.price_per_message);
+      const pricePerMessage = await axiosInstance
+        .post(
+          `/price-per-message`,
+          { user_id: receiver.user_id },
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          },
+        )
+        .then((res) => res.data.price_per_message);
 
-    console.log(pricePerMessage);
-    const processMessageSending = (isFirstMessage:boolean) => {
-      const receiverName = receiver?.name
-        ? receiver.name.charAt(0).toUpperCase() + receiver.name.slice(1)
-        : "";
-    
-      const handleInsufficientPoints = () => {
+      console.log(pricePerMessage);
+      const processMessageSending = (isFirstMessage: boolean) => {
+        const receiverName = receiver?.name
+          ? receiver.name.charAt(0).toUpperCase() + receiver.name.slice(1)
+          : "";
+
+        const handleInsufficientPoints = () => {
+          resetMessageInput();
+          return swal({
+            icon: "info",
+            title: "Insufficient Paypoints",
+            text: `Sorry, you need to have at least ${pricePerMessage.toLocaleString()} paypoints to send a message to ${receiverName}`,
+          });
+        };
+
+        const handleFirstMessageNotice = async () => {
+          return swal({
+            icon: "info",
+            title: "Notice from PayMeFans",
+            text: `Take note sending a message to ${receiverName} would cost you ${pricePerMessage.toLocaleString()} paypoints`,
+          }).then((isToSend) => {
+            if (isToSend) {
+              sendMessageWithAttachment(message, attachment);
+              resetMessageInput();
+            }
+          });
+        };
+
+        if (points < pricePerMessage) {
+          return handleInsufficientPoints();
+        }
+
+        if (!lastMessage && pricePerMessage !== 0) {
+          return handleFirstMessageNotice();
+        }
+
+        const trimmedMessage = message.trim();
+        if (trimmedMessage.length === 0 && attachment.length === 0) return;
+
+        sendMessageWithAttachment(trimmedMessage, attachment);
         resetMessageInput();
-        return swal({
-          icon: "info",
-          title: "Insufficient Paypoints",
-          text: `Sorry, you need to have at least ${pricePerMessage.toLocaleString()} paypoints to send a message to ${receiverName}`,
-        });
       };
-    
-      const handleFirstMessageNotice = async () => {
-        return swal({
+
+      if (isFirstMessage) {
+        swal({
           icon: "info",
           title: "Notice from PayMeFans",
-          text: `Take note sending a message to ${receiverName} would cost you ${pricePerMessage.toLocaleString()} paypoints`,
+          text: `You are about to send your first message to ${receiver.name}, this would cost you ${pricePerMessage} paypoints `,
+          dangerMode: true,
+          buttons: ["Cancel", "Continue"],
         }).then((isToSend) => {
           if (isToSend) {
-            sendMessageWithAttachment(message, attachment);
-            resetMessageInput();
+            processMessageSending(isFirstMessage);
           }
         });
-      };
-    
-      if (points < pricePerMessage) {
-        return handleInsufficientPoints();
+      } else {
+        processMessageSending(isFirstMessage);
       }
-    
-      if (!lastMessage && pricePerMessage !== 0) {
-        return handleFirstMessageNotice();
-      }
-    
-      const trimmedMessage = message.trim();
-      if (trimmedMessage.length === 0 && attachment.length === 0) return;
-    
-      sendMessageWithAttachment(trimmedMessage, attachment);
-      resetMessageInput();
-    };
-    
-    if (isFirstMessage) {
-      swal({
-        icon: "info",
-        title: "Notice from PayMeFans",
-        text: `You are about to send your first message to ${receiver.name}, this would cost you ${pricePerMessage} paypoints `,
-        dangerMode: true,
-        buttons: ["Cancel", "Continue"],
-      }).then((isToSend) => {
-        if (isToSend) {
-          processMessageSending(isFirstMessage);
-        }
-      });
-    } else {
-      processMessageSending(isFirstMessage);
-    }
-  }, [user, receiver, points, lastMessage, sendMessageWithAttachment, message, isFirstMessage, token]);
+    },
+    [
+      user,
+      receiver,
+      points,
+      lastMessage,
+      sendMessageWithAttachment,
+      message,
+      isFirstMessage,
+      token,
+    ],
+  );
 
   const handleKeyDown = useCallback(
     (event: KeyboardEvent) => {
@@ -161,10 +183,8 @@ const MessageInput = ({
         sendTyping("");
       }
     },
-    [sendTyping, message, sendNewMessage]
+    [sendTyping, message, sendNewMessage],
   );
-
-
 
   const resetMessageInput = () => {
     setMessage("");
@@ -173,7 +193,6 @@ const MessageInput = ({
       ref.current.focus();
     }
   };
-
 
   const openAttachmentModal = () => setAttachmentModal(!attachmentModal);
   const closeAttachmentModal = () => setAttachmentModal(false);

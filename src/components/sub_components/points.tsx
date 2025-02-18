@@ -10,6 +10,7 @@ const PointsBuy = ({
         amount: number;
         points_buy_id: string;
     }
+    postId?: string;
 }) => {
     const handlePointsClick = async (id: string) => {
         toast.loading("Please wait...")

@@ -12,10 +12,11 @@ import {
   Kablammo,
   DynaPuff,
   Geist,
+  Karla,
 } from "next/font/google";
 import { GeistSans } from "geist/font/sans";
 
-const font = Epilogue({
+const font = Inter({
   weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
   subsets: ["latin", "latin-ext"],
   display: "swap",
@@ -93,7 +94,7 @@ export default async function RootLayout({
     <html lang="en">
       <body
         className={`
-                ${font.className} 
+                ${font.className}
                 ${creteFont.variable}
                 ${unboundedFont.variable}
                 ${kablammoFont.variable}
@@ -126,11 +127,11 @@ export default async function RootLayout({
                       <div className="col-span-2">
                         <SideBar />
                       </div>
-                      <div className="col-span-7 overflow-auto border-r h-screen">
+                      <div className="col-span-7 overflow-auto border-r h-screen relative">
                         <Header />
-                        <div className="grid lg:grid-cols-7 h-full">
+                        <div className="grid lg:grid-cols-7 pt-[73px] lg:pt-[54px] h-screen">
                           <div className="col-span-4 flex flex-col h-full">
-                            <div className="h-full w-full md:border-r dark:border-slate-800">
+                            <div className="w-full md:border-r dark:border-slate-800 h-full">
                               {children}
                             </div>
                           </div>
@@ -141,7 +142,7 @@ export default async function RootLayout({
                     </ToggleWishListProvider>
                   </MessagesConversationProvider>
                   <MenuButtons />
-                  <ModalComponent />
+                  {/* <ModalComponent /> */}
                 </div>
                 <PostComponentPreview />
               </UserPointsContextProvider>

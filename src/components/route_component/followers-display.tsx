@@ -18,6 +18,7 @@ const FollowersDisplay = () => {
         try {
             const response = await fetch(`${process.env.NEXT_PUBLIC_EXPRESS_URL}/get/followers?min=${paginate.min}&max=${paginate.max}`, {
                 method: "POST",
+                cache: "force-cache",
                 headers: {
                     "Content-Type": "application/json",
                     Authorization: `Bearer ${token}`

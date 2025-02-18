@@ -1,5 +1,5 @@
 import { Call } from "@stream-io/video-react-sdk";
-import { ChangeEvent } from "react";
+import React, { ChangeEvent, SetStateAction } from "react";
 import { ProfileUserProps } from "./user";
 
 // POST COMPONENT PROPS
@@ -50,12 +50,20 @@ export interface PostData {
     name: string;
     username: string;
     user_id: string;
+    is_model: boolean;
     profile_image: string;
     Subscribers: {
       subscriber_id: number;
     }[];
   };
   PostComment?: PostCompomentProps[];
+}
+
+
+export interface BannerModalProps {
+  user: any;
+  open: boolean;
+  setOpen: React.Dispatch<SetStateAction<boolean>>
 }
 
 export interface PostCompomentProps {
@@ -241,7 +249,7 @@ export interface Message {
 }
 
 export interface MessageInputProps {
-  sendMessage: ({}: Message) => void;
+  sendMessage: ({ }: Message) => void;
   sendTyping: (value: string) => void;
   receiver: any;
   isFirstMessage: boolean;
@@ -281,11 +289,11 @@ export interface MessagesConversationContextValue {
 
 type OwnerOption =
   | {
-      name: string;
-      icon: React.ReactNode;
-      func?: (e: React.MouseEvent<HTMLButtonElement>) => void;
-      link?: undefined;
-    }
+    name: string;
+    icon: React.ReactNode;
+    func?: (e: React.MouseEvent<HTMLButtonElement>) => void;
+    link?: undefined;
+  }
   | { name: string; icon: React.ReactNode; func?: undefined; link?: URL };
 
 type postAudienceDataProps2 = {

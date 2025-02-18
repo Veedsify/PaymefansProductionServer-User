@@ -92,7 +92,7 @@ const PostPageImage: React.FC<PostPageImageProps> = ({
             alt=""
             width={300}
             height={300}
-            className="w-full h-full aspect-[3/4] md:aspect-square object-cover absolute inset-0"
+            className="w-full h-full aspect-[4/3] md:aspect-square object-cover absolute inset-0"
           />
           <button className="text-white absolute text-lg font-bold">
             <LucideLock />
@@ -108,11 +108,11 @@ const PostPageImage: React.FC<PostPageImageProps> = ({
               autoPlay: true,
               poster: isSubscriber ? media.url : "/site/blur.jpg",
             }}
-            className="w-full rounded-lg mt-3 block aspect-square object-cover cursor-pointer"
+            className="w-full block aspect-square object-cover cursor-pointer"
           ></HLSVideoPlayer>
           <div
             onClick={handleClick}
-            className="absolute inset-0 text-white bg-black bg-opacity-50 rounded-lg flex items-center justify-center cursor-pointer"
+            className="absolute inset-0 text-white bg-black bg-opacity-50 flex items-center justify-center cursor-pointer"
           >
             <button className="h-12 w-12 p-1 flex-shrink-0 rounded-full flex items-center justify-center bg-primary-dark-pink aspect-square">
               <HiPlay className="text-white" size={50} />
@@ -129,7 +129,7 @@ const PostPageImage: React.FC<PostPageImageProps> = ({
           src={isSubscriber ? media.url : media.blur}
           blurDataURL={isSubscriber ? media.url : media.blur}
           alt=""
-          className="w-full rounded-lg mt-3 block aspect-square object-cover cursor-pointer"
+          className="w-full aspect-[5/3] md:aspect-square object-cover block cursor-pointer"
         />
       )}
     </div>

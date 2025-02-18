@@ -1,8 +1,7 @@
 "use client";
 import { useNewPostStore } from "@/contexts/new-post-context";
-import { FileVideo2, Image, ImageIcon, LucidePaperclip } from "lucide-react";
+import { MdOutlinePermMedia } from "react-icons/md";
 import toast from "react-hot-toast";
-import { HiCamera, HiUser, HiVideoCamera } from "react-icons/hi";
 import Toggle from "../checked";
 import { imageTypes, videoTypes } from "@/lib/filetypes";
 import { useUserAuthContext } from "@/lib/userUseContext";
@@ -70,10 +69,10 @@ const NewPostMediaAdd = ({
   };
   return (
     <>
-      <div className="md:px-8 px-4 w-full dark:text-white flex md:justify-start gap-3 items-center">
+      <div className="md:px-8 border-y py-3 px-4 w-full dark:text-white flex md:justify-start gap-3 items-center">
         <label htmlFor="attachments" className="cursor-pointer">
-          <ImageIcon
-            size={45}
+          <MdOutlinePermMedia
+            size={40}
             className="border border-gray-400 dark:border-slate-800 p-2 rounded-lg"
           />
         </label>
@@ -86,14 +85,6 @@ const NewPostMediaAdd = ({
           className="hidden"
           name="attachments"
         />
-        <input type="file" className="hidden" id="flie" capture="environment" />
-        <label htmlFor="flie" className="cursor-pointer">
-          <FileVideo2
-            size={45}
-            strokeWidth={2}
-            className="border border-gray-400 dark:border-slate-800 p-2 rounded-lg"
-          />
-        </label>
         <div className="flex items-center gap-3">
           <Toggle state={false} />
           <small>enable watermark</small>

@@ -1,6 +1,6 @@
 "use client";
 import { useUserAuthContext } from "@/lib/userUseContext";
-import { LucideCamera, LucideLoader, X } from "lucide-react";
+import { LucideCamera, LucideLoader, LucideSend, X } from "lucide-react";
 import Image from "next/image";
 import React, { ChangeEvent, useCallback, useState } from "react";
 import { imageTypes } from "@/lib/filetypes";
@@ -14,12 +14,12 @@ import { POST_CONFIG } from "@/config/config";
 const FilesHolder = React.memo(({ file, remove }: FileHolderProps) => {
   const objUrl = URL.createObjectURL(file);
   return (
-    <div className="relative w-[100px] aspect-square">
+    <div className="relative w-[80px] md:w-[90px] aspect-square">
       <Image
         src={objUrl}
         alt=""
-        width={100}
-        height={100}
+        width={80}
+        height={80}
         className="rounded-lg w-full aspect-square shadow-lg bg-white object-cover"
       />
       <span
@@ -43,12 +43,9 @@ export const ReplyPostComponent = ({ options }: ReplyPostProps) => {
 
   const handleTextAreaFocus = () => setReplyPostOpen(true);
 
-  const handleTypedComment = useCallback(
-    (e: ChangeEvent<HTMLTextAreaElement>) => {
-      setTypedComment(e.target.value);
-    },
-    []
-  );
+  const handleTypedComment = useCallback((e: ChangeEvent<HTMLInputElement>) => {
+    setTypedComment(e.target.value);
+  }, []);
 
   const handleFiles = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => {
@@ -141,60 +138,69 @@ export const ReplyPostComponent = ({ options }: ReplyPostProps) => {
       <div className="flex gap-4 items-start mt-5 dark:text-white border-b">
         <div className="flex items-center gap-2">
           <Image
-            width={80}
-            height={80}
+            width={65}
+            height={65}
             src={user?.profile_image || "/site/avatar.png"}
             alt=""
-            className="w-10 md:w-16 h-auto rounded-full object-cover"
+            className="w-10 md:w-10 h-auto rounded-full object-cover"
           />
         </div>
-        <div className="flex-1">
-          <p className="mb-3 p-3 text-sm font-semibold">
-            Replying to{" "}
-            <span className="font-bold text-primary-dark-pink">
-              {options.author_username}
-            </span>
-          </p>
-          <div className={`h-auto`}>
-            <textarea
-              onBlur={(e) => !e.target.value && setReplyPostOpen(false)}
-              onFocus={handleTextAreaFocus}
-              onChange={handleTypedComment}
-              disabled={commentSending}
-              value={typedComment}
-              placeholder="Type a reply"
-              className={`block border w-full outline-none p-3 resize-none duration-300 transition-all ${
-                replyPostOpen ? "h-full" : "h-1/3"
-              } dark:text-white dark:bg-slate-800 rounded-md`}
-            />
-          </div>
-          <div className={`flex gap-3 flex-wrap ${files.length > 0 && "mb-3"}`}>
-            {files.map((file, index) => (
-              <FilesHolder key={index} file={file} remove={removeFile} />
-            ))}
-          </div>
-          <div className="flex p-3 gap-4">
-            <span className="cursor-pointer">
-              <label htmlFor="file" className="cursor-pointer">
-                <LucideCamera size={30} />
-                <input
-                  type="file"
-                  id="file"
-                  className="hidden"
-                  multiple
-                  onChange={handleFiles}
-                  accept="image/*"
-                />
-              </label>
-            </span>
+        <div className="flex-1 flex flex-col items-start">
+          <div className="w-full">
+            <p className="mb-1 p-3 text-sm font-semibold">
+              Replying to{" "}
+              <span className="font-bold text-primary-dark-pink">
+                {options.author_username}
+              </span>
+            </p>
+            <div
+              className={`h-auto w-full flex items-center justify-center rounded-full border border-gray-200 mb-3`}
+            >
+              <input
+                onBlur={(e) => !e.target.value && setReplyPostOpen(false)}
+                onFocus={handleTextAreaFocus}
+                onChange={handleTypedComment}
+                disabled={commentSending}
+                value={typedComment}
+                placeholder="Type a reply"
+                className={`block ml-3 leading-none py-2 w-full outline-none resize-none duration-300 transition-all bg-transparent dark:text-white dark:bg-slate-800 `}
+              />
+              <div className="p-2 gap-4 mr-2">
+                <label htmlFor="file" className="cursor-pointer">
+                  <LucideCamera size={28} />
+                  <input
+                    type="file"
+                    id="file"
+                    className="hidden"
+                    multiple
+                    onChange={handleFiles}
+                    accept="image/*"
+                  />
+                </label>
+              </div>
+              <button
+                onClick={handleReplyClicked}
+                className="bg-primary-dark-pink hidden mr-1 md:block text-white px-6 py-2 rounded-full"
+              >
+                Reply
+              </button>
+              <button
+                onClick={handleReplyClicked}
+                className="bg-primary-dark-pink md:hidden text-white px-3 py-2 mr-1 rounded-full"
+              >
+                <LucideSend size={20} />
+              </button>
+            </div>
+
+            <div
+              className={`flex gap-3 flex-wrap ${files.length > 0 && "mb-3"}`}
+            >
+              {files.map((file, index) => (
+                <FilesHolder key={index} file={file} remove={removeFile} />
+              ))}
+            </div>
           </div>
         </div>
-        <button
-          onClick={handleReplyClicked}
-          className="bg-primary-dark-pink text-white px-6 py-2 rounded-full"
-        >
-          Reply
-        </button>
       </div>
     </div>
   );

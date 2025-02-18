@@ -37,9 +37,6 @@ export default function ModelsPageSearch() {
 
     return (
         <>
-            <h1 className="font-bold text-xl mb-5 flex items-center gap-1">
-                Search for Models/Creators <LucideArrowDown />
-            </h1>
             <div className="relative overflow-auto pb-7 dark:text-white">
                 <label className="flex justify-between pr-5 overflow-hidden border border-gray-400 rounded-md">
                     <input
