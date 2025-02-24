@@ -25,12 +25,12 @@ const AddPoints = () => {
 
   function removeStringsAndFee(value: string) {
     let num = value.replace(/\D/g, "");
-    return (parseInt(num) * 0.2).toLocaleString();
+    return (parseInt(num) * 0.1).toLocaleString();
   }
 
   function balanceToSettle(value: string) {
     let num = value.replace(/\D/g, "");
-    const balance = (parseInt(num) * 0.8) / conversionRate;
+    const balance = (parseInt(num) * 0.9) / conversionRate;
     return Math.round(balance).toLocaleString();
   }
 
@@ -107,7 +107,7 @@ const AddPoints = () => {
           <div className="flex justify-between py-2">
             <p className="text-xl">Platform Fee</p>
             <p className="text-xl font-mediu/m">
-              20%
+              10%
               {/* ₦ {removeStringsAndFee(value)} */}
             </p>
           </div>

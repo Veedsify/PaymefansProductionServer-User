@@ -6,6 +6,7 @@ import usePostComponent from "@/contexts/post-component-preview";
 import { getToken } from "@/utils/cookie.get";
 import { MediaDataType } from "@/types/components";
 import HLSVideoPlayer from "./videoplayer";
+import { LockedMediaOverlay } from "./sub/locked-media-overlay";
 
 const getUniqueItems = (arr: MediaDataType[]) => {
   const uniqueMap = new Map();
@@ -43,6 +44,7 @@ const MediaPanelImageCard = React.memo(({ sort }: { sort: string }) => {
       url: media.url,
       type: media.media_type,
     }));
+
     fullScreenPreview({
       url: media,
       type,
@@ -108,18 +110,23 @@ const MediaPanelImageCard = React.memo(({ sort }: { sort: string }) => {
   };
 
   return (
-    <div className="grid grid-cols-3 gap-1 mb-20 select-none">
-      {sorted.map((media, index) => (
-        <div key={index} className="aspect-square overflow-hidden relative">
-          <MediaPanelMediaCard
-            isSubscriber={true}
-            media={media}
-            indexId={index}
-            PreviewImageHandler={PreviewImageHandler}
-          />
-        </div>
-      ))}
-      <div className="flex flex-col items-center justify-center col-span-3 py-4">
+    <>
+      <div className="grid lg:grid-cols-3 grid-cols-2 overflow-hidden rounded-xl gap-1  select-none">
+        {sorted.map((media, index) => (
+          <div
+            key={index}
+            className="aspect-[4/3] md:aspect-square overflow-hidden relative"
+          >
+            <MediaPanelMediaCard
+              isSubscriber={true}
+              media={media}
+              indexId={index}
+              PreviewImageHandler={PreviewImageHandler}
+            />
+          </div>
+        ))}
+      </div>
+      <div className="flex flex-col items-center justify-center mb-20 col-span-3 py-4">
         {loading && (
           <div className="flex justify-center col-span-3">
             <LucideLoader size={30} className="animate-spin" stroke="purple" />
@@ -139,17 +146,9 @@ const MediaPanelImageCard = React.memo(({ sort }: { sort: string }) => {
           </p>
         )}
       </div>
-    </div>
+    </>
   );
 });
-
-const LockedMediaOverlay = () => {
-  return (
-    <div className="lock-icon absolute inset-0 w-full h-full flex items-center justify-center bg-slate-900 bg-opacity-40 cursor-not-allowed">
-      <LucideLock stroke="white" size={30} strokeWidth={2} />
-    </div>
-  );
-};
 
 interface MediaPanelMediaCardProps {
   media: MediaDataType;
@@ -175,8 +174,9 @@ const MediaPanelMediaCard = ({
         <div className="relative w-full h-full">
           <HLSVideoPlayer
             streamUrl={media.url}
-            className="w-full h-full cursor-pointer object-cover transition-all duration-300 ease-in-out"
+            className="w-full h-[400px] cursor-pointer object-cover transition-all duration-300 ease-in-out"
             allOthers={{
+              muted: true,
               onClick: () =>
                 PreviewImageHandler(
                   media.url,
@@ -218,7 +218,12 @@ const MediaPanelMediaCard = ({
           className="w-full h-full cursor-pointer object-cover transition-all duration-300 ease-in-out hover:scale-105"
         />
       )}
-      {!isSubscriber && <LockedMediaOverlay />}
+      {!isSubscriber && (
+        <LockedMediaOverlay
+          mediaIsVideo={media.media_type === "video"}
+          duration={"00:34"}
+        />
+      )}
     </>
   );
 };

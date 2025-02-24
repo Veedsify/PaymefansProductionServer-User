@@ -1,4 +1,4 @@
-import ModelsPageSearch from "@/components/route_component/models-page-search";
+import ModelsPageSearch from "@/components/models/models-page-search";
 import ModelsSubscription from "@/components/sub_components/models_subscription";
 import { AllModelsProps, AuthUserProps } from "@/types/user";
 import getSideModels from "@/utils/data/get-sidemodels";

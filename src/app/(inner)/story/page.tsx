@@ -1,4 +1,4 @@
-import StoryComponent from "@/components/route_component/story-component";
+import StoryComponent from "@/components/story/story-component";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {

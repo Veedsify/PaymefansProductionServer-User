@@ -1,5 +1,5 @@
-import Chats from "@/components/route_component/chats";
-import FetchChatData from "@/components/route_component/fetch-chat-data";
+import Chats from "@/components/messages/chats";
+import FetchChatData from "@/components/messages/fetch-chat-data";
 import GetConversationMessages from "@/utils/data/get-conversation-messages";
 import {Metadata} from "next";
 import {redirect} from "next/navigation";

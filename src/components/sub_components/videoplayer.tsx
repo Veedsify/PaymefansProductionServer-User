@@ -1,5 +1,6 @@
 import Hls from "hls.js";
 import { HTMLProps, useEffect, useRef } from "react";
+import { useInView } from "react-intersection-observer";
 
 const HLSVideoPlayer = ({
   streamUrl,
@@ -11,6 +12,22 @@ const HLSVideoPlayer = ({
   allOthers?: React.VideoHTMLAttributes<HTMLVideoElement>;
 }) => {
   const videoRef = useRef<HTMLVideoElement>(null);
+  const { ref: intersectionRef, inView } = useInView({
+    threshold: 0.5, // 50% of the video must be visible
+  });
+
+  useEffect(() => {
+    if (!videoRef.current) return;
+
+    // Play/pause based on intersection
+    if (inView) {
+      videoRef.current.play().catch((error) => {
+        console.log("Playback failed:", error);
+      });
+    } else {
+      videoRef.current.pause();
+    }
+  }, [inView]);
 
   useEffect(() => {
     if (!videoRef.current) return;
@@ -39,7 +56,16 @@ const HLSVideoPlayer = ({
     }
   }, [streamUrl]);
 
-  return <video {...allOthers} className={className} ref={videoRef}></video>;
+  return (
+    <div ref={intersectionRef}>
+      <video
+        {...allOthers}
+        className={className}
+        ref={videoRef}
+        muted // Add muted to allow autoplay
+      ></video>
+    </div>
+  );
 };
 
 export default HLSVideoPlayer;

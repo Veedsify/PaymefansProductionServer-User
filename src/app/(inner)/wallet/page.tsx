@@ -1,4 +1,4 @@
-import OtherTransactions from "@/components/route_component/other-transactions";
+import OtherTransactions from "@/components/transactions/other-transactions";
 import ROUTE from "@/config/routes";
 import { AuthUserProps } from "@/types/user";
 import axiosInstance from "@/utils/axios";

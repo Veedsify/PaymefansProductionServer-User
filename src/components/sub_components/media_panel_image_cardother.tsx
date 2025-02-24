@@ -1,5 +1,6 @@
 "use client";
 import { LucideLoader, LucideLock, LucidePlay } from "lucide-react";
+import { BiSolidLock } from "react-icons/bi";
 import React, { useCallback, useEffect, useState } from "react";
 import Image from "next/image";
 import usePostComponent from "@/contexts/post-component-preview";
@@ -8,6 +9,7 @@ import { ProfileUserProps } from "@/types/user";
 import { useUserAuthContext } from "@/lib/userUseContext";
 import { MediaDataTypeOtherProps } from "@/types/components";
 import HLSVideoPlayer from "./videoplayer";
+import { LockedMediaOverlay } from "./sub/locked-media-overlay";
 
 const getUniqueItems = (arr: MediaDataTypeOtherProps[]) => {
   const uniqueMap = new Map();
@@ -15,142 +17,142 @@ const getUniqueItems = (arr: MediaDataTypeOtherProps[]) => {
   return Array.from(uniqueMap.values());
 };
 
-const MediaPanelImageCardOther = React.memo(({
-  sort,
-  userdata,
-}: {
-  sort: string;
-  userdata: ProfileUserProps;
-}) => {
-  const [data, setData] = useState<MediaDataTypeOtherProps[]>([]);
-  const [sorted, setSorted] = useState<MediaDataTypeOtherProps[]>([]);
-  const [page, setPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
-  const { fullScreenPreview } = usePostComponent();
-  const token = getToken();
-  const [hasMore, setHasMore] = useState(true);
-  const [loading, setLoading] = useState(false);
-  const { user } = useUserAuthContext();
-  useEffect(() => {
-    const sortData = (data: MediaDataTypeOtherProps[]) => {
-      return sort === "all"
-        ? data
-        : data.filter((media) => media.media_type === sort);
+const MediaPanelImageCardOther = React.memo(
+  ({ sort, userdata }: { sort: string; userdata: ProfileUserProps }) => {
+    const [data, setData] = useState<MediaDataTypeOtherProps[]>([]);
+    const [sorted, setSorted] = useState<MediaDataTypeOtherProps[]>([]);
+    const [page, setPage] = useState(1);
+    const [totalPages, setTotalPages] = useState(1);
+    const { fullScreenPreview } = usePostComponent();
+    const token = getToken();
+    const [hasMore, setHasMore] = useState(true);
+    const [loading, setLoading] = useState(false);
+    const { user } = useUserAuthContext();
+    useEffect(() => {
+      const sortData = (data: MediaDataTypeOtherProps[]) => {
+        return sort === "all"
+          ? data
+          : data.filter((media) => media.media_type === sort);
+      };
+      setSorted(sortData(data));
+    }, [data, sort]);
+
+    const fetchInitialData = useCallback(async () => {
+      setLoading(true); // Set loading to true before fetching
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_EXPRESS_URL}/profile/media/${userdata.id}?page=1`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      const data = await res.json();
+      setData(data.data);
+      setTotalPages(data.total);
+      setHasMore(data.data.length > 0);
+      setLoading(false); // Set loading to false after fetching
+      setPage(2); // Start with the next page
+    }, [token, userdata.id]);
+
+    useEffect(() => {
+      fetchInitialData();
+    }, [fetchInitialData]);
+
+    const fetchAdditionalData = async () => {
+      setLoading(true); // Set loading to true before fetching
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_EXPRESS_URL}/profile/media/${userdata.id}?page=${page}`,
+        {
+          method: "GET",
+          next: { revalidate: 30 },
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      const data = await res.json();
+      setData((prev) => {
+        const newMedia = [...prev, ...data.data];
+        return getUniqueItems(newMedia);
+      });
+      setHasMore(data.data.length > 0);
+      setPage((prev) => prev + 1); // Increment the page after fetching data
+      setLoading(false); // Set loading to false after fetching
     };
-    setSorted(sortData(data));
-  }, [data, sort]);
 
-  const fetchInitialData = useCallback(async () => {
-    setLoading(true); // Set loading to true before fetching
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_EXPRESS_URL}/profile/media/${userdata.id}?page=1`,
-      {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      },
-    );
-    const data = await res.json();
-    setData(data.data);
-    setTotalPages(data.total);
-    setHasMore(data.data.length > 0);
-    setLoading(false); // Set loading to false after fetching
-    setPage(2); // Start with the next page
-  }, [token, userdata.id]);
+    const PreviewImageHandler = (
+      media: MediaDataTypeOtherProps,
+      type: string,
+      isSubscriber: boolean,
+      indexId: number
+    ) => {
+      if (media.accessible_to === "subscribers" && !isSubscriber) return;
+      const medias = sorted
+      .filter((media) => !media.locked)
+      .map((media) => ({
+        url: media.url,
+        type: media.media_type,
+      }));
 
-  useEffect(() => {
-    fetchInitialData();
-  }, [fetchInitialData]);
-
-  const fetchAdditionalData = async () => {
-    setLoading(true); // Set loading to true before fetching
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_EXPRESS_URL}/profile/media/${userdata.id}?page=${page}`,
-      {
-        method: "GET",
-        next: { revalidate: 30 },
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      },
-    );
-    const data = await res.json();
-    setData((prev) => {
-      const newMedia = [...prev, ...data.data];
-      return getUniqueItems(newMedia);
-    });
-    setHasMore(data.data.length > 0);
-    setPage((prev) => prev + 1); // Increment the page after fetching data
-    setLoading(false); // Set loading to false after fetching
-  };
-
-  const PreviewImageHandler = (
-    media: MediaDataTypeOtherProps,
-    type: string,
-    isSubscriber: boolean,
-    indexId: number,
-  ) => {
-    if (media.accessible_to === "subscribers" && !isSubscriber) return;
-    const medias = sorted.map((media) => ({
-      url: media.url,
-      type: media.media_type,
-    }));
-    fullScreenPreview({
-      url: media.url,
-      type,
-      open: true,
-      ref: indexId,
-      otherUrl: medias,
-    });
-  };
-  return (
-    <div className="grid grid-cols-3 gap-1 mb-20 select-none">
-      {sorted.map((media, index) => (
-        <div key={index} className="aspect-square overflow-hidden relative">
-          <MediaPanelMediaCard
-            isSubscriber={userdata.Subscribers.some(
-              (sub) => sub.subscriber_id === user?.id,
-            )}
-            media={media}
-            PreviewImageHandler={PreviewImageHandler}
-            indexId={index}
-          />
+      fullScreenPreview({
+        url: media.url,
+        type,
+        open: true,
+        ref: indexId,
+        otherUrl: medias,
+      });
+    };
+    return (
+      <>
+        <div className="grid grid-cols-2 overflow-hidden rounded-xl lg:grid-cols-3 gap-1 select-none">
+          {sorted.map((media, index) => (
+            <div
+              key={index}
+              className="aspect-[4/3] md:aspect-square overflow-hidden relative"
+            >
+              <MediaPanelMediaCard
+                isSubscriber={userdata.Subscribers.some(
+                  (sub) => sub.subscriber_id === user?.id
+                )}
+                media={media}
+                PreviewImageHandler={PreviewImageHandler}
+                indexId={index}
+              />
+            </div>
+          ))}
         </div>
-      ))}
-      <div className="flex flex-col items-center justify-center col-span-3 py-4">
-        {loading && (
-          <div className="flex justify-center col-span-3">
-            <LucideLoader size={30} className="animate-spin" stroke="purple" />
-          </div>
-        )}
-        {hasMore && !loading && (
-          <button
-            className="col-span-3 px-4 py-2 rounded-lg text-sm font-bold bg-gray-200"
-            onClick={fetchAdditionalData}
-          >
-            Load More
-          </button>
-        )}
-        {!hasMore && !loading && (
-          <p className="col-span-3 py-4 text-center dark:text-white">
-            No more media
-          </p>
-        )}
-      </div>
-    </div>
-  );
-});
-
-const LockedMediaOverlay = () => {
-  return (
-    <div className="lock-icon absolute inset-0 w-full h-full flex items-center justify-center bg-slate-900 bg-opacity-40 cursor-not-allowed">
-      <LucideLock stroke="white" size={30} strokeWidth={2} />
-    </div>
-  );
-};
+        <div className="flex flex-col items-center justify-center col-span-3 py-4 mb-20">
+          {loading && (
+            <div className="flex justify-center col-span-3">
+              <LucideLoader
+                size={30}
+                className="animate-spin"
+                stroke="purple"
+              />
+            </div>
+          )}
+          {hasMore && !loading && (
+            <button
+              className="col-span-3 px-4 py-2 rounded-lg text-sm font-bold bg-gray-200"
+              onClick={fetchAdditionalData}
+            >
+              Load More
+            </button>
+          )}
+          {!hasMore && !loading && (
+            <p className="col-span-3 py-4 text-center dark:text-white">
+              No more media
+            </p>
+          )}
+        </div>
+      </>
+    );
+  }
+);
 
 interface MediaPanelMediaCardProps {
   media: MediaDataTypeOtherProps;
@@ -158,7 +160,7 @@ interface MediaPanelMediaCardProps {
     media: MediaDataTypeOtherProps,
     type: string,
     isSubscriber: boolean,
-    indexId: number,
+    indexId: number
   ) => void;
   isSubscriber: boolean;
   indexId: number;
@@ -175,9 +177,7 @@ const MediaPanelMediaCard = ({
       {media.media_type === "video" ? (
         <>
           {!isSubscriber && media.accessible_to === "subscribers" ? (
-            <>
-              <Image width={400} height={400} src={"/site/blur.jpg"} alt="" />
-            </>
+            <div className="w-[400px] h-[400px] bg-gray-600"/>
           ) : (
             <div className="relative w-full h-full">
               <HLSVideoPlayer
@@ -191,7 +191,7 @@ const MediaPanelMediaCard = ({
                       media,
                       media.media_type,
                       isSubscriber,
-                      indexId,
+                      indexId
                     ),
                 }}
               />
@@ -201,7 +201,7 @@ const MediaPanelMediaCard = ({
                     media,
                     media.media_type,
                     isSubscriber,
-                    indexId,
+                    indexId
                   )
                 }
                 className="absolute bg-black w-full h-full inset-0 bg-opacity-20 cursor-pointer flex items-center justify-center"
@@ -232,7 +232,7 @@ const MediaPanelMediaCard = ({
                   media,
                   media.media_type,
                   isSubscriber,
-                  indexId,
+                  indexId
                 )
               }
               src={media.url}
@@ -243,7 +243,10 @@ const MediaPanelMediaCard = ({
         </>
       )}
       {!isSubscriber && media.accessible_to === "subscribers" && (
-        <LockedMediaOverlay />
+        <LockedMediaOverlay 
+          mediaIsVideo={media.media_type === "video"}
+          duration={"00:34"}
+        />
       )}
     </>
   );

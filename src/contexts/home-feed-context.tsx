@@ -9,6 +9,7 @@ export type User = {
   username: string;
   profile_image: string;
   profile_banner: string;
+  is_model: boolean;
   bio: string;
   Subscribers: {
     subscriber_id: number;
@@ -95,7 +96,7 @@ export const useHomeFeedStore = create<HomeStoreFeed>((set) => ({
     set((state) => {
       const uniquePosts = posts.filter(
         (newPost) =>
-          !state.posts.some((existingPost) => existingPost.id === newPost.id),
+          !state.posts.some((existingPost) => existingPost.id === newPost.id)
       );
       let currentposts = [...state.posts, ...uniquePosts];
       return { posts: currentposts };

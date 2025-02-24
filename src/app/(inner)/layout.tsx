@@ -22,49 +22,14 @@ const font = Inter({
   display: "swap",
 });
 
-const creteFont = Crete_Round({
-  subsets: ["latin", "latin-ext"],
-  display: "auto",
-  weight: ["400"],
-  variable: "--font-crete-round",
-});
-
-const unboundedFont = Unbounded({
-  subsets: ["latin", "latin-ext"],
-  display: "auto",
-  weight: ["400", "500", "600", "700"],
-  variable: "--font-unbounded",
-});
-
-const kablammoFont = Kablammo({
-  subsets: ["latin", "latin-ext"],
-  display: "auto",
-  weight: ["400"],
-  variable: "--font-kablammo",
-});
-
-const dynapuffFont = DynaPuff({
-  subsets: ["latin", "latin-ext"],
-  display: "auto",
-  weight: ["400", "500", "600", "700"],
-  variable: "--font-dynapuff",
-});
-
-const instrumentFont = Instrument_Sans({
-  subsets: ["latin", "latin-ext"],
-  display: "auto",
-  weight: ["400", "500", "600", "700"],
-  variable: "--font-instrument-sans",
-});
-
 // import { GeistSans } from 'geist/font/sans';
 // import { GeistSans } from 'geist/font/sans';
 import "../globals.css";
-import MenuButtons from "@/components/route_component/menu_buttons";
-import ModalComponent from "@/components/route_component/modalComponent";
-import SideModels from "@/components/route_component/side_models";
-import Header from "@/components/route_component/header";
-import SideBar from "@/components/route_component/sidebar";
+import MenuButtons from "@/components/modals/menu_buttons";
+import ModalComponent from "@/components/modals/modalComponent";
+import SideModels from "@/components/models/side_models";
+import Header from "@/components/common/header";
+import SideBar from "@/components/common/sidebar";
 import { Toaster } from "react-hot-toast";
 import { Toaster as SonnerToast } from "sonner";
 import QueryProvider from "@/providers/query-provider";
@@ -73,8 +38,8 @@ import PostComponentPreview from "@/components/post/full-component-preview";
 import { UserContextProvider } from "@/lib/userUseContext";
 import { UserPointsContextProvider } from "@/contexts/user-points-context";
 import { MessagesConversationProvider } from "@/contexts/messages-conversation-context";
-import Loader from "@/components/route_component/loader";
-import VerificationAlert from "@/components/route_component/verification-alert";
+import Loader from "@/components/common/loader";
+import VerificationAlert from "@/components/common/verification-alert";
 import ToggleWishListProvider from "@/contexts/toggle-wishlist";
 import WishList from "@/components/sub_components/wishlist";
 
@@ -95,11 +60,6 @@ export default async function RootLayout({
       <body
         className={`
                 ${font.className}
-                ${creteFont.variable}
-                ${unboundedFont.variable}
-                ${kablammoFont.variable}
-                ${dynapuffFont.variable}
-                ${instrumentFont.variable}
                  dark:bg-gray-950 min-h-screen`}
       >
         <UserContextProvider user={user}>

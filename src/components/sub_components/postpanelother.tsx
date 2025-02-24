@@ -1,5 +1,5 @@
 "use client";
-import PostComponent from "../route_component/post_component";
+import PostComponent from "../post/post_component";
 import LoadingPost from "./loading_post";
 import { formatDate } from "@/utils/format-date";
 import { useCallback, useEffect, useState } from "react";

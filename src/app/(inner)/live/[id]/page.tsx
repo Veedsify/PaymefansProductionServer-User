@@ -4,9 +4,9 @@ import axiosInstance from "@/utils/axios";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import swal from "sweetalert";
-import StreamNotLive from "@/components/route_component/stream-not-live";
+import StreamNotLive from "@/components/stream/stream-not-live";
 import axios from "axios";
-import VideoStreamer from "@/components/route_component/video_streamer";
+import VideoStreamer from "@/components/video/video_streamer";
 
 const ViewStream = () => {
   const [meeting, initMeeting] = useDyteClient();

@@ -4,7 +4,7 @@ import { LucideArrowRight, LucideCheck, LucidePlay, X } from "lucide-react";
 import Image from "next/image";
 import React, { useEffect, useState, useMemo, useCallback } from "react";
 import { Tab, TabList, TabPanel, Tabs } from "react-tabs";
-import StoryMediaPanel from "@/components/route_component/story-media-panel";
+import StoryMediaPanel from "@/components/story/story-media-panel";
 import { useStoryStore } from "../../contexts/story-context";
 import StoryUploadForm from "../sub_components/story-upload-form";
 import StoryCaptionComponent from "./story-caption-component";

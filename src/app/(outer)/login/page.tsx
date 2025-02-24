@@ -96,7 +96,6 @@ const Login = () => {
                             up</Link></p>
                     </div>
                 </div>
-
             </div>
         </div>
     );

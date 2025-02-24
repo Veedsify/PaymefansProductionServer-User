@@ -1,6 +1,6 @@
-import HomePostComponent from "@/components/route_component/home-post-component";
-import PostComponent from "@/components/route_component/post_component";
-import StatusComponent from "@/components/route_component/status";
+import HomePostComponent from "@/components/post/home-post-component";
+import PostComponent from "@/components/post/post_component";
+import StatusComponent from "@/components/story/status";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {

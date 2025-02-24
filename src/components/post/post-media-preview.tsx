@@ -12,7 +12,7 @@ type PostMediaPreviewProps = {
     submitPost: (files: File[] | null) => void,
     medias?: File[] | null
 }
-function PostMediaPreview({ submitPost, medias,}: PostMediaPreviewProps) {
+function PostMediaPreview({ submitPost, medias}: PostMediaPreviewProps) {
     const [media, setMedia] = React.useState<File[] | null>(null)
     const {user} = useUserAuthContext()
     useEffect(() => {

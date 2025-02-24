@@ -1,6 +1,6 @@
 import { RespostPanelProps } from "@/types/components";
 import { formatDate } from "@/utils/format-date";
-import PostComponent from "../route_component/post_component";
+import PostComponent from "../post/post_component";
 import { useEffect, useState } from "react";
 import { useInView } from "react-intersection-observer";
 import { useUserAuthContext } from "@/lib/userUseContext";

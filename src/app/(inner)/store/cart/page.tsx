@@ -1,4 +1,4 @@
-import CartComponent from "@/components/route_component/cart-component";
+import CartComponent from "@/components/modals/cart-component";
 import Link from "next/link";
 
 const page = () => {

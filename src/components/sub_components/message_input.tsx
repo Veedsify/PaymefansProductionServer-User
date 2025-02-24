@@ -11,7 +11,7 @@ import {
   useState,
 } from "react";
 import toast from "react-hot-toast";
-import UploadMediaComponent from "../route_component/upload-media-conponent";
+import UploadMediaComponent from "../video/upload-media-conponent";
 import swal from "sweetalert";
 import { useConversationsContext } from "@/contexts/messages-conversation-context";
 import { Attachment, MessageInputProps } from "@/types/components";

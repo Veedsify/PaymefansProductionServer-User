@@ -165,6 +165,7 @@ export type UserPostProps = {
   post_comments: number;
   post_shares: number;
   post_reposts: number;
+  is_model: boolean;
   UserMedia: UserMediaProps[];
   created_at: Date;
   user: {
@@ -173,6 +174,7 @@ export type UserPostProps = {
     name: string;
     username: string;
     profile_image: string;
+    is_model: boolean;
     Subscribers: {
       subscriber_id: number;
     }[];
@@ -210,6 +212,7 @@ type UserPostPropsOther = {
     name: string;
     username: string;
     user_id: string;
+    is_model: boolean;
     profile_image: string;
     Subscribers: {
       subscriber_id: number;

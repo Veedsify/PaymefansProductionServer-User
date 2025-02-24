@@ -51,7 +51,7 @@ const NavigationBarSlide = () => {
     return (
         <div className={`fixed  duration-300 transition-all right-0 flex pointer-events-all w-full lg:justify-end z-50 md:-bottom-0 pointer-events-none ${openMenu ? "-bottom-0" : "-bottom-20"}`}>
             <div className="flex py-7 items-center justify-between px-8 md:px-16   dark:bg-gray-950  dark:text-white  bg-white w-full lg:w-[33.3%] pointer-events-auto">
-                <Link href="/" className="cursor-pointer">
+                <Link href="/client/public" className="cursor-pointer">
                     <LucideHome />
                 </Link>
                 <span className="cursor-pointer">

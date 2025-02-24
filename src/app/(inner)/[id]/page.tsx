@@ -1,4 +1,4 @@
-import UserNotFound from "@/components/route_component/usernotfound";
+import UserNotFound from "@/components/common/usernotfound";
 import CreateConversationButton from "@/components/sub_components/create-conversation-button";
 import CreateSubscriptionButton from "@/components/sub_components/create-subscription-button";
 import FollowUserComponent from "@/components/sub_components/followUserComponent";
