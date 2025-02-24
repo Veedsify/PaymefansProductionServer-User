@@ -384,7 +384,6 @@ const VideoComponent: React.FC<VideoComponentProps> = ({
           onEnded: () => setPlaying(false),
           poster: media.poster ? media.poster : "",
           muted: true,
-          autoPlay: true,
         }}
         className="h-full shadow-md aspect-square w-full object-cover"
       />

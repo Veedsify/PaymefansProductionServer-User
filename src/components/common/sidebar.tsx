@@ -4,18 +4,16 @@ import {
   LucideSettings,
   LucideLogOut,
   LucideHelpCircle,
-  LucideUser,
   LucideHeart,
-  LucideAirplay,
   LucideStore,
-  LucideMessageSquare,
   LucideUserPlus,
-  Router,
-  LucideBell,
   MessageCircle,
   User,
-  LucideShield,
-  LucideShieldCheck, LucideGroup,
+  LucideShieldCheck,
+  LucideGroup,
+  LucideLightbulb,
+  LucideLightbulbOff,
+  LucideMoon,
 } from "lucide-react";
 import React, { useContext, useEffect } from "react";
 import Link from "next/link";
@@ -27,6 +25,7 @@ import PointsCount from "../sub_components/sub/point-count";
 import { useConversationsContext } from "@/contexts/messages-conversation-context";
 import { useNotificationStore } from "@/contexts/notification-context";
 import NotificationSidebarLink from "../sub_components/sub/notification-sidebar-link";
+import useThemeToggle from "../sub_components/sub/theme-toggle";
 
 const SideBar = React.memo(() => {
   const router = useRouter();
@@ -34,8 +33,7 @@ const SideBar = React.memo(() => {
   const pathname = usePathname();
   const { user } = useUserAuthContext();
   const { count } = useConversationsContext();
-  const { notifications } = useNotificationStore();
-
+  const { theme, setTheme } = useThemeToggle();
   useEffect(() => {
     const closeSideBar = () => {
       setSideBar(false);
@@ -51,8 +49,8 @@ const SideBar = React.memo(() => {
   return (
     <>
       <div
-        className={`lg:ml-auto dark:bg-gray-950 bg-white h-screen lg:h-screen fixed lg:sticky top-0  z-[65] md:z-[50] overflow-auto smart-width p-4 shadow-xl lg:shadow-none lg:border-r duration-300 ease-in-out dark:text-white dark:border-slate-800 ${
-          sideBarState ? "left-0" : "-left-full"
+        className={`lg:ml-auto dark:bg-gray-950 bg-white h-screen lg:h-screen fixed lg:sticky top-0  z-[65] md:z-[50] overflow-auto smart-width p-4 shadow-xl lg:shadow-none lg:border-r transition-transform duration-300 ease-in-out dark:text-white dark:border-slate-800 ${
+          sideBarState ? "-translate-x-0" : "-translate-x-full md:translate-x-0"
         }`}
       >
         <div className="mt-8 mb-16 ">
@@ -154,22 +152,22 @@ const SideBar = React.memo(() => {
             </Link>
 
             {user?.is_model && (
-                <>
-              {/*<Link*/}
-              {/*  href="/live"*/}
-              {/*  className="flex items-center gap-5 p-2 mb-2 transition-all duration-200 hover:bg-gray-200 dark:hover:bg-gray-900 rounded-xl"*/}
-              {/*>*/}
-              {/*  <LucideAirplay />*/}
-              {/*  <p>Go Live</p>*/}
-              {/*</Link>*/}
-                  <Link
-                    href="/groups"
-                    className="flex items-center gap-5 p-2 mb-2 transition-all duration-200 hover:bg-gray-200 dark:hover:bg-gray-900 rounded-xl"
-                  >
-                    <LucideGroup />
-                    <p>Creator&apos;s Group</p>
-                  </Link>
-                </>
+              <>
+                {/*<Link*/}
+                {/*  href="/live"*/}
+                {/*  className="flex items-center gap-5 p-2 mb-2 transition-all duration-200 hover:bg-gray-200 dark:hover:bg-gray-900 rounded-xl"*/}
+                {/*>*/}
+                {/*  <LucideAirplay />*/}
+                {/*  <p>Go Live</p>*/}
+                {/*</Link>*/}
+                <Link
+                  href="/groups"
+                  className="flex items-center gap-5 p-2 mb-2 transition-all duration-200 hover:bg-gray-200 dark:hover:bg-gray-900 rounded-xl"
+                >
+                  <LucideGroup />
+                  <p>Creator&apos;s Group</p>
+                </Link>
+              </>
             )}
             <NotificationSidebarLink />
             {user?.is_model && user.Model?.verification_status == false && (
@@ -224,6 +222,21 @@ const SideBar = React.memo(() => {
               <LucideLogOut />
               <p>Logout</p>
             </span>
+            <div className="flex justify-end">
+              <button
+                onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+              >
+                {theme == "dark" ? (
+                  <span className="inline-block p-2 mb-2 rounded-full border ">
+                    <LucideMoon stroke="white" size={20} />
+                  </span>
+                ) : (
+                  <span className="inline-block p-2 mb-2 rounded-full border border-amber-400">
+                    <LucideLightbulb stroke="gold" size={20} />
+                  </span>
+                )}
+              </button>
+            </div>
           </div>
         </div>
       </div>
