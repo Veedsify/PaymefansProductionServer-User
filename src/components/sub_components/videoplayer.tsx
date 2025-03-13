@@ -1,14 +1,17 @@
+"use client";
 import Hls from "hls.js";
 import { HTMLProps, useEffect, useRef } from "react";
 import { useInView } from "react-intersection-observer";
 
 const HLSVideoPlayer = ({
   streamUrl,
+  autoPlay = false,
   className,
   allOthers,
 }: {
   streamUrl: string;
   className?: string;
+  autoPlay: boolean;
   allOthers?: React.VideoHTMLAttributes<HTMLVideoElement>;
 }) => {
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -20,7 +23,7 @@ const HLSVideoPlayer = ({
     if (!videoRef.current) return;
 
     // Play/pause based on intersection
-    if (inView) {
+    if (inView && autoPlay) {
       videoRef.current.play().catch((error) => {
         console.log("Playback failed:", error);
       });
@@ -43,7 +46,8 @@ const HLSVideoPlayer = ({
       });
 
       hls.on(Hls.Events.ERROR, (event, data) => {
-        console.error("HLS error:", data);
+        console.log("HLS Error Event:", event);
+        console.log("HLS Error Data:", JSON.stringify(data, null, 2));
       });
 
       // Clean up the HLS instance when the component is unmounted

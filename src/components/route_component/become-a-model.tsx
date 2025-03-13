@@ -56,6 +56,8 @@ const BecomeAModel = () => {
   const [modelSignUpdata, setModelSignUpData] = useState<ModelSignUpProps>({});
   const [dropdown, setDropdown] = useState(false);
   const [postAudience, setPostAudience] = useState<postAudienceDataProps2>({
+    id: 0,
+    icon: <LucideEye size={20} className="inline" />,
     name: "Choose Gender",
   });
   const [loading, setLoading] = useState(true);

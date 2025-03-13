@@ -1,111 +1,98 @@
-"use client"
-import {useNewPostStore} from "@/contexts/new-post-context";
-import {imageTypes, videoTypes} from "@/lib/filetypes";
-import {X} from "lucide-react";
-import Image from "next/image";
-import React, {useCallback, useEffect} from "react";
-import NewPostMediaAdd from "../sub_components/sub/new-post-media-add";
+"use client";
+import React, { useCallback, useState } from "react";
+import { useUserAuthContext } from "@/lib/userUseContext";
+import { POST_CONFIG } from "@/config/config";
+import { v4 as uuid } from "uuid";
+import { getToken } from "@/utils/cookie.get";
+import { UploadedImageProp } from "@/types/components";
 import toast from "react-hot-toast";
-import {useUserAuthContext} from "@/lib/userUseContext";
-import {POST_CONFIG} from "@/config/config";
+import ROUTE from "@/config/routes";
+import NewPostMediaAdd from "../sub_components/sub/new-post-media-add";
+import Media from "@/components/common/media-preview-post";
+
 type PostMediaPreviewProps = {
-    submitPost: (files: File[] | null) => void,
-    medias?: File[] | null
-}
-function PostMediaPreview({ submitPost, medias}: PostMediaPreviewProps) {
-    const [media, setMedia] = React.useState<File[] | null>(null)
-    const {user} = useUserAuthContext()
-    useEffect(() => {
-        if (medias) {
-            setMedia(medias)
-        }
-    }, [medias])
+  submitPost: (image: UploadedImageProp) => void;
+  removeThisMedia: (id: string, type: string) => void;
+};
 
-    const handleFileSelect = (files: File[]) => {
-        if (files) {
-            const allFiles = Array.from(files);
+function PostMediaPreview({
+  submitPost,
+  removeThisMedia,
+}: PostMediaPreviewProps) {
+  const [media, setMedia] = useState<Array<{ file: File; id: string }>>([]);
+  const { user } = useUserAuthContext();
+  const token = getToken();
 
-            // Check model file limit
-            if (media && user?.is_model && media.length + allFiles.length > POST_CONFIG.MODEL_POST_LIMIT) {
-                toast.error(POST_CONFIG.MODEL_POST_LIMIT_ERROR_MSG);
-            }
-            // Check regular user file limit
-            else if (media && !user?.is_model && media.length + allFiles.length > POST_CONFIG.USER_POST_LIMIT) {
-                toast.error(POST_CONFIG.USER_POST_LIMIT_ERROR_MSG);
-            } else {
-                // If limits are not exceeded, update media
-                setMedia([...allFiles, ...(media || [])]);
-            }
-        }
+  const handleMediaRemove = useCallback(
+    (id: string, type: string) => {
+      setMedia((prevMedia) => prevMedia.filter((file) => file.id !== id));
+      removeThisMedia(id, type);
+    },
+    [removeThisMedia]
+  );
+
+  const handleFileSelect = async (files: File[]) => {
+    if (!files || files.length === 0) return;
+
+    const allFiles = Array.from(files);
+    const fileLimit = user?.is_model
+      ? POST_CONFIG.MODEL_POST_LIMIT
+      : POST_CONFIG.USER_POST_LIMIT;
+
+    if (media.length + allFiles.length > fileLimit) {
+      toast.error(
+        user?.is_model
+          ? POST_CONFIG.MODEL_POST_LIMIT_ERROR_MSG
+          : POST_CONFIG.USER_POST_LIMIT_ERROR_MSG
+      );
+      return;
     }
 
-    const removeThisMedia = (index: number) => {
-        if (media) {
-            const files = media.filter((_, i) => i !== index)
-            setMedia(files)
-        }
+    const newMediaItems = allFiles.map((file) => ({ file, id: uuid() }));
+    setMedia((prevMedia) => [...prevMedia, ...newMediaItems]);
+
+    try {
+      const uploadPromises = newMediaItems.map(async (mediaItem) => {
+        const formData = new FormData();
+        formData.append("file", mediaItem.file);
+        formData.append("fileId", mediaItem.id);
+
+        const response = await fetch(ROUTE.UPLOAD_POST_MEDIA_ENDPOINT, {
+          method: "POST",
+          body: formData,
+          headers: { Authorization: `Bearer ${token}` },
+        });
+
+        if (!response.ok)
+          throw new Error(`Upload failed for ${mediaItem.file.name}`);
+
+        const uploadedUrls = await response.json();
+        submitPost({...uploadedUrls, fileId: mediaItem.id});
+      });
+
+      await Promise.all(uploadPromises);
+    } catch (error) {
+      toast.error("Some uploads failed.");
+      console.error(error);
     }
+  };
 
-    useEffect(() => {
-        submitPost(media)
-    }, [media, submitPost])
-
-    return (
-        <>
-            <div className="md:px-8 px-4 mb-5">
-                <div
-                    className="grid grid-cols-4 md:grid-cols-4 lg:grid-cols-6 items-center gap-3 overflow-x-auto select-none">
-                    {media?.map((file, index) =>
-                        <div className="relative" key={index}>
-                            <Media file={file} index={index} removeThisMedia={removeThisMedia}/>
-                        </div>
-                    )}
-                </div>
-            </div>
-            <NewPostMediaAdd handleFileSelect={handleFileSelect}/>
-        </>
-    );
+  return (
+    <div className="mb-5">
+      <div className="grid grid-cols-4 md:grid-cols-4 lg:grid-cols-6 gap-3 md:p-8 p-4 overflow-x-auto select-none">
+        {media.map((file) => (
+          <div className="relative" key={file.id}>
+            <Media
+              file={file.file}
+              id={file.id}
+              removeThisMedia={handleMediaRemove}
+            />
+          </div>
+        ))}
+      </div>
+      <NewPostMediaAdd handleFileSelect={handleFileSelect} />
+    </div>
+  );
 }
 
-const Media = ({file, removeThisMedia, index}: {
-    file: File,
-    index: number,
-    removeThisMedia: (index: number) => void
-}) => {
-    const [url, setUrl] = React.useState<string | null>(null)
-    useEffect(() => {
-        if (imageTypes.includes(file.type)) {
-            const reader = new FileReader()
-            reader.onload = (e) => {
-                setUrl(e.target?.result as string)
-            }
-            reader.readAsDataURL(file)
-        }
-
-        if (videoTypes.includes(file.type)) {
-            const blob = new Blob([file], {type: file.type})
-            const url = URL.createObjectURL(blob)
-            setUrl(url)
-        }
-    }, [file, setUrl])
-    return (
-        <>
-            {file.type.includes("video") && (
-                <video src={url || "/site/loading.gif"}
-                       className="object-cover h-auto aspect-square shadow-lg border block rounded-xl"/>
-            )}
-            {file.type.includes("image") && (
-                <Image src={url || "/site/loading.gif"}
-                       alt="1" width={200} height={200}
-                       className="object-cover h-auto aspect-square shadow-lg border block rounded-xl"/>
-            )}
-            <div
-                className="absolute top-0 right-0 bg-black bg-opacity-50 text-white p-1 w-full h-full rounded-xl flex items-center justify-center">
-                <span onClick={() => removeThisMedia(index)} className="cursor-pointer">
-                    <X size={20}/>
-                </span>
-            </div>
-        </>
-    )
-}
-export default PostMediaPreview;
+export default React.memo(PostMediaPreview);

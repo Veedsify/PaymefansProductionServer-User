@@ -53,10 +53,12 @@ const PostComponent: React.FC<PostComponentProps> = ({
         type: media.media_type,
         open: true,
         ref: media.index,
-        otherUrl: data.media.map((media) => ({
-          url: media.url,
-          type: media.media_type,
-        })),
+        otherUrl: data.media
+          .filter((item) => item.media_state !== "processing")
+          .map((media) => ({
+            url: media.url,
+            type: media.media_type,
+          })),
       });
     },
     [isSubscriber, data.post_audience, data.media, fullScreenPreview]
@@ -177,13 +179,12 @@ const PostComponent: React.FC<PostComponentProps> = ({
           dangerouslySetInnerHTML={{ __html: formattedText() as TrustedHTML }}
         ></div>
         <div
-          className={`grid gap-3 ${
-            data.media.length === 2
-              ? "grid-cols-2"
-              : data.media.length >= 3
+          className={`grid gap-3 ${data.media.length === 2
+            ? "grid-cols-2"
+            : data.media.length >= 3
               ? "grid-cols-3"
               : "grid-cols-1"
-          }`}
+            }`}
         >
           {data.media.slice(0, 3).map((media: UserMediaProps, i) => (
             <div
@@ -366,10 +367,20 @@ const VideoComponent: React.FC<VideoComponentProps> = ({
     };
   }, []);
 
+  if (media.media_state == "processing") {
+    return (
+      <div className="h-full select-none shadow-md aspect-square w-full object-cover bg-black flex flex-col gap-2 items-center justify-center text-white">
+        <h1>Your Media is still processing</h1>
+        <small>Please wait for a few minutes</small>
+      </div>
+    );
+  }
+
   return (
     <>
       <HLSVideoPlayer
         streamUrl={media.url}
+        autoPlay={false}
         allOthers={{
           id: "video_player_post",
           playsInline: true,

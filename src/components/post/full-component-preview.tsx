@@ -56,9 +56,8 @@ const PostComponentPreview = () => {
     <>
       {open && (
         <div
-          className={`fixed inset-0 w-full min-h-screen z-[999] smooth-opacity select-none ${
-            open ? "active" : ""
-          }`}
+          className={`fixed inset-0 w-full min-h-screen z-[999] smooth-opacity select-none ${open ? "active" : ""
+            }`}
         >
           <button
             onClick={close}
@@ -187,9 +186,11 @@ const VideoPreview = ({
     <div className="relative">
       <HLSVideoPlayer
         streamUrl={url}
+        autoPlay={true}
         allOthers={{
           controls: true,
           id: "video_player_full",
+          muted: false
         }}
         className="h-screen object-contain mx-auto w-auto transition-all duration-200 border-none animate-in scale-100 fullscreen-video"
       />

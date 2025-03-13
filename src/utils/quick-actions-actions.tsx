@@ -6,7 +6,7 @@ import {
   Repeat2,
 } from "lucide-react";
 import axiosInstance from "./axios";
-import { MouseEvent } from "react";
+import { MouseEvent, useCallback } from "react";
 import { OwnerOption, QuickPostActionsProps } from "@/types/components";
 import { getToken } from "./cookie.get";
 import toast from "react-hot-toast";
@@ -32,6 +32,7 @@ const QuickPostActionHooks = ({ options }: QuickPostActionsProps) => {
     }).then(async (willDelete) => {
       if (willDelete) {
         try {
+          toast.loading(POST_CONFIG.POST_DELETING_STATUS);
           const deletePost = await axiosInstance.delete(
             `/post/${options.post_id}`,
             {
@@ -41,6 +42,7 @@ const QuickPostActionHooks = ({ options }: QuickPostActionsProps) => {
             }
           );
           if (deletePost.status === 200) {
+            toast.dismiss();
             toast.success(POST_CONFIG.POST_DELETED_SUCCESS_MSG);
             if (path.startsWith("/profile")) {
               window.location.reload();
@@ -134,8 +136,8 @@ const QuickPostActionHooks = ({ options }: QuickPostActionsProps) => {
     });
   };
 
-  const repostThisPost = async () => {
-    try {
+  const repostThisPost = useCallback(async() => {
+    try { 
       const repost = await axiosInstance.post(
         `/post/repost/${options.post_id}`,
         {},
@@ -156,7 +158,7 @@ const QuickPostActionHooks = ({ options }: QuickPostActionsProps) => {
         icon: "info",
       });
     }
-  };
+  },[]);
 
   const ownerOptions: (OwnerOption | null)[] = [
     user?.is_model

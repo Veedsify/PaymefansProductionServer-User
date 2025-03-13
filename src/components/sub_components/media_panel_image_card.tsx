@@ -40,10 +40,12 @@ const MediaPanelImageCard = React.memo(({ sort }: { sort: string }) => {
     indexId: number
   ) => {
     if (!isSubscriber) return;
-    const medias = sorted.map((media) => ({
-      url: media.url,
-      type: media.media_type,
-    }));
+    const medias = sorted
+      .filter((item) => item.media_state !== "processing")
+      .map((media) => ({
+        url: media.url,
+        type: media.media_type,
+      }));
 
     fullScreenPreview({
       url: media,
@@ -168,12 +170,25 @@ const MediaPanelMediaCard = ({
   isSubscriber,
   indexId,
 }: MediaPanelMediaCardProps) => {
+  if (
+    media.media_state == "processing" &&
+    media.media_type.startsWith("video")
+  ) {
+    return (
+      <div className="h-full select-none shadow-md aspect-square w-full object-cover bg-black flex flex-col gap-2 items-center justify-center text-white">
+        <h1>Your Media is still processing</h1>
+        <small>Please wait for a few minutes</small>
+      </div>
+    );
+  }
+
   return (
     <>
       {media.media_type === "video" ? (
         <div className="relative w-full h-full">
           <HLSVideoPlayer
             streamUrl={media.url}
+            autoPlay={false}
             className="w-full h-[400px] cursor-pointer object-cover transition-all duration-300 ease-in-out"
             allOthers={{
               muted: true,

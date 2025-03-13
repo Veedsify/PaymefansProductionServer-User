@@ -21,12 +21,16 @@ const RepostPanel = ({ userdata }: RespostPanelProps) => {
 
   useEffect(() => {
     if (loading) return;
-    if (inView && hasMore) {
-      const timeout = setTimeout(() => {
+    let timeout: NodeJS.Timeout;
+    const callTimeout = () => {
+      timeout = setTimeout(() => {
         setPage((prev) => prev + 1);
       }, 300); // Small delay to prevent multiple quick calls
-      return () => clearTimeout(timeout);
+    };
+    if (inView && hasMore) {
+      callTimeout();
     }
+    return () => clearTimeout(timeout);
   }, [inView, hasMore, loading]);
 
   const EndMessage = () => (

@@ -48,17 +48,25 @@ const ROUTE = {
    */
   GET_HOME_POSTS: `${NEXT_PUBLIC_EXPRESS_URL}/home/posts`,
 
-    /**
+  /**
    * Endpoint for purchasing points
    * @type {string}
    */
   PURCHASE_POINTS: `${NEXT_PUBLIC_EXPRESS_URL}/points/purchase`,
 
-    /**
+  /**
    * Endpoint for fetching conversionrate for points
    * @type {string}
    */
-    GET_POINTS_CONVERSION_RATE: `${NEXT_PUBLIC_EXPRESS_URL}/point/rate`
+  GET_POINTS_CONVERSION_RATE: `${NEXT_PUBLIC_EXPRESS_URL}/point/rate`,
+
+  /**
+     * 
+     * Endpoint for upload progress posts
+     * @type {string}
+    
+     */
+  UPLOAD_POST_MEDIA_ENDPOINT: `${NEXT_PUBLIC_EXPRESS_URL}/post/upload-post-media`,
 };
 
 export default ROUTE;

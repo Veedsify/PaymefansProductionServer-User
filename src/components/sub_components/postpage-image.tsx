@@ -41,10 +41,12 @@ const PostPageImage: React.FC<PostPageImageProps> = ({
       });
       return;
     }
-    const otherUrl = medias.map((media) => ({
-      url: media.url,
-      type: media.media_type,
-    }));
+    const otherUrl = medias
+      .filter((item) => item.media_state !== "processing")
+      .map((media) => ({
+        url: media.url,
+        type: media.media_type,
+      }));
     fullScreenPreview({
       url: media.url,
       type: media.media_type,
@@ -80,6 +82,18 @@ const PostPageImage: React.FC<PostPageImageProps> = ({
     });
   };
 
+  if (
+    media.media_state == "processing" &&
+    media.media_type.startsWith("video")
+  ) {
+    return (
+      <div className="h-full select-none shadow-md aspect-square w-full object-cover bg-black flex flex-col gap-2 items-center justify-center text-white">
+        <h1>Your Media is still processing</h1>
+        <small>Please wait for a few minutes</small>
+      </div>
+    );
+  }
+
   return (
     <div className="relative">
       {!isSubscriber && (
@@ -102,11 +116,12 @@ const PostPageImage: React.FC<PostPageImageProps> = ({
       {media.media_type === "video" ? (
         <div className="relative">
           <HLSVideoPlayer
+            autoPlay={true}
             streamUrl={isSubscriber ? media.url : "/site/blur.jpg"}
             allOthers={{
               onClick: handleClick,
               autoPlay: true,
-              poster: isSubscriber ? media.url : "/site/blur.jpg",
+              poster: isSubscriber ? media.poster : "/site/blur.jpg",
             }}
             className="w-full block aspect-square object-cover cursor-pointer"
           ></HLSVideoPlayer>

@@ -22,6 +22,7 @@ export type UserMedia = {
   media_id: string;
   post_id: number;
   media_type: string;
+  media_state: "completed" | "processing";
   url: string;
   blur: string;
   poster: string;

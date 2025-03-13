@@ -92,11 +92,12 @@ const MediaPanelImageCardOther = React.memo(
     ) => {
       if (media.accessible_to === "subscribers" && !isSubscriber) return;
       const medias = sorted
-      .filter((media) => !media.locked)
-      .map((media) => ({
-        url: media.url,
-        type: media.media_type,
-      }));
+        .filter((media) => !media.locked)
+        .filter((item) => item.media_state !== "processing")
+        .map((media) => ({
+          url: media.url,
+          type: media.media_type,
+        }));
 
       fullScreenPreview({
         url: media.url,
@@ -177,11 +178,12 @@ const MediaPanelMediaCard = ({
       {media.media_type === "video" ? (
         <>
           {!isSubscriber && media.accessible_to === "subscribers" ? (
-            <div className="w-[400px] h-[400px] bg-gray-600"/>
+            <div className="w-[400px] h-[400px] bg-gray-600" />
           ) : (
             <div className="relative w-full h-full">
               <HLSVideoPlayer
                 streamUrl={media.url}
+                autoPlay={false}
                 className="w-[400px] h-[400px] cursor-pointer object-cover transition-all duration-300 ease-in-out"
                 allOthers={{
                   width: 400,
@@ -243,7 +245,7 @@ const MediaPanelMediaCard = ({
         </>
       )}
       {!isSubscriber && media.accessible_to === "subscribers" && (
-        <LockedMediaOverlay 
+        <LockedMediaOverlay
           mediaIsVideo={media.media_type === "video"}
           duration={"00:34"}
         />

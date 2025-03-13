@@ -36,6 +36,7 @@ export const getPost = async (secure_id: string) => {
                 },
             }
         );
+        console.log("Data", request.data.data);
         return request.data.data;
     } catch (error) {
         console.log(error);

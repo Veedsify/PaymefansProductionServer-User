@@ -2,15 +2,20 @@ import axios, { AxiosProgressEvent } from "axios";
 import { getToken } from "./cookie.get";
 import ROUTE from "@/config/routes";
 import toast from "react-hot-toast";
+import { RemovedMediaIdProps, UploadedImageProp } from "@/types/components";
 
 type SavePostType = {
-    data: FormData;
+    data: {
+        media: UploadedImageProp[];
+        content: string,
+        visibility: string,
+        removedMedia: RemovedMediaIdProps[],
+    };
     action: string;
     post_id: string;
-    onProgress: (progress: number) => void;
 };
 
-export const SavePost = async ({ data, action, post_id, onProgress }: SavePostType) => {
+export const SavePost = async ({ data, action, post_id }: SavePostType) => {
     try {
         const token = getToken();
         const url = action === 'create' ? ROUTE.POST_CREATE : `${process.env.NEXT_PUBLIC_EXPRESS_URL}/post/update/${post_id}`;
@@ -18,14 +23,12 @@ export const SavePost = async ({ data, action, post_id, onProgress }: SavePostTy
         // Make an axios POST request with onUploadProgress to track the progress
         const res = await axios.post(url, data, {
             headers: {
-                'Content-Type': 'multipart/form-data',
                 "Authorization": `Bearer ${token}`
             },
             onUploadProgress: (progressEvent: AxiosProgressEvent) => {
                 // Calculate the progress percentage
                 if (progressEvent?.total) {
                     const progress = Math.round((progressEvent.loaded * 100) / progressEvent.total);
-                    onProgress(progress); // Call the provided onProgress function
                 }
             }
         });

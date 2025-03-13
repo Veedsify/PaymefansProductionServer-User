@@ -72,10 +72,9 @@ export const PostCompInteractions = ({ data }: PostCompInteractionsProps) => {
           <LucideRepeat2 size={25} />
           {data?.post_reposts}
         </span>
-
-        {(data?.post_audience != "private" || data?.user?.is_model) && (
+        {data && data.post_audience !== "private" && data.user?.is_model && (
           <Link
-            href={`/posts/points/${data?.post_id}/`}
+            href={`/posts/points/${data.post_id}/`}
             className="flex items-center gap-1 text-sm cursor-pointer font-medium"
           >
             <PiCurrencyDollarSimple size={25} />

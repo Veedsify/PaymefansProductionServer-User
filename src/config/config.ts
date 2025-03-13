@@ -8,6 +8,7 @@ const POST_CONFIG = {
     },
     POST_CREATED_SUCCESS_MSG: "Post Created Successfully",
     POST_DELETED_SUCCESS_MSG: "Post Deleted Successfully",
+    POST_DELETING_STATUS: "Deleting post...",
     COMMENT: {
         COMMENT_CREATED_SUCCESS_MSG: "Post Comment Created Successfully",
     },

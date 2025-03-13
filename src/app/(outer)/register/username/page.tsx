@@ -7,6 +7,7 @@ import { useUser } from "@/lib/userContext";
 import { useRouter } from "next/navigation";
 import axiosServer from "@/utils/axios";
 import swal from "sweetalert";
+import axios from "axios";
 
 const ChooseUserName = () => {
   const router = useRouter();
@@ -31,6 +32,8 @@ const ChooseUserName = () => {
       setButtonActive(false);
       return;
     }
+
+
     const res = await axiosServer("/auth/signup/username", {
       method: "POST",
       headers: {
@@ -61,7 +64,7 @@ const ChooseUserName = () => {
       e.preventDefault();
       try {
         if (ref.current?.value) {
-          const createUser = await axiosServer("/auth/signup", {
+          const createUser = await axios("http://localhost:3009/api/auth/signup", {
             method: "POST",
             headers: {
               "Content-Type": "application/json",

@@ -4,9 +4,9 @@ import axios, { AxiosResponse } from "axios";
 import { useEffect, useState } from "react";
 
 const getUniqueItems = (arr: UserPostProps[]) => {
-  // const uniqueMap = new Map();
-  // arr.forEach(item => uniqueMap.set(item.id, item)); // Replace 'id' with the unique property
-  // return Array.from(uniqueMap.values());
+  const uniqueMap = new Map();
+  arr.forEach(item => uniqueMap.set(item.id, item)); // Replace 'id' with the unique property
+  return Array.from(uniqueMap.values());
   return arr;
 };
 
@@ -62,7 +62,7 @@ const RepostPanelFetch = ({
 
         setTotalResults(res.data.total);
         setPosts((prev) => getUniqueItems([...prev, ...data]));
-        setHasMore(posts.length + data.length < res.data.total);
+        setHasMore(data.length > 0 && posts.length + data.length < res.data.total);
         setLoading(false);
       })
       .catch((e) => {
@@ -72,7 +72,7 @@ const RepostPanelFetch = ({
       });
 
     return () => cancel();
-  }, [pageNumber, userdata]); // Removed `posts.length` from dependencies
+  }, [pageNumber, userdata]); // Removed posts.length from dependencies
 
   return { posts, loading, error, hasMore, totalResults };
 };

@@ -3,8 +3,8 @@ import { persist } from "zustand/middleware"
 
 export type NewPostState = {
     postText: string
-    visibility: "Public" | "Subscribers" | "Private"
-    setVisibility: (visibility: "Public" | "Subscribers" | "Private") => void
+    visibility: "Public" | "Subscribers" | "Price"
+    setVisibility: (visibility: "Public" | "Subscribers" | "Price") => void
     setPostText: (text: string) => void
     clearAll: () => void
 }
@@ -20,6 +20,6 @@ export const useNewPostStore = create<NewPostState>(
               return state.postText !== text ? { postText: text } : state;
             });
           },
-        setVisibility: (visibility: "Public" | "Subscribers" | "Private") => set({ visibility }),
+        setVisibility: (visibility: "Public" | "Subscribers" | "Price") => set({ visibility }),
     })
 )

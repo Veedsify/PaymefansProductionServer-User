@@ -1,23 +1,9 @@
 import type { Metadata } from "next";
-import {
-  Sora,
-  Instrument_Sans,
-  Be_Vietnam_Pro,
-  Epilogue,
-  Inter,
-  Public_Sans,
-  Source_Sans_3,
-  Crete_Round,
-  Unbounded,
-  Kablammo,
-  DynaPuff,
-  Geist,
-  Karla,
-} from "next/font/google";
+import { Instrument_Sans } from "next/font/google";
 import { GeistSans } from "geist/font/sans";
 
-const font = Inter({
-  weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
+const font = Instrument_Sans({
+  weight: ["400", "500", "600", "700"],
   subsets: ["latin", "latin-ext"],
   display: "swap",
 });
@@ -26,7 +12,6 @@ const font = Inter({
 // import { GeistSans } from 'geist/font/sans';
 import "../globals.css";
 import MenuButtons from "@/components/modals/menu_buttons";
-import ModalComponent from "@/components/modals/modalComponent";
 import SideModels from "@/components/models/side_models";
 import Header from "@/components/common/header";
 import SideBar from "@/components/common/sidebar";

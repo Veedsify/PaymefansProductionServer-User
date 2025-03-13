@@ -18,14 +18,14 @@ const ProfileSettings = ({ user }: ProfileSettingsProps) => {
   const [userData, setUserData] = useState<UserUpdateProfileType>(
     {} as UserUpdateProfileType
   );
-  const [emailcheck, setEmailCheck] = useState("");
+  const [usernameCheck, setusernameCheck] = useState("");
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     setUserData({ ...userData, [e.target.name]: e.target.value });
   };
 
-  const { message, canSave } = useCheckEmail(user, emailcheck);
+  const { message, canSave } = useCheckEmail(user, usernameCheck);
 
   const handleSaveClick = async () => {
     try {
@@ -77,14 +77,23 @@ const ProfileSettings = ({ user }: ProfileSettingsProps) => {
       </div>
       <div>
         <input
+          type="text"
+          name="username"
+          className="w-full block border mb-3 border-gray-300 p-4 outline-none text-black rounded-xl"
+          onChange={(e) => {
+            setusernameCheck(e.target.value);
+            handleInputChange(e);
+          }}
+          defaultValue={user?.username}
+          placeholder="Username"
+        />
+      </div>
+      <div>
+        <input
           type="email"
           name="email"
           disabled={true}
           readOnly={true}
-          // onChange={(e) => {
-          //   setEmailCheck(e.target.value);
-          //   handleInputChange(e);
-          // }}
           defaultValue={user?.email}
           className="w-full block select-none border mb-3 border-gray-300 p-4 outline-none text-black rounded-xl"
           placeholder="Email "
