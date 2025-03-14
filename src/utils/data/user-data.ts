@@ -2,7 +2,7 @@ import { AuthUserProps } from "@/types/user";
 import axiosInstance from "../axios";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
-import { AxiosResponse } from "axios";
+import axios, { AxiosResponse } from "axios";
 import { cache } from "react";
 
 const getUserData = cache(async (): Promise<AuthUserProps | null> => {
@@ -13,8 +13,8 @@ const getUserData = cache(async (): Promise<AuthUserProps | null> => {
   }
 
   try {
-    const res: AxiosResponse<{ user: AuthUserProps }> = await axiosInstance.get(
-      `${process.env.NEXT_PUBLIC_EXPRESS_URL}/retrieve`,
+    const res: AxiosResponse<{ user: AuthUserProps }> = await axios.get(
+      `http://localhost:3009/api/auth/retrieve`,
       {
         headers: {
           "Content-Type": "application/json",
@@ -24,6 +24,7 @@ const getUserData = cache(async (): Promise<AuthUserProps | null> => {
     );
 
     if (res.status === 200 && res.data?.user) {
+      console.log("User data:", res.data.user);
       return res.data.user as AuthUserProps;
     }
 

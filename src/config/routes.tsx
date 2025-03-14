@@ -46,7 +46,8 @@ const ROUTE = {
    * Endpoint for fetching posts for the home page.
    * @type {string}
    */
-  GET_HOME_POSTS: `${NEXT_PUBLIC_EXPRESS_URL}/home/posts`,
+  GET_HOME_POSTS: `http://localhost:3009/api/feeds/home`,
+  // GET_HOME_POSTS: `${NEXT_PUBLIC_EXPRESS_URL}/home/posts`,
 
   /**
    * Endpoint for purchasing points

@@ -7,6 +7,7 @@ import {useRouter} from "next/navigation";
 import {ChangeEvent, FormEvent, useEffect, useState} from 'react';
 import toast from "react-hot-toast";
 import {LOGIN_CONFIG} from "@/config/config";
+import axios from "axios";
 
 const Login = () => {
     const {setUser} = getUser();
@@ -27,7 +28,7 @@ const Login = () => {
     const submitLoginForm = async (e: FormEvent) => {
         e.preventDefault();
         try {
-            const loginThisUser = await axiosServer.post("/auth/login", {
+            const loginThisUser = await axios.post("http://localhost:3009/api/auth/login", {
                 ...loginCredentials
             });
 

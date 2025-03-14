@@ -34,7 +34,7 @@ const ChooseUserName = () => {
     }
 
 
-    const res = await axiosServer("/auth/signup/username", {
+    const res = await axios(`http://localhost:3009/api/auth/signup/username`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
