@@ -20,6 +20,18 @@ const LOGIN_CONFIG = {
     LOGIN_SUCCESSFUL_MSG: `Login successfully.`,
 }
 
+const REGISTER_CONFIG = {
+    REGISTER_SUCCESSFUL_MSG: `Account created successfully.`,
+    REGISTER_ERROR_MSG: `Failed to create account.`,
+    REGISTERING_MSG: `Creating account...`,
+    USERNAME_CHECKING_MSG: `Checking username...`,
+    USERNAME_AVAILABLE_MSG: `Username is available.`,
+    USERNAME_TAKEN_MSG: `Username is taken.`,
+    USERNAME_CHECKING_ERROR_MSG: `Failed to check username.`,
+    USERNAME_CHECKING_LIMIT: 5,
+    USERNAME_CHECKING_LIMIT_MSG: `Username checking limit reached.`,
+}
+
 const PROFILE_CONFIG = {
     PROFILE_UPDATED_SUCCESS_MSG: `Profile updated successfully.`,
     PROFILE_UPDATED_ERROR_MSG: `Failed to update profile.`,
@@ -38,4 +50,4 @@ const POINTS_CONFIG = {
     POINTS_MINIMUM_DEPOSIT_ERROR: `Minimum deposit is 2000`
 }
 
-export {POST_CONFIG, LOGIN_CONFIG, PROFILE_CONFIG, POINTS_CONFIG}
+export {POST_CONFIG, LOGIN_CONFIG, PROFILE_CONFIG, POINTS_CONFIG, REGISTER_CONFIG}

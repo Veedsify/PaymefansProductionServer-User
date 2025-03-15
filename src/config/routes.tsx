@@ -1,3 +1,4 @@
+const NEXT_PUBLIC_TS_EXPRESS_URL = process.env.NEXT_PUBLIC_TS_EXPRESS_URL;
 const NEXT_PUBLIC_EXPRESS_URL = process.env.NEXT_PUBLIC_EXPRESS_URL;
 
 /**
@@ -8,13 +9,13 @@ const ROUTE = {
    * Endpoint for uploading a banner image for a profile.
    * @type {string}
    */
-  BANNER_IMAGE_UPLOAD: `${NEXT_PUBLIC_EXPRESS_URL}/profile/banner/change`,
+  BANNER_IMAGE_UPLOAD: `${NEXT_PUBLIC_TS_EXPRESS_URL}/profile/banner/change`,
 
   /**
    * Endpoint for updating the profile image.
    * @type {string}
    */
-  PROFILE_UPDATE: `${NEXT_PUBLIC_EXPRESS_URL}/profile/image/change`,
+  PROFILE_UPDATE: `${NEXT_PUBLIC_TS_EXPRESS_URL}/profile/update`,
 
   /**
    * Endpoint for creating a new post.
@@ -46,7 +47,7 @@ const ROUTE = {
    * Endpoint for fetching posts for the home page.
    * @type {string}
    */
-  GET_HOME_POSTS: `http://localhost:3009/api/feeds/home`,
+  GET_HOME_POSTS: `${NEXT_PUBLIC_TS_EXPRESS_URL}/api/feeds/home`,
   // GET_HOME_POSTS: `${NEXT_PUBLIC_EXPRESS_URL}/home/posts`,
 
   /**

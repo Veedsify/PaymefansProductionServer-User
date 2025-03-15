@@ -2,6 +2,7 @@
 import ROUTE from "@/config/routes";
 import axiosInstance from "@/utils/axios";
 import { getToken } from "@/utils/cookie.get";
+import axios from "axios";
 import { LucideUpload } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
@@ -111,17 +112,20 @@ const BannerComponent = ({ profile_banner }: BannerComponentProps) => {
         "banner",
         new File([croppedImageBlob], file.name, { type: file.type })
       );
-      const response = await axiosInstance.post(
-        ROUTE.BANNER_IMAGE_UPLOAD,
-        formData,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-
-      if (response.data) {
+      const response = await fetch(ROUTE.BANNER_IMAGE_UPLOAD, {
+        method: "POST",
+        body: formData,
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      if (!response.ok) {
+        toast.dismiss();
+        toast.error("Failed to upload banner image");
+        return;
+      }
+      const data = await response.json();
+      if (data.status) {
         toast.dismiss();
         toast.success("Banner image uploaded successfully");
         router.refresh();

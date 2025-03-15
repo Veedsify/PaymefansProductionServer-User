@@ -8,6 +8,8 @@ import { useRouter } from "next/navigation";
 import axiosServer from "@/utils/axios";
 import swal from "sweetalert";
 import axios from "axios";
+import toast from "react-hot-toast";
+import { REGISTER_CONFIG } from "@/config/config";
 
 const ChooseUserName = () => {
   const router = useRouter();
@@ -32,7 +34,6 @@ const ChooseUserName = () => {
       setButtonActive(false);
       return;
     }
-
 
     const res = await axios(`http://localhost:3009/api/auth/signup/username`, {
       method: "POST",
@@ -62,65 +63,57 @@ const ChooseUserName = () => {
   const createNewUser = useCallback(
     async (e: React.FormEvent<HTMLFormElement>) => {
       e.preventDefault();
+      toast.loading(REGISTER_CONFIG.REGISTERING_MSG);
       try {
         if (ref.current?.value) {
-          const createUser = await axios("http://localhost:3009/api/auth/signup", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            data: {
-              fullname: user?.name,
-              user_id: Math.floor(Math.random() * 1000000).toString(),
-              username: ref.current?.value,
-              name: user?.name,
-              email: user?.email,
-              phone: user?.phone,
-              location: user?.location,
-              password: user?.password,
-            },
-          });
+          const createUser = await axios(
+            "http://localhost:3009/api/auth/signup",
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              data: {
+                fullname: user?.name,
+                user_id: Math.floor(Math.random() * 1000000).toString(),
+                username: ref.current?.value,
+                name: user?.name,
+                email: user?.email,
+                phone: user?.phone,
+                location: user?.location,
+                password: user?.password,
+              },
+            }
+          );
           if (createUser.data.status === true) {
             setUser(null);
-            return swal({
-              title: "Success",
-              text: "Account created successfully",
-              icon: "success",
-              buttons: {
-                cancel: false,
-                confirm: {
-                  text: "Ok",
-                  value: true,
-                  visible: true,
-                  className:
-                    "bg-primary-dark-pink text-white rounded-lg font-bold text-sm",
-                  closeModal: true,
-                },
-              },
-            }).then((willRedirect) => {
-              if (willRedirect) {
-                router.push("/login");
-              }
-            });
+            await new Promise((resolve) => setTimeout(resolve, 500));
+            toast.dismiss();
+            toast.success(REGISTER_CONFIG.REGISTER_SUCCESSFUL_MSG);
+            router.push("/login");
           }
 
           if (createUser.data.status === false) {
-            swal({
-              title: "Error",
-              text: createUser.data.message,
-              icon: "error",
-              buttons: {
-                cancel: false,
-                confirm: {
-                  text: "Ok",
-                  value: true,
-                  visible: true,
-                  className:
-                    "bg-primary-dark-pink text-white rounded-lg font-bold text-sm",
-                  closeModal: true,
-                },
-              },
-            });
+            await new Promise((resolve) => setTimeout(resolve, 500));
+            toast.dismiss();
+            toast.error(createUser.data.message);
+            return;
+            // swal({
+            //   title: "Error",
+            //   text: createUser.data.message,
+            //   icon: "error",
+            //   buttons: {
+            //     cancel: false,
+            //     confirm: {
+            //       text: "Ok",
+            //       value: true,
+            //       visible: true,
+            //       className:
+            //         "bg-primary-dark-pink text-white rounded-lg font-bold text-sm",
+            //       closeModal: true,
+            //     },
+            //   },
+            // });
           }
         }
       } catch (err) {
