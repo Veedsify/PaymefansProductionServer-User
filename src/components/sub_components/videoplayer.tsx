@@ -63,6 +63,7 @@ const HLSVideoPlayer = ({
   return (
     <div ref={intersectionRef}>
       <video
+        poster={allOthers?.poster}
         {...allOthers}
         className={className}
         ref={videoRef}
