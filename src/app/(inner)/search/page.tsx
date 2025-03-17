@@ -8,7 +8,6 @@ const searchFunction = async (query: string) => {
   console.log("loading... ", query);
   // const res = await fetch(`/api/search?q=${query}`);
   // const data = await res.json();
-  // console.log(data)
 };
 
 const SearchPage = () => {

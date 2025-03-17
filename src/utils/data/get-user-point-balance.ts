@@ -1,7 +1,7 @@
 import axiosInstance from "../axios"
 
 export const GetUserPointBalance = async (user_id: number) => {
-    return await axiosInstance.post(`${process.env.NEXT_PUBLIC_EXPRESS_URL}/user/get-points`,
+    return await axiosInstance.post(`${process.env.NEXT_PUBLIC_TS_EXPRESS_URL}/points/get-points`,
         { user_id }
         , {
             headers: {

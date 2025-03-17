@@ -54,7 +54,6 @@ const Chats = React.memo(({
         seen: false,
         created_at: new Date().toISOString(), // Using ISO format for consistency
       };
-      console.log({ ...newMessage });
       setMessages((prevMessages) => [...prevMessages, newMessage]);
       socket.emit("new-message", {
         ...newMessage,

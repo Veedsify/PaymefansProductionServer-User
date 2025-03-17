@@ -34,6 +34,7 @@ export interface PostData {
     post_likes?: number;
     post_comments?: number;
     post_shares?: number;
+    post_status: string;
     post_reposts?: number;
     repost_username?: string;
     was_repost?: boolean;
@@ -170,6 +171,7 @@ export type UserPostProps = {
     post_likes: number;
     post_comments: number;
     post_shares: number;
+    post_status: string;
     post_reposts: number;
     is_model: boolean;
     UserMedia: UserMediaProps[];

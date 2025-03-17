@@ -9,7 +9,7 @@ const useFetchStories = () => {
   const token = getToken();
   useEffect(() => {
     const fetchStories = async () => {
-      const res = await fetch(
+      const fetchStory = await fetch(
         `${process.env.NEXT_PUBLIC_TS_EXPRESS_URL}/story/all`,
         {
           method: "GET",
@@ -19,9 +19,8 @@ const useFetchStories = () => {
           },
         }
       );
-      const data = await res.json();
-      console.log(data.data);
-      setStories(data.data);
+      const response = await fetchStory.json();
+      setStories(response.data);
       setLoading(false);
     };
     fetchStories();

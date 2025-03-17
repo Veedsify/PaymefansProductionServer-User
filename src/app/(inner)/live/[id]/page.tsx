@@ -19,8 +19,7 @@ const ViewStream = () => {
       const response = await axios.get(
         `${process.env.NEXT_PUBLIC_LIVE_SERVER}/stream/${streamId}`
       );
-      console.log(response.data);
-    } catch (error) {
+     } catch (error) {
       console.log(error);
     }
   }, [streamId]);

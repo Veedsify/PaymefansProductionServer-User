@@ -23,7 +23,6 @@ const FetchHomeFeedPosts = () => {
           const usersfeed = await fetchHomePosts(API_URL);
           addToPosts(usersfeed.posts);
           setLoading(false);
-          console.log(usersfeed);
         } catch (error: any) {
           console.log(error);
         }

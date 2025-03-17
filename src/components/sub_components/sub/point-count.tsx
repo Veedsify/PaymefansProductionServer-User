@@ -22,7 +22,7 @@ const PointsCount = ({ user }: PointsCountProps) => {
 
     useEffect(() => {
         if (data) {
-            updatePoints(data.data.userPoints.points)
+            updatePoints(data.data.points)
         }
     }, [data, updatePoints])
 
@@ -34,7 +34,7 @@ const PointsCount = ({ user }: PointsCountProps) => {
 
     return (
         <h2 className="flex items-center mb-1 text-xl font-bold leading-none">
-            {data?.data.userPoints.points.toLocaleString("en-Us")}
+            {data?.data.points.toLocaleString("en-Us")}
             <span className="ml-2">
                 <Image width={20} height={20} src="/site/coin.svg"
                     className="w-auto h-5 aspect-square" alt="" />

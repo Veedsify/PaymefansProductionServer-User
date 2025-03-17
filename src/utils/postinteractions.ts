@@ -5,7 +5,7 @@ import { PostData } from "@/types/components";
 let token = getToken()
 
 const axionsIns = axios.create({
-    baseURL: process.env.NEXT_PUBLIC_EXPRESS_URL,
+    baseURL: process.env.NEXT_PUBLIC_TS_EXPRESS_URL,
     headers: {
         "Content-Type": "application/json",
         "Authorization": `Bearer ${token}`

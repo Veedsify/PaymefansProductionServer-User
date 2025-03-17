@@ -107,7 +107,6 @@ const BecomeAModel = () => {
       window.location.href = String("/verification");
     } else {
       toast.dismiss(loadingToast);
-      console.log(res.message);
       swal({
         icon: "error",
         title: "Error",

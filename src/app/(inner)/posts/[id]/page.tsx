@@ -36,6 +36,10 @@ export const getPost = async (postId: string) => {
                 },
             }
         );
+        if(request.data.status === false) {
+            redirect("/404");
+            return
+        }
         return request.data.data;
     } catch (error) {
         console.log(error);

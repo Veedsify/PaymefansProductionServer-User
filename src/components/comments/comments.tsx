@@ -35,7 +35,6 @@ const CommentsHolder = ({ post }: { post: PostData }) => {
   useEffect(() => {
     const fetchComments = async () => {
       const comments = await getUserComments(post);
-      console.log(comments);
       if (comments) {
         setPostComments(comments);
         setLoading(false);

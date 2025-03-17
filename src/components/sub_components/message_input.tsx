@@ -89,7 +89,6 @@ const MessageInput = ({
         )
         .then((res) => res.data.price_per_message);
 
-      console.log(pricePerMessage);
       const processMessageSending = (isFirstMessage: boolean) => {
         const receiverName = receiver?.name
           ? receiver.name.charAt(0).toUpperCase() + receiver.name.slice(1)

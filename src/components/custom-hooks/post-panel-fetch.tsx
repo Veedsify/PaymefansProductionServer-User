@@ -37,6 +37,7 @@ export default function PostPanelFetch(pageNumber: number) {
             },
             cancelToken: new axios.CancelToken(c => cancel = c)
         }).then(res => {
+            console.log(res.data.data)
             setPosts((prev) => {
                 const newPosts = [...prev, ...res.data.data];
                 return getUniqueItems(newPosts);

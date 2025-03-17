@@ -91,9 +91,14 @@ const PostComponent: React.FC<PostComponentProps> = ({
           return;
         } else if (data.post_audience === "private") {
           return router.push(`/posts/${data.post_id}`);
-        } else {
-          router.push(`/posts/${data.post_id}`);
+        } else if (data.post_status !== "approved") {
+          return swal({
+            title: "This post is still processing",
+            text: "Only you can preview this. Post while processing; it's done when borders disappear.",
+            icon: "warning",
+          });
         }
+        router.push(`/posts/${data.post_id}`);
       }
     },
     [router, data.post_id, data.post_audience, isSubscriber, user.user_id]
@@ -123,7 +128,12 @@ const PostComponent: React.FC<PostComponentProps> = ({
 
   return (
     <div className=" py-6 px-2 md:px-5 duration-300">
-      <div className="cursor-pointer" onClick={redirectToPost}>
+      <div
+        className="cursor-pointer"
+        onClick={redirectToPost}
+        role="link"
+        data-href={`/posts/${data.post_id}`}
+      >
         {was_repost && (
           <div className="mb-3">
             <Link
@@ -179,16 +189,19 @@ const PostComponent: React.FC<PostComponentProps> = ({
           dangerouslySetInnerHTML={{ __html: formattedText() as TrustedHTML }}
         ></div>
         <div
-          className={`grid gap-3 ${data.media.length === 2
-            ? "grid-cols-2"
-            : data.media.length >= 3
+          className={`grid gap-3 ${
+            data.media.length === 2
+              ? "grid-cols-2"
+              : data.media.length >= 3
               ? "grid-cols-3"
               : "grid-cols-1"
-            }`}
+          }`}
         >
           {data.media.slice(0, 3).map((media: UserMediaProps, i) => (
             <div
-              className="relative rounded-lg overflow-hidden"
+              className={`relative rounded-xl overflow-hidden ${
+                data.post_status !== "approved" && "border-fuchsia-500 border-2"
+              }`}
               key={i}
               onClick={handleNonSubscriberClick}
             >

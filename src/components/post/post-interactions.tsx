@@ -23,14 +23,8 @@ export const PostCompInteractions = ({ data }: PostCompInteractionsProps) => {
   const formattedNumber = (number: number) =>
     numeral(number).format("0a").toUpperCase(); // Converts the suffix to uppercase
   const [like, setLike] = useState<boolean>(false);
-  const [likesCount, setLikesCount] = useState<number>(0);
+  const [likesCount, setLikesCount] = useState<number>(data?.post_likes!);
   const { user } = useUserAuthContext();
-
-  useEffect(() => {
-    if (data?.post_likes) {
-      setLikesCount(data?.post_likes);
-    }
-  }, [data?.post_likes]);
 
   const likePost = async () => {
     setLike(!like);

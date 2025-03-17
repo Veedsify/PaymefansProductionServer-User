@@ -17,7 +17,7 @@ interface EditPostProps {
 const EditPost = async ({ params }: EditPostProps) => {
   const id = (await params).id;
   const token = (await cookies()).get("token")?.value;
-  const response = await axiosInstance.get(`/editpost/${id}`, {
+  const response = await axiosInstance.get(`/post/edit/${id}`, {
     headers: {
       Authorization: `Bearer ${token}`,
     },

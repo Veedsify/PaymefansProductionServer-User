@@ -105,7 +105,7 @@ const QuickPostActionHooks = ({ options }: QuickPostActionsProps) => {
     visibility.addEventListener("change", async (e) => {
       try {
         const setVisibility = await axiosInstance.put(
-          `/post/${options.post_id}`,
+          `/post/update/audience/${options.post_id}`,
           {
             visibility: visibility.value,
           },
@@ -136,8 +136,8 @@ const QuickPostActionHooks = ({ options }: QuickPostActionsProps) => {
     });
   };
 
-  const repostThisPost = useCallback(async() => {
-    try { 
+  const repostThisPost = useCallback(async () => {
+    try {
       const repost = await axiosInstance.post(
         `/post/repost/${options.post_id}`,
         {},
@@ -150,7 +150,6 @@ const QuickPostActionHooks = ({ options }: QuickPostActionsProps) => {
       );
       if (repost.status === 200) {
         toast.success(repost.data.message);
-        router.push("/profile");
         router.refresh();
       }
     } catch (error: any) {
@@ -158,7 +157,7 @@ const QuickPostActionHooks = ({ options }: QuickPostActionsProps) => {
         icon: "info",
       });
     }
-  },[]);
+  }, []);
 
   const ownerOptions: (OwnerOption | null)[] = [
     user?.is_model

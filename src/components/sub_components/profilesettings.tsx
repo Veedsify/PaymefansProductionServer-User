@@ -33,7 +33,6 @@ const ProfileSettings = ({ user }: ProfileSettingsProps) => {
       if (!email) {
         return toast.error("Email is required");
       }
-      console.log({ userData: userData.email, user: user.email });
       const regex = /^[a-zA-Z0-9._:$!%-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
       if (!regex.test(email)) {
         return toast.error("Invalid email address");

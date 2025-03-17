@@ -82,7 +82,6 @@ const Subscribe = () => {
 
     useEffect(() => {
         socket.on("subscription_added", () => {
-            console.log("subscription_added")
         })
 
         return () => {
