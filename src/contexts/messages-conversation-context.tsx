@@ -28,34 +28,33 @@ export const MessagesConversationProvider = ({ children }: { children: ReactNode
     const userid = useMemo(() => user?.user_id, [user?.user_id]);
     const username = useMemo(() => user?.username, [user?.username]);
 
-    useEffect(() => {
-        const token = getToken()
-        const url = `${process.env.NEXT_PUBLIC_EXPRESS_URL}/notifications/1`
-        const getNotifications = async () => {
-            const myNotitifications = await axios.post(url, {}, {
-                headers: {
-                    Authorization: `Bearer ${token}`
-                }
-            })
-            if (myNotitifications.status == 200) {
-                addAllNotifications(myNotitifications.data.data.map((notification: Notification) => {
-                    return {
-                        ...notification,
-                        created_at: notification.created_at
-                    }
-                }))
-                setTotalNotifications(Number(myNotitifications.data.total))
-            } else {
-                return
-            }
-        }
+    // useEffect(() => {
+    //     const token = getToken()
+    //     const url = `${process.env.NEXT_PUBLIC_EXPRESS_URL}/notifications/1`
+    //     const getNotifications = async () => {
+    //         const myNotitifications = await axios.post(url, {}, {
+    //             headers: {
+    //                 Authorization: `Bearer ${token}`
+    //             }
+    //         })
+    //         if (myNotitifications.status == 200) {
+    //             addAllNotifications(myNotitifications.data.data.map((notification: Notification) => {
+    //                 return {
+    //                     ...notification,
+    //                     created_at: notification.created_at
+    //                 }
+    //             }))
+    //             setTotalNotifications(Number(myNotitifications.data.total))
+    //         } else {
+    //             return
+    //         }
+    //     }
 
-        getNotifications()
-        return () => {
-            getNotifications()
-        }
-    }, [setTotalNotifications, addAllNotifications])
-
+    //     getNotifications()
+    //     return () => {
+    //         getNotifications()
+    //     }
+    // }, [setTotalNotifications, addAllNotifications])
 
     useEffect(() => {
         if (userid && username) {

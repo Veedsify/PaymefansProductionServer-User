@@ -31,8 +31,8 @@ const RepostPanelFetch = ({
     const token = getToken();
     const api =
       userdata && userdata.id
-        ? `${process.env.NEXT_PUBLIC_EXPRESS_URL}/user/reposts/${userdata.id}`
-        : `${process.env.NEXT_PUBLIC_EXPRESS_URL}/user/reposts`;
+        ? `${process.env.NEXT_PUBLIC_TS_EXPRESS_URL}/post/reposts/${userdata.id}`
+        : `${process.env.NEXT_PUBLIC_TS_EXPRESS_URL}/post/my-reposts`;
 
     const postPerPage = parseInt(
       process.env.NEXT_PUBLIC_POST_PER_PAGE || "5",

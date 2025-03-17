@@ -5,7 +5,7 @@ import { getToken } from "../cookie.get"
 export const getUserPosts = async ({ pageParam, userid }: { pageParam: number; userid?: number }) => {
     try {
         const token = getToken()
-        const api = userid ? `${process.env.NEXT_PUBLIC_EXPRESS_URL}/user/${userid}/posts` : `${process.env.NEXT_PUBLIC_EXPRESS_URL}/user/posts`
+        const api = userid ? `${process.env.NEXT_PUBLIC_TS_EXPRESS_URL}/post/${userid}/posts` : `${process.env.NEXT_PUBLIC_TS_EXPRESS_URL}/post/my-posts`
 
         const postPerPage = process.env.NEXT_PUBLIC_POST_PER_PAGE
 

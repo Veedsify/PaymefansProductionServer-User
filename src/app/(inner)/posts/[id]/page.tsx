@@ -24,11 +24,11 @@ interface PostPageprops {
     }>;
 }
 
-export const getPost = async (secure_id: string) => {
+export const getPost = async (postId: string) => {
     try {
         const token = (await cookies()).get("token")?.value;
         const request = await axios.get(
-            `${process.env.NEXT_PUBLIC_EXPRESS_URL}/posts/${secure_id}`,
+            `${process.env.NEXT_PUBLIC_TS_EXPRESS_URL}/post/${postId}`,
             {
                 headers: {
                     "Content-Type": "application/json",
@@ -36,7 +36,6 @@ export const getPost = async (secure_id: string) => {
                 },
             }
         );
-        console.log("Data", request.data.data);
         return request.data.data;
     } catch (error) {
         console.log(error);
@@ -45,10 +44,10 @@ export const getPost = async (secure_id: string) => {
 }
 
 const Post = React.memo(async ({params}: PostPageprops) => {
-    const secure_id = (await params).id;
+    const postId = (await params).id;
     const user: AuthUserProps | null = await getUserData();
     let isSubscriber: boolean = false;
-    const post = await getPost(secure_id);
+    const post = await getPost(postId);
     const content = {
         __html: `${post?.content.replace(/(?:\r\n|\r|\n)/g, "<br>")}`,
     };

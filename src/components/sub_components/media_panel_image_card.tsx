@@ -60,7 +60,7 @@ const MediaPanelImageCard = React.memo(({ sort }: { sort: string }) => {
     setLoading(true);
     try {
       const res = await fetch(
-        `${process.env.NEXT_PUBLIC_EXPRESS_URL}/user/media?page=1`,
+        `${process.env.NEXT_PUBLIC_TS_EXPRESS_URL}/post/media?page=1`,
         {
           method: "GET",
           headers: {
@@ -90,7 +90,7 @@ const MediaPanelImageCard = React.memo(({ sort }: { sort: string }) => {
     setLoading(true);
     try {
       const res = await fetch(
-        `${process.env.NEXT_PUBLIC_EXPRESS_URL}/user/media?page=${page}`,
+        `${process.env.NEXT_PUBLIC_TS_EXPRESS_URL}/post/media?page=${page}`,
         {
           method: "GET",
           headers: {

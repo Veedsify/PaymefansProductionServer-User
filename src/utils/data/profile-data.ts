@@ -10,7 +10,7 @@ const getUserProfile = async ({user_id}: getUserProfileProps) => {
     const token = (await cookies()).get("token");
     if (token?.value == '' || token?.value == null) redirect("/login");
     const res = await fetch(
-        `${process.env.NEXT_PUBLIC_EXPRESS_URL}/profile/user`,
+        `${process.env.NEXT_PUBLIC_TS_EXPRESS_URL}/profile/user`,
         {
             method: "POST",
             body: JSON.stringify({

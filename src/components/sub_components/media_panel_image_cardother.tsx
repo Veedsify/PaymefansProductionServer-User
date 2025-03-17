@@ -40,7 +40,7 @@ const MediaPanelImageCardOther = React.memo(
     const fetchInitialData = useCallback(async () => {
       setLoading(true); // Set loading to true before fetching
       const res = await fetch(
-        `${process.env.NEXT_PUBLIC_EXPRESS_URL}/profile/media/${userdata.id}?page=1`,
+        `${process.env.NEXT_PUBLIC_TS_EXPRESS_URL}/post/media/${userdata.id}?page=1`,
         {
           method: "GET",
           headers: {
@@ -64,7 +64,7 @@ const MediaPanelImageCardOther = React.memo(
     const fetchAdditionalData = async () => {
       setLoading(true); // Set loading to true before fetching
       const res = await fetch(
-        `${process.env.NEXT_PUBLIC_EXPRESS_URL}/profile/media/${userdata.id}?page=${page}`,
+        `${process.env.NEXT_PUBLIC_TS_EXPRESS_URL}/post/media/${userdata.id}?page=${page}`,
         {
           method: "GET",
           next: { revalidate: 30 },

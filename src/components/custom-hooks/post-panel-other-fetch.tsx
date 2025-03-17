@@ -20,7 +20,7 @@ export default function PostPanelFetchOther(userid: number, pageNumber: number) 
         setLoading(true)
         setError(false)
         const token = getToken()
-        const api = `${process.env.NEXT_PUBLIC_EXPRESS_URL}/user/${userid}/posts`
+        const api = `${process.env.NEXT_PUBLIC_TS_EXPRESS_URL}/post/user/${userid}`
         const postPerPage = process.env.NEXT_PUBLIC_POST_PER_PAGE
 
         axios(api, {

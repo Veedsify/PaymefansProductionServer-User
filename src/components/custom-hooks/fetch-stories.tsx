@@ -10,7 +10,7 @@ const useFetchStories = () => {
   useEffect(() => {
     const fetchStories = async () => {
       const res = await fetch(
-        `${process.env.NEXT_PUBLIC_EXPRESS_URL}/stories`,
+        `${process.env.NEXT_PUBLIC_TS_EXPRESS_URL}/story/all`,
         {
           method: "GET",
           headers: {

@@ -24,7 +24,6 @@ const getUserData = cache(async (): Promise<AuthUserProps | null> => {
     );
 
     if (res.status === 200 && res.data?.user) {
-      console.log("User data:", res.data.user);
       return res.data.user as AuthUserProps;
     }
 

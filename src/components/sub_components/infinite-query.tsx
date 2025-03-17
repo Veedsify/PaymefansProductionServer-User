@@ -6,7 +6,7 @@ import axios from 'axios';
 export const fetchItems = async ({ pageParam = 1 }: { pageParam: number }) => {
     try {
         const token = getToken()
-        const api = `${process.env.NEXT_PUBLIC_EXPRESS_URL}/user/posts`
+        const api = `${process.env.NEXT_PUBLIC_TS_EXPRESS_URL}/post/my-posts`
         const postPerPage = process.env.NEXT_PUBLIC_POST_PER_PAGE
         const res = await axios.get(`${api}?page=${pageParam}&limit=${postPerPage}`, {
             headers: {
@@ -23,7 +23,7 @@ export const fetchItems = async ({ pageParam = 1 }: { pageParam: number }) => {
 export const fetchItemsOther = async ({ pageParam, userid }: { pageParam: number, userid?: number }) => {
     try {
         const token = getToken()
-        const api = `${process.env.NEXT_PUBLIC_EXPRESS_URL}/user/${userid}/posts`
+        const api = `${process.env.NEXT_PUBLIC_TS_EXPRESS_URL}/post/user/${userid}`
         const postPerPage = process.env.NEXT_PUBLIC_POST_PER_PAGE
         const res = await axios.get(`${api}?page=${pageParam}&limit=${postPerPage}`, {
             headers: {
@@ -36,4 +36,3 @@ export const fetchItemsOther = async ({ pageParam, userid }: { pageParam: number
         console.error(error);
     }
 };
-
