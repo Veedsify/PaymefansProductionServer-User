@@ -1,6 +1,6 @@
+import { AuthUserProps } from "@/types/user";
 import Image from "next/image";
 import Link from "next/link";
-import { AuthUserProps } from "../types/user";
 
 const HookupSubscription = ({ hookup }: { hookup: AuthUserProps }) => {
     return (

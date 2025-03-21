@@ -79,7 +79,7 @@ export const ReplyPostComponent = ({ options }: ReplyPostProps) => {
     try {
       setCommentSending(true);
       const token = getToken();
-      const url = `${process.env.NEXT_PUBLIC_EXPRESS_URL}/comment/new`;
+      const url = `${process.env.NEXT_PUBLIC_TS_EXPRESS_URL}/comment/new`;
       const formData = new FormData();
       formData.append("post_id", options?.post_id);
       formData.append("postId", String(options?.id));

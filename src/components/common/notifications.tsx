@@ -44,7 +44,7 @@ export function NotificationBody() {
     const handleNotificationClick = async (url: string, notification_id: string, id: number, read: boolean) => {
         if (read) return
         if (url && url !== "") {
-            const readUrl = `${process.env.NEXT_PUBLIC_EXPRESS_URL}/read-notification/${id}`;
+            const readUrl = `${process.env.NEXT_PUBLIC_TS_EXPRESS_URL}/read-notification/${id}`;
             const readNotification = await axios.get(readUrl, { headers: { "Authorization": `Bearer ${token}` } })
             if (readNotification.status === 200) {
                 updateNotification(notification_id)

@@ -6,7 +6,7 @@ export const checkUserIsFollowing = async (
   thisuser: any
 ) => {
   const token = (await cookies()).get('token')
-  return fetch(`${process.env.NEXT_PUBLIC_EXPRESS_URL}/follow/check`, {
+  return fetch(`${process.env.NEXT_PUBLIC_TS_EXPRESS_URL}/follower/check`, {
     method: "POST",
     body: JSON.stringify({
       userId: user?.user_id,

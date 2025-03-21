@@ -133,7 +133,7 @@ function BannerModal({ user, open = false, setOpen }: BannerModalProps) {
           />
         </div>
         <label htmlFor="imageUpload">
-          <div className="relative border-[3px] mb-3 inline-block p-2 rounded-full border-dotted group">
+          <div className="relative border-[3px] border-black/50 mb-3 inline-block p-2 rounded-full border-dotted group">
             <Image
               src={
                 file
@@ -146,7 +146,7 @@ function BannerModal({ user, open = false, setOpen }: BannerModalProps) {
               height={100}
               className="object-cover w-20 h-20 rounded-full lg:w-24 lg:h-24 aspect-square "
             />
-            <div className="absolute inset-0 bg-black bg-opacity-30 flex items-center justify-center rounded-full cursor-pointer transition-all duration-200">
+            <div className="absolute inset-0 bg-black/30 flex items-center justify-center rounded-full cursor-pointer transition-all duration-200">
               <LucideCamera size={20} className="text-white" />
             </div>
           </div>
@@ -211,7 +211,7 @@ function BannerModal({ user, open = false, setOpen }: BannerModalProps) {
             placeholder="Website"
           />
         </div>
-        <div className="grid grid-cols-12 border rounded-xl items-center justify-center mb-5 overflow-hidden dark:border-slate-600">
+        <div className="grid grid-cols-12 border border-black/20 rounded-xl items-center justify-center mb-5 overflow-hidden dark:border-slate-600">
           <div
             className="flex items-center justify-center col-span-2 bg-gray-100 dark:bg-black dark:text-white h-full
                     "
@@ -226,7 +226,7 @@ function BannerModal({ user, open = false, setOpen }: BannerModalProps) {
             placeholder="https://instagram.com/@paymefans"
           />
         </div>
-        <div className="grid grid-cols-12 border rounded-xl items-center justify-center mb-5 overflow-hidden dark:border-slate-600">
+        <div className="grid grid-cols-12 border border-black/20 rounded-xl items-center justify-center mb-5 overflow-hidden dark:border-slate-600">
           <div
             className="flex items-center justify-center col-span-2 bg-gray-100 dark:bg-black dark:text-white h-full
                     "
@@ -237,11 +237,11 @@ function BannerModal({ user, open = false, setOpen }: BannerModalProps) {
             type="text"
             onChange={handleInputChange}
             name="twitter"
-            className="w-full block border-gray-300 dark:text-white dark:bg-slate-900 dark:border-slate-700 p-4 outline-none text-black  col-span-10"
+            className="w-full block border-gray-200 dark:text-white dark:bg-slate-900 dark:border-slate-700 p-4 outline-none text-black  col-span-10"
             placeholder="https://twitter.com/@paymefans"
           />
         </div>
-        <div className="grid grid-cols-12 border rounded-xl items-center justify-center mb-5 overflow-hidden dark:border-slate-600">
+        <div className="grid grid-cols-12 border border-black/20 rounded-xl items-center justify-center mb-5 overflow-hidden dark:border-slate-600">
           <div
             className="flex items-center justify-center col-span-2 bg-gray-100 dark:bg-black dark:text-white h-full
                     "

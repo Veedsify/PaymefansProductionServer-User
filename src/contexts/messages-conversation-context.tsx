@@ -30,7 +30,7 @@ export const MessagesConversationProvider = ({ children }: { children: ReactNode
 
     // useEffect(() => {
     //     const token = getToken()
-    //     const url = `${process.env.NEXT_PUBLIC_EXPRESS_URL}/notifications/1`
+    //     const url = `${process.env.NEXT_PUBLIC_TS_EXPRESS_URL}/notifications/1`
     //     const getNotifications = async () => {
     //         const myNotitifications = await axios.post(url, {}, {
     //             headers: {

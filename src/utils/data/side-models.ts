@@ -2,7 +2,7 @@
 // import axiosInstance from "../axios";
 
 // export const sideModels = async () => {
-//   return axiosInstance.post(`${process.env.NEXT_PUBLIC_EXPRESS_URL}/models/all`, {
+//   return axiosInstance.post(`${process.env.NEXT_PUBLIC_TS_EXPRESS_URL}/models/all`, {
 //     limit: 4,
 //   }, {
 //     headers: {

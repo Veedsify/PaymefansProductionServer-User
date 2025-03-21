@@ -30,7 +30,7 @@ const SetSubscription = () => {
     // Fetch Subscriptions
     const GetSubscriptions = useCallback(async () => {
         try {
-            const url = `${process.env.NEXT_PUBLIC_EXPRESS_URL}/fetch/user/subscriptions/${user?.user_id}`;
+            const url = `${process.env.NEXT_PUBLIC_TS_EXPRESS_URL}/fetch/user/subscriptions/${user?.user_id}`;
             const subscriptions = await FetchUserSubscriptions(url, token);
 
             if (subscriptions.data.data.length === 0) {

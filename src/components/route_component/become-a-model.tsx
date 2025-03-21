@@ -61,7 +61,6 @@ const BecomeAModel = () => {
     name: "Choose Gender",
   });
   const [loading, setLoading] = useState(true);
-  const ref = useRef();
 
   const updatePostAudience = (e: MouseEvent<HTMLLIElement>) => {
     const id = e.currentTarget.getAttribute("data-id");

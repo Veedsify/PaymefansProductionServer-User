@@ -17,6 +17,18 @@ const getUniqueItems = (arr: MediaDataTypeOtherProps[]) => {
   return Array.from(uniqueMap.values());
 };
 
+interface MediaPanelMediaCardProps {
+  media: MediaDataTypeOtherProps;
+  PreviewImageHandler: (
+    media: MediaDataTypeOtherProps,
+    type: string,
+    isSubscriber: boolean,
+    indexId: number
+  ) => void;
+  isSubscriber: boolean;
+  indexId: number;
+}
+
 const MediaPanelImageCardOther = React.memo(
   ({ sort, userdata }: { sort: string; userdata: ProfileUserProps }) => {
     const [data, setData] = useState<MediaDataTypeOtherProps[]>([]);
@@ -40,7 +52,7 @@ const MediaPanelImageCardOther = React.memo(
     const fetchInitialData = useCallback(async () => {
       setLoading(true); // Set loading to true before fetching
       const res = await fetch(
-        `${process.env.NEXT_PUBLIC_TS_EXPRESS_URL}/post/media/${userdata.id}?page=1`,
+        `${process.env.NEXT_PUBLIC_TS_EXPRESS_URL}/post/media/${userdata.id}?page=1&limit=${process.env.NEXT_PUBLIC_POST_MEDIA_PER_PAGE}`,
         {
           method: "GET",
           headers: {
@@ -64,7 +76,7 @@ const MediaPanelImageCardOther = React.memo(
     const fetchAdditionalData = async () => {
       setLoading(true); // Set loading to true before fetching
       const res = await fetch(
-        `${process.env.NEXT_PUBLIC_TS_EXPRESS_URL}/post/media/${userdata.id}?page=${page}`,
+        `${process.env.NEXT_PUBLIC_TS_EXPRESS_URL}/post/media/${userdata.id}?page=${page}&limit=${process.env.NEXT_PUBLIC_POST_MEDIA_PER_PAGE}`,
         {
           method: "GET",
           next: { revalidate: 30 },
@@ -91,19 +103,29 @@ const MediaPanelImageCardOther = React.memo(
       indexId: number
     ) => {
       if (media.accessible_to === "subscribers" && !isSubscriber) return;
-      const medias = sorted
-        .filter((media) => !media.locked)
+
+      const filteredMedias = sorted
         .filter((item) => item.media_state !== "processing")
-        .map((media) => ({
-          url: media.url,
-          type: media.media_type,
-        }));
+        .filter((media) => (media.accessible_to !== "price"))
+        .filter(
+          (media) => !(media.accessible_to === "subscribers" && !isSubscriber)
+        );
+
+      // Get the new index after filtering
+      const newIndexId = filteredMedias.findIndex(
+        (item) => item.id === media.id
+      );
+
+      const medias = filteredMedias.map((media) => ({
+        url: media.url,
+        type: media.media_type,
+      }));
 
       fullScreenPreview({
         url: media.url,
         type,
         open: true,
-        ref: indexId,
+        ref: newIndexId, // Use new index
         otherUrl: medias,
       });
     };
@@ -155,18 +177,6 @@ const MediaPanelImageCardOther = React.memo(
   }
 );
 
-interface MediaPanelMediaCardProps {
-  media: MediaDataTypeOtherProps;
-  PreviewImageHandler: (
-    media: MediaDataTypeOtherProps,
-    type: string,
-    isSubscriber: boolean,
-    indexId: number
-  ) => void;
-  isSubscriber: boolean;
-  indexId: number;
-}
-
 const MediaPanelMediaCard = ({
   media,
   PreviewImageHandler,
@@ -188,6 +198,7 @@ const MediaPanelMediaCard = ({
                 allOthers={{
                   width: 400,
                   height: 400,
+                  poster: media.poster,
                   onClick: () =>
                     PreviewImageHandler(
                       media,
@@ -215,6 +226,16 @@ const MediaPanelMediaCard = ({
         </>
       ) : (
         <>
+          {media.accessible_to === "price" && (
+            <Image
+              width={400}
+              height={400}
+              priority
+              src={media.blur}
+              alt=""
+              className="w-full h-full cursor-pointer object-cover transition-all duration-300 ease-in-out hover:scale-105"
+            />
+          )}
           {!isSubscriber && media.accessible_to === "subscribers" ? (
             <Image
               width={400}
@@ -246,6 +267,14 @@ const MediaPanelMediaCard = ({
       )}
       {!isSubscriber && media.accessible_to === "subscribers" && (
         <LockedMediaOverlay
+          type="subscribers"
+          mediaIsVideo={media.media_type === "video"}
+          duration={"00:34"}
+        />
+      )}
+      {media.accessible_to === "price" && (
+        <LockedMediaOverlay
+          type="price"
           mediaIsVideo={media.media_type === "video"}
           duration={"00:34"}
         />

@@ -1,5 +1,4 @@
 "use client";
-import "stories-react/dist/index.css";
 import { Loader2, LucidePlus } from "lucide-react";
 import Image from "next/image";
 import { useState } from "react";
@@ -19,7 +18,7 @@ const StatusComponent = () => {
       )
     : [];
   return (
-    <div className="select-none border-b">
+    <div className="select-none border-b border-black/30">
       <div className="flex items-center gap-4 overflow-x-auto lg:overflow-hidden lg:hover:overflow-x-auto w-screen md:w-full p-4 py-6 pb-9 clean-sidebar">
         <UserStatus />
         {loading && (

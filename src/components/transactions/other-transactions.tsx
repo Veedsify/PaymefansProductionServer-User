@@ -35,7 +35,7 @@ const OtherTransactions = React.memo(() => {
     const fetchTransactions = async () => {
       try {
         const res = await fetch(
-          `${process.env.NEXT_PUBLIC_EXPRESS_URL}/wallet/transactions/other`,
+          `${process.env.NEXT_PUBLIC_TS_EXPRESS_URL}/wallet/transactions/other`,
           {
             headers: {
               Authorization: `Bearer ${token}`,

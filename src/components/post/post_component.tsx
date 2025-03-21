@@ -1,10 +1,23 @@
 "use client";
-import { LucideEye, LucideLock, LucidePlus, LucideUsers } from "lucide-react";
+import {
+  DollarSign,
+  LucideEye,
+  LucideLock,
+  LucidePlus,
+  LucideUsers,
+} from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 import usePostComponent from "@/contexts/post-component-preview";
 import { HiPlay } from "react-icons/hi";
-import { MouseEvent, useCallback, useEffect, useRef, useState } from "react";
+import {
+  MouseEvent,
+  ReactNode,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import QuickPostActions from "../sub_components/quick_post_actions";
@@ -18,6 +31,7 @@ import {
 } from "@/types/components";
 import Hls from "hls.js";
 import HLSVideoPlayer from "../sub_components/videoplayer";
+import { useUserAuthContext } from "@/lib/userUseContext";
 
 const PostComponent: React.FC<PostComponentProps> = ({
   user,
@@ -29,6 +43,7 @@ const PostComponent: React.FC<PostComponentProps> = ({
 }) => {
   const imageLength = data.media.length;
   const { fullScreenPreview } = usePostComponent();
+  const { user: authUser } = useUserAuthContext();
   // const [isSubscriber, setIsSubscriber] = useState<boolean>(false);
   const router = useRouter();
   const formattedText = useCallback(() => {
@@ -89,19 +104,48 @@ const PostComponent: React.FC<PostComponentProps> = ({
             }
           });
           return;
-        } else if (data.post_audience === "private") {
-          return router.push(`/posts/${data.post_id}`);
-        } else if (data.post_status !== "approved") {
-          return swal({
+        }
+        if (data.post_status !== "approved") {
+          e.preventDefault();
+          swal({
             title: "This post is still processing",
             text: "Only you can preview this. Post while processing; it's done when borders disappear.",
             icon: "warning",
           });
+          return
+        }
+
+        if (data.post_audience === "price" && !(data.user?.user_id === authUser?.user_id)) {
+          e.preventDefault();
+          swal({
+            title: "This post is locked",
+            text: "You need to pay 5,000 coins to view this post.",
+            icon: "warning",
+            buttons: {
+              cancel: true,
+              confirm: {
+                text: "Pay",
+                className: "bg-primary-dark-pink text-white",
+              },
+            },
+          }).then((willPay) => {
+            if (willPay) {
+              router.push(`/posts/${data.post_id}`);
+            }
+          });
+          return
         }
         router.push(`/posts/${data.post_id}`);
       }
     },
-    [router, data.post_id, data.post_audience, isSubscriber, user.user_id]
+    [
+      router,
+      data.post_status,
+      data.post_id,
+      data.post_audience,
+      isSubscriber,
+      user.user_id,
+    ]
   );
 
   const handleNonSubscriberClick = (e: MouseEvent) => {
@@ -123,6 +167,48 @@ const PostComponent: React.FC<PostComponentProps> = ({
           router.push(`/subscribe/${user.user_id}`);
         }
       });
+    }
+    if (data.post_status !== "approved") {
+      e.preventDefault();
+      swal({
+        title: "This post is still processing",
+        text: "Only you can preview this. Post while processing; it's done when borders disappear.",
+        icon: "warning",
+      });
+    }
+    if (data.post_audience === "price" && !(data.user?.user_id === authUser?.user_id)) {
+      e.preventDefault();
+      swal({
+        title: "This post is paid",
+        text: "You need to pay 5,000 coins to view this post.",
+        icon: "warning",
+        buttons: {
+          cancel: true,
+          confirm: {
+            text: "Pay",
+            className: "bg-primary-dark-pink text-white",
+          },
+        },
+      }).then((willPay) => {
+        if (willPay) {
+          router.push(`/posts/${data.post_id}`);
+        }
+      });
+    }
+  };
+
+  const GetAudienceIcon = (audience: string): ReactNode => {
+    switch (audience) {
+      case "public":
+        return <LucideEye size={15} />;
+      case "private":
+        return <LucideLock size={15} />;
+      case "subscribers":
+        return <LucideUsers size={15} />;
+      case "price":
+        return <Image src="/site/coin.svg" alt="" width={15} height={15} />;
+      default:
+        return null;
     }
   };
 
@@ -167,13 +253,7 @@ const PostComponent: React.FC<PostComponentProps> = ({
             </Link>
             <small className="ml-auto">{data.time}</small>
             <div className="text-black dark:text-white">
-              {data.post_audience === "public" ? (
-                <LucideEye size={15} />
-              ) : data.post_audience === "private" ? (
-                <LucideLock size={15} />
-              ) : (
-                <LucideUsers size={15} />
-              )}
+              {GetAudienceIcon(data.post_audience)}
             </div>
           </div>
           <QuickPostActions
@@ -205,8 +285,42 @@ const PostComponent: React.FC<PostComponentProps> = ({
               key={i}
               onClick={handleNonSubscriberClick}
             >
+              {data.post_audience === "price" &&
+                data.user?.user_id !== authUser?.user_id && (
+                  <div className="absolute inset-0 bg-black/20 rounded-lg overflow-hidden flex items-center justify-center z-10">
+                    <Image
+                      src={media.blur ? media.blur.trimEnd() : "/site/blur.jpg"}
+                      alt=""
+                      width={300}
+                      height={300}
+                      className="w-full aspect-[3/4] md:aspect-square object-cover absolute inset-0"
+                    />
+                    <div className="lock-icon absolute inset-0 w-[85%] h-[65%] -translate-x-1/2 -translate-y-1/2 left-1/2 top-1/2 rounded-lg flex items-center justify-center dark:bg-slate-900/70 bg-slate-900/40 cursor-not-allowed">
+                      <span className="flex items-center justify-center flex-col gap-2 text-white">
+                        {i == 0 ? (
+                          <p className="text-base font-bold text-center leading-4 flex items-center justify-center gap-2">
+                            <Image
+                              width={20}
+                              height={20}
+                              src="/site/coin.svg"
+                              className="w-auto h-5 aspect-square"
+                              alt=""
+                            />
+                            5,000
+                          </p>
+                        ) : (
+                          <>
+                            <button className="text-white absolute text-lg font-bold">
+                              <LucideLock />
+                            </button>
+                          </>
+                        )}
+                      </span>
+                    </div>
+                  </div>
+                )}
               {!isSubscriber && data.post_audience === "subscribers" && (
-                <div className="absolute inset-0 bg-black bg-opacity-20 rounded-lg overflow-hidden flex items-center justify-center z-10">
+                <div className="absolute inset-0 bg-black/20 rounded-lg overflow-hidden flex items-center justify-center z-10">
                   <Image
                     src={media.blur ? media.blur.trimEnd() : "/site/blur.jpg"}
                     alt=""
@@ -273,13 +387,14 @@ const PostComponent: React.FC<PostComponentProps> = ({
                       ? "#"
                       : `/posts/${data.post_id}`
                   }
-                  className="flex flex-col absolute inset-0 items-center justify-center bg-black rounded-lg aspect-[3/4] md:aspect-square bg-opacity-40 cursor-pointer select-none"
+                  className="flex flex-col absolute inset-0 items-center justify-center rounded-lg aspect-[3/4] md:aspect-square bg-gray-500/70 cursor-pointer select-none"
                 >
                   <div>
                     <LucidePlus
                       size={40}
-                      stroke="#fff"
-                      className="border-4 rounded-full"
+                      fill="#ffffff"
+                      stroke="#ffffff"
+                      className="border-4 text-white rounded-full"
                     />
                   </div>
                   <p className="text-lg font-bold select-none text-white">
@@ -382,7 +497,7 @@ const VideoComponent: React.FC<VideoComponentProps> = ({
 
   if (media.media_state == "processing") {
     return (
-      <div className="h-full select-none shadow-md aspect-square w-full object-cover bg-black flex flex-col gap-2 items-center justify-center text-white">
+      <div className="h-full select-none shadow-md aspect aspect-[3/4] md:aspect-square w-full object-cover bg-black flex flex-col gap-2 items-center justify-center text-white">
         <h1>Your Media is still processing</h1>
         <small>Please wait for a few minutes</small>
       </div>
@@ -393,7 +508,8 @@ const VideoComponent: React.FC<VideoComponentProps> = ({
     <>
       <HLSVideoPlayer
         streamUrl={media.url}
-        autoPlay={false}
+        autoPlay={true}
+        modalOpen={false}
         allOthers={{
           id: "video_player_post",
           playsInline: true,
@@ -409,14 +525,14 @@ const VideoComponent: React.FC<VideoComponentProps> = ({
           poster: media.poster ? media.poster : "",
           muted: true,
         }}
-        className="h-full shadow-md aspect-square w-full object-cover"
+        className="h-full shadow-md aspect-[3/4] md:aspect-square w-full object-cover"
       />
       {!playing && (
         <div
           onClick={playPauseVideo}
-          className="absolute inset-0 text-white bg-black bg-opacity-20 rounded-lg flex items-center justify-center cursor-pointer"
+          className="absolute inset-0 text-white bg-black/20 rounded-lg flex items-center justify-center cursor-pointer"
         >
-          <button className="h-12 w-12 p-1 flex-shrink-0 rounded-full flex items-center justify-center bg-primary-dark-pink bg-opacity-30 aspect-square">
+          <button className="h-12 w-12 p-1 flex-shrink-0 rounded-full flex items-center justify-center bg-primary-dark-pink/30 aspect-square">
             <HiPlay className="text-white" size={50} />
           </button>
         </div>

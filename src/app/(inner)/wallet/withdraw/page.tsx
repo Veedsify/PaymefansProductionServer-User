@@ -9,14 +9,14 @@ import Link from "next/link";
 const Page = async () => {
     const token = (await cookies()).get('token')
     const user = await getUserData();
-    const { wallet } = await axiosInstance.post(`${process.env.NEXT_PUBLIC_EXPRESS_URL}/auth/wallet`, {
+    const { wallet } = await axiosInstance.post(`${process.env.NEXT_PUBLIC_TS_EXPRESS_URL}/auth/wallet`, {
     }, {
         headers: {
             "Content-Type": "application/json",
             "Authorization": `Bearer ${token?.value}`
         }
     }).then(res => res.data as { wallet: number })
-    const { points } = await axiosInstance.post(`${process.env.NEXT_PUBLIC_EXPRESS_URL}/auth/points`, {
+    const { points } = await axiosInstance.post(`${process.env.NEXT_PUBLIC_TS_EXPRESS_URL}/auth/points`, {
     }, {
         headers: {
             "Content-Type": "application/json",

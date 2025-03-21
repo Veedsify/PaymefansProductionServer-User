@@ -22,7 +22,7 @@ const SideModels = () => {
     queryFn: async () =>
       axiosInstance
         .post(
-          `${process.env.NEXT_PUBLIC_EXPRESS_URL}/models/all`,
+          `${process.env.NEXT_PUBLIC_TS_EXPRESS_URL}/models/all`,
           {
             limit: 4,
           },
@@ -47,7 +47,7 @@ const SideModels = () => {
     queryFn: async () =>
       axiosInstance
         .post(
-          `${process.env.NEXT_PUBLIC_EXPRESS_URL}/models/hookups`,
+          `${process.env.NEXT_PUBLIC_TS_EXPRESS_URL}/models/hookups`,
           {
             limit: 6,
           },
@@ -119,7 +119,7 @@ const SideModels = () => {
             </div>
           </div>
         </div>
-        <hr className="dark:border-slate-800" />
+        <hr className="dark:border-slate-800 border-black/30" />
         <div className="flex align-middle justify-between  my-8">
           <span className="font-bold">Hookup</span>
           <span>

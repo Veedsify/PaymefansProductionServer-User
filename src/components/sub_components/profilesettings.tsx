@@ -8,6 +8,7 @@ import { saveUserSettings } from "@/utils/data/save-user-settings";
 import axios from "axios";
 import { getToken } from "@/utils/cookie.get";
 import useCheckEmail from "../custom-hooks/check-email";
+import { countries } from "@/lib/locations";
 
 type ProfileSettingsProps = {
   user: any;
@@ -20,7 +21,9 @@ const ProfileSettings = ({ user }: ProfileSettingsProps) => {
   );
   const [usernameCheck, setusernameCheck] = useState("");
   const handleInputChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >
   ) => {
     setUserData({ ...userData, [e.target.name]: e.target.value });
   };
@@ -65,14 +68,21 @@ const ProfileSettings = ({ user }: ProfileSettingsProps) => {
         />
       </div>
       <div>
-        <input
-          type="text"
+        <select
           name="location"
           className="w-full block border mb-3 border-gray-300 p-4 outline-none text-black rounded-xl"
           defaultValue={user?.location}
           onChange={handleInputChange}
-          placeholder="Location "
-        />
+        >
+          {countries.map((location) => (
+            <option
+              value={location.name}
+              key={location.code}
+            >
+              {location.name}
+            </option>
+          ))}
+        </select>
       </div>
       <div>
         <input

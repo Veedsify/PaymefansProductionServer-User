@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import {useState, useEffect, useCallback} from 'react';
 import axios from 'axios';
 import { AuthUserProps } from '@/types/user';
 import { getToken } from '@/utils/cookie.get';
@@ -10,7 +10,7 @@ const useCheckEmail = (user: AuthUserProps, emailcheck: string) => {
 
     const debouncedEmailCheck = useDebounce(emailcheck, 500); // Adjust the debounce delay as needed
 
-    useEffect(() => {
+    const RunCheckEmail = useCallback(() => {
         // if (!debouncedEmailCheck) return;
 
         const source = axios.CancelToken.source();
@@ -20,7 +20,7 @@ const useCheckEmail = (user: AuthUserProps, emailcheck: string) => {
                 setCanSave(true);
                 setMessage("");
                 const token = getToken();
-                const api = `${process.env.NEXT_PUBLIC_EXPRESS_URL}/users/check-email?email=${debouncedEmailCheck}`;
+                const api = `${process.env.NEXT_PUBLIC_TS_EXPRESS_URL}/users/check-email?email=${debouncedEmailCheck}`;
 
                 const response = await axios.post(api, {}, {
                     headers: {
@@ -57,6 +57,8 @@ const useCheckEmail = (user: AuthUserProps, emailcheck: string) => {
             source.cancel("Operation canceled by the user.");
         };
     }, [user, debouncedEmailCheck]);
+
+    useEffect(()=> RunCheckEmail(), [RunCheckEmail])
 
     return { canSave, message };
 };

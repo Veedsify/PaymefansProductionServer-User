@@ -32,7 +32,7 @@ const WalletPage = async () => {
 
   const { wallet } = await axiosInstance
     .post(
-      `${process.env.NEXT_PUBLIC_EXPRESS_URL}/auth/wallet`,
+      `${process.env.NEXT_PUBLIC_TS_EXPRESS_URL}/auth/wallet`,
       {},
       {
         headers: {
@@ -45,7 +45,7 @@ const WalletPage = async () => {
 
   const { points } = await axiosInstance
     .post(
-      `${process.env.NEXT_PUBLIC_EXPRESS_URL}/auth/points`,
+      `${process.env.NEXT_PUBLIC_TS_EXPRESS_URL}/auth/points`,
       {},
       {
         headers: {

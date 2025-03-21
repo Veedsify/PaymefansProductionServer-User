@@ -15,7 +15,7 @@ const PageCallBack = () => {
     const [successful, setSuccessful] = useState<boolean | null>(null);
     useEffect(() => {
         const verifyBuy = async () => {
-            const verifyPurchaseFunction = await axiosInstance.post(`${process.env.NEXT_PUBLIC_EXPRESS_URL}/points/callback`, { reference: reference }, {
+            const verifyPurchaseFunction = await axiosInstance.post(`${process.env.NEXT_PUBLIC_TS_EXPRESS_URL}/points/callback`, { reference: reference }, {
                 headers: {
                     "Content-Type": "application/json",
                     Authorization: `Bearer ${document.cookie.split("token=")[1].split(";")[0]}`,

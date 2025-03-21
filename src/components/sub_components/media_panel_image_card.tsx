@@ -60,7 +60,7 @@ const MediaPanelImageCard = React.memo(({ sort }: { sort: string }) => {
     setLoading(true);
     try {
       const res = await fetch(
-        `${process.env.NEXT_PUBLIC_TS_EXPRESS_URL}/post/media?page=1`,
+        `${process.env.NEXT_PUBLIC_TS_EXPRESS_URL}/post/media?page=1&limit=${process.env.NEXT_PUBLIC_POST_MEDIA_PER_PAGE}`,
         {
           method: "GET",
           headers: {
@@ -90,7 +90,7 @@ const MediaPanelImageCard = React.memo(({ sort }: { sort: string }) => {
     setLoading(true);
     try {
       const res = await fetch(
-        `${process.env.NEXT_PUBLIC_TS_EXPRESS_URL}/post/media?page=${page}`,
+        `${process.env.NEXT_PUBLIC_TS_EXPRESS_URL}/post/media?page=${page}&limit=${process.env.NEXT_PUBLIC_POST_MEDIA_PER_PAGE}`,
         {
           method: "GET",
           headers: {
@@ -235,6 +235,7 @@ const MediaPanelMediaCard = ({
       )}
       {!isSubscriber && (
         <LockedMediaOverlay
+          type="subscribers"
           mediaIsVideo={media.media_type === "video"}
           duration={"00:34"}
         />

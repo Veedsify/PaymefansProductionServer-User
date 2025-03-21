@@ -16,7 +16,7 @@ const Stream = async ({
     try {
       const response = await axios({
         method: "GET",
-        url: `${process.env.NEXT_PUBLIC_EXPRESS_URL}/live/host/${stream_id}`,
+        url: `${process.env.NEXT_PUBLIC_TS_EXPRESS_URL}/live/host/${stream_id}`,
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,

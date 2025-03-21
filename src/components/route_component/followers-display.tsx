@@ -16,7 +16,7 @@ const FollowersDisplay = () => {
     const arr = new Array(30).fill(0);
     const fetchFollowers = useCallback(async () => {
         try {
-            const response = await fetch(`${process.env.NEXT_PUBLIC_EXPRESS_URL}/get/followers?min=${paginate.min}&max=${paginate.max}`, {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_TS_EXPRESS_URL}/follower/all?min=${paginate.min}&max=${paginate.max}`, {
                 method: "POST",
                 cache: "force-cache",
                 headers: {

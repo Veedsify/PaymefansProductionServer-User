@@ -157,7 +157,7 @@ const QuickPostActionHooks = ({ options }: QuickPostActionsProps) => {
         icon: "info",
       });
     }
-  }, []);
+  }, [router, options.post_id]);
 
   const ownerOptions: (OwnerOption | null)[] = [
     user?.is_model

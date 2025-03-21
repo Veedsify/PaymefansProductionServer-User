@@ -75,7 +75,7 @@ const WalletAddBank = () => {
 
         try {
 
-            const res = await fetch(`${process.env.NEXT_PUBLIC_EXPRESS_URL}/banks/add`, {
+            const res = await fetch(`${process.env.NEXT_PUBLIC_TS_EXPRESS_URL}/wallet/banks/add`, {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json",
@@ -153,7 +153,7 @@ const SavedBanks = () => {
     const [banks, setBanks] = useState<MyBanks[]>([])
     useEffect(() => {
         const getBanks = async () => {
-            const res = await fetch(`${process.env.NEXT_PUBLIC_EXPRESS_URL}/banks`, {
+            const res = await fetch(`${process.env.NEXT_PUBLIC_TS_EXPRESS_URL}/wallet/banks`, {
                 headers: {
                     "Content-Type": "application/json",
                     "Authorization": `Bearer ${getToken()}` || ""
@@ -167,7 +167,7 @@ const SavedBanks = () => {
 
     const deleteAccount = (accountNumber: string) => async () => {
         async function deleteBank() {
-            return await fetch(`${process.env.NEXT_PUBLIC_EXPRESS_URL}/banks/delete`, {
+            return await fetch(`${process.env.NEXT_PUBLIC_TS_EXPRESS_URL}/wallet/banks/delete`, {
                 method: "DELETE",
                 headers: {
                     "Content-Type": "application/json",

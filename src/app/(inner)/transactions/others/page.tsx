@@ -4,7 +4,7 @@ import Image from "next/image";
 
 const Transactions = async () => {
     const token = (await cookies()).get('token')
-    const res = await fetch(`${process.env.NEXT_PUBLIC_EXPRESS_URL}/wallet/transactions/other`, {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_TS_EXPRESS_URL}/wallet/transactions/other`, {
         headers: {
             "Content-Type": "application/json",
             "Authorization": `Bearer ${token?.value}`

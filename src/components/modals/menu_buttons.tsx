@@ -20,7 +20,7 @@ const NavigationBar = () => {
     const { setModal } = useModalContext()
     return (
         <div className="fixed bottom-0 right-0 flex pointer-events-none w-full lg:justify-end">
-            <div className="flex py-7 border-t dark:border-slate-800 items-center justify-between px-8 md:px-16 dark:bg-gray-950 dark:text-white bg-white w-full lg:w-[33.3%] pointer-events-auto">
+            <div className="flex py-7 border-t border-black/30 dark:border-slate-800 items-center justify-between px-8 md:px-16 dark:bg-gray-950 dark:text-white bg-white w-full lg:w-[33.3%] pointer-events-auto">
                 <Link href="/" className="cursor-pointer">
                     <LucideHome />
                 </Link>

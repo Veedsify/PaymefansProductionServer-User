@@ -202,6 +202,7 @@ type UserPostPropsOther = {
     content: string;
     post_id: string;
     post_audience: string;
+    post_status: string;
     post_likes: number;
     post_comments: number;
     post_shares: number;

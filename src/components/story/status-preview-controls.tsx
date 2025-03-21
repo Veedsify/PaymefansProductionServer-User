@@ -86,7 +86,7 @@ export const ProgressBar = ({
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
   const progressBarRef = useRef<HTMLDivElement>(null);
   const hasMovedToNextSlide = useRef(false);
-  const animationFrameRef = useRef<number>();
+  const animationFrameRef = useRef<number>(null);
 
   // Intersection Observer effect
   useEffect(() => {

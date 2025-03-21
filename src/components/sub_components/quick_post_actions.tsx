@@ -1,10 +1,6 @@
 "use client";
 import {
-  LucideEye,
-  LucideEyeOff,
   LucideMoreVertical,
-  LucidePen,
-  LucideTrash,
 } from "lucide-react";
 import { MouseEvent, RefObject, useEffect, useRef, useState } from "react";
 import Link from "next/link";
@@ -16,7 +12,7 @@ import QuickPostActionHooks from "@/utils/quick-actions-actions";
 
 const QuickPostActions = ({ options }: QuickPostActionsProps) => {
   const [open, setOpen] = useState(false);
-  const quickMenuRef = useRef(null) as RefObject<HTMLDivElement>;
+  const quickMenuRef = useRef(null) as unknown as RefObject<HTMLDivElement>;
   const { user } = useUserAuthContext();
   const { ownerOptions, publicOptions } = QuickPostActionHooks({ options });
 

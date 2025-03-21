@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 
 const getUniqueItems = (arr: UserPostProps[]) => {
   const uniqueMap = new Map();
-  arr.forEach(item => uniqueMap.set(item.id, item)); // Replace 'id' with the unique property
+  arr.forEach((item) => uniqueMap.set(item.id, item)); // Replace 'id' with the unique property
   return Array.from(uniqueMap.values());
   return arr;
 };
@@ -52,18 +52,20 @@ const RepostPanelFetch = ({
         const { data } = res.data;
         console.log("Fetched data:", data);
 
-        if (data.length === 0 && posts.length === 0) {
-          setHasMore(false);
-          setLoading(false);
-          setTotalResults(0);
-          setPosts([]);
-          return;
-        }
+        setPosts((prevPosts) => {
+          if (data.length === 0 && prevPosts.length === 0) {
+            setHasMore(false);
+            setLoading(false);
+            setTotalResults(0);
+            return [];
+          }
 
-        setTotalResults(res.data.total);
-        setPosts((prev) => getUniqueItems([...prev, ...data]));
-        setHasMore(data.length > 0 && posts.length + data.length < res.data.total);
-        setLoading(false);
+          setTotalResults(res.data.total);
+          const newPosts = getUniqueItems([...prevPosts, ...data]);
+          setHasMore(data.length > 0 && newPosts.length < res.data.total);
+          setLoading(false);
+          return newPosts;
+        });
       })
       .catch((e) => {
         if (axios.isCancel(e)) return;

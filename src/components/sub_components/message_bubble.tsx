@@ -9,7 +9,7 @@ import {HiPlay} from "react-icons/hi";
 import {Attachment, MessageBubbleProps} from "@/types/components";
 
 
-const server = process.env.NEXT_PUBLIC_EXPRESS_URL_DIRECT as string
+const server = process.env.NEXT_PUBLIC_TS_EXPRESS_URL_DIRECT as string
 
 const MessageBubble: React.FC<MessageBubbleProps> = ({ sender, seen, message, date, attachment }) => {
     const { user } = useUserAuthContext();

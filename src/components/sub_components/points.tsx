@@ -14,7 +14,7 @@ const PointsBuy = ({
 }) => {
     const handlePointsClick = async (id: string) => {
         toast.loading("Please wait...")
-        const createPaymentLink = await fetch(`${process.env.NEXT_PUBLIC_EXPRESS_URL}/points/buy`, {
+        const createPaymentLink = await fetch(`${process.env.NEXT_PUBLIC_TS_EXPRESS_URL}/points/buy`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",

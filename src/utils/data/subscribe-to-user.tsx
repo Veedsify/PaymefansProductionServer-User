@@ -5,7 +5,7 @@ import toast from "react-hot-toast"
 export const SubscribeToUser = async (profileId: string, id: number) => {
     const token = getToken()
     try {
-        const response = await axios.post(`${process.env.NEXT_PUBLIC_EXPRESS_URL}/subscribe/subscription-to-user/${profileId}`, {
+        const response = await axios.post(`${process.env.NEXT_PUBLIC_TS_EXPRESS_URL}/subscribe/subscription-to-user/${profileId}`, {
             tier_id: id
         }, {
             headers: {

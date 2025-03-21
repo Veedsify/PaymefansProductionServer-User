@@ -225,7 +225,7 @@ const BannerComponent = ({ profile_banner }: BannerComponentProps) => {
             accept=".jpg,.jpeg,.png"
             className="hidden"
           />
-          <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center cursor-pointer">
+          <div className="absolute inset-0 bg-black/50 flex items-center justify-center cursor-pointer">
             <button
               onClick={selectImage}
               className="flex items-center bg-white px-4 py-2 rounded"

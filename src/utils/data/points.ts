@@ -3,7 +3,7 @@ import axiosInstance from "../axios";
 
 const getUserPoints = async () => {
     const res = await axiosInstance.post(
-        `${process.env.NEXT_PUBLIC_EXPRESS_URL}/auth/points`, {},
+        `${process.env.NEXT_PUBLIC_TS_EXPRESS_URL}/auth/points`, {},
         {
             headers: {
                 "Content-Type": "application/json",

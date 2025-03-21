@@ -13,7 +13,7 @@ type PostComponentUser = {
 export const checkUserIsSubscriber = async (user: PostComponentUser, authUser?: AuthUserProps) => {
     try {
         const token = getToken()
-        const res = await axios.post(`${process.env.NEXT_PUBLIC_EXPRESS_URL}/subscriber/check`, {
+        const res = await axios.post(`${process.env.NEXT_PUBLIC_TS_EXPRESS_URL}/subscriber/check`, {
             main_user_id: user.id,
             user_id: authUser?.id
         }, {

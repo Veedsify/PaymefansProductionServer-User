@@ -59,7 +59,7 @@ const ROUTE = {
    * Endpoint for fetching conversionrate for points
    * @type {string}
    */
-  GET_POINTS_CONVERSION_RATE: `${NEXT_PUBLIC_TS_EXPRESS_URL}/point/rate`,
+  GET_POINTS_CONVERSION_RATE: `${NEXT_PUBLIC_TS_EXPRESS_URL}/points/rate`,
 
   /**
      * 

@@ -56,8 +56,9 @@ const PostComponentPreview = () => {
     <>
       {open && (
         <div
-          className={`fixed inset-0 w-full min-h-screen z-[999] smooth-opacity select-none ${open ? "active" : ""
-            }`}
+          className={`fixed inset-0 w-full h-screen z-[999] smooth-opacity select-none ${
+            open ? "active" : ""
+          }`}
         >
           <button
             onClick={close}
@@ -69,14 +70,14 @@ const PostComponentPreview = () => {
           <Swiper
             spaceBetween={0}
             slidesPerView={1}
-            className=""
+            className="h-screen"
             modules={[Navigation, Pagination]}
             onSwiper={(swiper) => (swiperRef.current = swiper)}
           >
             {otherUrl.map((item, index) => (
               <SwiperSlide
                 key={index}
-                className="flex items-center justify-center h-screen"
+                className="flex items-center justify-center h-full"
                 onClick={(e) => e.stopPropagation()}
                 onDoubleClick={close}
               >
@@ -102,7 +103,7 @@ const PostComponentPreview = () => {
                       quality={100}
                       draggable={false}
                       src={item.url.trimEnd()}
-                      className={`h-screen object-contain mx-auto w-auto transition-all duration-200 border-none animate-in z-10`}
+                      className={`h-screen object-contain w-auto transition-all duration-200 border-none animate-in z-10`}
                       alt="Media Preview"
                     />
                   </>
@@ -110,20 +111,22 @@ const PostComponentPreview = () => {
               </SwiperSlide>
             ))}
             {/* Custom Navigation */}
-            <div className="absolute top-1/2 transform pointer-events-none md:pointer-events-auto -translate-y-1/2 z-10 w-full flex justify-between p-4">
-              <button
-                onClick={() => swiperRef.current?.slidePrev()}
-                className="bg-gray-200 p-2 opacity-0 md:opacity-20 pointer-events-none md:pointer-events-auto hover:opacity-100 rounded-full hover:bg-gray-300"
-              >
-                <ChevronLeft className="md:h-[30px] h-[20px] md:w-[30px] w-[20px]" />
-              </button>
-              <button
-                onClick={() => swiperRef.current?.slideNext()}
-                className="bg-gray-200 p-2 opacity-0 md:opacity-20 pointer-events-none md:pointer-events-auto hover:opacity-100  rounded-full hover:bg-gray-300"
-              >
-                <ChevronRight className="md:h-[30px] h-[20px] md:w-[30px] w-[20px]" />
-              </button>
-            </div>
+            {otherUrl.length > 1 && (
+              <div className="absolute top-1/2 transform pointer-events-none md:pointer-events-auto -translate-y-1/2 z-10 w-full flex justify-between p-4">
+                <button
+                  onClick={() => swiperRef.current?.slidePrev()}
+                  className="bg-gray-200 p-2 opacity-0 md:opacity-20 pointer-events-none md:pointer-events-auto hover:opacity-100 rounded-full hover:bg-gray-300"
+                >
+                  <ChevronLeft className="md:h-[30px] h-[20px] md:w-[30px] w-[20px]" />
+                </button>
+                <button
+                  onClick={() => swiperRef.current?.slideNext()}
+                  className="bg-gray-200 p-2 opacity-0 md:opacity-20 pointer-events-none md:pointer-events-auto hover:opacity-100  rounded-full hover:bg-gray-300"
+                >
+                  <ChevronRight className="md:h-[30px] h-[20px] md:w-[30px] w-[20px]" />
+                </button>
+              </div>
+            )}
           </Swiper>
         </div>
       )}
@@ -187,10 +190,10 @@ const VideoPreview = ({
       <HLSVideoPlayer
         streamUrl={url}
         autoPlay={true}
+        modalOpen={true}
         allOthers={{
-          controls: true,
           id: "video_player_full",
-          muted: false
+          muted: false,
         }}
         className="h-screen object-contain mx-auto w-auto transition-all duration-200 border-none animate-in scale-100 fullscreen-video"
       />

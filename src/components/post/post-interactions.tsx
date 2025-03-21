@@ -46,7 +46,7 @@ export const PostCompInteractions = ({ data }: PostCompInteractionsProps) => {
         url={`${process.env.NEXT_PUBLIC_SERVER_URL}/posts/${data?.post_id}`}
         title={data?.content}
       />
-      <div className="flex mt-6 justify-around text-sm w-full text-gray-600 py-6 dark:border-slate-700 border-b">
+      <div className="flex mt-6 justify-around text-sm w-full text-gray-600 py-6 dark:border-slate-700 border-b border-black/20">
         <span
           className="flex items-center gap-1 text-sm cursor-pointer font-medium"
           onClick={likePost}

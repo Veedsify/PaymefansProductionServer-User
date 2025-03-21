@@ -58,7 +58,7 @@ const Subscribe = () => {
         document.title = "Subscribe"
         const fetchUserSubscription = async () => {
             try {
-                const response = await axios.post(`${process.env.NEXT_PUBLIC_EXPRESS_URL}/user/subscription-data/${params.user_id}`, {}, {
+                const response = await axios.post(`${process.env.NEXT_PUBLIC_TS_EXPRESS_URL}/user/subscription-data/${params.user_id}`, {}, {
                     headers: {
                         "Content-Type": "application/json",
                         Authorization: `Bearer ${token}`

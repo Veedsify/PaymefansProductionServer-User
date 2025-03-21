@@ -18,7 +18,7 @@ export default function ModelsFetch(pageNumber: number, search: string) {
         setLoading(true)
         setError(false)
         const token = getToken()
-        const api = `${process.env.NEXT_PUBLIC_EXPRESS_URL}/search-models`
+        const api = `${process.env.NEXT_PUBLIC_TS_EXPRESS_URL}/models/search-models`
 
         axios(api, {
             method: 'GET',

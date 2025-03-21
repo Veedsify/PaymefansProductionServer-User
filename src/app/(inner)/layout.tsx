@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Instrument_Sans } from "next/font/google";
+import Head from "next/head";
 import { GeistSans } from "geist/font/sans";
 
 const font = Instrument_Sans({
@@ -42,9 +43,12 @@ export default async function RootLayout({
   const user = await getUserData();
   return (
     <html lang="en">
+    <Head>
+      <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sf-font@1.0.0/stylesheet.min.css"/>
+    </Head>
       <body
         className={`
-                ${font.className}
+              
                  dark:bg-gray-950 min-h-screen`}
       >
         <UserContextProvider user={user}>
@@ -76,7 +80,7 @@ export default async function RootLayout({
                         <Header />
                         <div className="grid lg:grid-cols-7 pt-[73px] lg:pt-[54px] h-screen">
                           <div className="col-span-4 flex flex-col h-full">
-                            <div className="w-full md:border-r dark:border-slate-800 h-full">
+                            <div className="w-full md:border-r border-black/30 dark:border-slate-800 h-full">
                               {children}
                             </div>
                           </div>

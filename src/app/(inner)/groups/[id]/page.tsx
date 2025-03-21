@@ -65,7 +65,7 @@ const Page = () => {
         <div className="w-full">
           <div className="flex w-full items-center gap-5 px-6 dark:bg-gray-800 bg-gray-100 lg:py-2 py-4">
             <div
-              ref={ref as RefObject<HTMLDivElement>}
+              ref={ref as unknown as RefObject<HTMLDivElement>}
               contentEditable={true}
               id="message-input"
               className="bg-transparent outline-none w-full p-2 font-semibold resize-none dark:text-white"

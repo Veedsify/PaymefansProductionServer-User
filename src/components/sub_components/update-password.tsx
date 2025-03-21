@@ -46,7 +46,7 @@ const UpdatePasswords = () => {
 
         // call api to update password
         async function updatePassword() {
-            const res = await axios.patch(`${process.env.NEXT_PUBLIC_EXPRESS_URL}/settings/update/password`, {
+            const res = await axios.patch(`${process.env.NEXT_PUBLIC_TS_EXPRESS_URL}/settings/update/password`, {
                 ...passwords,
             }, {
                 headers: {
@@ -55,12 +55,12 @@ const UpdatePasswords = () => {
                 },
             });
 
-            return res;
+            return res.data;
         }
         try {
             const reset = await updatePassword();
-            if (reset.data.status === false) {
-                toast.error(reset.data.message);
+            if (reset.status === false) {
+                toast.error(reset.message);
                 return;
             }
             toast.success("Password updated successfully");

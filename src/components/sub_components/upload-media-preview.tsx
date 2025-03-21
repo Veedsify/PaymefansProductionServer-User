@@ -36,7 +36,7 @@ const MediaPreviewer: React.FC<MediaPreviewProps> = ({files, setMessage, sendNew
         close()
         toast.loading("Uploading attachments")
         // await new Promise(resolve => setTimeout(resolve, 2000))
-        const res = await fetch(`${process.env.NEXT_PUBLIC_EXPRESS_URL}/upload/attachments`, {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_TS_EXPRESS_URL}/upload/attachments`, {
             body: formData,
             method: "POST",
             headers: {

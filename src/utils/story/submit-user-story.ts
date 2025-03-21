@@ -4,7 +4,7 @@ import { getToken } from "../cookie.get";
 
 async function SubmitUserStory(stories: StoryType[]) {     
      const token = getToken();
-     const sendData =  await axios.post(`${process.env.NEXT_PUBLIC_EXPRESS_URL}/save/story`, {
+     const sendData =  await axios.post(`${process.env.NEXT_PUBLIC_TS_EXPRESS_URL}/save/story`, {
           stories
      },{
           headers: {
