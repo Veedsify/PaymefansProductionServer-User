@@ -242,7 +242,7 @@ const SideBar = React.memo(() => {
       </div>
       <div
         onClick={() => setSideBar(false)}
-        className={`lg:hidden block fixed inset-0 z-[64] md:z-[49]  w-full bg-opacity-50 duration-300 ease-in-out bg-black ${
+        className={`lg:hidden block fixed inset-0 z-[64] md:z-[49]  w-full duration-300 ease-in-out bg-black/50 ${
           sideBarState
             ? "opacity-100 pointer-events-auto"
             : "opacity-0 pointer-events-none"

@@ -210,7 +210,7 @@ const MediaPanelMediaCard = ({
                 indexId
               )
             }
-            className="absolute bg-black w-full h-full inset-0 bg-opacity-20 cursor-pointer flex items-center justify-center"
+            className="absolute bg-black/20 w-full h-full inset-0 cursor-pointer flex items-center justify-center"
           >
             <LucidePlay stroke="white" size={30} strokeWidth={2} />
           </div>

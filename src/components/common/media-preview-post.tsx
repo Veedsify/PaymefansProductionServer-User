@@ -62,7 +62,7 @@ const Media = ({ id, file, removeThisMedia }: MediaProps) => {
           className="relative object-cover h-auto aspect-square shadow-lg border block rounded-xl z-10"
         />
       )}
-      <div className="absolute top-0 right-0 bg-black bg-opacity-50 text-white p-1 w-full h-full rounded-xl flex items-center justify-center z-20">
+      <div className="absolute top-0 right-0 bg-black/50 text-white p-1 w-full h-full rounded-xl flex items-center justify-center z-20">
         <span
           onClick={() => removeThisMedia(id, file.type)}
           className="cursor-pointer"

@@ -11,10 +11,10 @@ const WishList = () => {
   return (
     <div
       onClick={toggleWishList}
-      className={`bg-black fixed h-screen w-full top-0 z-50 left-0 duration-500 ${
+      className={`fixed h-screen w-full top-0 z-50 left-0 duration-500 ${
         wishList
-          ? "bg-opacity-60 pointer-events-auto"
-          : "bg-opacity-0 pointer-events-none"
+          ? "bg-black/60 pointer-events-auto"
+          : "bg-black/0 pointer-events-none"
       }`}
     >
       <div

@@ -43,12 +43,15 @@ export default async function RootLayout({
   const user = await getUserData();
   return (
     <html lang="en">
-    <Head>
-      <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sf-font@1.0.0/stylesheet.min.css"/>
-    </Head>
+      {/* <Head>
+        //<link
+          //rel="stylesheet"
+          //href="https://cdn.jsdelivr.net/npm/sf-font@1.0.0/stylesheet.min.css"
+        //>
+      </Head> */}
       <body
         className={`
-              
+              ${font.className}
                  dark:bg-gray-950 min-h-screen`}
       >
         <UserContextProvider user={user}>

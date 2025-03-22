@@ -65,7 +65,7 @@ const Media = ({ file, removeThisMedia, index }: {
                          unoptimized
                          alt="1" width={200} height={200} className="object-cover h-auto aspect-square shadow-lg border block rounded-xl" />
                )}
-               <div className="absolute top-0 right-0 bg-black bg-opacity-50 text-white p-1 w-full h-full rounded-xl flex items-center justify-center">
+               <div className="absolute top-0 right-0 bg-black/50 text-white p-1 w-full h-full rounded-xl flex items-center justify-center">
                     <span onClick={() => removeThisMedia(index)} className="cursor-pointer">
                          <X size={20} />
                     </span>

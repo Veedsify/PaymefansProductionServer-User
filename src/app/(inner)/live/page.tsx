@@ -76,7 +76,7 @@ const Live = async () => {
     if (user?.Model?.verification_status === true && user.is_model) {
         return (
             <div className="relative w-full min-h-screen flex items-center justify-center">
-                <div className="absolute inset-0 p-0 m-0 bg-black left-0 bg-opacity-60 -z-10">
+                <div className="absolute inset-0 p-0 m-0 bg-black/60 left-0 -z-10">
                 </div>
                 <Image src={user.profile_banner ? user.profile_banner : "/images/_cbea538c-470c-47a4-940b-bd00104953ca.jpeg"} alt="live background"
                     width={1200} height={1200} priority className="absolute object-cover w-full h-full p-0 m-0 -z-20" />

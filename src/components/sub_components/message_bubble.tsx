@@ -55,7 +55,7 @@ const MessageBubble: React.FC<MessageBubbleProps> = ({ sender, seen, message, da
                 />
             ) : (
                 <div className="relative">
-                    <div className="bg-black bg-opacity-20 absolute inset-0 w-full h-full flex items-center justify-center">
+                    <div className="bg-black/20 absolute inset-0 w-full h-full flex items-center justify-center">
                         <button className="h-12 w-12 p-1 rounded-full flex items-center justify-center bg-primary-dark-pink aspect-square">
                             <HiPlay className="text-white" size={50} />
                         </button>

@@ -20,7 +20,7 @@ const StoryCaptionComponent = ({ close }: StoryCaptionComponentProps) => {
      const { story, addcCaptionToStory } = useStoryStore();
      return (
           <div
-               className="flex flex-col items-center fixed justify-center inset-0 w-full min-h-screen bg-opacity-80 bg-black z-50 select-none">
+               className="flex flex-col items-center fixed justify-center inset-0 w-full min-h-screen bg-black/80 z-50 select-none">
                <div
                     className="p-3 bg-white w-full ">
                     <h2
@@ -84,7 +84,7 @@ const SlideComponent = ({ story, close }: { story: StoryType; index: number; clo
 
      return (
           <div className="flex relative flex-col items-center justify-center h-full w-full">
-               <div className='absolute flex items-center justify-between top-0 left-0 w-full z-50 px-5 py-3 backdrop-blur-sm bg-white bg-opacity-10'>
+               <div className='absolute flex items-center justify-between top-0 left-0 w-full z-50 px-5 py-3 backdrop-blur-sm bg-white/10'>
                     <button
                          onClick={changeFont}
                          className='p-3 rounded-full bg-primary-dark-pink cursor-pointer'>

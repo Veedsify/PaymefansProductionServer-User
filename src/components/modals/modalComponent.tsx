@@ -19,7 +19,7 @@ const ModalComponent = () => {
   return (
     <div
       onClick={onRequestClose}
-      className={`fixed w-full h-dvh lg:h-screen bg-black ease-in-out duration-300 bg-opacity-50 z-[100] ${
+      className={`fixed w-full h-dvh lg:h-screen bg-black/50 ease-in-out duration-300 z-[100] ${
         modalState
           ? "opacity-100 pointer-events-auto"
           : "opacity-0 pointer-events-none"

@@ -3,7 +3,7 @@ import Link from "next/link";
 
 const GroupMessageComponent = () => {
   return (
-    <div className="p-4 px-6 flex items-center hover:bg-gray-50 bg-opacity-70 gap-4 border-b cursor-pointer">
+    <div className="p-4 px-6 flex items-center hover:bg-gray-50/50 gap-4 border-b cursor-pointer">
       <Link href={""}>
         <Image
           src={

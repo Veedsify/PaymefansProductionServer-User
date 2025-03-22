@@ -99,7 +99,7 @@ const PostPageImage: React.FC<PostPageImageProps> = ({
       {!isSubscriber && (
         <div
           onClick={handleMediaClick}
-          className="absolute inset-0 bg-black bg-opacity-20 rounded-lg overflow-hidden flex items-center justify-center z-10 cursor-pointer"
+          className="absolute inset-0 bg-black/20 rounded-lg overflow-hidden flex items-center justify-center z-10 cursor-pointer"
         >
           <Image
             src={media.blur ? media.blur.trimEnd() : "/site/blur.jpg"}
@@ -127,7 +127,7 @@ const PostPageImage: React.FC<PostPageImageProps> = ({
           ></HLSVideoPlayer>
           <div
             onClick={handleClick}
-            className="absolute inset-0 text-white bg-black bg-opacity-50 flex items-center justify-center cursor-pointer"
+            className="absolute inset-0 text-white bg-black/50 flex items-center justify-center cursor-pointer"
           >
             <button className="h-12 w-12 p-1 flex-shrink-0 rounded-full flex items-center justify-center bg-primary-dark-pink aspect-square">
               <HiPlay className="text-white" size={50} />

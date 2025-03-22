@@ -258,7 +258,7 @@ const VideoPlayer = ({
 
       {/* Controls Panel - Time and seek bar */}
       {modalOpen && (
-        <div className="absolute flex flex-col gap-3 px-5 py-4 bg-gray-950 bg-opacity-25 bottom-0 w-full text-white">
+        <div className="absolute flex flex-col gap-3 px-5 py-4 bg-gray-950/25 bottom-0 w-full text-white">
           {/* Seek Bar with custom styling */}
           <CustomSeekBar
             currentTime={currentTime}

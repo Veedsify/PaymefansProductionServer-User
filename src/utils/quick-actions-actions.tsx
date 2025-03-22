@@ -63,7 +63,7 @@ const QuickPostActionHooks = ({ options }: QuickPostActionsProps) => {
   const handleSetvisibility = (e: MouseEvent<HTMLButtonElement>) => {
     const modal = document.createElement("div");
     modal.innerHTML = `
-        <div class="fixed z-50 inset-0 bg-black bg-opacity-50 flex items-center justify-center"
+        <div class="fixed z-50 inset-0 bg-black/50 flex items-center justify-center"
             id="modal-bg"
         >
             <div class="bg-white dark:bg-slate-800 p-5 aspect-video rounded-md">

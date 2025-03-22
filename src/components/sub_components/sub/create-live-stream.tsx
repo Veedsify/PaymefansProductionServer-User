@@ -71,7 +71,7 @@ const CreateLiveStream = () => {
           <input
             type="text"
             onChange={(e) => setTitle(e.target.value)}
-            className="block px-3 py-3 mb-4 text-sm bg-gray-300 outline-none bg-opacity-20 rounded-xl w-[320px] md:w-[450px]"
+            className="block px-3 py-3 mb-4 text-sm bg-gray-300/20 outline-none rounded-xl w-[320px] md:w-[450px]"
             placeholder="Title for your live session..."
           />
           <input

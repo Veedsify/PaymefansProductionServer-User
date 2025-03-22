@@ -14,10 +14,10 @@
 }
 
 
-*,
+/* *,
 body {
     font-family: "SF Pro Display", "Instrument Sans";
-}
+} */
 
 ::selection {
     background: #fcc1ff;
