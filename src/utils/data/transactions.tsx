@@ -1,9 +1,6 @@
 import axios from "axios";
-import { getToken } from "../cookie.get";
-
-const getTransactionsData = async () => {
+export const getTransactionsData = async (token: string) => {
   try {
-    const token = getToken();
     const res = await axios.get(
       `${process.env.NEXT_PUBLIC_TS_EXPRESS_URL}/wallet/transactions`,
       {
@@ -20,5 +17,3 @@ const getTransactionsData = async () => {
     return undefined;
   }
 };
-
-export default getTransactionsData;

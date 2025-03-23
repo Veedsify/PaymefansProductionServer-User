@@ -1,20 +1,9 @@
-"use client";
-import getTransactionsData from "@/utils/data/transactions";
+import { getTransactionsData } from "@/utils/data/transactions";
+import { cookies } from "next/headers";
 import Image from "next/image";
-import { useEffect, useState } from "react";
-
-const Transactions = () => {
-  const [transactions, setTransactions] = useState<any[]>([]);
-  useEffect(() => {
-    const fetchTransactions = async () => {
-      const { data: transactions } = await getTransactionsData();
-      if (transactions) {
-        setTransactions(transactions);
-      }
-    };
-    fetchTransactions();
-  }, []);
-
+const Transactions = async () => {
+  const token = (await cookies()).get("token")?.value;
+  const { data: transactions } = await getTransactionsData(token as string);
   if (!transactions) {
     return (
       <div className="p-4 py-8 dark:text-white">

@@ -1,6 +1,6 @@
 import WithDrawInput from "@/components/sub_components/withdraw-input";
 import axiosInstance from "@/utils/axios";
-import getTransactionsData from "@/utils/data/transactions";
+import {getTransactionsData} from "@/utils/data/transactions";
 import getUserData from "@/utils/data/user-data";
 import { cookies } from "next/headers";
 import Image from "next/image";

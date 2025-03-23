@@ -2,7 +2,7 @@ import OtherTransactions from "@/components/transactions/other-transactions";
 import ROUTE from "@/config/routes";
 import { AuthUserProps } from "@/types/user";
 import axiosInstance from "@/utils/axios";
-import getTransactionsData from "@/utils/data/transactions";
+import {getTransactionsData} from "@/utils/data/transactions";
 import getUserData from "@/utils/data/user-data";
 import axios from "axios";
 import { Metadata } from "next";
@@ -16,14 +16,14 @@ export const metadata: Metadata = {
 };
 
 const WalletPage = async () => {
-  const token = (await cookies()).get("token");
+  const token = (await cookies()).get("token")?.value;
   const user = (await getUserData()) as AuthUserProps;
-  const { data } = await getTransactionsData();
+  const { data } = await getTransactionsData(token as string);
   const conversionRate = await axios
     .post(
       ROUTE.GET_POINTS_CONVERSION_RATE,
       {},
-      { headers: { Authorization: `Bearer ${token?.value}` } }
+      { headers: { Authorization: `Bearer ${token}` } }
     )
     .catch((err) => {
       console.log(err);
@@ -37,12 +37,11 @@ const WalletPage = async () => {
       {
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token?.value}`,
+          Authorization: `Bearer ${token}`,
         },
       }
     )
     .then((res) => res.data as { wallet: number });
-
   const { points } = await axiosInstance
     .post(
       `${process.env.NEXT_PUBLIC_TS_EXPRESS_URL}/auth/points`,
@@ -50,7 +49,7 @@ const WalletPage = async () => {
       {
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token?.value}`,
+          Authorization: `Bearer ${token}`,
         },
       }
     )
