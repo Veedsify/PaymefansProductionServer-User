@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
-import { Bricolage_Grotesque } from "next/font/google";
+import { Inter } from "next/font/google";
 import Head from "next/head";
 import { GeistSans } from "geist/font/sans";
 
-const font = Bricolage_Grotesque({
-  weight: ["200", "300", "400", "500", "600", "700", "800"],
+const font = Inter({
+  weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
   subsets: ["latin", "latin-ext"],
   display: "swap",
 });
@@ -61,7 +61,7 @@ export default async function RootLayout({
                       fontWeight: "500",
                       border: "1px solid #CC0DF8",
                       borderRadius: "100vmax",
-                      fontFamily: "Manrope",
+                      fontFamily: "Inter",
                     },
                   }}
                 />
