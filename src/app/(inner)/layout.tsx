@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
-import { Instrument_Sans } from "next/font/google";
+import { Manrope } from "next/font/google";
 import Head from "next/head";
 import { GeistSans } from "geist/font/sans";
 
-const font = Instrument_Sans({
-  weight: ["400", "500", "600", "700"],
+const font = Manrope({
+  weight: ["200", "300", "400", "500", "600", "700", "800"],
   subsets: ["latin", "latin-ext"],
   display: "swap",
 });
@@ -59,7 +59,19 @@ export default async function RootLayout({
             <MessagesConversationProvider>
               <UserPointsContextProvider>
                 <Loader />
-                <Toaster />
+                <Toaster
+                  toastOptions={{
+                    duration: 5000,
+                    style: {
+                      fontSize: "14px",
+                      fontWeight: "500",
+                      filter: "drop-shadow(0 0 2px #000)",
+                      border: "1px solid #CC0DF8",
+                      borderRadius: "100vmax",
+                      fontFamily: "Manrope",
+                    },
+                  }}
+                />
                 <SonnerToast
                   richColors
                   position="top-center"
@@ -68,7 +80,7 @@ export default async function RootLayout({
                     duration: 10000,
                     style: {
                       fontSize: "16px",
-                      borderRadius: "10px",
+                      borderRadius: "100vmax",
                       fontFamily: "system-ui",
                     },
                   }}
