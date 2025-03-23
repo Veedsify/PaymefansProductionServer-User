@@ -207,7 +207,7 @@ const BecomeAModel = () => {
               type="text"
               placeholder="First name"
               name="firstname"
-              className="border mt-2 p-4 w-full rounded-lg pl-5 font-semibold outline-none"
+              className="border border-black/30 mt-2 p-4 w-full rounded-lg pl-5 font-semibold outline-none"
             />
           </div>
           <div>
@@ -216,7 +216,7 @@ const BecomeAModel = () => {
               type="text"
               placeholder="Last name"
               name="lastname"
-              className="border p-4 mt-4 w-full rounded-lg pl-5 font-semibold outline-none"
+              className="border p-4 mt-4 border-black/30 w-full rounded-lg pl-5 font-semibold outline-none"
             />
           </div>
           <div>
@@ -225,10 +225,10 @@ const BecomeAModel = () => {
               type="date"
               placeholder="Date of Birth"
               name="dob"
-              className="border p-4 mt-4 w-full rounded-lg pl-5 font-semibold outline-none"
+              className="border p-4 mt-4 border-black/30 w-full rounded-lg pl-5 font-semibold outline-none"
             />
           </div>
-          <button className="border p-4 mt-4  rounded-lg pl-5  outline-none  relative w-full">
+          <button className="border p-4 mt-4 border-black/30  rounded-lg pl-5  outline-none  relative w-full">
             <span
               className="flex gap-2 items-center text-sm font-semibold "
               onClick={() => setDropdown(!dropdown)}
@@ -267,7 +267,7 @@ const BecomeAModel = () => {
             <select
               onChange={updateModelSignUpData}
               defaultValue="1"
-              className="border p-4 mt-4 w-full rounded-lg pl-5 font-semibold outline-none"
+              className="border p-4 mt-4 border-black/30 w-full rounded-lg pl-5 font-semibold outline-none"
               name="country"
             >
               <option value={1} disabled>

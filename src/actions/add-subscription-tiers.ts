@@ -5,7 +5,7 @@ import {getToken} from "@/utils/cookie.get";
 export default async function AddSubscriptionTiers({tiers}: { tiers: SubscriptionTiersProps[] }) {
     const token = getToken()
     try {
-        const saveSubscriptions = await axios.post(`${process.env.NEXT_PUBLIC_TS_EXPRESS_URL}/create/subscription-tiers`, {tiers}, {
+        const saveSubscriptions = await axios.post(`${process.env.NEXT_PUBLIC_TS_EXPRESS_URL}/subscribers/create/subscription-tiers`, {tiers}, {
             headers: {
                 "Content-Type": "application/json",
                 "Authorization": `Bearer ${token}`
