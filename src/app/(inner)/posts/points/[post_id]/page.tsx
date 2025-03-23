@@ -31,23 +31,22 @@ async function Page({ params }: { params: params }) {
     redirect(`/posts/${postId}`);
   }
 
+  const isCreator = post?.user.id === user?.id;
+  // const isAdmin = user.role === "admin";
+  const isSubscribed = user?.subscriptions?.includes(post.user?.id as number);
+  const hasPaid = user?.purchasedPosts?.includes(post?.id as number);
+
+  // Determine visibility
+  const canView =
+    // isAdmin || // Admin sees all
+    isCreator || // Creator sees their own posts
+    post.post_audience === "public" || // Public posts are visible to all
+    (post.post_audience === "subscribers" && isSubscribed) || // Subscriber-only post for subscribed users
+    (post.post_audience === "price" && hasPaid); // Paid posts if the user has paid
+
   const content = {
     __html: `${post?.content.replace(/\r\n|\r|\n/g, "<br>")}`,
   };
-  let isSubscriber: boolean = false;
-  if (post?.post_audience === "subscribers") {
-    if (user?.user_id !== null) {
-      const isOwner = post?.user_id == user?.id;
-      const findSubscriber = post?.user?.Subscribers?.some(
-        (subscriber: any) => subscriber.subscriber_id === user?.id
-      );
-      isSubscriber = findSubscriber ? true : isOwner; // Set to true if found, false otherwise
-    } else {
-      isSubscriber = false;
-    }
-  } else {
-    isSubscriber = true; // If the audience is not "subscribers", assume the user is a subscriber
-  }
 
   return (
     <div>
@@ -103,8 +102,8 @@ async function Page({ params }: { params: params }) {
               key={index}
               media={media}
               indexId={index}
+              canView={canView as boolean}
               postOwnerId={post?.user?.user_id}
-              isSubscriber={isSubscriber}
               medias={post?.UserMedia}
             />
           ))}

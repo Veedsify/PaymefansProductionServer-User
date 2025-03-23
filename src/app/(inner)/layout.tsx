@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
-import { Manrope } from "next/font/google";
+import { Bricolage_Grotesque } from "next/font/google";
 import Head from "next/head";
 import { GeistSans } from "geist/font/sans";
 
-const font = Manrope({
+const font = Bricolage_Grotesque({
   weight: ["200", "300", "400", "500", "600", "700", "800"],
   subsets: ["latin", "latin-ext"],
   display: "swap",
@@ -43,12 +43,6 @@ export default async function RootLayout({
   const user = await getUserData();
   return (
     <html lang="en">
-      {/* <Head>
-        //<link
-          //rel="stylesheet"
-          //href="https://cdn.jsdelivr.net/npm/sf-font@1.0.0/stylesheet.min.css"
-        //>
-      </Head> */}
       <body
         className={`
               ${font.className}
@@ -65,7 +59,6 @@ export default async function RootLayout({
                     style: {
                       fontSize: "14px",
                       fontWeight: "500",
-                      filter: "drop-shadow(0 0 2px #000)",
                       border: "1px solid #CC0DF8",
                       borderRadius: "100vmax",
                       fontFamily: "Manrope",

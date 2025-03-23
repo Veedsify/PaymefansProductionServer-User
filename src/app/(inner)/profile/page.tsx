@@ -30,8 +30,8 @@ const ProfilePage = async () => {
                     <Image
                         src={user ? user.profile_banner : "/site/banner.png"}
                         alt="Home Banner"
-                        width={700}
-                        height={400}
+                        width={1950}
+                        height={650}
                         priority
                         className="inset-0 aspect-21-9 object-cover w-full h-full"
                     />

@@ -45,7 +45,6 @@ const HomePostComponent = () => {
             media: post.UserMedia,
             time: formatDate(new Date(post.created_at)),
           }}
-          isSubscriber={checkIfSubscriber()}
           user={{
             id: post.user?.id!,
             user_id: post.user?.user_id!,

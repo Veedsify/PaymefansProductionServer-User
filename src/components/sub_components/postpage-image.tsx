@@ -14,14 +14,14 @@ import HLSVideoPlayer from "./videoplayer";
 interface PostPageImageProps {
   indexId: number;
   medias: UserMediaProps[];
-  isSubscriber: boolean;
+  canView: boolean;
   media: UserMediaProps;
   postOwnerId: string;
 }
 
 const PostPageImage: React.FC<PostPageImageProps> = ({
   indexId,
-  isSubscriber,
+  canView,
   medias,
   media,
   postOwnerId,
@@ -31,7 +31,7 @@ const PostPageImage: React.FC<PostPageImageProps> = ({
   const [canplay, setCanplay] = useState(false);
 
   const handleClick = () => {
-    if (!isSubscriber) return;
+    if (!canView) return;
     if (media.media_type === "video" && !canplay) {
       swal({
         title: "Video not ready",
@@ -94,34 +94,19 @@ const PostPageImage: React.FC<PostPageImageProps> = ({
     );
   }
 
+  const mediaUrl = canView ? media.url : media.blur;
+
   return (
     <div className="relative">
-      {!isSubscriber && (
-        <div
-          onClick={handleMediaClick}
-          className="absolute inset-0 bg-black/20 rounded-lg overflow-hidden flex items-center justify-center z-10 cursor-pointer"
-        >
-          <Image
-            src={media.blur ? media.blur.trimEnd() : "/site/blur.jpg"}
-            alt=""
-            width={300}
-            height={300}
-            className="w-full h-full aspect-[4/3] md:aspect-square object-cover absolute inset-0"
-          />
-          <button className="text-white absolute text-lg font-bold">
-            <LucideLock />
-          </button>
-        </div>
-      )}
       {media.media_type === "video" ? (
         <div className="relative">
           <HLSVideoPlayer
             autoPlay={true}
-            streamUrl={isSubscriber ? media.url : "/site/blur.jpg"}
+            streamUrl={media.url}
             allOthers={{
               onClick: handleClick,
               autoPlay: true,
-              poster: isSubscriber ? media.poster : "/site/blur.jpg",
+              poster: canView ? media.poster : "/site/blur.jpg",
             }}
             className="w-full block aspect-square object-cover cursor-pointer"
           ></HLSVideoPlayer>
@@ -141,11 +126,61 @@ const PostPageImage: React.FC<PostPageImageProps> = ({
           priority
           width={300}
           onClick={handleClick}
-          src={isSubscriber ? media.url : media.blur}
-          blurDataURL={isSubscriber ? media.url : media.blur}
+          src={mediaUrl}
+          blurDataURL={mediaUrl}
           alt=""
           className="w-full aspect-[5/3] md:aspect-square object-cover block cursor-pointer"
         />
+      )}
+      {media.accessible_to === "subscribers" && !canView && (
+        <div
+          onClick={handleMediaClick}
+          className="absolute inset-0 bg-black/20 rounded-lg overflow-hidden flex items-center justify-center z-10"
+        >
+          <Image
+            src={media.blur ? media.blur.trimEnd() : "/site/blur.jpg"}
+            alt=""
+            width={300}
+            height={300}
+            className="w-full aspect-[3/4] md:aspect-square object-cover absolute inset-0"
+          />
+          <button className="text-white absolute text-lg font-bold">
+            <LucideLock />
+          </button>
+        </div>
+      )}
+      {media.accessible_to === "price" && !canView && (
+        <div className="absolute inset-0 bg-black/20 rounded-lg overflow-hidden flex items-center justify-center z-10">
+          <Image
+            src={media.blur ? media.blur.trimEnd() : "/site/blur.jpg"}
+            alt=""
+            width={300}
+            height={300}
+            className="w-full aspect-[3/4] md:aspect-square object-cover absolute inset-0"
+          />
+          <div className="lock-icon absolute inset-0 w-[85%] h-[65%] -translate-x-1/2 -translate-y-1/2 left-1/2 top-1/2 rounded-lg flex items-center justify-center dark:bg-slate-900/70 bg-slate-900/40 cursor-not-allowed">
+            <span className="flex items-center justify-center flex-col gap-2 text-white">
+              {indexId == 0 ? (
+                <p className="text-base font-bold text-center leading-4 flex items-center justify-center gap-2">
+                  <Image
+                    width={20}
+                    height={20}
+                    src="/site/coin.svg"
+                    className="w-auto h-5 aspect-square"
+                    alt=""
+                  />
+                  5,000
+                </p>
+              ) : (
+                <>
+                  <button className="text-white absolute text-lg font-bold">
+                    <LucideLock />
+                  </button>
+                </>
+              )}
+            </span>
+          </div>
+        </div>
       )}
     </div>
   );

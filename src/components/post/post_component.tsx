@@ -36,7 +36,6 @@ import { useUserAuthContext } from "@/lib/userUseContext";
 const PostComponent: React.FC<PostComponentProps> = ({
   user,
   data,
-  isSubscriber,
   was_repost,
   repost_username,
   repost_id,
@@ -44,22 +43,41 @@ const PostComponent: React.FC<PostComponentProps> = ({
   const imageLength = data.media.length;
   const { fullScreenPreview } = usePostComponent();
   const { user: authUser } = useUserAuthContext();
-  // const [isSubscriber, setIsSubscriber] = useState<boolean>(false);
+  const isCreator = user?.id === authUser?.id;
+  // const isAdmin = user.role === "admin";
+  const isSubscribed = authUser?.subscriptions?.includes(
+    data.user?.id as number
+  );
+  const hasPaid = authUser?.purchasedPosts?.includes(data?.id as number);
+
+  // Determine visibility
+  const canView =
+    // isAdmin || // Admin sees all
+    isCreator || // Creator sees their own posts
+    data.post_audience === "public" || // Public posts are visible to all
+    (data.post_audience === "subscribers" && isSubscribed) || // Subscriber-only post for subscribed users
+    (data.post_audience === "price" && hasPaid); // Paid posts if the user has paid
+
+  // const [isSubscribed, setIsSubscribed] = useState<boolean>(false);
   const router = useRouter();
   const formattedText = useCallback(() => {
     const text = data.post.replace(/\r?\n/g, "<br/>");
-    if (data.post_audience === "subscribers" && !isSubscriber) {
+    if (!isSubscribed && data.post_audience === "subscribers" && !isCreator) {
       return "<p class='text-sm text-emerald-500'>This post is only available to subscribers</p>";
-    } else if (text.length >= 200) {
-      return text.slice(0, 200) + "...";
-    } else {
-      return text;
     }
-  }, [data.post, data.post_audience, isSubscriber]);
+    if (data.post_audience === "price" && !hasPaid && !isCreator) {
+      return "<p class='text-sm text-emerald-500'>This post is only available to paid users</p>";
+    }
+    if (text.length >= 200) {
+      return text.slice(0, 200) + "...";
+    }
+
+    return text;
+  }, [data.post, isSubscribed, hasPaid, isCreator, data.post_audience]);
 
   const clickImageEvent = useCallback(
     (media: { url: string; media_type: string; index: number }) => {
-      if (data.post_audience === "subscribers" && !isSubscriber) {
+      if (data.post_audience === "subscribers" && !isSubscribed) {
         toast.error("You need to be a subscriber to view this post");
         return;
       }
@@ -76,7 +94,7 @@ const PostComponent: React.FC<PostComponentProps> = ({
           })),
       });
     },
-    [isSubscriber, data.post_audience, data.media, fullScreenPreview]
+    [isSubscribed, data.post_audience, data.media, fullScreenPreview]
   );
 
   const redirectToPost = useCallback(
@@ -87,7 +105,7 @@ const PostComponent: React.FC<PostComponentProps> = ({
         !(target instanceof HTMLButtonElement)
       ) {
         e.preventDefault();
-        if (data.post_audience === "subscribers" && !isSubscriber) {
+        if (data.post_audience === "subscribers" && !isSubscribed) {
           swal({
             title: "You need to be a subscriber to view this post",
             icon: "/icons/error.svg",
@@ -112,10 +130,13 @@ const PostComponent: React.FC<PostComponentProps> = ({
             text: "Only you can preview this. Post while processing; it's done when borders disappear.",
             icon: "warning",
           });
-          return
+          return;
         }
 
-        if (data.post_audience === "price" && !(data.user?.user_id === authUser?.user_id)) {
+        if (
+          data.post_audience === "price" &&
+          !(data.user?.user_id === authUser?.user_id)
+        ) {
           e.preventDefault();
           swal({
             title: "This post is locked",
@@ -133,7 +154,7 @@ const PostComponent: React.FC<PostComponentProps> = ({
               router.push(`/posts/${data.post_id}`);
             }
           });
-          return
+          return;
         }
         router.push(`/posts/${data.post_id}`);
       }
@@ -143,14 +164,16 @@ const PostComponent: React.FC<PostComponentProps> = ({
       data.post_status,
       data.post_id,
       data.post_audience,
-      isSubscriber,
+      isSubscribed,
       user.user_id,
+      data.user?.user_id,
+      authUser?.user_id,
     ]
   );
 
   const handleNonSubscriberClick = (e: MouseEvent) => {
     e.stopPropagation();
-    if (data.post_audience === "subscribers" && !isSubscriber) {
+    if (data.post_audience === "subscribers" && !isSubscribed) {
       e.preventDefault();
       swal({
         title: "You need to be a subscriber to view this post",
@@ -176,7 +199,7 @@ const PostComponent: React.FC<PostComponentProps> = ({
         icon: "warning",
       });
     }
-    if (data.post_audience === "price" && !(data.user?.user_id === authUser?.user_id)) {
+    if (data.post_audience === "price" && !(isCreator || hasPaid)) {
       e.preventDefault();
       swal({
         title: "This post is paid",
@@ -285,8 +308,79 @@ const PostComponent: React.FC<PostComponentProps> = ({
               key={i}
               onClick={handleNonSubscriberClick}
             >
-              {data.post_audience === "price" &&
-                data.user?.user_id !== authUser?.user_id && (
+              <>
+                {media.media_type === "video" && (
+                  <>
+                    {!canView ? (
+                      <Image
+                        src={"/site/blur.jpg"}
+                        alt={data.post}
+                        width={300}
+                        height={300}
+                        unoptimized
+                        priority
+                        blurDataURL={media.blur}
+                        className="w-full h-full rounded-lg aspect-[3/4] md:aspect-square object-cover cursor-pointer"
+                      />
+                    ) : (
+                      <div className="relative">
+                        <VideoComponent
+                          media={{ ...media, index: i }}
+                          data={data}
+                          clickImageEvent={clickImageEvent}
+                          isSubscriber={isSubscribed as boolean}
+                        />
+                      </div>
+                    )}
+                  </>
+                )}
+                {media.media_type !== "video" && (
+                  <>
+                    {!canView ? (
+                      <Image
+                        src={media.blur}
+                        alt={data.post}
+                        unoptimized
+                        width={400}
+                        height={400}
+                        priority
+                        blurDataURL={media.blur}
+                        className="w-full h-full rounded-lg aspect-[3/4] md:aspect-square object-cover cursor-pointer"
+                      />
+                    ) : (
+                      <ImageComponent
+                        media={{ ...media, index: i }}
+                        data={data}
+                        clickImageEvent={clickImageEvent}
+                      />
+                    )}
+                  </>
+                )}
+                {i === 2 && data.media.length > 3 && (
+                  <Link
+                    href={
+                      data.post_audience === "private"
+                        ? "#"
+                        : `/posts/${data.post_id}`
+                    }
+                    className="flex flex-col absolute inset-0 items-center justify-center rounded-lg aspect-[3/4] md:aspect-square bg-gray-500/70 cursor-pointer select-none"
+                  >
+                    <div>
+                      <LucidePlus
+                        size={40}
+                        fill="#ffffff"
+                        stroke="#ffffff"
+                        className="border-4 text-white rounded-full"
+                      />
+                    </div>
+                    <p className="text-lg font-bold select-none text-white">
+                      {imageLength - 3} more
+                    </p>
+                  </Link>
+                )}
+              </>
+              <>
+                {data.post_audience === "price" && !canView && (
                   <div className="absolute inset-0 bg-black/20 rounded-lg overflow-hidden flex items-center justify-center z-10">
                     <Image
                       src={media.blur ? media.blur.trimEnd() : "/site/blur.jpg"}
@@ -319,89 +413,21 @@ const PostComponent: React.FC<PostComponentProps> = ({
                     </div>
                   </div>
                 )}
-              {!isSubscriber && data.post_audience === "subscribers" && (
-                <div className="absolute inset-0 bg-black/20 rounded-lg overflow-hidden flex items-center justify-center z-10">
-                  <Image
-                    src={media.blur ? media.blur.trimEnd() : "/site/blur.jpg"}
-                    alt=""
-                    width={300}
-                    height={300}
-                    className="w-full aspect-[3/4] md:aspect-square object-cover absolute inset-0"
-                  />
-                  <button className="text-white absolute text-lg font-bold">
-                    <LucideLock />
-                  </button>
-                </div>
-              )}
-              {media.media_type === "video" && (
-                <>
-                  {!isSubscriber && data.post_audience === "subscribers" ? (
+                {data.post_audience === "subscribers" && !canView && (
+                  <div className="absolute inset-0 bg-black/20 rounded-lg overflow-hidden flex items-center justify-center z-10">
                     <Image
-                      src={"/site/blur.jpg"}
-                      alt={data.post}
+                      src={media.blur ? media.blur.trimEnd() : "/site/blur.jpg"}
+                      alt=""
                       width={300}
                       height={300}
-                      unoptimized
-                      priority
-                      blurDataURL={media.blur}
-                      className="w-full h-full rounded-lg aspect-[3/4] md:aspect-square object-cover cursor-pointer"
+                      className="w-full aspect-[3/4] md:aspect-square object-cover absolute inset-0"
                     />
-                  ) : (
-                    <div className="relative">
-                      <VideoComponent
-                        media={{ ...media, index: i }}
-                        data={data}
-                        clickImageEvent={clickImageEvent}
-                        isSubscriber={isSubscriber}
-                      />
-                    </div>
-                  )}
-                </>
-              )}
-              {media.media_type !== "video" && (
-                <>
-                  {!isSubscriber && data.post_audience === "subscribers" ? (
-                    <Image
-                      src={media.blur}
-                      alt={data.post}
-                      unoptimized
-                      width={400}
-                      height={400}
-                      priority
-                      blurDataURL={media.blur}
-                      className="w-full h-full rounded-lg aspect-[3/4] md:aspect-square object-cover cursor-pointer"
-                    />
-                  ) : (
-                    <ImageComponent
-                      media={{ ...media, index: i }}
-                      data={data}
-                      clickImageEvent={clickImageEvent}
-                    />
-                  )}
-                </>
-              )}
-              {i === 2 && data.media.length > 3 && (
-                <Link
-                  href={
-                    data.post_audience === "private"
-                      ? "#"
-                      : `/posts/${data.post_id}`
-                  }
-                  className="flex flex-col absolute inset-0 items-center justify-center rounded-lg aspect-[3/4] md:aspect-square bg-gray-500/70 cursor-pointer select-none"
-                >
-                  <div>
-                    <LucidePlus
-                      size={40}
-                      fill="#ffffff"
-                      stroke="#ffffff"
-                      className="border-4 text-white rounded-full"
-                    />
+                    <button className="text-white absolute text-lg font-bold">
+                      <LucideLock />
+                    </button>
                   </div>
-                  <p className="text-lg font-bold select-none text-white">
-                    {imageLength - 3} more
-                  </p>
-                </Link>
-              )}
+                )}
+              </>
             </div>
           ))}
         </div>

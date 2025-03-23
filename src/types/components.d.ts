@@ -53,9 +53,6 @@ export interface PostData {
         user_id: string;
         is_model: boolean;
         profile_image: string;
-        Subscribers: {
-            subscriber_id: number;
-        }[];
     };
     PostComment?: PostCompomentProps[];
 }
@@ -128,7 +125,6 @@ interface PostComponentProps {
         image: string;
     };
     data: PostData;
-    isSubscriber: boolean;
 }
 
 interface VideoComponentProps {
@@ -391,13 +387,9 @@ type MediaDataTypeOtherProps = {
     media_id: string;
     accessible_to: string;
     post: {
+        id: number;
         user: {
-            Subscribers: {
-                subscriber_id: number;
-                user_id: number;
-                id: number;
-                sub_id: string;
-            }[];
+            id: number;
         };
     };
 };

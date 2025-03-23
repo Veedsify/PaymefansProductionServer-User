@@ -53,7 +53,6 @@ const PostPanel = () => {
               username: user?.username!,
               image: user?.profile_image!,
             }}
-            isSubscriber={true}
             data={{
               ...post,
               post: post.content,

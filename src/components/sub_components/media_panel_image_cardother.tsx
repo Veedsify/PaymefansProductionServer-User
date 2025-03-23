@@ -25,7 +25,6 @@ interface MediaPanelMediaCardProps {
     isSubscriber: boolean,
     indexId: number
   ) => void;
-  isSubscriber: boolean;
   indexId: number;
 }
 
@@ -106,7 +105,7 @@ const MediaPanelImageCardOther = React.memo(
 
       const filteredMedias = sorted
         .filter((item) => item.media_state !== "processing")
-        .filter((media) => (media.accessible_to !== "price"))
+        .filter((media) => media.accessible_to !== "price")
         .filter(
           (media) => !(media.accessible_to === "subscribers" && !isSubscriber)
         );
@@ -138,9 +137,6 @@ const MediaPanelImageCardOther = React.memo(
               className="aspect-[4/3] md:aspect-square overflow-hidden relative"
             >
               <MediaPanelMediaCard
-                isSubscriber={userdata.Subscribers.some(
-                  (sub) => sub.subscriber_id === user?.id
-                )}
                 media={media}
                 PreviewImageHandler={PreviewImageHandler}
                 indexId={index}
@@ -180,16 +176,29 @@ const MediaPanelImageCardOther = React.memo(
 const MediaPanelMediaCard = ({
   media,
   PreviewImageHandler,
-  isSubscriber,
   indexId,
 }: MediaPanelMediaCardProps) => {
+  const { user: authUser } = useUserAuthContext();
+  const isCreator = media.post.user.id === authUser?.id;
+  // const isAdmin = user.role === "admin";
+  const isSubscribed = authUser?.subscriptions?.includes(
+    media.post.user.id as number
+  );
+  const hasPaid = authUser?.purchasedPosts?.includes(media.post?.id as number);
+
+  // Determine visibility
+  const canView =
+    // isAdmin || // Admin sees all
+    isCreator || // Creator sees their own posts
+    media.accessible_to === "public" || // Public posts are visible to all
+    (media.accessible_to === "subscribers" && isSubscribed) || // Subscriber-only post for subscribed users
+    (media.accessible_to === "price" && hasPaid); // Paid posts if the user has paid
+
   return (
     <>
       {media.media_type === "video" ? (
         <>
-          {!isSubscriber && media.accessible_to === "subscribers" ? (
-            <div className="w-[400px] h-[400px] bg-gray-600" />
-          ) : (
+          {!canView ? (
             <div className="relative w-full h-full">
               <HLSVideoPlayer
                 streamUrl={media.url}
@@ -203,7 +212,7 @@ const MediaPanelMediaCard = ({
                     PreviewImageHandler(
                       media,
                       media.media_type,
-                      isSubscriber,
+                      isSubscribed as boolean,
                       indexId
                     ),
                 }}
@@ -213,7 +222,7 @@ const MediaPanelMediaCard = ({
                   PreviewImageHandler(
                     media,
                     media.media_type,
-                    isSubscriber,
+                    isSubscribed as boolean,
                     indexId
                   )
                 }
@@ -222,11 +231,7 @@ const MediaPanelMediaCard = ({
                 <LucidePlay stroke="white" size={30} strokeWidth={2} />
               </div>
             </div>
-          )}
-        </>
-      ) : (
-        <>
-          {media.accessible_to === "price" && (
+          ) : (
             <Image
               width={400}
               height={400}
@@ -236,7 +241,10 @@ const MediaPanelMediaCard = ({
               className="w-full h-full cursor-pointer object-cover transition-all duration-300 ease-in-out hover:scale-105"
             />
           )}
-          {!isSubscriber && media.accessible_to === "subscribers" ? (
+        </>
+      ) : (
+        <>
+          {!canView ? (
             <Image
               width={400}
               height={400}
@@ -254,7 +262,7 @@ const MediaPanelMediaCard = ({
                 PreviewImageHandler(
                   media,
                   media.media_type,
-                  isSubscriber,
+                  isSubscribed as boolean,
                   indexId
                 )
               }
@@ -265,16 +273,9 @@ const MediaPanelMediaCard = ({
           )}
         </>
       )}
-      {!isSubscriber && media.accessible_to === "subscribers" && (
+      {!canView && (
         <LockedMediaOverlay
-          type="subscribers"
-          mediaIsVideo={media.media_type === "video"}
-          duration={"00:34"}
-        />
-      )}
-      {media.accessible_to === "price" && (
-        <LockedMediaOverlay
-          type="price"
+          type={media.accessible_to ? "price" : "subscribers"}
           mediaIsVideo={media.media_type === "video"}
           duration={"00:34"}
         />

@@ -61,7 +61,9 @@ export type AuthUserProps = {
     hookup: boolean;
     verification_status: boolean;
     verification_state: ' not_started' | 'pending' | 'approved' | 'rejected' | 'started';
-  }
+  },
+  subscriptions?: number[];
+  purchasedPosts?: number[];
 }
 
 export type AllModelsProps = {

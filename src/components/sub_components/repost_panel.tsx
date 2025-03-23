@@ -62,7 +62,6 @@ const RepostPanel = ({ userdata }: RespostPanelProps) => {
               username: post.user?.username,
               image: post.user?.profile_image,
             }}
-            isSubscriber={true}
             data={{
               ...post,
               post: post.content,

@@ -48,9 +48,6 @@ const PostPanelOther = ({ userdata }: { userdata: ProfileUserProps }) => {
               username: post.user.username,
               image: post.user.profile_image,
             }}
-            isSubscriber={post.user.Subscribers.some(
-              (sub) => sub.subscriber_id == user?.id
-            )}
             data={{
               ...post,
               post: post.content,
