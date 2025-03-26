@@ -10,8 +10,8 @@ import React from "react";
 import { cookies } from "next/headers";
 import axios from "axios";
 import { redirect } from "next/navigation";
-import { getPost } from "@/app/(inner)/posts/[id]/page";
 import getUserData from "@/utils/data/user-data";
+import {getPost} from "@/utils/data/getpost";
 
 type Points = {
   points: number;

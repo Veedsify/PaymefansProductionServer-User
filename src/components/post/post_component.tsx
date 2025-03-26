@@ -77,7 +77,7 @@ const PostComponent: React.FC<PostComponentProps> = ({
 
   const clickImageEvent = useCallback(
     (media: { url: string; media_type: string; index: number }) => {
-      if (data.post_audience === "subscribers" && !isSubscribed) {
+      if (data.post_audience === "subscribers" && !(isSubscribed || isCreator)) {
         toast.error("You need to be a subscriber to view this post");
         return;
       }
@@ -105,7 +105,7 @@ const PostComponent: React.FC<PostComponentProps> = ({
         !(target instanceof HTMLButtonElement)
       ) {
         e.preventDefault();
-        if (data.post_audience === "subscribers" && !isSubscribed) {
+        if (data.post_audience === "subscribers" && !(isSubscribed || isCreator)) {
           swal({
             title: "You need to be a subscriber to view this post",
             icon: "/icons/error.svg",
@@ -173,7 +173,7 @@ const PostComponent: React.FC<PostComponentProps> = ({
 
   const handleNonSubscriberClick = (e: MouseEvent) => {
     e.stopPropagation();
-    if (data.post_audience === "subscribers" && !isSubscribed) {
+    if (data.post_audience === "subscribers" && !(isSubscribed || isCreator)) {
       e.preventDefault();
       swal({
         title: "You need to be a subscriber to view this post",

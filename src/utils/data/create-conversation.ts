@@ -2,7 +2,7 @@ import axios, { AxiosResponse } from "axios"
 import axiosInstance from "../axios"
 
 export const createNewConversation = async ({ userId, profileId }: { userId: string, profileId: string }) => {
-    const response: Promise<AxiosResponse<any>> = axiosInstance.post("/conversation/create-new", {
+    const response: Promise<AxiosResponse<any>> = axiosInstance.post("/conversations/create-new", {
         userId,
         profileId
     }, {

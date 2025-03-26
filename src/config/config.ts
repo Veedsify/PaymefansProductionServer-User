@@ -10,7 +10,8 @@ const POST_CONFIG = {
     POST_DELETED_SUCCESS_MSG: "Post Deleted Successfully",
     POST_DELETING_STATUS: "Deleting post...",
     COMMENT: {
-        COMMENT_CREATED_SUCCESS_MSG: "Post Comment Created Successfully",
+        COMMENT_CREATED_SUCCESS_MSG: "Post Comment Added Successfully",
+        COMMENT_CREATED_ERROR_MSG: "Failed to add comment",
     },
     IMAGE_FILE_SIZE_LIMIT: 10000000,
     IMAGE_FILE_SIZE_LIMIT_ERROR_MSG: "File size should not exceed 10MB",

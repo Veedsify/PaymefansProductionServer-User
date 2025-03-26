@@ -64,6 +64,14 @@ export interface BannerModalProps {
     setOpen: React.Dispatch<SetStateAction<boolean>>
 }
 
+export interface PostCommentAttachments {
+    id: number;
+    comment_id: number;
+    path: string;
+    type: string;
+    created_at: string;
+}
+
 export interface PostCompomentProps {
     id: number;
     comment: string;
@@ -75,13 +83,7 @@ export interface PostCompomentProps {
         username: string;
         profile_image: string;
     };
-    PostCommentAttachments: {
-        id: number;
-        comment_id: number;
-        path: string;
-        type: string;
-        created_at: string;
-    }[];
+    PostCommentAttachments: PostCommentAttachments[];
     PostCommentLike: {
         comment_id: number;
         user_id: number;

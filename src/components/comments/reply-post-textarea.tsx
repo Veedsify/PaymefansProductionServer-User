@@ -39,6 +39,7 @@ export const ReplyPostComponent = ({ options }: ReplyPostProps) => {
   const [typedComment, setTypedComment] = useState("");
   const [files, setFiles] = useState<File[]>([]);
   const [commentSending, setCommentSending] = useState(false);
+  const [progress, setProgress] = useState(0);  
   const router = useRouter();
 
   const handleTextAreaFocus = () => setReplyPostOpen(true);
@@ -79,24 +80,20 @@ export const ReplyPostComponent = ({ options }: ReplyPostProps) => {
     try {
       setCommentSending(true);
       const token = getToken();
-      const url = `${process.env.NEXT_PUBLIC_TS_EXPRESS_URL}/comment/new`;
+      const url = `${process.env.NEXT_PUBLIC_TS_EXPRESS_URL}/comments/new`;
+      
       const formData = new FormData();
       formData.append("post_id", options?.post_id);
       formData.append("postId", String(options?.id));
       formData.append("comment", typedComment);
       formData.append("reply_to", options?.reply_to || "");
-      files.forEach((file) => {
-        formData.append("files", file);
-      });
-      let cancel;
-      // Perform your API call here with axios using the token and url
+      files.forEach((file) => formData.append("files", file));
+
       const res = await axios.post(url, formData, {
-        cancelToken: new axios.CancelToken((c) => (cancel = c)),
-        onUploadProgress(progressEvent) {
-          if (progressEvent) {
-            console.log(
-              (progressEvent.loaded / progressEvent.total!) * 100 + "%"
-            );
+        cancelToken: new axios.CancelToken((c) => (c)), // Simplified cancel token
+        onUploadProgress: (progressEvent) => {
+          if (progressEvent?.total) {
+            setProgress(Math.round((progressEvent.loaded / progressEvent.total) * 100));
           }
         },
         headers: {
@@ -104,38 +101,47 @@ export const ReplyPostComponent = ({ options }: ReplyPostProps) => {
           "Content-Type": "multipart/form-data",
         },
       });
-      const data = res.data;
-      console.log(data);
-      if (data.status) {
-        toast.success(POST_CONFIG.COMMENT.COMMENT_CREATED_SUCCESS_MSG);
+
+      const { status, error, data } = res.data;
+
+      if (status && !error) {
         setCommentSending(false);
+        toast.success(POST_CONFIG.COMMENT.COMMENT_CREATED_SUCCESS_MSG);
         options.setNewComment?.({
-          text: data.data.comment,
-          files: files,
+          text: data.comment,
+          files,
           author_username: user?.username || "",
           time: new Date(),
           name: user?.name || "",
           profile_image: user?.profile_image || "",
         });
+
+        // Reset form
         setTypedComment("");
         setFiles([]);
+      } else {
+        toast.error(POST_CONFIG.COMMENT.COMMENT_CREATED_ERROR_MSG);
       }
     } catch (err) {
-      console.log(err);
+      console.error("Error posting comment:", err);
+      toast.error(POST_CONFIG.COMMENT.COMMENT_CREATED_ERROR_MSG);
+    } finally {
+      setCommentSending(false); // Always reset sending state
     }
   };
 
   return (
     <div>
       {commentSending && (
-        <div className="flex w-full text-center justify-center p-2">
+        <div className="flex w-full flex-col items-center text-center justify-center p-2">
           <LucideLoader
             size={30}
             className="animate-spin transition-all duration-300"
           />
+          <p className="text-sm text-gray-500">{progress}%</p>
         </div>
       )}
-      <div className="flex gap-4 items-start mt-5 dark:text-white border-b">
+      <div className="flex gap-4 items-start mt-5 dark:text-white pb-10 border-black/30">
         <div className="flex items-center gap-2">
           <Image
             width={65}

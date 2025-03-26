@@ -9,6 +9,7 @@ import Link from "next/link";
 import { LucideLock } from "lucide-react";
 import { useRouter } from "next/navigation";
 import HLSVideoPlayer from "./videoplayer";
+import { MouseEvent } from "react";
 
 // Define props type for the component
 interface PostPageImageProps {
@@ -82,6 +83,25 @@ const PostPageImage: React.FC<PostPageImageProps> = ({
     });
   };
 
+  const handlePriceClick = (e: MouseEvent<HTMLDivElement>)=>{
+    e.preventDefault()
+    swal({
+      title: "You need to pay 5,000 coins to view this post",
+      icon: "warning",
+      buttons: {
+        cancel: true,
+        confirm: {
+          text: "Pay",
+          className: "bg-primary-dark-pink text-white",
+        },
+      },
+    }).then((willSubscribe) => {
+      if (willSubscribe) {
+        router.push(`/wallet`);
+      }
+    });
+  }
+
   if (
     media.media_state == "processing" &&
     media.media_type.startsWith("video")
@@ -150,7 +170,9 @@ const PostPageImage: React.FC<PostPageImageProps> = ({
         </div>
       )}
       {media.accessible_to === "price" && !canView && (
-        <div className="absolute inset-0 bg-black/20 rounded-lg overflow-hidden flex items-center justify-center z-10">
+        <div
+            onClick={handlePriceClick}
+            className="absolute inset-0 bg-black/20 rounded-lg overflow-hidden flex items-center justify-center z-10">
           <Image
             src={media.blur ? media.blur.trimEnd() : "/site/blur.jpg"}
             alt=""
@@ -158,7 +180,7 @@ const PostPageImage: React.FC<PostPageImageProps> = ({
             height={300}
             className="w-full aspect-[3/4] md:aspect-square object-cover absolute inset-0"
           />
-          <div className="lock-icon absolute inset-0 w-[85%] h-[65%] -translate-x-1/2 -translate-y-1/2 left-1/2 top-1/2 rounded-lg flex items-center justify-center dark:bg-slate-900/70 bg-slate-900/40 cursor-not-allowed">
+          <div className="lock-icon absolute inset-0 w-[85%] h-[65%] -translate-x-1/2 -translate-y-1/2 left-1/2 top-1/2 rounded-lg flex items-center justify-center dark:bg-slate-900/70 bg-slate-900/40">
             <span className="flex items-center justify-center flex-col gap-2 text-white">
               {indexId == 0 ? (
                 <p className="text-base font-bold text-center leading-4 flex items-center justify-center gap-2">

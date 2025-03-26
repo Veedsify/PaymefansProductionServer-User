@@ -275,7 +275,7 @@ const MediaPanelMediaCard = ({
       )}
       {!canView && (
         <LockedMediaOverlay
-          type={media.accessible_to ? "price" : "subscribers"}
+          type={media.accessible_to === "price" ? "price" : "subscribers"}
           mediaIsVideo={media.media_type === "video"}
           duration={"00:34"}
         />
