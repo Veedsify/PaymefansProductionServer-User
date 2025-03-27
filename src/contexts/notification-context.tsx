@@ -15,7 +15,9 @@ export type Notification = {
 
 type NotificationState = {
     notifications: Notification[];
-    totalNotifications: number
+    totalNotifications: number;
+    hasMore: boolean;
+    setHasmore: (hasMore: boolean) => void
     updateNotification: (id: string) => void
     setTotalNotifications: (count: number) => void
     addNotification: (notification: Notification) => void;
@@ -73,6 +75,8 @@ export const NotificationIcontypes: NotificationType[] = [
 
 export const useNotificationStore = create<NotificationState>()((set) => ({
     notifications: [],
+    hasMore: false,
+    setHasmore: (hasMore: boolean) => set((state) => ({ hasMore })),
     totalNotifications: 0,
     updateNotification: (id: string) => set((state) => {
         const notifications = state.notifications.map(note =>

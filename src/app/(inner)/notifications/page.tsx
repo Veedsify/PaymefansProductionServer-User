@@ -10,7 +10,7 @@ const Notifications = () => {
     return (
         <div>
             <div className="md:py-5 md:px-8 p-3">
-                <NotificationHeader className="border-b">
+                <NotificationHeader>
                     Notifications
                 </NotificationHeader>
             </div>
