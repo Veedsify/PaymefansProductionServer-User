@@ -144,7 +144,7 @@ const MediaPanelImageCardOther = React.memo(
             </div>
           ))}
         </div>
-        <div className="flex flex-col items-center justify-center col-span-3 py-4 mb-20">
+        <div className="flex flex-col items-center justify-center col-span-3 py-2 mb-20">
           {loading && (
             <div className="flex justify-center col-span-3">
               <LucideLoader
@@ -163,7 +163,7 @@ const MediaPanelImageCardOther = React.memo(
             </button>
           )}
           {!hasMore && !loading && (
-            <p className="col-span-3 py-4 text-center dark:text-white">
+            <p className="col-span-3 text-gray-500 italic text-center font-medium">
               No more media
             </p>
           )}

@@ -5,6 +5,7 @@ import { LucideCheck, LucideLoader, LucidePlay } from "lucide-react";
 import Image from "next/image";
 import { useInView } from "react-intersection-observer";
 import { useStoryStore } from "@/contexts/story-context";
+import VideoPlayer from "../sub_components/videoplayer";
 
 const StoryMediaPanel = () => {
   const [page, setPage] = useState(1);
@@ -76,7 +77,7 @@ const StoryMediaItem = React.memo(({ data }: { data: any }) => {
 
   return (
     <div
-      className={`bg-gray-200 w-full aspect-square rounded-lg flex items-center justify-center relative outline-2 duration-500 outline ${
+      className={`bg-gray-200 w-full aspect-square rounded-xl flex items-center justify-center relative duration-500 outline ${
         selected ? "outline-primary-dark-pink" : "outline-transparent"
       }`}
     >
@@ -90,14 +91,13 @@ const StoryMediaItem = React.memo(({ data }: { data: any }) => {
               onClick={handleSelect}
             />
           )}
-          <video
-            onClick={handleSelect}
-            src={data.url}
-            muted
+          <VideoPlayer
+          allOthers={{onClick: handleSelect, muted: true}}
+            streamUrl={data.url}
             className={`object-cover rounded-xl cursor-pointer ${
               selected ? "p-[2px] saturate-100" : "saturate-0"
             } ease-in-out duration-300 inset-0 w-full h-full`}
-          ></video>
+          ></VideoPlayer>
           <span className="absolute top-0 left-0 bg-primary-dark-pink p-1 rounded-full m-1 shadow-lg shadow-white">
             <LucidePlay fill="#fff" strokeWidth={0} size={15} />
           </span>

@@ -13,7 +13,7 @@ const StoryMediaFetch = ({page}: StoryMediaFetchProps) => {
     useEffect(() => {
         setLoading(true)
         setError(false)
-        const URL = `${process.env.NEXT_PUBLIC_TS_EXPRESS_URL}/story/media`
+        const URL = `${process.env.NEXT_PUBLIC_TS_EXPRESS_URL}/stories/media`
         const token = getToken()
         let cancel;
         // @ts-ignore

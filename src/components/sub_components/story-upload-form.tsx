@@ -22,7 +22,7 @@ const StoryUploadForm = () => {
                 formData.append("files[]", file)
             })
             try {
-                toast.promise(axiosServer.post("/upload/story", formData, {
+                toast.promise(axiosServer.post("/stories/upload", formData, {
                     headers: {
                         "Content-Type": "multipart/form-data",
                         "Authorization": `Bearer ${token}`
@@ -57,7 +57,7 @@ const StoryUploadForm = () => {
     return (
         <form className="flex-1 h-full">
             <label htmlFor="file"
-                className="text-sm font-semibold w-full h-full flex flex-1 gap-3 flex-col items-center justify-center dark:hover:bg-gray-800 dark:bg-gray-900 dark:text-white p-5 hover:bg-gray-100 duration-300 ease-in-out">
+                className="text-sm font-semibold w-full h-full flex flex-1 gap-3 flex-col items-center justify-center dark:hover:bg-gray-800 dark:bg-gray-900 dark:text-white p-5 hover:bg-gray-100 duration-300 ease-in-out h-full">
                 <HiCamera size={40} />
                 <span>Select a photo or video</span>
                 <input type="file" multiple id="file" onChange={handleSelect}

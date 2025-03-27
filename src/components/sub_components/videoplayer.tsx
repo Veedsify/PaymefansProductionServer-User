@@ -162,7 +162,7 @@ const VideoPlayer = ({
   };
 
   return (
-    <div className="relative max-w-[600px] mx-auto bg-black rounded-lg overflow-hidden shadow-xl">
+    <div className="relative mx-auto bg-black rounded-lg overflow-hidden shadow-xl">
       <div
         ref={intersectionRef}
         className="relative group"
@@ -177,7 +177,7 @@ const VideoPlayer = ({
         <video
           ref={videoRef}
           {...allOthers}
-          className={`w-full h-full object-cover ${className}`}
+          className={`w-full h-full aspect-square object-contain ${className}`}
           onTimeUpdate={handleTimeUpdate}
           onLoadedMetadata={() => setDuration(videoRef.current?.duration || 0)}
           muted

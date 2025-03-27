@@ -21,36 +21,29 @@ const StoryCaptionComponent = ({ close }: StoryCaptionComponentProps) => {
      return (
           <div
                className="flex flex-col items-center fixed justify-center inset-0 w-full min-h-screen bg-black/80 z-50 select-none">
-               <div
-                    className="p-3 bg-white w-full ">
-                    <h2
-                         className="text-2xl text-center font-bold"
-                    >
-                         Story Caption
-                    </h2>
-               </div>
-               <div className="p-3 flex aspect-[9/15] md:h-[90%] flex-1 w-full"
+               <div className="p-3 flex justify-center items-center w-full flex-1"
                     onClick={(e) => {
                          if (e.target === e.currentTarget) {
                               close()
                          }
                     }}
                >
-                    {/* <div className=""> */}
                     <Swiper
                          navigation={true}
                          pagination={true}
                          modules={[Navigation, Pagination]}
-                         className="mySwiper max-w-[520px] aspect-[9/15] h-[90%] mx-auto object-contain bg-white border p-3 rounded-lg">
+                         spaceBetween={0}
+                         slidesPerView={1}
+                         className="max-w-[520px] w-full aspect-[9/16] bg-white border rounded-lg overflow-hidden">
                          {story?.map((story, index) => (
                               <SwiperSlide
                                    key={index}
+                                   className="h-full w-full"
                               >
                                    <SlideComponent story={story} index={index} close={close}/>
                               </SwiperSlide>
                          ))}
                     </Swiper>
-                    {/* </div> */}
                </div>
           </div>
      );

@@ -112,20 +112,20 @@ const PostComponentPreview = () => {
             ))}
             {/* Custom Navigation */}
             {otherUrl.length > 1 && (
-              <div className="absolute top-1/2 transform pointer-events-none md:pointer-events-auto -translate-y-1/2 z-10 w-full flex justify-between p-4">
+              <>
                 <button
                   onClick={() => swiperRef.current?.slidePrev()}
-                  className="bg-gray-200 p-2 opacity-0 md:opacity-20 pointer-events-none md:pointer-events-auto hover:opacity-100 rounded-full hover:bg-gray-300"
+                  className="absolute left-4 top-1/2 transform -translate-y-1/2 z-10 bg-gray-200 p-2 opacity-0 md:opacity-20 pointer-events-none md:pointer-events-auto hover:opacity-100 rounded-full hover:bg-gray-300"
                 >
                   <ChevronLeft className="md:h-[30px] h-[20px] md:w-[30px] w-[20px]" />
                 </button>
                 <button
                   onClick={() => swiperRef.current?.slideNext()}
-                  className="bg-gray-200 p-2 opacity-0 md:opacity-20 pointer-events-none md:pointer-events-auto hover:opacity-100  rounded-full hover:bg-gray-300"
+                  className="absolute right-4 top-1/2 transform -translate-y-1/2 z-10 bg-gray-200 p-2 opacity-0 md:opacity-20 pointer-events-none md:pointer-events-auto hover:opacity-100 rounded-full hover:bg-gray-300"
                 >
                   <ChevronRight className="md:h-[30px] h-[20px] md:w-[30px] w-[20px]" />
                 </button>
-              </div>
+              </>
             )}
           </Swiper>
         </div>

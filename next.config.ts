@@ -42,6 +42,11 @@ const nextConfig: NextConfig = {
       },
       {
         protocol: "https",
+        hostname: "d3dmrzkhiwq4ar.cloudfront.net",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
         hostname: "images.unsplash.com",
         pathname: "/**",
       },

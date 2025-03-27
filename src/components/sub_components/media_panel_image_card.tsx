@@ -128,7 +128,7 @@ const MediaPanelImageCard = React.memo(({ sort }: { sort: string }) => {
           </div>
         ))}
       </div>
-      <div className="flex flex-col items-center justify-center mb-20 col-span-3 py-4">
+      <div className="flex flex-col items-center justify-center mb-20 col-span-3 py-2">
         {loading && (
           <div className="flex justify-center col-span-3">
             <LucideLoader size={30} className="animate-spin" stroke="purple" />
@@ -143,7 +143,7 @@ const MediaPanelImageCard = React.memo(({ sort }: { sort: string }) => {
           </button>
         )}
         {!hasMore && !loading && (
-          <p className="col-span-3 py-4 text-center dark:text-white">
+          <p className="col-span-3 text-gray-500 italic text-center font-medium">
             No more media
           </p>
         )}
