@@ -10,12 +10,19 @@ import { LucideLock } from "lucide-react";
 import { useRouter } from "next/navigation";
 import HLSVideoPlayer from "./videoplayer";
 import { MouseEvent } from "react";
+import { useInView } from "react-intersection-observer";
+import { useUserAuthContext } from "@/lib/userUseContext";
+import { socket } from "./sub/socket";
 
 // Define props type for the component
 interface PostPageImageProps {
   indexId: number;
   medias: UserMediaProps[];
   canView: boolean;
+  data: {
+    id: string;
+    post_status: string;
+  }
   media: UserMediaProps;
   postOwnerId: string;
 }
@@ -25,11 +32,27 @@ const PostPageImage: React.FC<PostPageImageProps> = ({
   canView,
   medias,
   media,
+  data,
   postOwnerId,
 }) => {
   const router = useRouter();
   const { fullScreenPreview } = usePostComponent();
+    const { user: authUser } = useUserAuthContext();
   const [canplay, setCanplay] = useState(false);
+  const { ref, inView } = useInView({
+    threshold: 0.5,
+    triggerOnce: true
+  });
+
+  // Mark post as viewed
+  useEffect(() => {
+    if (data.post_status === "approved" && inView && authUser?.user_id) {
+      socket.emit("post-viewed", {
+        userId: authUser.id,
+        postId: data.id,
+      });
+    }
+  }, [data.id, data.post_status, inView, authUser?.user_id]);
 
   const handleClick = () => {
     if (!canView) return;

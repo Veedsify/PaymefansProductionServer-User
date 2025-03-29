@@ -45,9 +45,9 @@ const Login = () => {
             } else {
                 toast.error("Invalid Login credentials");
             }
-        } catch (error) {
+        } catch (error: any) {
             console.error("Error while logging in:", error);
-            toast.error("An error occurred while logging in");
+            toast.error(error.response?.data.message || "An error occurred while logging in");
         }
     };
     return (

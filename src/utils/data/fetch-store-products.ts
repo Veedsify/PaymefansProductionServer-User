@@ -1,30 +1,21 @@
 import ROUTE from "@/config/routes";
-import { fetstoreProps } from "@/types/components";
+import { StoreAllProductsResponse } from "@/types/components";
 import axios from "axios";
 
 
-const fetchStoreProducts: () => Promise<fetstoreProps> = async () => {
-     try {
-          const res = await axios.get(ROUTE.FETCH_STORE_PRODUCTS);
-
-          if (res.status === 200) {
-               return {
-                    error: false,
-                    data: res.data.data
-               }
-          } else {
-               return {
-                    error: true,
-                    message: res.data.data.message
-               }
-          }
-
-     } catch (error: any) {
-          return {
-               error: true,
-               message: error.message as unknown as string
-          }
-     }
-}
+const fetchStoreProducts: () => Promise<StoreAllProductsResponse> =
+  async () => {
+    try {
+      const res = await axios.get(ROUTE.FETCH_STORE_PRODUCTS);
+      return res.data as StoreAllProductsResponse;
+    } catch (error: any) {
+      console.error("Error fetching store products:", error);
+      return {
+        error: true,
+        message: "An error occurred while fetching products",
+        data: null,
+      };
+    }
+  };
 
 export default fetchStoreProducts;

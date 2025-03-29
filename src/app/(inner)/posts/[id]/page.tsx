@@ -8,8 +8,8 @@ import Image from "next/image";
 import Link from "next/link";
 import getUserData from "@/utils/data/user-data";
 import { AuthUserProps } from "@/types/user";
-import React, {ReactNode} from "react";
-import {getPost} from "@/utils/data/getpost";
+import React, { ReactNode } from "react";
+import { getPost } from "@/utils/data/getpost";
 
 interface PostPageProps {
   params: Promise<{
@@ -25,7 +25,6 @@ const Post = React.memo(async ({ params }: PostPageProps) => {
     __html: `${post?.content.replace(/(?:\r\n|\r|\n)/g, "<br>")}`,
   };
 
-
   const isCreator = post?.user.id === user?.id;
   // const isAdmin = user.role === "admin";
   const isSubscribed = user?.subscriptions?.includes(post.user?.id as number);
@@ -38,7 +37,6 @@ const Post = React.memo(async ({ params }: PostPageProps) => {
     post.post_audience === "public" || // Public posts are visible to all
     (post.post_audience === "subscribers" && isSubscribed) || // Subscriber-only post for subscribed users
     (post.post_audience === "price" && hasPaid); // Paid posts if the user has paid
-
 
   const GetAudienceIcon = (audience: string): ReactNode => {
     switch (audience) {
@@ -85,6 +83,7 @@ const Post = React.memo(async ({ params }: PostPageProps) => {
           </div>
           <QuickPostActions
             options={{
+              content: post?.content,
               post_id: post?.post_id,
               username: post?.user.username,
               post_audience: post?.post_audience,
@@ -101,14 +100,15 @@ const Post = React.memo(async ({ params }: PostPageProps) => {
         >
           {post?.UserMedia.map((media: any, index: number) => (
             <div key={index} className="relative">
-                <PostPageImage
-                  key={index}
-                  media={media}
-                  indexId={index}
-                  postOwnerId={post?.user?.user_id}
-                  canView={canView as boolean}
-                  medias={post?.UserMedia}
-                />
+              <PostPageImage
+                key={index}
+                data={{ id: post?.id, post_status: post?.post_status }}
+                media={media}
+                indexId={index}
+                postOwnerId={post?.user?.user_id}
+                canView={canView as boolean}
+                medias={post?.UserMedia}
+              />
             </div>
           ))}
         </div>

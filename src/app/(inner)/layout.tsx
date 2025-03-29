@@ -84,7 +84,7 @@ export default async function RootLayout({
                       <div className="col-span-2">
                         <SideBar />
                       </div>
-                      <div className="col-span-7 overflow-auto border-r h-screen relative">
+                      <div className="col-span-7 overflow-auto border-black/30 border-r h-screen relative">
                         <Header />
                         <div className="grid lg:grid-cols-7 pt-[73px] lg:pt-[54px] h-screen">
                           <div className="col-span-4 flex flex-col h-full">

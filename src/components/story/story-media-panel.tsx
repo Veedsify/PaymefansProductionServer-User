@@ -28,12 +28,13 @@ const StoryMediaPanel = () => {
 
   return (
     <>
-      <div className="grid grid-cols-3 gap-3 p-3 md:p-5 pb-10 max-h-[400px]">
+      <div className="grid grid-cols-3 gap-3 p-3 md:p-5 pb-10 max-h-[500px] overflow-auto">
         {media.map((data: any, index: number) => (
-          <div key={data.id} ref={index === media.length - 1 ? ref : null}>
+          <div key={data.id}>
             <StoryMediaItem data={data} />
           </div>
         ))}
+        <div ref={ref}></div>
       </div>
       {loading && (
         <div className="px-4">

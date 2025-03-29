@@ -3,6 +3,7 @@ import {StoryMediaFetchProps} from "@/types/components";
 import {useEffect, useState} from "react";
 import axios, {CancelToken} from "axios";
 import {getToken} from "@/utils/cookie.get";
+import lodash from "lodash";
 
 const StoryMediaFetch = ({page}: StoryMediaFetchProps) => {
     const [media, setMedia] = useState<any>([])
@@ -31,17 +32,11 @@ const StoryMediaFetch = ({page}: StoryMediaFetchProps) => {
             cancelToken: new CancelToken((c:any) => cancel = c)
     }).
         then(res => {
-            setHasMore(res.data.data.length > 0)
+            setHasMore(res.data.hasMore)
+            console.log(res.data.hasMore)
             setLoading(false)
             setMedia((prev: any) => {
-                const arr = new Map()
-                prev.map((data: any) => {
-                    arr.set(data.id, data)
-                })
-                res.data.data.map((data: any) => {
-                    arr.set(data.id, data)
-                })
-                return Array.from(arr.values())
+                return lodash.uniqBy([...prev, ...res.data.data], "id")
             })
         }).catch(error => {
             if (axios.isCancel(error)) {

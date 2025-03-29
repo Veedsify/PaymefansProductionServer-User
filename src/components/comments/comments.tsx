@@ -137,23 +137,23 @@ const CommentsHolder = ({ post }: { post: PostData }) => {
               <h3 className="mb-2">
                 <Link
                   href={`/${comment.user.username}`}
-                  className="md:text-lg text-sm font-bold"
+                  className="md:text-base text-sm font-bold"
                 >
                   {comment.user.name}
                 </Link>{" "}
                 &nbsp;
                 <Link
                   href={`/${comment.user.username}`}
-                  className="md:text-lg text-sm"
+                  className="md:text-base text-sm"
                 >
                   {comment.user.username}
                 </Link>{" "}
                 &nbsp; . &nbsp;{" "}
-                <span className="md:text-lg text-xs">
+                <span className="md:text-base text-xs">
                   {formatDate(comment.created_at)}
                 </span>
               </h3>
-              <div className="md:text-lg text-sm mb-2">
+              <div className="md:text-base text-sm mb-2">
                 <div
                   className="mb-3"
                   dangerouslySetInnerHTML={{ __html: comment.comment }}
@@ -216,7 +216,7 @@ const ReplyInteractions = () => {
         <LucideMessageSquare size={18} />0
       </span>
       <span className="flex items-center gap-1 text-xs cursor-pointer font-medium">
-        <LucideRepeat2 size={18} />0
+        <LucideBarChart size={18} />0
       </span>
     </div>
   );

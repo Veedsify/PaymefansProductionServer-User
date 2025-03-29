@@ -221,8 +221,9 @@ const StoryPreviewComponent = ({
                   <Image
                     src={story.url}
                     alt={story?.caption ? story.caption : ""}
-                    width={1000}
-                    height={1000}
+                    width={1500}
+                    height={1500}
+                    quality={100}
                     priority={index === activeIndex}
                     loading={index === activeIndex ? "eager" : "lazy"}
                     // className="object-contain w-full max-h-[calc(100vh-120px)]"

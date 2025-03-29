@@ -1,7 +1,9 @@
+"use client"
 import {
   LucideEye,
   LucideEyeOff,
   LucidePen,
+  LucideShare,
   LucideTrash,
   Repeat2,
 } from "lucide-react";
@@ -136,6 +138,65 @@ const QuickPostActionHooks = ({ options }: QuickPostActionsProps) => {
     });
   };
 
+  const ShareThisPost = ( e: MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault()
+    swal({
+      title: "Share this post",
+      content: {
+        element: "div",
+        attributes: {
+          className: "space-y-6",
+          innerHTML: `
+            <div class="flex flex-wrap gap-4">
+              <button onclick="window.open('https://twitter.com/intent/tweet?url=${process.env.NEXT_PUBLIC_SERVER_URL}/posts/${options.post_id}')" 
+                class="flex items-center space-x-2 px-4 py-2 rounded-lg text-white bg-[#1DA1F2] hover:bg-[#1a8cd8] transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z"></path>
+                </svg>
+                <span>Twitter</span>
+              </button>
+
+              <button onclick="window.open('https://www.facebook.com/sharer/sharer.php?u=${process.env.NEXT_PUBLIC_SERVER_URL}/posts/${options.post_id}')"
+                class="flex items-center space-x-2 px-4 py-2 rounded-lg text-white bg-[#1877F2] hover:bg-[#166fe5] transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path>
+                </svg>
+                <span>Facebook</span>
+              </button>
+
+              <button onclick="window.open('https://api.whatsapp.com/send?text=${process.env.NEXT_PUBLIC_SERVER_URL}/posts/${options.post_id}')"
+                class="flex items-center space-x-2 px-4 py-2 rounded-lg text-white bg-[#25D366] hover:bg-[#22c35e] transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M3 21l1.65-3.8a9 9 0 1 1 3.4 2.9L3 21"></path>
+                  <path d="M9 10a.5.5 0 0 0 1 0V9a.5.5 0 0 0-1 0v1a5 5 0 0 0 5 5h1a.5.5 0 0 0 0-1h-1a.5.5 0 0 0 0 1"></path>
+                </svg>
+                <span>WhatsApp</span>
+              </button>
+            </div>
+
+            <div class="space-y-3">
+              <p class="text-sm text-gray-600 font-medium">Copy link</p>
+              <div class="flex items-center space-x-2">
+                <div class="flex-1 p-3 bg-gray-100 rounded-lg truncate">
+                  <p class="text-sm text-gray-600">${process.env.NEXT_PUBLIC_SERVER_URL}/posts/${options.post_id}</p>
+                </div>
+                <button onclick="navigator.clipboard.writeText('${process.env.NEXT_PUBLIC_SERVER_URL}/posts/${options.post_id}').then(() => swal('Link copied!', '', 'success'))"
+                  class="p-3 rounded-lg transition-colors bg-primary-dark-pink text-white hover:bg-primary-text-dark-pink">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path>
+                    <rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect>
+                  </svg>
+                </button>
+              </div>
+            </div>
+          `
+        }
+      },
+      closeOnEsc: true,
+      closeOnClickOutside: true,
+    });
+  }
+
   const repostThisPost = useCallback(async () => {
     try {
       const repost = await axiosInstance.post(
@@ -178,6 +239,11 @@ const QuickPostActionHooks = ({ options }: QuickPostActionsProps) => {
       func: repostThisPost,
     },
     {
+      name: "Share",
+      icon: <LucideShare className="mr-2" size={16} />,
+      func: ShareThisPost,
+    },
+    {
       name: "Delete",
       icon: <LucideTrash className="mr-2" size={16} />,
       func: handleDelete,
@@ -190,11 +256,11 @@ const QuickPostActionHooks = ({ options }: QuickPostActionsProps) => {
       icon: <Repeat2 className="mr-2" size={16} />,
       func: repostThisPost,
     },
-    // {
-    //     name: "Report",
-    //     icon: <LucideTrash className="mr-2" size={16}/>,
-    //     link: "/edit-post",
-    // },
+    {
+      name: "Share",
+      icon: <LucideShare className="mr-2" size={16} />,
+      func: ShareThisPost,
+    },
     // {
     //     name: "Hide",
     //     icon: <LucideEyeOff className="mr-2" size={16}/>,

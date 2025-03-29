@@ -32,6 +32,8 @@ import {
 import Hls from "hls.js";
 import HLSVideoPlayer from "../sub_components/videoplayer";
 import { useUserAuthContext } from "@/lib/userUseContext";
+import { socket } from "../sub_components/sub/socket";
+import { useInView } from "react-intersection-observer";
 
 const PostComponent: React.FC<PostComponentProps> = ({
   user,
@@ -49,6 +51,20 @@ const PostComponent: React.FC<PostComponentProps> = ({
     data.user?.id as number
   );
   const hasPaid = authUser?.purchasedPosts?.includes(data?.id as number);
+  const { ref, inView } = useInView({
+    threshold: 0.5,
+    triggerOnce: true
+  });
+
+  // Mark post as viewed
+  useEffect(() => {
+    if (data.post_status === "approved" && inView && authUser?.user_id) {
+      socket.emit("post-viewed", {
+        userId: authUser.id,
+        postId: data.id,
+      });
+    }
+  }, [data.id, data.post_status, inView, authUser?.user_id]);
 
   // Determine visibility
   const canView =
@@ -58,8 +74,9 @@ const PostComponent: React.FC<PostComponentProps> = ({
     (data.post_audience === "subscribers" && isSubscribed) || // Subscriber-only post for subscribed users
     (data.post_audience === "price" && hasPaid); // Paid posts if the user has paid
 
-  // const [isSubscribed, setIsSubscribed] = useState<boolean>(false);
   const router = useRouter();
+
+  
   const formattedText = useCallback(() => {
     const text = data.post.replace(/\r?\n/g, "<br/>");
     if (!isSubscribed && data.post_audience === "subscribers" && !isCreator) {
@@ -77,7 +94,10 @@ const PostComponent: React.FC<PostComponentProps> = ({
 
   const clickImageEvent = useCallback(
     (media: { url: string; media_type: string; index: number }) => {
-      if (data.post_audience === "subscribers" && !(isSubscribed || isCreator)) {
+      if (
+        data.post_audience === "subscribers" &&
+        !(isSubscribed || isCreator)
+      ) {
         toast.error("You need to be a subscriber to view this post");
         return;
       }
@@ -105,7 +125,10 @@ const PostComponent: React.FC<PostComponentProps> = ({
         !(target instanceof HTMLButtonElement)
       ) {
         e.preventDefault();
-        if (data.post_audience === "subscribers" && !(isSubscribed || isCreator)) {
+        if (
+          data.post_audience === "subscribers" &&
+          !(isSubscribed || isCreator)
+        ) {
           swal({
             title: "You need to be a subscriber to view this post",
             icon: "/icons/error.svg",
@@ -241,6 +264,7 @@ const PostComponent: React.FC<PostComponentProps> = ({
         className="cursor-pointer"
         onClick={redirectToPost}
         role="link"
+        ref={ref}
         data-href={`/posts/${data.post_id}`}
       >
         {was_repost && (
@@ -281,6 +305,7 @@ const PostComponent: React.FC<PostComponentProps> = ({
           </div>
           <QuickPostActions
             options={{
+              content: data.content,
               post_id: data.post_id,
               username: user.username,
               post_audience: data.post_audience,

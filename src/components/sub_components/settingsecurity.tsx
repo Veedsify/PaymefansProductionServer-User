@@ -29,7 +29,7 @@ const SettingSecurity = () => {
                         className="flex gap-4 items-center border-green-500 border rounded-lg py-4 px-6 hover:bg-gray-100 transition-all duration-200 cursor-pointer mb-2"
                         href="/settings/subscribers">
                     <span>
-                        <LucideUsers/>
+                        <LucideUsers className="text-green-500"/>
                     </span>
                         <span className="font-semibold text-green-500">
                         Active Subscribers

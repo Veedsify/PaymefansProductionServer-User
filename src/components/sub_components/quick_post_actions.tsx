@@ -57,7 +57,7 @@ const QuickPostActions = ({ options }: QuickPostActionsProps) => {
                     <>
                       <button
                         onClick={option?.func}
-                        className="font-medium dark:text-white text-black flex items-center text-sm py-1 w-full px-3"
+                        className="font-medium dark:text-white text-black flex items-center text-sm py-1 w-full px-3 cursor-pointer"
                       >
                         {option?.icon}
                         {option?.name}
@@ -84,7 +84,7 @@ const QuickPostActions = ({ options }: QuickPostActionsProps) => {
                   {!option?.link ? (
                     <button
                       onClick={option?.func}
-                      className="font-medium dark:text-white text-black flex items-center text-sm py-1 w-full px-3"
+                      className="font-medium dark:text-white text-black flex items-center text-sm py-1 w-full px-3 cursor-pointer"
                     >
                       {option?.icon}
                       {option?.name}

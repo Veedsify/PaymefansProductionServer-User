@@ -1,6 +1,7 @@
 "use client";
 import { PiCurrencyDollarSimple } from "react-icons/pi";
 import {
+  BarChart,
   LucideHeart,
   LucideMessageSquare,
   LucideRepeat2,
@@ -13,6 +14,7 @@ import numeral from "numeral";
 import { PostData } from "@/types/components";
 import PostShareModal from "../sub_components/post-share-component";
 import Link from "next/link";
+import formatNumber from "@/lib/formatnumbers";
 
 type PostCompInteractionsProps = {
   data: PostData | undefined;
@@ -40,12 +42,6 @@ export const PostCompInteractions = ({ data }: PostCompInteractionsProps) => {
 
   return (
     <>
-      <PostShareModal
-        isOpen={isShareModalOpen}
-        onClose={() => setIsShareModalOpen(false)}
-        url={`${process.env.NEXT_PUBLIC_SERVER_URL}/posts/${data?.post_id}`}
-        title={data?.content}
-      />
       <div className="flex mt-6 justify-around text-sm w-full text-gray-600 py-6 dark:border-slate-700 border-b border-black/20">
         <span
           className="flex items-center gap-1 text-sm cursor-pointer font-medium"
@@ -78,7 +74,8 @@ export const PostCompInteractions = ({ data }: PostCompInteractionsProps) => {
           onClick={() => setIsShareModalOpen(true)}
           className="flex items-center gap-1 text-sm cursor-pointer font-medium"
         >
-          <LucideShare size={23} />
+          <BarChart size={23} /> 
+          {formatNumber(data?.post_impressions as number)}
         </span>
       </div>
     </>

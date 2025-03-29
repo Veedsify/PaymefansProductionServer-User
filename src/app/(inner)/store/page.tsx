@@ -1,6 +1,6 @@
 "use client";
 import CartIcon from "@/components/sub_components/cart-icon";
-import { fetstoreProps } from "@/types/components";
+import { fetstoreProps, StoreProduct } from "@/types/components";
 import fetchStoreProducts from "@/utils/data/fetch-store-products";
 import { ShoppingCart } from "lucide-react";
 import Image from "next/image";
@@ -8,9 +8,10 @@ import Link from "next/link";
 import numeral from "numeral";
 import { useCallback, useEffect, useState } from "react";
 import toast from "react-hot-toast";
+import _ from "lodash";
 
 const Store = () => {
-  const [products, setProducts] = useState<fetstoreProps["data"]>([]);
+  const [products, setProducts] = useState<StoreProduct[]>([]);
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
 
@@ -18,13 +19,13 @@ const Store = () => {
     setLoading(true);
     const product = await fetchStoreProducts();
 
-    if (product.error) {
+    if ('error' in product && product.error === true) {
       setLoading(false);
       toast.error(product.message as string);
       return;
     }
-
-    setProducts(product.data);
+    
+    setProducts(prev => _.uniqBy([...prev, ...product.data as StoreProduct[] || []], "id"));
     setLoading(false);
   }, []);
 
@@ -47,9 +48,9 @@ const Store = () => {
           </div>
 
           <p className="mt-4 max-w-md text-gray-500 dark:text-white">
-            Lorem ipsum, dolor sit amet consectetur adipisicing elit. Itaque
-            praesentium cumque iure dicta incidunt est ipsam, officia dolor
-            fugit natus?
+            Paymefans store is a platform where you can buy products
+            and merchandise from your favorite models. We offer a wide range of
+            products, including clothing, accessories, and more. 
           </p>
         </header>
 
