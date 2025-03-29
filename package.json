@@ -32,7 +32,6 @@
     "media-icons": "^1.1.5",
     "moment": "^2.30.1",
     "next": "^15.2.3",
-    "next-auth": "^4.24.11",
     "numeral": "^2.0.6",
     "prisma": "^6.5.0",
     "react": "19.0.0",

@@ -43,7 +43,7 @@ const CommentsHolder = ({ post }: { post: PostData }) => {
     if (inView && hasMore) {
       setPage((prev) => prev + 1);
     }
-  }, [inView]);
+  }, [inView, hasMore]);
   // Aadd infinte scroll to load more comments
   useEffect(() => {
     const fetchComments = async () => {

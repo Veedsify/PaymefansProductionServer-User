@@ -195,7 +195,7 @@ const VideoPreview = ({
           id: "video_player_full",
           muted: false,
         }}
-        className="h-screen object-contain mx-auto w-auto transition-all duration-200 border-none animate-in scale-100 fullscreen-video"
+        className="h-screen object-contain mx-auto w-full max-w-3xl transition-all duration-200 border-none animate-in scale-100 fullscreen-video"
       />
     </div>
   );

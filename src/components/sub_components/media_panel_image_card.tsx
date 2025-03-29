@@ -192,6 +192,7 @@ const MediaPanelMediaCard = ({
             className="w-full h-[400px] cursor-pointer object-cover transition-all duration-300 ease-in-out"
             allOthers={{
               muted: true,
+              poster:media.poster,
               onClick: () =>
                 PreviewImageHandler(
                   media.url,

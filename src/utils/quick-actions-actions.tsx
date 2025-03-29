@@ -268,7 +268,7 @@ const QuickPostActionHooks = ({ options }: QuickPostActionsProps) => {
     // },
   ] as {
     name: string;
-    icon: JSX.Element;
+    icon: React.ReactNode;
     link?: string;
     func?: (e: MouseEvent<HTMLButtonElement>) => void;
   }[];

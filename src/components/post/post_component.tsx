@@ -58,13 +58,13 @@ const PostComponent: React.FC<PostComponentProps> = ({
 
   // Mark post as viewed
   useEffect(() => {
-    if (data.post_status === "approved" && inView && authUser?.user_id) {
+    if (data.post_status === "approved" && inView && authUser?.id) {
       socket.emit("post-viewed", {
         userId: authUser.id,
         postId: data.id,
       });
     }
-  }, [data.id, data.post_status, inView, authUser?.user_id]);
+  }, [data.id, data.post_status, inView, authUser?.id]);
 
   // Determine visibility
   const canView =
@@ -114,7 +114,7 @@ const PostComponent: React.FC<PostComponentProps> = ({
           })),
       });
     },
-    [isSubscribed, data.post_audience, data.media, fullScreenPreview]
+    [isSubscribed, data.post_audience, data.media, isCreator, fullScreenPreview]
   );
 
   const redirectToPost = useCallback(
@@ -188,6 +188,7 @@ const PostComponent: React.FC<PostComponentProps> = ({
       data.post_id,
       data.post_audience,
       isSubscribed,
+      isCreator,
       user.user_id,
       data.user?.user_id,
       authUser?.user_id,

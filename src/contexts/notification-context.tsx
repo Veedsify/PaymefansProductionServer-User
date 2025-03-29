@@ -26,7 +26,7 @@ type NotificationState = {
 
 type NotificationType = {
     type: 'like' | 'comment' | 'follow' | 'repost' | 'message' | 'live' | 'purchase' | 'sparkle';
-    icon: JSX.Element;
+    icon: React.ReactNode
     color: string;
 }
 

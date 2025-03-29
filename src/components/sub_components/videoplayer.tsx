@@ -177,7 +177,7 @@ const VideoPlayer = ({
         <video
           ref={videoRef}
           {...allOthers}
-          className={`w-full h-full aspect-square object-contain ${className}`}
+          className={`${className}`}
           onTimeUpdate={handleTimeUpdate}
           onLoadedMetadata={() => setDuration(videoRef.current?.duration || 0)}
           muted

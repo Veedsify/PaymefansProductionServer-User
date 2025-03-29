@@ -46,13 +46,13 @@ const PostPageImage: React.FC<PostPageImageProps> = ({
 
   // Mark post as viewed
   useEffect(() => {
-    if (data.post_status === "approved" && inView && authUser?.user_id) {
+    if (data.post_status === "approved" && inView && authUser?.id) {
       socket.emit("post-viewed", {
         userId: authUser.id,
         postId: data.id,
       });
     }
-  }, [data.id, data.post_status, inView, authUser?.user_id]);
+  }, [data.id, data.post_status, inView, authUser?.id]);
 
   const handleClick = () => {
     if (!canView) return;

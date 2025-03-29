@@ -84,6 +84,7 @@ async function Page({ params }: { params: params }) {
           </div>
           <QuickPostActions
             options={{
+              content: post?.content,
               post_id: post?.post_id,
               username: post?.user.username,
               post_audience: post?.post_audience,
@@ -100,6 +101,7 @@ async function Page({ params }: { params: params }) {
           {post?.UserMedia.map((media: any, index: number) => (
             <PostPageImage
               key={index}
+              data={post}
               media={media}
               indexId={index}
               canView={canView as boolean}

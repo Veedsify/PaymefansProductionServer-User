@@ -38,7 +38,6 @@ const MediaPanelImageCardOther = React.memo(
     const token = getToken();
     const [hasMore, setHasMore] = useState(true);
     const [loading, setLoading] = useState(false);
-    const { user } = useUserAuthContext();
     useEffect(() => {
       const sortData = (data: MediaDataTypeOtherProps[]) => {
         return sort === "all"
