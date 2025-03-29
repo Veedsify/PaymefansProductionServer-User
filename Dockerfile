@@ -14,7 +14,7 @@ RUN bun install
 COPY . .
 
 # Build the application (if needed, Bun has a different build command)
-RUN bun build
+RUN bun run build
 
 # Expose the application port
 EXPOSE 3000
