@@ -13,30 +13,29 @@ import axiosInstance from "@/utils/axios";
 import { getToken } from "../../utils/cookie.get";
 import { useRouter } from "next/navigation";
 import Form from "next/form";
+import { useEffect, useState } from "react";
+import { socket } from "../sub_components/sub/socket";
 
 const SideModels = () => {
-  const { isLoading, data, error, refetch } = useQuery<{
-    models: AuthUserProps[];
-  }>({
-    queryKey: ["models"],
-    queryFn: async () =>
-      axiosInstance
-        .post(
-          `${process.env.NEXT_PUBLIC_TS_EXPRESS_URL}/models/all`,
-          {
-            limit: 4,
-          },
-          {
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${getToken()}`,
-            },
-          }
-        )
-        .then((res) => {
-          return res.data;
-        }),
-  });
+  const [models, setModels] = useState([]);
+  const [isLoading, setLoading] = useState(false);
+  useEffect(() => {
+    const Models = (data: any) => {
+      console.log("Models", data);
+      setLoading(true);
+      if (data?.models) {
+        setLoading(false);
+        setModels(data.models);
+      } else {
+        setLoading(true);
+      }
+    };
+
+    socket.on("models-update", Models);
+    return () => {
+      socket.off("models-update", Models);
+    };
+  }, [socket]);
 
   const {
     isLoading: loadinModels,
@@ -105,13 +104,13 @@ const SideModels = () => {
             </span>
           </div>
           <div className="py-6 mb-6">
-            {data?.models.length === 0 && (
+            {(models.length === 0 && !isLoading) && (
               <div className="text-center text-gray-700">No Models Found</div>
             )}
             {isLoading && <ModelLoader />}
             <div className="grid grid-cols-3 gap-3">
-              {data?.models &&
-                data?.models?.map((model: any) => {
+              {models &&
+                models?.map((model: any) => {
                   return (
                     <ModelsSubscription model={model} key={model?.username} />
                   );

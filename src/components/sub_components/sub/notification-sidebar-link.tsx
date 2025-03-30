@@ -4,11 +4,7 @@ import { LucideBell } from "lucide-react"
 import { useNotificationStore } from "@/contexts/notification-context";
 import { useEffect, useState } from "react";
 const NotificationSidebarLink = () => {
-     const [count, setCount] = useState(0)
-     const { notifications } = useNotificationStore()
-     useEffect(() => {
-          setCount(notifications.filter(note => note.read == false).length)
-     }, [notifications])
+     const { totalNotifications } = useNotificationStore()
      return (
           <span>
                <Link href="/notifications"
@@ -16,7 +12,7 @@ const NotificationSidebarLink = () => {
                     <LucideBell />
                     <p>Notifications</p>
                     <span className="ml-auto h-8 w-8 p-0 font-bold flex items-center justify-center rounded-full bg-primary-dark-pink text-white">
-                         {count ? count : 0}
+                         {totalNotifications ? totalNotifications : 0}
                     </span>
                </Link>
           </span>

@@ -3,14 +3,12 @@ import { Inter } from "next/font/google";
 import Head from "next/head";
 import { GeistSans } from "geist/font/sans";
 
-const font = Inter({
-  weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
-  subsets: ["latin", "latin-ext"],
-  display: "swap",
-});
+// const font = Inter({
+//   weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
+//   subsets: ["latin", "latin-ext"],
+//   display: "swap",
+// });
 
-// import { GeistSans } from 'geist/font/sans';
-// import { GeistSans } from 'geist/font/sans';
 import "../globals.css";
 import MenuButtons from "@/components/modals/menu_buttons";
 import SideModels from "@/components/models/side_models";
@@ -45,7 +43,7 @@ export default async function RootLayout({
     <html lang="en">
       <body
         className={`
-              ${font.className}
+              ${GeistSans.className}
                  dark:bg-gray-950 min-h-screen`}
       >
         <UserContextProvider user={user}>
@@ -61,7 +59,7 @@ export default async function RootLayout({
                       fontWeight: "500",
                       border: "1px solid #CC0DF8",
                       borderRadius: "100vmax",
-                      fontFamily: "Inter",
+                      fontFamily: "Geist Sans",
                     },
                   }}
                 />

@@ -21,14 +21,7 @@ export function NotificationHeader({
   children: string;
   className?: string;
 }) {
-  const { notifications, setTotalNotifications } = useNotificationStore();
-  const [count, setCount] = useState<number>(0);
-  useEffect(() => {
-    const allUnreadNotifications = notifications.filter(
-      (note) => note.read == false
-    );
-    setCount(allUnreadNotifications.length);
-  }, [notifications]);
+  const { totalNotifications } = useNotificationStore();
 
   return (
     <>
@@ -38,7 +31,7 @@ export function NotificationHeader({
             {children}
           </span>
           <div className="flex items-center justify-center w-8 h-8 aspect-square flex-shrink-0 ml-auto text-white md:py-3 md:px-3 py-1 px-1  bg-primary-text-dark-pink rounded-full font-bold">
-            {count > 100 ? "99+" : count}
+            {totalNotifications > 100 ? "99+" : totalNotifications}
           </div>
         </div>
       </div>
