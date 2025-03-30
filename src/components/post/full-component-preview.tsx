@@ -72,6 +72,7 @@ const PostComponentPreview = () => {
             slidesPerView={1}
             className="h-screen"
             modules={[Navigation, Pagination]}
+            draggable={false}
             onSwiper={(swiper) => (swiperRef.current = swiper)}
           >
             {otherUrl.map((item, index) => (

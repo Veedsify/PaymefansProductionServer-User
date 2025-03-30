@@ -132,6 +132,12 @@ const PostEditor = React.memo(({posts}: PostEditorProps) => {
             return;
         }
 
+        // Check if all uploads are completed
+        if (media?.some((file) => !file.fileId)) {
+            toast.error("Please wait for all uploads to complete.");
+            return;
+        }
+
         toast.loading("Creating your post...");
         console.log("Media", media);
         console.log("Removed Media", removedIds);
