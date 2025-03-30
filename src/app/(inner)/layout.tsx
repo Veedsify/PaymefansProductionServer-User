@@ -59,7 +59,6 @@ export default async function RootLayout({
                       fontWeight: "500",
                       border: "1px solid #CC0DF8",
                       borderRadius: "100vmax",
-                      fontFamily: "Geist Sans",
                     },
                   }}
                 />
@@ -72,7 +71,6 @@ export default async function RootLayout({
                     style: {
                       fontSize: "16px",
                       borderRadius: "100vmax",
-                      fontFamily: "system-ui",
                     },
                   }}
                 />
