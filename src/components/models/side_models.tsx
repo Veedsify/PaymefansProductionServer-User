@@ -15,9 +15,12 @@ import { useRouter } from "next/navigation";
 import Form from "next/form";
 import { useEffect, useState } from "react";
 import { socket } from "../sub_components/sub/socket";
+const _ = require('lodash');
 
 const SideModels = () => {
   const [models, setModels] = useState([]);
+  const [hookups, setHookups] = useState([]);
+  const [isHookupLoading, setHookupLoading] = useState(false);
   const [isLoading, setLoading] = useState(false);
   useEffect(() => {
     const Models = (data: any) => {
@@ -25,42 +28,30 @@ const SideModels = () => {
       setLoading(true);
       if (data?.models) {
         setLoading(false);
-        setModels(data.models);
+        setModels(_.shuffle(data.models));
       } else {
         setLoading(true);
       }
     };
 
+    const Hookups = (data: any) => {
+      console.log("Hookups", data);
+      setHookupLoading(true);
+      if (data?.hookups) {
+        setHookupLoading(false);
+        setHookups(_.shuffle(data.hookups));
+      } else {
+        setHookupLoading(true);
+      }
+    };
+
     socket.on("models-update", Models);
+    socket.on("hookup-update", Hookups);
     return () => {
       socket.off("models-update", Models);
+      socket.off("hookup-update", Hookups);
     };
   }, [socket]);
-
-  const {
-    isLoading: loadinModels,
-    data: data2,
-    error: ErrHookup,
-  } = useQuery<{ hookups: AuthUserProps[] }>({
-    queryKey: ["hookups"],
-    queryFn: async () =>
-      axiosInstance
-        .post(
-          `${process.env.NEXT_PUBLIC_TS_EXPRESS_URL}/models/hookups`,
-          {
-            limit: 6,
-          },
-          {
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${getToken()}`,
-            },
-          }
-        )
-        .then((res) => {
-          return res.data;
-        }),
-  });
 
   const router = useRouter();
 
@@ -104,7 +95,7 @@ const SideModels = () => {
             </span>
           </div>
           <div className="py-6 mb-6">
-            {(models.length === 0 && !isLoading) && (
+            {models.length === 0 && !isLoading && (
               <div className="text-center text-gray-700">No Models Found</div>
             )}
             {isLoading && <ModelLoader />}
@@ -130,13 +121,13 @@ const SideModels = () => {
             </Link>
           </span>
         </div>
-        {data2?.hookups?.length === 0 && (
+        {(hookups?.length === 0  && !isHookupLoading) && (
           <div className="text-center text-gray-700">No Hookup Available</div>
         )}
-        {loadinModels && <HookUpLoader />}
+        {isHookupLoading && <HookUpLoader />}
         <div className="grid gap-4 lg:gap-6 grid-cols-3 ">
-          {data2?.hookups &&
-            data2?.hookups?.map((hookup: AuthUserProps) => {
+          {!isHookupLoading &&
+            hookups?.map((hookup: AuthUserProps) => {
               return (
                 <HookupSubscription hookup={hookup} key={hookup?.username} />
               );
