@@ -1,75 +1,65 @@
-"use client"
-import { Suspense, useState } from "react";
-import { Tab, Tabs, TabList, TabPanel } from "react-tabs";
+"use client";
+import {useState} from "react";
 import PostPanel from "./postpanel";
 import MediaPanel from "./mediapanel";
-import LoadingPost from "./loading_post";
 import RepostPanel from "./repost_panel";
-import { LucideImage, LucideLock, LucidePodcast, LucideReceipt, LucideRepeat, LucideRepeat2 } from "lucide-react";
+import {LucideImage, LucideLock, LucidePodcast, LucideRepeat2} from "lucide-react";
+
 const ProfileTabs = () => {
-  const [selectedTab, setSelectedTab] = useState(0);
-  return (
-    <div className="">
-      <Tabs
-        className="px-3 md:px-5"
-        selectedIndex={selectedTab}
-        onSelect={(index) => setSelectedTab(index)}
-      >
-        <TabList className="flex items-center text-center border-b border-black/30 dark:border-slate-600 dark:text-white">
-          <Tab className="flex-1 outline-none cursor-pointer">
-            <span className="inline-flex items-center justify-center mb-2 text-sm font-medium">
-              <LucidePodcast size={24} />
-            </span>
-            <span
-              className={` block h-[2px] w-full rounded-lg ${selectedTab === 0 ? "bg-primary-dark-pink" : ""
-                }`}
-            ></span>
-          </Tab>
-          <Tab className="flex-1 text-center outline-none cursor-pointer">
-            <span className="inline-flex items-center justify-center mb-2 text-sm font-medium">
-              <LucideImage size={24} />
-            </span>
-            <span
-              className={` block h-[2px] w-full rounded-lg ${selectedTab === 1 ? "bg-primary-dark-pink" : ""
-                }`}
-            ></span>
-          </Tab>
-          <Tab className="flex-1 text-center outline-none cursor-pointer">
-            <span className="inline-flex items-center justify-center mb-2 text-sm font-medium">
-              <LucideRepeat2 size={24} />
-            </span>
-            <span
-              className={` block h-[2px] w-full rounded-lg ${selectedTab === 2 ? "bg-primary-dark-pink" : ""
-                }`}
-            ></span>
-          </Tab>
-          <Tab className="flex-1 outline-none cursor-pointer">
-            <span className="inline-flex items-center justify-center mb-2 text-sm font-medium whitespace-nowrap">
-              <LucideLock size={24} />
-            </span>
-            <span
-              className={` block h-[2px] w-full rounded-lg ${selectedTab === 3 ? "bg-primary-dark-pink" : ""
-                }`}
-            ></span>
-          </Tab>
-        </TabList>
-        <TabPanel>
-          <PostPanel />
-        </TabPanel>
-        <TabPanel>
-          <MediaPanel />
-        </TabPanel>
-        <TabPanel>
-          <RepostPanel />
-        </TabPanel>
-        <TabPanel>
-          <div className="py-8">
-            <p>four!</p>
-          </div>
-        </TabPanel>
-      </Tabs>
-    </div>
-  );
+    const [activeTab, setActiveTab] = useState(0);
+
+    const tabs = [
+        {icon: <LucidePodcast size={24}/>, label: "Posts", content: <PostPanel/>},
+        {icon: <LucideImage size={24}/>, label: "Media", content: <MediaPanel/>},
+        {icon: <LucideRepeat2 size={24}/>, label: "Reposts", content: <RepostPanel/>},
+        {icon: <LucideLock size={24}/>, label: "Private", content: <div className="py-8"><p>four!</p></div>},
+    ];
+
+    return (
+        <div className="px-3 md:px-5 relative">
+            {/* Tab List */}
+            <div className={'relative'}>
+                <div
+                    className="flex items-center text-center border-b border-black/30 dark:border-slate-600 dark:text-white relative">
+                    {tabs.map((tab, index) => (
+                        <button
+                            key={index}
+                            className={`flex-1 outline-none cursor-pointer py-4 transition-colors ${
+                                activeTab === index
+                                    ? "text-primary-dark-pink"
+                                    : "text-gray-500 hover:text-gray-700 dark:hover:text-gray-300"
+                            }`}
+                            onClick={() => setActiveTab(index)}
+                        >
+                        <span className="inline-flex flex-col items-center justify-center gap-1">
+                          <span className="flex items-center gap-2">
+                            {tab.icon}
+                              <span className="text-sm font-medium hidden sm:inline-block">
+                              {tab.label}
+                            </span>
+                          </span>
+                        </span>
+                        </button>
+                    ))}
+                </div>
+
+                {/* Active Indicator */}
+                <div
+                    className={`absolute bottom-0 h-[2px] bg-primary-dark-pink transition-all duration-300`}
+                    style={{
+                        width: `${100 / tabs.length}%`,
+                        left: `${(activeTab * 100) / tabs.length}%`
+                    }}
+                ></div>
+            </div>
+
+
+            {/* Tab Content */}
+            <div className="mt-4">
+                {tabs[activeTab].content}
+            </div>
+        </div>
+    );
 };
 
 export default ProfileTabs;

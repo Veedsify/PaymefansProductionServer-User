@@ -7,6 +7,8 @@ import { getToken } from "@/utils/cookie.get";
 import { MediaDataType } from "@/types/components";
 import HLSVideoPlayer from "./videoplayer";
 import { LockedMediaOverlay } from "./sub/locked-media-overlay";
+import _, { set } from "lodash";
+import { useProfileMediaContext } from "@/contexts/profile-media-context";
 
 const getUniqueItems = (arr: MediaDataType[]) => {
   const uniqueMap = new Map();
@@ -15,7 +17,7 @@ const getUniqueItems = (arr: MediaDataType[]) => {
 };
 
 const MediaPanelImageCard = React.memo(({ sort }: { sort: string }) => {
-  const [arData, setData] = useState<MediaDataType[]>([]);
+  const {arData, setData} = useProfileMediaContext()
   const [sorted, setSorted] = useState<MediaDataType[]>([]);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
@@ -80,7 +82,7 @@ const MediaPanelImageCard = React.memo(({ sort }: { sort: string }) => {
     } finally {
       setLoading(false);
     }
-  }, [token]);
+  }, [token, setData]);
 
   useEffect(() => {
     fetchInitialData();
@@ -100,7 +102,7 @@ const MediaPanelImageCard = React.memo(({ sort }: { sort: string }) => {
         }
       );
       const data = await res.json();
-      setData((prev) => getUniqueItems([...prev, ...data.data]));
+      setData(data.data);
       setHasMore(sorted.length + data.data.length < data.total);
       setPage((prev) => prev + 1); // Increment the page after fetching data
       setLoading(false);

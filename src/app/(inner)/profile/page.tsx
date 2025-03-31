@@ -8,7 +8,6 @@ import {
     LucideCalendar,
     LucideLink,
     LucideLock,
-    LucideMail,
     LucideMapPin,
 } from "lucide-react";
 import { Metadata } from "next";
@@ -48,12 +47,12 @@ const ProfilePage = async () => {
                         <EditProfileButton user={user} />
                     </div>
                 </div>
-                <div className="flex flex-col gap-2 px-2 mt-2 mb-12 md:px-5 dark:text-white items-start">
-                    <div className="flex flex-col ">
-                        <h1 className="font-bold ">{user?.name ? user.name : ""}</h1>
+                <div className="flex flex-col gap-2 px-2 mt-2 mb-12 md:px-5 items-start">
+                    <div className="flex flex-col">
+                        <h1 className="font-bold text-gray-900 dark:text-gray-100">{user?.name ? user.name : ""}</h1>
                         <small className="text-gray-500 dark:text-gray-400">{user?.username}</small>
                     </div>
-                    <div className="font-medium mb-2 leading-loose dark:text-gray-300 text-gray-700"
+                    <div className="font-medium mb-2 leading-loose text-gray-700 dark:text-gray-300"
                         dangerouslySetInnerHTML={{ __html: user?.bio ? user?.bio?.replace(/(?:\r\n|\r|\n)/g, '<br>') : "" }}
                     >
                     </div>
@@ -61,54 +60,54 @@ const ProfilePage = async () => {
                         <Link
                             href={user.website ? user.website : ""}
                             target="_blank"
-                            className="font-medium text-primary-text-dark-pink text-sm mb-2 inline-block"
+                            className="font-medium text-primary-text-dark-pink dark:text-primary-dark-pink text-sm mb-2 inline-block"
                         >
-                            <LucideLink className="text-primary-text-dark-pink inline-block mr-2" size={18} />
+                            <LucideLink className="text-primary-dark-pink inline-block mr-2" size={18} />
                             {user.website ? user.website : ""}
                         </Link>
                     </>}
-                    <div className="flex gap-3 flex-wrap text-sm items-center font-semibold text-gray-700 mb-2">
+                    <div className="flex gap-3 flex-wrap text-sm items-center font-semibold text-gray-700 dark:text-gray-300 mb-2">
                         <span className="flex gap-2 items-center">
-                            <LucideMapPin className="text-primary-text-dark-pink" size={18} />
+                            <LucideMapPin className="text-primary-dark-pink" size={18} />
                             <span>{user && user.state ? user.state + "," : ""} {user?.location}</span>
                         </span>
                         {
                             user?.is_model ? (
                                 <span className="flex items-center gap-2">
-                                    <LucideLock className="text-primary-text-dark-pink" size={18} />
+                                    <LucideLock className="text-primary-dark-pink" size={18} />
                                     <span>Model</span>
                                 </span>
                             ) : ""
                         }
                         <span className="flex items-center gap-2">
-                            <LucideCalendar className="text-primary-text-dark-pink" size={18} />
+                            <LucideCalendar className="text-primary-dark-pink" size={18} />
                             <span>Joined {
                                 user?.created_at ? new Date(user.created_at).toLocaleDateString("en-US", { month: "long", year: "numeric" }) : ""
                             }</span>
                         </span>
                     </div>
 
-                    <div className="flex gap-2 mb-3  flex-wrap sm:text-base text-sm">
+                    <div className="flex gap-2 mb-3 flex-wrap sm:text-base text-sm">
                         <span className="flex gap-2 items-center">
-                            <h1 className="font-bold text-sm">{
+                            <h1 className="font-bold text-sm text-gray-900 dark:text-gray-100">{
                                 formatNumber(user?.total_followers)
                             }</h1>
-                            <p className="font-medium text-gray-500 text-sm">Followers</p>
+                            <p className="font-medium text-gray-500 dark:text-gray-400 text-sm">Followers</p>
                         </span>
                         <span className="flex gap-2 items-center">
-                            <h1 className="font-bold text-sm">{formatNumber(user?.total_following)}</h1>
-                            <p className="font-medium text-gray-500 text-sm">Following</p>
+                            <h1 className="font-bold text-sm text-gray-900 dark:text-gray-100">{formatNumber(user?.total_following)}</h1>
+                            <p className="font-medium text-gray-500 dark:text-gray-400 text-sm">Following</p>
                         </span>
-                        <span className="flex gap-2 items-center ">
-                            <h1 className="font-bold text-sm">
+                        <span className="flex gap-2 items-center">
+                            <h1 className="font-bold text-sm text-gray-900 dark:text-gray-100">
                                 {
                                     formatNumber(user?._count.Subscribers)
                                 }
                             </h1>
-                            <p className="font-medium text-gray-500 text-sm">Subscribers</p>
+                            <p className="font-medium text-gray-500 dark:text-gray-400 text-sm">Subscribers</p>
                         </span>
                     </div>
-                </div >
+                </div>
             </div >
             <ProfileTabs />
         </>

@@ -197,7 +197,7 @@ const MediaPanelMediaCard = ({
     <>
       {media.media_type === "video" ? (
         <>
-          {!canView ? (
+          {canView ? (
             <div className="relative w-full h-full">
               <HLSVideoPlayer
                 streamUrl={media.url}
@@ -276,7 +276,7 @@ const MediaPanelMediaCard = ({
         <LockedMediaOverlay
           type={media.accessible_to === "price" ? "price" : "subscribers"}
           mediaIsVideo={media.media_type === "video"}
-          duration={"00:34"}
+          duration={media.duration}
         />
       )}
     </>

@@ -374,6 +374,7 @@ type MediaDataType = {
   media_state: "completed" | "processing";
   locked: boolean;
   media_type: string;
+  duation: string;
   poster?: string;
 };
 
@@ -386,6 +387,7 @@ type MediaDataTypeOtherProps = {
   media_type: string;
   media_state: "completed" | "processing";
   poster?: string;
+  duration: string;
   media_id: string;
   accessible_to: string;
   post: {

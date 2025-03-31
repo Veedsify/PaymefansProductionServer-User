@@ -42,7 +42,7 @@ export const PostCompInteractions = ({ data }: PostCompInteractionsProps) => {
 
   return (
     <>
-      <div className="flex mt-6 justify-around text-sm w-full text-gray-600 py-6 dark:border-slate-700 border-b border-black/20">
+      <div className="flex mt-6 justify-around text-sm w-full dark:text-gray-300 py-6 dark:border-slate-700 border-b border-black/20">
         <span
           className="flex items-center gap-1 text-sm cursor-pointer font-medium"
           onClick={likePost}
