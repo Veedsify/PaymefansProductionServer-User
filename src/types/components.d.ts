@@ -290,6 +290,8 @@ interface UserConversations {
 // MESSAGE CONVERSATION CONTEXT PROPS
 export interface MessagesConversationContextValue {
   count?: number;
+  setPage: React.Dispatch<SetStateAction<number>>
+  hasMore: boolean;
   conversations: UserConversations[];
   lastMessage?: LastMessage;
   addConversations?: (conversations: Conversation) => void;

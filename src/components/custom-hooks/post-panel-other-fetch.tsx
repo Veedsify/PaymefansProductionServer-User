@@ -3,13 +3,14 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { getToken } from "@/utils/cookie.get";
 import { PostData, UserPostProps, UserPostPropsOther } from "@/types/components";
+import {useOtherProfilePostsStore} from "@/contexts/personal-profile-context";
 const getUniqueItems = (arr: UserPostProps[]) => {
     const uniqueMap = new Map();
     arr.forEach(item => uniqueMap.set(item.id, item)); // Replace 'id' with the unique property
     return Array.from(uniqueMap.values());
 };
 export default function PostPanelFetchOther(userid: number, pageNumber: number) {
-    const [posts, setPosts] = useState<UserPostPropsOther[]>([]);
+    const {posts, setPosts} = useOtherProfilePostsStore()
     const [totalResults, setTotalResults] = useState(0);
     const [loading, setLoading] = useState(true);
     const [hasMore, setHasMore] = useState(true);
@@ -35,10 +36,7 @@ export default function PostPanelFetchOther(userid: number, pageNumber: number) 
             },
             cancelToken: new axios.CancelToken(c => cancel = c)
         }).then(res => {
-            setPosts((prev) => {
-                const newPosts = [...prev, ...res.data.data];
-                return getUniqueItems(newPosts);
-            });
+            setPosts(res.data.data);
             setTotalResults(res.data.total)
             setHasMore(res.data.data.length > 0)
             setLoading(false)
@@ -46,7 +44,7 @@ export default function PostPanelFetchOther(userid: number, pageNumber: number) 
             if (axios.isCancel(e)) return
             setError(true)
         })
-    }, [pageNumber, userid])
+    }, [pageNumber, userid, setPosts])
 
     return { posts, loading, error, hasMore, totalResults }
 }
