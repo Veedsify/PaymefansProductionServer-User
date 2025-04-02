@@ -9,7 +9,6 @@ import { LucideLoader } from "lucide-react";
 
 const RepostPanel = ({ userdata }: RespostPanelProps) => {
   const [page, setPage] = useState(1);
-
   const { posts, loading, hasMore, error } = RepostPanelFetch({
     isForViewer: false,
     pageNumber: page,

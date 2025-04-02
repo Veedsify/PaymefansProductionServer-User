@@ -1,6 +1,7 @@
 import { Call } from "@stream-io/video-react-sdk";
 import React, { ChangeEvent, ReactNode, SetStateAction } from "react";
 import { ProfileUserProps } from "./user";
+import { LastMessage } from "./conversations";
 
 // POST COMPONENT PROPS
 export type PostShareModalProps = {
@@ -290,7 +291,6 @@ interface UserConversations {
 // MESSAGE CONVERSATION CONTEXT PROPS
 export interface MessagesConversationContextValue {
   count?: number;
-  setPage: React.Dispatch<SetStateAction<number>>
   hasMore: boolean;
   conversations: UserConversations[];
   lastMessage?: LastMessage;

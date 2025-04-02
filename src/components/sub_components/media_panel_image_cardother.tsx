@@ -66,7 +66,7 @@ const MediaPanelImageCardOther = React.memo(
             setHasMore(data.data.length > 0);
             setLoading(false); // Set loading to false after fetching
             setPage(2); // Start with the next page
-        }, [token, userdata.id]);
+        }, [token, userdata.id, setData]);
 
         useEffect(() => {
             fetchInitialData();

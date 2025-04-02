@@ -50,7 +50,7 @@ const RepostPanelFetch = ({
                     cancelToken: new axios.CancelToken((c) => (cancel = c)),
                 })
                     .then((res) => {
-                        const {data} = res.data;
+                        const {data, hasMore} = res.data;
                         console.log("Fetched data:", data);
                         if (data.length === 0) {
                             setHasMore(false);
@@ -59,7 +59,7 @@ const RepostPanelFetch = ({
                             setPosts([])
                             return
                         }
-                        setHasMore((data.length + posts) > res.data.total);
+                        setHasMore(hasMore);
                         setPosts(data)
                         setTotalResults(res.data.total);
                         setLoading(false);

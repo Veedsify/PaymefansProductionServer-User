@@ -13,7 +13,7 @@ import {
 import toast from "react-hot-toast";
 import UploadMediaComponent from "../video/upload-media-conponent";
 import swal from "sweetalert";
-import { useConversationsContext } from "@/contexts/messages-conversation-context";
+import { useMessageContext } from "@/contexts/messages-conversation-context";
 import { Attachment, MessageInputProps } from "@/types/components";
 import axiosInstance from "@/utils/axios";
 import { getToken } from "@/utils/cookie.get";
@@ -54,7 +54,7 @@ const MessageInput = ({
   const { user } = useUserAuthContext();
   const ref = useRef<HTMLDivElement>(null);
   const { points } = useUserPointsContext();
-  const { lastMessage } = useConversationsContext();
+  const { conversations } = useMessageContext();
   const [isTyping, setIsTyping] = useState(false);
   const typingTimeout = useRef<number | null>(null);
   const token = getToken();
@@ -70,22 +70,21 @@ const MessageInput = ({
         created_at: new Date().toString(),
       });
     },
-    [sendMessage, user],
+    [sendMessage, user]
   );
 
   const sendNewMessage = useCallback(
     async (attachment: Attachment[]) => {
       if (!user) return;
 
-      const pricePerMessage = await axiosInstance
-        .post(
-          `/price-per-message`,
+      const pricePerMessage = await axiosInstance.post(
+          `/points/price-per-message`,
           { user_id: receiver.user_id },
           {
             headers: {
               Authorization: `Bearer ${token}`,
             },
-          },
+          }
         )
         .then((res) => res.data.price_per_message);
 
@@ -120,7 +119,7 @@ const MessageInput = ({
           return handleInsufficientPoints();
         }
 
-        if (!lastMessage && pricePerMessage !== 0) {
+        if (!conversations[0].lastMessage && pricePerMessage !== 0) {
           return handleFirstMessageNotice();
         }
 
@@ -151,12 +150,12 @@ const MessageInput = ({
       user,
       receiver,
       points,
-      lastMessage,
+      conversations,
       sendMessageWithAttachment,
       message,
       isFirstMessage,
       token,
-    ],
+    ]
   );
 
   const handleKeyDown = useCallback(
@@ -182,7 +181,7 @@ const MessageInput = ({
         sendTyping("");
       }
     },
-    [sendTyping, message, sendNewMessage],
+    [sendTyping, message, sendNewMessage]
   );
 
   const resetMessageInput = () => {

@@ -7,7 +7,7 @@ import { Message } from "@/types/components";
 
 const FetchChatData = ({ stringId }: { stringId: string }) => {
     const [messages, setMessages] = useState<Message[]>([]);
-    const [receiver, setReceiver] = useState<string>("");
+    const [receiver, setReceiver] = useState(null);
     const [lastMessage, setLastMessage] = useState<Message | undefined | null>();
     const router = useRouter();
     const conversationId = stringId;
@@ -18,7 +18,6 @@ const FetchChatData = ({ stringId }: { stringId: string }) => {
             if (data?.invalid_conversation === true && data?.status === false) {
                 return router.push("/messages")
             }
-
             setMessages(data?.messages)
             setReceiver(data?.receiver)
             setLastMessage(data?.messages[data?.messages.length - 1])
@@ -28,7 +27,7 @@ const FetchChatData = ({ stringId }: { stringId: string }) => {
 
     }, [conversationId, router, setMessages, setReceiver, setLastMessage])
 
-    return <Chats receiver={receiver} allmessages={messages} lastMessage={lastMessage} conversationId={conversationId} />;
+    return <Chats receiver={receiver} allMessages={messages} lastMessage={lastMessage} conversationId={conversationId} />;
 }
 
 export default FetchChatData;

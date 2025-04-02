@@ -22,7 +22,7 @@ import Image from "next/image";
 import swal from "sweetalert";
 import { useUserAuthContext } from "@/lib/userUseContext";
 import PointsCount from "../sub_components/sub/point-count";
-import { useConversationsContext } from "@/contexts/messages-conversation-context";
+import { useMessageContext } from "@/contexts/messages-conversation-context";
 import { useNotificationStore } from "@/contexts/notification-context";
 import NotificationSidebarLink from "../sub_components/sub/notification-sidebar-link";
 import useThemeToggle from "../sub_components/sub/theme-toggle";
@@ -32,7 +32,7 @@ const SideBar = React.memo(() => {
   const { sideBarState, setSideBar } = useSideBarContext();
   const pathname = usePathname();
   const { user } = useUserAuthContext();
-  const { count } = useConversationsContext();
+  const { unreadCount } = useMessageContext();
   const { theme, setTheme } = useThemeToggle();
   useEffect(() => {
     const closeSideBar = () => {
@@ -133,7 +133,7 @@ const SideBar = React.memo(() => {
               <MessageCircle size={25} />
               <p>Messages</p>
               <span className="ml-auto h-8 w-8 p-0 font-bold items-center justify-center flex rounded-full bg-primary-dark-pink text-white">
-                {count ? count : 0}
+                {unreadCount > 99 ? "99+" : unreadCount}
               </span>
             </Link>
             <Link
