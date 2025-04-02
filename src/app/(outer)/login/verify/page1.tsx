@@ -64,21 +64,16 @@ const Login = () => {
                                    alt="Logo"/>
                         </Link>
                     </div>
-                    <h1 className="mt-auto mb-5 text-2xl font-bold text-white ">Sign in</h1>
+                    <h1 className="mt-auto mb-5 text-2xl font-bold text-white ">Verify Login in</h1>
                     <form action="" method="post" className="flex-1 w-full mb-5" onSubmit={submitLoginForm}>
                         <div className="flex flex-col gap-3 mb-4">
                             <input type="email" name="email" id="email" onChange={handleLoginInput}
                                    className="block w-full px-3 py-3 text-sm font-bold text-white bg-transparent rounded-lg outline outline-white outline-1 md:max-w-lg"
                                    placeholder="Email"/>
                         </div>
-                        <div className="flex flex-col gap-3 mb-5">
-                            <input type="password" name="password" id="password" onChange={handleLoginInput}
-                                   className="block w-full px-3 py-3 text-sm font-bold text-white bg-transparent rounded-lg outline outline-white outline-1 md:max-w-lg"
-                                   placeholder="Password"/>
-                        </div>
                         <button
-                            className="w-full px-3 py-3 text-sm font-bold text-white rounded-lg bg-primary-dark-pink md:max-w-lg">Sign
-                            in
+                            className="w-full px-3 py-3 text-sm font-bold text-white rounded-lg bg-primary-dark-pink md:max-w-lg">
+                            Sign in
                         </button>
                     </form>
                     <div className="flex items-center md:max-w-lg w-full mt-5">
