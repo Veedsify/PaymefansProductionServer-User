@@ -93,12 +93,12 @@ export const MessagesConversationProvider = ({
     };
     fetchConversations();
 
-    socket.on("refetch-conversations", (data) => {
+    socket.on("prefetch-conversations", (data) => {
       fetchConversations();
     });
 
     return () => {
-      socket.off("refetch-conversations", (data) => {
+      socket.off("prefetch-conversations", (data) => {
         fetchConversations();
       });
     };

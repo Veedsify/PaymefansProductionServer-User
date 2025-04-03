@@ -11,7 +11,7 @@ const Settings = async () => {
     const user = await getUserData()
     return (
         <div className="p-4 lg:mb-4 mb-20">
-            <div className="border-[3px] mb-3 inline-block p-2 rounded-full border-dotted">
+            <div className="border-[3px] border-black/30 mb-3 inline-block p-2 rounded-full border-dotted">
                 <Image
                     src={`${user?.profile_image}`}
                     alt=""

@@ -28,7 +28,6 @@ const initialTier = {
 
 const SetSubscription = () => {
   const { user } = useUserAuthContext();
-  const { settings, setSubscription } = useSettingsBillingContext();
   const [tiers, setTiers] = useState<SubscriptionTiersProps[]>([initialTier]);
   const token = getToken();
   const router = useRouter();
