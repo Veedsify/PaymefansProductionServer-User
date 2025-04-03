@@ -31,7 +31,7 @@ const SettingsTab = ({user}: { user: AuthUserProps | null }) => {
     return (
         <div>
             <Tabs selectedTabClassName="border-b-4 border-primary-dark-pink">
-                <TabList className="flex gap-9 mb-4 border-b">
+                <TabList className="flex gap-9 mb-4 border-b border-black/30">
                     <Tab>
                         <button
                             onClick={handleClick}
