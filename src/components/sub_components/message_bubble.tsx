@@ -30,12 +30,12 @@ const MessageBubble: React.FC<MessageBubbleProps> = ({ sender, seen, message, da
 
     const handlePreview = (file: Attachment, index: number) => {
         fullScreenPreview({
-            url: `${server}${file.url}`,
+            url: `${file.url}`,
             type: file.type.includes("image") ? "image" : "video",
             open: true,
             ref: index,
             otherUrl: attachment?.map(f => ({
-                url: `${server}${f.url}`,
+                url: f.url,
                 type: f.type
             })) || [],
             withOptions: true
@@ -49,7 +49,7 @@ const MessageBubble: React.FC<MessageBubbleProps> = ({ sender, seen, message, da
                     priority
                     width={300}
                     height={300}
-                    src={`${server}${file.url}`}
+                    src={file.url}
                     alt="Uploaded content"
                     className="w-full object-cover rounded-lg aspect-square"
                 />
@@ -61,7 +61,7 @@ const MessageBubble: React.FC<MessageBubbleProps> = ({ sender, seen, message, da
                         </button>
                     </div>
                     <video className="w-full object-cover rounded-lg">
-                        <source src={`${server}${file.url}`} type={file.type} />
+                        <source src={file.url} type={file.type} />
                     </video>
                 </div>
             )}

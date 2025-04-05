@@ -2,7 +2,6 @@
 import { socket } from "@/components/sub_components/sub/socket";
 import { useUserAuthContext } from "@/lib/userUseContext";
 import {
-  MessagesConversationContextValue,
   UserConversations,
 } from "@/types/components";
 import {
@@ -39,12 +38,16 @@ export const useMessageContext = create<MessageContextType>((set) => ({
   setPage: (number) => set({ page: number }),
   setHasMore: (value) => set((state) => ({ hasMore: value })),
   setConversations: (conversations) =>
-    set((state) => ({
-      conversations: _.uniqBy(
-        [...state.conversations, ...conversations],
-        "conversation_id"
-      ),
-    })),
+    set((state) => {
+     return { 
+       conversations: Array.from(
+        [...state.conversations, ...conversations].reduce((map, obj) => {
+          map.set(obj.conversation_id, obj); // Always overwrite with the latest object
+          return map;
+        }, new Map<string, UserConversations>())
+      ).map(([_, value]) => value) 
+     };
+    }),
   setCount: (number) =>
     set({
       unreadCount: number,
@@ -84,8 +87,8 @@ export const MessagesConversationProvider = ({
             },
           }
         );
-        console.log(response.data.conversations)
         setConversations(response.data.conversations);
+        setCount(response.data.unreadCount);
         setHasMore(response.data.hasMore);
       } catch (error) {
         console.error(error);
@@ -102,7 +105,7 @@ export const MessagesConversationProvider = ({
         fetchConversations();
       });
     };
-  }, [page, token]);
+  }, [page, token, setConversations, setCount, setHasMore]);
 
   return <>{children}</>;
 };

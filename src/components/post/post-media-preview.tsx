@@ -9,6 +9,7 @@ import toast from "react-hot-toast";
 import ROUTE from "@/config/routes";
 import NewPostMediaAdd from "../sub_components/sub/new-post-media-add";
 import Media from "@/components/common/media-preview-post";
+import axios from "axios";
 
 type PostMediaPreviewProps = {
   submitPost: (image: UploadedImageProp) => void;
@@ -57,17 +58,16 @@ function PostMediaPreview({
         formData.append("file", mediaItem.file);
         formData.append("fileId", mediaItem.id);
 
-        const response = await fetch(ROUTE.UPLOAD_POST_MEDIA_ENDPOINT, {
-          method: "POST",
-          body: formData,
-          headers: { Authorization: `Bearer ${token}` },
-        });
+        const response = await axios.post(
+          ROUTE.UPLOAD_POST_MEDIA_ENDPOINT,
+          formData,
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
 
-        if (!response.ok)
-          throw new Error(`Upload failed for ${mediaItem.file.name}`);
-
-        const uploadedUrls = await response.json();
-        submitPost({...uploadedUrls, fileId: mediaItem.id});
+        const uploadedUrls = response.data;
+        submitPost({ ...uploadedUrls, fileId: mediaItem.id });
       });
 
       await Promise.all(uploadPromises);

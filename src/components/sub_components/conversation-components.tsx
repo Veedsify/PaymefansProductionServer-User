@@ -23,7 +23,7 @@ const ConversationComponent = () => {
     if (inView && hasMore) {
       setPage(page + 1);
     }
-  }, [setPage, inView, hasMore]);
+  }, [page, setPage, inView, hasMore]);
 
   useEffect(() => {
     if (conversations) {
