@@ -20,7 +20,6 @@ const SideModels = () => {
     useEffect(() => {
         const Models = (data: any) => {
             setLoading(false);
-            console.log("Models", data);
             if (data?.models) {
                 // Using lodash to shuffle the models array
                 setModels(shuffle(data.models));
@@ -29,7 +28,6 @@ const SideModels = () => {
 
         const Hookups = (data: any) => {
             setHookupLoading(false);
-            console.log("Hookups", data);
             if (data?.hookups) {
                 setHookups(shuffle(data.hookups));
             }

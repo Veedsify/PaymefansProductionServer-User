@@ -46,12 +46,22 @@ export const UserPointsContextProvider = ({
       setTotalNotifications(res.data);
     };
 
+    const HandleRestoreNotifications = () => {
+      socket.emit("restoreNotifications", { userId: user?.user_id });
+    };
+    const HandleReconnect = () => {
+      HandleRestoreNotifications();
+      socket.emit("restoreRoom", { userId: user?.user_id });
+    };
     if (!user?.user_id) return;
     socket.emit("notifications-join", user?.user_id);
     socket.on(`notifications-${user?.user_id}`, HandleNotificationReceived);
 
+    socket.on("reconnect", HandleReconnect);
+
     return () => {
       socket.off(`noticiations-${user?.user_id}`, HandleNotificationReceived);
+      socket.off("reconnect", HandleReconnect);
     };
   }, [user?.user_id, setTotalNotifications]);
 

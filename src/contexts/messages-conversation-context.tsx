@@ -18,6 +18,7 @@ import _ from "lodash";
 import { MESSAGE_CONFIG } from "@/config/config";
 import { create } from "zustand";
 import { Conversation } from "@/types/conversations";
+import toast from "react-hot-toast";
 
 interface MessageContextType {
   conversations: UserConversations[];
@@ -87,6 +88,7 @@ export const MessagesConversationProvider = ({
             },
           }
         );
+        console.log(response.data)
         setConversations(response.data.conversations);
         setCount(response.data.unreadCount);
         setHasMore(response.data.hasMore);
@@ -97,6 +99,7 @@ export const MessagesConversationProvider = ({
     fetchConversations();
 
     socket.on("prefetch-conversations", (data) => {
+      toast.success("New message received");
       fetchConversations();
     });
 

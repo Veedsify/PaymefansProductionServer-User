@@ -116,9 +116,9 @@ const ConversationCard = React.memo(
     return (
       <div
         onClick={handleClick}
-        className={`block border-b border-black/30 dark:border-black/90 ${
+        className={`block border-b border-black/20 dark:border-black/90 ${
           isUnread ? "bg-messages-unread dark:text-black" : "dark:text-white"
-        } dark:bg-gray-900 mb-3 cursor-pointer`}
+        } dark:bg-gray-900 cursor-pointer`}
       >
         <div className="flex items-center gap-2 md:gap-5 p-3 dark:text-white">
           <Link
