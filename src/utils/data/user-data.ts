@@ -14,7 +14,7 @@ const getUserData = cache(async (): Promise<AuthUserProps | null> => {
 
   try {
     const res: AxiosResponse<{ user: AuthUserProps }> = await axios.get(
-      `http://localhost:3009/api/auth/retrieve`,
+      `${process.env.NEXT_PUBLIC_TS_EXPRESS_URL}/auth/retrieve`,
       {
         headers: {
           "Content-Type": "application/json",

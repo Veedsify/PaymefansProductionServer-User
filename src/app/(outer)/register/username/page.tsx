@@ -35,7 +35,7 @@ const ChooseUserName = () => {
       return;
     }
 
-    const res = await axios(`http://localhost:3009/api/auth/signup/username`, {
+    const res = await axios(`${process.env.NEXT_PUBLIC_TS_EXPRESS_URL}/auth/signup/username`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -67,7 +67,7 @@ const ChooseUserName = () => {
       try {
         if (ref.current?.value) {
           const createUser = await axios(
-            "http://localhost:3009/api/auth/signup",
+            `${process.env.NEXT_PUBLIC_TS_EXPRESS_URL}/auth/signup`,
             {
               method: "POST",
               headers: {

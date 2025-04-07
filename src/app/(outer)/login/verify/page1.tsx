@@ -28,7 +28,7 @@ const Login = () => {
     const submitLoginForm = async (e: FormEvent) => {
         e.preventDefault();
         try {
-            const loginThisUser = await axios.post("http://localhost:3009/api/auth/login", {
+            const loginThisUser = await axios.post(`${process.env.NEXT_PUBLIC_TS_EXPRESS_URL}/auth/login`, {
                 ...loginCredentials
             });
 
