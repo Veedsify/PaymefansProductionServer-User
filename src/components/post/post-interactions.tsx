@@ -15,12 +15,14 @@ import { PostData } from "@/types/components";
 import PostShareModal from "../sub_components/post-share-component";
 import Link from "next/link";
 import formatNumber from "@/lib/formatnumbers";
+import { usePersonalProfileStore } from "@/contexts/personal-profile-context";
 
 type PostCompInteractionsProps = {
   data: PostData | undefined;
 };
 
 export const PostCompInteractions = ({ data }: PostCompInteractionsProps) => {
+  const { likePost: likeThisPost, unlikePost } = usePersonalProfileStore();
   const [isShareModalOpen, setIsShareModalOpen] = useState(false);
   const formattedNumber = (number: number) =>
     numeral(number).format("0a").toUpperCase(); // Converts the suffix to uppercase
@@ -32,7 +34,21 @@ export const PostCompInteractions = ({ data }: PostCompInteractionsProps) => {
     setLike(!like);
     setLikesCount(like ? likesCount - 1 : likesCount + 1);
     const res = await LikeThisPost({ data: data! });
-    setLike(res);
+    if (res && res.isLiked) {
+      setLike(res.isLiked);
+      if (like) {
+        unlikePost(data?.post_id as string, user?.id as number);
+      } else {
+        likeThisPost(data?.post_id as string, {
+          id: res.id,
+          created_at: res.created_at,
+          like_id: res.like_id,
+          user_id: res.user_id,
+          updated_at: res.updated_at,
+          post_id: res.post_id,
+        });
+      }
+    }
   };
 
   useEffect(() => {
@@ -74,7 +90,7 @@ export const PostCompInteractions = ({ data }: PostCompInteractionsProps) => {
           onClick={() => setIsShareModalOpen(true)}
           className="flex items-center gap-1 text-sm cursor-pointer font-medium"
         >
-          <BarChart size={23} /> 
+          <BarChart size={23} />
           {formatNumber(data?.post_impressions as number)}
         </span>
       </div>

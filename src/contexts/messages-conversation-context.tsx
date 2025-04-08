@@ -1,9 +1,7 @@
 "use client";
 import { socket } from "@/components/sub_components/sub/socket";
 import { useUserAuthContext } from "@/lib/userUseContext";
-import {
-  UserConversations,
-} from "@/types/components";
+import { UserConversations } from "@/types/components";
 import {
   ReactNode,
   createContext,
@@ -40,14 +38,14 @@ export const useMessageContext = create<MessageContextType>((set) => ({
   setHasMore: (value) => set((state) => ({ hasMore: value })),
   setConversations: (conversations) =>
     set((state) => {
-     return { 
-       conversations: Array.from(
-        [...state.conversations, ...conversations].reduce((map, obj) => {
-          map.set(obj.conversation_id, obj); // Always overwrite with the latest object
-          return map;
-        }, new Map<string, UserConversations>())
-      ).map(([_, value]) => value) 
-     };
+      return {
+        conversations: Array.from(
+          [...state.conversations, ...conversations].reduce((map, obj) => {
+            map.set(obj.conversation_id, obj); // Always overwrite with the latest object
+            return map;
+          }, new Map<string, UserConversations>())
+        ).map(([_, value]) => value),
+      };
     }),
   setCount: (number) =>
     set({
@@ -88,7 +86,7 @@ export const MessagesConversationProvider = ({
             },
           }
         );
-        console.log(response.data)
+        console.log(response.data);
         setConversations(response.data.conversations);
         setCount(response.data.unreadCount);
         setHasMore(response.data.hasMore);
@@ -99,7 +97,6 @@ export const MessagesConversationProvider = ({
     fetchConversations();
 
     socket.on("prefetch-conversations", (data) => {
-      toast.success("New message received");
       fetchConversations();
     });
 

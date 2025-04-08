@@ -12,13 +12,6 @@
     --color-coins-card-bottom: #FAE2FF;
     --color-coins-card-top: #e057ff;
 }
-html{
-    font-size: 95%;
-}
-/* *,
-body {
-    font-family: "SF Pro Display", "Instrument Sans";
-} */
 
 ::selection {
     background: #fcc1ff;

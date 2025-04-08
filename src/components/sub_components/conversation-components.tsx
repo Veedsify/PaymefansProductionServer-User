@@ -103,7 +103,7 @@ const ConversationCard = React.memo(
     }, [conversation.conversation_id]);
 
     const isUnread =
-      conversation.lastMessage && 
+      conversation.lastMessage &&
       !conversation.lastMessage.seen &&
       conversation.lastMessage.sender_id !== user?.user_id;
 
@@ -146,10 +146,13 @@ const ConversationCard = React.memo(
                 onClick={(e) => e.stopPropagation()}
                 href={`/${conversation.receiver.username}`}
               >
-                <h1 className="font-bold flex gap-1">
+                <h1 className="font-bold flex gap-1 ">
                   {conversation.receiver.name}
                   {conversation.receiver.username === "@paymefans" && (
-                    <LucideVerified size={20} className="text-yellow-600" />
+                    <LucideVerified
+                      size={20}
+                      className="text-yellow-600"
+                    />
                   )}
                 </h1>
               </Link>
@@ -158,14 +161,14 @@ const ConversationCard = React.memo(
                 href={`/${conversation.receiver.username}`}
               >
                 {conversation.receiver.username !== "@paymefans" && (
-                  <p className="hidden md:block">
+                  <p className="hidden xl:block">
                     {conversation.receiver.username}
                   </p>
                 )}
               </Link>
               <div className="flex items-center gap-2 ml-auto">
                 <p className="block">{lastMessageTime}</p>
-                {(conversation.lastMessage && !conversation.lastMessage.seen )&& (
+                {conversation.lastMessage && !conversation.lastMessage.seen && (
                   <span className="text-white w-2 h-2 bg-primary-dark-pink rounded-2xl block"></span>
                 )}
               </div>
