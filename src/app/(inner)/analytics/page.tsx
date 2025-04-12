@@ -1,7 +1,7 @@
 "use client";
 import {useUserAuthContext} from "@/lib/userUseContext";
 import {useRouter} from "next/navigation";
-import {useEffect} from "react";
+import {ChangeEvent, ReactNode, useEffect} from "react";
 import React, {useState} from 'react';
 import {
     BarChart,
@@ -33,13 +33,16 @@ import {
     Loader2
 } from 'lucide-react';
 import numeral from "numeral";
+import Image from "next/image";
 
 // Mock API functions - replace with actual API calls later
-const fetchAccountGrowthData = async (timeRange) => {
+type TimeRangeKey = '24hrs' | '48hrs' | '3days' | '7days' | '1month' | '3months' | '6months' | 'alltime';
+
+const fetchAccountGrowthData = async (timeRange: TimeRangeKey) => {
     // Simulate API delay
     await new Promise(resolve => setTimeout(resolve, 500));
 
-    const data = {
+    const data: Record<TimeRangeKey, { name: string; followers: number; }[]> = {
             '24hrs': [
                 {name: '00:00', followers: 11000},
                 {name: '04:00', followers: 11050},
@@ -100,12 +103,11 @@ const fetchAccountGrowthData = async (timeRange) => {
                 {name: 'Dec', followers: 3004},
             ]
         }
-    ;
+    return data[timeRange as TimeRangeKey] || data['7days'];
 
-    return data[timeRange] || data['7days'];
 };
 
-const fetchEngagementData = async (timeRange) => {
+const fetchEngagementData = async (timeRange: any) => {
     await new Promise(resolve => setTimeout(resolve, 500));
 
     const data = {
@@ -161,7 +163,7 @@ const fetchEngagementData = async (timeRange) => {
         ]
     };
 
-    return data[timeRange] || data['7days'];
+    return data[timeRange as TimeRangeKey] || data['7days'];
 };
 
 const fetchAudienceData = async () => {
@@ -176,7 +178,7 @@ const fetchAudienceData = async () => {
     ];
 };
 
-const fetchRecentPosts = async (timeRange) => {
+const fetchRecentPosts = async (timeRange: any) => {
     await new Promise(resolve => setTimeout(resolve, 700));
 
     const basePosts = [
@@ -283,7 +285,7 @@ const fetchRecentPosts = async (timeRange) => {
     return filteredPosts;
 };
 
-const fetchMetrics = async (timeRange) => {
+const fetchMetrics = async (timeRange: any) => {
     await new Promise(resolve => setTimeout(resolve, 400));
 
     // These would normally be calculated from the actual data
@@ -338,7 +340,7 @@ const fetchMetrics = async (timeRange) => {
         }
     };
 
-    return metrics[timeRange] || metrics['7days'];
+    return metrics[timeRange as TimeRangeKey] || metrics['7days'];
 };
 
 const COLORS = ['#78158E', '#CC0DF8', '#F4900C', '#04D900', '#e057ff'];
@@ -358,12 +360,12 @@ const timeRangeOptions = [
 export default function Analytics() {
     const {user} = useUserAuthContext();
     const router = useRouter();
-    const [timeRange, setTimeRange] = useState('7days');
+    const [timeRange, setTimeRange] = useState<TimeRangeKey>('7days');
     const [loading, setLoading] = useState(false);
-    const [accountGrowthData, setAccountGrowthData] = useState([]);
-    const [engagementData, setEngagementData] = useState([]);
-    const [audienceData, setAudienceData] = useState([]);
-    const [recentPostsData, setRecentPostsData] = useState([]);
+    const [accountGrowthData, setAccountGrowthData] = useState<any>([]);
+    const [engagementData, setEngagementData] = useState<any>([]);
+    const [audienceData, setAudienceData] = useState<any>([]);
+    const [recentPostsData, setRecentPostsData] = useState<any>([]);
     const [metrics, setMetrics] = useState({
         followers: {value: '0', trend: 0},
         views: {value: '0', trend: 0},
@@ -411,7 +413,7 @@ export default function Analytics() {
     }, [timeRange]);
 
     // Card component for metrics
-    const MetricCard = ({title, value, trend, icon: Icon}) => (
+    const MetricCard = ({title, value, trend, icon: Icon}: {title: string, value: string, trend: number; icon: any}) => (
         <div className="bg-white rounded-lg border border-black/10 p-4">
             <div className="flex justify-between items-center mb-2">
                 <span className="text-gray-500 text-sm">{title}</span>
@@ -446,7 +448,7 @@ export default function Analytics() {
                         <select
                             className="bg-transparent border-none focus:outline-none focus:ring-0 px-2 py-1"
                             value={timeRange}
-                            onChange={(e) => setTimeRange(e.target.value)}
+                            onChange={(e: ChangeEvent<HTMLSelectElement>) => setTimeRange(e.currentTarget.value as TimeRangeKey)}
                             disabled={loading}
                         >
                             {timeRangeOptions.map(option => (
@@ -505,7 +507,7 @@ export default function Analytics() {
                 <div className="bg-white rounded-lg border border-black/10 p-4 lg:col-span-2">
                     <div className="flex justify-between items-center mb-4">
                         <h2 className="font-bold text-gray-800">Account Growth &nbsp;
-                           {timeRange === "alltime" && (<>{new Date(user?.created_at).toLocaleDateString('en-US', {day: "numeric", month: "short", year: "numeric"})} - Now</>)}
+                           {timeRange === "alltime" && (<>{new Date(user?.created_at as Date).toLocaleDateString('en-US', {day: "numeric", month: "short", year: "numeric"})} - Now</>)}
                         </h2>
                         <div className="flex items-center text-sm text-gray-500">
                             <span>Followers</span>
@@ -553,7 +555,7 @@ export default function Analytics() {
                                     dataKey="value"
                                     label={({name, percent}) => `${name}: ${(percent * 100).toFixed(0)}%`}
                                 >
-                                    {audienceData.map((entry, index) => (
+                                    {audienceData.map((entry: any, index: number) => (
                                         <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]}/>
                                     ))}
                                 </Pie>
@@ -656,17 +658,17 @@ export default function Analytics() {
                                 </tr>
                                 </thead>
                                 <tbody>
-                                {recentPostsData.map((post) => (
+                                {recentPostsData.map((post: any) => (
                                     <tr key={post.id} className="border-b border-gray-200 hover:bg-gray-50">
                                         <td className="py-4 px-4">
                                             <div className="flex items-center">
                                                 <div
                                                     className="w-12 h-12 rounded bg-gray-200 flex items-center justify-center">
-                                                    <img
+                                                    <Image
                                                         src={post.thumbnail}
                                                         alt="Post thumbnail"
                                                         className="w-full h-full rounded object-cover"
-                                                        onError={(e) => {
+                                                        onError={(e: any) => {
                                                             e.target.onerror = null;
                                                             e.target.src = "data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%22400%22%20height%3D%22400%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20400%20400%22%20preserveAspectRatio%3D%22none%22%3E%3Cdefs%3E%3Cstyle%20type%3D%22text%2Fcss%22%3E%23holder_18c6b8a6e8e%20text%20%7B%20fill%3A%23AAAAAA%3Bfont-weight%3Abold%3Bfont-family%3AArial%2C%20Helvetica%2C%20Open%20Sans%2C%20sans-serif%2C%20monospace%3Bfont-size%3A20pt%20%7D%20%3C%2Fstyle%3E%3C%2Fdefs%3E%3Cg%20id%3D%22holder_18c6b8a6e8e%22%3E%3Crect%20width%3D%22400%22%20height%3D%22400%22%20fill%3D%22%23EEEEEE%22%3E%3C%2Frect%3E%3Cg%3E%3Ctext%20x%3D%22147.5%22%20y%3D%22218.1%22%3E400x400%3C%2Ftext%3E%3C%2Fg%3E%3C%2Fg%3E%3C%2Fsvg%3E";
                                                         }}

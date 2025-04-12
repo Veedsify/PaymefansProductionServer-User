@@ -192,14 +192,7 @@ type UserPostPropsOther = {
   post_shares: number;
   post_reposts: number;
   UserMedia: UserMediaProps[];
-  PostLike: {
-    id: number;
-    like_id: number;
-    user_id: number;
-    post_id: string;
-    created_at: string;
-    updated_at: string;
-  }[];
+  likedByme: boolean;
   user: {
     id: number;
     name: string;

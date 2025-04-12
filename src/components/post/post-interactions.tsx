@@ -57,7 +57,7 @@ export const PostCompInteractions = ({ data }: PostCompInteractionsProps) => {
         icon: "info",
       });
     }
-  }, [router, data?.post_id]);
+  }, [router, data?.post_id, token]);
 
   const handleLikePost = async () => {
     try {
