@@ -54,6 +54,7 @@ export type AuthUserProps = {
     subscription_active: boolean;
     subscription_duration: number;
     enable_free_message: boolean;
+    two_factor_auth: boolean;
     subscription_price: number;
   },
   following: number;

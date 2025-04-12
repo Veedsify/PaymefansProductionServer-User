@@ -43,11 +43,8 @@ export interface PostData {
   repost_id?: string;
   time: string;
   created_at: Date;
+  likedByme: boolean;
   media: UserMediaProps[];
-  PostLike: {
-    post_id: string;
-    user_id: number;
-  }[];
   user?: {
     id: number;
     name: string;
@@ -66,31 +63,26 @@ export interface BannerModalProps {
 }
 
 export interface PostCommentAttachments {
-  id: number;
-  comment_id: number;
   path: string;
   type: string;
-  created_at: string;
+  name: string;
 }
 
 export interface PostCompomentProps {
   id: number;
+  date: string;
+  profile_image: string;
+  name: string;
+  comment_id: string;
+  userId: string; // or ObjectId
+  postId: number;
+  parentId: string | null;
   comment: string;
-  created_at: string;
-  user: {
-    id: number;
-    user_id: string;
-    name: string;
-    username: string;
-    profile_image: string;
-  };
-  PostCommentAttachments: PostCommentAttachments[];
-  PostCommentLike: {
-    comment_id: number;
-    user_id: number;
-    id: number;
-    created_at: string;
-  }[];
+  replies: number;
+  attachment: { name: string; path: string; type: string }[] | null;
+  likes: number;
+  impressions: number;
+  username: string;
 }
 
 export interface UserMediaProps {
@@ -186,14 +178,7 @@ export type UserPostProps = {
       subscriber_id: number;
     }[];
   };
-  PostLike: {
-    id: number;
-    like_id: number;
-    user_id: number;
-    post_id: string;
-    created_at: string;
-    updated_at: string;
-  }[];
+  likedByme: boolean;
 };
 
 type UserPostPropsOther = {

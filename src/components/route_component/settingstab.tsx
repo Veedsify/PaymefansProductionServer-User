@@ -10,13 +10,14 @@ import {useSearchParams} from "next/navigation";
 import {SettingsBillingProvider} from "@/contexts/settings-billing-context";
 import {useUserAuthContext} from "@/lib/userUseContext";
 
+
 const SettingsTab = ({user}: { user: AuthUserProps | null }) => {
     const searchParams = useSearchParams();
     const {user: authuser} = useUserAuthContext();
     const handleClick = (e: MouseEvent<HTMLButtonElement>) => {
         const tab = e.currentTarget.getAttribute("data-tab");
         window.history.pushState({}, "", `?tab=${tab}`);
-    };
+    };  
 
     useEffect(() => {
         const tab = searchParams.get("tab");

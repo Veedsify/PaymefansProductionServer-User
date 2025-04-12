@@ -35,28 +35,29 @@ const ChooseUserName = () => {
       return;
     }
 
-    const res = await axios(`${process.env.NEXT_PUBLIC_TS_EXPRESS_URL}/auth/signup/username`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      data: {
-        username: ref.current?.value,
-      },
-    });
+    try {
+      const res = await axios(
+        `${process.env.NEXT_PUBLIC_TS_EXPRESS_URL}/auth/signup/username`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          data: {
+            username: ref.current?.value,
+          },
+        }
+      );
 
-    if (res.data) {
-      setMessage(res.data.message);
-      if (res.data.status === true) {
+      console.log(res.data);
+
+      if (res.data && res.data.status) {
         setButtonActive(true);
         return;
       }
-    }
-    if (res.status === 200) {
-      if (res.data.status === false) {
-        setButtonActive(false);
-        return;
-      }
+    } catch (error: any) {
+      setButtonActive(false);
+      setMessage(error.response.data.message || "Sorry an error occured");
     }
   };
 

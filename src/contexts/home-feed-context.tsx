@@ -81,8 +81,7 @@ export type Post = {
   updated_at: string;
   user: User;
   UserMedia: UserMedia[];
-  PostLike: PostLike[];
-  UserRepost: UserRepost[];
+  likedByme: boolean;
   score?: number;
 };
 

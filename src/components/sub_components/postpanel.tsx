@@ -1,19 +1,12 @@
 "use client";
 import { useUserAuthContext } from "@/lib/userUseContext";
 import PostComponent from "../post/post_component";
-import LoadingPost from "./loading_post";
 import React, {
-  RefObject,
-  useCallback,
   useEffect,
-  useRef,
   useState,
 } from "react";
 import { formatDate } from "@/utils/format-date";
-import { fetchItems } from "@/components/sub_components/infinite-query";
-import InfiniteScroll from "react-infinite-scroll-component";
 import PostPanelFetch from "../custom-hooks/post-panel-fetch";
-import { UserPostProps } from "@/types/components";
 import { useInView } from "react-intersection-observer";
 import { LucideLoader } from "lucide-react";
 

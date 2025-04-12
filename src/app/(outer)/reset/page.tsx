@@ -11,8 +11,10 @@ import axios from "axios";
 
 const Login = () => {
   const { setUser } = getUser();
+  const [code, setCode] = useState("");
+  const [error, setError] = useState("");
   const router = useRouter();
-    const [loginCredentials, setLoginCredentials] = useState({
+  const [loginCredentials, setLoginCredentials] = useState({
     email: "",
     password: "",
   });
@@ -21,59 +23,20 @@ const Login = () => {
     document.title = "Login | Paymefans";
   }, [router]);
 
-  const handleLoginInput = (e: ChangeEvent<HTMLInputElement>) => {
-    setLoginCredentials({
-      ...loginCredentials,
-      [e.target.name]: e.target.value,
-    });
-  };
-
-  const submitLoginForm = async (e: FormEvent) => {
-    e.preventDefault();
-    try {
-      const loginThisUser = await axios.post(
-        `${process.env.NEXT_PUBLIC_TS_EXPRESS_URL}/auth/login`,
-        {
-          ...loginCredentials,
-        }
-      );
-
-      if (!loginThisUser?.data?.error) {
-        if (loginThisUser?.data?.token && !loginThisUser?.data?.tfa) {
-          toast.success(LOGIN_CONFIG.LOGIN_SUCCESSFUL_MSG);
-          document.cookie = `token=${loginThisUser.data.token}`;
-          setUser(loginThisUser.data.user);
-          const redirect = new URLSearchParams(window.location.search).get(
-            "redirect"
-          );
-          if (redirect) {
-            if (typeof window !== "undefined") {
-              window.location.href = redirect;
-              return;
-            }
-          } else {
-            if (typeof window !== "undefined") {
-              window.location.href = "/";
-              return;
-            }
-          }
-        } else if (
-          loginThisUser?.data?.tfa &&
-          loginThisUser?.data?.token === null
-        ) {
-          router.push("/verify");
-          return;
-        }
+  const handleCodeInput = (e: ChangeEvent<HTMLInputElement>) => {
+    const codeRegex = /^[0-9]*$/;
+    const inputValue = e.target.value;
+    setError("");
+    if (codeRegex.test(inputValue) || inputValue === "") {
+      if (inputValue.length > 6) {
+        setError("Code must be 6 digits");
+        e.target.value = inputValue.slice(0, 6);
         return;
-      }else{
-          toast.error(loginThisUser?.data?.message);
       }
-
-    } catch (error: any) {
-      console.error("Error while logging in:", error);
-      toast.error(
-        error.response?.data.message || "An error occurred while logging in"
-      );
+      setCode(inputValue);
+    } else {
+      e.preventDefault();
+      setError("Invalid code format");
     }
   };
   return (
@@ -103,65 +66,65 @@ const Login = () => {
             </Link>
           </div>
           <h1 className="mt-auto mb-5 text-2xl font-bold text-white ">
-            Sign in
+            Reset Password
           </h1>
           <form
             action=""
             method="post"
             className="flex-1 w-full mb-5"
-            onSubmit={submitLoginForm}
+            autoComplete="off"
+            autoFocus={false}
           >
             <div className="flex flex-col gap-3 mb-4">
               <input
                 type="email"
                 name="email"
                 id="email"
-                onChange={handleLoginInput}
                 className="block w-full px-3 py-3 text-sm font-bold text-white bg-transparent rounded-lg outline-white outline-1 md:max-w-lg"
                 placeholder="Email"
               />
             </div>
-            <div className="flex flex-col gap-3 mb-5">
+            <div className="flex items-center md:max-w-lg w-full mb-3 ">
+              <button
+                className="text-sm hover:underline font-bold text-primary-dark-pink cursor-pointer ml-auto"
+              >
+                Send Reset Code
+              </button>
+            </div>
+            <div className="flex flex-col gap-3 mb-4">
+              <input
+                type="text"
+                name="verificationCode"
+                id="verificationCode"
+                maxLength={6}
+                onChange={handleCodeInput}
+                className="block w-full px-3 py-3 text-lg font-bold text-white bg-transparent rounded-lg outline-white outline-1 md:max-w-lg"
+                placeholder="*** ***"
+              />
+            </div>
+            <div className="mb-3">
+              {error && (
+                <p className="text-sm font-bold text-red-500">{error}</p>
+              )}
+            </div>
+            <div className="flex flex-col gap-3 mb-4">
               <input
                 type="password"
                 name="password"
                 id="password"
-                onChange={handleLoginInput}
                 className="block w-full px-3 py-3 text-sm font-bold text-white bg-transparent rounded-lg outline-white outline-1 md:max-w-lg"
                 placeholder="Password"
               />
             </div>
             <button className="w-full px-3 py-3 text-sm font-bold text-white rounded-lg bg-primary-dark-pink md:max-w-lg">
-              Sign in
+              Reset Password
             </button>
           </form>
-          <div className="flex items-center md:max-w-lg w-full mt-5">
-            <div className="flex">
-              <input
-                type="checkbox"
-                name="remember"
-                id="remember"
-                className="mr-2 text-sm accent-primary-dark-pink"
-              />
-              <label
-                htmlFor="remember"
-                className="text-sm font-bold    text-white cursor-pointer"
-              >
-                Remember me
-              </label>
-            </div>
-            <Link
-              href="/reset"
-              className="text-sm font-bold text-primary-dark-pink  ml-auto"
-            >
-              Forgot password?
-            </Link>
-          </div>
           <div className="mt-28">
             <p className="text-sm font-bold text-white">
-              Don&apos;t have an account?{" "}
-              <Link href="/register" className="text-primary-dark-pink">
-                Sign up
+              Back To Login?{" "}
+              <Link href="/login" className="text-primary-dark-pink">
+                Login
               </Link>
             </p>
           </div>

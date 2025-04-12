@@ -20,6 +20,7 @@ import {
   PostData,
 } from "@/types/components";
 import { useInView } from "react-intersection-observer";
+import _ from "lodash";
 import { getUserComments } from "@/utils/data/get-post-comments";
 interface Comment {
   text: string;
@@ -29,7 +30,7 @@ interface Comment {
   name: string;
   profile_image: string;
 }
-const CommentsHolder = ({ post }: { post: PostData }) => {
+const CommentsHolder = ({ post, postComments}: { post: PostData, postComments: Comment[] }) => {
   const [loading, setLoading] = useState(true);
   const [postComment, setPostComments] = useState<PostCompomentProps[]>([]);
   const [page, setPage] = useState(1);
@@ -55,43 +56,39 @@ const CommentsHolder = ({ post }: { post: PostData }) => {
           setHasMore(false);
         }
         setPostComments((prev) => {
-          const uniqueMap = new Map();
-          // Add existing comments to map
-          prev.forEach((comment) => uniqueMap.set(comment.id, comment));
-          // Add new comments, overwriting duplicates
-          comments.data.forEach((comment: any) =>
-            uniqueMap.set(comment.id, comment)
-          );
-          return Array.from(uniqueMap.values());
+          return _.uniqBy([...comments.data, ...prev], "_id");
         });
         setLoading(false);
         return;
       }
     };
     fetchComments();
-  }, [post, page]);
+  }, [post, page, postComments]);
+
   const formatDate = (dateString: string) => {
     const now = moment();
     const diffForHumans = moment(dateString).from(now);
     return diffForHumans;
   };
+
   const previewImage = (
     media: PostCommentAttachments,
     comment: PostCompomentProps
   ) => {
-    const allMedia = comment.PostCommentAttachments.map((item) => ({
+    const allMedia = comment?.attachment?.map((item) => ({
       url: item.path,
       type: "image",
     }));
-    const currentIndex = comment.PostCommentAttachments.findIndex(
-      (item) => item.id === media.id
+    const currentIndex = comment?.attachment?.findIndex(
+      (item) => item.name === media.name
     );
+
     fullScreenPreview({
       url: media.path,
       type: "image",
       open: true,
-      otherUrl: allMedia,
-      ref: currentIndex,
+      otherUrl: allMedia as any,
+      ref: currentIndex as number,
     });
   };
   const calculateHeight = () => {
@@ -124,9 +121,9 @@ const CommentsHolder = ({ post }: { post: PostData }) => {
             }`}
             key={index}
           >
-            <Link href={`/${comment.user.username}`}>
+            <Link href={`/${comment.username}`}>
               <Image
-                src={comment.user.profile_image}
+                src={comment.profile_image}
                 width="50"
                 height="50"
                 className="h-auto aspect-square rounded-full w-8 md:w-14"
@@ -136,21 +133,21 @@ const CommentsHolder = ({ post }: { post: PostData }) => {
             <div className="w-full">
               <h3 className="mb-2">
                 <Link
-                  href={`/${comment.user.username}`}
+                  href={`/${comment.username}`}
                   className="md:text-base text-sm font-bold"
                 >
-                  {comment.user.name}
+                  {comment.name}
                 </Link>{" "}
                 &nbsp;
                 <Link
-                  href={`/${comment.user.username}`}
+                  href={`/${comment.username}`}
                   className="md:text-base text-sm"
                 >
-                  {comment.user.username}
+                  {comment.username}
                 </Link>{" "}
                 &nbsp; . &nbsp;{" "}
                 <span className="md:text-base text-xs">
-                  {formatDate(comment.created_at)}
+                  {formatDate(comment.date)}
                 </span>
               </h3>
               <div className="md:text-base text-sm mb-2">
@@ -159,7 +156,7 @@ const CommentsHolder = ({ post }: { post: PostData }) => {
                   dangerouslySetInnerHTML={{ __html: comment.comment }}
                 ></div>
                 <div className="grid grid-cols-3 gap-2">
-                  {comment.PostCommentAttachments.map((media, index) => (
+                  {comment.attachment?.map((media, index) => (
                     <div
                       key={index}
                       onClick={() => previewImage(media, comment)}

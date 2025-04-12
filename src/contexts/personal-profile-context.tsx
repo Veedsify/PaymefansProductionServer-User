@@ -15,6 +15,7 @@ type Post = {
   is_model: boolean;
   UserMedia: UserMediaProps[];
   created_at: Date;
+  likedByme: boolean;
   user: {
     id: number;
     user_id: string;
@@ -26,20 +27,12 @@ type Post = {
       subscriber_id: number;
     }[];
   };
-  PostLike: {
-    id: number;
-    like_id: number;
-    user_id: number;
-    post_id: string;
-    created_at: string;
-    updated_at: string;
-  }[];
 };
 
 type PersonalProfileContext = {
   posts: Post[];
   setPosts: (post: Post[]) => void;
-  likePost: (postId: string, likeData: Post["PostLike"][number]) => void;
+  likePost: (postId: string) => void;
   unlikePost: (postId: string, userId: number) => void;
   repostPost: (postId: string) => void;
 };
@@ -47,7 +40,6 @@ type PersonalProfileContext = {
 export const usePersonalProfileStore = create<PersonalProfileContext>(
   (set) => ({
     posts: [],
-
     setPosts: (post: Post[]) =>
       set((state) => ({
         posts: _.uniqBy(
@@ -55,43 +47,38 @@ export const usePersonalProfileStore = create<PersonalProfileContext>(
           (item) => `${item.id}-${item.post_likes}`
         ),
       })),
-
-    likePost: (postId, likeData) =>
+    likePost: (postId) =>
       set((state) => ({
         posts: state.posts.map((post) =>
           post.post_id === postId
             ? {
-                ...post,
-                post_likes: post.post_likes + 1,
-                PostLike: [...post.PostLike, likeData],
-              }
+              ...post,
+              post_likes: post.post_likes + 1,
+              likedByme: true,
+            }
             : post
         ),
       })),
-
-    unlikePost: (postId, userId) =>
+    unlikePost: (postId, _) =>
       set((state) => ({
         posts: state.posts.map((post) =>
           post.post_id === postId
             ? {
-                ...post,
-                post_likes: Math.max(0, post.post_likes - 1),
-                PostLike: post.PostLike.filter(
-                  (like) => like.user_id !== userId
-                ),
-              }
+              ...post,
+              post_likes: Math.max(0, post.post_likes - 1),
+              likedByme: false,
+            }
             : post
         ),
       })),
-
     repostPost: (postId) =>
       set((state) => ({
         posts: state.posts.map((post) =>
           post.post_id === postId
             ? {
-                ...post,
-                post_reposts: post.post_reposts + 1,
-              }
+              ...post,
+              post_reposts: post.post_reposts + 1,
+            }
             : post
         ),
       })),
@@ -101,10 +88,48 @@ export const usePersonalProfileStore = create<PersonalProfileContext>(
 type OtherProfileContext = {
   posts: UserPostPropsOther[];
   setPosts: (posts: UserPostPropsOther[]) => any;
+  likePost: (postId: string) => void;
+  unlikePost: (postId: string, userId: number) => void;
+  repostPost: (postId: string) => void;
 };
 
 export const useOtherProfilePostsStore = create<OtherProfileContext>((set) => ({
   setPosts: (posts: UserPostPropsOther[]) =>
     set((state) => ({ posts: _.uniqBy([...state.posts, ...posts], "id") })),
   posts: [],
+  likePost: (postId) =>
+    set((state) => ({
+      posts: state.posts.map((post) =>
+        post.post_id === postId
+          ? {
+            ...post,
+            post_likes: post.post_likes + 1,
+            likedByme: true,
+          }
+          : post
+      ),
+    })),
+  unlikePost: (postId, _) =>
+    set((state) => ({
+      posts: state.posts.map((post) =>
+        post.post_id === postId
+          ? {
+            ...post,
+            post_likes: Math.max(0, post.post_likes - 1),
+            likedByme: false,
+          }
+          : post
+      ),
+    })),
+  repostPost: (postId) =>
+    set((state) => ({
+      posts: state.posts.map((post) =>
+        post.post_id === postId
+          ? {
+            ...post,
+            post_reposts: post.post_reposts + 1,
+          }
+          : post
+      ),
+    })),
 }));
