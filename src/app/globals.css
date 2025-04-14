@@ -13,6 +13,10 @@
     --color-coins-card-top: #e057ff;
 }
 
+html{
+    font-size: 92.5%;
+}
+
 ::selection {
     background: #fcc1ff;
     color: #000000;

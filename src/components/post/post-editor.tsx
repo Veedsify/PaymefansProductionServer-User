@@ -161,7 +161,7 @@ const PostEditor = React.memo(({posts}: PostEditorProps) => {
             toast.success(POST_CONFIG.POST_CREATED_SUCCESS_MSG);
             setPostText("");
             setVisibility("Public");
-            router.push(`/profile`);
+            window.location.href = String(`/profile`);
         }
     };
 

@@ -1,26 +1,31 @@
 import {useState, useEffect, useCallback} from 'react';
 import axios from 'axios';
-import { AuthUserProps } from '@/types/user';
-import { getToken } from '@/utils/cookie.get';
+import {AuthUserProps} from '@/types/user';
+import {getToken} from '@/utils/cookie.get';
 import useDebounce from './debounce'; // Adjust the import path as necessary
 
-const useCheckEmail = (user: AuthUserProps, emailcheck: string) => {
+const useCheckUsername = (user: AuthUserProps, usernameCheck: string) => {
     const [canSave, setCanSave] = useState(false);
     const [message, setMessage] = useState("");
 
-    const debouncedEmailCheck = useDebounce(emailcheck, 500); // Adjust the debounce delay as needed
+    const debouncedUsernameCheck = useDebounce(usernameCheck, 300); // Adjust the debounce delay as needed
 
-    const RunCheckEmail = useCallback(() => {
-        // if (!debouncedEmailCheck) return;
+    const RunCheckUsername = useCallback(() => {
+        // if (!debouncedUsernameCheck) return;
 
         const source = axios.CancelToken.source();
 
-        const setUpEmailCheck = async () => {
+        const setUpUsernameCheck = async () => {
             try {
                 setCanSave(true);
                 setMessage("");
                 const token = getToken();
-                const api = `${process.env.NEXT_PUBLIC_TS_EXPRESS_URL}/users/check-email?email=${debouncedEmailCheck}`;
+                const api = `${process.env.NEXT_PUBLIC_TS_EXPRESS_URL}/settings/check-username?username=${debouncedUsernameCheck}`;
+
+                if(user.username === debouncedUsernameCheck) {
+                    setCanSave(true);
+                    return;
+                }
 
                 const response = await axios.post(api, {}, {
                     headers: {
@@ -31,15 +36,10 @@ const useCheckEmail = (user: AuthUserProps, emailcheck: string) => {
                 });
 
                 if (response.data.status) {
-                    if (response.data.email == user?.email) {
-                        setMessage("");
-                        setCanSave(true);
-                    } else {
-                        setMessage("Email already exists");
-                        setCanSave(false);
-                    }
-                } else {
                     setCanSave(true);
+                } else {
+                    setMessage("Username already exists");
+                    setCanSave(false);
                 }
             } catch (error) {
                 if (axios.isCancel(error)) {
@@ -50,17 +50,17 @@ const useCheckEmail = (user: AuthUserProps, emailcheck: string) => {
             }
         };
 
-        setUpEmailCheck();
+        setUpUsernameCheck();
 
         // Cleanup function to cancel the request if the component unmounts
         return () => {
             source.cancel("Operation canceled by the user.");
         };
-    }, [user, debouncedEmailCheck]);
+    }, [user, debouncedUsernameCheck]);
 
-    useEffect(()=> RunCheckEmail(), [RunCheckEmail])
+    useEffect(() => RunCheckUsername(), [RunCheckUsername])
 
-    return { canSave, message };
+    return {canSave, message};
 };
 
-export default useCheckEmail;
+export default useCheckUsername;
