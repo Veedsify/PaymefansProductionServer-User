@@ -15,7 +15,7 @@ export const metadata: Metadata = {
 const Verification = async () => {
   const user = await getUserData();
 
-  if (user?.Model?.verification_status) {
+  if (user?.Model?.verification_status || !user?.is_model) {
     redirect("/profile");
   }
 

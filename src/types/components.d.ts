@@ -614,3 +614,62 @@ export type HelpCategoryProp = {
   description?: string;
   id: number;
 };
+
+// Message Search Results
+interface User {
+  id: number;
+  email: string;
+  name: string;
+  fullname: string;
+  user_id: string;
+  username: string;
+  admin: boolean;
+  role: string;
+  is_active: boolean;
+  is_verified: boolean;
+  is_email_verified: boolean;
+  is_model: boolean;
+  email_verify_code: string | null;
+  email_verify_time: string | null;
+  is_phone_verified: boolean;
+  phone: string;
+  profile_image: string;
+  profile_banner: string;
+  bio: string | null;
+  location: string | null;
+  website: string | null;
+  country: string | null;
+  state: string | null;
+  city: string | null;
+  zip: string | null;
+  post_watermark: string | null;
+  total_followers: number;
+  total_following: number;
+  total_subscribers: number;
+  admin_status: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
+interface Conversation {
+  id: number;
+  conversation_id: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface MessageResult {
+  id: number;
+  message_id: string;
+  sender_id: string;
+  receiver_id: string;
+  seen: boolean;
+  message: string;
+  attachment: any[];
+  created_at: string;
+  updated_at: string;
+  conversationsId: string;
+  sender: User;
+  receiver: User;
+  Conversations: Conversation;
+}
