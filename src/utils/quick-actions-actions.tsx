@@ -80,9 +80,9 @@ const QuickPostActionHooks = ({ options }: QuickPostActionsProps) => {
                         <option value="subscribers" ${
                           options.post_audience == "subscribers" && "selected"
                         }>Subscribers</option>
-                        <option value="private" ${
-                          options.post_audience == "private" && "selected"
-                        }>Private</option>
+                        <option value="price" ${
+                          options.post_audience == "price" && "selected"
+                        }>Price</option>
                         `
                         : `
                         <option value="public" ${

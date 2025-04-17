@@ -8,10 +8,11 @@ import { socket } from "../sub_components/sub/socket";
 type MediaProps = {
   id: string;
   file: File;
+  progress: number;
   removeThisMedia: (id: string, type: string) => void;
 };
 
-const Media = ({ id, file, removeThisMedia }: MediaProps) => {
+const Media = ({ id, file, removeThisMedia, progress }: MediaProps) => {
   const [url, setUrl] = useState<string | null>(null);
   const [uploadProgress, setUploadProgress] = useState<number>(0);
 
@@ -27,24 +28,8 @@ const Media = ({ id, file, removeThisMedia }: MediaProps) => {
   }, [file]);
 
   useEffect(() => {
-    socket.emit("join-upload-room", id);
-
-    const handleUploadProgress = (data: { id: string; percentage: number }) => {
-      if (data.id === id) setUploadProgress(data.percentage);
-    };
-
-    const handleUploadComplete = (data: { id: string }) => {
-      if (data.id === id) setUploadProgress(100);
-    };
-
-    socket.on("upload-progress", handleUploadProgress);
-    socket.on("upload-complete", handleUploadComplete);
-
-    return () => {
-      socket.off("upload-progress", handleUploadProgress);
-      socket.off("upload-complete", handleUploadComplete);
-    };
-  }, [id]);
+    setUploadProgress(progress);
+  }, [progress]);
 
   return (
     <div className="relative">

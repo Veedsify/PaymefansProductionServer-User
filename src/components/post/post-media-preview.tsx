@@ -6,14 +6,23 @@ import { v4 as uuid } from "uuid";
 import { getToken } from "@/utils/cookie.get";
 import { UploadedImageProp } from "@/types/components";
 import toast from "react-hot-toast";
-import ROUTE from "@/config/routes";
 import NewPostMediaAdd from "../sub_components/sub/new-post-media-add";
 import Media from "@/components/common/media-preview-post";
 import axios from "axios";
+import { getMaxDurationBase64 } from "@/utils/get-video-max-duration";
+import * as tus from "tus-js-client";
 
 type PostMediaPreviewProps = {
   submitPost: (image: UploadedImageProp) => void;
   removeThisMedia: (id: string, type: string) => void;
+};
+
+type UploadResponseResponse = {
+  error: boolean;
+  id: string;
+  uploadUrl: string;
+  type: string;
+  message: string;
 };
 
 function PostMediaPreview({
@@ -21,6 +30,10 @@ function PostMediaPreview({
   removeThisMedia,
 }: PostMediaPreviewProps) {
   const [media, setMedia] = useState<Array<{ file: File; id: string }>>([]);
+  const [progress, setProgress] = useState<{ [key: string]: number }>({});
+  const [uploadError, setUploadError] = useState<{ [key: string]: boolean }>(
+    {}
+  );
   const { user } = useUserAuthContext();
   const token = getToken();
 
@@ -30,6 +43,96 @@ function PostMediaPreview({
       removeThisMedia(id, type);
     },
     [removeThisMedia]
+  );
+
+  const tusUploader = useCallback(
+    (file: File, uploadUrl: string, id: string): Promise<string> => {
+      return new Promise((resolve, reject) => {
+        const upload = new tus.Upload(file, {
+          endpoint: uploadUrl,
+          retryDelays: [0, 3000, 5000, 10000, 20000],
+          chunkSize: 8388608,
+          uploadSize: file.size,
+          metadata: {
+            name: file.name,
+            filetype: file.type,
+          },
+          onError: function (error) {
+            console.error("Upload failed:", error);
+            setUploadError((prev) => ({
+              ...prev,
+              [id]: true,
+            }));
+          },
+          onProgress: function (bytesUploaded, bytesTotal) {
+            const percentage = parseFloat(
+              ((bytesUploaded / bytesTotal) * 100).toFixed(2)
+            );
+            setProgress((prev) => ({
+              ...prev,
+              [id]: percentage,
+            }));
+            console.log(file.name, bytesUploaded, bytesTotal, percentage + "%");
+          },
+          onSuccess: function () {
+            setProgress((prev) => ({
+              ...prev,
+              [id]: 100,
+            }));
+          },
+          onAfterResponse: function (_, res) {
+            const mediaIdHeader = res.getHeader("Stream-Media-Id");
+            if (mediaIdHeader) {
+              resolve(mediaIdHeader);
+            }
+          },
+        });
+
+        upload.start();
+      });
+    },
+    [setProgress, setUploadError]
+  );
+
+  const imageUploader = useCallback(
+    async (file: File, uploadUrl: string, id: string) => {
+      try {
+        const formData = new FormData();
+        formData.append("file", file);
+
+        const response = await axios.post(uploadUrl, formData, {
+          onUploadProgress: (progressEvent) => {
+            const percentage = Math.round(
+              (progressEvent.loaded * 100) /
+                (progressEvent.total ?? progressEvent.loaded)
+            );
+            setProgress((prev) => ({
+              ...prev,
+              [id]: percentage,
+            }));
+          },
+        });
+
+        if (response.status === 200) {
+          setProgress((prev) => ({
+            ...prev,
+            [id]: 100,
+          }));
+          console.log(response.data);
+          return response.data;
+        } else {
+          throw new Error("Upload failed");
+        }
+      } catch (error) {
+        setUploadError((prev) => ({
+          ...prev,
+          [id]: true,
+        }));
+        console.error("Image upload error:", error);
+        throw error;
+      }
+    },
+    [setProgress, setUploadError]
   );
 
   const handleFileSelect = async (files: File[]) => {
@@ -53,24 +156,89 @@ function PostMediaPreview({
     setMedia((prevMedia) => [...prevMedia, ...newMediaItems]);
 
     try {
-      const uploadPromises = newMediaItems.map(async (mediaItem) => {
-        const formData = new FormData();
-        formData.append("file", mediaItem.file);
-        formData.append("fileId", mediaItem.id);
+      for (const mediaItem of newMediaItems) {
+        await (async () => {
+          const getSignedUrls = async () => {
+            try {
+              const isVideo = mediaItem.file.type.startsWith("video/");
 
-        const response = await axios.post(
-          ROUTE.UPLOAD_POST_MEDIA_ENDPOINT,
-          formData,
-          {
-            headers: { Authorization: `Bearer ${token}` },
+              const maxVideoDuration = isVideo
+                ? getMaxDurationBase64(mediaItem.file)
+                : null;
+
+              const payload: any = {
+                type: isVideo ? "video" : "image",
+                fileName: btoa(`paymefans-${user?.username}-${Date.now()}`),
+                fileSize: mediaItem.file.size,
+                fileType: btoa(mediaItem.file.type),
+                explicitImageType: mediaItem.file.type,
+              };
+
+              if (isVideo) {
+                payload.maxDuration = maxVideoDuration;
+              }
+
+              const response = await axios.post(
+                `${process.env.NEXT_PUBLIC_TS_EXPRESS_URL}/post/media/signed-url`,
+                payload,
+                {
+                  headers: {
+                    Authorization: `Bearer ${token}`,
+                    "Content-Type": "application/json",
+                  },
+                }
+              );
+
+              return response.data as UploadResponseResponse;
+            } catch (err) {
+              throw err;
+            }
+          };
+
+          const { uploadUrl, type, id } = await getSignedUrls();
+
+          if (!id || !uploadUrl) {
+            throw new Error("Failed to get upload URL");
           }
-        );
 
-        const uploadedUrls = response.data;
-        submitPost({ ...uploadedUrls, fileId: mediaItem.id });
-      });
+          if (type === "video") {
+            const uploadVideo = await tusUploader(
+              mediaItem.file,
+              uploadUrl,
+              mediaItem.id
+            );
 
-      await Promise.all(uploadPromises);
+            submitPost({
+              blur: ``,
+              public: `${process.env.NEXT_PUBLIC_CLOUDFLARE_CUSTOMER_SUBDOMAIN}${uploadVideo}/manifest/video.m3u8`,
+              id: uploadVideo,
+              type: "video",
+              fileId: mediaItem.id,
+            });
+          }
+
+          if (type === "image") {
+            const uploadImage = await imageUploader(
+              mediaItem.file,
+              uploadUrl,
+              mediaItem.id
+            );
+
+            const variants = uploadImage.result.variants;
+            const imageUrl = variants[0].includes("/public")
+              ? variants[0]
+              : variants[1];
+
+            submitPost({
+              blur: imageUrl,
+              public: imageUrl,
+              id: uploadImage.result.id,
+              type: "image",
+              fileId: mediaItem.id,
+            });
+          }
+        })();
+      }
     } catch (error) {
       toast.error("Some uploads failed.");
       console.error(error);
@@ -85,6 +253,7 @@ function PostMediaPreview({
             <Media
               file={file.file}
               id={file.id}
+              progress={progress[file.id] || 0}
               removeThisMedia={handleMediaRemove}
             />
           </div>
