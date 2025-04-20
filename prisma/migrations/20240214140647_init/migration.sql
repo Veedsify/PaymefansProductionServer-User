@@ -29,7 +29,7 @@ CREATE TABLE `User` (
     `total_followers` INTEGER NOT NULL DEFAULT 0,
     `total_following` INTEGER NOT NULL DEFAULT 0,
     `total_subscribers` INTEGER NOT NULL DEFAULT 0,
-    `admin_status` BOOLEAN NOT NULL DEFAULT true,
+    `active_status` BOOLEAN NOT NULL DEFAULT true,
     `created_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updated_at` DATETIME(3) NOT NULL,
 

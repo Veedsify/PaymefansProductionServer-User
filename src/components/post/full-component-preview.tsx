@@ -62,8 +62,7 @@ const PostComponentPreview = React.memo(() => {
         }
     };
 
-
-    if (open === false) return null;
+    if (!open) return null;
 
     return (
         <>

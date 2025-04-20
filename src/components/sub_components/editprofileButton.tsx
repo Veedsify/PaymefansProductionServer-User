@@ -18,6 +18,7 @@ import { getToken } from "@/utils/cookie.get";
 import { PROFILE_CONFIG } from "@/config/config";
 import ROUTE from "@/config/routes";
 import { BannerModalProps } from "@/types/components";
+import {countries} from "@/lib/locations";
 
 const EditProfileButton = ({ user }: { user: any }) => {
   const [open, setOpen] = useState(false);
@@ -43,7 +44,7 @@ function BannerModal({ user, open = false, setOpen }: BannerModalProps) {
   const router = useRouter();
 
   const handleInputChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
   ) => {
     setUserData({ ...userData, [e.target.name]: e.target.value });
   };
@@ -170,20 +171,27 @@ function BannerModal({ user, open = false, setOpen }: BannerModalProps) {
           />
         </div>
         <div>
-          <input
-            type="text"
-            onChange={handleInputChange}
-            name="location"
-            className="w-full block border mb-3 dark:text-white dark:bg-slate-900 dark:border-slate-700 border-gray-300 p-4 outline-none text-black rounded-xl"
-            defaultValue={user?.location ? user?.location : ""}
-            placeholder="Location "
-          />
+          <select
+              name="location"
+              className="w-full block border mb-3 border-gray-300 p-4 outline-none text-black rounded-xl"
+              defaultValue={user?.location}
+              onChange={handleInputChange}
+          >
+            {countries.map((location) => (
+                <option
+                    value={location.name}
+                    key={location.code}
+                >
+                  {location.name}
+                </option>
+            ))}
+          </select>
         </div>
         <div>
           <input
             type="email"
             defaultValue={user?.email ? user?.email : ""}
-            className="w-full block border mb-3 dark:text-white dark:bg-slate-900 dark:border-slate-700 border-gray-300 p-4 outline-none text-black rounded-xl select-none cursor-none"
+            className="w-full hidden border mb-3 dark:text-white dark:bg-slate-900 dark:border-slate-700 border-gray-300 p-4 outline-none text-black rounded-xl select-none cursor-none"
             name="email"
             readOnly
             onChange={handleInputChange}

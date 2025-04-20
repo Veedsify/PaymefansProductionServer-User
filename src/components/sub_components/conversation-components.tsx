@@ -1,6 +1,6 @@
 "use client";
 import { useUserAuthContext } from "@/lib/userUseContext";
-import { Conversation, LastMessage } from "@/types/conversations";
+import { LastMessage } from "@/types/conversations";
 import { LucideLink2, LucideVerified } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -10,6 +10,7 @@ import ActiveProfileTag from "./sub/active-profile-tag";
 import { useInView } from "react-intersection-observer";
 import { socket } from "./sub/socket";
 import { useMessageContext } from "@/contexts/messages-conversation-context";
+import { Conversation } from "@/types/components";
 
 const ConversationComponent = () => {
   const [loading, setLoading] = useState(true);

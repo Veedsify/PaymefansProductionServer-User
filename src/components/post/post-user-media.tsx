@@ -1,10 +1,7 @@
 "use client"
-import { useNewPostStore } from "@/contexts/new-post-context";
-import { imageTypes, videoTypes } from "@/lib/filetypes";
 import { X } from "lucide-react";
 import Image from "next/image";
 import React, { Dispatch, SetStateAction, useCallback, useEffect } from "react";
-import NewPostMediaAdd from "../sub_components/sub/new-post-media-add";
 import { UserMediaProps } from "@/types/components";
 
 function PostUserMedia({

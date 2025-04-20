@@ -41,7 +41,7 @@ const useCheckUsername = (user: AuthUserProps, usernameCheck: string) => {
                     setMessage("Username already exists");
                     setCanSave(false);
                 }
-            } catch (error) {
+            } catch (error: any) {
                 if (axios.isCancel(error)) {
                     console.log('Request canceled', error.message);
                 } else {

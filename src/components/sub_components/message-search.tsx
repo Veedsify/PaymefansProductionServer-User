@@ -52,16 +52,12 @@ const MessageSearch = () => {
   };
 
   // Debounce search function to limit API calls
-  const debouncedSearch = debounce((searchTerm: string) => {
-    fetchSearchResults(searchTerm);
-  }, 300);
-
-  // Cleanup debounce on unmount
-  useEffect(() => {
-    return () => {
-      debouncedSearch.cancel();
-    };
-  }, [debouncedSearch]);
+  const debouncedSearch = useCallback(
+    debounce((searchTerm: string) => {
+      fetchSearchResults(searchTerm);
+    }, 300),
+    []
+  );
 
   // Handle input change and trigger debounced search
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {

@@ -11,12 +11,13 @@ import {
   useState,
 } from "react";
 import toast from "react-hot-toast";
-import UploadMediaComponent from "../video/upload-media-conponent";
 import swal from "sweetalert";
 import { useMessageContext } from "@/contexts/messages-conversation-context";
 import { Attachment, MessageInputProps } from "@/types/components";
 import axiosInstance from "@/utils/axios";
 import { getToken } from "@/utils/cookie.get";
+import { useMediaContext } from "@/contexts/message-media-context";
+import UploadMediaModal from "./upload-media-modal";
 
 // Utility functions
 const escapeHtml = (str: string) => {
@@ -33,6 +34,7 @@ const escapeHtml = (str: string) => {
 };
 
 export const linkify = (text: string) => {
+  if (!text || text.length === 0) return "";
   const urlRegex = /(https?:\/\/[^\s]+)/g;
 
   return text.replace(urlRegex, (url) => {
@@ -49,8 +51,6 @@ const MessageInput = ({
   receiver,
   isFirstMessage,
 }: MessageInputProps) => {
-  const [message, setMessage] = useState("");
-  const [attachmentModal, setAttachmentModal] = useState(false);
   const { user } = useUserAuthContext();
   const ref = useRef<HTMLDivElement>(null);
   const { points } = useUserPointsContext();
@@ -58,27 +58,57 @@ const MessageInput = ({
   const [isTyping, setIsTyping] = useState(false);
   const typingTimeout = useRef<number | null>(null);
   const token = getToken();
-  const sendMessageWithAttachment = useCallback(
-    (message: string, attachment: Attachment[]) => {
-      const id = Math.floor(Math.random() * 100000 + 1) + Date.now();
-      sendMessage({
-        message_id: id,
-        message: linkify(message.trim()),
-        attachment: attachment,
-        sender_id: user?.user_id as string,
-        seen: false,
-        created_at: new Date().toString(),
-      });
-    },
-    [sendMessage, user]
-  );
 
-  const sendNewMessage = useCallback(
-    async (attachment: Attachment[]) => {
+  // abort controller
+  const { message, setMessage, mediaFiles, openModal, resetAll } =
+    useMediaContext();
+
+  const sendMessageWithAttachment = useCallback(
+    async (message: string) => {
       if (!user) return;
 
-      const pricePerMessage = await axiosInstance.post(
-          `/points/price-per-message`,
+      let attachments: Attachment[] = [];
+
+      const generateNumericId = () =>
+        Date.now() * 1000 + Math.floor(Math.random() * 1000);
+      sendMessage({
+        message_id: generateNumericId(),
+        message: linkify(message.trim()),
+        attachment: attachments,
+        sender_id: user.user_id,
+        seen: false,
+        rawFiles: mediaFiles,
+        triggerSend: true,
+        id: generateNumericId(),
+        created_at: new Date().toString(),
+      });
+
+      if (ref.current) {
+        ref.current.innerHTML = "";
+      }
+      resetAll();
+    },
+    [sendMessage, user, mediaFiles, token, resetAll]
+  );
+
+  const resetMessageInput = () => {
+    setMessage("");
+    if (ref.current) {
+      ref.current.innerHTML = "";
+      ref.current.focus();
+    }
+  };
+
+  const handleSendMessage = useCallback(async () => {
+    if (!user) return;
+
+    // If message is empty and no media files, do nothing
+    if (message.trim().length === 0 && mediaFiles.length === 0) return;
+
+    try {
+      const pricePerMessage = await axiosInstance
+        .post(
+          "/points/price-per-message",
           { user_id: receiver.user_id },
           {
             headers: {
@@ -88,75 +118,66 @@ const MessageInput = ({
         )
         .then((res) => res.data.price_per_message);
 
-      const processMessageSending = (isFirstMessage: boolean) => {
-        const receiverName = receiver?.name
-          ? receiver.name.charAt(0).toUpperCase() + receiver.name.slice(1)
-          : "";
+      const receiverName = receiver?.name
+        ? receiver.name.charAt(0).toUpperCase() + receiver.name.slice(1)
+        : "";
 
-        const handleInsufficientPoints = () => {
-          resetMessageInput();
-          return swal({
-            icon: "info",
-            title: "Insufficient Paypoints",
-            text: `Sorry, you need to have at least ${pricePerMessage.toLocaleString()} paypoints to send a message to ${receiverName}`,
-          });
-        };
-
-        const handleFirstMessageNotice = async () => {
-          return swal({
-            icon: "info",
-            title: "Notice from PayMeFans",
-            text: `Take note sending a message to ${receiverName} would cost you ${pricePerMessage.toLocaleString()} paypoints`,
-          }).then((isToSend) => {
-            if (isToSend) {
-              sendMessageWithAttachment(message, attachment);
-              resetMessageInput();
-            }
-          });
-        };
-
-        if (points < pricePerMessage) {
-          return handleInsufficientPoints();
-        }
-
-        if (!conversations[0].lastMessage && pricePerMessage !== 0) {
-          return handleFirstMessageNotice();
-        }
-
-        const trimmedMessage = message.trim();
-        if (trimmedMessage.length === 0 && attachment.length === 0) return;
-
-        sendMessageWithAttachment(trimmedMessage, attachment);
+      // Check if user has enough points
+      if (points < pricePerMessage) {
         resetMessageInput();
-      };
+        return swal({
+          icon: "info",
+          title: "Insufficient Paypoints",
+          text: `Sorry, you need to have at least ${pricePerMessage.toLocaleString()} paypoints to send a message to ${receiverName}`,
+        });
+      }
 
-      if (isFirstMessage) {
-        swal({
+      // Handle first message notice
+      if (!conversations[0].lastMessage && pricePerMessage !== 0) {
+        return swal({
           icon: "info",
           title: "Notice from PayMeFans",
-          text: `You are about to send your first message to ${receiver.name}, this would cost you ${pricePerMessage} paypoints `,
+          text: `Take note sending a message to ${receiverName} would cost you ${pricePerMessage.toLocaleString()} paypoints`,
+        }).then((isToSend) => {
+          if (isToSend) {
+            sendMessageWithAttachment(message);
+          }
+        });
+      }
+
+      // Handle first message special case
+      if (isFirstMessage) {
+        return swal({
+          icon: "info",
+          title: "Notice from PayMeFans",
+          text: `You are about to send your first message to ${receiver.name}, this would cost you ${pricePerMessage} paypoints`,
           dangerMode: true,
           buttons: ["Cancel", "Continue"],
         }).then((isToSend) => {
           if (isToSend) {
-            processMessageSending(isFirstMessage);
+            sendMessageWithAttachment(message);
           }
         });
-      } else {
-        processMessageSending(isFirstMessage);
       }
-    },
-    [
-      user,
-      receiver,
-      points,
-      conversations,
-      sendMessageWithAttachment,
-      message,
-      isFirstMessage,
-      token,
-    ]
-  );
+
+      // Normal message sending
+      sendMessageWithAttachment(message);
+    } catch (error) {
+      console.error("Error sending message:", error);
+      toast.error("Failed to send message");
+    }
+  }, [
+    user,
+    receiver,
+    points,
+    conversations,
+    sendMessageWithAttachment,
+    message,
+    isFirstMessage,
+    token,
+    mediaFiles.length,
+    resetMessageInput,
+  ]);
 
   const handleKeyDown = useCallback(
     (event: KeyboardEvent) => {
@@ -176,30 +197,15 @@ const MessageInput = ({
 
       if (event.key === "Enter" && !event.shiftKey) {
         event.preventDefault();
-        sendNewMessage([]);
+        handleSendMessage();
         setIsTyping(false);
         sendTyping("");
       }
     },
-    [sendTyping, message, sendNewMessage]
+    [sendTyping, message, handleSendMessage]
   );
 
-  const resetMessageInput = () => {
-    setMessage("");
-    if (ref.current) {
-      ref.current.innerHTML = "";
-      ref.current.focus();
-    }
-  };
-
-  const openAttachmentModal = () => setAttachmentModal(!attachmentModal);
-  const closeAttachmentModal = () => setAttachmentModal(false);
-
-  const insertNewMessageFromPreview = (message: string) => {
-    const messageWithLink = linkify(message);
-    setMessage(messageWithLink);
-  };
-
+  // Handle contentEditable synchronization with state
   useEffect(() => {
     const handleInput = (e: Event) => {
       const target = e.target as HTMLDivElement;
@@ -225,37 +231,42 @@ const MessageInput = ({
         messageInput.removeEventListener("paste", handlePaste);
       }
     };
-  }, []);
+  }, [setMessage]);
+
+  // Show preview badge if we have media files
+  const mediaPreviewBadge =
+    mediaFiles.length > 0 ? (
+      <div className="absolute -top-10 left-1/2 transform -translate-x-1/2 bg-primary-dark-pink text-white px-4 py-2 rounded-full">
+        {mediaFiles.length} {mediaFiles.length === 1 ? "file" : "files"}{" "}
+        selected
+      </div>
+    ) : null;
 
   return (
     <>
-      <div className="bottom-0 lg:ml-4 lg:mr-2">
-        <div className="flex mb-2 items-center gap-5 px-6 dark:bg-gray-800 bg-gray-100 lg:py-2 py-4 lg:rounded-xl">
+      <div className="bottom-0 lg:ml-4 lg:mr-2 relative max-h-max">
+        {mediaPreviewBadge}
+        <div className="flex mb-2 items-center gap-5 px-6 dark:bg-gray-800 bg-gray-  lg:py-2 py-4 lg:rounded-xl">
           <div
             ref={ref as RefObject<HTMLDivElement>}
             contentEditable={true}
             id="message-input"
-            onKeyDown={handleKeyDown} // Fixed reference to `handleKeyDown`
-            className="bg-transparent outline-none w-full p-2 font-semibold resize-none dark:text-white"
+            onKeyDown={handleKeyDown}
+            className="bg-transparent outline-none w-full p-2 font-semibold resize-none dark:text-white overflow-auto max-h-24"
           ></div>
-          <span className="cursor-pointer" onClick={openAttachmentModal}>
+          <span className="cursor-pointer" onClick={openModal}>
             <LucidePlus stroke="#CC0DF8" size={25} />
           </span>
-          <span className="cursor-pointer" onClick={openAttachmentModal}>
+          <span className="cursor-pointer" onClick={openModal}>
             <LucideCamera stroke="#CC0DF8" size={25} />
           </span>
-          <span className="cursor-pointer" onClick={() => sendNewMessage([])}>
+          <span className="cursor-pointer" onClick={handleSendMessage}>
             <LucideSendHorizonal stroke="#CC0DF8" size={25} />
           </span>
         </div>
       </div>
-      <UploadMediaComponent
-        sendNewMessage={sendNewMessage}
-        open={attachmentModal}
-        close={closeAttachmentModal}
-        setMessage={insertNewMessageFromPreview}
-        message={message}
-      />
+
+      <UploadMediaModal />
     </>
   );
 };

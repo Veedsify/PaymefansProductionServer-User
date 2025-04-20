@@ -14,21 +14,14 @@ const FetchChatData = ({ stringId }: { stringId: string }) => {
   const conversationId = stringId;
 
   useEffect(() => {
-    const emitConversationOpened = () => {
-      socket.emit("conversations-opened", stringId);
-    };
-    emitConversationOpened();
-  }, [stringId,]);
-
-  useEffect(() => {
     const fetchData = async () => {
       const data = await GetConversationMessages(conversationId);
       if (data?.invalid_conversation === true && data?.status === false) {
         return router.push("/messages");
       }
-      setMessages(data?.messages);
+      setMessages(data?.messages.map((message: Message) => ({...message, triggerSend: false, rawFiles: []})));
       setReceiver(data?.receiver);
-      setLastMessage(data?.messages[data?.messages.length - 1]);
+      setLastMessage({...data?.messages[data?.messages.length - 1], triggerSend: false, rawFiles: []});
     };
 
     fetchData();

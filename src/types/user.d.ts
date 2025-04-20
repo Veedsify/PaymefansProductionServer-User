@@ -37,7 +37,7 @@ export type AuthUserProps = {
   total_followers: number;
   total_following: number;
   total_subscribers: number;
-  admin_status: boolean;
+  active_status: boolean;
   created_at: Date;
   updated_at: Date;
   iat: number;
@@ -97,7 +97,7 @@ export type AllModelsProps = {
   total_followers: number;
   total_following: number;
   total_subscribers: number;
-  admin_status: boolean;
+  active_status: boolean;
   created_at: Date;
   updated_at: Date;
   iat: number;
@@ -146,7 +146,7 @@ export type ProfileUserProps = {
   total_followers: number;
   total_following: number;
   total_subscribers: number;
-  admin_status: boolean;
+  active_status: boolean;
   created_at: string;
   updated_at: string;
   Subscribers: {

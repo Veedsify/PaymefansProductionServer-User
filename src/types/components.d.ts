@@ -227,30 +227,63 @@ export interface Attachment {
 }
 
 export interface Message {
+  id: number;
   message_id: number;
   message: string;
   sender_id: string;
   receiver_id?: string;
-  attachment: Attachment[] | null;
+  attachment: Attachment[] | [];
   seen: boolean;
   conversationId?: string;
   created_at: string;
+  rawFiles?: MediaFile[] | [];
+  triggerSend: boolean;
 }
 
 export interface MessageInputProps {
-  sendMessage: ({}: Message) => void;
+  sendMessage: ({ }: Message) => void;
   sendTyping: (value: string) => void;
   receiver: any;
   isFirstMessage: boolean;
 }
 
+// New types for the unified components
+export interface MediaFile {
+  file: File;
+  type: "image" | "video";
+  previewUrl: string;
+  posterUrl?: string; // For videos
+}
+
+// MESSAGE BUBBLE CONTENT PROPS
+type MessageBubbleContentProps = {
+  message?: string;
+  hasAttachments: boolean;
+  hasMessage: boolean;
+  hasRawFiles: boolean;
+  attachment: Attachment[] | [];
+  rawFiles?: MediaFile[] | [];
+  isSender: boolean;
+}
+
 // MESSAGE BUBBLE PROPS
 type MessageBubbleProps = {
-  message?: string | TrustedHTML;
+  message?: Message;
   attachment: Attachment[] | null;
   sender: string;
+  conversationId: string;
+  receiver?: {
+    id: number;
+    user_id: string;
+    name: string;
+    username: string;
+    profile_image: string | null;
+    Settings: any;
+  } | null;
   seen: boolean;
   date: string;
+  rawFiles?: MediaFile[] | [];
+  triggerSend: boolean;
 };
 
 // MESSAGE CONVERSATION PROPS
@@ -279,11 +312,11 @@ export interface MessagesConversationContextValue {
 
 type OwnerOption =
   | {
-      name: string;
-      icon: React.ReactNode;
-      func?: (e: React.MouseEvent<HTMLButtonElement>) => void;
-      link?: undefined;
-    }
+    name: string;
+    icon: React.ReactNode;
+    func?: (e: React.MouseEvent<HTMLButtonElement>) => void;
+    link?: undefined;
+  }
   | { name: string; icon: React.ReactNode; func?: undefined; link?: URL };
 
 export interface PostAudienceDataProps {
@@ -563,17 +596,17 @@ type StoreProduct = {
 
 type StoreAllProductsResponse =
   | {
-      error: boolean;
-      message: string;
-      totalProducts: number;
-      hasMore: boolean;
-      data: StoreProduct[];
-    }
+    error: boolean;
+    message: string;
+    totalProducts: number;
+    hasMore: boolean;
+    data: StoreProduct[];
+  }
   | {
-      error: boolean;
-      message: string;
-      data: null;
-    };
+    error: boolean;
+    message: string;
+    data: null;
+  };
 
 export type Product = {
   id: number;
@@ -646,7 +679,7 @@ interface User {
   total_followers: number;
   total_following: number;
   total_subscribers: number;
-  admin_status: boolean;
+  active_status: boolean;
   created_at: string;
   updated_at: string;
 }

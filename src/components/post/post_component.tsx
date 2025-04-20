@@ -150,7 +150,7 @@ const PostComponent: React.FC<PostComponentProps> = ({
           e.preventDefault();
           swal({
             title: "This post is still processing",
-            text: "Only you can preview this. Post while processing; it's done when borders disappear.",
+            text: "Only you can view this. Post anytime — the borders will disappear when it's fully ready.",
             icon: "warning",
           });
           return;
@@ -219,7 +219,7 @@ const PostComponent: React.FC<PostComponentProps> = ({
       e.preventDefault();
       swal({
         title: "This post is still processing",
-        text: "Only you can preview this. Post while processing; it's done when borders disappear.",
+        text: "Only you can view this. Post anytime — the borders will disappear when it's fully ready.",
         icon: "warning",
       });
     }

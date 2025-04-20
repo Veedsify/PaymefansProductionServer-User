@@ -1,15 +1,7 @@
-import type { Metadata } from "next";
-import { Inter } from "next/font/google";
-import Head from "next/head";
-// import { GeistSans } from "geist/font/sans";
-
-const font = Inter({
-  weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
-  subsets: ["latin", "latin-ext"],
-  display: "swap",
-});
-
 import "../globals.css";
+import type { Metadata } from "next";
+import { Sora } from "next/font/google";
+import localFont from "next/font/local";
 import MenuButtons from "@/components/modals/menu_buttons";
 import SideModels from "@/components/models/side_models";
 import Header from "@/components/common/header";
@@ -23,9 +15,36 @@ import { UserContextProvider } from "@/lib/userUseContext";
 import { UserPointsContextProvider } from "@/contexts/user-points-context";
 import { MessagesConversationProvider } from "@/contexts/messages-conversation-context";
 import Loader from "@/components/common/loader";
-import VerificationAlert from "@/components/common/verification-alert";
 import ToggleWishListProvider from "@/contexts/toggle-wishlist";
 import WishList from "@/components/sub_components/wishlist";
+// import { GeistSans } from "geist/font/sans";
+
+const font = Sora({
+  weight: ["100", "200", "300", "400", "500", "600", "700", "800"],
+  subsets: ["latin", "latin-ext"],
+  display: "swap",
+});
+
+const chirpFont = localFont({
+  src: [
+    {
+      path: "../../../public/fonts/Chirp-Medium.ttf",
+      weight: "500",
+    },
+    {
+      path: "../../../public/fonts/Chirp-Regular.ttf",
+      weight: "400",
+    },
+    {
+      path: "../../../public/fonts/Chirp-Bold.ttf",
+      weight: "700",
+    },
+    {
+      path: "../../../public/fonts/Chirp-Heavy.ttf",
+      weight: "800",
+    },
+  ],
+});
 
 export const metadata: Metadata = {
   title: "Create Next App",

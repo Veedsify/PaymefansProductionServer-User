@@ -86,7 +86,6 @@ export const MessagesConversationProvider = ({
             },
           }
         );
-        console.log(response.data);
         setConversations(response.data.conversations);
         setCount(response.data.unreadCount);
         setHasMore(response.data.hasMore);
@@ -94,18 +93,23 @@ export const MessagesConversationProvider = ({
         console.error(error);
       }
     };
+
+    // Initial fetch
     fetchConversations();
 
-    socket.on("prefetch-conversations", (data) => {
+    // Define the handler outside to use the same reference
+    const handlePrefetch = () => {
       fetchConversations();
-    });
-
-    return () => {
-      socket.off("prefetch-conversations", (data) => {
-        fetchConversations();
-      });
     };
-  }, [page, token, setConversations, setCount, setHasMore]);
+
+    // Add socket listener
+    socket.on("prefetch-conversations", handlePrefetch);
+
+    // Cleanup with the same handler reference
+    return () => {
+      socket.off("prefetch-conversations", handlePrefetch);
+    };
+  }, [page, token, setConversations, setCount, setHasMore]); // Remove setState functions from dependencies
 
   return <>{children}</>;
 };

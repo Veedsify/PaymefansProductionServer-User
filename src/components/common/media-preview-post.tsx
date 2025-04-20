@@ -40,6 +40,7 @@ const Media = ({ id, file, removeThisMedia, progress }: MediaProps) => {
         />
       ) : (
         <Image
+        unoptimized
           src={url || "/site/loading.gif"}
           alt="Media preview"
           width={200}
