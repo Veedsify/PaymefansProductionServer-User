@@ -2,7 +2,7 @@ import OtherTransactions from "@/components/transactions/other-transactions";
 import ROUTE from "@/config/routes";
 import { AuthUserProps } from "@/types/user";
 import axiosInstance from "@/utils/axios";
-import {getTransactionsData} from "@/utils/data/transactions";
+import { getTransactionsData } from "@/utils/data/transactions";
 import getUserData from "@/utils/data/user-data";
 import axios from "axios";
 import { Metadata } from "next";
@@ -63,62 +63,66 @@ const WalletPage = async () => {
 
   return (
     <div className="p-4 py-8">
-      <div className="flex flex-wrap gap-5 items-center justify-between pb-6">
-        <div className="flex align-middle gap-5">
+      <div className="flex flex-wrap gap-6 items-center justify-between pb-8 border-b border-gray-200 dark:border-gray-700 mb-6">
+        <div className="flex items-center gap-4">
           <Image
             src={user.profile_image}
-            width={50}
-            height={50}
-            alt=""
+            width={56}
+            height={56}
+            alt="Profile"
             priority
-            className="object-cover w-12 h-12 border-2 rounded-full sm:-top-12  -top-12"
+            className="object-cover w-14 h-14 border-2 border-primary-dark-pink rounded-full shadow"
           />
-          <div className="self-center dark:text-gray-300">
-            <h2 className="font-bold">{user.name}</h2>
-            <p>{user.username}</p>
+          <div className="self-center dark:text-gray-200">
+            <h2 className="font-bold text-lg">{user.name}</h2>
+            <p className="text-sm text-gray-500 dark:text-gray-400">
+              {user.username}
+            </p>
           </div>
         </div>
-        <div>
-          <Link
-            href="/points"
-            className="p-3 px-8 text-xs font-semibold text-white bg-black dark:bg-primary-dark-pink rounded"
-          >
-            Add Funds
-          </Link>
-        </div>
+        <Link
+          href="/points"
+          className="p-3 px-8 text-xs font-semibold text-white bg-primary-dark-pink hover:bg-pink-700 transition rounded shadow"
+        >
+          Add Funds
+        </Link>
       </div>
-      <div className="mb-5 flex align-middle justify-between bg-primary-dark-pink text-white p-5 rounded-xl">
-        <div className="grid gap-3">
-          <small className="text-md">Your Balance</small>
-          <h1 className="text-xl md:text-3xl font-bold">
+      <div className="mb-6 flex flex-col md:flex-row align-middle justify-between bg-gradient-to-r from-primary-dark-pink to-pink-400 text-white p-6 rounded-2xl shadow-lg">
+        <div className="grid gap-2">
+          <small className="text-base font-medium opacity-90">
+            Your Balance
+          </small>
+          <h1 className="text-2xl md:text-4xl font-extrabold tracking-tight">
             ₦ {calculateAmount()}
           </h1>
         </div>
-        <div className="flex self-center">
-          <div className="bg-coins-card-top md:px-5 md:py-3 p-2 px-4 rounded-md">
-            <div className="opacity-100 flex gap-1">
-              <span>{points ? points.toLocaleString() : 0}</span>
-              <Image
-                width={20}
-                height={20}
-                className="w-auto h-5 aspect-square"
-                src="/site/coin.svg"
-                alt=""
-              />
-            </div>
+        <div className="flex self-center mt-4 md:mt-0">
+          <div className="bg-white/10 md:px-6 md:py-4 p-3 px-5 rounded-lg flex items-center gap-2 shadow-inner">
+            <span className="font-semibold text-lg">
+              {points ? points.toLocaleString() : 0}
+            </span>
+            <Image
+              width={24}
+              height={24}
+              className="w-6 h-6"
+              src="/site/coin.svg"
+              alt="Points"
+            />
           </div>
         </div>
       </div>
       {user?.is_model && user?.Model?.verification_status && (
         <>
-          <div className=" bg-black text-white p-5 rounded-xl">
-            <small className="text-md">Your Balance</small>
-            <h1 className="text-xl md:text-3xl font-bold mb-4">
+          <div className="bg-black text-white p-6 rounded-2xl shadow mb-4">
+            <small className="text-base font-medium opacity-80">
+              Your Balance
+            </small>
+            <h1 className="text-2xl md:text-4xl font-bold mb-4">
               ₦ {calculateAmount()}
             </h1>
             <Link
               href="/wallet/withdraw"
-              className="block text-sm text-center bg-coins-card-bottom px-6 py-3 rounded-md w-full text-primary-dark-pink font-semibold"
+              className="block text-sm text-center bg-coins-card-bottom px-8 py-3 rounded-lg w-full text-primary-dark-pink font-semibold hover:bg-pink-100 transition"
             >
               WITHDRAW
             </Link>
@@ -126,7 +130,7 @@ const WalletPage = async () => {
           <div>
             <Link
               href="/wallet/add"
-              className="block text-center bg-coins-card-bottom px-6 py-3 rounded-md w-full text-primary-dark-pink font-semibold my-5 text-sm md:text-base"
+              className="block text-center bg-coins-card-bottom px-8 py-3 rounded-lg w-full text-primary-dark-pink font-semibold my-5 text-sm md:text-base hover:bg-pink-100 transition"
             >
               SET WITHDRAWAL BANK ACCOUNT
             </Link>

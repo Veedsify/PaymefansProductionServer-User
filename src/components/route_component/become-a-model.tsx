@@ -198,63 +198,62 @@ const BecomeAModel = () => {
     );
   } else {
     return (
-      <div className="px-4 py-6 ">
-        <h1 className="text-lg md:hidden block font-bold">Become a Model</h1>
-        <div>
-          <div>
-            <input
-              onChange={updateModelSignUpData}
-              type="text"
-              placeholder="First name"
-              name="firstname"
-              className="border border-black/30 mt-2 p-4 w-full rounded-lg pl-5 font-semibold outline-none"
-            />
-          </div>
-          <div>
-            <input
-              onChange={updateModelSignUpData}
-              type="text"
-              placeholder="Last name"
-              name="lastname"
-              className="border p-4 mt-4 border-black/30 w-full rounded-lg pl-5 font-semibold outline-none"
-            />
-          </div>
-          <div>
-            <input
-              onChange={updateModelSignUpData}
-              type="date"
-              placeholder="Date of Birth"
-              name="dob"
-              className="border p-4 mt-4 border-black/30 w-full rounded-lg pl-5 font-semibold outline-none"
-            />
-          </div>
-          <button className="border p-4 mt-4 border-black/30  rounded-lg pl-5  outline-none  relative w-full">
-            <span
-              className="flex gap-2 items-center text-sm font-semibold "
+      <div className="py-8 bg-white dark:bg-gray-900 rounded-2xl p-6">
+        <h1 className="text-2xl font-bold mb-6 text-center text-primary-dark-pink md:hidden block">
+          Become a Model
+        </h1>
+        <div className="space-y-4">
+          <input
+            onChange={updateModelSignUpData}
+            type="text"
+            placeholder="First name"
+            name="firstname"
+            className="border border-gray-300 dark:border-gray-700 p-4 w-full rounded-lg font-semibold outline-none focus:ring-2 focus:ring-primary-dark-pink transition"
+          />
+          <input
+            onChange={updateModelSignUpData}
+            type="text"
+            placeholder="Last name"
+            name="lastname"
+            className="border border-gray-300 dark:border-gray-700 p-4 w-full rounded-lg font-semibold outline-none focus:ring-2 focus:ring-primary-dark-pink transition"
+          />
+          <input
+            onChange={updateModelSignUpData}
+            type="date"
+            placeholder="Date of Birth"
+            name="dob"
+            className="border border-gray-300 dark:border-gray-700 p-4 w-full rounded-lg font-semibold outline-none focus:ring-2 focus:ring-primary-dark-pink transition"
+          />
+          <div className="relative">
+            <button
+              type="button"
+              className="border border-gray-300 dark:border-gray-700 p-4 w-full rounded-lg font-semibold outline-none flex items-center justify-between bg-white dark:bg-gray-800 transition focus:ring-2 focus:ring-primary-dark-pink"
               onClick={() => setDropdown(!dropdown)}
               data-gender={postAudience.name}
             >
-              {postAudience.icon} {postAudience.name}
+              <span className="flex gap-2 items-center text-sm font-semibold">
+                {postAudience.icon} {postAudience.name}
+              </span>
               {dropdown ? (
                 <LucideChevronUp size={20} className="ml-auto" />
               ) : (
                 <LucideChevronDown size={20} className="ml-auto" />
               )}
-            </span>
+            </button>
             <div
-              className={`absolute w-full left-0 mt-3 transition-all duration-300 ${
+              className={`absolute z-10 w-full left-0 mt-2 transition-all duration-200 ${
                 dropdown
-                  ? "opacity-100 -translate-y-0 pointer-events-auto"
-                  : "opacity-0 -translate-y-5 pointer-events-none"
+                  ? "opacity-100 translate-y-0 pointer-events-auto"
+                  : "opacity-0 -translate-y-2 pointer-events-none"
               }`}
             >
-              <ul className="bg-white rounded-xl mt-2 shadow-md text-left w-full">
+              <ul className="bg-white dark:bg-gray-800 rounded-xl shadow-md text-left w-full border border-gray-200 dark:border-gray-700">
                 {postAudienceData.map((audience) => (
                   <li
                     key={audience.id}
                     data-id={audience.id}
                     onClick={updatePostAudience}
-                    className="p-2 text-xs flex items-center gap-2 text-gray-600 font-medium hover:bg-gray-100"
+                    className="p-3 text-sm flex items-center gap-2 text-gray-700 dark:text-gray-200 font-medium hover:bg-primary-dark-pink/10 cursor-pointer transition"
                   >
                     {audience.icon}
                     {audience.name}
@@ -262,64 +261,65 @@ const BecomeAModel = () => {
                 ))}
               </ul>
             </div>
-          </button>
-          <div>
-            <select
-              onChange={updateModelSignUpData}
-              defaultValue="1"
-              className="border p-4 mt-4 border-black/30 w-full rounded-lg pl-5 font-semibold outline-none"
-              name="country"
-            >
-              <option value={1} disabled>
-                (--- Select Country ---)
-              </option>
-              {countries.map((location) => (
-                <option
-                  value={location.code ? location.name : ""}
-                  key={location.code}
-                >
-                  {location.name}
-                </option>
-              ))}
-              <option value="uk">UK</option>
-            </select>
           </div>
+          <select
+            onChange={updateModelSignUpData}
+            defaultValue="1"
+            className="border border-gray-300 dark:border-gray-700 p-4 w-full rounded-lg font-semibold outline-none focus:ring-2 focus:ring-primary-dark-pink transition bg-white dark:bg-gray-800"
+            name="country"
+          >
+            <option value={1} disabled>
+              (--- Select Country ---)
+            </option>
+            {countries.map((location) => (
+              <option
+                value={location.code ? location.name : ""}
+                key={location.code}
+              >
+                {location.name}
+              </option>
+            ))}
+            <option value="uk">UK</option>
+          </select>
         </div>
-        <div className="mt-4 px">
-          <p>Are you available for Hookup?</p>
-          <label
-            className="inline-flex cursor-pointer mt-3 items-center font-medium gap-2 text-gray-500"
-            htmlFor="yes"
-          >
-            <input
-              onChange={updateModelSignUpData}
-              type="radio"
-              name="available"
-              id="yes"
-              value="yes"
-              className="accent-primary-dark-pink h-6 w-6 outline-none"
-            />
-            Yes
-          </label>
-          <label
-            className="inline-flex cursor-pointer items-center font-medium gap-2 ml-4 text-gray-500"
-            htmlFor="no"
-          >
-            <input
-              onChange={updateModelSignUpData}
-              type="radio"
-              name="available"
-              value="no"
-              id="no"
-              className="accent-primary-dark-pink h-6 w-6 outline-none"
-            />
-            No
-            <label></label>
-          </label>
+        <div className="mt-6">
+          <p className="font-medium text-gray-700 dark:text-gray-200 mb-2">
+            Are you available for Hookup?
+          </p>
+          <div className="flex gap-6">
+            <label
+              className="inline-flex cursor-pointer items-center font-medium gap-2 text-gray-600 dark:text-gray-300"
+              htmlFor="yes"
+            >
+              <input
+                onChange={updateModelSignUpData}
+                type="radio"
+                name="available"
+                id="yes"
+                value="yes"
+                className="accent-primary-dark-pink h-5 w-5 outline-none"
+              />
+              Yes
+            </label>
+            <label
+              className="inline-flex cursor-pointer items-center font-medium gap-2 text-gray-600 dark:text-gray-300"
+              htmlFor="no"
+            >
+              <input
+                onChange={updateModelSignUpData}
+                type="radio"
+                name="available"
+                value="no"
+                id="no"
+                className="accent-primary-dark-pink h-5 w-5 outline-none"
+              />
+              No
+            </label>
+          </div>
         </div>
         <button
           onClick={submitData}
-          className="bg-primary-dark-pink w-full p-3 rounded-xl mt-3 mb-20 text-white font-semibold"
+          className="bg-primary-dark-pink w-full p-3 rounded-xl mt-8 text-white font-semibold shadow-md hover:bg-primary-dark-pink/90 transition cursor-pointer"
         >
           Signup
         </button>

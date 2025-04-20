@@ -119,9 +119,11 @@ export function NotificationBody() {
   }
 
   return (
-    <div>
+    <div className="space-y-3">
       {(!notifications || notifications.length) === 0 ? (
-        <div className="text-center py-2">No Notifications yet</div>
+        <div className="text-center py-4 text-gray-500 dark:text-gray-400">
+          No Notifications yet
+        </div>
       ) : (
         notifications.map((notification, index) => (
           <div
@@ -134,17 +136,14 @@ export function NotificationBody() {
                 notification.read
               )
             }
+            className={`transition-colors duration-150 rounded-lg cursor-pointer group ${
+              notification.read
+                ? "bg-white dark:bg-gray-950 hover:bg-gray-50 dark:hover:bg-gray-900"
+                : "bg-messages-unread dark:bg-gray-800 hover:bg-messages-unread/90 dark:hover:bg-gray-700"
+            }`}
           >
             <div
-              className={`w-full mt-3 select-none ${
-                index + 1 === notifications.length && "border-b"
-              } border-b border-gray-50/30 dark:border-slate-800 p-3 rounded flex items-center hover:border border-none dark:hover:bg-slate-800 dark:text-white hover:bg-gray-100 
-                        ${
-                          notification.read === false
-                            ? "bg-messages-unread dark:bg-gray-800 cursor-pointer"
-                            : "bg-white dark:bg-gray-950 cursor-default"
-                        }
-                        `}
+              className={`flex items-center gap-5 p-4 border-b last:border-b-0 border-gray-100 dark:border-slate-800`}
             >
               <div
                 role="img"
@@ -152,18 +151,18 @@ export function NotificationBody() {
                   color: types.find((type) => type.type === notification.action)
                     ?.color,
                 }}
-                className="focus:outline-none w-14 h-14 aspect-square rounded-full border border-gray-200 flex items-center justify-center"
+                className="flex items-center justify-center w-12 h-12 rounded-full dark:border-gray-700 bg-white dark:bg-gray-900"
               >
                 {notification.action &&
                   types.find((type) => type.type === notification.action)?.icon}
               </div>
-              <div className="pl-7 space-y-3">
-                <p className="focus:outline-none leading-none max-w-[80%] notification_message_container">
+              <div className="flex-1 min-w-0">
+                <p className="text-base font-medium text-gray-900 dark:text-white notification_message_container leading-snug break-words">
                   <span
                     dangerouslySetInnerHTML={{ __html: notification.message }}
                   ></span>
                 </p>
-                <p className="focus:outline-none text-sm leading-3 pt-1 text-gray-500">
+                <p className="text-xs text-gray-500 dark:text-gray-400 pt-2">
                   {new Date(notification.created_at).toLocaleDateString(
                     "en-US",
                     {
@@ -182,7 +181,7 @@ export function NotificationBody() {
       )}
       {loading && (
         <div className="flex justify-center items-center py-5">
-          <LucideLoader className="animate-spin" />
+          <LucideLoader className="animate-spin text-primary" />
         </div>
       )}
       <div ref={ref} className="h-1 w-full"></div>

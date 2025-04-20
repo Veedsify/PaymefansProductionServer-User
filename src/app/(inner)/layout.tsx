@@ -1,6 +1,6 @@
 import "../globals.css";
 import type { Metadata } from "next";
-import { Sora } from "next/font/google";
+import { Instrument_Sans } from "next/font/google";
 import localFont from "next/font/local";
 import MenuButtons from "@/components/modals/menu_buttons";
 import SideModels from "@/components/models/side_models";
@@ -19,8 +19,8 @@ import ToggleWishListProvider from "@/contexts/toggle-wishlist";
 import WishList from "@/components/sub_components/wishlist";
 // import { GeistSans } from "geist/font/sans";
 
-const font = Sora({
-  weight: ["100", "200", "300", "400", "500", "600", "700", "800"],
+const font = Instrument_Sans({
+  weight: ["400", "500", "600", "700"],
   subsets: ["latin", "latin-ext"],
   display: "swap",
 });

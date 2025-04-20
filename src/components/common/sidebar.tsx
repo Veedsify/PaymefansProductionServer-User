@@ -76,7 +76,7 @@ const SideBar = React.memo(() => {
                                     ? user?.profile_image
                                     : "/site/avatar.png"
                             }
-                            className="object-cover w-12 h-12 rounded-full"
+                            className="object-cover w-12 h-12 rounded-full border-2 border-primary-dark-pink"
                             alt=""
                         />
                         <div className="overflow-hidden">

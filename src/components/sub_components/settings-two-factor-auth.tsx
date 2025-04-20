@@ -45,8 +45,8 @@ const TwoFactorAuth = () => {
   }, [user]);
   return (
     <div>
-      <h2 className="mb-4 font-bold mt-10">Two Factor Authentication</h2>
-      <p className="mb-3">
+      <h2 className="mb-4 font-bold mt-10 dark:text-white">Two Factor Authentication</h2>
+      <p className="mb-3 dark:text-white">
         When you log in, you will be asked for a verification code sent to your
         email address. This code is valid for 30 minutes.
       </p>

@@ -4,6 +4,7 @@ import PostPanel from "./postpanel";
 import MediaPanel from "./mediapanel";
 import RepostPanel from "./repost_panel";
 import {LucideImage, LucideLock, LucidePodcast, LucideRepeat2} from "lucide-react";
+import PrivatePanel from "./privatepanel";
 
 const ProfileTabs = () => {
     const [activeTab, setActiveTab] = useState(0);
@@ -12,7 +13,7 @@ const ProfileTabs = () => {
         {icon: <LucidePodcast size={24}/>, label: "Posts", content: <PostPanel/>},
         {icon: <LucideImage size={24}/>, label: "Media", content: <MediaPanel/>},
         {icon: <LucideRepeat2 size={24}/>, label: "Reposts", content: <RepostPanel/>},
-        {icon: <LucideLock size={24}/>, label: "Private", content: <div className="py-8"><p>four!</p></div>},
+        {icon: <LucideLock size={24}/>, label: "Private", content: <PrivatePanel/>},
     ];
 
     return (

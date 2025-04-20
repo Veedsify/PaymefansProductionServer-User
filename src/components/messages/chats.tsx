@@ -255,7 +255,7 @@ const Chats = React.memo(
         </div>
         {/* Messages */}
         <div
-          className="flex-1 overflow-auto p-4 space-y-4 bg-white dark:bg-gray-900"
+          className="flex-1 overflow-auto p-4 space-y-4 bg-white dark:bg-gray-950"
           ref={scrollRef}
         >
           {messages.map((message, index) => (
@@ -279,7 +279,7 @@ const Chats = React.memo(
           ))}
         </div>
         {/* Input */}
-        <div className="sticky bottom-0 bg-white dark:bg-gray-800 border-t dark:border-gray-800 p-4 z-50 shrink-0">
+        <div className="sticky bottom-0 bg-white dark:bg-gray-800 border-t dark:border-gray-950 p-4 z-50 shrink-0">
           <MediaProvider>
             <MessageInput
               receiver={receiver}

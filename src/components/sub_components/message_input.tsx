@@ -246,23 +246,25 @@ const MessageInput = ({
     <>
       <div className="bottom-0 lg:ml-4 lg:mr-2 relative max-h-max">
         {mediaPreviewBadge}
-        <div className="flex mb-2 items-center gap-5 px-6 dark:bg-gray-800 bg-gray-  lg:py-2 py-4 lg:rounded-xl">
+        <div className="flex mb-2 items-center gap-5 px-6 dark:bg-gray-950 lg:py-2 py-4 lg:rounded-xl">
           <div
             ref={ref as RefObject<HTMLDivElement>}
             contentEditable={true}
             id="message-input"
             onKeyDown={handleKeyDown}
-            className="bg-transparent outline-none w-full p-2 font-semibold resize-none dark:text-white overflow-auto max-h-24"
+            className="bg-transparent outline-none w-full p-2 border rounded-xl border-black/20 dark:border-gray-600 font-semibold resize-none dark:text-white overflow-auto max-h-24"
           ></div>
-          <span className="cursor-pointer" onClick={openModal}>
-            <LucidePlus stroke="#CC0DF8" size={25} />
-          </span>
-          <span className="cursor-pointer" onClick={openModal}>
-            <LucideCamera stroke="#CC0DF8" size={25} />
-          </span>
-          <span className="cursor-pointer" onClick={handleSendMessage}>
-            <LucideSendHorizonal stroke="#CC0DF8" size={25} />
-          </span>
+          <div className="border flex border-black/20 gap-4 rounded-xl p-1.5">
+            <span className="cursor-pointer" onClick={openModal}>
+              <LucidePlus stroke="#CC0DF8" size={25} />
+            </span>
+            <span className="cursor-pointer" onClick={openModal}>
+              <LucideCamera stroke="#CC0DF8" size={25} />
+            </span>
+            <span className="cursor-pointer" onClick={handleSendMessage}>
+              <LucideSendHorizonal stroke="#CC0DF8" size={24} />
+            </span>
+          </div>
         </div>
       </div>
 

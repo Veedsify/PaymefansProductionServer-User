@@ -11,6 +11,7 @@ import Media from "@/components/common/media-preview-post";
 import axios from "axios";
 import { getMaxDurationBase64 } from "@/utils/get-video-max-duration";
 import * as tus from "tus-js-client";
+import UploadImageToCloudflare from "../sub_components/cloudflare-image-uploader";
 
 type PostMediaPreviewProps = {
   submitPost: (image: UploadedImageProp) => void;
@@ -87,7 +88,6 @@ function PostMediaPreview({
             }
           },
         });
-
         upload.start();
       });
     },
@@ -96,41 +96,13 @@ function PostMediaPreview({
 
   const imageUploader = useCallback(
     async (file: File, uploadUrl: string, id: string) => {
-      try {
-        const formData = new FormData();
-        formData.append("file", file);
-
-        const response = await axios.post(uploadUrl, formData, {
-          onUploadProgress: (progressEvent) => {
-            const percentage = Math.round(
-              (progressEvent.loaded * 100) /
-                (progressEvent.total ?? progressEvent.loaded)
-            );
-            setProgress((prev) => ({
-              ...prev,
-              [id]: percentage,
-            }));
-          },
-        });
-
-        if (response.status === 200) {
-          setProgress((prev) => ({
-            ...prev,
-            [id]: 100,
-          }));
-          console.log(response.data);
-          return response.data;
-        } else {
-          throw new Error("Upload failed");
-        }
-      } catch (error) {
-        setUploadError((prev) => ({
-          ...prev,
-          [id]: true,
-        }));
-        console.error("Image upload error:", error);
-        throw error;
-      }
+      return await UploadImageToCloudflare({
+        file,
+        setProgress,
+        setUploadError,
+        id,
+        uploadUrl,
+      });
     },
     [setProgress, setUploadError]
   );
@@ -224,14 +196,12 @@ function PostMediaPreview({
               mediaItem.id
             );
 
-            const variants = uploadImage.result.variants;
-            const imageUrl = variants[0].includes("/public")
-              ? variants[0]
-              : variants[1];
-
+            const variants = uploadImage.result.variants ?? [];
+            const publicVariant = variants.find((v:string) => v?.includes("/public")) ?? variants[0] ?? '';
+            const blurVariant = variants.find((v:string) => v?.includes("/blur")) ?? variants[0] ?? '';
             submitPost({
-              blur: imageUrl,
-              public: imageUrl,
+              blur: publicVariant,
+              public: blurVariant,
               id: uploadImage.result.id,
               type: "image",
               fileId: mediaItem.id,

@@ -32,12 +32,12 @@ const SettingsTab = ({user}: { user: AuthUserProps | null }) => {
     return (
         <div>
             <Tabs selectedTabClassName="border-b-4 border-primary-dark-pink">
-                <TabList className="flex gap-9 mb-4 border-b border-black/30">
+                <TabList className="flex gap-9 mb-4 border-b border-black/30 dark:border-white/30">
                     <Tab>
                         <button
                             onClick={handleClick}
                             data-tab="profile"
-                            className="text-black font-bold py-2"
+                            className="text-black dark:text-white font-bold py-2"
                         >
                             Profile
                         </button>
@@ -46,7 +46,7 @@ const SettingsTab = ({user}: { user: AuthUserProps | null }) => {
                         <button
                             onClick={handleClick}
                             data-tab="security"
-                            className="text-black font-bold py-2"
+                            className="text-black dark:text-white font-bold py-2"
                         >
                             Security
                         </button>
@@ -57,7 +57,7 @@ const SettingsTab = ({user}: { user: AuthUserProps | null }) => {
                                 <button
                                     onClick={handleClick}
                                     data-tab="billing"
-                                    className="text-black font-bold py-2"
+                                    className="text-black dark:text-white font-bold py-2"
                                 >
                                     Billing
                                 </button>

@@ -8,6 +8,7 @@ import { ProfileUserProps } from "@/types/user";
 import RepostPanel from "./repost_panel";
 import PostPanel from "@/components/sub_components/postpanel";
 import MediaPanel from "@/components/sub_components/mediapanel";
+import PrivatePanelOther from "./privatepanelother";
 const ProfileTabsOther = ({ userdata }: { userdata: ProfileUserProps }) => {
     const [activeTab, setActiveTab] = useState(0);
 
@@ -15,7 +16,7 @@ const ProfileTabsOther = ({ userdata }: { userdata: ProfileUserProps }) => {
         {icon: <LucidePodcast size={24}/>, label: "Posts", content: <PostPanelOther userdata={userdata} />},
         {icon: <LucideImage size={24}/>, label: "Media", content: <MediaPanelOther userdata={userdata}/>},
         {icon: <LucideRepeat2 size={24}/>, label: "Reposts", content: <RepostPanel userdata={userdata}/>},
-        {icon: <LucideLock size={24}/>, label: "Private", content: <div className="py-8"><p>four!</p></div>},
+        {icon: <LucideLock size={24}/>, label: "Private", content: <PrivatePanelOther userdata={userdata}/>},
     ];
 
     return (

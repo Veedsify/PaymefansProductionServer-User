@@ -154,44 +154,66 @@ const MessageSearch = () => {
 
             {/* Search Results */}
             {results.length > 0 && !loading && (
-              <div className="bg-white dark:bg-gray-900 py-6 rounded-md w-full md:w-3/5 mx-auto">
+              <div className="bg-white dark:bg-gray-900 py-6 rounded-xl w-full md:w-3/5 mx-auto border border-gray-200 dark:border-gray-800">
                 {results.map((result, index) => (
                   <div
                     key={index}
-                    className="p-3 border-b last:border-b-0 rounded-lg border-black/30 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors duration-200"
+                    className="p-4 border-b last:border-b-0 border-gray-100 dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-gray-800/60 transition-colors duration-150 rounded-lg flex items-start gap-4 group"
                   >
-                    <div className="flex items-start gap-4">
-                      <Image
-                        src={result.sender.profile_image}
-                        alt={result.sender.name}
-                        width={48}
-                        height={48}
-                        className="h-12 w-12 rounded-full object-cover ring-2 ring-gray-100 dark:ring-gray-700"
-                      />
-                      <div className="flex-1 min-w-0">
-                        <div className="flex justify-between items-center mb-2">
-                          <h4 className="font-semibold text-sm dark:text-white truncate">
-                            {result.sender.name == user?.name
-                              ? "You"
-                              : result.sender.name}
-                            <span className="text-xs font-normal text-gray-500 dark:text-gray-400 ml-2">
-                              {result.sender.username}
+                    <Image
+                      src={result.sender.profile_image}
+                      alt={result.sender.name}
+                      width={48}
+                      height={48}
+                      className="h-12 w-12 rounded-full object-cover ring-2 ring-blue-100 dark:ring-blue-900 shadow-sm"
+                    />
+                    <div className="flex-1 min-w-0">
+                      <div className="flex justify-between items-center mb-1">
+                        <h4 className="font-semibold text-base dark:text-white truncate flex items-center gap-2">
+                          {result.sender.name === user?.name ? (
+                            <span className="text-blue-600 dark:text-blue-400">
+                              You
                             </span>
-                          </h4>
-                          <span className="text-xs text-gray-500 dark:text-gray-400 whitespace-nowrap">
-                            {new Date(result.created_at).toLocaleDateString()}
+                          ) : (
+                            result.sender.name
+                          )}
+                          <span className="text-xs font-normal text-gray-500 dark:text-gray-400 ml-1">
+                            @{result.sender.username}
                           </span>
-                        </div>
-                        <p className="text-sm text-gray-700 dark:text-gray-300 line-clamp-2 leading-relaxed">
-                          {result.message}
-                        </p>
-                        {result.attachment && result.attachment.length > 0 && (
-                          <span className="inline-flex items-center text-xs text-blue-600 dark:text-blue-400 mt-2 font-medium">
-                            {result.attachment.length} attachment
-                            {result.attachment.length > 1 ? "s" : ""}
-                          </span>
-                        )}
+                        </h4>
+                        <span className="text-xs text-gray-400 dark:text-gray-500 whitespace-nowrap">
+                          {new Date(result.created_at).toLocaleDateString(
+                            undefined,
+                            {
+                              year: "numeric",
+                              month: "short",
+                              day: "numeric",
+                            }
+                          )}
+                        </span>
                       </div>
+                      <p className="text-sm text-gray-700 dark:text-gray-300 line-clamp-2 leading-relaxed group-hover:text-blue-700 dark:group-hover:text-blue-300 transition-colors">
+                        {result.message}
+                      </p>
+                      {result.attachment && result.attachment.length > 0 && (
+                        <span className="inline-flex items-center text-xs text-blue-600 dark:text-blue-400 mt-2 font-medium gap-1">
+                          <svg
+                            className="w-4 h-4"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth={2}
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l7.07-7.07a4 4 0 00-5.656-5.657l-8.485 8.485a6 6 0 108.485 8.485l6.364-6.364"
+                            />
+                          </svg>
+                          {result.attachment.length} attachment
+                          {result.attachment.length > 1 ? "s" : ""}
+                        </span>
+                      )}
                     </div>
                   </div>
                 ))}

@@ -1,7 +1,7 @@
 "use client";
 import { useUserAuthContext } from "@/lib/userUseContext";
 import { LastMessage } from "@/types/conversations";
-import { LucideLink2, LucideVerified } from "lucide-react";
+import { LucideLink2, LucideLoader, LucideVerified } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -53,26 +53,8 @@ const ConversationComponent = () => {
 };
 
 const ConversationCardLoader = () => (
-  <div>
-    {[...Array(3)].map((_, i) => (
-      <div
-        key={i}
-        className="animate-pulse flex items-center gap-2 md:gap-5 p-3"
-      >
-        <div className="flex items-center gap-2">
-          <div className="w-12 h-12 md:w-16 md:h-16 aspect-square bg-gray-300 rounded-full"></div>
-          <div className="flex-1">
-            <div className="flex flex-1 text-sm gap-4 mb-2 w-full">
-              <div className="w-24 h-4 bg-gray-300 rounded-md"></div>
-              <div className="w-16 h-4 bg-gray-300 rounded-md"></div>
-            </div>
-            <div className="text-sm">
-              <div className="w-36 h-4 bg-gray-300 rounded-md"></div>
-            </div>
-          </div>
-        </div>
-      </div>
-    ))}
+  <div className="flex items-center gap-2 md:gap-5 p-3 dark:text-white justify-center">
+    <LucideLoader className="animate-spin text-gray-700" size={25} />
   </div>
 );
 
@@ -115,99 +97,135 @@ const ConversationCard = React.memo(
         })
       : "";
     return (
+      // Improved Conversation Item Component
       <div
         onClick={handleClick}
-        className={`block border-b border-black/20 dark:border-black/90 ${
-          isUnread ? "bg-messages-unread dark:text-black" : "dark:text-white"
-        } dark:bg-gray-900 cursor-pointer`}
+        className={`
+    group flex items-center p-4 
+    border-b border-gray-200 dark:border-gray-800
+    transition-all duration-200 ease-in-out
+    ${
+      isUnread
+        ? "bg-indigo-50 dark:bg-indigo-900/30 font-medium"
+        : "bg-white dark:bg-gray-950"
+    }
+    hover:bg-primary-light-pink/5 dark:hover:bg-primary-dark-pink/10
+    cursor-pointer
+  `}
       >
-        <div className="flex items-center gap-2 md:gap-5 p-3 dark:text-white">
-          <Link
-            onClick={(e) => e.stopPropagation()}
-            className="relative"
-            href={`/${conversation.receiver.username}`}
-          >
+        {/* Profile Image with Active Status */}
+        <Link
+          onClick={(e) => e.stopPropagation()}
+          className="relative flex-shrink-0 mr-4"
+          href={`/${conversation.receiver.username}`}
+          tabIndex={-1}
+        >
+          <div className="relative">
             <Image
-              width={65}
-              height={65}
+              width={56}
+              height={56}
               src={conversation.receiver.profile_image}
-              alt="user messages"
-              className="object-cover rounded-full w-12 md:w-16 aspect-square"
+              alt={`${conversation.receiver.name} profile`}
+              className="object-cover rounded-full w-14 aspect-square 
+                 border-2 transition-colors duration-200
+                 group-hover:border-primary-dark-pink
+                 border-primary-light-pink/70 dark:border-primary-light-pink/50"
             />
-            <div className="absolute right-0 scale-110 bg-white p-1 rounded-full bottom-1">
+            <div className="absolute -right-1 -bottom-1 bg-white dark:bg-gray-900 p-0.5 rounded-full shadow-md">
               <ActiveProfileTag
-                scale={1.2}
+                scale={1.1}
                 userid={conversation.receiver.username}
               />
             </div>
-          </Link>
-          <div className="flex-1">
-            <div className="flex flex-1 text-sm gap-4 mb-2 w-full">
+          </div>
+        </Link>
+
+        {/* Content Container */}
+        <div className="flex-1 min-w-0">
+          {/* Header: Name, Username, Time, Unread Indicator */}
+          <div className="flex items-center gap-2 mb-1.5">
+            {/* Name with Verification Badge */}
+            <Link
+              onClick={(e) => e.stopPropagation()}
+              href={`/${conversation.receiver.username}`}
+              className="truncate font-semibold text-gray-900 dark:text-gray-100"
+            >
+              <span className="flex items-center gap-1 truncate">
+                {conversation.receiver.name}
+                {conversation.receiver.username === "@paymefans" && (
+                  <LucideVerified size={16} className="text-yellow-500" />
+                )}
+              </span>
+            </Link>
+
+            {/* Username (hidden on small screens) */}
+            {conversation.receiver.username !== "@paymefans" && (
               <Link
                 onClick={(e) => e.stopPropagation()}
                 href={`/${conversation.receiver.username}`}
+                className="hidden xl:inline-block text-gray-500 dark:text-gray-400 text-sm truncate"
               >
-                <h1 className="font-bold flex gap-1 ">
-                  {conversation.receiver.name}
-                  {conversation.receiver.username === "@paymefans" && (
-                    <LucideVerified
-                      size={20}
-                      className="text-yellow-600"
-                    />
+                {conversation.receiver.username}
+              </Link>
+            )}
+
+            {/* Time and Unread Indicator */}
+            <div className="flex items-center gap-2 ml-auto">
+              {lastMessageTime && (
+                <span className="text-xs text-gray-500 dark:text-gray-400 whitespace-nowrap">
+                  {lastMessageTime}
+                </span>
+              )}
+              {isUnread && (
+                <span className="w-2.5 h-2.5 bg-primary-dark-pink rounded-full animate-pulse" />
+              )}
+            </div>
+          </div>
+
+          {/* Message Preview */}
+          <div className="text-sm text-gray-600 dark:text-gray-300 truncate">
+            <Link
+              href={`/chats/${conversation.conversation_id}`}
+              onClick={(e) => e.stopPropagation()}
+              className="flex items-center gap-1"
+            >
+              {conversation.lastMessage?.created_at ? (
+                <>
+                  <span
+                    className="truncate max-w-[90%]"
+                    dangerouslySetInnerHTML={{
+                      __html: `${String(
+                        conversation.lastMessage.message
+                      ).substring(0, 100)}${
+                        conversation.lastMessage.message.length > 100
+                          ? "..."
+                          : ""
+                      }`,
+                    }}
+                  />
+                  {conversation.lastMessage.attachment?.length > 0 && (
+                    <span className="flex gap-1 items-center text-gray-400 ml-auto">
+                      {conversation.lastMessage.attachment
+                        .slice(0, 3)
+                        .map((_, idx) => (
+                          <LucideLink2
+                            className="text-gray-400"
+                            size={14}
+                            key={idx}
+                          />
+                        ))}
+                      {conversation.lastMessage.attachment.length > 3 && (
+                        <span className="text-xs text-gray-400">
+                          +{conversation.lastMessage.attachment.length - 3}
+                        </span>
+                      )}
+                    </span>
                   )}
-                </h1>
-              </Link>
-              <Link
-                onClick={(e) => e.stopPropagation()}
-                href={`/${conversation.receiver.username}`}
-              >
-                {conversation.receiver.username !== "@paymefans" && (
-                  <p className="hidden xl:block">
-                    {conversation.receiver.username}
-                  </p>
-                )}
-              </Link>
-              <div className="flex items-center gap-2 ml-auto">
-                <p className="block">{lastMessageTime}</p>
-                {conversation.lastMessage && !conversation.lastMessage.seen && (
-                  <span className="text-white w-2 h-2 bg-primary-dark-pink rounded-2xl block"></span>
-                )}
-              </div>
-            </div>
-            <div className="text-sm">
-              <Link href={`/chats/${conversation.conversation_id}`}>
-                {conversation.lastMessage?.created_at ? (
-                  <div>
-                    <div
-                      className="text-xs md:text-sm"
-                      dangerouslySetInnerHTML={{
-                        __html: `${String(
-                          conversation.lastMessage.message
-                        ).substring(0, 100)}${
-                          conversation.lastMessage.message.length > 100
-                            ? "..."
-                            : ""
-                        }`,
-                      }}
-                    />
-                    {conversation.lastMessage.attachment?.length > 0 && (
-                      <div className="flex gap-1">
-                        {conversation.lastMessage.attachment
-                          .slice(0, 6)
-                          .map((file, index) => (
-                            <LucideLink2
-                              className="text-gray-500"
-                              key={index}
-                            />
-                          ))}
-                      </div>
-                    )}
-                  </div>
-                ) : (
-                  "New Conversation"
-                )}
-              </Link>
-            </div>
+                </>
+              ) : (
+                <span className="italic text-gray-400">New Conversation</span>
+              )}
+            </Link>
           </div>
         </div>
       </div>
