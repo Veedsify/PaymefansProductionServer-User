@@ -104,7 +104,7 @@ const MessageSearch = () => {
             </button>
           </div>
 
-          <div className="mx-auto max-w-screen-lg p-3 w-full flex-1 py-3">
+          <div className="mx-auto max-w-screen-lg p-3 w-full flex-1 py-3 ">
             <h1 className="md:w-3/5 mx-auto mb-4">
               <span className="text-gray-800 dark:text-white font-semibold text-lg">
                 Search Messages
@@ -154,7 +154,7 @@ const MessageSearch = () => {
 
             {/* Search Results */}
             {results.length > 0 && !loading && (
-              <div className="bg-white dark:bg-gray-900 py-6 rounded-xl w-full md:w-3/5 mx-auto border border-gray-200 dark:border-gray-800">
+              <div className="bg-white dark:bg-gray-900 py-6 rounded-xl w-full md:w-3/5 mx-auto border border-gray-200 dark:border-gray-800  max-h-[85vh] overflow-y-auto">
                 {results.map((result, index) => (
                   <div
                     key={index}
