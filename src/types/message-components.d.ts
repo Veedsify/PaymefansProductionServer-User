@@ -37,6 +37,7 @@ export interface MediaContextState {
   openModal: () => void;
   closeModal: () => void;
   resetAll: () => void;
+  revokeUrls: () => void;
 }
 
 // Define supported file types (move from hard-coded in components)

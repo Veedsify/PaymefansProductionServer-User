@@ -1,6 +1,5 @@
 "use client";
 import ROUTE from "@/config/routes";
-import axiosInstance from "@/utils/axios";
 import { getToken } from "@/utils/cookie.get";
 import axios from "axios";
 import { LucideUpload } from "lucide-react";
@@ -48,14 +47,14 @@ const BannerComponent = ({ profile_banner }: BannerComponentProps) => {
     // Set initial crop to full image width/height
     const initialCrop = centerCrop(
       makeAspectCrop(
-        {
-          unit: "%",
-          width: 100,
-          height: 100,
-        },
-        3 / 1, // 1200/400 aspect ratio
-        naturalWidth,
-        naturalHeight
+      {
+        unit: "%",
+        width: 100,
+        height: 100,
+      },
+      1980 / 650, // 1980x650 aspect ratio
+      naturalWidth,
+      naturalHeight
       ),
       naturalWidth,
       naturalHeight
@@ -157,9 +156,9 @@ const BannerComponent = ({ profile_banner }: BannerComponentProps) => {
   };
 
   return (
-    <div className="relative overflow-hidden">
+    <div className="relative overflow-hidden rounded-lg shadow-lg border border-gray-200">
       {imageUrl ? (
-        <div className="relative w-full flex justify-center max-h-[400px]">
+        <div className="relative w-full flex justify-center max-h-[400px] bg-gray-50">
           <ReactCrop
             crop={crop}
             className="mx-auto w-auto max-h-[400px]"
@@ -169,18 +168,20 @@ const BannerComponent = ({ profile_banner }: BannerComponentProps) => {
             <Image
               ref={imageRef}
               src={imageUrl}
-              width={1000}
-              height={1000}
+              width={1200}
+              height={400}
               alt="Banner Crop"
               style={{
                 objectFit: "contain",
                 width: "100%",
                 height: "100%",
+                borderRadius: "0.5rem",
               }}
               onLoad={(e) => onImageLoaded(e.currentTarget)}
+              className="rounded-lg border border-gray-300"
             />
           </ReactCrop>
-          <div className="absolute bottom-2 right-2 flex space-x-2">
+          <div className="absolute flex gap-2 bottom-4 right-4 z-10">
             <input
               type="file"
               id="banner_image_upload"
@@ -190,33 +191,33 @@ const BannerComponent = ({ profile_banner }: BannerComponentProps) => {
             />
             <button
               onClick={selectImage}
-              className="bg-gray-200 text-black p-2 rounded cursor-pointer"
+              className="px-3 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg shadow hover:bg-gray-100 transition"
             >
               Replace
             </button>
             <button
               onClick={cancelCrop}
-              className="bg-red-500 text-white p-2 rounded"
+              className="px-3 py-2 text-sm font-medium text-white bg-red-500 rounded-lg shadow hover:bg-red-600 transition"
             >
               Cancel
             </button>
             <button
               onClick={uploadBannerImage}
-              className="bg-green-500 text-white p-2 rounded flex items-center"
+              className="flex items-center px-3 py-2 text-sm font-medium text-white bg-green-600 rounded-lg shadow hover:bg-green-700 transition"
             >
-              <LucideUpload size={20} className="mr-2" /> Upload
+              <LucideUpload size={18} className="mr-2" /> Upload
             </button>
           </div>
         </div>
       ) : (
-        <div className="relative w-full h-full">
+        <div className="relative w-full h-[180px] bg-gray-100 rounded-lg overflow-hidden">
           <Image
             src={profile_banner || "/site/banner.png"}
             alt="Home Banner"
             width={1200}
             height={400}
             priority
-            className="object-cover w-full h-full"
+            className="object-cover w-full h-full rounded-lg"
           />
           <input
             type="file"
@@ -225,10 +226,10 @@ const BannerComponent = ({ profile_banner }: BannerComponentProps) => {
             accept=".jpg,.jpeg,.png"
             className="hidden"
           />
-          <div className="absolute inset-0 bg-black/50 flex items-center justify-center cursor-pointer">
+          <div className="absolute inset-0 flex items-center justify-center bg-black/40 hover:bg-black/60 transition cursor-pointer">
             <button
               onClick={selectImage}
-              className="flex items-center bg-white px-4 py-2 rounded"
+              className="flex items-center px-5 py-2 bg-white/90 text-gray-800 font-semibold rounded-lg shadow hover:bg-white"
             >
               <LucideUpload size={20} className="mr-2" /> Upload Banner
             </button>

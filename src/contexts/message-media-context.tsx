@@ -70,19 +70,20 @@ export const MediaProvider: React.FC<{ children: ReactNode }> = ({
     setIsModalOpen(false);
   }, []);
 
-  const resetAll = useCallback(() => {
-    // Clean up URLs to prevent memory leaks
+  const revokeUrls = useCallback(() => {
     mediaFiles.forEach((file) => {
       URL.revokeObjectURL(file.previewUrl);
       if (file.posterUrl && file.posterUrl !== file.previewUrl) {
         URL.revokeObjectURL(file.posterUrl);
       }
     });
+  }, [mediaFiles]);
 
+  const resetAll = useCallback(() => {
     setMediaFiles([]);
     setMessage("");
     setIsModalOpen(false);
-  }, [mediaFiles]);
+  }, []);
 
   return (
     <MediaContext.Provider
@@ -96,6 +97,7 @@ export const MediaProvider: React.FC<{ children: ReactNode }> = ({
         openModal,
         closeModal,
         resetAll,
+        revokeUrls,
       }}
     >
       {children}

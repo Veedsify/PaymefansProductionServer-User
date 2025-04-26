@@ -45,10 +45,6 @@ export type AuthUserProps = {
   UserPoints: {
     points: number;
   };
-  _count: {
-    Follow: number;
-    Subscribers: number
-  }
   Settings?: {
     price_per_message: number;
     subscription_active: boolean;

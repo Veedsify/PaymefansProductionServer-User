@@ -1,11 +1,9 @@
 "use client";
+import React, { useCallback, useMemo, useRef, useEffect } from "react";
 import { useUserAuthContext } from "@/lib/userUseContext";
-import { useEffect, useMemo, useRef, useState } from "react";
 import { Attachment, MessageBubbleProps } from "@/types/components";
 import { socket } from "./sub/socket";
 import MessageBubbleContent from "./message-bubble-content";
-
-const server = process.env.NEXT_PUBLIC_TS_EXPRESS_URL_DIRECT as string;
 
 const MessageBubble: React.FC<MessageBubbleProps> = ({
   receiver,
@@ -13,27 +11,26 @@ const MessageBubble: React.FC<MessageBubbleProps> = ({
   seen,
   message,
   date,
-  attachment,
+  attachment = [],
   conversationId,
-  rawFiles,
+  rawFiles = [],
   triggerSend,
 }) => {
   const { user } = useUserAuthContext();
-
   const isSender = sender === user?.user_id;
-  const hasAttachments = attachment && attachment.length > 0;
-  const hasRawFiles = rawFiles && rawFiles.length > 0;
-  const hasMessage = message && message.message.trim().length > 0;
+  const hasAttachments = attachment && attachment.length > 0 ? true : false;
+  const hasRawFiles = rawFiles.length > 0;
+  const hasMessage = Boolean(message?.message?.trim());
 
-  // Memoize formatted date string
+  // Format date string for chat bubble
   const dateString = useMemo(() => {
     const now = new Date();
     const inputDate = new Date(date);
-    const oneDayAgo = new Date(now);
-    oneDayAgo.setDate(now.getDate() - 1); // Subtract 1 days from today
+    const yesterday = new Date(now);
+    yesterday.setDate(now.getDate() - 1);
 
-    if (inputDate < oneDayAgo) {
-      // Older than 1 days: Show full date + time (e.g., "Apr 5, 2024, 3:30 PM")
+    if (inputDate < yesterday) {
+      // Older than 1 day: full date + time
       return inputDate.toLocaleString("en-US", {
         month: "short",
         day: "numeric",
@@ -42,88 +39,82 @@ const MessageBubble: React.FC<MessageBubbleProps> = ({
         minute: "numeric",
         hour12: true,
       });
-    } else {
-      // Within the last 2 days: Show only time (e.g., "3:30 PM")
-      return inputDate.toLocaleTimeString("en-US", {
-        hour: "numeric",
-        minute: "numeric",
-        hour12: true,
-      });
     }
+    // Within the last 1 day: only time
+    return inputDate.toLocaleTimeString("en-US", {
+      hour: "numeric",
+      minute: "numeric",
+      hour12: true,
+    });
   }, [date]);
 
+  // Prevent duplicate socket sends for the same message
+  const sentRef = useRef(false);
+  const handleSendSocketMessage = useCallback(
+    (attachments?: Attachment[]) => {
+      if (sentRef.current) return;
+      sentRef.current = true;
+      socket.emit("new-message", {
+        id: message?.id,
+        message_id: message?.message_id,
+        message: message?.message,
+        sender_id: message?.sender_id,
+        attachment: attachments ?? [],
+        seen: false,
+        created_at: new Date().toISOString(),
+        receiver_id: receiver?.user_id,
+        conversationId,
+        date: message?.created_at,
+      });
+    },
+    [message, receiver?.user_id, conversationId]
+  );
 
-  const sentRef = useRef(false); // Use a ref to persist the sent state across renders
-
-  function SendSocketMessage(attachment?: Attachment[]) {
-    if (sentRef.current) return;  // Prevent sending if already sent
-  
-    sentRef.current = true;  // Set the flag to true once the message is sent
-  
-    socket.emit("new-message", {
-      id: message?.id,
-      message_id: message?.message_id,
-      message: message?.message,
-      sender_id: message?.sender_id,
-      attachment: attachment && attachment.length > 0 ? attachment : [],
-      seen: false,
-      created_at: new Date().toISOString(),
-      receiver_id: receiver?.user_id,
-      conversationId,
-      date: message?.created_at,
-    });
-  }
-  
+  // Handle triggerSend for text-only messages
   useEffect(() => {
-    function HandleMessageSend() {
-      console.log("triggerSend:", triggerSend);
-      console.log("rawFiles:", rawFiles);
-      if (triggerSend && rawFiles?.length === 0) {
-        SendSocketMessage([]);  // Send socket message
-      }
+    if (triggerSend && rawFiles.length === 0) {
+      handleSendSocketMessage([]);
     }
-  
-    HandleMessageSend();
-  }, [rawFiles, triggerSend]);
+  }, [triggerSend, rawFiles, handleSendSocketMessage]);
+
+  // Bubble content with time & seen
+  const Bubble = (
+    <div className="max-w-[85%] md:max-w-[60%]">
+      <MessageBubbleContent
+        isSender={isSender}
+        SendSocketMessage={handleSendSocketMessage}
+        hasAttachments={hasAttachments}
+        hasMessage={hasMessage}
+        hasRawFiles={hasRawFiles}
+        rawFiles={rawFiles}
+        attachment={attachment}
+        message={message?.message?.trim() || ""}
+      />
+      <small
+        className={`text-xs mt-2 flex items-center dark:text-gray-200 ${
+          isSender ? "pt-1 float-right" : ""
+        }`}
+      >
+        {dateString}
+        {isSender && (
+          <span
+            className={`ml-2 h-3 w-3 rounded-3xl ${
+              seen ? "bg-primary-dark-pink" : "bg-gray-300"
+            }`}
+            aria-label={seen ? "Seen" : "Not seen"}
+          />
+        )}
+      </small>
+    </div>
+  );
 
   return (
-    <div className="flex items-center">
-      {isSender ? (
-        <div className="ml-auto max-w-[85%] md:max-w-[60%]">
-          <MessageBubbleContent
-            isSender={isSender}
-            hasAttachments={hasAttachments as boolean}
-            hasMessage={hasMessage as boolean}
-            hasRawFiles={hasRawFiles as boolean}
-            rawFiles={rawFiles}
-            attachment={attachment as Attachment[]}
-            message={message?.message.trim() as string}
-          />
-          <small className="text-xs mt-2 pt-1 float-right flex dark:text-gray-200 items-center">
-            {dateString}
-            <span
-              className={`ml-2 h-3 w-3 rounded-3xl ${
-                seen ? "bg-primary-dark-pink" : "bg-gray-300"
-              }`}
-            />
-          </small>
-        </div>
-      ) : (
-        <div className="max-w-[85%] md:max-w-[60%]">
-          <MessageBubbleContent
-            isSender={isSender}
-            hasAttachments={hasAttachments as boolean}
-            hasMessage={hasMessage as boolean}
-            hasRawFiles={hasRawFiles as boolean}
-            rawFiles={rawFiles}
-            attachment={attachment as Attachment[]}
-            message={message?.message.trim() as string}
-          />
-          <small className="text-xs mt-2 flex items-center dark:text-gray-200">
-            {dateString}
-          </small>
-        </div>
-      )}
+    <div
+      className={`flex items-center w-full ${
+        isSender ? "justify-end" : "justify-start"
+      }`}
+    >
+      {Bubble}
     </div>
   );
 };

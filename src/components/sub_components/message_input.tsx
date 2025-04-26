@@ -12,7 +12,7 @@ import {
 } from "react";
 import toast from "react-hot-toast";
 import swal from "sweetalert";
-import { useMessageContext } from "@/contexts/messages-conversation-context";
+import { useConversations } from "@/contexts/messages-conversation-context";
 import { Attachment, MessageInputProps } from "@/types/components";
 import axiosInstance from "@/utils/axios";
 import { getToken } from "@/utils/cookie.get";
@@ -54,7 +54,7 @@ const MessageInput = ({
   const { user } = useUserAuthContext();
   const ref = useRef<HTMLDivElement>(null);
   const { points } = useUserPointsContext();
-  const { conversations } = useMessageContext();
+  const { conversations } = useConversations();
   const [isTyping, setIsTyping] = useState(false);
   const typingTimeout = useRef<number | null>(null);
   const token = getToken();
@@ -76,6 +76,7 @@ const MessageInput = ({
         message: linkify(message.trim()),
         attachment: attachments,
         sender_id: user.user_id,
+        receiver_id: receiver?.user_id,
         seen: false,
         rawFiles: mediaFiles,
         triggerSend: true,
@@ -88,16 +89,16 @@ const MessageInput = ({
       }
       resetAll();
     },
-    [sendMessage, user, mediaFiles, token, resetAll]
+    [sendMessage, user, mediaFiles, resetAll, receiver?.user_id]
   );
 
-  const resetMessageInput = () => {
+  const resetMessageInput = useCallback(() => {
     setMessage("");
     if (ref.current) {
       ref.current.innerHTML = "";
       ref.current.focus();
     }
-  };
+  }, [ref, setMessage]);
 
   const handleSendMessage = useCallback(async () => {
     if (!user) return;
@@ -267,7 +268,6 @@ const MessageInput = ({
           </div>
         </div>
       </div>
-
       <UploadMediaModal />
     </>
   );

@@ -1,19 +1,57 @@
 "use client";
 import { useUserAuthContext } from "@/lib/userUseContext";
 import PostComponent from "../post/post_component";
-import React, {
-  useEffect,
-  useState,
-} from "react";
+import React, { useEffect } from "react";
 import { formatDate } from "@/utils/format-date";
 import { useInView } from "react-intersection-observer";
 import { LucideLoader } from "lucide-react";
-import PrivatePanelFetch from "../custom-hooks/private-panel-fetch";
+import { useInfiniteQuery } from "@tanstack/react-query";
+import { getToken } from "@/utils/cookie.get";
+import axios, { AxiosResponse } from "axios";
+
+async function fetchPrivatePost(pageNumber: number) {
+  const token = getToken();
+  const api = `${process.env.NEXT_PUBLIC_TS_EXPRESS_URL}/post/my-private-posts`;
+  const postPerPage = process.env.NEXT_PUBLIC_POST_PER_PAGE as string;
+  let cancel: any;
+  const response = await axios<any, AxiosResponse>(api, {
+    method: "GET",
+    params: {
+      page: pageNumber,
+      limit: postPerPage,
+    },
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    cancelToken: new axios.CancelToken((c) => (cancel = c)),
+  });
+  return response.data;
+}
 
 const PrivatePanel = () => {
   const { user } = useUserAuthContext();
-  const [page, setPage] = useState(1);
-  const { posts, loading, hasMore } = PrivatePanelFetch(page);
+  const {
+    data,
+    error,
+    isLoading,
+    hasNextPage,
+    fetchNextPage,
+    isFetchingNextPage,
+  } = useInfiniteQuery({
+    queryKey: ["private-posts"],
+    queryFn: ({ pageParam = 1 }: { pageParam?: number }) =>
+      fetchPrivatePost(Number(pageParam)),
+    getNextPageParam: (lastPage, allPages) => {
+      return lastPage?.hasMore ? allPages.length + 1 : undefined;
+    },
+    initialPageParam: 1,
+  });
+
+  // Flatten posts from all pages
+  const posts = data?.pages?.flatMap((page: any) => page.data) || [];
+  const loading = isLoading || isFetchingNextPage;
+  const hasMore = hasNextPage;
   const { ref, inView } = useInView({
     threshold: 0.5,
   });
@@ -21,17 +59,25 @@ const PrivatePanel = () => {
   useEffect(() => {
     if (loading) return;
     if (inView && hasMore) {
-      setPage((prev) => prev + 1);
+      fetchNextPage();
     }
-  }, [inView, hasMore, loading]);
+  }, [inView, hasMore, loading, fetchNextPage]);
 
   const EndMessage = () => (
     <div className="px-3 py-2">
-      <p className="text-gray-500 italic text-center font-medium">
-        No Post Found
+      <p className="text-gray-500 text-sm text-center font-medium">
+        No Private Post Found
       </p>
     </div>
   );
+
+  if (error) {
+    return (
+      <div className="px-3 py-2 text-red-500 italic text-center font-medium">
+        An error occurred while fetching posts.
+      </div>
+    );
+  }
 
   return (
     <div className="mt-3 mb-12 select-none">
@@ -61,7 +107,7 @@ const PrivatePanel = () => {
           <LucideLoader size={30} className="animate-spin" stroke="purple" />
         </div>
       )}
-      {!hasMore && <EndMessage />}
+      {!hasMore && !loading && <EndMessage />}
     </div>
   );
 };

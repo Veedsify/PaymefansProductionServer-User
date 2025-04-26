@@ -181,70 +181,87 @@ const StoryPreviewComponent = ({
   }, [resetSwiper, activeIndex, stories, PlayVideo]);
 
   return (
-    <div className={`${className}`}>
+    <div className={`relative flex flex-col items-center justify-center min-h-screen bg-black ${className}`}>
       {stories.length > 0 && (
-        <StoriesHeader
-          username={stories[activeIndex].user.username}
-          timestamp={stories[activeIndex].created_at}
-          profileImage={stories[activeIndex].user.profile_image.trimEnd()}
-        />
-      )}
-      <div className="relative">
-        {stories.length > 0 && (
-          <StoryPreviewControlls
-            type={stories[activeIndex].type}
-            moveToNextSlide={moveToNextSlide}
-            playVideoOnLoad={PlayIfVideo}
-            clickToPlay={() => PlayVideo(stories[activeIndex].type === "video")}
-            stories={stories}
-            index={activeIndex}
-            moveToPrevSlide={moveToPrevSlide}
+        <div className="w-full mx-auto z-20 absolute top-0 left-1/2 -translate-x-1/2">
+          <StoriesHeader
+            username={stories[activeIndex].user.username}
+            timestamp={stories[activeIndex].created_at}
+            profileImage={stories[activeIndex].user.profile_image.trimEnd()}
           />
+        </div>
+      )}
+      <div className="relative w-full h-screen flex items-center justify-center">
+        {stories.length > 0 && (
+          <div className="absolute z-20 w-full mx-auto left-1/2 -translate-x-1/2 top-4 pointer-events-none">
+            <StoryPreviewControlls
+              type={stories[activeIndex].type}
+              moveToNextSlide={moveToNextSlide}
+              playVideoOnLoad={PlayIfVideo}
+              clickToPlay={() => PlayVideo(stories[activeIndex].type === "video")}
+              stories={stories}
+              index={activeIndex}
+              moveToPrevSlide={moveToPrevSlide}
+            />
+          </div>
         )}
         <Swiper
           key={`stories-swiper-${activeIndex}-${stories.length}-${resetSwiper}`}
           spaceBetween={0}
           slidesPerView={1}
-          className="h-full bg-black w-full"
+          draggable={false}
           onSwiper={(swiper) => (swiperRef.current = swiper)}
+          className="w-full h-full flex items-center justify-center"
           onSlideChange={handleSlideChange}
           speed={300}
           initialSlide={activeIndex}
         >
           {stories.map((story, index) => (
             <SwiperSlide
-              className="swiper-status-class"
+              className="flex items-center justify-center w-full h-full bg-black"
               key={`${story.url}-${index}`}
             >
-              <div className="flex items-center justify-center flex-col w-full h-screen object-contain relative">
+              <div className="flex items-center justify-center w-full h-full">
                 {story.type === "image" && (
-                  <Image
-                    src={story.url}
-                    alt={story?.caption ? story.caption : ""}
-                    width={1500}
-                    height={1500}
-                    quality={100}
-                    priority={index === activeIndex}
-                    loading={index === activeIndex ? "eager" : "lazy"}
-                    // className="object-contain w-full max-h-[calc(100vh-120px)]"
-                  />
+                  <div className="relative w-full h-full flex items-center justify-center">
+                    <Image
+                      src={story.url}
+                      alt={story?.caption ? story.caption : ""}
+                      fill
+                      style={{ objectFit: "contain" }}
+                      quality={100}
+                      priority={index === activeIndex}
+                      loading={index === activeIndex ? "eager" : "lazy"}
+                      className="rounded-lg shadow-lg bg-black"
+                    />
+                  </div>
                 )}
                 {story.type === "video" && (
-                  <VideoPlayer
-                    modalOpen={false}
-                    autoPlay={index === activeIndex}
-                    allOthers={{
-                      playsInline: true,
-                      muted: false,
-                      controls: false,
-                      loop: false,
-                      preload: index === activeIndex ? "auto" : "metadata",
-                      onEnded: () => moveToNextSlide,
-                      style: { width: "100%", maxHeight: "calc(100vh - 120px)" }
-                    }}
-                    className="object-contain w-full"
-                    streamUrl={story.url}
-                  />
+                  <div className="relative w-full h-full flex items-center justify-center">
+                    <VideoPlayer
+                      modalOpen={false}
+                      autoPlay={index === activeIndex}
+                      allOthers={{
+                        playsInline: true,
+                        muted: false,
+                        controls: false,
+                        loop: false,
+                        preload: index === activeIndex ? "auto" : "metadata",
+                        onEnded: () => moveToNextSlide(),
+                        style: {
+                          width: "100%",
+                          height: "100%",
+                          maxHeight: "calc(100vh - 120px)",
+                          objectFit: "contain",
+                          background: "black",
+                          borderRadius: "0.75rem",
+                          boxShadow: "0 4px 24px rgba(0,0,0,0.7)"
+                        }
+                      }}
+                      className="w-full h-full rounded-lg shadow-lg bg-black"
+                      streamUrl={story.url}
+                    />
+                  </div>
                 )}
               </div>
             </SwiperSlide>

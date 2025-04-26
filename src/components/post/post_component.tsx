@@ -42,7 +42,7 @@ const PostComponent: React.FC<PostComponentProps> = ({
   repost_username,
   repost_id,
 }) => {
-  const imageLength = data.media.length;
+  const imageLength = data?.media?.length;
   const { fullScreenPreview } = usePostComponent();
   const { user: authUser } = useUserAuthContext();
   const isCreator = user?.id === authUser?.id;
@@ -260,7 +260,7 @@ const PostComponent: React.FC<PostComponentProps> = ({
   };
 
   return (
-    <div className=" py-6 px-2 md:px-5 duration-300">
+    <div className="px-2 py-6 duration-300  md:px-5">
       <div
         className="cursor-pointer"
         onClick={redirectToPost}
@@ -280,7 +280,7 @@ const PostComponent: React.FC<PostComponentProps> = ({
             </Link>
           </div>
         )}
-        <div className="flex items-center justify-between text-gray-500 text-sm mb-2">
+        <div className="flex items-center justify-between mb-2 text-sm text-gray-500">
           <div className="flex items-center gap-1 md:gap-3 dark:text-white">
             <Image
               width={50}
@@ -288,13 +288,13 @@ const PostComponent: React.FC<PostComponentProps> = ({
               priority
               src={user?.image.trimEnd()}
               alt=""
-              className="w-8 md:w-10 rounded-full aspect-square object-cover"
+              className="object-cover w-8 rounded-full md:w-10 aspect-square"
             />
             <Link
               href={user?.link}
               className="flex items-center gap-1 text-xs md:text-sm"
             >
-              <p className="text-black dark:text-white font-bold">
+              <p className="font-bold text-black dark:text-white">
                 {user.name}
               </p>
               {user.username}
@@ -340,7 +340,7 @@ const PostComponent: React.FC<PostComponentProps> = ({
                     {!canView ? (
                       <Image
                         src={"/site/blur.jpg"}
-                        alt={data.post}
+                        alt=""
                         width={300}
                         height={300}
                         unoptimized
@@ -396,10 +396,10 @@ const PostComponent: React.FC<PostComponentProps> = ({
                         size={40}
                         fill="#ffffff"
                         stroke="#ffffff"
-                        className="border-4 text-white rounded-full"
+                        className="text-white border-4 rounded-full"
                       />
                     </div>
-                    <p className="text-lg font-bold select-none text-white">
+                    <p className="text-lg font-bold text-white select-none">
                       {imageLength - 3} more
                     </p>
                   </Link>
@@ -407,7 +407,7 @@ const PostComponent: React.FC<PostComponentProps> = ({
               </>
               <>
                 {data.post_audience === "price" && !canView && (
-                  <div className="absolute inset-0 bg-black/20 rounded-lg overflow-hidden flex items-center justify-center z-10">
+                  <div className="absolute inset-0 z-10 flex items-center justify-center overflow-hidden rounded-lg bg-black/20">
                     <Image
                       src={media.blur ? media.blur.trimEnd() : "/site/blur.jpg"}
                       alt=""
@@ -416,9 +416,9 @@ const PostComponent: React.FC<PostComponentProps> = ({
                       className="w-full aspect-[3/4] md:aspect-square object-cover absolute inset-0"
                     />
                     <div className="lock-icon absolute inset-0 w-[85%] h-[65%] -translate-x-1/2 -translate-y-1/2 left-1/2 top-1/2 rounded-lg flex items-center justify-center dark:bg-slate-900/70 bg-slate-900/40 cursor-not-allowed">
-                      <span className="flex items-center justify-center flex-col gap-2 text-white">
+                      <span className="flex flex-col items-center justify-center gap-2 text-white">
                         {i == 0 ? (
-                          <p className="text-base font-bold text-center leading-4 flex items-center justify-center gap-2">
+                          <p className="flex items-center justify-center gap-2 text-base font-bold leading-4 text-center">
                             <Image
                               width={20}
                               height={20}
@@ -430,7 +430,7 @@ const PostComponent: React.FC<PostComponentProps> = ({
                           </p>
                         ) : (
                           <>
-                            <button className="text-white absolute text-lg font-bold">
+                            <button className="absolute text-lg font-bold text-white">
                               <LucideLock />
                             </button>
                           </>
@@ -440,7 +440,7 @@ const PostComponent: React.FC<PostComponentProps> = ({
                   </div>
                 )}
                 {data.post_audience === "subscribers" && !canView && (
-                  <div className="absolute inset-0 bg-black/20 rounded-lg overflow-hidden flex items-center justify-center z-10">
+                  <div className="absolute inset-0 z-10 flex items-center justify-center overflow-hidden rounded-lg bg-black/20">
                     <Image
                       src={media.blur ? media.blur.trimEnd() : "/site/blur.jpg"}
                       alt=""
@@ -448,7 +448,7 @@ const PostComponent: React.FC<PostComponentProps> = ({
                       height={300}
                       className="w-full aspect-[3/4] md:aspect-square object-cover absolute inset-0"
                     />
-                    <button className="text-white absolute text-lg font-bold">
+                    <button className="absolute text-lg font-bold text-white">
                       <LucideLock />
                     </button>
                   </div>
@@ -582,9 +582,9 @@ const VideoComponent: React.FC<VideoComponentProps> = ({
       {!playing && (
         <div
           onClick={playPauseVideo}
-          className="absolute inset-0 text-white bg-black/20 rounded-lg flex items-center justify-center cursor-pointer"
+          className="absolute inset-0 flex items-center justify-center text-white rounded-lg cursor-pointer bg-black/20"
         >
-          <button className="h-12 w-12 p-1 flex-shrink-0 rounded-full flex items-center justify-center bg-primary-dark-pink/30 aspect-square">
+          <button className="flex items-center justify-center flex-shrink-0 w-12 h-12 p-1 rounded-full bg-primary-dark-pink/30 aspect-square">
             <HiPlay className="text-white" size={50} />
           </button>
         </div>

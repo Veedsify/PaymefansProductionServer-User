@@ -11,7 +11,7 @@ const MediaPanelOther = ({ userdata }: { userdata: ProfileUserProps }) => {
     }
 
     return (
-        <div className="py-4">
+        <div className="">
             {/* <div className="py-3 mb-2 flex items-center gap-4">
                 <button
                     onClick={() => toggleThisSort("all")}

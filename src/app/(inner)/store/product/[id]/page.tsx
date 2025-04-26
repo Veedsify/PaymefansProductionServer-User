@@ -195,10 +195,12 @@ const ProductPreview = () => {
                 {product.sizes.map((size, index) => (
                   <Link
                     key={index}
-                    href={`?${new URLSearchParams({
-                      ...Object.fromEntries(searchParams.entries()),
-                      size: size.size.name,
-                    }).toString()}`}
+                    href={`?${String(
+                      new URLSearchParams({
+                        ...Object.fromEntries(searchParams.entries()),
+                        size: size.size.name,
+                      })
+                    )}`}
                     className={`py-2 text-center block text-sm font-medium rounded-md ${
                       selectedSize === size.size.name
                         ? "bg-primary-dark-pink text-white"
@@ -218,13 +220,15 @@ const ProductPreview = () => {
               </h3>
               <div className="flex items-center gap-4">
                 <Link
-                  href={`?${new URLSearchParams({
-                    ...Object.fromEntries(searchParams.entries()),
-                    quantity:
-                      Number(selectedQuantity) > 1
-                        ? String(Number(selectedQuantity) - 1)
-                        : "1",
-                  }).toString()}`}
+                  href={`?${String(
+                    new URLSearchParams({
+                      ...Object.fromEntries(searchParams.entries()),
+                      quantity:
+                        Number(selectedQuantity) > 1
+                          ? String(Number(selectedQuantity) - 1)
+                          : "1",
+                    })
+                  )}`}
                   // onClick={() =>
                   //   setSelectedQuantity((prev) => Math.max(prev - 1, 1))
                   // }
@@ -236,10 +240,12 @@ const ProductPreview = () => {
                   {selectedQuantity}
                 </span>
                 <Link
-                  href={`?${new URLSearchParams({
-                    ...Object.fromEntries(searchParams.entries()),
-                    quantity: String(Number(selectedQuantity) + 1),
-                  }).toString()}`}
+                  href={`?${String(
+                    new URLSearchParams({
+                      ...Object.fromEntries(searchParams.entries()),
+                      quantity: String(Number(selectedQuantity) + 1),
+                    })
+                  )}`}
                   // onClick={() => setSelectedQuantity((prev) => prev + 1)}
                   className="px-4 py-2 border border-slate-300 dark:border-slate-600 rounded-md dark:text-white"
                 >

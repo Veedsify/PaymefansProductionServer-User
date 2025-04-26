@@ -5,7 +5,7 @@ import PostComponent from "./post_component";
 import LoadingPost from "../sub_components/loading_post";
 import { useHomeFeedStore } from "@/contexts/home-feed-context";
 
-const HomePostComponent = () => {
+const   HomePostComponent = () => {
   const { loading, error, updatePage } = FetchHomeFeedPosts();
   const {posts} = useHomeFeedStore();
   const checkIfSubscriber = () => {

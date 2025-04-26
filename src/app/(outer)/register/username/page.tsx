@@ -76,7 +76,7 @@ const ChooseUserName = () => {
               },
               data: {
                 fullname: user?.name,
-                user_id: Math.floor(Math.random() * 1000000).toString(),
+                user_id: String(Math.floor(Math.random() * 1000000)),
                 username: ref.current?.value,
                 name: user?.name,
                 email: user?.email,

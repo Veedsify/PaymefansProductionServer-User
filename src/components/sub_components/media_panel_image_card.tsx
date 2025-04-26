@@ -1,6 +1,6 @@
 "use client";
-import { LucideLoader, LucideLock, LucidePlay } from "lucide-react";
-import React, { useCallback, useEffect, useState } from "react";
+import { LucideLoader, LucidePlay } from "lucide-react";
+import React, { useEffect } from "react";
 import Image from "next/image";
 import usePostComponent from "@/contexts/post-component-preview";
 import { getToken } from "@/utils/cookie.get";
@@ -9,6 +9,7 @@ import HLSVideoPlayer from "./videoplayer";
 import { LockedMediaOverlay } from "./sub/locked-media-overlay";
 import _, { set } from "lodash";
 import { useProfileMediaContext } from "@/contexts/profile-media-context";
+import { useInfiniteQuery } from "@tanstack/react-query";
 
 const getUniqueItems = (arr: MediaDataType[]) => {
   const uniqueMap = new Map();
@@ -17,23 +18,49 @@ const getUniqueItems = (arr: MediaDataType[]) => {
 };
 
 const MediaPanelImageCard = React.memo(({ sort }: { sort: string }) => {
-  const {arData, setData} = useProfileMediaContext()
-  const [sorted, setSorted] = useState<MediaDataType[]>([]);
-  const [page, setPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
+
   const { fullScreenPreview } = usePostComponent();
   const token = getToken();
-  const [hasMore, setHasMore] = useState(true);
-  const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    const sortData = (data: MediaDataType[]) => {
-      return sort === "all"
-        ? data
-        : data.filter((media) => media.media_type === sort);
-    };
-    setSorted(sortData(arData));
-  }, [arData, sort]);
+  const fetchMedia = async ({ pageParam = 1 }) => {
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_TS_EXPRESS_URL}/post/media?page=${pageParam}&limit=${process.env.NEXT_PUBLIC_POST_MEDIA_PER_PAGE}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    if (!res.ok) throw new Error("Network response was not ok");
+    return res.json();
+  };
+
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } =
+    useInfiniteQuery({  
+      queryKey: ["media"],
+      queryFn: fetchMedia,
+      getNextPageParam: (lastPage, allPages) => {
+        const loaded = allPages.flatMap((p) => p.data).length;
+        if (loaded < lastPage.total) {
+          return allPages.length + 1;
+        }
+        return undefined;
+      },
+      initialPageParam: 1,
+    });
+
+  const allMedia = React.useMemo(
+    () => (data ? data.pages.flatMap((page) => page.data) : []),
+    [data]
+  );
+
+  const sorted = React.useMemo(() => {
+    return sort === "all"
+      ? allMedia
+      : allMedia.filter((media) => media.media_type === sort);
+  }, [allMedia, sort]);
 
   const PreviewImageHandler = (
     media: string,
@@ -42,6 +69,7 @@ const MediaPanelImageCard = React.memo(({ sort }: { sort: string }) => {
     indexId: number
   ) => {
     if (!isSubscriber) return;
+
     const medias = sorted
       .filter((item) => item.media_state !== "processing")
       .map((media) => ({
@@ -58,60 +86,12 @@ const MediaPanelImageCard = React.memo(({ sort }: { sort: string }) => {
     });
   };
 
-  const fetchInitialData = useCallback(async () => {
-    setLoading(true);
-    try {
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_TS_EXPRESS_URL}/post/media?page=1&limit=${process.env.NEXT_PUBLIC_POST_MEDIA_PER_PAGE}`,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      const data = await res.json();
-      setData(data.data);
-      setTotalPages(data.total);
-      setHasMore(data.data.length < data.total);
-      setLoading(false);
-      setPage(2); // Start with the next page
-    } catch (error) {
-      console.error("Error fetching initial data:", error);
-    } finally {
-      setLoading(false);
-    }
-  }, [token, setData]);
-
-  useEffect(() => {
-    fetchInitialData();
-  }, [fetchInitialData]);
-
-  const fetchAdditionalData = async () => {
-    setLoading(true);
-    try {
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_TS_EXPRESS_URL}/post/media?page=${page}&limit=${process.env.NEXT_PUBLIC_POST_MEDIA_PER_PAGE}`,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      const data = await res.json();
-      setData(data.data);
-      setHasMore(sorted.length + data.data.length < data.total);
-      setPage((prev) => prev + 1); // Increment the page after fetching data
-      setLoading(false);
-    } catch (error) {
-      console.error("Error fetching additional data:", error);
-    } finally {
-      setLoading(false);
-    }
+  const fetchAdditionalData = () => {
+    fetchNextPage();
   };
+
+  const loading = isLoading || isFetchingNextPage;
+  const hasMore = !!hasNextPage;
 
   return (
     <>
@@ -137,12 +117,12 @@ const MediaPanelImageCard = React.memo(({ sort }: { sort: string }) => {
           </div>
         )}
         {hasMore && !loading && (
-          <button
-            className="col-span-3 px-4 py-2 rounded-lg text-sm font-bold bg-gray-200"
+            <button
+            className="col-span-3 px-6 py-2 rounded-lg text-sm font-semibold bg-purple-600 text-white hover:bg-purple-700 transition-colors shadow-md focus:outline-none focus:ring-2 focus:ring-purple-400"
             onClick={fetchAdditionalData}
-          >
+            >
             Load More
-          </button>
+            </button>
         )}
         {!hasMore && !loading && (
           <p className="col-span-3 text-gray-500 italic text-center font-medium">
@@ -194,7 +174,7 @@ const MediaPanelMediaCard = ({
             className="w-full h-[400px] cursor-pointer object-cover transition-all duration-300 ease-in-out"
             allOthers={{
               muted: true,
-              poster:media.poster,
+              poster: media.poster,
               onClick: () =>
                 PreviewImageHandler(
                   media.url,

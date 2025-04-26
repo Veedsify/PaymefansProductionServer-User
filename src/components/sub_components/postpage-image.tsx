@@ -130,7 +130,7 @@ const PostPageImage: React.FC<PostPageImageProps> = ({
     media.media_type.startsWith("video")
   ) {
     return (
-      <div className="h-full select-none shadow-md aspect-square w-full object-cover bg-black flex flex-col gap-2 items-center justify-center text-white">
+      <div className="flex flex-col items-center justify-center object-cover w-full h-full gap-2 text-white bg-black shadow-md select-none aspect-square">
         <h1>Your Media is still processing</h1>
         <small>Please wait for a few minutes</small>
       </div>
@@ -151,13 +151,13 @@ const PostPageImage: React.FC<PostPageImageProps> = ({
               autoPlay: true,
               poster: canView ? media.poster : "/site/blur.jpg",
             }}
-            className="w-full block aspect-square object-cover cursor-pointer"
+            className="w-full block aspect-[5/3] md:aspect-square object-cover cursor-pointer"
           ></HLSVideoPlayer>
           <div
             onClick={handleClick}
-            className="absolute inset-0 text-white bg-black/50 flex items-center justify-center cursor-pointer"
+            className="absolute inset-0 flex items-center justify-center text-white cursor-pointer bg-black/50"
           >
-            <button className="h-12 w-12 p-1 flex-shrink-0 rounded-full flex items-center justify-center bg-primary-dark-pink aspect-square">
+            <button className="flex items-center justify-center flex-shrink-0 w-12 h-12 p-1 rounded-full bg-primary-dark-pink aspect-square">
               <HiPlay className="text-white" size={50} />
             </button>
           </div>
@@ -178,7 +178,7 @@ const PostPageImage: React.FC<PostPageImageProps> = ({
       {media.accessible_to === "subscribers" && !canView && (
         <div
           onClick={handleMediaClick}
-          className="absolute inset-0 bg-black/20 rounded-lg overflow-hidden flex items-center justify-center z-10"
+          className="absolute inset-0 z-10 flex items-center justify-center overflow-hidden rounded-lg bg-black/20"
         >
           <Image
             src={media.blur ? media.blur.trimEnd() : "/site/blur.jpg"}
@@ -187,7 +187,7 @@ const PostPageImage: React.FC<PostPageImageProps> = ({
             height={300}
             className="w-full aspect-[3/4] md:aspect-square object-cover absolute inset-0"
           />
-          <button className="text-white absolute text-lg font-bold">
+          <button className="absolute text-lg font-bold text-white">
             <LucideLock />
           </button>
         </div>
@@ -195,7 +195,7 @@ const PostPageImage: React.FC<PostPageImageProps> = ({
       {media.accessible_to === "price" && !canView && (
         <div
             onClick={handlePriceClick}
-            className="absolute inset-0 bg-black/20 rounded-lg overflow-hidden flex items-center justify-center z-10">
+            className="absolute inset-0 z-10 flex items-center justify-center overflow-hidden rounded-lg bg-black/20">
           <Image
             src={media.blur ? media.blur.trimEnd() : "/site/blur.jpg"}
             alt=""
@@ -204,9 +204,9 @@ const PostPageImage: React.FC<PostPageImageProps> = ({
             className="w-full aspect-[3/4] md:aspect-square object-cover absolute inset-0"
           />
           <div className="lock-icon absolute inset-0 w-[85%] h-[65%] -translate-x-1/2 -translate-y-1/2 left-1/2 top-1/2 rounded-lg flex items-center justify-center dark:bg-slate-900/70 bg-slate-900/40">
-            <span className="flex items-center justify-center flex-col gap-2 text-white">
+            <span className="flex flex-col items-center justify-center gap-2 text-white">
               {indexId == 0 ? (
-                <p className="text-base font-bold text-center leading-4 flex items-center justify-center gap-2">
+                <p className="flex items-center justify-center gap-2 text-base font-bold leading-4 text-center">
                   <Image
                     width={20}
                     height={20}
@@ -218,7 +218,7 @@ const PostPageImage: React.FC<PostPageImageProps> = ({
                 </p>
               ) : (
                 <>
-                  <button className="text-white absolute text-lg font-bold">
+                  <button className="absolute text-lg font-bold text-white">
                     <LucideLock />
                   </button>
                 </>

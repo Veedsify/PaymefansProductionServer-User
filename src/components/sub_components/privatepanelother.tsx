@@ -25,7 +25,7 @@ const PrivatePanelOther = ({ userdata }: { userdata: ProfileUserProps }) => {
 
   const EndMessage = () => (
     <div className="px-3 py-2">
-      <p className="text-gray-500 italic text-center font-medium">
+      <p className="text-gray-500 text-sm text-center font-medium">
         No Post Found
       </p>
     </div>

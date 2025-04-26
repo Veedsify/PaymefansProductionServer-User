@@ -1,9 +1,9 @@
 "use client"
-import { useMessageContext } from "@/contexts/messages-conversation-context";
+import { useConversations } from "@/contexts/messages-conversation-context";
 
 const MessageCounter = () => {
      const { unreadCount } =
-       useMessageContext();
+     useConversations();
     return (
         <div className="flex items-center mb-7">
             <span className="font-bold text-xl flex-shrink-0 dark:text-white">All Your Conversations</span>

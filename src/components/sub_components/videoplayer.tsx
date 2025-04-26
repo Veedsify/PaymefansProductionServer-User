@@ -5,6 +5,7 @@ import {
   LucidePause,
   LucidePlay,
   LucideSettings,
+  LucideLoader,
 } from "lucide-react";
 import { MouseEvent, useCallback, useEffect, useRef, useState } from "react";
 import { useInView } from "react-intersection-observer";
@@ -38,6 +39,10 @@ const VideoPlayer = ({
     "auto"
   );
 
+  // New states for loading and buffering
+  const [isLoading, setIsLoading] = useState(true);
+  const [isBuffering, setIsBuffering] = useState(false);
+
   const GetResoultion = (height: number) => {
     if (height >= 2160) return "4K";
     if (height >= 1440) return "2K";
@@ -51,6 +56,8 @@ const VideoPlayer = ({
   useEffect(() => {
     const video = videoRef.current;
     if (!video) return;
+
+    setIsLoading(true);
 
     if (Hls.isSupported()) {
       const hls = new Hls();
@@ -70,19 +77,66 @@ const VideoPlayer = ({
         const quality = localStorage.getItem("selectedQuality");
         setSelectedQuality(quality ? parseInt(quality) : levels[0].index);
         setQualityLevels([...levels, { index: -1, label: "Auto" }]);
+
+        // Set loading to false once manifest is parsed
+        setIsLoading(false);
       });
 
-      hls.on(Hls.Events.ERROR, (event, data) =>
-        console.log("HLS Error:", data)
-      );
+      // Handle HLS errors
+      hls.on(Hls.Events.ERROR, (event, data) => {
+        console.log("HLS Error:", data);
+        // Could add additional error handling here
+      });
 
       return () => hls.destroy();
     } else if (video.canPlayType("application/vnd.apple.mpegurl")) {
       video.src = streamUrl;
+
+      // For native HLS playback, we need to handle loading states differently
+      video.addEventListener("loadeddata", () => {
+        setIsLoading(false);
+      });
     }
   }, [streamUrl]);
 
-  // **Fix: Autoplay logic should not conflict with manual play/pause**
+  // Handle buffering events
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+
+    const handleWaiting = () => {
+      setIsBuffering(true);
+    };
+
+    const handlePlaying = () => {
+      setIsBuffering(false);
+    };
+
+    // Initial load events
+    const handleLoadStart = () => {
+      setIsLoading(true);
+    };
+
+    const handleLoadedData = () => {
+      setIsLoading(false);
+    };
+
+    // Add event listeners
+    video.addEventListener("waiting", handleWaiting);
+    video.addEventListener("playing", handlePlaying);
+    video.addEventListener("loadstart", handleLoadStart);
+    video.addEventListener("loadeddata", handleLoadedData);
+
+    // Cleanup event listeners
+    return () => {
+      video.removeEventListener("waiting", handleWaiting);
+      video.removeEventListener("playing", handlePlaying);
+      video.removeEventListener("loadstart", handleLoadStart);
+      video.removeEventListener("loadeddata", handleLoadedData);
+    };
+  }, []);
+
+  // Autoplay logic should not conflict with manual play/pause
   useEffect(() => {
     const video = videoRef.current;
     if (!video) return;
@@ -144,7 +198,7 @@ const VideoPlayer = ({
   // Change quality
   const changeQuality = (level: number) => {
     if (hlsRef.current) {
-      localStorage.setItem("selectedQuality", level.toString());
+      localStorage.setItem("selectedQuality", String(level));
       hlsRef.current.currentLevel = level;
       setSelectedQuality(level);
     }
@@ -162,12 +216,11 @@ const VideoPlayer = ({
   };
 
   return (
-    <div className="relative mx-auto bg-black rounded-lg overflow-hidden shadow-xl">
+    <div className="w-full overflow-hidden bg-black rounded-xl">
       <div
         ref={intersectionRef}
         className="relative group"
         onClick={(e) => {
-          // Close resolution menu when clicking elsewhere
           if (showResolutionMenu) {
             setShowResolutionMenu(false);
             e.stopPropagation();
@@ -177,63 +230,89 @@ const VideoPlayer = ({
         <video
           ref={videoRef}
           {...allOthers}
-          className={`${className}`}
+          className={`w-full ${className} transition-all duration-300`}
           onTimeUpdate={handleTimeUpdate}
           onLoadedMetadata={() => setDuration(videoRef.current?.duration || 0)}
           muted
+          style={{ background: "#18181b" }}
         ></video>
+
+        {/* Loading Spinner Overlay - shown during initial loading */}
+        {(isLoading && modalOpen) && (
+          <div className="absolute inset-0 flex items-center justify-center bg-black/50">
+            <div className="flex flex-col items-center">
+              <LucideLoader className="w-10 h-10 text-pink-400 animate-spin" />
+              <p className="mt-3 text-sm font-medium text-white">
+                Loading video...
+              </p>
+            </div>
+          </div>
+        )}
+
+        {/* Buffering Indicator - shown during playback buffering */}
+        {!isLoading && isBuffering && (
+          <div className="absolute inset-0 flex items-center justify-center bg-black/30">
+            <div className="p-3 bg-black/70 rounded-full">
+              <LucideLoader className="w-8 h-8 text-gray-400 animate-spin" />
+            </div>
+          </div>
+        )}
+
         {modalOpen && (
           <>
             {/* Overlay gradient for better control visibility */}
-            <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+            <div className="absolute inset-0 transition-opacity duration-300 opacity-0 pointer-events-none bg-gradient-to-t from-black/80 via-black/30 to-transparent group-hover:opacity-100"></div>
 
             {/* Controls overlay at the bottom */}
-            <div className="absolute left-0 right-0 bottom-16 px-4 py-3 flex items-center justify-between opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+            <div className="absolute left-0 right-0 z-20 flex items-center justify-between px-6 py-4 transition-opacity duration-300 opacity-0 bottom-20 group-hover:opacity-100">
               {/* Play/Pause button */}
               <button
                 onClick={(e) => {
                   e.stopPropagation();
                   togglePlay();
                 }}
-                className="bg-black/60 hover:bg-black/80 p-2.5 rounded-full transition-all duration-200 transform hover:scale-105 aspect-square flex items-center justify-center"
+                className="flex items-center justify-center p-3 transition-all duration-200 transform border border-gray-700 rounded-full shadow-lg bg-black/70 hover:bg-black/90 hover:scale-110 aspect-square"
                 aria-label={isPlaying ? "Pause" : "Play"}
+                disabled={isLoading}
               >
                 {isPlaying ? (
-                  <LucidePause className="w-5 h-5 text-white" />
+                  <LucidePause className="w-6 h-6 text-white" />
                 ) : (
-                  <LucidePlay className="w-5 h-5 text-white ml-0.5" />
+                  <LucidePlay className="w-6 h-6 text-white ml-0.5" />
                 )}
               </button>
 
               {/* Right-side controls */}
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-3">
                 {/* Resolution toggle button */}
                 <button
                   onClick={(e) => {
                     setShowResolutionMenu(!showResolutionMenu);
                     e.stopPropagation();
                   }}
-                  className="bg-black/60 hover:bg-black/80 p-2 rounded-full transition-all duration-200 flex items-center justify-center"
+                  className="bg-black/70 hover:bg-black/90 p-2.5 rounded-full shadow-lg transition-all duration-200 flex items-center justify-center border border-gray-700"
                   aria-label="Video quality"
+                  disabled={isLoading}
                 >
-                  <LucideSettings className="w-4 h-4 text-white" />
+                  <LucideSettings className="w-5 h-5 text-white" />
                 </button>
 
                 {/* Fullscreen button */}
                 <button
                   onClick={toggleFullscreen}
-                  className="bg-black/60 hover:bg-black/80 p-2 rounded-full transition-all duration-200 flex items-center justify-center"
+                  className="bg-black/70 hover:bg-black/90 p-2.5 rounded-full shadow-lg transition-all duration-200 flex items-center justify-center border border-gray-700"
                   aria-label="Toggle fullscreen"
+                  disabled={isLoading}
                 >
-                  <LucideMaximize className="w-4 h-4 text-white" />
+                  <LucideMaximize className="w-5 h-5 text-white" />
                 </button>
               </div>
             </div>
 
             {/* Resolution menu popup */}
             {showResolutionMenu && (
-              <div className="absolute right-12 bottom-16 bg-gray-900 border border-gray-700 rounded-md py-2 px-1 shadow-lg z-10">
-                <div className="text-xs font-medium text-gray-300 px-2 pb-1 mb-1 border-b border-gray-700">
+              <div className="absolute right-16 bottom-28 bg-gray-900/95 border border-gray-700 rounded-lg py-2 px-2 shadow-2xl z-30 min-w-[120px] animate-fade-in">
+                <div className="px-2 pb-1 mb-1 text-xs font-semibold tracking-wide text-gray-300 border-b border-gray-700">
                   Resolution
                 </div>
                 {qualityLevels.map(({ index, label }) => (
@@ -243,8 +322,10 @@ const VideoPlayer = ({
                       changeQuality(index);
                       setShowResolutionMenu(false);
                     }}
-                    className={`w-full text-left px-3 py-1.5 text-xs font-medium rounded hover:bg-gray-800 transition-colors ${
-                      selectedQuality === index ? "text-blue-400" : "text-white"
+                    className={`w-full text-left px-3 py-2 text-sm font-medium rounded-md hover:bg-gray-800/80 transition-colors ${
+                      selectedQuality === index
+                        ? "text-blue-400 bg-gray-800/60"
+                        : "text-white"
                     }`}
                   >
                     {label}
@@ -257,19 +338,20 @@ const VideoPlayer = ({
       </div>
 
       {/* Controls Panel - Time and seek bar */}
-      {modalOpen && (
-        <div className="absolute flex flex-col gap-3 px-5 py-4 bg-gray-950/25 bottom-0 w-full text-white">
+      {modalOpen && !isLoading && (
+        <div className="absolute bottom-0 z-10 flex flex-col w-full gap-2 px-6 py-3 text-white bg-gradient-to-t from-black/80 via-black/40 to-transparent">
           {/* Seek Bar with custom styling */}
           <CustomSeekBar
             currentTime={currentTime}
             duration={duration}
             onSeek={(newTime) => handleSeek(newTime)}
+            isBuffering={isBuffering}
           />
 
           {/* Time display */}
-          <div className="flex text-xs font-medium text-gray-300">
+          <div className="flex justify-end text-xs font-semibold tracking-wide text-gray-200">
             <span>{formatTime(currentTime)}</span>
-            <span className="mx-1">/</span>
+            <span className="mx-1 opacity-70">/</span>
             <span>{formatTime(duration)}</span>
           </div>
         </div>
@@ -285,17 +367,19 @@ const formatTime = (seconds: number) => {
   return `${min}:${sec < 10 ? "0" : ""}${sec}`;
 };
 
-// Custom
+// Custom SeekBar component with buffering indicator
 interface SeekBarProps {
   currentTime: number;
   duration: number;
   onSeek: (time: number) => void;
+  isBuffering?: boolean;
 }
 
 const CustomSeekBar: React.FC<SeekBarProps> = ({
   currentTime,
   duration,
   onSeek,
+  isBuffering = false,
 }) => {
   const [isDragging, setIsDragging] = useState(false);
   const progressRef = useRef<HTMLDivElement | null>(null);
@@ -313,26 +397,57 @@ const CustomSeekBar: React.FC<SeekBarProps> = ({
   return (
     <div
       ref={progressRef}
-      className="relative w-full h-1 bg-gray-700 rounded-full cursor-pointer"
+      className="relative w-full h-1.5 bg-gray-800 rounded-full cursor-pointer group"
       onMouseDown={() => setIsDragging(true)}
       onClick={handleSeek}
       onMouseMove={(e) => isDragging && handleSeek(e)}
       onMouseUp={() => setIsDragging(false)}
       onMouseLeave={() => setIsDragging(false)}
+      aria-label="Seek bar"
+      tabIndex={0}
+      role="slider"
+      aria-valuenow={currentTime}
+      aria-valuemin={0}
+      aria-valuemax={duration}
     >
       {/* Progress Fill */}
       <div
-        className="absolute top-0 left-0 h-full bg-white rounded-full"
-        style={{ width: `${(currentTime / duration) * 100}%` }}
+        className={`absolute top-0 left-0 h-full transition-all duration-200 rounded-full bg-gradient-to-r from-blue-400 via-blue-300 to-blue-200 ${
+          isBuffering ? "opacity-60 animate-pulse" : "opacity-100"
+        }`}
+        style={{
+          width: `${duration ? (currentTime / duration) * 100 : 0}%`,
+          transition: "width 0.18s cubic-bezier(0.4,0,0.2,1)",
+        }}
       ></div>
 
       {/* Seek Handle */}
       <div
-        className="absolute h-4 w-4 bg-blue-500 rounded-full transform -translate-y-1/2"
+        className={`absolute w-3 h-3 bg-white border-2 border-gray-300 shadow-md rounded-full transition-transform duration-200
+      ${isDragging ? "scale-125" : "scale-100"}
+      ${isBuffering ? "animate-pulse" : ""}
+      group-hover:scale-110`}
         style={{
-          left: `${(currentTime / duration) * 100}%`,
+          left: `${duration ? (currentTime / duration) * 100 : 0}%`,
           top: "50%",
           transform: "translate(-50%, -50%)",
+          zIndex: 2,
+          boxShadow: "0 2px 8px 0 rgba(0,0,0,0.10)",
+          transition:
+            "left 0.18s cubic-bezier(0.4,0,0.2,1), transform 0.18s cubic-bezier(0.4,0,0.2,1)",
+        }}
+      ></div>
+
+      {/* Time marker (dot) */}
+      <div
+        className="absolute w-1.5 h-1.5 bg-gray-400 rounded-full"
+        style={{
+          left: `${duration ? (currentTime / duration) * 100 : 0}%`,
+          top: "50%",
+          transform: "translate(-50%, -50%)",
+          zIndex: 1,
+          opacity: 0.7,
+          transition: "left 0.18s cubic-bezier(0.4,0,0.2,1)",
         }}
       ></div>
     </div>

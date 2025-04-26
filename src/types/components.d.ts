@@ -216,6 +216,14 @@ export type RespotPanelFetchProps = {
   pageNumber: number;
   userdata?: ProfileUserProps;
 };
+// Get Cloudflare Media Uplaod Url Response
+export type UploadResponseResponse = {
+  error: boolean;
+  id: string;
+  uploadUrl: string;
+  type: string;
+  message: string;
+};
 
 // MESSAGE INPUT PROPS
 export interface Attachment {
@@ -241,7 +249,7 @@ export interface Message {
 }
 
 export interface MessageInputProps {
-  sendMessage: ({ }: Message) => void;
+  sendMessage: ({}: Message) => void;
   sendTyping: (value: string) => void;
   receiver: any;
   isFirstMessage: boolean;
@@ -260,11 +268,12 @@ type MessageBubbleContentProps = {
   message?: string;
   hasAttachments: boolean;
   hasMessage: boolean;
+  SendSocketMessage: (attachment: Attachment[]) => void;
   hasRawFiles: boolean;
-  attachment: Attachment[] | [];
+  attachment: Attachment[] | null;
   rawFiles?: MediaFile[] | [];
   isSender: boolean;
-}
+};
 
 // MESSAGE BUBBLE PROPS
 type MessageBubbleProps = {
@@ -312,11 +321,11 @@ export interface MessagesConversationContextValue {
 
 type OwnerOption =
   | {
-    name: string;
-    icon: React.ReactNode;
-    func?: (e: React.MouseEvent<HTMLButtonElement>) => void;
-    link?: undefined;
-  }
+      name: string;
+      icon: React.ReactNode;
+      func?: (e: React.MouseEvent<HTMLButtonElement>) => void;
+      link?: undefined;
+    }
   | { name: string; icon: React.ReactNode; func?: undefined; link?: URL };
 
 export interface PostAudienceDataProps {
@@ -596,17 +605,17 @@ type StoreProduct = {
 
 type StoreAllProductsResponse =
   | {
-    error: boolean;
-    message: string;
-    totalProducts: number;
-    hasMore: boolean;
-    data: StoreProduct[];
-  }
+      error: boolean;
+      message: string;
+      totalProducts: number;
+      hasMore: boolean;
+      data: StoreProduct[];
+    }
   | {
-    error: boolean;
-    message: string;
-    data: null;
-  };
+      error: boolean;
+      message: string;
+      data: null;
+    };
 
 export type Product = {
   id: number;

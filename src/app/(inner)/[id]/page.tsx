@@ -33,7 +33,7 @@ function formatNumber(number: any): string {
   } else if (number >= 1000) {
     return (number / 1000).toFixed(1) + "K";
   } else {
-    return number.toString();
+    return Number(number).toLocaleString();
   }
 }
 

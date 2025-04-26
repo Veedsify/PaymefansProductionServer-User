@@ -86,9 +86,9 @@ export const PostCompInteractions = ({ data }: PostCompInteractionsProps) => {
 
   return (
     <>
-      <div className="flex mt-6 justify-around text-sm w-full dark:text-gray-300 py-6 dark:border-slate-700 border-b border-black/20">
+      <div className="flex justify-around w-full py-6 mt-6 text-sm border-b dark:text-gray-300 dark:border-slate-700 border-black/20">
         <span
-          className="flex items-center gap-1 text-sm cursor-pointer font-medium"
+          className="flex items-center gap-1 text-sm font-medium cursor-pointer"
           onClick={handleLikePost}
         >
           <LucideHeart
@@ -98,13 +98,13 @@ export const PostCompInteractions = ({ data }: PostCompInteractionsProps) => {
           />
           {formattedNumber(likesCount)}
         </span>
-        <span className="flex items-center gap-1 text-sm cursor-pointer font-medium">
+        <span className="flex items-center gap-1 text-sm font-medium cursor-pointer">
           <LucideMessageSquare size={25} />
           {data?.post_comments}
         </span>
         <span
           onClick={RepostThisPost}
-          className="flex items-center gap-1 text-sm cursor-pointer font-medium"
+          className="flex items-center gap-1 text-sm font-medium cursor-pointer"
         >
           <LucideRepeat2 size={25} />
           {data?.post_reposts}
@@ -112,14 +112,14 @@ export const PostCompInteractions = ({ data }: PostCompInteractionsProps) => {
         {data && data.post_audience !== "private" && data.user?.is_model && (
           <Link
             href={`/posts/points/${data.post_id}/`}
-            className="flex items-center gap-1 text-sm cursor-pointer font-medium"
+            className="flex items-center gap-1 text-sm font-medium cursor-pointer"
           >
             <PiCurrencyDollarSimple size={25} />
           </Link>
         )}
         <span
           onClick={() => setIsShareModalOpen(true)}
-          className="flex items-center gap-1 text-sm cursor-pointer font-medium"
+          className="flex items-center gap-1 text-sm font-medium cursor-pointer"
         >
           <BarChart size={23} />
           {formatNumber(data?.post_impressions as number)}

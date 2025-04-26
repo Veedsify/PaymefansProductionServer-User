@@ -72,17 +72,17 @@ export default async function RootLayout({
                     },
                   }}
                 />
-                <div className="relative grid lg:grid-cols-9 h-screen">
+                <div className="relative grid h-screen lg:grid-cols-9">
                   <MessagesConversationProvider>
                     <ToggleWishListProvider>
                       <div className="col-span-2">
                         <SideBar />
                       </div>
-                      <div className="col-span-7 overflow-auto border-black/30 border-r h-screen relative">
+                      <div className="relative h-screen col-span-7 overflow-auto border-r border-pink-50">
                         <Header />
-                        <div className="grid lg:grid-cols-7 pt-[73px] lg:pt-[54px] h-screen">
-                          <div className="col-span-4 flex flex-col h-full">
-                            <div className="w-full md:border-r border-black/30 dark:border-slate-800 h-full">
+                        <div className="grid lg:grid-cols-7 pt-[73px] lg:pt-[48px] h-screen">
+                          <div className="flex flex-col h-full col-span-4">
+                            <div className="w-full h-full md:border-r border-primary-dark-pink/40 dark:border-slate-800">
                               {children}
                             </div>
                           </div>

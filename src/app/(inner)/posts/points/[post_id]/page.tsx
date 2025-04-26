@@ -11,7 +11,7 @@ import { cookies } from "next/headers";
 import axios from "axios";
 import { redirect } from "next/navigation";
 import getUserData from "@/utils/data/user-data";
-import {getPost} from "@/utils/data/getpost";
+import { getPost } from "@/utils/data/getpost";
 
 type Points = {
   points: number;
@@ -51,20 +51,20 @@ async function Page({ params }: { params: params }) {
   return (
     <div>
       <div className="p-4 md:p-8">
-        <div className="flex items-center justify-between dark:text-white text-gray-500 text-sm mb-2">
+        <div className="flex items-center justify-between mb-2 text-sm text-gray-500 dark:text-white">
           <div className="flex items-center gap-3">
             <Image
               width={40}
               height={40}
               src={post.user.profile_image}
               alt=""
-              className="w-8 md:w-10 rounded-full aspect-square object-cover"
+              className="object-cover w-8 rounded-full md:w-10 aspect-square"
             />
             <Link
               href={`/${[post?.user.username]}`}
               className="flex items-center gap-1"
             >
-              <p className="dark:text-white text-black font-bold">
+              <p className="font-bold text-black dark:text-white">
                 {post?.user.name}
               </p>
               {post?.user.username}
@@ -92,7 +92,7 @@ async function Page({ params }: { params: params }) {
           />
         </div>
         <div
-          className="text-sm font-medium py-2 leading-loose dark:text-white text-gray-700"
+          className="py-2 text-sm font-medium leading-loose text-gray-700 dark:text-white"
           dangerouslySetInnerHTML={content}
         ></div>
         <div
@@ -112,17 +112,22 @@ async function Page({ params }: { params: params }) {
         </div>
       </div>
       <div className={"pt-6 p-4 md:p-8"}>
-        <h2 className="text-2xl md:text-3xl font-extrabold text-gray-800 mb-2">
+        <h2 className="mb-2 text-2xl font-extrabold text-gray-800 md:text-3xl">
           Show Some Love ❤️
         </h2>
-        <p className="text-gray-600 text-lg">
+        <p className="text-lg text-gray-600">
           Support your favorite creator by sending them coins!
         </p>
       </div>
       <div className="p-4 md:p-8 dark:text-white">
-        <div className="grid grid-cols-3 gap-3 md:gap-6 mb-20 md:mb-0">
+        <div className="grid grid-cols-3 gap-3 mb-20 md:gap-6 md:mb-0">
           {points.map((point, index) => (
-            <PointsBuy key={index} point={point} postId={postId} />
+            <PointsBuy
+              key={index}
+              {...point}
+              postId={postId}
+              userId={post.user?.id}
+            />
           ))}
         </div>
       </div>

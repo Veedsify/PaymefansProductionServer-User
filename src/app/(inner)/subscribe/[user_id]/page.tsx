@@ -139,9 +139,7 @@ const Subscribe = () => {
         <p className="text-gray-500 mb-8 leading-loose">
           Subscribe to {profileUser?.name} to get access to{" "}
           {profileUser?.Model?.gender == "female" ? "her" : "his"} exclusive
-          content,
-          <br />
-          and get notified when he goes live.
+          content and special updates.
         </p>
         {!profileUser?.ModelSubscriptionPack?.ModelSubscriptionTier?.length && (
           <div className="max-w-md mx-auto border-2 border-dashed border-gray-300 p-10 rounded-2xl bg-gray-50/50 text-center select-none hover:border-gray-400 transition-colors duration-300">
@@ -165,7 +163,7 @@ const Subscribe = () => {
               No Subscription Plans
             </h3>
             <p className="text-gray-600 leading-relaxed">
-              This creator hasn't set up any subscription plans yet. Check back
+              This creator hasn&apos;t set up any subscription plans yet. Check back
               later for updates.
             </p>
           </div>

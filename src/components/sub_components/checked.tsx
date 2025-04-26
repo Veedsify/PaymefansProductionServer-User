@@ -22,15 +22,15 @@ const Toggle = ({ state, set }: { state?: boolean, set?: (value: boolean) => voi
                 type="checkbox"
                 checked={isChecked}
                 onChange={toggleSwitch}
-                id={newId.toString()}
+                id={String(newId)}
                 className="hidden"
             />
             <label
-                htmlFor={newId.toString()}
+                htmlFor={String(newId)}
                 className="flex items-center cursor-pointer duration-300"
             >
                 <div className="relative">
-                    <div className={`w-12 h-7 flex items-center outline outline-[1px] outline-gray-200 rounded-full shadow-inner dark:outline-slate-800 ${isChecked
+                    <div className={`w-12 h-7 flex items-center outline outline-gray-200 rounded-full shadow-inner dark:outline-slate-800 ${isChecked
                         ? "bg-primary-dark-pink"
                         : ""
                         } transition-transform duration-300`}>

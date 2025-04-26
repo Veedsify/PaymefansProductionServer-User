@@ -18,7 +18,7 @@ import { getToken } from "@/utils/cookie.get";
 import { PROFILE_CONFIG } from "@/config/config";
 import ROUTE from "@/config/routes";
 import { BannerModalProps } from "@/types/components";
-import {countries} from "@/lib/locations";
+import { countries } from "@/lib/locations";
 
 const EditProfileButton = ({ user }: { user: any }) => {
   const [open, setOpen] = useState(false);
@@ -27,7 +27,7 @@ const EditProfileButton = ({ user }: { user: any }) => {
     <div>
       <button
         onClick={() => setOpen(!open)}
-        className="sm:px-4 py-1 px-2 text-sm font-semibold text-white dark:bg-primary-dark-pink bg-black border border-black rounded text-color"
+        className="px-2 py-1 text-sm font-semibold text-white bg-black border border-black rounded sm:px-4 dark:bg-primary-dark-pink text-color"
       >
         Edit Profile
       </button>
@@ -44,7 +44,9 @@ function BannerModal({ user, open = false, setOpen }: BannerModalProps) {
   const router = useRouter();
 
   const handleInputChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >
   ) => {
     setUserData({ ...userData, [e.target.name]: e.target.value });
   };
@@ -109,169 +111,157 @@ function BannerModal({ user, open = false, setOpen }: BannerModalProps) {
   return (
     <div
       onClick={() => setOpen(false)}
-      className={`fixed inset-0 w-full h-full  bg-white dark:bg-slate-950 z-50 flex items-center justify-center transition-all duration-300 ${
+      className={`fixed inset-0 w-full h-full bg-black/40 dark:bg-black/70 z-50 flex items-center justify-center transition-all duration-300 ${
         open
           ? "opacity-100 pointer-events-auto"
           : "pointer-events-none opacity-0"
       }`}
     >
-      <span
-        className="absolute top-5 right-5 cursor-pointer"
-        onClick={() => setOpen(false)}
-      >
-        <X />
-      </span>
       <div
-        className="bg-white dark:bg-slate-900 md:max-w-7xl p-5 h-full md:min-w-[550px] w-full overflow-y-auto"
+        className="relative bg-white dark:bg-slate-900 md:max-w-2xl w-full md:h-auto h-full rounded-none md:rounded shadow-2xl p-6 md:p-8 max-h-[100vh] overflow-y-auto"
         onClick={(e) => e.stopPropagation()}
       >
-        <h1 className="font-bold text-lg md:text-xl mb-5 dark:text-white">
+        <button
+          className="absolute text-gray-500 transition-colors top-4 right-4 hover:text-primary-dark-pink"
+          onClick={() => setOpen(false)}
+          aria-label="Close"
+          type="button"
+        >
+          <X size={28} />
+        </button>
+        <h1 className="mb-6 text-2xl font-bold text-center dark:text-white">
           Edit Profile
         </h1>
-        <div className="mb-3 rounded-xl overflow-hidden">
+        <div className="flex justify-center mb-5 overflow-hidden rounded-xl">
           <BannerComponent
             profile_banner={user ? user.profile_banner : "/site/banner.png"}
           />
         </div>
-        <label htmlFor="imageUpload">
-          <div className="relative border-[3px] border-black/50 mb-3 inline-block p-2 rounded-full border-dotted group">
-            <Image
-              src={
-                file
-                  ? URL.createObjectURL(file)
-                  : user?.profile_image || "/site/avatar.png"
-              }
-              alt=""
-              width={100}
-              priority
-              height={100}
-              className="object-cover w-20 h-20 rounded-full lg:w-24 lg:h-24 aspect-square "
-            />
-            <div className="absolute inset-0 bg-black/30 flex items-center justify-center rounded-full cursor-pointer transition-all duration-200">
-              <LucideCamera size={20} className="text-white" />
+        <div className="flex flex-col items-center mb-6">
+          <label
+            htmlFor="imageUpload"
+            className="relative cursor-pointer group"
+          >
+            <div className="relative inline-block p-1 mb-2 overflow-hidden transition-all border-4 border-dotted rounded-full border-primary-dark-pink/40 dark:border-slate-700 group-hover:border-primary-dark-pink">
+              <Image
+                src={
+                  file
+                    ? URL.createObjectURL(file)
+                    : user?.profile_image || "/site/avatar.png"
+                }
+                alt=""
+                width={96}
+                height={96}
+                className="object-cover w-24 h-24 rounded-full aspect-square"
+                priority
+              />
+              <div className="absolute inset-0 flex items-center justify-center transition-opacity rounded-full opacity-15 bg-black/30 group-hover:opacity-100">
+                <LucideCamera size={22} className="text-white" />
+              </div>
             </div>
-          </div>
-        </label>
-        <input
-          onChange={handleFileChange}
-          type="file"
-          id="imageUpload"
-          className="hidden"
-        />
-
-        {/* <form onSubmit={(e) => e.preventDefault()} action=""> */}
-        <div>
+          </label>
+          <input
+            onChange={handleFileChange}
+            type="file"
+            id="imageUpload"
+            className="hidden"
+          />
+        </div>
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            handleSaveClick();
+          }}
+          className="space-y-4"
+        >
           <input
             type="text"
             onChange={handleInputChange}
             name="name"
             defaultValue={user?.name}
-            className="w-full block border mb-3 dark:text-white dark:bg-slate-900 dark:border-slate-700 border-gray-300 p-4 outline-none text-black rounded-xl"
-            placeholder="Name "
+            className="w-full p-3 text-black border border-gray-300 rounded-lg outline-none dark:text-white dark:bg-slate-900 dark:border-slate-700 focus:ring-2 focus:ring-primary-dark-pink"
+            placeholder="Name"
           />
-        </div>
-        <div>
           <select
-              name="location"
-              className="w-full block border mb-3 border-gray-300 p-4 outline-none text-black rounded-xl"
-              defaultValue={user?.location}
-              onChange={handleInputChange}
+            name="location"
+            className="w-full p-3 text-black border border-gray-300 rounded-lg outline-none dark:text-white dark:bg-slate-900 dark:border-slate-700 focus:ring-2 focus:ring-primary-dark-pink"
+            defaultValue={user?.location}
+            onChange={handleInputChange}
           >
             {countries.map((location) => (
-                <option
-                    value={location.name}
-                    key={location.code}
-                >
-                  {location.name}
-                </option>
+              <option value={location.name} key={location.code}>
+                {location.name}
+              </option>
             ))}
           </select>
-        </div>
-        <div>
           <input
             type="email"
             defaultValue={user?.email ? user?.email : ""}
-            className="w-full hidden border mb-3 dark:text-white dark:bg-slate-900 dark:border-slate-700 border-gray-300 p-4 outline-none text-black rounded-xl select-none cursor-none"
+            className="hidden w-full p-3 mb-3 text-black border border-gray-300 rounded-lg outline-none select-none dark:text-white dark:bg-slate-900 dark:border-slate-700 cursor-none"
             name="email"
             readOnly
             onChange={handleInputChange}
-            placeholder="Email "
+            placeholder="Email"
           />
-        </div>
-        <div>
           <textarea
             name="bio"
-            id=""
-            rows={6}
+            rows={4}
             onChange={handleInputChange}
-            className="resize-none w-full block outline-none border mb-3 border-gray-300 dark:text-white dark:bg-slate-900 dark:border-slate-700 p-4 text-black rounded-xl"
+            className="w-full p-3 text-black border border-gray-300 rounded-lg outline-none resize-none dark:text-white dark:bg-slate-900 dark:border-slate-700 focus:ring-2 focus:ring-primary-dark-pink"
             placeholder="Bio"
             defaultValue={user?.bio ? user?.bio : ""}
           ></textarea>
-        </div>
-        <div>
           <input
             type="text"
             onChange={handleInputChange}
             name="website"
             defaultValue={user?.website ? user?.website : ""}
-            className="w-full block border mb-5 border-gray-300 p-4 outline-none text-black rounded-xl dark:text-white dark:bg-slate-900 dark:border-slate-700"
+            className="w-full p-3 text-black border border-gray-300 rounded-lg outline-none dark:text-white dark:bg-slate-900 dark:border-slate-700 focus:ring-2 focus:ring-primary-dark-pink"
             placeholder="Website"
           />
-        </div>
-        <div className="grid grid-cols-12 border border-black/20 rounded-xl items-center justify-center mb-5 overflow-hidden dark:border-slate-600">
-          <div
-            className="flex items-center justify-center col-span-2 bg-gray-100 dark:bg-black dark:text-white h-full
-                    "
-          >
-            <Instagram />
+          <div className="grid items-center grid-cols-12 mb-2 overflow-hidden border rounded-lg border-black/10 dark:border-slate-700 bg-gray-50 dark:bg-slate-800">
+            <div className="flex items-center justify-center h-full col-span-2 py-2 text-primary-dark-pink dark:text-white">
+              <Instagram />
+            </div>
+            <input
+              type="text"
+              onChange={handleInputChange}
+              name="instagram"
+              className="col-span-10 p-2 text-black bg-transparent border-none outline-none dark:text-white"
+              placeholder="https://instagram.com/@paymefans"
+            />
           </div>
-          <input
-            type="text"
-            onChange={handleInputChange}
-            name="instagram"
-            className="w-full block border-gray-300 dark:text-white dark:bg-slate-900 dark:border-slate-700 p-4 outline-none text-black  col-span-10"
-            placeholder="https://instagram.com/@paymefans"
-          />
-        </div>
-        <div className="grid grid-cols-12 border border-black/20 rounded-xl items-center justify-center mb-5 overflow-hidden dark:border-slate-600">
-          <div
-            className="flex items-center justify-center col-span-2 bg-gray-100 dark:bg-black dark:text-white h-full
-                    "
-          >
-            <Twitter />
+          <div className="grid items-center grid-cols-12 mb-2 overflow-hidden border rounded-lg border-black/10 dark:border-slate-700 bg-gray-50 dark:bg-slate-800">
+            <div className="flex items-center justify-center h-full col-span-2 py-2 text-primary-dark-pink dark:text-white">
+              <Twitter />
+            </div>
+            <input
+              type="text"
+              onChange={handleInputChange}
+              name="twitter"
+              className="col-span-10 p-2 text-black bg-transparent border-none outline-none dark:text-white"
+              placeholder="https://twitter.com/@paymefans"
+            />
           </div>
-          <input
-            type="text"
-            onChange={handleInputChange}
-            name="twitter"
-            className="w-full block border-gray-200 dark:text-white dark:bg-slate-900 dark:border-slate-700 p-4 outline-none text-black  col-span-10"
-            placeholder="https://twitter.com/@paymefans"
-          />
-        </div>
-        <div className="grid grid-cols-12 border border-black/20 rounded-xl items-center justify-center mb-5 overflow-hidden dark:border-slate-600">
-          <div
-            className="flex items-center justify-center col-span-2 bg-gray-100 dark:bg-black dark:text-white h-full
-                    "
-          >
-            <Facebook />
+          <div className="grid items-center grid-cols-12 mb-4 overflow-hidden border rounded-lg border-black/10 dark:border-slate-700 bg-gray-50 dark:bg-slate-800">
+            <div className="flex items-center justify-center h-full col-span-2 py-2 text-primary-dark-pink dark:text-white">
+              <Facebook />
+            </div>
+            <input
+              type="text"
+              onChange={handleInputChange}
+              name="facebook"
+              className="col-span-10 p-2 text-black bg-transparent border-none outline-none dark:text-white"
+              placeholder="https://facebook.com/@paymefans"
+            />
           </div>
-          <input
-            type="text"
-            onChange={handleInputChange}
-            name="facebook"
-            className="w-full block border-gray-300 dark:text-white dark:bg-slate-900 dark:border-slate-700 p-4 outline-none text-black  col-span-10"
-            placeholder="https://facebook.com/@paymefans"
-          />
-        </div>
-        <div>
-          <input
+          <button
             type="submit"
-            onClick={handleSaveClick}
-            defaultValue={"Save"}
-            className="w-full block border mb-3 dark:text-white dark:bg-slate-900 dark:border-slate-700 bg-primary-dark-pink p-4 outline-none text-white rounded-xl cursor-pointer"
-          />
-        </div>
+            className="w-full py-3 font-semibold text-white transition-colors rounded-lg shadow bg-primary-dark-pink hover:bg-pink-700 focus:outline-none focus:ring-2 focus:ring-primary-dark-pink"
+          >
+            Save
+          </button>
+        </form>
       </div>
     </div>
   );
