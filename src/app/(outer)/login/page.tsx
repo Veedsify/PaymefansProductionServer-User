@@ -81,13 +81,21 @@ const Login = () => {
       <div className="lg:grid grid-cols-2 items-start justify-center mx-auto">
         <div className="min-h-screen hidden lg:block relative">
           <Image
-            width={1200}
-            height={1200}
+            width={720}
+            height={720}
             priority
             src="/images/auth_image.jpeg"
             alt="Login Image"
             className="h-full absolute object-cover inset-0 w-full "
           />
+            <div
+              style={{
+                position: "absolute",
+                inset: 0,
+                background: "linear-gradient(to right, transparent 70%, rgba(0,0,0,9) 100%)",
+                pointerEvents: "none"
+              }}
+            ></div>
         </div>
         <div className="h-full lg:p-14 2xl:p-28">
           <div className="max-w-screen-xl pt-12 mx-auto mb-24 md:mt-16">

@@ -1,8 +1,10 @@
 "use client"
-import { getToken } from "@/utils/cookie.get";
-import { LucideLoader, LucideTrash, LucideTrash2 } from "lucide-react";
-import React, { useEffect, useState } from "react";
+import {getToken} from "@/utils/cookie.get";
+import {LucideLoader, LucideTrash2} from "lucide-react";
+import React, {useEffect, useState, useCallback} from "react";
 import swal from "sweetalert";
+import {acceptedBankCountries} from "@/utils/data/accepted-bank-countries";
+import CountrySelector from "@/components/sub_components/country-selector";
 
 interface BankData {
     slug: string
@@ -16,7 +18,13 @@ const WalletAddBank = () => {
     let [name, setName] = useState<string>("")
     let [accountNumber, setAccountNumber] = useState<string>("")
     let [selectedBank, setSelectedBank] = useState<string>("")
+    let [bankType, setBankType] = useState<string>("")
+    let [selectCountry, setSelectCountry] = useState<string>("")
     const token = getToken()
+
+    const SelectCountry = useCallback((name: string) => {
+        setSelectCountry(name)
+    }, [])
 
     useEffect(() => {
         const validateBannk = (accountNumber: string, selectedBank: string) => {
@@ -47,7 +55,6 @@ const WalletAddBank = () => {
         validateBannk(accountNumber, selectedBank)
     }, [accountNumber, selectedBank])
 
-
     useEffect(() => {
         const getBanks = async () => {
             const res = await fetch("https://api.paystack.co/bank", {
@@ -74,7 +81,6 @@ const WalletAddBank = () => {
         }
 
         try {
-
             const res = await fetch(`${process.env.NEXT_PUBLIC_TS_EXPRESS_URL}/wallet/banks/add`, {
                 method: "PUT",
                 headers: {
@@ -102,6 +108,22 @@ const WalletAddBank = () => {
         }
     }
 
+    // ---- FIX: conditional render, not conditional return ----
+    if (!selectCountry || selectCountry === "") {
+        return (
+            <div className={"flex items-center justify-center p-4 md:p-8 flex-col"}>
+              <h1 className={"md:text-2xl font-semibold leading-tight mb-4"}>
+                  Select a country
+              </h1>
+                <CountrySelector
+                    acceptedBankCountries={acceptedBankCountries}
+                    onCountryChange={SelectCountry}
+                    defaultCountry={"ke"}
+                />
+            </div>
+        )
+    }
+
     return (
         <div className="p-4 py-8">
             <div className="flex items-center mb-7 lg:hidden">
@@ -109,12 +131,12 @@ const WalletAddBank = () => {
             </div>
             <div>
                 <input type="text" placeholder="Account Number"
-                    onChange={(e) => setAccountNumber(e.target.value)}
-                    className="border p-4 mt-4 w-full rounded-lg pl-5 outline-none" maxLength={10} />
+                       onChange={(e) => setAccountNumber(e.target.value)}
+                       className="border p-4 mt-4 w-full rounded-lg pl-5 outline-none" maxLength={10}/>
                 <select
                     onChange={(e) => setSelectedBank(e.target.value)}
                     defaultValue="1"
-                    className="border p-4 mt-4 w-full rounded-lg pl-5 outline-none text-black cursor-pointer" >
+                    className="border p-4 mt-4 w-full rounded-lg pl-5 outline-none text-black cursor-pointer">
                     <option label="Select Bank" value={1} disabled></option>
                     {
                         banks.map((bank, index) => {
@@ -125,7 +147,7 @@ const WalletAddBank = () => {
                     }
                 </select>
                 <div className="flex items-center gap-2 mt-3">
-                    {loading && <LucideLoader className="animate-spin" />}
+                    {loading && <LucideLoader className="animate-spin"/>}
                     {(name && !loading) && <span className="font-bold pl-3">{name}</span>}
                 </div>
                 <div className="py-5">
@@ -139,7 +161,7 @@ const WalletAddBank = () => {
                 </div>
             </div>
             {/* SAVED BANKS */}
-            <SavedBanks />
+            <SavedBanks/>
         </div>
     );
 }
@@ -149,6 +171,7 @@ interface MyBanks {
     account_number: string
     account_name: string
 }
+
 const SavedBanks = () => {
     const [banks, setBanks] = useState<MyBanks[]>([])
     useEffect(() => {
@@ -173,7 +196,7 @@ const SavedBanks = () => {
                     "Content-Type": "application/json",
                     "Authorization": `Bearer ${getToken()}` || ""
                 },
-                body: JSON.stringify({ accountNumber })
+                body: JSON.stringify({accountNumber})
             })
         }
 
@@ -206,36 +229,36 @@ const SavedBanks = () => {
             <h2 className="font-bold text-xl mb-3 mt-6">Saved Bank Accounts</h2>
             <table className="w-full table-auto" border={1}>
                 <thead>
-                    <tr>
-                        <th className="text-left border p-2">S/N</th>
-                        <th className="text-left border p-2">Bank</th>
-                        <th className="text-left border p-2">Account Number</th>
-                        <th className="text-left border p-2">Account Name</th>
-                        <th className="text-left border p-2">
-                            <span className="hidden lg:block">Actions</span>
-                        </th>
-                    </tr>
+                <tr>
+                    <th className="text-left border p-2">S/N</th>
+                    <th className="text-left border p-2">Bank</th>
+                    <th className="text-left border p-2">Account Number</th>
+                    <th className="text-left border p-2">Account Name</th>
+                    <th className="text-left border p-2">
+                        <span className="hidden lg:block">Actions</span>
+                    </th>
+                </tr>
                 </thead>
                 <tbody>
-                    {banks.map((bank, index) => (
-                        <tr key={index}>
-                            <td className="border p-2">{index + 1}</td>
-                            <td className="border p-2">{bank.bank_name}</td>
-                            <td className="border p-2">{bank.account_number}</td>
-                            <td className="border p-2">{bank.account_name}</td>
-                            <td className="border p-2">
-                                <button
-                                    onClick={deleteAccount(bank.account_number)}
-                                    className="bg-red-500 p-2 rounded">
-                                    <LucideTrash2 size={20} stroke="#fff" />
-                                </button>
-                            </td>
-                        </tr>
-                    ))}
+                {banks.map((bank, index) => (
+                    <tr key={index}>
+                        <td className="border p-2">{index + 1}</td>
+                        <td className="border p-2">{bank.bank_name}</td>
+                        <td className="border p-2">{bank.account_number}</td>
+                        <td className="border p-2">{bank.account_name}</td>
+                        <td className="border p-2">
+                            <button
+                                onClick={deleteAccount(bank.account_number)}
+                                className="bg-red-500 p-2 rounded">
+                                <LucideTrash2 size={20} stroke="#fff"/>
+                            </button>
+                        </td>
+                    </tr>
+                ))}
                 </tbody>
             </table>
         </div>
-    ) : (<React.Fragment >
+    ) : (<React.Fragment>
     </React.Fragment>)
 }
 
