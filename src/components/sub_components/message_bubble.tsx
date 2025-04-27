@@ -82,7 +82,7 @@ const MessageBubble: React.FC<MessageBubbleProps> = ({
     <div className="max-w-[85%] md:max-w-[60%]">
       <MessageBubbleContent
         isSender={isSender}
-        SendSocketMessage={handleSendSocketMessage}
+      SendSocketMessage={handleSendSocketMessage}
         hasAttachments={hasAttachments}
         hasMessage={hasMessage}
         hasRawFiles={hasRawFiles}
