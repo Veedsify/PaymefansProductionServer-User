@@ -1,5 +1,4 @@
 import HomePostComponent from "@/components/post/home-post-component";
-import PostComponent from "@/components/post/post_component";
 import StatusComponent from "@/components/story/status";
 import { Metadata } from "next";
 
