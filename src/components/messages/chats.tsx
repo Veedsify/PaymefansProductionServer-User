@@ -318,7 +318,7 @@ const Chats: React.FC<ChatProps> = React.memo(
           {allMessages.map((message, index) => (
             <div
               ref={index === allMessages.length - 1 ? scrollRef : null}
-              key={index} // Use `id` for optimistic messages
+              key={message.id} // Use `id` for optimistic messages
               className="message-bubble"
               id={String(message.message_id || message.id)}
             >

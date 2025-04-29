@@ -17,6 +17,7 @@ interface BankData {
 }
 
 const WalletAddBank = () => {
+  let [walletType, setWalletType] = useState<"bank" | "crypto" | null>();
   let [banks, setBanks] = useState<BankData[]>([]);
   let [loading, setLoading] = useState<boolean>(false);
   let [name, setName] = useState<string>("");
@@ -267,6 +268,7 @@ const WalletAddBank = () => {
 };
 
 interface MyBanks {
+  id: number;
   bank_name: string;
   account_number: string;
   bank_country: string;
@@ -293,7 +295,7 @@ const SavedBanks = () => {
     getBanks();
   }, []);
 
-  const deleteAccount = (accountNumber: string) => async () => {
+  const deleteAccount = (accountId: number) => async () => {
     async function deleteBank() {
       return await fetch(
         `${process.env.NEXT_PUBLIC_TS_EXPRESS_URL}/wallet/banks/delete`,
@@ -303,7 +305,7 @@ const SavedBanks = () => {
             "Content-Type": "application/json",
             Authorization: `Bearer ${getToken()}` || "",
           },
-          body: JSON.stringify({ accountNumber }),
+          body: JSON.stringify({ accountId }),
         }
       );
     }
@@ -385,7 +387,7 @@ const SavedBanks = () => {
                 </td>
                 <td className="whitespace-nowrap px-4 py-3 text-sm">
                   <button
-                    onClick={deleteAccount(bank.account_number)}
+                    onClick={deleteAccount(bank.id)}
                     className="inline-flex items-center rounded-md bg-red-50 px-2 py-1 text-red-700 hover:bg-red-100 transition-colors"
                   >
                     <LucideTrash2 size={18} className="mr-1" />
