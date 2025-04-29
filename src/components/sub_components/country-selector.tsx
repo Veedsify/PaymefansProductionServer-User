@@ -32,12 +32,12 @@ const CountrySelector = ({
   // Filter countries based on search term
   const filteredCountries = searchTerm
     ? acceptedBankCountries.filter((country) =>
-        country.name.toLowerCase().includes(searchTerm.toLowerCase())
-      )
+      country.name.toLowerCase().includes(searchTerm.toLowerCase())
+    )
     : acceptedBankCountries;
 
   // Handle selection
-  const handleSelect = (countryIso: string, bankType: string) => {
+  const handleSelect = (countryIso: keyof typeof acceptedBankTypes, bankType: string) => {
     if (countryIso !== selectedCountry) {
       setSelectedCountry(countryIso);
       if (onCountryChange) onCountryChange(countryIso, bankType);
@@ -180,9 +180,8 @@ const CountrySelector = ({
           </span>
         </div>
         <ChevronDown
-          className={`w-5 h-5 text-gray-500 transform transition-transform duration-200 ${
-            isOpen ? "rotate-180" : ""
-          }`}
+          className={`w-5 h-5 text-gray-500 transform transition-transform duration-200 ${isOpen ? "rotate-180" : ""
+            }`}
           aria-hidden="true"
         />
       </button>
@@ -214,7 +213,7 @@ const CountrySelector = ({
             className="max-h-60 overflow-y-auto py-1 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent"
           >
             {filteredCountries.length > 0 ? (
-              filteredCountries.map((country) => (
+              filteredCountries.map((country: any) => (
                 <div
                   key={country.countryIso}
                   id={`country-option-${country.countryIso}`}
@@ -230,11 +229,10 @@ const CountrySelector = ({
                       handleSelect(country.countryIso, country.bankType);
                     }
                   }}
-                  className={`flex items-center w-full px-4 py-3 text-left hover:bg-gray-50 transition-colors duration-150 cursor-pointer ${
-                    selectedCountry === country.countryIso
-                      ? "bg-primary-dark-pink text-white bg-opacity-10 font-medium"
-                      : ""
-                  }`}
+                  className={`flex items-center w-full px-4 py-3 text-left hover:bg-gray-50 transition-colors duration-150 cursor-pointer ${selectedCountry === country.countryIso
+                    ? "bg-primary-dark-pink text-white bg-opacity-10 font-medium"
+                    : ""
+                    }`}
                 >
                   <div className="flex items-center space-x-3">
                     {/* Flag */}
@@ -252,11 +250,10 @@ const CountrySelector = ({
                       }}
                     />
                     <span
-                      className={`${
-                        selectedCountry === country.countryIso
-                          ? "text-primary-dark-pink"
-                          : "text-gray-800"
-                      }`}
+                      className={`${selectedCountry === country.countryIso
+                        ? "text-primary-dark-pink"
+                        : "text-gray-800"
+                        }`}
                     >
                       {country.name}
                     </span>

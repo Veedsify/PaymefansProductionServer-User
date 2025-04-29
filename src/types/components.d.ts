@@ -236,7 +236,7 @@ export interface Attachment {
 
 export interface Message {
   id: number;
-  message_id: number;
+  message_id: string;
   message: string;
   sender_id: string;
   receiver_id?: string;

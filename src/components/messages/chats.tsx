@@ -1,11 +1,13 @@
 "use client";
 import React, { useCallback, useEffect, useMemo, useRef } from "react";
 import Link from "next/link";
+import _ from "lodash";
 import Image from "next/image";
 import {
   LucideArrowLeft,
   LucideGrip,
   LucideLoader,
+  LucideLoader2,
   LucideVerified,
 } from "lucide-react";
 import MessageBubble from "../sub_components/message_bubble";
@@ -24,6 +26,7 @@ import Loader from "../lib_components/loading-animation";
 interface ChatProps {
   allMessages: Message[];
   lastMessage: Message | undefined | null;
+  setAllMessages: React.Dispatch<React.SetStateAction<Message[]>>;
   conversationId: string;
   onLoadMore: () => void;
   isFetchingMore: boolean;
@@ -42,6 +45,7 @@ const Chats: React.FC<ChatProps> = React.memo(
   ({
     allMessages,
     lastMessage,
+    setAllMessages,
     conversationId,
     receiver,
     onLoadMore,
@@ -58,7 +62,58 @@ const Chats: React.FC<ChatProps> = React.memo(
     });
 
     const hasCalledRef = useRef(false);
+    // Track if the user is at the bottom of the messages
+    const [userScrolledUp, setUserScrolledUp] = React.useState(false);
+    const messagesContainerRef = useRef<HTMLDivElement>(null);
 
+
+    // Scroll to bottom utility
+    const scrollToBottom = useCallback(() => {
+      scrollRef.current?.scrollIntoView({ behavior: "auto", block: "end" });
+    }, []);
+
+    // Track scroll position to determine if user is at bottom
+    useEffect(() => {
+      const container = messagesContainerRef.current;
+      if (!container) return;
+      const handleScroll = () => {
+        // If the user is within 100px of the bottom, consider as "at bottom"
+        const isAtBottom =
+          container.scrollHeight - container.scrollTop - container.clientHeight < 100;
+        setUserScrolledUp(!isAtBottom);
+      };
+      container.addEventListener("scroll", handleScroll);
+      // Run once on mount in case already at bottom
+      handleScroll();
+      return () => {
+        container.removeEventListener("scroll", handleScroll);
+      };
+    }, []);
+
+    // On initial load, always scroll to bottom
+    useEffect(() => {
+      if (allMessages.length > 0) {
+        scrollToBottom();
+      }
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []); // only on mount
+
+    // When new messages arrive (not from loading more), scroll to bottom if user is not scrolled up
+    const prevMessagesLengthRef = useRef<number>(allMessages.length);
+    useEffect(() => {
+      // If length increased, and not fetching more, and user is not scrolled up
+      if (
+        allMessages.length > prevMessagesLengthRef.current &&
+        !isFetchingMore &&
+        !userScrolledUp
+      ) {
+        scrollToBottom();
+      }
+      prevMessagesLengthRef.current = allMessages.length;
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [allMessages.length, isFetchingMore, userScrolledUp]);
+
+    // When loading more, do NOT scroll to bottom.
     useEffect(() => {
       if (inView && !isFetchingMore && !hasCalledRef.current) {
         hasCalledRef.current = true;
@@ -73,14 +128,7 @@ const Chats: React.FC<ChatProps> = React.memo(
       () => receiver?.profile_image || "/site/avatar.png",
       [receiver?.profile_image]
     );
-    // Scroll latest message into view
-    const scrollLastMessageIntoView = useCallback(() => {
-      scrollRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
-    }, []);
-    // Scroll when messages update
-    useEffect(() => {
-      scrollLastMessageIntoView();
-    }, [allMessages, scrollLastMessageIntoView]);
+
     // Typing handler: emits and manages local typing state
     const sendTyping = useCallback(
       (value: string) => {
@@ -114,80 +162,36 @@ const Chats: React.FC<ChatProps> = React.memo(
         const newMessage = {
           ...msg,
           id: Math.random(),
-          sender_id: user?.user_id,
+          sender_id: user?.user_id!,
           triggerSend: true,
           rawFiles: msg.rawFiles,
           seen: false,
           conversationId,
           created_at: new Date().toISOString(),
         };
-        queryClient.setQueryData(
-          ["conversationMessages", conversationId],
-          (oldData: any) => {
-            if (!oldData || !oldData.pages?.length) {
-              return {
-                pages: [{ messages: [newMessage] }],
-                pageParams: [],
-              };
-            }
-            const updatedPages = oldData.pages.map(
-              (page: any, index: number) => {
-                if (index === oldData.pages.length - 1) {
-                  return {
-                    ...page,
-                    messages: [...page.messages, newMessage],
-                  };
-                }
-                return page;
-              }
-            );
-            return {
-              ...oldData,
-              pages: updatedPages,
-            };
-          }
-        );
-        if (newMessage.rawFiles && !newMessage?.rawFiles.length) {
+
+        if (!newMessage.rawFiles || newMessage.rawFiles.length === 0) {
           socket.emit("new-message", newMessage);
         }
-        queryClient.invalidateQueries({
-          queryKey: ["conversationMessages", conversationId],
-          refetchType: "inactive",
-        });
+
+        setAllMessages((prev) => _.uniqBy([...prev, newMessage], 'id'));
       },
-      [conversationId, queryClient, user?.user_id]
+      [conversationId, user?.user_id, setAllMessages]
     );
     // Socket event handling: message received, seen status, errors, typing
     useEffect(() => {
       // Event: New message
       const handleMessageReceived = (msg: Message) => {
         // Update the query cache with the new message
-        queryClient.setQueryData(
-          ["conversationMessages", conversationId],
-          (oldData: any) => {
-            if (!oldData || !oldData.pages?.length) {
-              return {
-                pages: [{ messages: [msg] }],
-                pageParams: [],
-              };
+        setAllMessages((prev) => {
+          const updatedMessages = prev.map((message) => {
+            if (message.id === msg.id) {
+              return { ...message, seen: true };
             }
-            const updatedPages = oldData.pages.map(
-              (page: any, index: number) => {
-                if (index === oldData.pages.length - 1) {
-                  return {
-                    ...page,
-                    messages: [...page.messages, msg],
-                  };
-                }
-                return page;
-              }
-            );
-            return {
-              ...oldData,
-              pages: updatedPages,
-            };
-          }
-        );
+            return message;
+          });
+          return [...updatedMessages, msg];
+        });
 
         // Optimistically add the new message to the query cache or handle it here if required
         socket.emit("message-seen", {
@@ -196,7 +200,10 @@ const Chats: React.FC<ChatProps> = React.memo(
           userId: user?.user_id,
           receiver_id: receiver?.user_id,
         });
-        scrollLastMessageIntoView();
+        // Only scroll if the user is not scrolled up
+        if (!userScrolledUp) {
+          scrollToBottom();
+        }
       };
       // Event: Error
       const handleMessageError = () => {
@@ -227,13 +234,15 @@ const Chats: React.FC<ChatProps> = React.memo(
         socket.off("sender-typing", handleSenderTyping);
         if (typingTimeoutRef.current) clearTimeout(typingTimeoutRef.current);
       };
+      // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [
       conversationId,
       user?.user_id,
       receiver?.user_id,
       queryClient,
       handleSenderTyping,
-      scrollLastMessageIntoView,
+      scrollToBottom,
+      userScrolledUp,
     ]);
     // Seen handler for last message on mount/change
     useEffect(() => {
@@ -296,15 +305,20 @@ const Chats: React.FC<ChatProps> = React.memo(
           </div>
         </div>
         {/* Messages */}
-        <div className="flex-1 p-4 space-y-4 overflow-auto bg-white dark:bg-gray-950">
+        <div
+          className="flex-1 p-4 space-y-4 overflow-auto bg-white dark:bg-gray-950"
+          ref={messagesContainerRef}
+        >
           <div ref={loadMoreRef}></div>
           {isFetchingMore && (
-            <LucideLoader className="text-primary-dark-pink h-6 w-6 animate-spin" />
+            <div className="flex items-center justify-center w-full py-4">
+              <LucideLoader2 className="text-primary-dark-pink h-6 w-6 animate-spin" />
+            </div>
           )}
           {allMessages.map((message, index) => (
             <div
               ref={index === allMessages.length - 1 ? scrollRef : null}
-              key={message.message_id || message.id} // Use `id` for optimistic messages
+              key={index} // Use `id` for optimistic messages
               className="message-bubble"
               id={String(message.message_id || message.id)}
             >

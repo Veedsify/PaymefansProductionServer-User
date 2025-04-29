@@ -3,13 +3,15 @@ import { getToken } from "../cookie.get";
 export const fetchConversationMessages = async ({
   pageParam,
   conversationId,
+  cursor,
 }: {
   pageParam: number;
   conversationId: string;
+  cursor: number;
 }) => {
   const token = getToken();
   const response = await fetch(
-    `${process.env.NEXT_PUBLIC_TS_EXPRESS_URL}/conversations/messages/${conversationId}?page=${pageParam}`,
+    `${process.env.NEXT_PUBLIC_TS_EXPRESS_URL}/conversations/messages/${conversationId}?page=${pageParam}&cursor=${cursor}`,
     {
       headers: {
         "Content-Type": "application/json",
@@ -21,7 +23,6 @@ export const fetchConversationMessages = async ({
 
   if (response.ok) {
     const result = await response.json();
-    console.log("Fetched messages:", result);
     return result;
   }
 

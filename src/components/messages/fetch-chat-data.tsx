@@ -5,54 +5,81 @@ import { fetchConversationMessages } from "@/utils/data/get-conversation-message
 import Chats from "./chats";
 import { useRouter } from "next/navigation";
 import { Message } from "@/types/components";
-import { useEffect, useCallback } from "react";
+import { useEffect, useCallback, useState } from "react";
 import { socket } from "../sub_components/sub/socket";
+import _ from "lodash";
 
 const FetchChatData = ({ stringId }: { stringId: string }) => {
   const router = useRouter();
+  // Prepend new messages to the start of the array
+  const [allMessages, setAllMessages] = useState<Message[]>([]);
+  const [cursor, setCursor] = useState(0);
+  const [isFetchingNextPage, setIsFetchingNextPage] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isError, setIsError] = useState(false);
+  const [receiver, setReceiver] = useState<any>(null);
+  const [invalidConversation, setInvalidConversation] = useState(false);
   const conversationId = stringId;
 
-  const {
-    data,
-    fetchNextPage,
-    hasNextPage,
-    isFetchingNextPage,
-    isLoading,
-    isError,
-  } = useInfiniteQuery({
-    queryKey: ["conversationMessages", conversationId],
-    queryFn: ({ pageParam }) =>
-      fetchConversationMessages({ pageParam, conversationId }),
-    getNextPageParam: (lastPage, allPages) => {
-      // Use the hasMore boolean to determine if there are more pages
-      return lastPage.hasMore ? allPages.length + 1 || null : undefined;
+  // Fetch messages function
+  const fetchMessages = useCallback(
+    async (pageParam: number) => {
+      try {
+        setIsFetchingNextPage(true);
+        console.log("Fetching messages for page:", cursor);
+        const res = await fetchConversationMessages({ pageParam, conversationId, cursor });
+        if (res.invalid_conversation && res.status === false) {
+          setInvalidConversation(true);
+          setIsError(true);
+          setIsLoading(false);
+          return;
+        }
+        setReceiver(res.receiver);
+        setCursor(Number(res.nextCursor));
+        const messages = res.messages.map((message: Message) => ({
+          ...message,
+          triggerSend: false,
+          rawFiles: Array.isArray(message.rawFiles) ? message.rawFiles : [],
+        }));
+
+        setAllMessages((prev) => _.uniqBy([...messages, ...prev], "id"));
+        setIsLoading(false);
+        setIsFetchingNextPage(false);
+      } catch (error) {
+        setIsError(true);
+        setIsLoading(false);
+        setIsFetchingNextPage(false);
+      }
     },
-    initialPageParam: 1,
-  });
+    [conversationId, cursor]
+  );
 
-  // Prepend new messages to the start of the array
-  const allMessages =
-    data?.pages.reduceRight((acc, page) => {
-      const messages = page.messages.map((message: Message) => ({
-        ...message,
-        triggerSend: false,
-        rawFiles: Array.isArray(message.rawFiles) ? message.rawFiles : [], // <-- this line
-      }));
-      return [...messages, ...acc]; // Prepend new messages
-    }, [] as Message[]) || [];
+  // Initial fetch
+  useEffect(() => {
+    setIsLoading(true);
+    setAllMessages([]);
+    setCursor(1);
+    setIsError(false);
+    setInvalidConversation(false);
+    fetchMessages(1);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [conversationId]);
 
-  const receiver = data?.pages[0]?.receiver;
+
   const lastMessage = allMessages[allMessages.length - 1];
+  const loadMoreMessages = useCallback(() => {
+    if (!isFetchingNextPage) {
+      fetchMessages(cursor);
+    }
+  }, [isFetchingNextPage, cursor, fetchMessages]);
+
 
   // Handle invalid conversation
   useEffect(() => {
-    if (
-      data?.pages[0]?.invalid_conversation &&
-      data?.pages[0]?.status === false
-    ) {
+    if (invalidConversation) {
       router.push("/messages");
     }
-  }, [data, router]);
+  }, [invalidConversation, router]);
 
   // Socket connection for joining/leaving conversation
   useEffect(() => {
@@ -62,20 +89,15 @@ const FetchChatData = ({ stringId }: { stringId: string }) => {
     };
   }, [conversationId]);
 
-  // Function to load more data
-  const loadMoreMessages = useCallback(() => {
-    if (hasNextPage && !isFetchingNextPage) {
-      fetchNextPage();
-    }
-  }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
-
   if (isLoading) {
-    <div className="flex flex-col items-center justify-center h-full py-8 space-y-4">
-      <div className="w-10 h-10 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
-      <span className="text-blue-500 text-base font-medium">
-        Loading messages...
-      </span>
-    </div>;
+    return (
+      <div className="flex flex-col items-center justify-center h-full py-8 space-y-4">
+        <div className="w-10 h-10 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+        <span className="text-blue-500 text-base font-medium">
+          Loading messages...
+        </span>
+      </div>
+    );
   }
 
   if (isError) {
@@ -108,6 +130,7 @@ const FetchChatData = ({ stringId }: { stringId: string }) => {
     <Chats
       receiver={receiver}
       allMessages={allMessages}
+      setAllMessages={setAllMessages}
       lastMessage={lastMessage}
       conversationId={conversationId}
       onLoadMore={loadMoreMessages}

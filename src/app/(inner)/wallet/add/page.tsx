@@ -8,6 +8,7 @@ import {
   acceptedBankTypes,
 } from "@/utils/data/accepted-bank-countries";
 import CountrySelector from "@/components/sub_components/country-selector";
+import Image from "next/image";
 
 interface BankData {
   slug: string;
@@ -180,7 +181,9 @@ const WalletAddBank = () => {
                   >
                     <span className="flex flex-col items-center justify-center p-3 rounded-full border-2 border-gray-200 hover:border-primary-dark-pink transition-colors mb-4 w-24 h-24 cursor-pointer">
                       <div className="rounded-full bg-gray-50">
-                        <img
+                        <Image
+                          width={64}
+                          height={64}
                           src={bank.image}
                           alt={bank.name}
                           className="w-16 h-16 rounded-full aspect-square object-cover"

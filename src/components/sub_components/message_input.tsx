@@ -1,6 +1,7 @@
 "use client";
 import { useUserPointsContext } from "@/contexts/user-points-context";
 import { useUserAuthContext } from "@/lib/userUseContext";
+import { v4 as uuid } from "uuid";
 import { LucidePlus, LucideCamera, LucideSendHorizonal } from "lucide-react";
 import {
   KeyboardEvent,
@@ -70,9 +71,9 @@ const MessageInput = ({
       let attachments: Attachment[] = [];
 
       const generateNumericId = () =>
-        Date.now() * 1000 + Math.floor(Math.random() * 1000);
+        Math.floor(Math.random() * 1000000000) + 1;
       sendMessage({
-        message_id: generateNumericId(),
+        message_id: uuid(),
         message: linkify(message.trim()),
         attachment: attachments,
         sender_id: user.user_id,
