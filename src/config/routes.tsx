@@ -39,7 +39,7 @@ const ROUTE = {
    * @param {number} post_id - The ID of the post.
    * @returns {string} The URL to fetch comments for the specified post.
    */
-  GET_COMMENTS: (post_id: number) =>
+  GET_COMMENTS: (post_id: string) =>
     `${NEXT_PUBLIC_TS_EXPRESS_URL}/post/${post_id}/comments`,
 
   /**

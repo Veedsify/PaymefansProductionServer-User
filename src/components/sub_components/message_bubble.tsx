@@ -70,12 +70,12 @@ const MessageBubble: React.FC<MessageBubbleProps> = ({
     [message, receiver?.user_id, conversationId]
   );
 
-  // Handle triggerSend for text-only messages
-  useEffect(() => {
-    if (triggerSend && !rawFiles.length) {
-      handleSendSocketMessage([]);
-    }
-  }, [triggerSend, rawFiles, handleSendSocketMessage]);
+  // // Handle triggerSend for text-only messages
+  // useEffect(() => {
+  //   if (triggerSend && !rawFiles.length) {
+  //     handleSendSocketMessage([]);
+  //   }
+  // }, [triggerSend, rawFiles, handleSendSocketMessage]);
 
   // Bubble content with time & seen
   const Bubble = (

@@ -6,7 +6,7 @@ import { getToken } from "../cookie.get";
 export const getUserComments = async (post: PostData, page: number) => {
      try {
           const token = getToken()
-          const response = await axios.get(`${ROUTE.GET_COMMENTS(post.id)}?page=${page}`, {
+          const response = await axios.get(`${ROUTE.GET_COMMENTS(post.post_id)}?page=${page}`, {
                headers: {
                     "Authorization": `Bearer ${token}`
                }

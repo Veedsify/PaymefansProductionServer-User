@@ -338,14 +338,12 @@ const Chats: React.FC<ChatProps> = React.memo(
         </div>
         {/* Input */}
         <div className="sticky bottom-0 z-50 p-4 bg-white border-t dark:bg-gray-800 dark:border-gray-950 shrink-0">
-          <MediaProvider>
             <MessageInput
               receiver={receiver}
               isFirstMessage={allMessages.length === 0}
               sendMessage={sendMessage} // Use the new sendMessage function
               sendTyping={sendTyping} // Pass the typing handler
             />
-          </MediaProvider>
         </div>
       </div>
     );
