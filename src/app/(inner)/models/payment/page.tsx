@@ -130,8 +130,10 @@ const PaymentPage = () => {
               <div className="uppercase tracking-wide text-sm text-primary-dark-pink font-semibold">
                 One-time payment
               </div>
-              <h2 className="mt-1 text-3xl font-bold">Model Sign-up Fee</h2>
-              <div className="mt-4 flex items-baseline">
+              <h2 className="mt-1 text-3xl font-bold dark:text-white">
+                Model Sign-up Fee
+              </h2>
+              <div className="mt-4 flex items-baseline ">
                 <span className="text-5xl font-extrabold text-primary-dark-pink">
                   $7
                 </span>
