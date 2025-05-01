@@ -36,6 +36,7 @@ export interface PostData {
   post_comments?: number;
   post_shares?: number;
   post_status: string;
+  post_price: string;
   post_reposts?: number;
   post_impressions?: number;
   repost_username?: string;
@@ -249,7 +250,7 @@ export interface Message {
 }
 
 export interface MessageInputProps {
-  sendMessage: ({}: Message) => void;
+  sendMessage: ({ }: Message) => void;
   sendTyping: (value: string) => void;
   receiver: any;
   isFirstMessage: boolean;
@@ -321,11 +322,11 @@ export interface MessagesConversationContextValue {
 
 type OwnerOption =
   | {
-      name: string;
-      icon: React.ReactNode;
-      func?: (e: React.MouseEvent<HTMLButtonElement>) => void;
-      link?: undefined;
-    }
+    name: string;
+    icon: React.ReactNode;
+    func?: (e: React.MouseEvent<HTMLButtonElement>) => void;
+    link?: undefined;
+  }
   | { name: string; icon: React.ReactNode; func?: undefined; link?: URL };
 
 export interface PostAudienceDataProps {
@@ -559,6 +560,7 @@ export type QuickPostActionsProps = {
   options: {
     content: string;
     post_id: string;
+    price?: string;
     post_audience: string;
     username: string;
   };
@@ -605,17 +607,17 @@ type StoreProduct = {
 
 type StoreAllProductsResponse =
   | {
-      error: boolean;
-      message: string;
-      totalProducts: number;
-      hasMore: boolean;
-      data: StoreProduct[];
-    }
+    error: boolean;
+    message: string;
+    totalProducts: number;
+    hasMore: boolean;
+    data: StoreProduct[];
+  }
   | {
-      error: boolean;
-      message: string;
-      data: null;
-    };
+    error: boolean;
+    message: string;
+    data: null;
+  };
 
 export type Product = {
   id: number;

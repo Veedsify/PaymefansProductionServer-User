@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import {
   LucideEye,
   LucideEyeOff,
@@ -65,39 +65,58 @@ const QuickPostActionHooks = ({ options }: QuickPostActionsProps) => {
   const handleSetvisibility = (e: MouseEvent<HTMLButtonElement>) => {
     const modal = document.createElement("div");
     modal.innerHTML = `
-        <div class="fixed z-50 inset-0 bg-black/50 flex items-center justify-center"
-            id="modal-bg"
-        >
-            <div class="bg-white dark:bg-slate-800 p-5 aspect-video rounded-md">
-                <h1 class="text-lg font-semibold mb-5 dark:text-white">Set visibility</h1>
-                <select class="w-72 mt-2 p-3 rounded-md border-collapse bg-transparent border dark:border-slate-700 dark:bg-slate-900 text-black dark:text-white" name="visibility" id="visibility">
-                    ${
-                      user && user.is_model && user.Model?.verification_status
-                        ? `
-                        <option value="public" ${
-                          options.post_audience == "public" && "selected"
-                        }>Public</option>
-                        <option value="subscribers" ${
-                          options.post_audience == "subscribers" && "selected"
-                        }>Subscribers</option>
-                        <option value="price" ${
-                          options.post_audience == "price" && "selected"
-                        }>Price</option>
-                        `
-                        : `
-                        <option value="public" ${
-                          options.post_audience == "public" && "selected"
-                        }>Public</option>
-                        `
-                    }
-                </select>
-            </div>
-        </div>
-        `;
+      <div class="fixed z-50 inset-0 bg-black/50 flex items-center justify-center"
+          id="modal-bg"
+      >
+          <div class="bg-white dark:bg-slate-800 p-5 aspect-video rounded-md">
+              <h1 class="text-lg font-semibold mb-5 dark:text-white">Set visibility</h1>
+              <select class="w-72 mt-2 p-3 rounded-md border-collapse bg-transparent border dark:border-slate-700 dark:bg-slate-900 text-black dark:text-white" name="visibility" id="visibility">
+                  ${
+                    user && user.is_model && user.Model?.verification_status
+                      ? `
+                      <option value="public" ${
+                        options.post_audience == "public" ? "selected" : ""
+                      }>Public</option>
+                      <option value="subscribers" ${
+                        options.post_audience == "subscribers" ? "selected" : ""
+                      }>Subscribers</option>
+                      <option value="price" ${
+                        options.post_audience == "price" ? "selected" : ""
+                      }>Price</option>
+                      `
+                      : `
+                      <option value="public" ${
+                        options.post_audience == "public" ? "selected" : ""
+                      }>Public</option>
+                      `
+                  }
+              </select>
+              <div id="price-input-container" style="display: ${
+                options.post_audience === "price" ? "block" : "none"
+              };">
+                <label for="price-input" class="block mt-4 mb-2 text-sm font-medium text-gray-700 dark:text-gray-200">Set Price</label>
+                <input type="number" min="1" step="any" id="price-input" class="w-72 p-3 rounded-md border border-gray-300 dark:border-slate-700 bg-transparent dark:bg-slate-900 text-black dark:text-white" placeholder="Enter price" value="${
+                  options.price ?? ""
+                }" />
+              </div>
+          </div>
+      </div>
+    `;
+
+    // Add dynamic show/hide for price input
+    const visibility = modal.querySelector("#visibility") as HTMLSelectElement;
+    const priceInputContainer = modal.querySelector(
+      "#price-input-container"
+    ) as HTMLDivElement;
+
+    visibility.addEventListener("change", () => {
+      if (visibility.value === "price") {
+        priceInputContainer.style.display = "block";
+      } else {
+        priceInputContainer.style.display = "none";
+      }
+    });
     document.body.appendChild(modal);
-    const visibility = document.getElementById(
-      "visibility"
-    ) as HTMLSelectElement;
     modal.addEventListener("click", (e) => {
       const modalBg = document.getElementById("modal-bg");
       if (e.target === modalBg) {
@@ -138,8 +157,8 @@ const QuickPostActionHooks = ({ options }: QuickPostActionsProps) => {
     });
   };
 
-  const ShareThisPost = ( e: MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault()
+  const ShareThisPost = (e: MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
     swal({
       title: "Share this post",
       content: {
@@ -189,13 +208,13 @@ const QuickPostActionHooks = ({ options }: QuickPostActionsProps) => {
                 </button>
               </div>
             </div>
-          `
-        }
+          `,
+        },
       },
       closeOnEsc: true,
       closeOnClickOutside: true,
     });
-  }
+  };
 
   const repostThisPost = useCallback(async () => {
     try {

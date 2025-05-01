@@ -2,6 +2,7 @@ export type UserRegisterType = {
   name: string;
   email: string;
   phone: string;
+  countryCode: string
   location: string;
   password: string;
   terms: string;

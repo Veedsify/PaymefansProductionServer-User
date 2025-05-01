@@ -53,7 +53,7 @@ const PostComponent: React.FC<PostComponentProps> = ({
   const hasPaid = authUser?.purchasedPosts?.includes(data?.id as number);
   const { ref, inView } = useInView({
     threshold: 0.5,
-    triggerOnce: true
+    triggerOnce: true,
   });
 
   // Mark post as viewed
@@ -76,7 +76,6 @@ const PostComponent: React.FC<PostComponentProps> = ({
 
   const router = useRouter();
 
-  
   const formattedText = useCallback(() => {
     const text = data.post.replace(/\r?\n/g, "<br/>");
     if (!isSubscribed && data.post_audience === "subscribers" && !isCreator) {
@@ -309,6 +308,7 @@ const PostComponent: React.FC<PostComponentProps> = ({
               content: data.content,
               post_id: data.post_id,
               username: user.username,
+              price: data?.post_price,
               post_audience: data.post_audience,
             }}
           />

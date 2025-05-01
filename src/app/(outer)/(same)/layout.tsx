@@ -1,15 +1,12 @@
 import type { Metadata } from "next";
 import { Epilogue, Inter } from "next/font/google";
 import { GeistSans } from "geist/font/sans";
-import "../globals.css";
+import "../../globals.css";
 import { Toaster as SonnerToast } from "sonner";
 import { Toaster } from "react-hot-toast";
 
 const font = Epilogue({
-  subsets: [
-    "latin",
-    "latin-ext",
-  ],
+  subsets: ["latin", "latin-ext"],
   display: "swap",
   adjustFontFallback: false,
 });

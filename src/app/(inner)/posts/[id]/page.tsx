@@ -85,6 +85,7 @@ const Post = React.memo(async ({ params }: PostPageProps) => {
             options={{
               content: post?.content,
               post_id: post?.post_id,
+              price: post?.post_price,
               username: post?.user.username,
               post_audience: post?.post_audience,
             }}
