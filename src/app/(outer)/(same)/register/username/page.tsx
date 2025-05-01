@@ -26,11 +26,11 @@ const ChooseUserName = () => {
   const checkForUsername = async () => {
     if (!ref.current?.value) {
       setButtonActive(false);
-      setMessage("Username requires minimum 8 characters");
+      setMessage("Username requires minimum 5 characters");
       return;
     }
-    if (ref.current.value.length < 8) {
-      setMessage("Username requires minimum 8 characters");
+    if (ref.current.value.length < 5) {
+      setMessage("Username requires minimum 5 characters");
       setButtonActive(false);
       return;
     }
@@ -185,7 +185,7 @@ const ChooseUserName = () => {
               autoComplete="false"
             >
               <div className="flex flex-col gap-3 mb-4 md:max-w-96">
-                <div className="flex items-center gap-1 outline outline-white outline-1 rounded-lg px-3">
+                <div className="flex items-center gap-1 outline-white outline-1 rounded-lg px-3">
                   <input
                     onChange={checkForUsername}
                     ref={ref}

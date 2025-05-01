@@ -1,6 +1,6 @@
 import "../globals.css";
 import type { Metadata } from "next";
-import { Rubik } from "next/font/google";
+import { Inter_Tight } from "next/font/google";
 import localFont from "next/font/local";
 import MenuButtons from "@/components/modals/menu_buttons";
 import SideModels from "@/components/models/side_models";
@@ -19,8 +19,8 @@ import ToggleWishListProvider from "@/contexts/toggle-wishlist";
 import WishList from "@/components/sub_components/wishlist";
 // import { GeistSans } from "geist/font/sans";
 
-const font = Rubik({
-  weight: ["400", "500", "600", "700"],
+const font = Inter_Tight({
+  weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
   subsets: ["latin", "latin-ext"],
   display: "swap",
 });

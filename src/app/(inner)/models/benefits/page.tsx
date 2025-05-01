@@ -77,7 +77,7 @@ async function Models() {
             },
             {
               icon: "🖼️",
-              benefit: "Upload up to 30 media posts",
+              benefit: "Upload High Quality Image & Videos",
             },
             {
               icon: "💸",
@@ -93,7 +93,15 @@ async function Models() {
             },
             {
               icon: "💰",
-              benefit: "Competitive 25% platform fee",
+              benefit: "100% Earnings on your content",
+            },
+            {
+              icon: "🚀",
+              benefit: "Monetize your unique content",
+            },
+            {
+              icon: "🚀",
+              benefit: "Monetize your unique content",
             },
             {
               icon: "🚀",
@@ -112,7 +120,7 @@ async function Models() {
       </div>
       <div className="flex align-middle justify-center">
         <Link
-          href="/models/become-a-model"
+          href="/models/payment"
           className="bg-primary-dark-pink text-white text-sm p-4 font-bold m-3 rounded-xl w-full text-center"
         >
           Sign Up

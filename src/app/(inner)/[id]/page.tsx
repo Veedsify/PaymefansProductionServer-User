@@ -158,12 +158,14 @@ const ProfilePage = async ({ params }: { params: paramsProp }) => {
               </h1>
               <p className="font-medium text-gray-500 text-sm">Following</p>
             </span>
-            <span className="flex gap-2 items-center ">
-              <h1 className="font-bold text-sm">
-                {formatNumber(userdata.total_subscribers)}
-              </h1>
-              <p className="font-medium text-gray-500 text-sm">Subscribers</p>
-            </span>
+            {userdata?.is_model && (
+              <span className="flex gap-2 items-center ">
+                <h1 className="font-bold text-sm">
+                  {formatNumber(userdata.total_subscribers)}
+                </h1>
+                <p className="font-medium text-gray-500 text-sm">Subscribers</p>
+              </span>
+            )}
           </div>
         </div>
       </div>

@@ -124,14 +124,16 @@ const ProfilePage = async () => {
                 Following
               </p>
             </span>
-            <span className="flex gap-2 items-center">
-              <h1 className="font-bold text-sm text-gray-900 dark:text-gray-100">
-                {formatNumber(user?.total_subscribers)}
-              </h1>
-              <p className="font-medium text-gray-500 dark:text-gray-400 text-sm">
-                Subscribers
-              </p>
-            </span>
+            {user?.is_model && (
+              <span className="flex gap-2 items-center">
+                <h1 className="font-bold text-sm text-gray-900 dark:text-gray-100">
+                  {formatNumber(user?.total_subscribers)}
+                </h1>
+                <p className="font-medium text-gray-500 dark:text-gray-400 text-sm">
+                  Subscribers
+                </p>
+              </span>
+            )}
           </div>
         </div>
       </div>
