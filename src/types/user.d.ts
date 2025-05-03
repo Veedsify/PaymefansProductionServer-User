@@ -2,7 +2,7 @@ export type UserRegisterType = {
   name: string;
   email: string;
   phone: string;
-  countryCode: string
+  countryCode: string;
   location: string;
   password: string;
   terms: string;
@@ -34,6 +34,7 @@ export type AuthUserProps = {
   state: string | null;
   city: string | null;
   zip: string | null;
+  currency: string;
   post_watermark: string | null;
   total_followers: number;
   total_following: number;
@@ -53,16 +54,21 @@ export type AuthUserProps = {
     enable_free_message: boolean;
     two_factor_auth: boolean;
     subscription_price: number;
-  },
+  };
   following: number;
   Model?: {
     hookup: boolean;
     verification_status: boolean;
-    verification_state: ' not_started' | 'pending' | 'approved' | 'rejected' | 'started';
-  },
+    verification_state:
+      | " not_started"
+      | "pending"
+      | "approved"
+      | "rejected"
+      | "started";
+  };
   subscriptions?: number[];
   purchasedPosts?: number[];
-}
+};
 
 export type AllModelsProps = {
   id: number;

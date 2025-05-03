@@ -46,12 +46,13 @@ const ChooseUserName = () => {
           data: {
             username: ref.current?.value,
           },
-        }
+        },
       );
 
       console.log(res.data);
 
       if (res.data && res.data.status) {
+        setMessage(res.data.message);
         setButtonActive(true);
         return;
       }
@@ -84,7 +85,7 @@ const ChooseUserName = () => {
                 location: user?.location,
                 password: user?.password,
               },
-            }
+            },
           );
           if (createUser.data.status === true) {
             setUser(null);
@@ -136,7 +137,7 @@ const ChooseUserName = () => {
         });
       }
     },
-    [user, router, setUser]
+    [user, router, setUser],
   );
 
   return (

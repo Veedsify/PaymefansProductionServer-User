@@ -61,6 +61,8 @@ const WalletPage = async () => {
     return Number(conversionRate.data.rate * points).toLocaleString();
   }
 
+  function calculateAmountInDollars() {}
+
   return (
     <div className="p-4 py-8">
       <div className="flex flex-wrap gap-6 items-center justify-between pb-8 border-b border-gray-200 dark:border-gray-700 mb-6">
@@ -86,6 +88,30 @@ const WalletPage = async () => {
         >
           Add Funds
         </Link>
+      </div>
+      <div className="mb-6 flex flex-col md:flex-row align-middle justify-between bg-gradient-to-r from-primary-dark-pink to-pink-400 text-white p-6 rounded-2xl shadow-lg">
+        <div className="grid gap-2">
+          <small className="text-base font-medium opacity-90">
+            Your Balance
+          </small>
+          <h1 className="text-2xl md:text-4xl font-extrabold tracking-tight">
+            ₦ {calculateAmount()}
+          </h1>
+        </div>
+        <div className="flex self-center mt-4 md:mt-0">
+          <div className="bg-white/10 md:px-6 md:py-4 p-3 px-5 rounded-lg flex items-center gap-2 shadow-inner">
+            <span className="font-semibold text-lg">
+              {points ? points.toLocaleString() : 0}
+            </span>
+            <Image
+              width={24}
+              height={24}
+              className="w-6 h-6"
+              src="/site/coin.svg"
+              alt="Points"
+            />
+          </div>
+        </div>
       </div>
       <div className="mb-6 flex flex-col md:flex-row align-middle justify-between bg-gradient-to-r from-primary-dark-pink to-pink-400 text-white p-6 rounded-2xl shadow-lg">
         <div className="grid gap-2">

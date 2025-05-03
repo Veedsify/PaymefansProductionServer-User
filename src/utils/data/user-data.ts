@@ -20,7 +20,9 @@ const getUserData = async (): Promise<AuthUserProps | null> => {
     if (res.status === 200 && res.data?.user) {
       return res.data.user as AuthUserProps;
     }
-    return null;
+    if (res.status === 401) {
+      redirect("/login");
+    }
   } catch (error) {
     if (axios.isAxiosError(error)) {
       // Log response if available

@@ -2,14 +2,63 @@
 
 import { POINTS_CONFIG } from "@/config/config";
 import ROUTE from "@/config/routes";
+import { useUserAuthContext } from "@/lib/userUseContext";
 import { getToken } from "@/utils/cookie.get";
+import { LucideLoader } from "lucide-react";
 import Image from "next/image";
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 import toast from "react-hot-toast";
 
+type ExchangeRate = {
+  buyValue: number;
+  sellValue: number;
+  rate: number;
+  name: string;
+  symbol: string;
+};
+export const currencyRates = [
+  { rate: 1, name: "USD", sellValue: 1, buyValue: 1, symbol: "$" },
+  { rate: 1, name: "NGN", sellValue: 1509, buyValue: 1632, symbol: "₦" },
+  { rate: 1, name: "POINTS", sellValue: 16, buyValue: 16, symbol: "P" },
+  { rate: 1, name: "KES", sellValue: 120, buyValue: 129.19, symbol: "Ksh" },
+  { rate: 1, name: "ZAR", sellValue: 18, buyValue: 18.55, symbol: "R" },
+  { rate: 1, name: "GHS", sellValue: 14, buyValue: 14.3, symbol: "₵" },
+];
+
 const AddPoints = () => {
+  const { user } = useUserAuthContext();
   const [value, setValue] = useState("");
-  const conversionRate = 100;
+  const [rates, setRates] = useState<ExchangeRate[]>(currencyRates);
+  const [error, setError] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [POINTS_PER_USD, setPointsPerUSD] = useState(16); // Default value
+
+  useEffect(() => {
+    const fetchRates = async () => {
+      setLoading(true);
+      try {
+        const response = await fetch(ROUTE.GET_PLATFROM_EXCHANGE_RATE);
+        if (!response.ok) {
+          throw new Error("Failed to fetch exchange rates");
+        }
+        const data = await response.json();
+        if (data.data.length) {
+          setRates(data.data);
+          setPointsPerUSD(
+            data.data.find((rate: ExchangeRate) => rate.name === "POINTS")
+              ?.value || 16
+          );
+        }
+      } catch (error) {
+        console.error("Error fetching exchange rates:", error);
+        setError(true);
+      } finally {
+        setLoading(false);
+      }
+    };
+    // Uncomment the line below to fetch rates from the API
+    fetchRates();
+  }, []);
 
   // Format the input value with commas
   const formatNumber = (num: string) => {
@@ -18,41 +67,88 @@ const AddPoints = () => {
 
   // Handle input change
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    // Remove any non-digit characters
     let inputValue = e.target.value.replace(/\D/g, "");
     setValue(formatNumber(inputValue));
   };
 
-  function removeStringsAndFee(value: string) {
+  // Calculate platform fee (10% of input)
+  function calculateFee(value: string) {
     let num = value.replace(/\D/g, "");
     return (parseInt(num) * 0.1).toLocaleString();
   }
 
+  // Calculate points received
   function balanceToSettle(value: string) {
     let num = value.replace(/\D/g, "");
-    const balance = (parseInt(num) * 0.9) / conversionRate;
-    return Math.floor(balance).toLocaleString();
+    const amount = parseInt(num) || 0;
+
+    // Convert the input amount from user's currency to USD
+    const userCurrency = user?.currency || "USD";
+    const amountInUSD = convertCurrency(amount, userCurrency, "USD");
+
+    // Apply 10% fee and convert to points (1 USD = 16 points)
+    const pointsAfterFee = Math.floor(amountInUSD * 0.9 * POINTS_PER_USD);
+
+    return pointsAfterFee.toLocaleString();
   }
 
+  // Get original amount without formatting
   function pricePerPoints(value: string) {
     let num = value.replace(/\D/g, "");
     return parseInt(num).toLocaleString();
-    // return (parseInt(num) * 0.8).toLocaleString();
+  }
+
+  // Convert local currency amount to target currency
+  function convertCurrency(
+    amount: number,
+    fromCurrency: string,
+    toCurrency: string
+  ): number {
+    const fromRate =
+      rates.find((rate) => rate.name === fromCurrency)?.buyValue || 1;
+    const toRate =
+      rates.find((rate) => rate.name === toCurrency)?.buyValue || 1;
+
+    console.log("toRate", toRate);
+
+    // Convert from source currency to USD (our base currency)
+    return (amount / fromRate) * toRate;
+  }
+
+  // Format converted amount for display
+  function formatConvertedAmount(amount: number, currency: string): string {
+    const symbol = rates.find((rate) => rate.name === currency)?.symbol || "";
+    return `${symbol}${amount.toLocaleString(undefined, {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    })}`;
   }
 
   async function handlePointBuy() {
     const token = getToken();
-
     toast.dismiss();
     toast.loading(POINTS_CONFIG.POINT_PENDING_PAYMENTS);
 
-    const validate =
-      parseInt(value.replace(/\D/g, "")) < POINTS_CONFIG.POINT_MINIMUM_DEPOSIT;
+    const amount = parseInt(value.replace(/\D/g, "")) || 0;
+    // Calculate minimum deposit in user's currency based on NGN 2500 rate
+    const minNgn = 2500;
+    const userCurrency = user?.currency || "USD";
+    const minInUserCurrency = convertCurrency(minNgn, "NGN", userCurrency);
+
+    const validate = amount < minInUserCurrency;
     if (!value || validate) {
       toast.dismiss();
-      toast.error(POINTS_CONFIG.POINTS_MINIMUM_DEPOSIT_ERROR);
+      toast.error(
+        `Minimum deposit is ${formatConvertedAmount(
+          minInUserCurrency,
+          userCurrency
+        )}`
+      );
       return;
     }
+
+    // Calculate USD equivalent
+    const usdAmount = convertCurrency(amount, user?.currency || "USD", "USD");
 
     try {
       const response = await fetch(ROUTE.PURCHASE_POINTS, {
@@ -61,7 +157,12 @@ const AddPoints = () => {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ amount: parseInt(value.replace(/\D/g, "")) }),
+        body: JSON.stringify({
+          amount,
+          currency: user?.currency || "USD",
+          usd_amount: usdAmount,
+          ngn_amount: convertCurrency(amount, user?.currency || "USD", "NGN"),
+        }),
       });
 
       if (!response.ok) {
@@ -81,15 +182,39 @@ const AddPoints = () => {
         toast.error(data.message);
       }
     } catch (error) {
+      toast.dismiss();
       toast.error(POINTS_CONFIG.POINTS_PURCHASE_FAILED);
       console.error(error);
     }
   }
 
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center w-full h-full p-6">
+        <LucideLoader className="w-10 h-10 animate-spin text-primary-dark-pink" />
+      </div>
+    );
+  }
+  if (error) {
+    return (
+      <div className="flex items-center justify-center w-full h-full">
+        <p className="text-lg font-semibold text-red-500">
+          Error fetching exchange rate
+        </p>
+      </div>
+    );
+  }
+
+  const inputAmount = parseInt(value.replace(/\D/g, "")) || 0;
+  const usdValue = convertCurrency(inputAmount, user?.currency || "USD", "USD");
+  const ngnValue = convertCurrency(inputAmount, user?.currency || "USD", "NGN");
+
   return (
     <div>
       <div className="flex items-start gap-2 mb-3">
-        <div className="text-4xl">₦</div>
+        <div className="text-4xl">
+          {rates.find((rate) => rate.name === user?.currency)?.symbol}
+        </div>
         <div className="flex-1">
           <input
             type="text"
@@ -103,21 +228,31 @@ const AddPoints = () => {
       </div>
       {value && (
         <div className="mb-6">
-          {/* <div className="flex justify-between py-4 mb-3 border-b">
-            <p className="text-xl font-semibold">Amount To Add</p>
-            <p className="text-xl font-medium">₦ {value}</p>
-          </div> */}
           <div className="flex justify-between py-2">
             <p className="text-xl">Platform Fee</p>
-            <p className="text-xl font-mediu/m">
-              10%
-              {/* ₦ {removeStringsAndFee(value)} */}
+            <p className="text-xl font-medium">
+              10% ({rates.find((rate) => rate.name === user?.currency)?.symbol}
+              {calculateFee(value)})
+            </p>
+          </div>
+          <div className="flex justify-between py-2">
+            <p className="text-xl">Amount in USD</p>
+            <p className="text-xl font-medium">
+              {formatConvertedAmount(usdValue, "USD")}
+            </p>
+          </div>
+          <div className="flex justify-between py-2">
+            <p className="text-xl">Amount in NGN</p>
+            <p className="text-xl font-medium">
+              {formatConvertedAmount(ngnValue, "NGN")}
             </p>
           </div>
           <div className="flex justify-between py-2">
             <p className="text-xl">Amount</p>
-            {/* <p className="text-xl font-medium">₦ {pricePerPoints(value)}</p> */}
-            <p className="text-xl font-medium">₦ {pricePerPoints(value)}</p>
+            <p className="text-xl font-medium">
+              {rates.find((rate) => rate.name === user?.currency)?.symbol}
+              {pricePerPoints(value)}
+            </p>
           </div>
           <div className="flex justify-between py-2">
             <p className="text-xl">Points Received</p>

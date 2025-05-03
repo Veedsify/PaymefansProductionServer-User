@@ -73,6 +73,7 @@ export type Post = {
   media: any[];
   post_status: string;
   post_audience: string;
+  post_price: string;
   post_is_visible: boolean;
   post_likes: number;
   post_comments: number;
@@ -96,7 +97,7 @@ export const useHomeFeedStore = create<HomeStoreFeed>((set) => ({
     set((state) => {
       const uniquePosts = posts.filter(
         (newPost) =>
-          !state.posts.some((existingPost) => existingPost.id === newPost.id)
+          !state.posts.some((existingPost) => existingPost.id === newPost.id),
       );
       let currentposts = [...state.posts, ...uniquePosts];
       return { posts: currentposts };

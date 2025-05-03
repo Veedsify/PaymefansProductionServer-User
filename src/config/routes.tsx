@@ -68,6 +68,11 @@ const ROUTE = {
     
      */
   UPLOAD_POST_MEDIA_ENDPOINT: `${NEXT_PUBLIC_TS_EXPRESS_URL}/post/upload-post-media`,
+  /**
+   *
+   * Endpoint for fetching exchange rate
+   */
+  GET_PLATFROM_EXCHANGE_RATE: `${NEXT_PUBLIC_TS_EXPRESS_URL}/rates/platfrom-rate`,
 };
 
 export default ROUTE;

@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { useParams } from "next/navigation";
 import Image from "next/image";
+import Link from "next/link";
 
 interface PageData {
   title: string;
@@ -20,11 +21,11 @@ export default function Page() {
   const [loading, setLoading] = useState(true);
 
   const fetchPage = async (
-    page: string
+    page: string,
   ): Promise<PageData | ErrorData | null> => {
     try {
       const res = await fetch(
-        `${process.env.NEXT_PUBLIC_TS_EXPRESS_URL}/pages/${page}`
+        `${process.env.NEXT_PUBLIC_TS_EXPRESS_URL}/pages/${page}`,
       );
       if (!res.ok) {
         throw new Error("Failed to fetch data");
@@ -78,7 +79,7 @@ export default function Page() {
         <nav className="nav">
           <div className="nav-container">
             <div className="nav-content">
-              <a href="/" className="logo-container">
+              <Link href="/" className="logo-container">
                 <Image
                   src="/site/logo.svg"
                   className="logo"
@@ -86,7 +87,7 @@ export default function Page() {
                   height={40}
                   alt="logo"
                 />
-              </a>
+              </Link>
             </div>
           </div>
         </nav>
@@ -106,7 +107,7 @@ export default function Page() {
         <footer>
           <div className="footer-content">
             <h1>MediaSetroom Ltd</h1>
-            <a href="/s/contact-us">Contact Us</a>
+            <Link href="/s/contact-us">Contact Us</Link>
           </div>
         </footer>
       </div>

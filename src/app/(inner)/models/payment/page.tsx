@@ -17,38 +17,6 @@ import {
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import {
-  ChangeEvent,
-  LegacyRef,
-  MouseEvent,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
-import toast from "react-hot-toast";
-import swal from "sweetalert";
-
-const postAudienceData: postAudienceDataProps2[] = [
-  {
-    id: 1,
-    name: "Male",
-    icon: <LucideUser size={20} className="inline" />,
-  },
-  {
-    id: 2,
-    name: "Female",
-    icon: <LucideUser2 size={20} className="inline" />,
-  },
-];
-
-interface ModelSignUpProps {
-  firstname?: string;
-  lastname?: string;
-  dob?: string;
-  country?: string;
-  available?: string;
-  audience?: string;
-}
 
 const PaymentPage = () => {
   const router = useRouter();
@@ -121,7 +89,7 @@ const PaymentPage = () => {
     return (
       <div className="py-8 bg-white dark:bg-gray-900 rounded-2xl p-6">
         <h1 className="text-2xl font-bold mb-6 text-center text-primary-dark-pink md:hidden block">
-          Model Signup Fee
+          Activate Creator Dashboard
         </h1>
 
         <div className="max-w-md mx-auto bg-white dark:bg-gray-800 rounded-xl shadow-md overflow-hidden md:max-w-2xl mb-4">
@@ -131,13 +99,20 @@ const PaymentPage = () => {
                 One-time payment
               </div>
               <h2 className="mt-1 text-3xl font-bold dark:text-white">
-                Model Sign-up Fee
+                Activate Creator Dashboard
               </h2>
-              <div className="mt-4 flex items-baseline ">
+              <div className="mt-4 flex items-baseline gap-1">
+                <Image
+                  width={80}
+                  height={80}
+                  src="/site/coin.svg"
+                  className="w-auto h-8 aspect-square"
+                  alt=""
+                />
                 <span className="text-5xl font-extrabold text-primary-dark-pink">
-                  $7
+                  120
                 </span>
-                <span className="ml-1 text-xl text-gray-500 dark:text-gray-400">
+                <span className="text-xl text-gray-500 dark:text-gray-400">
                   .00
                 </span>
               </div>
