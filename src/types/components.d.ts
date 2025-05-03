@@ -718,3 +718,12 @@ export interface MessageResult {
   receiver: User;
   Conversations: Conversation;
 }
+// Exchange rate
+
+export type ExchangeRate = {
+  buyValue: number;
+  sellValue: number;
+  rate: number;
+  name: string;
+  symbol: string;
+};

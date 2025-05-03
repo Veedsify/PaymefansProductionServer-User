@@ -1,5 +1,6 @@
 import OtherTransactions from "@/components/transactions/other-transactions";
 import ROUTE from "@/config/routes";
+import { ExchangeRate } from "@/types/components";
 import { AuthUserProps } from "@/types/user";
 import axiosInstance from "@/utils/axios";
 import { getTransactionsData } from "@/utils/data/transactions";
@@ -19,16 +20,54 @@ const WalletPage = async () => {
   const token = (await cookies()).get("token")?.value;
   const user = (await getUserData()) as AuthUserProps;
   const { data } = await getTransactionsData(token as string);
-  const conversionRate = await axios
-    .post(
-      ROUTE.GET_POINTS_CONVERSION_RATE,
-      {},
-      { headers: { Authorization: `Bearer ${token}` } }
-    )
-    .catch((err) => {
-      console.log(err);
-      return { data: { rate: "0" } };
-    });
+  const rates = await axios(ROUTE.GET_PLATFROM_EXCHANGE_RATE);
+  function convertCurrency(
+    amount: number,
+    fromCurrency: string,
+    toCurrency: string
+  ): number {
+    if (fromCurrency === "POINTS") {
+      // Convert points to USD first (16 points = $1)
+      const usdAmount =
+        amount /
+        rates.data.data.find((rate: ExchangeRate) => rate.name === "POINTS")
+          ?.buyValue;
+
+      // Then convert USD to target currency
+      const targetRate =
+        rates.data.data.find((rate: ExchangeRate) => rate.name === toCurrency)
+          ?.buyValue || 1;
+
+      return usdAmount * targetRate;
+    }
+
+    // For other currency conversions
+    if (fromCurrency === "USD") {
+      // Direct conversion from USD
+      const toRate =
+        rates.data.data.find((rate: ExchangeRate) => rate.name === toCurrency)
+          ?.buyValue || 1;
+      return amount * toRate;
+    } else if (toCurrency === "USD") {
+      // Convert to USD
+      const fromRate =
+        rates.data.data.find((rate: ExchangeRate) => rate.name === fromCurrency)
+          ?.buyValue || 1;
+      return amount / fromRate;
+    } else {
+      // Convert through USD as intermediate
+      const fromRate =
+        rates.data.data.find((rate: ExchangeRate) => rate.name === fromCurrency)
+          ?.buyValue || 1;
+      const toRate =
+        rates.data.data.find((rate: ExchangeRate) => rate.name === toCurrency)
+          ?.buyValue || 1;
+
+      // First convert to USD then to target currency
+      const usdAmount = amount / fromRate;
+      return usdAmount * toRate;
+    }
+  }
 
   const { wallet } = await axiosInstance
     .post(
@@ -58,10 +97,23 @@ const WalletPage = async () => {
   const transactions = data.slice(0, 5);
 
   function calculateAmount() {
-    return Number(conversionRate.data.rate * points).toLocaleString();
+    const convert = convertCurrency(points, "POINTS", user?.currency || "USD");
+    return convert.toLocaleString("en-US", {
+      style: "currency",
+      currency:
+        rates.data.data.find(
+          (rate: ExchangeRate) => rate.name === user?.currency
+        ).name || "USD",
+    });
   }
 
-  function calculateAmountInDollars() {}
+  function calculateAmountInDollars() {
+    const usd = convertCurrency(points, "POINTS", "USD");
+    return usd.toLocaleString("en-US", {
+      style: "currency",
+      currency: "USD",
+    });
+  }
 
   return (
     <div className="p-4 py-8">
@@ -95,7 +147,7 @@ const WalletPage = async () => {
             Your Balance
           </small>
           <h1 className="text-2xl md:text-4xl font-extrabold tracking-tight">
-            ₦ {calculateAmount()}
+            {calculateAmount()}
           </h1>
         </div>
         <div className="flex self-center mt-4 md:mt-0">
@@ -119,7 +171,7 @@ const WalletPage = async () => {
             Your Balance
           </small>
           <h1 className="text-2xl md:text-4xl font-extrabold tracking-tight">
-            ₦ {calculateAmount()}
+            {calculateAmountInDollars()}
           </h1>
         </div>
         <div className="flex self-center mt-4 md:mt-0">

@@ -3,19 +3,13 @@
 import { POINTS_CONFIG } from "@/config/config";
 import ROUTE from "@/config/routes";
 import { useUserAuthContext } from "@/lib/userUseContext";
+import { ExchangeRate } from "@/types/components";
 import { getToken } from "@/utils/cookie.get";
 import { LucideLoader } from "lucide-react";
 import Image from "next/image";
 import { ChangeEvent, useEffect, useState } from "react";
 import toast from "react-hot-toast";
 
-type ExchangeRate = {
-  buyValue: number;
-  sellValue: number;
-  rate: number;
-  name: string;
-  symbol: string;
-};
 export const currencyRates = [
   { rate: 1, name: "USD", sellValue: 1, buyValue: 1, symbol: "$" },
   { rate: 1, name: "NGN", sellValue: 1509, buyValue: 1632, symbol: "₦" },
@@ -104,15 +98,47 @@ const AddPoints = () => {
     fromCurrency: string,
     toCurrency: string
   ): number {
-    const fromRate =
-      rates.find((rate) => rate.name === fromCurrency)?.buyValue || 1;
-    const toRate =
-      rates.find((rate) => rate.name === toCurrency)?.buyValue || 1;
+    if (fromCurrency === "POINTS") {
+      // Convert points to USD first (16 points = $1)
+      const usdAmount =
+        amount /
+        (rates.find((rate: ExchangeRate) => rate.name === "POINTS")?.buyValue ||
+          16);
 
-    console.log("toRate", toRate);
+      // Then convert USD to target currency
+      const targetRate =
+        rates.find((rate: ExchangeRate) => rate.name === toCurrency)
+          ?.buyValue || 1;
 
-    // Convert from source currency to USD (our base currency)
-    return (amount / fromRate) * toRate;
+      return usdAmount * targetRate;
+    }
+
+    // For other currency conversions
+    if (fromCurrency === "USD") {
+      // Direct conversion from USD
+      const toRate =
+        rates.find((rate: ExchangeRate) => rate.name === toCurrency)
+          ?.buyValue || 1;
+      return amount * toRate;
+    } else if (toCurrency === "USD") {
+      // Convert to USD
+      const fromRate =
+        rates.find((rate: ExchangeRate) => rate.name === fromCurrency)
+          ?.buyValue || 1;
+      return amount / fromRate;
+    } else {
+      // Convert through USD as intermediate
+      const fromRate =
+        rates.find((rate: ExchangeRate) => rate.name === fromCurrency)
+          ?.buyValue || 1;
+      const toRate =
+        rates.find((rate: ExchangeRate) => rate.name === toCurrency)
+          ?.buyValue || 1;
+
+      // First convert to USD then to target currency
+      const usdAmount = amount / fromRate;
+      return usdAmount * toRate;
+    }
   }
 
   // Format converted amount for display
