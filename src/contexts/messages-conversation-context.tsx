@@ -1,20 +1,23 @@
 "use client";
 
-import { socket } from "@/components/sub_components/sub/socket";
-import { useUserAuthContext } from "@/lib/userUseContext";
-import { UserConversations } from "@/types/components";
-import { ReactNode, useEffect, useMemo } from "react";
-import axios from "axios";
-import { getToken } from "@/utils/cookie.get";
-import _ from "lodash";
-import { MESSAGE_CONFIG } from "@/config/config";
 import {
-  useQuery,
-  useInfiniteQuery,
-  useQueryClient,
-} from "@tanstack/react-query";
+  createContext,
+  useContext,
+  useEffect,
+  useMemo,
+  ReactNode,
+} from "react";
+import { useUserAuthContext } from "@/lib/userUseContext";
+import { getSocket } from "@/components/sub_components/sub/socket";
+import { MESSAGE_CONFIG } from "@/config/config";
+import { getToken } from "@/utils/cookie.get";
+import axios from "axios";
+import { useInfiniteQuery, useQueryClient } from "@tanstack/react-query";
 
-// Axios instance for API calls
+const MessagesConversationContext = createContext<ReturnType<
+  typeof useProvideConversations
+> | null>(null);
+
 const axiosInstance = axios.create({
   baseURL: process.env.NEXT_PUBLIC_TS_EXPRESS_URL,
   headers: {
@@ -22,54 +25,31 @@ const axiosInstance = axios.create({
   },
 });
 
-// Fetch conversations function with pagination
 const fetchConversations = async (page: number) => {
-  const response = await axiosInstance.get(`/conversations/my-conversations`, {
+  const res = await axiosInstance.get("/conversations/my-conversations", {
     params: {
       page,
       limit: MESSAGE_CONFIG.MESSAGE_PAGINATION,
     },
   });
-  return response.data;
+  return res.data;
 };
 
-// Custom hook for conversations using TanStack Query
-export const useConversations = () => {
-  const queryClient = useQueryClient();
-
+const useProvideConversations = () => {
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage } =
     useInfiniteQuery({
       queryKey: ["conversations"],
       queryFn: ({ pageParam = 1 }) => fetchConversations(pageParam),
-      getNextPageParam: (lastPage) => {
-        if (lastPage.hasMore) {
-          return lastPage.page + 1;
-        }
-        return undefined;
-      },
+      getNextPageParam: (lastPage) =>
+        lastPage?.hasMore ? lastPage.page + 1 : undefined,
+      staleTime: 1000 * 60 * 5, // 5 minutes
+      refetchOnMount: false,
+      refetchOnWindowFocus: false,
       initialPageParam: 1,
     });
 
-  // Prefetch conversations on socket event
-  useEffect(() => {
-    const handlePrefetch = () => {
-      queryClient.invalidateQueries({ queryKey: ["conversations"] });
-    };
-
-    const throttledPrefetch = _.throttle(handlePrefetch, 1000, {
-      leading: true,
-      trailing: false,
-    });
-
-    socket.on("prefetch-conversations", throttledPrefetch);
-
-    return () => {
-      socket.off("prefetch-conversations", throttledPrefetch);
-    };
-  }, [queryClient]);
-
   return {
-    conversations: data?.pages.flatMap((page) => page.conversations) || [],
+    conversations: data?.pages.flatMap((p) => p.conversations) || [],
     unreadCount: data?.pages[0]?.unreadCount || 0,
     hasMore: hasNextPage,
     fetchNextPage,
@@ -83,25 +63,34 @@ export const MessagesConversationProvider = ({
   children: ReactNode;
 }) => {
   const { user } = useUserAuthContext();
-  const {
-    conversations,
-    unreadCount,
-    hasMore,
-    fetchNextPage,
-    isFetchingNextPage,
-  } = useConversations();
-
+  const socket = getSocket();
   const userid = useMemo(() => user?.user_id, [user?.user_id]);
   const username = useMemo(() => user?.username, [user?.username]);
+
+  const value = useProvideConversations();
 
   useEffect(() => {
     if (userid && username) {
       socket.emit("user-connected", {
         userId: userid,
-        username: username,
+        username,
       });
     }
   }, [userid, username]);
 
-  return <>{children}</>;
+  return (
+    <MessagesConversationContext.Provider value={value}>
+      {children}
+    </MessagesConversationContext.Provider>
+  );
+};
+
+export const useMessagesConversation = () => {
+  const context = useContext(MessagesConversationContext);
+  if (!context) {
+    throw new Error(
+      "useMessagesConversation must be used within a MessagesConversationProvider"
+    );
+  }
+  return context;
 };

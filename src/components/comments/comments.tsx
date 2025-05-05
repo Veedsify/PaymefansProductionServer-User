@@ -30,7 +30,13 @@ interface Comment {
   name: string;
   profile_image: string;
 }
-const CommentsHolder = ({ post, postComments}: { post: PostData, postComments: Comment[] }) => {
+const CommentsHolder = ({
+  post,
+  postComments,
+}: {
+  post: PostData;
+  postComments: Comment[];
+}) => {
   const [loading, setLoading] = useState(true);
   const [postComment, setPostComments] = useState<PostCompomentProps[]>([]);
   const [page, setPage] = useState(1);
@@ -155,7 +161,7 @@ const CommentsHolder = ({ post, postComments}: { post: PostData, postComments: C
                   className="mb-3"
                   dangerouslySetInnerHTML={{ __html: comment.comment }}
                 ></div>
-                <div className="grid grid-cols-3 gap-2">
+                <div className="flex items-baseline flex-wrap max-w-md gap-2">
                   {comment.attachment?.map((media, index) => (
                     <div
                       key={index}
@@ -166,7 +172,7 @@ const CommentsHolder = ({ post, postComments}: { post: PostData, postComments: C
                         src={media.path}
                         width="500"
                         height="500"
-                        className="h-auto aspect-square rounded-lg object-cover cursor-pointer"
+                        className="h-auto max-w-40 aspect-square rounded-lg object-cover cursor-pointer"
                         alt=""
                       />
                     </div>

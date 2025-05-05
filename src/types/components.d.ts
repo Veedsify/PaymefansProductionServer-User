@@ -231,6 +231,8 @@ export type UploadResponseResponse = {
 export interface Attachment {
   type: string;
   extension: string;
+  id: string;
+  poster?: string;
   size: number;
   name: string;
   url: string;

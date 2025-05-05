@@ -14,9 +14,7 @@ const Messages = async () => {
     <div className="md:py-5 md:px-8 p-3">
       <MessageCounter />
       <MessageSearch />
-      <MessagesConversationProvider>
-        <ConversationComponent />
-      </MessagesConversationProvider>
+      <ConversationComponent />
     </div>
   );
 };

@@ -34,13 +34,14 @@ const UploadMediaModal: React.FC = () => {
 
       if (e.target.files) {
         const selectedFiles = Array.from(e.target.files);
-        const validFiles = selectedFiles.filter((file) =>
-          imageTypes.includes(file.type),
+        const validFiles = selectedFiles.filter(
+          (file) =>
+            imageTypes.includes(file.type) || file.type.startsWith("video/")
         );
 
         if (validFiles.length !== selectedFiles.length) {
           toast.error(
-            "Invalid file type, please select an image or video file",
+            "Invalid file type, please select an image or video file"
           );
           return;
         }
@@ -48,7 +49,7 @@ const UploadMediaModal: React.FC = () => {
         addFiles(e.target.files);
       }
     },
-    [addFiles],
+    [addFiles]
   );
 
   if (!isModalOpen) return null;
@@ -160,10 +161,11 @@ const UploadMediaModal: React.FC = () => {
                 <SwiperSlide key={index} className="cursor-pointer">
                   <div
                     onClick={() => setActiveFileIndex(index)}
-                    className={`relative transition-all ${activeFileIndex === index
+                    className={`relative transition-all ${
+                      activeFileIndex === index
                         ? "ring-2 ring-primary-dark-pink"
                         : "ring-1 ring-gray-200 dark:ring-gray-700"
-                      } bg-gray-50 dark:bg-gray-800`}
+                    } bg-gray-50 dark:bg-gray-800`}
                   >
                     <Image
                       src={file.posterUrl || file.previewUrl}

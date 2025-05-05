@@ -4,6 +4,7 @@ import CreateSubscriptionButton from "@/components/sub_components/create-subscri
 import FollowUserComponent from "@/components/sub_components/followUserComponent";
 import ProfileTabsOther from "@/components/sub_components/profile_tabs_other";
 import ActiveProfileTag from "@/components/sub_components/sub/active-profile-tag";
+import SuspendedUserPage from "@/components/sub_components/suspended";
 import { ProfileUserProps } from "@/types/user";
 import getUserProfile from "@/utils/data/profile-data";
 import getUserData from "@/utils/data/user-data";
@@ -46,6 +47,13 @@ const ProfilePage = async ({ params }: { params: paramsProp }) => {
   if (!userdata) return <UserNotFound userid={id} />;
   if (user?.id === userdata.id) redirect("/profile");
 
+  const verifiedUsers = ["@paymefans", "@paymefans1", "@paymefans2"];
+  const isVerified = verifiedUsers.includes(userdata.username);
+
+  if (userdata && userdata.active_status === false) {
+    return <SuspendedUserPage userdata={userdata} />;
+  }
+
   return (
     <>
       <div className="overflow-hidden">
@@ -77,15 +85,21 @@ const ProfilePage = async ({ params }: { params: paramsProp }) => {
         <div className="flex flex-col gap-2 px-2 mt-2 mb-12 md:px-5 dark:text-white">
           <div className="flex flex-col ">
             <h1 className="font-bold flex items-center gap-2">
-              {userdata.username == "@paymefans" && (
-                <span title="Verified">
-                  <Verified stroke="goldenrod" />
+              {userdata?.name}
+              {isVerified && (
+                <span className="relative group">
+                  <Verified stroke="limegreen" />
+                  <span className="absolute left-1/2 -translate-x-1/2 mt-2 px-2 py-1 rounded bg-black text-white text-xs opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-10">
+                    Verified
+                  </span>
                 </span>
               )}
-              {userdata?.name}
               {userdata.is_model && (
-                <span title="Verified">
+                <span className="relative group">
                   <Verified stroke="purple" />
+                  <span className="absolute left-1/2 -translate-x-1/2 mt-2 px-2 py-1 rounded bg-black text-white text-xs opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-10">
+                    Model Verified
+                  </span>
                 </span>
               )}
               <ActiveProfileTag userid={userdata.username} />

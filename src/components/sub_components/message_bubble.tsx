@@ -2,7 +2,7 @@
 import React, { useCallback, useMemo, useRef, useEffect } from "react";
 import { useUserAuthContext } from "@/lib/userUseContext";
 import { Attachment, MessageBubbleProps } from "@/types/components";
-import { socket } from "./sub/socket";
+import { getSocket } from "./sub/socket";
 import MessageBubbleContent from "./message-bubble-content";
 
 const MessageBubble: React.FC<MessageBubbleProps> = ({
@@ -50,6 +50,7 @@ const MessageBubble: React.FC<MessageBubbleProps> = ({
 
   // Prevent duplicate socket sends for the same message
   const sentRef = useRef(false);
+  const socket = getSocket();
   const handleSendSocketMessage = useCallback(
     (attachments?: Attachment[]) => {
       if (sentRef.current) return;
@@ -91,14 +92,16 @@ const MessageBubble: React.FC<MessageBubbleProps> = ({
         message={message?.message?.trim() || ""}
       />
       <small
-        className={`text-xs mt-2 flex items-center dark:text-gray-200 ${isSender ? "pt-1 float-right" : ""
-          }`}
+        className={`text-xs mt-2 flex items-center dark:text-gray-200 ${
+          isSender ? "pt-1 float-right" : ""
+        }`}
       >
         {dateString}
         {isSender && (
           <span
-            className={`ml-2 h-3 w-3 rounded-3xl ${seen ? "bg-primary-dark-pink" : "bg-gray-300"
-              }`}
+            className={`ml-2 h-3 w-3 rounded-3xl ${
+              seen ? "bg-primary-dark-pink" : "bg-gray-300"
+            }`}
             aria-label={seen ? "Seen" : "Not seen"}
           />
         )}
@@ -108,8 +111,9 @@ const MessageBubble: React.FC<MessageBubbleProps> = ({
 
   return (
     <div
-      className={`flex items-center w-full ${isSender ? "justify-end" : "justify-start"
-        }`}
+      className={`flex items-center w-full ${
+        isSender ? "justify-end" : "justify-start"
+      }`}
     >
       {Bubble}
     </div>

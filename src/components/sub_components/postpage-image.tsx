@@ -12,7 +12,7 @@ import HLSVideoPlayer from "./videoplayer";
 import { MouseEvent } from "react";
 import { useInView } from "react-intersection-observer";
 import { useUserAuthContext } from "@/lib/userUseContext";
-import { socket } from "./sub/socket";
+import { getSocket } from "./sub/socket";
 
 // Define props type for the component
 interface PostPageImageProps {
@@ -22,7 +22,7 @@ interface PostPageImageProps {
   data: {
     id: string;
     post_status: string;
-  }
+  };
   media: UserMediaProps;
   postOwnerId: string;
 }
@@ -37,12 +37,13 @@ const PostPageImage: React.FC<PostPageImageProps> = ({
 }) => {
   const router = useRouter();
   const { fullScreenPreview } = usePostComponent();
-    const { user: authUser } = useUserAuthContext();
+  const { user: authUser } = useUserAuthContext();
   const [canplay, setCanplay] = useState(false);
   const { ref, inView } = useInView({
     threshold: 0.5,
-    triggerOnce: true
+    triggerOnce: true,
   });
+  const socket = getSocket();
 
   // Mark post as viewed
   useEffect(() => {
@@ -106,8 +107,8 @@ const PostPageImage: React.FC<PostPageImageProps> = ({
     });
   };
 
-  const handlePriceClick = (e: MouseEvent<HTMLDivElement>)=>{
-    e.preventDefault()
+  const handlePriceClick = (e: MouseEvent<HTMLDivElement>) => {
+    e.preventDefault();
     swal({
       title: "You need to pay 5,000 coins to view this post",
       icon: "warning",
@@ -123,7 +124,7 @@ const PostPageImage: React.FC<PostPageImageProps> = ({
         router.push(`/wallet`);
       }
     });
-  }
+  };
 
   if (
     media.media_state == "processing" &&
@@ -149,6 +150,7 @@ const PostPageImage: React.FC<PostPageImageProps> = ({
             allOthers={{
               onClick: handleClick,
               autoPlay: true,
+              muted: true,
               poster: canView ? media.poster : "/site/blur.jpg",
             }}
             className="w-full block aspect-[5/3] md:aspect-square object-cover cursor-pointer"
@@ -194,8 +196,9 @@ const PostPageImage: React.FC<PostPageImageProps> = ({
       )}
       {media.accessible_to === "price" && !canView && (
         <div
-            onClick={handlePriceClick}
-            className="absolute inset-0 z-10 flex items-center justify-center overflow-hidden rounded-lg bg-black/20">
+          onClick={handlePriceClick}
+          className="absolute inset-0 z-10 flex items-center justify-center overflow-hidden rounded-lg bg-black/20"
+        >
           <Image
             src={media.blur ? media.blur.trimEnd() : "/site/blur.jpg"}
             alt=""

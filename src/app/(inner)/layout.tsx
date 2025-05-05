@@ -1,6 +1,6 @@
 import "../globals.css";
 import type { Metadata } from "next";
-import { Inter_Tight } from "next/font/google";
+// import { Inter } from "next/font/google";
 import localFont from "next/font/local";
 import MenuButtons from "@/components/modals/menu_buttons";
 import SideModels from "@/components/models/side_models";
@@ -13,17 +13,18 @@ import getUserData from "@/utils/data/user-data";
 import PostComponentPreview from "@/components/post/full-component-preview";
 import { UserContextProvider } from "@/lib/userUseContext";
 import { UserPointsContextProvider } from "@/contexts/user-points-context";
-import { MessagesConversationProvider } from "@/contexts/messages-conversation-context";
 import Loader from "@/components/common/loader";
 import ToggleWishListProvider from "@/contexts/toggle-wishlist";
 import WishList from "@/components/sub_components/wishlist";
-// import { GeistSans } from "geist/font/sans";
+import { GeistSans } from "geist/font/sans";
+import { MessagesConversationProvider } from "@/contexts/messages-conversation-context";
+import UserAccountSupendedScreen from "@/components/sub_components/user-account-suspended-screen";
 
-const font = Inter_Tight({
-  weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
-  subsets: ["latin", "latin-ext"],
-  display: "swap",
-});
+// const font = Inter({
+//   weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
+//   subsets: ["latin", "latin-ext"],
+//   display: "swap",
+// });
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -37,11 +38,24 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   const user = await getUserData();
+
+  if (user && user.active_status === false) {
+    return (
+      <html>
+        <body
+          className={`bg-white dark:bg-gray-950 min-h-screen flex items-center justify-center ${GeistSans.className}`}
+        >
+          <UserAccountSupendedScreen user={user} />
+        </body>
+      </html>
+    );
+  }
+
   return (
     <html lang="en">
       <body
         className={`
-          ${font.className}
+          ${GeistSans.className}
                  dark:bg-gray-950 min-h-screen`}
       >
         <UserContextProvider user={user}>
@@ -72,16 +86,16 @@ export default async function RootLayout({
                     },
                   }}
                 />
-                <div className="relative grid h-screen lg:grid-cols-9">
+                <div className="relative grid h-screen lg:grid-cols-8">
                   <MessagesConversationProvider>
                     <ToggleWishListProvider>
                       <div className="col-span-2">
                         <SideBar />
                       </div>
-                      <div className="relative h-screen col-span-7 overflow-auto border-r border-pink-50">
+                      <div className="relative h-screen col-span-6 overflow-auto border-r border-pink-50">
                         <Header />
-                        <div className="grid lg:grid-cols-7 pt-[73px] lg:pt-[48px] h-screen">
-                          <div className="flex flex-col h-full col-span-4">
+                        <div className="grid lg:grid-cols-6 pt-[73px] lg:pt-[48px] h-screen">
+                          <div className="flex flex-col h-full col-span-3">
                             <div className="w-full h-full md:border-r border-primary-dark-pink/40 dark:border-slate-800">
                               {children}
                             </div>

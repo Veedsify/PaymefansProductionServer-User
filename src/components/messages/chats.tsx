@@ -13,12 +13,11 @@ import {
 import MessageBubble from "../sub_components/message_bubble";
 import MessageInput from "../sub_components/message_input";
 import { useUserAuthContext } from "@/lib/userUseContext";
-import { socket } from "../sub_components/sub/socket";
+import { getSocket } from "../sub_components/sub/socket";
 import swal from "sweetalert";
 import { MediaFile, Message } from "@/types/components";
 import ActiveProfileTag from "../sub_components/sub/active-profile-tag";
 import { MediaProvider } from "@/contexts/message-media-context";
-import { useQueryClient } from "@tanstack/react-query";
 import { useInView } from "react-intersection-observer";
 import Loader from "../lib_components/loading-animation";
 
@@ -51,7 +50,6 @@ const Chats: React.FC<ChatProps> = React.memo(
     onLoadMore,
     isFetchingMore,
   }) => {
-    const queryClient = useQueryClient();
     const { user } = useUserAuthContext();
     const scrollRef = useRef<HTMLDivElement>(null);
     const typingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -60,12 +58,12 @@ const Chats: React.FC<ChatProps> = React.memo(
       threshold: 0.5,
       triggerOnce: false, // keep watching
     });
+    const socket = getSocket();
 
     const hasCalledRef = useRef(false);
     // Track if the user is at the bottom of the messages
     const [userScrolledUp, setUserScrolledUp] = React.useState(false);
     const messagesContainerRef = useRef<HTMLDivElement>(null);
-
 
     // Scroll to bottom utility
     const scrollToBottom = useCallback(() => {
@@ -79,7 +77,10 @@ const Chats: React.FC<ChatProps> = React.memo(
       const handleScroll = () => {
         // If the user is within 100px of the bottom, consider as "at bottom"
         const isAtBottom =
-          container.scrollHeight - container.scrollTop - container.clientHeight < 100;
+          container.scrollHeight -
+            container.scrollTop -
+            container.clientHeight <
+          100;
         setUserScrolledUp(!isAtBottom);
       };
       container.addEventListener("scroll", handleScroll);
@@ -174,7 +175,7 @@ const Chats: React.FC<ChatProps> = React.memo(
           socket.emit("new-message", newMessage);
         }
 
-        setAllMessages((prev) => _.uniqBy([...prev, newMessage], 'id'));
+        setAllMessages((prev) => _.uniqBy([...prev, newMessage], "id"));
       },
       [conversationId, user?.user_id, setAllMessages]
     );
@@ -222,16 +223,34 @@ const Chats: React.FC<ChatProps> = React.memo(
           if (refresh) window.location.reload();
         });
       };
+
+      // Event: Message seen
+      const handleMessageSeenUpdated = ({
+        messageId,
+      }: {
+        messageId: string;
+      }) => {
+        setAllMessages((prev) =>
+          prev.map((message) =>
+            message.message_id === messageId
+              ? { ...message, seen: true }
+              : message
+          )
+        );
+      };
+
       // Join conversation and set up listeners
       socket.emit("join", conversationId);
       socket.on("message", handleMessageReceived);
       socket.on("message-error", handleMessageError);
       socket.on("sender-typing", handleSenderTyping);
+      socket.on("message-seen-updated", handleMessageSeenUpdated);
       // Clean up
       return () => {
         socket.off("message", handleMessageReceived);
         socket.off("message-error", handleMessageError);
         socket.off("sender-typing", handleSenderTyping);
+        socket.off("message-seen-updated", handleMessageSeenUpdated);
         if (typingTimeoutRef.current) clearTimeout(typingTimeoutRef.current);
       };
       // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -239,7 +258,6 @@ const Chats: React.FC<ChatProps> = React.memo(
       conversationId,
       user?.user_id,
       receiver?.user_id,
-      queryClient,
       handleSenderTyping,
       scrollToBottom,
       userScrolledUp,
@@ -338,12 +356,12 @@ const Chats: React.FC<ChatProps> = React.memo(
         </div>
         {/* Input */}
         <div className="sticky bottom-0 z-50 p-4 bg-white border-t dark:bg-gray-800 dark:border-gray-950 shrink-0">
-            <MessageInput
-              receiver={receiver}
-              isFirstMessage={allMessages.length === 0}
-              sendMessage={sendMessage} // Use the new sendMessage function
-              sendTyping={sendTyping} // Pass the typing handler
-            />
+          <MessageInput
+            receiver={receiver}
+            isFirstMessage={allMessages.length === 0}
+            sendMessage={sendMessage} // Use the new sendMessage function
+            sendTyping={sendTyping} // Pass the typing handler
+          />
         </div>
       </div>
     );

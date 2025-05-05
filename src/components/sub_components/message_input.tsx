@@ -13,7 +13,7 @@ import {
 } from "react";
 import toast from "react-hot-toast";
 import swal from "sweetalert";
-import { useConversations } from "@/contexts/messages-conversation-context";
+import { useMessagesConversation } from "@/contexts/messages-conversation-context";
 import { Attachment, MessageInputProps } from "@/types/components";
 import axiosInstance from "@/utils/axios";
 import { getToken } from "@/utils/cookie.get";
@@ -55,7 +55,7 @@ const MessageInput = ({
   const { user } = useUserAuthContext();
   const ref = useRef<HTMLDivElement>(null);
   const { points } = useUserPointsContext();
-  const { conversations } = useConversations();
+  const { conversations } = useMessagesConversation();
   const [isTyping, setIsTyping] = useState(false);
   const typingTimeout = useRef<number | null>(null);
   const token = getToken();

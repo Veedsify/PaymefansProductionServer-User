@@ -1,5 +1,5 @@
 "use client";
-import { socket } from "@/components/sub_components/sub/socket";
+import { getSocket } from "@/components/sub_components/sub/socket";
 import { useUserPointsContext } from "@/contexts/user-points-context";
 import { useUserAuthContext } from "@/lib/userUseContext";
 import { getToken } from "@/utils/cookie.get";
@@ -50,6 +50,7 @@ const Subscribe = () => {
   const [profileUser, setProfileUser] = useState<ProfileUser>();
   const router = useRouter();
   const { points } = useUserPointsContext();
+  const socket = getSocket();
   if (user?.user_id === params.user_id) {
     router.push("/profile");
   }
@@ -163,8 +164,8 @@ const Subscribe = () => {
               No Subscription Plans
             </h3>
             <p className="text-gray-600 leading-relaxed">
-              This creator hasn&apos;t set up any subscription plans yet. Check back
-              later for updates.
+              This creator hasn&apos;t set up any subscription plans yet. Check
+              back later for updates.
             </p>
           </div>
         )}
@@ -173,64 +174,65 @@ const Subscribe = () => {
           Array.isArray(
             profileUser.ModelSubscriptionPack.ModelSubscriptionTier
           ) &&
-          profileUser.ModelSubscriptionPack.ModelSubscriptionTier.length > 0 && (
+          profileUser.ModelSubscriptionPack.ModelSubscriptionTier.length >
+            0 && (
             <div className="grid items-stretch xl:grid-cols-2 2xl:grid-cols-3 gap-8 mt-12">
               {profileUser.ModelSubscriptionPack.ModelSubscriptionTier.map(
-            (tier, index) => (
-              <div
-                key={tier.id}
-                className="group relative p-8 border border-gray-200 rounded-3xl shadow-sm hover:shadow-2xl hover:border-primary-dark-pink/40 transition-all duration-300 flex flex-col justify-between bg-gradient-to-br from-white via-gray-50 to-pink-50 overflow-hidden"
-              >
-                {/* Decorative background pattern */}
-                <div className="absolute inset-0 pointer-events-none">
-                  <div className="absolute -right-10 -top-10 w-36 h-36 bg-primary-dark-pink/10 rounded-full blur-2xl" />
-                  <div className="absolute -left-10 -bottom-10 w-28 h-28 bg-primary-dark-pink/10 rounded-full blur-xl" />
-                </div>
+                (tier, index) => (
+                  <div
+                    key={tier.id}
+                    className="group relative p-8 border border-gray-200 rounded-3xl shadow-sm hover:shadow-2xl hover:border-primary-dark-pink/40 transition-all duration-300 flex flex-col justify-between bg-gradient-to-br from-white via-gray-50 to-pink-50 overflow-hidden"
+                  >
+                    {/* Decorative background pattern */}
+                    <div className="absolute inset-0 pointer-events-none">
+                      <div className="absolute -right-10 -top-10 w-36 h-36 bg-primary-dark-pink/10 rounded-full blur-2xl" />
+                      <div className="absolute -left-10 -bottom-10 w-28 h-28 bg-primary-dark-pink/10 rounded-full blur-xl" />
+                    </div>
 
-                <div className="relative flex flex-col items-center">
-                  {/* Price section */}
-                  <div className="flex justify-center gap-3 items-center mb-4">
-                <Image
-                  width={36}
-                  height={36}
-                  src="/site/coin.svg"
-                  className="w-9 h-9 aspect-square group-hover:scale-110 transition-transform duration-300"
-                  alt="Price icon"
-                />
-                <span className="font-extrabold text-primary-dark-pink text-3xl drop-shadow-sm">
-                  {numeral(tier.tier_price).format("0,0")}
-                </span>
-                  </div>
+                    <div className="relative flex flex-col items-center">
+                      {/* Price section */}
+                      <div className="flex justify-center gap-3 items-center mb-4">
+                        <Image
+                          width={36}
+                          height={36}
+                          src="/site/coin.svg"
+                          className="w-9 h-9 aspect-square group-hover:scale-110 transition-transform duration-300"
+                          alt="Price icon"
+                        />
+                        <span className="font-extrabold text-primary-dark-pink text-3xl drop-shadow-sm">
+                          {numeral(tier.tier_price).format("0,0")}
+                        </span>
+                      </div>
 
-                  {/* Tier name */}
-                  <h3 className="font-extrabold text-2xl lg:text-3xl mb-2 text-center text-gray-900 tracking-tight">
-                {tier.tier_name}
-                  </h3>
+                      {/* Tier name */}
+                      <h3 className="font-extrabold text-2xl lg:text-3xl mb-2 text-center text-gray-900 tracking-tight">
+                        {tier.tier_name}
+                      </h3>
 
-                  {/* Duration badge */}
-                  <div className="bg-primary-dark-pink/10 py-2 px-5 rounded-full mb-5 mx-auto w-fit shadow-sm">
-                <p className="text-sm font-semibold text-primary-dark-pink">
-                  {getFormattedStringFromDays(tier.tier_duration)}
-                </p>
-                  </div>
+                      {/* Duration badge */}
+                      <div className="bg-primary-dark-pink/10 py-2 px-5 rounded-full mb-5 mx-auto w-fit shadow-sm">
+                        <p className="text-sm font-semibold text-primary-dark-pink">
+                          {getFormattedStringFromDays(tier.tier_duration)}
+                        </p>
+                      </div>
 
-                  {/* Description */}
-                  <p className="text-gray-700 leading-relaxed text-center mb-8 min-h-[60px]">
-                {tier.tier_description}
-                  </p>
-                </div>
+                      {/* Description */}
+                      <p className="text-gray-700 leading-relaxed text-center mb-8 min-h-[60px]">
+                        {tier.tier_description}
+                      </p>
+                    </div>
 
-                {/* Subscribe button */}
-                <button
-                  onClick={() => subscribeToUser(tier.id)}
-                  className="relative block w-full py-4 px-6 bg-gradient-to-r from-primary-dark-pink via-pink-500 to-primary-dark-pink text-white font-bold rounded-xl shadow-lg
+                    {/* Subscribe button */}
+                    <button
+                      onClick={() => subscribeToUser(tier.id)}
+                      className="relative block w-full py-4 px-6 bg-gradient-to-r from-primary-dark-pink via-pink-500 to-primary-dark-pink text-white font-bold rounded-xl shadow-lg
                 hover:from-pink-600 hover:to-primary-dark-pink/90 hover:scale-105 active:scale-100 transition-all duration-200
                 focus:outline-none focus:ring-2 focus:ring-primary-dark-pink/40"
-                >
-                  Subscribe Now
-                </button>
-              </div>
-            )
+                    >
+                      Subscribe Now
+                    </button>
+                  </div>
+                )
               )}
             </div>
           )}

@@ -25,14 +25,14 @@ import PointsCount from "../sub_components/sub/point-count";
 import NotificationSidebarLink from "../sub_components/sub/notification-sidebar-link";
 import useThemeToggle from "../sub_components/sub/theme-toggle";
 import axiosInstance from "@/utils/axios";
-import { useConversations } from "@/contexts/messages-conversation-context";
+import { useMessagesConversation } from "@/contexts/messages-conversation-context";
 
 const SideBar = React.memo(() => {
   const router = useRouter();
   const { sideBarState, setSideBar } = useSideBarContext();
   const pathname = usePathname();
   const { user } = useUserAuthContext();
-  const { unreadCount } = useConversations();
+  const { unreadCount } = useMessagesConversation();
   const { theme, setTheme } = useThemeToggle();
   useEffect(() => {
     const closeSideBar = () => {

@@ -228,17 +228,16 @@ const VideoPlayer = ({
         }}
       >
         <video
-          ref={videoRef}
           {...allOthers}
+          ref={videoRef}
           className={`w-full ${className} transition-all duration-300`}
           onTimeUpdate={handleTimeUpdate}
           onLoadedMetadata={() => setDuration(videoRef.current?.duration || 0)}
-          muted
           style={{ background: "#18181b" }}
         ></video>
 
         {/* Loading Spinner Overlay - shown during initial loading */}
-        {(isLoading && modalOpen) && (
+        {isLoading && modalOpen && (
           <div className="absolute inset-0 flex items-center justify-center bg-black/50">
             <div className="flex flex-col items-center">
               <LucideLoader className="w-10 h-10 text-pink-400 animate-spin" />
@@ -261,10 +260,10 @@ const VideoPlayer = ({
         {modalOpen && (
           <>
             {/* Overlay gradient for better control visibility */}
-            <div className="absolute inset-0 transition-opacity duration-300 opacity-0 pointer-events-none bg-gradient-to-t from-black/80 via-black/30 to-transparent group-hover:opacity-100"></div>
+            <div className="absolute inset-0 transition-opacity duration-300 opacity-100 lg:opacity-0 pointer-events-none lg:bg-gradient-to-t lg:from-black/80 lg:via-black/30 lg:to-transparent lg:group-hover:opacity-100"></div>
 
             {/* Controls overlay at the bottom */}
-            <div className="absolute left-0 right-0 z-20 flex items-center justify-between px-6 py-4 transition-opacity duration-300 opacity-0 bottom-20 group-hover:opacity-100">
+            <div className="absolute left-0 right-0 z-20 flex items-center justify-between px-6 py-4 transition-opacity duration-300 opacity-100 lg:opacity-0  bottom-20 lg:group-hover:opacity-100">
               {/* Play/Pause button */}
               <button
                 onClick={(e) => {

@@ -51,20 +51,21 @@ const MessageSearch = () => {
     }
   };
 
-  // Debounce search function to limit API calls
-  const debouncedSearch = useCallback(
-    debounce((searchTerm: string) => {
-      fetchSearchResults(searchTerm);
-    }, 300),
-    []
-  );
+  // Debounce search function using setTimeout
+  const debounceTimeout = useRef<NodeJS.Timeout | null>(null);
 
-  // Handle input change and trigger debounced search
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setLoading(true);
     const searchTerm = event.target.value;
     setQuery(searchTerm);
-    debouncedSearch(searchTerm);
+
+    if (debounceTimeout.current) {
+      clearTimeout(debounceTimeout.current);
+    }
+
+    debounceTimeout.current = setTimeout(() => {
+      fetchSearchResults(searchTerm);
+    }, 300);
   };
 
   useEffect(() => {
@@ -178,7 +179,7 @@ const MessageSearch = () => {
                             result.sender.name
                           )}
                           <span className="text-xs font-normal text-gray-500 dark:text-gray-400 ml-1">
-                            @{result.sender.username}
+                            {result.sender.username}
                           </span>
                         </h4>
                         <span className="text-xs text-gray-400 dark:text-gray-500 whitespace-nowrap">

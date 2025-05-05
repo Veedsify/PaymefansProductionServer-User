@@ -2,7 +2,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { getToken } from "@/utils/cookie.get";
 import { LiveStreamSocketProps } from "@/types/components";
-import { socket } from "@/components/sub_components/sub/socket";
+import { getSocket } from "@/components/sub_components/sub/socket";
 import { useUserAuthContext } from "@/lib/userUseContext";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
@@ -21,6 +21,7 @@ const LiveStreamSockets = ({ streamId }: LiveStreamSocketProps) => {
     const [commentsCount, setCommentsCount] = useState(0)
     const pathname = usePathname()
     const searchParams = useSearchParams()
+    const socket = getSocket();
     const router = useRouter()
     const token = getToken();
 

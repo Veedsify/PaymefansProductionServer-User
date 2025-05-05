@@ -8,13 +8,26 @@ import { useRouter } from "next/navigation";
 import React, { MouseEvent, useEffect, useState } from "react";
 import ActiveProfileTag from "./sub/active-profile-tag";
 import { useInView } from "react-intersection-observer";
-import { socket } from "./sub/socket";
+import { getSocket } from "./sub/socket";
 import { Conversation } from "@/types/components";
-import { useConversations } from "@/contexts/messages-conversation-context";
+import { useMessagesConversation } from "@/contexts/messages-conversation-context";
+import { useQueryClient } from "@tanstack/react-query";
 
 const ConversationComponent = () => {
   const [loading, setLoading] = useState(true);
-  const { hasMore, conversations, fetchNextPage } = useConversations();
+  const { hasMore, conversations, fetchNextPage } = useMessagesConversation();
+  const socket = getSocket();
+  const queryClient = useQueryClient();
+  useEffect(() => {
+    const handlePrefetch = () => {
+      console.log("Invalidating conversations");
+      queryClient.invalidateQueries({ queryKey: ["conversations"] });
+    };
+    socket.on("prefetch-conversations", handlePrefetch);
+    return () => {
+      socket.off("prefetch-conversations", handlePrefetch);
+    };
+  }, []);
 
   const { ref, inView } = useInView({
     threshold: 0.5,
@@ -75,6 +88,7 @@ const ConversationCard = React.memo(
   ({ conversation }: ConversationCardProps) => {
     const router = useRouter();
     const { user } = useUserAuthContext();
+    const socket = getSocket();
 
     const handleClick = (e: MouseEvent<HTMLDivElement>) => {
       if ((e.target as HTMLElement).tagName !== "A") {

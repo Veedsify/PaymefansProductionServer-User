@@ -1,5 +1,5 @@
 "use client";
-import { socket } from "@/components/sub_components/sub/socket";
+import { getSocket } from "@/components/sub_components/sub/socket";
 import { useUserAuthContext } from "@/lib/userUseContext";
 import {
   createContext,
@@ -37,6 +37,7 @@ export const UserPointsContextProvider = ({
   const [points, setPoints] = useState(0);
   const { user } = useUserAuthContext();
   const { setTotalNotifications } = useNotificationStore();
+  const socket = getSocket();
 
   useEffect(() => {
     const HandleNotificationReceived = (res: any) => {
@@ -56,7 +57,6 @@ export const UserPointsContextProvider = ({
     if (!user?.user_id) return;
     socket.emit("notifications-join", user?.user_id);
     socket.on(`notifications-${user?.user_id}`, HandleNotificationReceived);
-
     socket.on("reconnect", HandleReconnect);
 
     return () => {

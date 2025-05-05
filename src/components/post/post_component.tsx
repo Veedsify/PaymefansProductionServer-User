@@ -32,7 +32,7 @@ import {
 import Hls from "hls.js";
 import HLSVideoPlayer from "../sub_components/videoplayer";
 import { useUserAuthContext } from "@/lib/userUseContext";
-import { socket } from "../sub_components/sub/socket";
+import { getSocket } from "../sub_components/sub/socket";
 import { useInView } from "react-intersection-observer";
 
 const PostComponent: React.FC<PostComponentProps> = ({
@@ -50,6 +50,7 @@ const PostComponent: React.FC<PostComponentProps> = ({
   const isSubscribed = authUser?.subscriptions?.includes(
     data.user?.id as number
   );
+  const socket = getSocket();
   const hasPaid = authUser?.purchasedPosts?.includes(data?.id as number);
   const { ref, inView } = useInView({
     threshold: 0.5,

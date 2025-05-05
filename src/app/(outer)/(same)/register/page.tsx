@@ -15,7 +15,7 @@ const Register = () => {
   const { setUser, user } = useUser();
   const router = useRouter();
   const UserInputCaptured = (
-    e: ChangeEvent<HTMLInputElement | HTMLSelectElement>,
+    e: ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
     const { name, value } = e.target;
     // Update userData state using spread operator to ensure immutability:
@@ -138,7 +138,7 @@ const Register = () => {
                   style={{ maxWidth: 100 }}
                   onChange={(e) => {
                     const selected = countries.find(
-                      (c) => c.code === e.target.value,
+                      (c) => c.code === e.target.value
                     );
                     if (selected) {
                       setUserData({
@@ -154,7 +154,7 @@ const Register = () => {
                   </option>
                   {countries.map((country, idx) => (
                     <option key={idx} value={country.code as string}>
-                      {country.dial_code} ({country.code})
+                      {country.dial_code} {country.name}
                     </option>
                   ))}
                 </select>
