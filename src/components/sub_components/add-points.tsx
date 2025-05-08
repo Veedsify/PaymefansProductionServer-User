@@ -26,7 +26,7 @@ const AddPoints = () => {
   const [error, setError] = useState(false);
   const [loading, setLoading] = useState(true);
   const [POINTS_PER_USD, setPointsPerUSD] = useState(16); // Default value
-
+  const PLATFORM_DEPOSITE_FEE = 0.1; // 10% fee
   useEffect(() => {
     const fetchRates = async () => {
       setLoading(true);
@@ -68,7 +68,7 @@ const AddPoints = () => {
   // Calculate platform fee (10% of input)
   function calculateFee(value: string) {
     let num = value.replace(/\D/g, "");
-    return (parseInt(num) * 0.1).toLocaleString();
+    return (parseInt(num) * PLATFORM_DEPOSITE_FEE).toLocaleString();
   }
 
   // Calculate points received
@@ -257,7 +257,12 @@ const AddPoints = () => {
           <div className="flex justify-between py-2">
             <p className="text-xl">Platform Fee</p>
             <p className="text-xl font-medium">
-              10% ({rates.find((rate) => rate.name === user?.currency)?.symbol}
+              {
+                <span className="text-primary-dark-pink">
+                  {PLATFORM_DEPOSITE_FEE * 100}%{" "}
+                </span>
+              }{" "}
+              ({rates.find((rate) => rate.name === user?.currency)?.symbol}
               {calculateFee(value)})
             </p>
           </div>

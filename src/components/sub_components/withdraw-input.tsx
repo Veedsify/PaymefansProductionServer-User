@@ -168,10 +168,6 @@ const WithDrawInput = () => {
           </div>
         </div>
       )}
-      <div className="flex justify-between items-center mb-5">
-        <p className="text-lg font-semibold">Minimum withdrawal</p>
-        <p className="text-lg font-medium"></p>
-      </div>
       {value && (
         <div className="mt-5">
           <button className="bg-black font-bold uppercase text-white w-full py-4 rounded-md">
