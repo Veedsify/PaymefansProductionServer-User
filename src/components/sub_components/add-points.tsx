@@ -12,7 +12,7 @@ import toast from "react-hot-toast";
 
 export const currencyRates = [
   { rate: 1, name: "USD", sellValue: 1, buyValue: 1, symbol: "$" },
-  { rate: 1, name: "NGN", sellValue: 1509, buyValue: 1632, symbol: "₦" },
+  { rate: 1, name: "NGN", sellValue: 1503, buyValue: 1632, symbol: "₦" },
   { rate: 1, name: "POINTS", sellValue: 16, buyValue: 16, symbol: "P" },
   { rate: 1, name: "KES", sellValue: 120, buyValue: 129.19, symbol: "Ksh" },
   { rate: 1, name: "ZAR", sellValue: 18, buyValue: 18.55, symbol: "R" },
@@ -102,13 +102,13 @@ const AddPoints = () => {
       // Convert points to USD first (16 points = $1)
       const usdAmount =
         amount /
-        (rates.find((rate: ExchangeRate) => rate.name === "POINTS")?.buyValue ||
-          16);
+        (rates.find((rate: ExchangeRate) => rate.name === "POINTS")
+          ?.sellValue || 16);
 
       // Then convert USD to target currency
       const targetRate =
         rates.find((rate: ExchangeRate) => rate.name === toCurrency)
-          ?.buyValue || 1;
+          ?.sellValue || 1;
 
       return usdAmount * targetRate;
     }
@@ -118,13 +118,13 @@ const AddPoints = () => {
       // Direct conversion from USD
       const toRate =
         rates.find((rate: ExchangeRate) => rate.name === toCurrency)
-          ?.buyValue || 1;
+          ?.sellValue || 1;
       return amount * toRate;
     } else if (toCurrency === "USD") {
       // Convert to USD
       const fromRate =
         rates.find((rate: ExchangeRate) => rate.name === fromCurrency)
-          ?.buyValue || 1;
+          ?.sellValue || 1;
       return amount / fromRate;
     } else {
       // Convert through USD as intermediate
