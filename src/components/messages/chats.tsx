@@ -56,8 +56,7 @@ const Chats: React.FC<ChatProps> = React.memo(
     const typingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
     const [typing, setTyping] = React.useState("");
     const { ref: loadMoreRef, inView } = useInView({
-      threshold: 0.5,
-      triggerOnce: false, // keep watching
+      threshold: 1,
     });
     const socket = getSocket();
 
@@ -79,8 +78,8 @@ const Chats: React.FC<ChatProps> = React.memo(
         // If the user is within 100px of the bottom, consider as "at bottom"
         const isAtBottom =
           container.scrollHeight -
-            container.scrollTop -
-            container.clientHeight <
+          container.scrollTop -
+          container.clientHeight <
           100;
         setUserScrolledUp(!isAtBottom);
       };
@@ -128,7 +127,7 @@ const Chats: React.FC<ChatProps> = React.memo(
     // Memoized profile picture
     const profilePicture = useMemo(
       () => receiver?.profile_image || "/site/avatar.png",
-      [receiver?.profile_image]
+      [receiver?.profile_image],
     );
 
     // Typing handler: emits and manages local typing state
@@ -142,7 +141,7 @@ const Chats: React.FC<ChatProps> = React.memo(
         });
         typingTimeoutRef.current = setTimeout(() => setTyping(""), 10000);
       },
-      [user?.user_id, conversationId]
+      [user?.user_id, conversationId],
     );
     // Handle showing "typing..." when other user is typing
     const handleSenderTyping = useCallback(
@@ -156,7 +155,7 @@ const Chats: React.FC<ChatProps> = React.memo(
           }
         }
       },
-      [user?.user_id]
+      [user?.user_id],
     );
     // Optimistic message creation
     const sendMessage = useCallback(
@@ -178,7 +177,7 @@ const Chats: React.FC<ChatProps> = React.memo(
 
         setAllMessages((prev) => _.uniqBy([...prev, newMessage], "id"));
       },
-      [conversationId, user?.user_id, setAllMessages]
+      [conversationId, user?.user_id, setAllMessages],
     );
     // Socket event handling: message received, seen status, errors, typing
     useEffect(() => {
@@ -235,8 +234,8 @@ const Chats: React.FC<ChatProps> = React.memo(
           prev.map((message) =>
             message.message_id === messageId
               ? { ...message, seen: true }
-              : message
-          )
+              : message,
+          ),
         );
       };
 
@@ -329,7 +328,7 @@ const Chats: React.FC<ChatProps> = React.memo(
         </div>
         {/* Messages */}
         <div
-          className="flex-1 p-4 space-y-4 overflow-auto bg-white dark:bg-gray-950"
+          className="flex-1 p-4 space-y-4 overflow-y-auto overflow-x-hidden bg-white dark:bg-gray-950"
           ref={messagesContainerRef}
         >
           <div ref={loadMoreRef}></div>
@@ -370,7 +369,7 @@ const Chats: React.FC<ChatProps> = React.memo(
         </div>
       </div>
     );
-  }
+  },
 );
 Chats.displayName = "Chats";
 export default Chats;
