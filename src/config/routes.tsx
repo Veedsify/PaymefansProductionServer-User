@@ -26,7 +26,8 @@ const ROUTE = {
    * Endpoint for fetching all products from the store.
    * @type {string}
    */
-  FETCH_STORE_PRODUCTS: `${NEXT_PUBLIC_TS_EXPRESS_URL}/store/products`,
+  FETCH_STORE_PRODUCTS: (page: number) =>
+    `${NEXT_PUBLIC_TS_EXPRESS_URL}/store/products?page=${page}`,
 
   /**
    * Endpoint for fetching a specific product from the store.
@@ -73,6 +74,12 @@ const ROUTE = {
    * Endpoint for fetching exchange rate
    */
   GET_PLATFROM_EXCHANGE_RATE: `${NEXT_PUBLIC_TS_EXPRESS_URL}/rates/platfrom-rate`,
+
+  /**
+   * Endpoint for account suspended ticket.
+   */
+
+  ACCOUNT_SUSPENDED_TICKET: `${NEXT_PUBLIC_TS_EXPRESS_URL}/support/ticket`,
 };
 
 export default ROUTE;

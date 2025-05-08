@@ -64,6 +64,8 @@ const MessageInput = ({
   const { message, setMessage, mediaFiles, openModal, resetAll } =
     useMediaContext();
 
+  console.log(receiver);
+
   const sendMessageWithAttachment = useCallback(
     async (message: string) => {
       if (!user) return;
@@ -243,6 +245,16 @@ const MessageInput = ({
         selected
       </div>
     ) : null;
+
+  if (receiver && !receiver.active_status) {
+    return (
+      <div className="flex items-center justify-center h-full py-4 space-y-2 text-center">
+        <p className="text-gray-500 dark:text-white">
+          {receiver.name} is currently suspended.
+        </p>
+      </div>
+    );
+  }
 
   return (
     <>

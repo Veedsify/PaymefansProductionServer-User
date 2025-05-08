@@ -1,13 +1,21 @@
 "use client";
 import { useCartStore } from "@/contexts/store-context";
-import { LucideMinus, LucidePlus, LucideTrash, X } from "lucide-react";
+import { LucideTrash, X } from "lucide-react";
 import Image from "next/image";
 import CustomCartPageHooks from "../custom-hooks/custom-cart-hooks";
-import { ChangeEvent } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 
 const CartComponent = () => {
   const { calculateTotalPrice, addProduct, cart } = useCartStore();
   const { sizes, addToCart, removeFromCart } = CustomCartPageHooks();
+  const [totalPrice, setTotalPrice] = useState(0);
+
+  useEffect(() => {
+    if (cart.length > 0) {
+      const total = calculateTotalPrice();
+      setTotalPrice(total);
+    }
+  }, [cart, calculateTotalPrice]);
 
   const handleSizeChange = (e: ChangeEvent<HTMLSelectElement>, id: number) => {
     const product = cart.find((p) => p.id === id);
@@ -16,41 +24,48 @@ const CartComponent = () => {
       addProduct({ ...product, size });
     }
   };
+
   return (
-    <>
-      <div className="grid grid-cols-1">
+    <section className="max-w-3xl mx-auto w-full">
+      <div className="grid grid-cols-1 gap-6">
         {cart.map((item, index) => (
           <div
             key={index}
-            className="flex items-start gap-6 p-6 bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200 mb-4"
+            className="flex flex-col md:flex-row items-center gap-6 p-6 bg-white dark:bg-gray-900 rounded-2xl shadow-md hover:shadow-lg transition-shadow duration-200 mb-3 border border-gray-200 dark:border-gray-800"
           >
             <Image
               src={item.images[0].image_url.trimEnd()}
               alt={item.name}
               width={120}
               height={120}
-              className="rounded-lg object-cover aspect-square flex-shrink-0"
+              className="rounded-xl object-cover aspect-square border border-gray-200 dark:border-gray-700"
             />
-            <div className="flex-1">
-              <div className="flex items-start justify-between mb-3">
+            <div className="flex-1 w-full">
+              <div className="flex flex-col md:flex-row items-start md:items-center justify-between mb-2">
                 <div>
-                  <h1 className="text-xl font-semibold text-gray-800">
+                  <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100">
                     {item.name}
-                  </h1>
-                  <p className="text-primary-dark-pink font-medium">
+                  </h2>
+                  <p className="text-primary-dark-pink dark:text-pink-400 font-medium text-base mt-1">
                     ₦ {item.price.toLocaleString()}
                   </p>
                 </div>
-                <button className="text-gray-400 hover:text-red-500 transition-colors p-1 rounded-full hover:bg-red-50">
+                <button
+                  className="ml-auto mt-2 md:mt-0 flex items-center text-gray-400 dark:text-gray-500 hover:text-red-500 dark:hover:text-red-400 transition p-2 rounded-full hover:bg-red-50 dark:hover:bg-red-900/30"
+                  aria-label="Remove item"
+                  onClick={() => removeFromCart(item.id)}
+                >
                   <X size={20} />
                 </button>
               </div>
-              <p className="text-sm text-gray-600 mb-4">{item.description}</p>
-              <div className="flex items-center justify-between">
+              <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
+                {item.description}
+              </p>
+              <div className="flex flex-col md:flex-row items-center gap-4">
                 <select
                   onChange={(e) => handleSizeChange(e, item.id)}
                   defaultValue={item.size.name}
-                  className="px-4 py-2 border border-gray-200 rounded-lg text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-primary-dark-pink/20"
+                  className="px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-lg text-sm text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-primary-dark-pink/30 dark:focus:ring-pink-400/30 w-full md:w-auto"
                 >
                   {sizes.map((s) => (
                     <option key={s.name} value={s.name}>
@@ -58,18 +73,22 @@ const CartComponent = () => {
                     </option>
                   ))}
                 </select>
-                <div className="flex items-center border border-gray-200 rounded-lg">
+                <div className="flex items-center border border-gray-300 dark:border-gray-700 rounded-lg bg-gray-50 dark:bg-gray-800 overflow-hidden">
                   <button
                     onClick={() => removeFromCart(item.id)}
-                    className="px-3 py-2 hover:bg-gray-50 transition-colors"
+                    className="px-3 py-2 hover:bg-red-50 dark:hover:bg-red-700 transition-colors rounded-l-lg"
+                    aria-label="Remove from cart"
                   >
-                    <LucideTrash size={16} className="text-red-600" />
+                    <LucideTrash
+                      size={18}
+                      className="text-red-600 dark:text-red-400"
+                    />
                   </button>
                   <input
                     type="text"
                     readOnly
                     defaultValue={item.quantity}
-                    className="w-12 text-center py-2 text-gray-700 font-medium"
+                    className="w-12 text-center py-2 text-gray-700 dark:text-gray-200 font-semibold bg-transparent border-0"
                   />
                 </div>
               </div>
@@ -78,16 +97,19 @@ const CartComponent = () => {
         ))}
       </div>
       <div>
-        <div className="flex items-center justify-between bg-white rounded">
-          <h1 className="text-lg font-semibold">
-            Total: ₦ {calculateTotalPrice().toLocaleString()}
-          </h1>
-          <button className="bg-primary-dark-pink hover:bg-primary-text-dark-pink duration-200 text-white text-sm font-bold py-2 px-4 rounded-lg">
+        <div className="flex flex-col sm:flex-row items-center justify-between bg-white dark:bg-gray-900 rounded-2xl shadow-md mt-8 p-6 border border-gray-200 dark:border-gray-800">
+          <h2 className="text-lg font-bold text-gray-900 dark:text-gray-100 mb-4 sm:mb-0">
+            Total:{" "}
+            <span className="text-primary-dark-pink dark:text-pink-400">
+              ₦ {totalPrice.toLocaleString()}
+            </span>
+          </h2>
+          <button className="bg-primary-dark-pink dark:bg-pink-600 hover:bg-primary-text-dark-pink dark:hover:bg-pink-700 transition duration-200 text-white text-base font-bold py-3 px-8 rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-primary-dark-pink/30 dark:focus:ring-pink-400/30">
             Checkout
           </button>
         </div>
       </div>
-    </>
+    </section>
   );
 };
 

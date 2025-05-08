@@ -34,6 +34,7 @@ interface ChatProps {
     user_id: string;
     name: string;
     username: string;
+    active_status: boolean;
     profile_image: string | null;
     Settings: any;
   } | null;
@@ -290,7 +291,11 @@ const Chats: React.FC<ChatProps> = React.memo(
               width={40}
               height={40}
               priority
-              src={profilePicture}
+              src={
+                receiver && receiver.active_status
+                  ? profilePicture
+                  : "/site/avatar.png"
+              }
               alt={`${receiver?.name || "User"}'s profile`}
             />
             <div>

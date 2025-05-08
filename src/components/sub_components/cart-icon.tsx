@@ -4,9 +4,18 @@ import { useToggleWishList } from "@/contexts/toggle-wishlist";
 import { Heart, ShoppingCart } from "lucide-react";
 import Link from "next/link";
 
+import { useEffect, useState } from "react";
+
 const CartIcon = () => {
   const { total } = useCartStore();
   const { toggleWishList } = useToggleWishList();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  const cartTotal = mounted ? total() : 0;
 
   return (
     <div className="flex items-center gap-4">
@@ -16,7 +25,7 @@ const CartIcon = () => {
           strokeWidth={2}
         />
         <div className="absolute -top-2 -right-2 inline-flex items-center justify-center px-1 py-1 text-xs font-bold leading-none text-white bg-primary-dark-pink rounded-full">
-          {Number(total()).toLocaleString()}
+          {Number(cartTotal).toLocaleString()}
         </div>
       </button>
       <Link href="/store/cart" className="relative">
@@ -25,7 +34,7 @@ const CartIcon = () => {
           strokeWidth={2}
         />
         <div className="absolute -top-2 -right-2 inline-flex items-center justify-center px-1 py-1 text-xs font-bold leading-none text-white bg-primary-dark-pink rounded-full">
-          {Number(total()).toLocaleString()}
+          {Number(cartTotal).toLocaleString()}
         </div>
       </Link>
     </div>

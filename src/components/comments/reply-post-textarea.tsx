@@ -87,6 +87,9 @@ export const ReplyPostComponent = ({ options }: ReplyPostProps) => {
       formData.append("postId", String(options?.id));
       formData.append("comment", typedComment);
       formData.append("reply_to", options?.reply_to || "");
+      if(options.parentId){
+        formData.append("parentId", options.parentId);
+      }
       files.forEach((file) => formData.append("files", file));
 
       const res = await axios.post(url, formData, {
@@ -114,6 +117,7 @@ export const ReplyPostComponent = ({ options }: ReplyPostProps) => {
           time: new Date(),
           name: user?.name || "",
           profile_image: user?.profile_image || "",
+          comment_id: data.comment_id,
         });
 
         // Reset form

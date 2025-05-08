@@ -1,11 +1,46 @@
-import { AlertCircle, Mail, ArrowLeft, HelpCircle, Phone } from "lucide-react";
+"use client";
+import {
+  AlertCircle,
+  Mail,
+  ArrowLeft,
+  HelpCircle,
+  Phone,
+  Loader2,
+} from "lucide-react";
 import LogoutButton from "@/components/sub_components/sub/logout";
 import Link from "next/link";
+import SuspendedSupportTicketForm from "./sub/suspended-support-ticket-form";
+import React, { useEffect } from "react";
 const UserAccountSupendedScreen = ({ user }: { user: any }) => {
+  const [open, setOpen] = React.useState(false);
+  const [loading, setLoading] = React.useState(true);
+  const handleOpen = () => {
+    setOpen(true);
+  };
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setLoading(false);
+    }, 200);
+
+    return () => clearTimeout(timer);
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <Loader2 className="animate-spin text-primary-dark-pink" size={40} />
+      </div>
+    );
+  }
+
   return (
     <>
-      <div className="bg-white dark:bg-gray-950 min-h-screen flex items-center justify-center p-4">
-        <div className="max-w-md w-full bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden">
+      <div className="bg-white dark:bg-gray-950 min-h-screen flex items-center justify-center">
+        <div className="lg:max-w-md w-full h-screen lg:h-auto bg-white dark:bg-gray-800 lg:rounded-xl lg:shadow-lg overflow-hidden">
           {/* Status Bar */}
           <div className="bg-red-500 px-6 py-3 flex items-center">
             <AlertCircle className="text-white mr-2" size={20} />
@@ -22,7 +57,8 @@ const UserAccountSupendedScreen = ({ user }: { user: any }) => {
                 Your Account Has Been Suspended
               </h1>
               <p className="text-gray-600 dark:text-gray-300">
-                We're sorry, but your account is currently not active.
+                Your account has been found in violation of Paymefans' Community
+                Guidelines.
               </p>
             </div>
 
@@ -63,7 +99,10 @@ const UserAccountSupendedScreen = ({ user }: { user: any }) => {
 
             {/* Actions */}
             <div className="flex flex-col gap-3">
-              <button className="w-full py-3 bg-pink-600 hover:bg-pink-700 text-white font-medium rounded-lg transition flex items-center justify-center">
+              <button
+                onClick={handleOpen}
+                className="w-full py-3 bg-primary-dark-pink hover:bg-primary-text-dark-pink text-white font-medium rounded-lg transition flex cursor-pointer items-center justify-center"
+              >
                 <HelpCircle size={18} className="mr-2" />
                 Request Reactivation
               </button>
@@ -81,6 +120,7 @@ const UserAccountSupendedScreen = ({ user }: { user: any }) => {
           </div>
         </div>
       </div>
+      <SuspendedSupportTicketForm open={open} close={handleClose} user={user} />
     </>
   );
 };

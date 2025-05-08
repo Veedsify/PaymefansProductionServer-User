@@ -148,6 +148,7 @@ export interface ReplyPostProps {
   options: {
     id: number;
     post_id: string;
+    parentId?: string;
     post_audience: string;
     author_username: string;
     reply_to?: string;
@@ -362,6 +363,7 @@ interface Comment {
   author_username: string;
   time: Date;
   name: string;
+  comment_id: string;
   profile_image: string;
 }
 
@@ -608,19 +610,14 @@ type StoreProduct = {
   }[];
 };
 
-type StoreAllProductsResponse =
-  | {
-    error: boolean;
-    message: string;
-    totalProducts: number;
-    hasMore: boolean;
-    data: StoreProduct[];
-  }
-  | {
-    error: boolean;
-    message: string;
-    data: null;
-  };
+type StoreAllProductsResponse = {
+  error: boolean;
+  message: string;
+  totalProducts: number;
+  hasMore: boolean;
+  perPage: number;
+  data: StoreProduct[];
+}
 
 export type Product = {
   id: number;
