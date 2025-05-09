@@ -1,5 +1,4 @@
 "use client";
-
 import { POINTS_CONFIG } from "@/config/config";
 import ROUTE from "@/config/routes";
 import { useUserAuthContext } from "@/lib/userUseContext";
@@ -9,7 +8,6 @@ import { LucideLoader } from "lucide-react";
 import Image from "next/image";
 import { ChangeEvent, useEffect, useState } from "react";
 import toast from "react-hot-toast";
-
 export const currencyRates = [
   { rate: 1, name: "USD", sellValue: 1, buyValue: 1, symbol: "$" },
   { rate: 1, name: "NGN", sellValue: 1503, buyValue: 1632, symbol: "₦" },
@@ -18,7 +16,6 @@ export const currencyRates = [
   { rate: 1, name: "ZAR", sellValue: 18, buyValue: 18.55, symbol: "R" },
   { rate: 1, name: "GHS", sellValue: 14, buyValue: 14.3, symbol: "₵" },
 ];
-
 const AddPoints = () => {
   const { user } = useUserAuthContext();
   const [value, setValue] = useState("");
@@ -53,45 +50,36 @@ const AddPoints = () => {
     // Uncomment the line below to fetch rates from the API
     fetchRates();
   }, []);
-
   // Format the input value with commas
   const formatNumber = (num: string) => {
     return num.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   };
-
   // Handle input change
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     let inputValue = e.target.value.replace(/\D/g, "");
     setValue(formatNumber(inputValue));
   };
-
   // Calculate platform fee (10% of input)
   function calculateFee(value: string) {
     let num = value.replace(/\D/g, "");
     return (parseInt(num) * PLATFORM_DEPOSITE_FEE).toLocaleString();
   }
-
   // Calculate points received
   function balanceToSettle(value: string) {
     let num = value.replace(/\D/g, "");
     const amount = parseInt(num) || 0;
-
     // Convert the input amount from user's currency to USD
     const userCurrency = user?.currency || "USD";
     const amountInUSD = convertCurrency(amount, userCurrency, "USD");
-
     // Apply 10% fee and convert to points (1 USD = 16 points)
     const pointsAfterFee = Math.floor(amountInUSD * 0.9 * POINTS_PER_USD);
-
     return pointsAfterFee.toLocaleString();
   }
-
   // Get original amount without formatting
   function pricePerPoints(value: string) {
     let num = value.replace(/\D/g, "");
     return parseInt(num).toLocaleString();
   }
-
   // Convert local currency amount to target currency
   function convertCurrency(
     amount: number,
@@ -104,15 +92,12 @@ const AddPoints = () => {
         amount /
         (rates.find((rate: ExchangeRate) => rate.name === "POINTS")
           ?.sellValue || 16);
-
       // Then convert USD to target currency
       const targetRate =
         rates.find((rate: ExchangeRate) => rate.name === toCurrency)
           ?.sellValue || 1;
-
       return usdAmount * targetRate;
     }
-
     // For other currency conversions
     if (fromCurrency === "USD") {
       // Direct conversion from USD
@@ -134,13 +119,11 @@ const AddPoints = () => {
       const toRate =
         rates.find((rate: ExchangeRate) => rate.name === toCurrency)
           ?.buyValue || 1;
-
       // First convert to USD then to target currency
       const usdAmount = amount / fromRate;
       return usdAmount * toRate;
     }
   }
-
   // Format converted amount for display
   function formatConvertedAmount(amount: number, currency: string): string {
     const symbol = rates.find((rate) => rate.name === currency)?.symbol || "";
@@ -149,18 +132,15 @@ const AddPoints = () => {
       maximumFractionDigits: 2,
     })}`;
   }
-
   async function handlePointBuy() {
     const token = getToken();
     toast.dismiss();
     toast.loading(POINTS_CONFIG.POINT_PENDING_PAYMENTS);
-
     const amount = parseInt(value.replace(/\D/g, "")) || 0;
     // Calculate minimum deposit in user's currency based on NGN 2500 rate
     const minNgn = 2500;
     const userCurrency = user?.currency || "USD";
     const minInUserCurrency = convertCurrency(minNgn, "NGN", userCurrency);
-
     const validate = amount < minInUserCurrency;
     if (!value || validate) {
       toast.dismiss();
@@ -172,10 +152,8 @@ const AddPoints = () => {
       );
       return;
     }
-
     // Calculate USD equivalent
     const usdAmount = convertCurrency(amount, user?.currency || "USD", "USD");
-
     try {
       const response = await fetch(ROUTE.PURCHASE_POINTS, {
         method: "POST",
@@ -190,13 +168,10 @@ const AddPoints = () => {
           ngn_amount: convertCurrency(amount, user?.currency || "USD", "NGN"),
         }),
       });
-
       if (!response.ok) {
         throw new Error("Failed to purchase points");
       }
-
       const data = await response.json();
-
       if (data.status) {
         toast.dismiss();
         toast.loading(data.message);
@@ -213,7 +188,6 @@ const AddPoints = () => {
       console.error(error);
     }
   }
-
   if (loading) {
     return (
       <div className="flex items-center justify-center w-full h-full p-6">
@@ -230,11 +204,9 @@ const AddPoints = () => {
       </div>
     );
   }
-
   const inputAmount = parseInt(value.replace(/\D/g, "")) || 0;
   const usdValue = convertCurrency(inputAmount, user?.currency || "USD", "USD");
   const ngnValue = convertCurrency(inputAmount, user?.currency || "USD", "NGN");
-
   return (
     <div>
       <div className="flex items-start gap-2 mb-3">
@@ -302,7 +274,6 @@ const AddPoints = () => {
           </div>
         </div>
       )}
-
       {value && (
         <div className="mt-5">
           <button
@@ -316,5 +287,4 @@ const AddPoints = () => {
     </div>
   );
 };
-
 export default AddPoints;

@@ -7,6 +7,8 @@ import { currencyRates as defaultRates } from "./add-points";
 import { LucideLoader } from "lucide-react";
 import { ChangeEvent, useEffect, useState } from "react";
 import toast from "react-hot-toast";
+import { useWithdrawStore } from "@/contexts/withdraw-context";
+import { useRouter } from "next/navigation";
 
 // You can adjust or import this from a common place
 const FEE_PERCENTAGE = 0.25; // 20% fee
@@ -17,6 +19,8 @@ const WithDrawInput = () => {
   const [rates, setRates] = useState<ExchangeRate[]>(defaultRates);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
+  const { setWithDrawStore } = useWithdrawStore();
+  const router = useRouter();
 
   useEffect(() => {
     const fetchRates = async () => {
@@ -34,6 +38,35 @@ const WithDrawInput = () => {
     };
     fetchRates();
   }, []);
+
+  const handleWithdrawClick = () => {
+    const num = value.replace(/\D/g, "");
+    const amount = parseInt(num);
+    const userCurrency = user?.currency || "NGN";
+    const ngnValue = convertCurrency(amount, userCurrency, "NGN");
+    const usdValue = convertCurrency(amount, userCurrency, "USD");
+    const minWithdrawalAmount = Number(POINTS_CONFIG.MIN_WITHDRAWAL_AMOUNT);
+    const minAmountInNgn = convertCurrency(
+      minWithdrawalAmount,
+      userCurrency,
+      "NGN"
+    );
+    if (amount < minAmountInNgn) {
+      const minAmount = Number(minAmountInNgn).toLocaleString();
+      toast.error(`Minimum withdrawal amount is ${userCurrency} ${minAmount}`);
+      return;
+    }
+    setWithDrawStore({
+      platfromFee: parseInt(calculateFee(value).replace(/\D/g, "")),
+      amountToSettle: parseInt(balanceToSettle(value).replace(/\D/g, "")),
+      amountInUsd: usdValue,
+      amountInNgn: ngnValue,
+      localCurrency: userCurrency,
+      userBank: null,
+    });
+
+    router.push("/wallet/withdraw/select-bank");
+  };
 
   // Format the input value with commas
   const formatNumber = (num: string) => {
@@ -55,17 +88,17 @@ const WithDrawInput = () => {
     if (fromCurrency === toCurrency) return amount;
     if (fromCurrency === "USD") {
       const toRate =
-        rates.find((rate) => rate.name === toCurrency)?.buyValue || 1;
+        rates.find((rate) => rate.name === toCurrency)?.sellValue || 1;
       return amount * toRate;
     } else if (toCurrency === "USD") {
       const fromRate =
-        rates.find((rate) => rate.name === fromCurrency)?.buyValue || 1;
+        rates.find((rate) => rate.name === fromCurrency)?.sellValue || 1;
       return amount / fromRate;
     } else {
       const fromRate =
-        rates.find((rate) => rate.name === fromCurrency)?.buyValue || 1;
+        rates.find((rate) => rate.name === fromCurrency)?.sellValue || 1;
       const toRate =
-        rates.find((rate) => rate.name === toCurrency)?.buyValue || 1;
+        rates.find((rate) => rate.name === toCurrency)?.sellValue || 1;
       const usdAmount = amount / fromRate;
       return usdAmount * toRate;
     }
@@ -170,7 +203,10 @@ const WithDrawInput = () => {
       )}
       {value && (
         <div className="mt-5">
-          <button className="bg-black font-bold uppercase text-white w-full py-4 rounded-md">
+          <button
+            onClick={handleWithdrawClick}
+            className="bg-black font-bold uppercase text-white w-full py-4 rounded-md"
+          >
             Withdraw
           </button>
         </div>
