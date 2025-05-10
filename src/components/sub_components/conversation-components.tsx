@@ -27,7 +27,7 @@ const ConversationComponent = () => {
     return () => {
       socket.off("prefetch-conversations", handlePrefetch);
     };
-  }, []);
+  }, [socket, queryClient]);
 
   const { ref, inView } = useInView({
     threshold: 0.5,
@@ -97,7 +97,7 @@ const ConversationCard = React.memo(
     };
     useEffect(() => {
       socket.emit("join", conversation.conversation_id);
-    }, [conversation.conversation_id]);
+    }, [conversation.conversation_id, socket]);
 
     const isUnread =
       conversation.lastMessage &&

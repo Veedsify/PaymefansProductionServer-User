@@ -30,7 +30,7 @@ const FollowUserComponent: React.FC<FollowUserProps> = ({
     return () => {
       socket.off("isFollowing");
     };
-  }, [profileuser, thisuser]);
+  }, [profileuser, thisuser, socket]);
   return (
     <FollowButton
       setFollowId={setFollowId}

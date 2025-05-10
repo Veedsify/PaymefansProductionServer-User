@@ -38,7 +38,7 @@ const FollowButton = ({
     return () => {
       socket.off("followed");
     };
-  }, [setstatus, setFollowId]);
+  }, [setstatus, setFollowId, socket]);
 
   return (
     <button

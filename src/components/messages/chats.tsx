@@ -141,7 +141,7 @@ const Chats: React.FC<ChatProps> = React.memo(
         });
         typingTimeoutRef.current = setTimeout(() => setTyping(""), 10000);
       },
-      [user?.user_id, conversationId],
+      [user?.user_id, conversationId, socket],
     );
     // Handle showing "typing..." when other user is typing
     const handleSenderTyping = useCallback(
@@ -177,7 +177,7 @@ const Chats: React.FC<ChatProps> = React.memo(
 
         setAllMessages((prev) => _.uniqBy([...prev, newMessage], "id"));
       },
-      [conversationId, user?.user_id, setAllMessages],
+      [conversationId, user?.user_id, setAllMessages, socket],
     );
     // Socket event handling: message received, seen status, errors, typing
     useEffect(() => {
@@ -272,7 +272,7 @@ const Chats: React.FC<ChatProps> = React.memo(
           receiver_id: receiver?.user_id,
         });
       }
-    }, [lastMessage, user?.user_id, conversationId, receiver?.user_id]);
+    }, [lastMessage, user?.user_id, conversationId, receiver?.user_id, socket]);
     // UI
     return (
       <div className="flex flex-col h-[calc(100vh-60px)]">

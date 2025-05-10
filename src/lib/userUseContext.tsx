@@ -50,7 +50,7 @@ export const UserContextProvider = ({
       setUser(user);
       socket.emit("user_active", user.username);
     }
-  }, [user, router, location]);
+  }, [user, router, location, socket]);
 
   const updateUser = (newUserData: AuthUserProps) => {
     setUser(newUserData);

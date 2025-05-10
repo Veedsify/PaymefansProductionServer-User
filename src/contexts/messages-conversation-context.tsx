@@ -76,7 +76,7 @@ export const MessagesConversationProvider = ({
         username,
       });
     }
-  }, [userid, username]);
+  }, [userid, username, socket]);
 
   return (
     <MessagesConversationContext.Provider value={value}>

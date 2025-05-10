@@ -90,7 +90,7 @@ const Subscribe = () => {
     return () => {
       socket.off("subscription_added");
     };
-  }, []);
+  }, [socket]);
 
   const subscribeToUser = (id: number) => {
     if (user && profileUser) {

@@ -53,7 +53,7 @@ const PostPageImage: React.FC<PostPageImageProps> = ({
         postId: data.id,
       });
     }
-  }, [data.id, data.post_status, inView, authUser?.id]);
+  }, [data.id, data.post_status, inView, authUser?.id, socket]);
 
   const handleClick = () => {
     if (!canView) return;

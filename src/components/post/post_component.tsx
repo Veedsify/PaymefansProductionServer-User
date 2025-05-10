@@ -65,7 +65,7 @@ const PostComponent: React.FC<PostComponentProps> = ({
         postId: data.id,
       });
     }
-  }, [data.id, data.post_status, inView, authUser?.id]);
+  }, [data.id, data.post_status, inView, authUser?.id, socket]);
 
   // Determine visibility
   const canView =

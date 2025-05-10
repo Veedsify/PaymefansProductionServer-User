@@ -27,7 +27,7 @@ const LiveStreamSockets = ({ streamId }: LiveStreamSocketProps) => {
 
     useEffect(() => {
         socket.emit('connect-stream', { streamId, userId: user?.user_id, })
-    }, [streamId, user?.user_id]);
+    }, [streamId, user?.user_id, socket]);
 
     useEffect(() => {
         const handleStreamConnected = (data: LiveStreamJoinProps) => {
@@ -44,7 +44,7 @@ const LiveStreamSockets = ({ streamId }: LiveStreamSocketProps) => {
             })
             socket.off('stream-connected', handleStreamConnected)
         }
-    }, [streamId, user?.user_id, pathname]);
+    }, [streamId, user?.user_id, pathname, socket]);
 
     useEffect(() => {
         socket.emit('disconnect-stream', { streamId, userId: user?.user_id, })
@@ -52,7 +52,7 @@ const LiveStreamSockets = ({ streamId }: LiveStreamSocketProps) => {
         return () => {
             socket.disconnect()
         }
-    }, [pathname, searchParams, streamId, user?.user_id])
+    }, [pathname, searchParams, streamId, user?.user_id, socket]);
 
 
     return { views, likes, commentsCount }

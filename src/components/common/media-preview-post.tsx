@@ -3,7 +3,6 @@ import React, { useEffect, useState } from "react";
 import { X } from "lucide-react";
 import Image from "next/image";
 import { imageTypes, videoTypes } from "@/lib/filetypes";
-import { socket } from "../sub_components/sub/socket";
 
 type MediaProps = {
   id: string;

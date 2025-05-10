@@ -57,7 +57,7 @@ const UserAccountSupendedScreen = ({ user }: { user: any }) => {
                 Your Account Has Been Suspended
               </h1>
               <p className="text-gray-600 dark:text-gray-300">
-                Your account has been found in violation of Paymefans' Community
+                Your account has been found in violation of Paymefans&apos; Community
                 Guidelines.
               </p>
             </div>

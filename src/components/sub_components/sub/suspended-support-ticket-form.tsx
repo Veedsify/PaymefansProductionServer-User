@@ -10,7 +10,7 @@ const SuspendedSupportTicketForm = ({
 }: {
   user: { email: string; name: string; username: string };
   open: boolean;
-  close: () => voi0d;
+  close: () => void;
 }) => {
   const [userData, _] = useState(user);
   const [loading, setLoading] = useState(false);

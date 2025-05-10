@@ -44,7 +44,7 @@ const SideModels = () => {
       socket.off("models-update", Models);
       socket.off("hookup-update", Hookups);
     };
-  }, []);
+  }, [socket]);
 
   const handleSearchKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter" && e.currentTarget.value) {

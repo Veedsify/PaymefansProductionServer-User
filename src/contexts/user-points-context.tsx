@@ -63,7 +63,7 @@ export const UserPointsContextProvider = ({
       socket.off(`noticiations-${user?.user_id}`, HandleNotificationReceived);
       socket.off("reconnect", HandleReconnect);
     };
-  }, [user?.user_id, setTotalNotifications]);
+  }, [user?.user_id, setTotalNotifications, socket]);
 
   const updatePoints = (newPoints: any) => {
     setPoints(newPoints);

@@ -91,7 +91,7 @@ const FetchChatData = ({ stringId }: { stringId: string }) => {
     return () => {
       socket.emit("leave", conversationId);
     };
-  }, [conversationId]);
+  }, [conversationId, socket]);
 
   if (isLoading) {
     return (

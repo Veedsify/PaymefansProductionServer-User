@@ -38,7 +38,7 @@ const ActiveProfileTag = ({
     return () => {
       socket.off("active_users", handleActiveUsers);
     };
-  }, [username]);
+  }, [username, socket]);
 
   useEffect(() => {
     const checkForInactivity = () => {
@@ -52,7 +52,7 @@ const ActiveProfileTag = ({
     const intervalId = setInterval(checkForInactivity, 1000);
 
     return () => clearInterval(intervalId);
-  }, [lastActivityTime]);
+  }, [lastActivityTime, socket]);
 
   return (
     <div className="flex items-center gap-2">

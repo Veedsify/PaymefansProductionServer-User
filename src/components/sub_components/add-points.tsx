@@ -9,12 +9,12 @@ import Image from "next/image";
 import { ChangeEvent, useEffect, useState } from "react";
 import toast from "react-hot-toast";
 export const currencyRates = [
-  { rate: 1, name: "USD", sellValue: 1, buyValue: 1, symbol: "$" },
-  { rate: 1, name: "NGN", sellValue: 1503, buyValue: 1632, symbol: "₦" },
-  { rate: 1, name: "POINTS", sellValue: 16, buyValue: 16, symbol: "P" },
-  { rate: 1, name: "KES", sellValue: 120, buyValue: 129.19, symbol: "Ksh" },
-  { rate: 1, name: "ZAR", sellValue: 18, buyValue: 18.55, symbol: "R" },
-  { rate: 1, name: "GHS", sellValue: 14, buyValue: 14.3, symbol: "₵" },
+  { rate: 1, name: "USD", buyValue: 1, sellValue: 1, symbol: "$" },
+  { rate: 1, name: "NGN", buyValue: 1503, sellValue: 1632, symbol: "₦" },
+  { rate: 1, name: "POINTS", buyValue: 16, sellValue: 16, symbol: "P" },
+  { rate: 1, name: "KES", buyValue: 120, sellValue: 129.19, symbol: "Ksh" },
+  { rate: 1, name: "ZAR", buyValue: 18, sellValue: 18.55, symbol: "R" },
+  { rate: 1, name: "GHS", buyValue: 14, sellValue: 14.3, symbol: "₵" },
 ];
 const AddPoints = () => {
   const { user } = useUserAuthContext();
@@ -22,7 +22,7 @@ const AddPoints = () => {
   const [rates, setRates] = useState<ExchangeRate[]>(currencyRates);
   const [error, setError] = useState(false);
   const [loading, setLoading] = useState(true);
-  const [POINTS_PER_USD, setPointsPerUSD] = useState(16); // Default value
+  const [POINTS_PER_USD, setPointsPerUSD] = useState(0); // Default value
   const PLATFORM_DEPOSITE_FEE = 0.1; // 10% fee
   useEffect(() => {
     const fetchRates = async () => {
@@ -33,12 +33,13 @@ const AddPoints = () => {
           throw new Error("Failed to fetch exchange rates");
         }
         const data = await response.json();
-        if (data.data.length) {
+        if (data.data.length > 0) {
+          console.log(data);
           setRates(data.data);
-          setPointsPerUSD(
-            data.data.find((rate: ExchangeRate) => rate.name === "POINTS")
-              ?.value || 16
-          );
+          const pointRate =
+            data.data.find((rate: ExchangeRate) => rate.name == "POINTS")
+              ?.buyValue ?? 16;
+          setPointsPerUSD(pointRate);
         }
       } catch (error) {
         console.error("Error fetching exchange rates:", error);
@@ -72,13 +73,17 @@ const AddPoints = () => {
     const userCurrency = user?.currency || "USD";
     const amountInUSD = convertCurrency(amount, userCurrency, "USD");
     // Apply 10% fee and convert to points (1 USD = 16 points)
-    const pointsAfterFee = Math.floor(amountInUSD * 0.9 * POINTS_PER_USD);
+    const pointsAfterFee = Math.floor(amountInUSD * POINTS_PER_USD);
+    console.log(amountInUSD, POINTS_PER_USD, pointsAfterFee);
     return pointsAfterFee.toLocaleString();
   }
   // Get original amount without formatting
   function pricePerPoints(value: string) {
     let num = value.replace(/\D/g, "");
-    return parseInt(num).toLocaleString();
+    const fee = calculateFee(value);
+    return Number(
+      parseInt(num) + parseInt(fee.replace(/\D/g, ""))
+    ).toLocaleString();
   }
   // Convert local currency amount to target currency
   function convertCurrency(
@@ -90,12 +95,12 @@ const AddPoints = () => {
       // Convert points to USD first (16 points = $1)
       const usdAmount =
         amount /
-        (rates.find((rate: ExchangeRate) => rate.name === "POINTS")
-          ?.sellValue || 16);
+        (rates.find((rate: ExchangeRate) => rate.name === "POINTS")?.buyValue ??
+          16);
       // Then convert USD to target currency
       const targetRate =
         rates.find((rate: ExchangeRate) => rate.name === toCurrency)
-          ?.sellValue || 1;
+          ?.buyValue || 1;
       return usdAmount * targetRate;
     }
     // For other currency conversions
@@ -103,13 +108,13 @@ const AddPoints = () => {
       // Direct conversion from USD
       const toRate =
         rates.find((rate: ExchangeRate) => rate.name === toCurrency)
-          ?.sellValue || 1;
+          ?.buyValue || 1;
       return amount * toRate;
     } else if (toCurrency === "USD") {
       // Convert to USD
       const fromRate =
         rates.find((rate: ExchangeRate) => rate.name === fromCurrency)
-          ?.sellValue || 1;
+          ?.buyValue || 1;
       return amount / fromRate;
     } else {
       // Convert through USD as intermediate
@@ -251,7 +256,7 @@ const AddPoints = () => {
             </p>
           </div>
           <div className="flex justify-between py-2">
-            <p className="text-xl">Amount</p>
+            <p className="text-xl">Total Amount</p>
             <p className="text-xl font-medium">
               {rates.find((rate) => rate.name === user?.currency)?.symbol}
               {pricePerPoints(value)}
