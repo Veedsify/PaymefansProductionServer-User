@@ -18,6 +18,10 @@ export default async function UploadImageToCloudflare({
       try {
             const formData = new FormData();
             formData.append("file", file);
+            setProgress((prev) => ({
+                  ...prev,
+                  [id]: 0,
+            }));
             const response = await axios.post(uploadUrl, formData, {
                   onUploadProgress: (progressEvent) => {
                         const percentage = Math.round(
