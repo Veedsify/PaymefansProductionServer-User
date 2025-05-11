@@ -80,6 +80,12 @@ const ROUTE = {
    */
 
   ACCOUNT_SUSPENDED_TICKET: `${NEXT_PUBLIC_TS_EXPRESS_URL}/support/ticket`,
+
+    /**
+     * Endpoint for fetching system configs
+     * @type {string}
+     */
+  GET_SYSTEM_CONFIGS: `${NEXT_PUBLIC_TS_EXPRESS_URL}/configs`,
 };
 
 export default ROUTE;

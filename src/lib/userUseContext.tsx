@@ -37,7 +37,7 @@ export const UserContextProvider = ({
   user,
   children,
 }: UserContextProviderProps) => {
-  const router = useRouter();
+  const router = useRouter(); 
   const location = usePathname();
   const socket = getSocket();
 
