@@ -13,9 +13,9 @@
   --color-coins-card-top: #e057ff;
 }
 
-/* html {
+html {
   font-size: 92.5%;
-} */
+}
 
 body {
   text-rendering: optimizeLegibility;

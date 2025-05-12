@@ -172,8 +172,8 @@ const BlockUserModal: React.FC<{ onClose: () => void }> = ({ onClose }) => (
     >
       <h3 className="text-xl font-bold text-gray-800">Block this user?</h3>
       <p className="text-gray-600 mt-2">
-        You won't receive messages or calls from this user anymore. They won't
-        be notified that you've blocked them.
+        You won&apos;t receive messages or calls from this user anymore. They
+        won&apos;t be notified that you&apos;ve blocked them.
       </p>
       <div className="mt-6 flex gap-3 justify-end">
         <button
