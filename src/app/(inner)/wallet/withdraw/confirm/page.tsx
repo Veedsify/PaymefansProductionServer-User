@@ -45,14 +45,14 @@ const WithdrawConfirmPage = () => {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-primary-50">
+      <div className="flex items-center justify-center min-h-dvh bg-primary-50">
         <LucideBanknote className="w-16 h-16 text-primary-dark-pink animate-spin" />
       </div>
     );
   }
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-primary-50 px-4">
+    <div className="flex flex-col items-center justify-center min-h-dvh bg-primary-50 px-4">
       {/* Placeholder for SVG or image */}
       <div className="mb-6 flex justify-center">
         <LucideBanknote className="w-16 h-16 text-primary-dark-pink" />

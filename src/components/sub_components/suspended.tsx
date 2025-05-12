@@ -1,7 +1,7 @@
 import React from "react";
 import {
   MapPin,
-    Calendar,
+  Calendar,
   Image as ImageIcon,
   MessageCircle,
   Repeat,
@@ -14,7 +14,7 @@ import SuspendedSupportTicketForm from "@/components/sub_components/sub/suspende
 const SuspendedUserPage = ({ userdata }: { userdata: ProfileUserProps }) => {
   return (
     <>
-      <div className="bg-gradient-to-b from-gray-50 to-gray-200 min-h-screen">
+      <div className="bg-gradient-to-b from-gray-50 to-gray-200 min-h-dvh">
         {/* Profile Banner */}
         <div className="h-48 bg-gradient-to-r from-red-200 via-gray-200 to-red-100 flex items-center justify-center relative">
           <Image

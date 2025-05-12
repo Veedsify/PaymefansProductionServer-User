@@ -56,7 +56,7 @@ export default async function RootLayout({
     return (
       <html>
         <body
-          className={`bg-white dark:bg-gray-950 min-h-screen flex items-center justify-center ${GeistSans.className}`}
+          className={`bg-white dark:bg-gray-950 min-h-dvh flex items-center justify-center ${GeistSans.className}`}
         >
           <UserAccountSupendedScreen user={user} />
         </body>
@@ -92,7 +92,7 @@ export default async function RootLayout({
       <body
         className={`
           ${GeistSans.className}
-                 dark:bg-gray-950 min-h-screen`}
+                 dark:bg-gray-950 min-h-dvh`}
       >
         <ConfigProvider>
           <UserContextProvider user={user}>
@@ -123,15 +123,15 @@ export default async function RootLayout({
                       },
                     }}
                   />
-                  <div className="relative grid h-screen lg:grid-cols-8">
+                  <div className="relative grid h-dvh lg:grid-cols-8">
                     <MessagesConversationProvider>
                       <ToggleWishListProvider>
                         <div className="col-span-2">
                           <SideBar />
                         </div>
-                        <div className="relative h-screen col-span-6 overflow-auto border-r border-pink-50">
+                        <div className="relative h-dvh col-span-6 overflow-auto border-r border-pink-50">
                           <Header />
-                          <div className="grid lg:grid-cols-6 pt-[73px] lg:pt-[48px] h-screen">
+                          <div className="grid lg:grid-cols-6 pt-[73px] lg:pt-[48px] h-dvh">
                             <div className="flex flex-col h-full col-span-3">
                               <div className="w-full h-full md:border-r border-primary-dark-pink/40 dark:border-slate-800 pb-24 lg:pb-0">
                                 {children}

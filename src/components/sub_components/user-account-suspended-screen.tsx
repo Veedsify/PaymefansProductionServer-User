@@ -31,7 +31,7 @@ const UserAccountSupendedScreen = ({ user }: { user: any }) => {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
+      <div className="flex items-center justify-center min-h-dvh">
         <Loader2 className="animate-spin text-primary-dark-pink" size={40} />
       </div>
     );
@@ -39,8 +39,8 @@ const UserAccountSupendedScreen = ({ user }: { user: any }) => {
 
   return (
     <>
-      <div className="bg-white dark:bg-gray-950 min-h-screen flex items-center justify-center">
-        <div className="lg:max-w-md w-full h-screen lg:h-auto bg-white dark:bg-gray-800 lg:rounded-xl lg:shadow-lg overflow-hidden">
+      <div className="bg-white dark:bg-gray-950 min-h-dvh flex items-center justify-center">
+        <div className="lg:max-w-md w-full h-dvh lg:h-auto bg-white dark:bg-gray-800 lg:rounded-xl lg:shadow-lg overflow-hidden">
           {/* Status Bar */}
           <div className="bg-red-500 px-6 py-3 flex items-center">
             <AlertCircle className="text-white mr-2" size={20} />
@@ -57,8 +57,8 @@ const UserAccountSupendedScreen = ({ user }: { user: any }) => {
                 Your Account Has Been Suspended
               </h1>
               <p className="text-gray-600 dark:text-gray-300">
-                Your account has been found in violation of Paymefans&apos; Community
-                Guidelines.
+                Your account has been found in violation of Paymefans&apos;
+                Community Guidelines.
               </p>
             </div>
 

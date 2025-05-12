@@ -98,7 +98,7 @@ const Live = async () => {
 
   if (user?.Model?.verification_status === true && user.is_model) {
     return (
-      <div className="relative w-full min-h-screen flex items-center justify-center">
+      <div className="relative w-full min-h-dvh flex items-center justify-center">
         <div className="absolute inset-0 p-0 m-0 bg-black/60 left-0 -z-10"></div>
         <Image
           src={

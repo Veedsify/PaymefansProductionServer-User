@@ -146,7 +146,7 @@ const StreamDeckCamera = ({
   };
 
   return (
-    <div className="fixed bg-white dark:bg-gray-950 flex flex-col left-0 top-0 w-full min-h-screen items-center z-50">
+    <div className="fixed bg-white dark:bg-gray-950 flex flex-col left-0 top-0 w-full min-h-dvh items-center z-50">
       <div className="flex-1 w-full h-full border dark:border-slate-800 grid lg:grid-cols-3  dark:text-white relative">
         <StreamStats
           handleCreateStream={handleCreateStream}

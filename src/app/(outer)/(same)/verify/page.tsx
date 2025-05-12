@@ -86,9 +86,9 @@ const Login = () => {
   const debounceSubmitLoginForm = _.debounce(submitLoginForm, 300);
 
   return (
-    <div className="min-h-screen lg:p-0 bg-black p-5">
+    <div className="min-h-dvh lg:p-0 bg-black p-5">
       <div className="lg:grid grid-cols-2 items-start justify-center mx-auto">
-        <div className="min-h-screen hidden lg:block relative">
+        <div className="min-h-dvh hidden lg:block relative">
           <Image
             width={1200}
             height={1200}
@@ -124,7 +124,7 @@ const Login = () => {
             method="post"
             className="flex-1 w-full mb-5"
             onSubmit={(e) => {
-              e.preventDefault(); 
+              e.preventDefault();
               setLoading(true);
               setError("");
               debounceSubmitLoginForm(e);

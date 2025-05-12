@@ -21,11 +21,11 @@ export default function Page() {
   const [loading, setLoading] = useState(true);
 
   const fetchPage = async (
-    page: string,
+    page: string
   ): Promise<PageData | ErrorData | null> => {
     try {
       const res = await fetch(
-        `${process.env.NEXT_PUBLIC_TS_EXPRESS_URL}/pages/${page}`,
+        `${process.env.NEXT_PUBLIC_TS_EXPRESS_URL}/pages/${page}`
       );
       if (!res.ok) {
         throw new Error("Failed to fetch data");
@@ -66,7 +66,7 @@ export default function Page() {
 
   if (!pageData || ("error" in pageData && pageData.error)) {
     return (
-      <div className="flex flex-col items-center justify-center h-screen">
+      <div className="flex flex-col items-center justify-center h-dvh">
         <h1 className="text-2xl font-bold">Error</h1>
         <p>{pageData?.message || "An error occurred"}</p>
       </div>

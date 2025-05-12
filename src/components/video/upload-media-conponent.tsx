@@ -84,7 +84,7 @@ const UploadMediaComponent: React.FC<UploadMediaCompProps> = ({
 
   return (
     <div
-      className={`fixed bg-white inset-0  w-full min-h-screen ${
+      className={`fixed bg-white inset-0  w-full min-h-dvh ${
         open ? "block" : "hidden"
       }`}
     >

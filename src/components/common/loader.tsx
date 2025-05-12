@@ -19,7 +19,7 @@ const Loader = () => {
         loading
           ? "opacity-100 pointer-events-auto"
           : "opacity-0 pointer-events-none"
-      } fixed z-[999] duration-300 ease-out bg-black min-h-screen w-full flex items-center justify-center`}
+      } fixed z-[999] duration-300 ease-out bg-black min-h-dvh w-full flex items-center justify-center`}
     >
       <div className="animate-pulse">
         <Image

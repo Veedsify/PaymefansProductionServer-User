@@ -67,7 +67,7 @@ const PostComponentPreview = React.memo(() => {
     <>
       {open && (
         <div
-          className={`fixed inset-0 w-full h-screen z-[999] smooth-opacity select-none ${
+          className={`fixed inset-0 w-full h-dvh z-[999] smooth-opacity select-none ${
             open ? "active" : ""
           }`}
         >
@@ -81,7 +81,7 @@ const PostComponentPreview = React.memo(() => {
           <Swiper
             spaceBetween={0}
             slidesPerView={1}
-            className="h-screen"
+            className="h-dvh"
             modules={[Navigation, Pagination]}
             draggable={false}
             onSwiper={(swiper) => (swiperRef.current = swiper)}
@@ -115,7 +115,7 @@ const PostComponentPreview = React.memo(() => {
                       quality={100}
                       draggable={false}
                       src={item.url.trimEnd()}
-                      className={`h-screen object-contain w-auto transition-all duration-200 border-none animate-in z-10`}
+                      className={`h-dvh object-contain w-auto transition-all duration-200 border-none animate-in z-10`}
                       alt="Media Preview"
                     />
                   </>
@@ -207,7 +207,7 @@ const VideoPreview = ({
           id: "video_player_full",
           muted: false,
         }}
-        className="object-contain w-full h-screen max-w-3xl mx-auto transition-all duration-200 scale-100 border-none animate-in fullscreen-video"
+        className="object-contain w-full h-dvh max-w-3xl mx-auto transition-all duration-200 scale-100 border-none animate-in fullscreen-video"
       />
     </div>
   );

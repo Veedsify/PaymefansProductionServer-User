@@ -32,7 +32,7 @@ const Modal = ({ show = false, setShow }: ContactModalProps) => {
         show
           ? "opacity-100 pointer-events-auto"
           : "opacity-0 pointer-events-none"
-      } duration-300 fixed inset min-h-screen bg-white w-full left-0 top-0 z-50 cursor-pointer flex items-center justify-center`}
+      } duration-300 fixed inset min-h-dvh bg-white w-full left-0 top-0 z-50 cursor-pointer flex items-center justify-center`}
     >
       <div className="bg-white p-4 md:p-6 m-1 rounded md:max-w-[700px] relative">
         <span

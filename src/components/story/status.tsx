@@ -1,25 +1,59 @@
 "use client";
 import { Loader2, LucidePlus } from "lucide-react";
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import swal from "sweetalert";
 import { useUserAuthContext } from "@/lib/userUseContext";
 import Link from "next/link";
 import StoryPreviewComponent from "./status-preview-component";
 import useFetchStories from "../custom-hooks/fetch-stories";
 import { Story } from "@/types/story";
+import { debounce } from "lodash";
 
 const StatusComponent = () => {
   const { stories, loading } = useFetchStories();
   const { user } = useUserAuthContext();
+  const [maxWidth, setMaxWidth] = useState(0);
+  const storyContainer = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (!storyContainer.current) return;
+      const containerWidth = storyContainer.current.clientWidth;
+      if (containerWidth > 0) {
+        setMaxWidth(containerWidth);
+      }
+    };
+    window.addEventListener("resize", handleResize);
+    window.addEventListener("load", handleResize);
+    window.addEventListener("orientationchange", handleResize);
+
+    // Initial measurement
+    handleResize();
+
+    return () => {
+      // Clean up all event listeners
+      window.removeEventListener("resize", handleResize);
+      window.removeEventListener("load", handleResize);
+      window.removeEventListener("orientationchange", handleResize);
+    };
+  }, []);
+
   const prioritizedStories = stories
     ? [...stories].sort((a, b) =>
         a.user.id === user?.id ? -1 : b.user.id === user?.id ? 1 : 0
       )
     : [];
   return (
-    <div className="select-none border-b border-black/30">
-      <div className="flex items-center gap-4 overflow-x-auto lg:overflow-hidden lg:hover:overflow-x-auto w-screen md:w-full p-4 py-6 pb-9 clean-sidebar">
+    <div ref={storyContainer} className="select-none border-b border-black/30">
+      <div
+        className="flex items-center gap-4 p-4 py-6 pb-9 clean-sidebar whitespace-nowrap"
+        style={{
+          maxWidth: maxWidth,
+          overflowX: "auto",
+          overflowY: "hidden",
+        }}
+      >
         <UserStatus />
         {loading && (
           <>
@@ -180,7 +214,7 @@ export const StatusModal = ({
   return (
     <>
       <div
-        className={`fixed bg-black/90 inset-0 z-50 w-full h-dvh md:h-screen p-3 flex items-center justify-center ${
+        className={`fixed bg-black/90 inset-0 z-50 w-full h-dvh md:h-dvh p-3 flex items-center justify-center ${
           open
             ? "pointer-events-auto opacity-100 visible"
             : "opacity-0 pointer-events-none invisible"
@@ -188,7 +222,7 @@ export const StatusModal = ({
         onClick={closeStoryModal}
       >
         <div
-          className="max-w-screen-md min-h-screen flex flex-col mx-auto"
+          className="max-w-screen-md min-h-dvh flex flex-col mx-auto"
           onClick={(e) => e.stopPropagation()}
         >
           <StoryPreviewComponent

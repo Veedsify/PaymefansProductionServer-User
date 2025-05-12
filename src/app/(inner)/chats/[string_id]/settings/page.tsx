@@ -19,7 +19,7 @@ const ConversationSettingsPage = () => {
   const [isSearching, setIsSearching] = useState(false);
 
   return (
-    <div className="flex flex-col items-center min-h-screen">
+    <div className="flex flex-col items-center min-h-dvh">
       <motion.div
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}

@@ -62,7 +62,7 @@ const SuspendedSupportTicketForm = ({
       >
         <X />
       </button>
-      <div className="bg-white dark:bg-gray-900 h-screen lg:h-auto lg:rounded-2xl px-4 lg:mt-0 mt-42 py-8 lg:p-8 max-w-md w-full animate-fade-in lg:border border-pink-200 dark:border-gray-800">
+      <div className="bg-white dark:bg-gray-900 h-dvh lg:h-auto lg:rounded-2xl px-4 lg:mt-0 mt-42 py-8 lg:p-8 max-w-md w-full animate-fade-in lg:border border-pink-200 dark:border-gray-800">
         <div className="flex flex-col items-center mb-6">
           <div className="bg-pink-100 dark:bg-pink-900 rounded-full p-3 mb-2">
             <svg

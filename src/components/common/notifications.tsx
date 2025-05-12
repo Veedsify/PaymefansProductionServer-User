@@ -120,7 +120,7 @@ export function NotificationBody() {
 
   return (
     <div className="space-y-3">
-      {(!notifications || notifications.length) === 0 ? (
+      {(!notifications || notifications.length) === 0 && !loading ? (
         <div className="text-center py-4 text-gray-500 dark:text-gray-400">
           No Notifications yet
         </div>
