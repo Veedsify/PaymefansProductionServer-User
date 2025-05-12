@@ -9,17 +9,19 @@ import { ChangeEvent, useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { useWithdrawStore } from "@/contexts/withdraw-context";
 import { useRouter } from "next/navigation";
+import { useConfigContext } from "@/contexts/configs-context";
 
 // You can adjust or import this from a common place
 const FEE_PERCENTAGE = 0.25; // 20% fee
 
-const WithDrawInput = () => {
+const WithDrawInput = ({ points }: { points: number }) => {
   const { user } = useUserAuthContext();
   const [value, setValue] = useState("");
   const [rates, setRates] = useState<ExchangeRate[]>(defaultRates);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
   const { setWithDrawStore } = useWithdrawStore();
+  const { config } = useConfigContext();
   const router = useRouter();
 
   useEffect(() => {
@@ -44,16 +46,25 @@ const WithDrawInput = () => {
     const amount = parseInt(num);
     const userCurrency = user?.currency || "NGN";
     const ngnValue = convertCurrency(amount, userCurrency, "NGN");
+    const maxWithdrawalAmount = convertCurrency(points, "POINTS", "NGN");
     const usdValue = convertCurrency(amount, userCurrency, "USD");
-    const minWithdrawalAmount = Number(POINTS_CONFIG.MIN_WITHDRAWAL_AMOUNT);
-    const minAmountInNgn = convertCurrency(
-      minWithdrawalAmount,
-      userCurrency,
-      "NGN"
-    );
+    const minAmountInNgn = config?.min_withdrawal_amount_ngn || 0;
+    const defalutCurrency = config?.default_symbol || "NGN";
+    const withdrawCurrency = config?.default_currency || "NGN";
+
+    if (amount > maxWithdrawalAmount) {
+      const maxAmount = Number(maxWithdrawalAmount).toLocaleString();
+      toast.error(
+        `You can only withdraw a maximum of ${defalutCurrency}${maxAmount}`
+      );
+      return;
+    }
+
     if (amount < minAmountInNgn) {
       const minAmount = Number(minAmountInNgn).toLocaleString();
-      toast.error(`Minimum withdrawal amount is ${userCurrency} ${minAmount}`);
+      toast.error(
+        `Minimum withdrawal amount is ${defalutCurrency}${minAmount}`
+      );
       return;
     }
     setWithDrawStore({
@@ -61,7 +72,7 @@ const WithDrawInput = () => {
       amountToSettle: parseInt(balanceToSettle(value).replace(/\D/g, "")),
       amountInUsd: usdValue,
       amountInNgn: ngnValue,
-      localCurrency: userCurrency,
+      localCurrency: withdrawCurrency,
       userBank: null,
     });
 
@@ -86,6 +97,15 @@ const WithDrawInput = () => {
     toCurrency: string
   ): number {
     if (fromCurrency === toCurrency) return amount;
+
+    if (fromCurrency == "POINTS" && toCurrency == "NGN") {
+      if (points && config) {
+        const amount = (points * config?.point_conversion_rate_ngn) as number;
+        return amount;
+      }
+      return 0;
+    }
+
     if (fromCurrency === "USD") {
       const toRate =
         rates.find((rate) => rate.name === toCurrency)?.sellValue || 1;

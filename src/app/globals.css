@@ -13,9 +13,9 @@
   --color-coins-card-top: #e057ff;
 }
 
-html {
+/* html {
   font-size: 92.5%;
-}
+} */
 
 body {
   text-rendering: optimizeLegibility;
@@ -28,8 +28,7 @@ body {
   color: #000000;
 }
 
-@media (prefers-color-scheme: light) {
-}
+@media (prefers-color-scheme: light) {}
 
 img {
   max-width: 100%;
@@ -242,17 +241,6 @@ img {
   height: calc(100vh - 81px);
 }
 
-.swal-icon--custom {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin: 2rem 0;
-}
-
-.swal-icon--custom {
-  scale: 2;
-}
-
 @media screen and (min-width: 1024px) {
   .clean-sidebar::-webkit-scrollbar {
     width: 0px;
@@ -348,7 +336,7 @@ img {
 }
 
 /* 1 child: full size of the container */
-.str-video__livestream-layout__wrapper > div:only-child {
+.str-video__livestream-layout__wrapper>div:only-child {
   grid-template-columns: 1fr !important;
   grid-template-rows: 1fr !important;
   width: 100%;
@@ -368,13 +356,13 @@ img {
   grid-template-columns: 1fr;
 }
 
-.str-video__livestream-layout__wrapper > div:nth-child(1) {
+.str-video__livestream-layout__wrapper>div:nth-child(1) {
   grid-column: 1 / -1 !important;
   /* Span across all columns */
 }
 
-.str-video__livestream-layout__wrapper > div:nth-child(2),
-.str-video__livestream-layout__wrapper > div:nth-child(3) {
+.str-video__livestream-layout__wrapper>div:nth-child(2),
+.str-video__livestream-layout__wrapper>div:nth-child(3) {
   grid-template-rows: 1fr !important;
   /* Adjust for 3 children */
 }
@@ -387,8 +375,20 @@ img {
 
 /* SWAL */
 .swal-modal {
-  border-radius: 0px !important;
-  box-shadow: none !important;
+  border-radius: 16px !important;
+  box-shadow: 0 10px 25px rgba(120, 21, 142, 0.15) !important;
+}
+
+.swal-icon--custom {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 2.5rem 0;
+}
+
+.swal-icon--custom {
+  scale: 2;
+  transition: transform 0.3s ease;
 }
 
 .swal-icon .swal-icon--success::before,
@@ -396,7 +396,7 @@ img {
 .swal-icon .swal-icon--warning::before,
 .swal-icon .swal-icon--info::before,
 .swal-icon .swal-icon--question::before {
-  background: #ecfffb !important;
+  background: #fcf1ff !important;
 }
 
 .swal-icon .swal-icon--success::after,
@@ -404,59 +404,64 @@ img {
 .swal-icon .swal-icon--warning::after,
 .swal-icon .swal-icon--info::after,
 .swal-icon .swal-icon--question::after {
-  background: #ecfffb !important;
+  background: #fcf1ff !important;
 }
-
-/* .swal-icon--success__hide-corners {
-          background-color: transparent !important;
-      } */
 
 .swal-title,
 .swal-text {
   color: #78158e !important;
-  margin: 1rem;
+  margin: 1.2rem;
+  font-weight: 600;
 }
 
 .swal-text {
   color: #333 !important;
-  line-height: 1.2;
+  line-height: 1.5;
   text-align: center;
+  font-weight: normal;
 }
 
 .swal-button {
   background-color: #78158e !important;
   border: none !important;
-  border-radius: 0px !important;
+  border-radius: 12px !important;
+  padding: 10px 24px !important;
+  transition: all 0.2s ease-in-out !important;
 }
 
 .swal-button.swal-button--cancel {
-  background-color: #e7e7e7 !important;
+  background-color: #f0f0f0 !important;
+  color: #333 !important;
 }
 
 .swal-button.swal-button--cancel:hover {
-  background-color: #d2d2d2 !important;
+  background-color: #e0e0e0 !important;
+  transform: translateY(-2px);
 }
 
 .swal-button.swal-button--danger {
-  background-color: red !important;
+  background-color: #ff3b5c !important;
 }
 
 .swal-button.swal-button--danger:hover {
-  background-color: rgb(216, 0, 0) !important;
+  background-color: #e6354f !important;
+  transform: translateY(-2px);
 }
 
 .swal-button.swal-button--confirm {
   color: #fff !important;
+  box-shadow: 0 4px 12px rgba(120, 21, 142, 0.25);
 }
 
 .swal-button:hover {
-  background-color: #78158e !important;
+  background-color: #9019ab !important;
+  transform: translateY(-2px);
 }
 
 .swal-modal {
-  max-width: 600px !important;
-  width: 100% !important;
-  padding: 1rem 0.5rem 0.5rem 0.5rem !important;
+  max-width: 420px !important;
+  width: 90% !important;
+  padding: 1.5rem 1rem 1rem 1rem !important;
 }
 
 .notification_message_container strong {
@@ -467,11 +472,11 @@ img {
   width: fit-content !important;
 }
 
-.livestream-view > div > div {
+.livestream-view>div>div {
   min-height: 100vh;
 }
 
-.livestream-view > div > div video {
+.livestream-view>div>div video {
   object-fit: cover;
 }
 
@@ -487,4 +492,26 @@ img {
 
 .preview-container.active {
   opacity: 1;
+}
+
+.loader-bar {
+  width: 0%;
+  animation: loaderBarAnim 1.2s linear infinite;
+}
+
+@keyframes loaderBarAnim {
+  0% {
+    width: 0%;
+    left: 0;
+  }
+
+  50% {
+    width: 100%;
+    left: 0;
+  }
+
+  100% {
+    width: 0%;
+    left: 100%;
+  }
 }

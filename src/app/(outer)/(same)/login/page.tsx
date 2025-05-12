@@ -12,7 +12,7 @@ import axios from "axios";
 const Login = () => {
   const { setUser } = getUser();
   const router = useRouter();
-    const [loginCredentials, setLoginCredentials] = useState({
+  const [loginCredentials, setLoginCredentials] = useState({
     email: "",
     password: "",
   });
@@ -65,10 +65,9 @@ const Login = () => {
           return;
         }
         return;
-      }else{
-          toast.error(loginThisUser?.data?.message);
+      } else {
+        toast.error(loginThisUser?.data?.message);
       }
-
     } catch (error: any) {
       console.error("Error while logging in:", error);
       toast.error(
@@ -88,14 +87,15 @@ const Login = () => {
             alt="Login Image"
             className="h-full absolute object-cover inset-0 w-full "
           />
-            <div
-              style={{
-                position: "absolute",
-                inset: 0,
-                background: "linear-gradient(to right, transparent 70%, rgba(0,0,0,9) 100%)",
-                pointerEvents: "none"
-              }}
-            ></div>
+          <div
+            style={{
+              position: "absolute",
+              inset: 0,
+              background:
+                "linear-gradient(to right, transparent 70%, rgba(0,0,0,9) 100%)",
+              pointerEvents: "none",
+            }}
+          ></div>
         </div>
         <div className="h-full lg:p-14 2xl:p-28">
           <div className="max-w-screen-xl pt-12 mx-auto mb-24 md:mt-16">

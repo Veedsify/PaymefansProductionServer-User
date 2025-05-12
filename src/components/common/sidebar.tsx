@@ -14,8 +14,11 @@ import {
   LucideLightbulb,
   LucideLightbulbOff,
   LucideMoon,
+  AlertTriangle,
+  LogOutIcon,
+  LucideLoader2,
 } from "lucide-react";
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import Image from "next/image";
@@ -26,10 +29,12 @@ import NotificationSidebarLink from "../sub_components/sub/notification-sidebar-
 import useThemeToggle from "../sub_components/sub/theme-toggle";
 import axiosInstance from "@/utils/axios";
 import { useMessagesConversation } from "@/contexts/messages-conversation-context";
+import { motion } from "framer-motion";
 
 const SideBar = React.memo(() => {
   const router = useRouter();
   const { sideBarState, setSideBar } = useSideBarContext();
+  const [willLogout, setWillLogout] = useState(false);
   const pathname = usePathname();
   const { user } = useUserAuthContext();
   const { unreadCount } = useMessagesConversation();
@@ -40,12 +45,6 @@ const SideBar = React.memo(() => {
     };
     closeSideBar();
   }, [pathname, setSideBar]);
-
-  const LogOut = async () => {
-    document.cookie = `token=; expires=${new Date()}; path=/;`;
-    await axiosInstance.post("/logout", { username: user?.username });
-    router.push("/login");
-  };
 
   return (
     <>
@@ -206,19 +205,7 @@ const SideBar = React.memo(() => {
             </Link>
             <span
               className="flex items-center gap-5 p-2 mb-2 transition-all duration-200 hover:bg-gray-200 dark:hover:bg-gray-900 rounded-xl cursor-pointer select-none"
-              onClick={() => {
-                swal({
-                  title: "Are you sure?",
-                  text: "You are about to logout",
-                  icon: "/icons/error.svg",
-                  buttons: ["Cancel", "Logout"],
-                  dangerMode: true,
-                }).then((willLogout) => {
-                  if (willLogout) {
-                    LogOut();
-                  }
-                });
-              }}
+              onClick={() => setWillLogout(true)}
             >
               <LucideLogOut />
               <p>Logout</p>
@@ -249,9 +236,72 @@ const SideBar = React.memo(() => {
             : "opacity-0 pointer-events-none"
         }`}
       ></div>
+      {willLogout && <LogOutModal onClose={() => setWillLogout(false)} />}
     </>
   );
 });
+const LogOutModal: React.FC<{ onClose: () => void }> = ({ onClose }) => {
+  const { user } = useUserAuthContext();
+  const [loggingOut, setLoggingOut] = useState(false);
+  const router = useRouter();
+  const LogOut = async () => {
+    document.cookie = `token=; expires=${new Date()}; path=/;`;
+    await axiosInstance.post("/logout", { username: user?.username });
+    router.push("/login");
+  };
+  const handleLogout = async () => {
+    setLoggingOut(true);
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+    LogOut();
+    setLoggingOut(false);
+  };
+  return (
+    <div
+      className="fixed inset-0 bg-black/50 flex items-center justify-center z-[100]"
+      onClick={onClose}
+    >
+      <motion.div
+        initial={{
+          scale: 0.6,
+          opacity: 0,
+          transformOrigin: "center",
+        }}
+        animate={{
+          scale: 1,
+          opacity: 1,
+          transformOrigin: "center",
+        }}
+        onClick={(e) => e.stopPropagation()}
+        className="bg-white rounded-xl p-6 max-w-sm w-full mx-4"
+      >
+        <div className="flex items-center justify-center w-12 h-12 rounded-full bg-red-100 mx-auto mb-4">
+          <LogOutIcon className="text-red-600" />
+        </div>
+        <h3 className="text-xl font-bold text-gray-800 text-center">Logout</h3>
+        <p className="text-gray-600 mt-3 text-center">
+          Are you sure you want to log out? This will end your current session.
+        </p>
+        <div className="mt-6 flex gap-6 justify-end">
+          <button
+            onClick={onClose}
+            className="px-4 py-2 text-gray-700 font-medium rounded-lg hover:bg-gray-100 cursor-pointer"
+          >
+            Cancel
+          </button>
+          <button
+            onClick={handleLogout}
+            className="px-4 py-2 bg-red-600 text-white font-medium rounded-lg hover:bg-red-700 cursor-pointer inline-flex items-center gap-2"
+          >
+            Yes Logout
+            {loggingOut && (
+              <LucideLoader2 className="animate-spin text-white" />
+            )}
+          </button>
+        </div>
+      </motion.div>
+    </div>
+  );
+};
 
 SideBar.displayName = "SideBar";
 

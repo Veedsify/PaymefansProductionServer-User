@@ -19,6 +19,7 @@ type WithdrawValuesProps = {
 type WithdrawStore = {
   withdrawValues: WithdrawValuesProps;
   setWithDrawStore: (data: WithdrawValuesProps) => void;
+  clearWithdrawStore: () => void;
 };
 
 export const useWithdrawStore = create<WithdrawStore>((set) => ({
@@ -30,5 +31,16 @@ export const useWithdrawStore = create<WithdrawStore>((set) => ({
     localCurrency: "",
     userBank: null,
   },
+  clearWithdrawStore: () =>
+    set(() => ({
+      withdrawValues: {
+        platfromFee: 0,
+        amountToSettle: 0,
+        amountInUsd: 0,
+        amountInNgn: 0,
+        localCurrency: "",
+        userBank: null,
+      },
+    })),
   setWithDrawStore: (data) => set(() => ({ withdrawValues: data })),
 }));

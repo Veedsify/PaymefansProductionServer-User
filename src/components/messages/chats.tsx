@@ -78,8 +78,8 @@ const Chats: React.FC<ChatProps> = React.memo(
         // If the user is within 100px of the bottom, consider as "at bottom"
         const isAtBottom =
           container.scrollHeight -
-          container.scrollTop -
-          container.clientHeight <
+            container.scrollTop -
+            container.clientHeight <
           100;
         setUserScrolledUp(!isAtBottom);
       };
@@ -127,7 +127,7 @@ const Chats: React.FC<ChatProps> = React.memo(
     // Memoized profile picture
     const profilePicture = useMemo(
       () => receiver?.profile_image || "/site/avatar.png",
-      [receiver?.profile_image],
+      [receiver?.profile_image]
     );
 
     // Typing handler: emits and manages local typing state
@@ -141,7 +141,7 @@ const Chats: React.FC<ChatProps> = React.memo(
         });
         typingTimeoutRef.current = setTimeout(() => setTyping(""), 10000);
       },
-      [user?.user_id, conversationId, socket],
+      [user?.user_id, conversationId, socket]
     );
     // Handle showing "typing..." when other user is typing
     const handleSenderTyping = useCallback(
@@ -155,7 +155,7 @@ const Chats: React.FC<ChatProps> = React.memo(
           }
         }
       },
-      [user?.user_id],
+      [user?.user_id]
     );
     // Optimistic message creation
     const sendMessage = useCallback(
@@ -177,7 +177,7 @@ const Chats: React.FC<ChatProps> = React.memo(
 
         setAllMessages((prev) => _.uniqBy([...prev, newMessage], "id"));
       },
-      [conversationId, user?.user_id, setAllMessages, socket],
+      [conversationId, user?.user_id, setAllMessages, socket]
     );
     // Socket event handling: message received, seen status, errors, typing
     useEffect(() => {
@@ -234,8 +234,8 @@ const Chats: React.FC<ChatProps> = React.memo(
           prev.map((message) =>
             message.message_id === messageId
               ? { ...message, seen: true }
-              : message,
-          ),
+              : message
+          )
         );
       };
 
@@ -319,11 +319,17 @@ const Chats: React.FC<ChatProps> = React.memo(
             </div>
           </div>
           <div className="ml-auto">
-            <LucideGrip
-              size={24}
-              className="text-gray-900 cursor-pointer dark:text-white"
-              aria-label="More options"
-            />
+            <Link
+              href={`/chats/${conversationId}/settings`}
+              className="flex items-center justify-center w-10 h-10 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800"
+              aria-label="Settings"
+            >
+              <LucideGrip
+                size={24}
+                className="text-gray-900 cursor-pointer dark:text-white"
+                aria-label="More options"
+              />
+            </Link>
           </div>
         </div>
         {/* Messages */}
@@ -369,7 +375,7 @@ const Chats: React.FC<ChatProps> = React.memo(
         </div>
       </div>
     );
-  },
+  }
 );
 Chats.displayName = "Chats";
 export default Chats;

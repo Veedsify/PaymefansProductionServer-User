@@ -1,138 +1,188 @@
+"use client";
+
 import OtherTransactions from "@/components/transactions/other-transactions";
 import ROUTE from "@/config/routes";
+import { useConfigContext } from "@/contexts/configs-context";
+import { useUserAuthContext } from "@/lib/userUseContext";
 import { ExchangeRate } from "@/types/components";
 import { AuthUserProps } from "@/types/user";
 import axiosInstance from "@/utils/axios";
-import { getTransactionsData } from "@/utils/data/transactions";
-import getUserData from "@/utils/data/user-data";
+import { getToken } from "@/utils/cookie.get";
 import axios from "axios";
-import { Metadata } from "next";
-import { cookies, headers } from "next/headers";
 import Image from "next/image";
 import Link from "next/link";
+import { useState, useEffect } from "react";
 
-export const metadata: Metadata = {
-  title: "Wallet",
-  description: "Profile page",
-};
+const WalletPage = () => {
+  const { user } = useUserAuthContext();
+  const [transactions, setTransactions] = useState<any[]>([]);
+  const [rates, setRates] = useState<any>(null);
+  const [wallet, setWallet] = useState<number | null>(null);
+  const [points, setPoints] = useState<number | null>(null);
+  const [loading, setLoading] = useState(true);
+  const token = getToken();
+  const { config } = useConfigContext();
 
-const WalletPage = async () => {
-  const token = (await cookies()).get("token")?.value;
-  const user = (await getUserData()) as AuthUserProps;
-  const { data } = await getTransactionsData(token as string);
-  const rates = await axios(ROUTE.GET_PLATFROM_EXCHANGE_RATE);
-  function convertCurrency(
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        // Fetch token from cookies (client-side)
+        const cookies = document.cookie.split(";").reduce((acc, cookie) => {
+          const [key, value] = cookie.trim().split("=");
+          acc[key] = value;
+          return acc;
+        }, {} as Record<string, string>);
+        const fetchedToken = cookies["token"];
+
+        // Fetch transactions
+        const transactionsResponse = await axiosInstance.get(
+          `${process.env.NEXT_PUBLIC_TS_EXPRESS_URL}/wallet/transactions`,
+          {
+            headers: {
+              Authorization: `Bearer ${fetchedToken}`,
+            },
+          }
+        );
+        setTransactions(transactionsResponse.data.data.slice(0, 5));
+
+        // Fetch exchange rates
+        const ratesResponse = await axios.get(ROUTE.GET_PLATFROM_EXCHANGE_RATE);
+        setRates(ratesResponse.data);
+
+        // Fetch wallet
+        const walletResponse = await axiosInstance.post(
+          `${process.env.NEXT_PUBLIC_TS_EXPRESS_URL}/auth/wallet`,
+          {},
+          {
+            headers: {
+              Authorization: `Bearer ${fetchedToken}`,
+              "Content-Type": "application/json",
+            },
+          }
+        );
+        setWallet(walletResponse.data.wallet);
+
+        // Fetch points
+        const pointsResponse = await axiosInstance.post(
+          `${process.env.NEXT_PUBLIC_TS_EXPRESS_URL}/auth/points`,
+          {},
+          {
+            headers: {
+              Authorization: `Bearer ${fetchedToken}`,
+              "Content-Type": "application/json",
+            },
+          }
+        );
+        setPoints(pointsResponse.data.points);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  const convertCurrency = (
     amount: number,
     fromCurrency: string,
     toCurrency: string
-  ): number {
+  ): number => {
+    if (!rates) return 0;
+
+    if (fromCurrency == "POINTS" && toCurrency == "NGN") {
+      if (points && config) {
+        const amount = (points * config?.point_conversion_rate_ngn) as number;
+        return amount;
+      }
+      return 0;
+    }
+
     if (fromCurrency === "POINTS") {
-      // Convert points to USD first (16 points = $1)
       const usdAmount =
         amount /
-        rates.data.data.find((rate: ExchangeRate) => rate.name === "POINTS")
+        rates.data.find((rate: ExchangeRate) => rate.name === "POINTS")
           ?.buyValue;
 
-      // Then convert USD to target currency
       const targetRate =
-        rates.data.data.find((rate: ExchangeRate) => rate.name === toCurrency)
+        rates.data.find((rate: ExchangeRate) => rate.name === toCurrency)
           ?.buyValue || 1;
 
       return usdAmount * targetRate;
     }
 
-    // For other currency conversions
     if (fromCurrency === "USD") {
-      // Direct conversion from USD
       const toRate =
-        rates.data.data.find((rate: ExchangeRate) => rate.name === toCurrency)
+        rates.data.find((rate: ExchangeRate) => rate.name === toCurrency)
           ?.buyValue || 1;
       return amount * toRate;
     } else if (toCurrency === "USD") {
-      // Convert to USD
       const fromRate =
-        rates.data.data.find((rate: ExchangeRate) => rate.name === fromCurrency)
+        rates.data.find((rate: ExchangeRate) => rate.name === fromCurrency)
           ?.buyValue || 1;
       return amount / fromRate;
     } else {
-      // Convert through USD as intermediate
       const fromRate =
-        rates.data.data.find((rate: ExchangeRate) => rate.name === fromCurrency)
+        rates.data.find((rate: ExchangeRate) => rate.name === fromCurrency)
           ?.buyValue || 1;
       const toRate =
-        rates.data.data.find((rate: ExchangeRate) => rate.name === toCurrency)
+        rates.data.find((rate: ExchangeRate) => rate.name === toCurrency)
           ?.buyValue || 1;
 
-      // First convert to USD then to target currency
       const usdAmount = amount / fromRate;
       return usdAmount * toRate;
     }
-  }
+  };
 
-  const { wallet } = await axiosInstance
-    .post(
-      `${process.env.NEXT_PUBLIC_TS_EXPRESS_URL}/auth/wallet`,
-      {},
-      {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    )
-    .then((res) => res.data as { wallet: number });
-  const { points } = await axiosInstance
-    .post(
-      `${process.env.NEXT_PUBLIC_TS_EXPRESS_URL}/auth/points`,
-      {},
-      {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    )
-    .then((res) => res.data as { points: number });
-
-  const transactions = data.slice(0, 5);
-
-  function calculateAmount() {
-    const convert = convertCurrency(points, "POINTS", user?.currency || "USD");
+  const calculateAmount = () => {
+    if (!points || !rates || !user) return "N/A";
+    const convert = convertCurrency(points, "POINTS", "NGN");
     return convert.toLocaleString("en-US", {
       style: "currency",
       currency:
-        rates.data.data.find(
-          (rate: ExchangeRate) => rate.name === user?.currency
-        ).name || "USD",
+        rates.data.find((rate: ExchangeRate) => rate.name === user.currency)
+          ?.name || "USD",
     });
-  }
+  };
 
-  function calculateAmountInDollars() {
+  const calculateAmountInDollars = () => {
+    if (!points) return "N/A";
     const usd = convertCurrency(points, "POINTS", "USD");
     return usd.toLocaleString("en-US", {
       style: "currency",
       currency: "USD",
     });
+  };
+
+  if (loading) {
+    <div className="w-full h-1 bg-gray-200 rounded overflow-hidden my-8">
+      <div className="loader-bar h-full bg-primary-dark-pink animate-loader-bar"></div>
+    </div>;
   }
 
   return (
     <div className="p-4 py-8">
       <div className="flex flex-wrap gap-6 items-center justify-between pb-8 border-b border-gray-200 dark:border-gray-700 mb-6">
         <div className="flex items-center gap-4">
-          <Image
-            src={user.profile_image}
-            width={56}
-            height={56}
-            alt="Profile"
-            priority
-            className="object-cover w-14 h-14 border-2 border-primary-dark-pink rounded-full shadow"
-          />
-          <div className="self-center dark:text-gray-200">
-            <h2 className="font-bold text-lg">{user.name}</h2>
-            <p className="text-sm text-gray-500 dark:text-gray-400">
-              {user.username}
-            </p>
-          </div>
+          {user && (
+            <>
+              <Image
+                src={user.profile_image}
+                width={56}
+                height={56}
+                alt="Profile"
+                priority
+                className="object-cover w-14 h-14 border-2 border-primary-dark-pink rounded-full shadow"
+              />
+              <div className="self-center dark:text-gray-200">
+                <h2 className="font-bold text-lg">{user.name}</h2>
+                <p className="text-sm text-gray-500 dark:text-gray-400">
+                  {user.username}
+                </p>
+              </div>
+            </>
+          )}
         </div>
         <Link
           href="/points"

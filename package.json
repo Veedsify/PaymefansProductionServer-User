@@ -24,6 +24,7 @@
     "axios": "^1.8.4",
     "bufferutil": "^4.0.9",
     "caniuse-lite": "^1.0.30001706",
+    "framer-motion": "^12.10.5",
     "geist": "^1.3.1",
     "hls.js": "^1.5.20",
     "js-cookie": "^3.0.5",
