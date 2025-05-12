@@ -66,17 +66,29 @@ export default async function RootLayout({
 
   return (
     <html lang="en">
-      <Head>
+      <head>
         <link rel="icon" href="/site/logo.svg" />
-        <link rel="apple-touch-icon" href="/site/logo.svg" />
+        <link rel="apple-touch-icon" href="/site/logo.svg" sizes="180x180" />
         <link rel="manifest" href="/site/site.webmanifest" />
         <meta name="theme-color" content="#000000" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta charSet="utf-8" />
+        <meta
+          name="viewport"
+          content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover"
+        />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta
+          name="apple-mobile-web-app-status-bar-style"
+          content="black-translucent"
+        />
         <meta
           name="description"
           content="Paymefans - The Ultimate Fan Experience"
         />
-      </Head>
+        <meta name="format-detection" content="telephone=no" />
+        <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
+        <meta property="og:image" content="/site/logo.svg" />
+      </head>
       <body
         className={`
           ${GeistSans.className}
@@ -121,7 +133,7 @@ export default async function RootLayout({
                           <Header />
                           <div className="grid lg:grid-cols-6 pt-[73px] lg:pt-[48px] h-screen">
                             <div className="flex flex-col h-full col-span-3">
-                              <div className="w-full h-full md:border-r border-primary-dark-pink/40 dark:border-slate-800 pb-[50px] lg:pb-0">
+                              <div className="w-full h-full md:border-r border-primary-dark-pink/40 dark:border-slate-800 pb-24 lg:pb-0">
                                 {children}
                               </div>
                             </div>
