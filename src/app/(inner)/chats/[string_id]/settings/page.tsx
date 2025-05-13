@@ -19,7 +19,7 @@ const ConversationSettingsPage = () => {
   const [isSearching, setIsSearching] = useState(false);
 
   return (
-    <div className="flex flex-col items-center min-h-screen">
+    <div className="flex flex-col items-center min-h-dvh">
       <motion.div
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
@@ -172,8 +172,8 @@ const BlockUserModal: React.FC<{ onClose: () => void }> = ({ onClose }) => (
     >
       <h3 className="text-xl font-bold text-gray-800">Block this user?</h3>
       <p className="text-gray-600 mt-2">
-        You won't receive messages or calls from this user anymore. They won't
-        be notified that you've blocked them.
+        You won&apos;t receive messages or calls from this user anymore. They
+        won&apos;t be notified that you&apos;ve blocked them.
       </p>
       <div className="mt-6 flex gap-3 justify-end">
         <button

@@ -50,73 +50,66 @@ async function Models() {
 
   return (
     <div>
-        <div className="border-black/10 dark:border-white/10 border m-3 p-8 px-12 rounded-2xl overflow-hidden relative dark:bg-gray-800">
-          <div className="absolute top-0 right-0 w-40 h-40 -mr-10 -mt-10 opacity-5">
-            <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
-              <path
-                fill="currentColor"
-                d="M100 10L122.5 57.7L174.2 66.3L137.1 103L147.5 154.5L100 130L52.5 154.5L62.9 103L25.8 66.3L77.5 57.7L100 10Z"
-              />
-            </svg>
-          </div>
+      <div className="border-black/10 dark:border-white/10 border m-3 p-8 px-12 rounded-2xl relative dark:bg-gray-800">
+        <h2 className="text-center text-3xl font-bold mb-8 relative z-10 dark:text-white">
+          Exclusive Benefits of Becoming a Model
+        </h2>
 
-          <h2 className="text-center text-3xl font-bold mb-8 relative z-10 dark:text-white">
-            Exclusive Benefits of Becoming a Model
-          </h2>
-
-          <div className="grid md:grid-cols-2 gap-6 relative z-10">
-            {[
-              {
-          icon: "💬",
-          benefit: "Chat with fans and build connections",
-              },
-              {
-          icon: "💲",
-          benefit: "Earn per message sent",
-              },
-              {
-          icon: "🖼️",
-          benefit: "Upload High Quality Image & Videos",
-              },
-              {
-          icon: "💸",
-          benefit: "Unlock subscription-based earnings",
-              },
-              {
-          icon: "👥",
-          benefit: "Engage with active subscribers",
-              },
-              {
-          icon: "🌟",
-          benefit: "Join the exclusive Creators Group",
-              },
-              {
-          icon: "💰",
-          benefit: "100% Earnings on your content",
-              },
-              {
-          icon: "🚀",
-          benefit: "Monetize your unique content",
-              },
-              {
-          icon: "👩‍🎤",
-          benefit: "Top Creator Recognition",
-              },
-              {
-          icon: "🎥",
-          benefit: "Unlimited Uploads",
-              },
-            ].map((item, index) => (
-              <div
-          key={index}
-          className="flex items-center bg-black/10 dark:bg-white/10 backdrop-blur-sm p-4 rounded-xl transition-transform hover:scale-105"
-              >
-          <span className="text-2xl mr-3">{item.icon}</span>
-          <p className="text-black dark:text-white font-medium">{item.benefit}</p>
-              </div>
-            ))}
-          </div>
+        <div className="grid md:grid-cols-2 gap-6 relative z-10">
+          {[
+            {
+              icon: "💬",
+              benefit: "Chat with fans and build connections",
+            },
+            {
+              icon: "💲",
+              benefit: "Earn per message sent",
+            },
+            {
+              icon: "🖼️",
+              benefit: "Upload High Quality Image & Videos",
+            },
+            {
+              icon: "💸",
+              benefit: "Unlock subscription-based earnings",
+            },
+            {
+              icon: "👥",
+              benefit: "Engage with active subscribers",
+            },
+            {
+              icon: "🌟",
+              benefit: "Join the exclusive Creators Group",
+            },
+            {
+              icon: "💰",
+              benefit: "100% Earnings on your content",
+            },
+            {
+              icon: "🚀",
+              benefit: "Monetize your unique content",
+            },
+            {
+              icon: "👩‍🎤",
+              benefit: "Top Creator Recognition",
+            },
+            {
+              icon: "🎥",
+              benefit: "Unlimited Uploads",
+            },
+          ].map((item, index) => (
+            <div
+              key={index}
+              className="flex items-center bg-black/10 dark:bg-white/10 p-4 rounded-xl"
+            >
+              <span className="text-2xl mr-3">{item.icon}</span>
+              <p className="text-black dark:text-white font-medium">
+                {item.benefit}
+              </p>
+            </div>
+          ))}
         </div>
+      </div>
       <div className="flex align-middle justify-center">
         <Link
           href="/models/payment"

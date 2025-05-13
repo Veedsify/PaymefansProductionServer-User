@@ -105,7 +105,7 @@ export default function ConfigProvider({ children }: { children: ReactNode }) {
     }
 
     fetchConfigs();
-  }, []);
+  }, [router]);
 
   const updateConfig = useCallback(
     (config: Configs) => {

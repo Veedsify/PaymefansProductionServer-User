@@ -29,7 +29,7 @@ const StoryPreviewControlls = ({
   }, [inView, type, playVideoOnLoad]);
 
   return (
-    <div className="flex absolute min-h-screen w-full z-50 inset-0">
+    <div className="flex absolute min-h-dvh w-full z-[600] inset-0">
       <div
         style={{
           display: "grid",

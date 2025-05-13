@@ -21,6 +21,7 @@ import { MessagesConversationProvider } from "@/contexts/messages-conversation-c
 import UserAccountSupendedScreen from "@/components/sub_components/user-account-suspended-screen";
 import ConfigProvider from "@/contexts/configs-context";
 import { Inter } from "next/font/google";
+import Head from "next/head";
 
 const font = Inter({
   weight: ["200", "300", "400", "500", "600", "700", "800"],
@@ -55,7 +56,7 @@ export default async function RootLayout({
     return (
       <html>
         <body
-          className={`bg-white dark:bg-gray-950 min-h-screen flex items-center justify-center ${font.className}`}
+          className={`bg-white dark:bg-gray-950 min-h-dvh flex items-center justify-center ${GeistSans.className}`}
         >
           <UserAccountSupendedScreen user={user} />
         </body>
@@ -65,10 +66,33 @@ export default async function RootLayout({
 
   return (
     <html lang="en">
+      <head>
+        <link rel="icon" href="/site/logo.svg" />
+        <link rel="apple-touch-icon" href="/site/logo.svg" sizes="180x180" />
+        <link rel="manifest" href="/site/site.webmanifest" />
+        <meta name="theme-color" content="#000000" />
+        <meta charSet="utf-8" />
+        <meta
+          name="viewport"
+          content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover"
+        />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta
+          name="apple-mobile-web-app-status-bar-style"
+          content="black-translucent"
+        />
+        <meta
+          name="description"
+          content="Paymefans - The Ultimate Fan Experience"
+        />
+        <meta name="format-detection" content="telephone=no" />
+        <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
+        <meta property="og:image" content="/site/logo.svg" />
+      </head>
       <body
         className={`
-          ${font.className}
-                 dark:bg-gray-950 min-h-screen`}
+          ${GeistSans.className}
+                 dark:bg-gray-950 min-h-dvh`}
       >
         <ConfigProvider>
           <UserContextProvider user={user}>
@@ -99,17 +123,17 @@ export default async function RootLayout({
                       },
                     }}
                   />
-                  <div className="relative grid h-screen lg:grid-cols-8">
+                  <div className="relative grid h-dvh lg:grid-cols-8">
                     <MessagesConversationProvider>
                       <ToggleWishListProvider>
                         <div className="col-span-2">
                           <SideBar />
                         </div>
-                        <div className="relative h-screen col-span-6 overflow-auto border-r border-pink-50">
+                        <div className="relative h-dvh col-span-6 overflow-auto border-r border-pink-50">
                           <Header />
-                          <div className="grid lg:grid-cols-6 pt-[73px] lg:pt-[48px] h-screen">
+                          <div className="grid lg:grid-cols-6 pt-[73px] lg:pt-[48px] h-dvh">
                             <div className="flex flex-col h-full col-span-3">
-                              <div className="w-full h-full md:border-r border-primary-dark-pink/40 dark:border-slate-800">
+                              <div className="w-full h-full md:border-r border-primary-dark-pink/40 dark:border-slate-800 pb-24 lg:pb-0">
                                 {children}
                               </div>
                             </div>

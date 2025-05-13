@@ -191,7 +191,7 @@ const WalletPage = () => {
           Add Funds
         </Link>
       </div>
-      <div className="mb-6 flex flex-col md:flex-row align-middle justify-between bg-gradient-to-r from-primary-dark-pink to-pink-400 text-white p-6 rounded-2xl shadow-lg">
+      <div className="mb-6 flex items-center justify-between bg-gradient-to-r from-primary-dark-pink to-pink-400 text-white p-6 rounded-2xl shadow-lg">
         <div className="grid gap-2">
           <small className="text-base font-medium opacity-90">
             Your Balance
@@ -215,7 +215,7 @@ const WalletPage = () => {
           </div>
         </div>
       </div>
-      <div className="mb-6 flex flex-col md:flex-row align-middle justify-between bg-gradient-to-r from-primary-dark-pink to-pink-400 text-white p-6 rounded-2xl shadow-lg">
+      <div className="mb-6 flex items-center justify-between bg-gradient-to-r from-primary-dark-pink to-pink-400 text-white p-6 rounded-2xl shadow-lg">
         <div className="grid gap-2">
           <small className="text-base font-medium opacity-90">
             Your Balance

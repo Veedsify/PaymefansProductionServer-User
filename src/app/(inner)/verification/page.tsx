@@ -20,7 +20,7 @@ const Verification = async () => {
   }
 
   return (
-    <div className="min-h-screen p-5 md:p-7 dark:text-white">
+    <div className="min-h-dvh p-5 md:p-7 dark:text-white">
       <div className="max-w-screen-xl pt-12 mx-auto mb-24 md:mt-16">
         <h1 className="mt-auto mb-16 text-2xl font-bold text-center">
           Verify Yourself

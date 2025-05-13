@@ -181,7 +181,9 @@ const StoryPreviewComponent = ({
   }, [resetSwiper, activeIndex, stories, PlayVideo]);
 
   return (
-    <div className={`relative flex flex-col items-center justify-center min-h-screen bg-black ${className}`}>
+    <div
+      className={`relative flex flex-col items-center justify-center min-h-dvh bg-black ${className}`}
+    >
       {stories.length > 0 && (
         <div className="w-full mx-auto z-20 absolute top-0 left-1/2 -translate-x-1/2">
           <StoriesHeader
@@ -191,14 +193,16 @@ const StoryPreviewComponent = ({
           />
         </div>
       )}
-      <div className="relative w-full h-screen flex items-center justify-center">
+      <div className="relative w-full h-dvh flex items-center justify-center">
         {stories.length > 0 && (
-          <div className="absolute z-20 w-full mx-auto left-1/2 -translate-x-1/2 top-4 pointer-events-none">
+          <div className="absolute w-full mx-auto left-1/2 -translate-x-1/2 top-4 pointer-events-none z-[550]">
             <StoryPreviewControlls
               type={stories[activeIndex].type}
               moveToNextSlide={moveToNextSlide}
               playVideoOnLoad={PlayIfVideo}
-              clickToPlay={() => PlayVideo(stories[activeIndex].type === "video")}
+              clickToPlay={() =>
+                PlayVideo(stories[activeIndex].type === "video")
+              }
               stories={stories}
               index={activeIndex}
               moveToPrevSlide={moveToPrevSlide}
@@ -255,8 +259,8 @@ const StoryPreviewComponent = ({
                           objectFit: "contain",
                           background: "black",
                           borderRadius: "0.75rem",
-                          boxShadow: "0 4px 24px rgba(0,0,0,0.7)"
-                        }
+                          boxShadow: "0 4px 24px rgba(0,0,0,0.7)",
+                        },
                       }}
                       className="w-full h-full rounded-lg shadow-lg bg-black"
                       streamUrl={story.url}

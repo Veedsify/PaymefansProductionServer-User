@@ -65,14 +65,14 @@ const BecomeAModel = () => {
   const updatePostAudience = (e: MouseEvent<HTMLLIElement>) => {
     const id = e.currentTarget.getAttribute("data-id");
     const audience = postAudienceData.find(
-      (audience) => audience.id === Number(id),
+      (audience) => audience.id === Number(id)
     ) as postAudienceDataProps;
     setPostAudience(audience);
     setDropdown(false);
   };
 
   const updateModelSignUpData = (
-    e: ChangeEvent<HTMLInputElement | HTMLSelectElement>,
+    e: ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
     setModelSignUpData((prev) => ({
       ...prev,
@@ -244,10 +244,11 @@ const BecomeAModel = () => {
               )}
             </button>
             <div
-              className={`absolute z-10 w-full left-0 mt-2 transition-all duration-200 ${dropdown
+              className={`absolute z-10 w-full left-0 mt-2 transition-all duration-200 ${
+                dropdown
                   ? "opacity-100 translate-y-0 pointer-events-auto"
                   : "opacity-0 -translate-y-2 pointer-events-none"
-                }`}
+              }`}
             >
               <ul className="bg-white dark:bg-gray-800 rounded-xl shadow-md text-left w-full border border-gray-200 dark:border-gray-700">
                 {postAudienceData.map((audience) => (

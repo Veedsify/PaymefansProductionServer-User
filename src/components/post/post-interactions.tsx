@@ -94,19 +94,19 @@ export const PostCompInteractions = ({ data }: PostCompInteractionsProps) => {
           <LucideHeart
             fill={like ? "#f20" : "none"}
             strokeWidth={like ? 0 : 2}
-            size={25}
+            className="w-5 h-5 lg:w-7 lg:h-7"
           />
           {formattedNumber(likesCount)}
         </span>
         <span className="flex items-center gap-1 text-sm font-medium cursor-pointer">
-          <LucideMessageSquare size={25} />
+          <LucideMessageSquare className="w-5 h-5 lg:w-7 lg:h-7" />
           {data?.post_comments}
         </span>
         <span
           onClick={RepostThisPost}
           className="flex items-center gap-1 text-sm font-medium cursor-pointer"
         >
-          <LucideRepeat2 size={25} />
+          <LucideRepeat2 className="w-5 h-5 lg:w-7 lg:h-7" />
           {data?.post_reposts}
         </span>
         {data && data.post_audience !== "private" && data.user?.is_model && (
@@ -114,14 +114,14 @@ export const PostCompInteractions = ({ data }: PostCompInteractionsProps) => {
             href={`/posts/points/${data.post_id}/`}
             className="flex items-center gap-1 text-sm font-medium cursor-pointer"
           >
-            <PiCurrencyDollarSimple size={25} />
+            <PiCurrencyDollarSimple className="w-5 h-5 lg:w-7 lg:h-7" />
           </Link>
         )}
         <span
           onClick={() => setIsShareModalOpen(true)}
           className="flex items-center gap-1 text-sm font-medium cursor-pointer"
         >
-          <BarChart size={23} />
+          <BarChart className="w-5 h-5 lg:w-7 lg:h-7" />
           {formatNumber(data?.post_impressions as number)}
         </span>
       </div>

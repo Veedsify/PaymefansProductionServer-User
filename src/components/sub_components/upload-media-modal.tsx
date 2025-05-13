@@ -57,7 +57,7 @@ const UploadMediaModal: React.FC = () => {
   // Show the file selector if no files have been selected
   if (mediaFiles.length === 0) {
     return (
-      <div className="fixed bg-white dark:bg-gray-900 inset-0 w-full min-h-screen z-[100] transition-colors">
+      <div className="fixed bg-white dark:bg-gray-900 inset-0 w-full min-h-dvh z-[100] transition-colors">
         <div className="flex items-center justify-center h-full w-full p-2 relative">
           {/* Close button */}
           <div
@@ -115,7 +115,7 @@ const UploadMediaModal: React.FC = () => {
 
   // Show media preview if files have been selected
   return (
-    <div className="fixed bg-white dark:bg-gray-900 inset-0 w-full min-h-screen z-[100] transition-colors">
+    <div className="fixed bg-white dark:bg-gray-900 inset-0 w-full min-h-dvh z-[100] transition-colors">
       <div className="flex items-center justify-center h-full w-full p-2 relative">
         {/* Close button */}
         <div

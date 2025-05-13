@@ -76,9 +76,9 @@ const Login = () => {
     }
   };
   return (
-    <div className="min-h-screen lg:p-0 bg-black p-5">
+    <div className="min-h-dvh lg:p-0 bg-black p-5">
       <div className="lg:grid grid-cols-2 items-start justify-center mx-auto">
-        <div className="min-h-screen hidden lg:block relative">
+        <div className="min-h-dvh hidden lg:block relative">
           <Image
             width={720}
             height={720}
