@@ -17,7 +17,7 @@ const MenuButtons = () => {
   const pathname = usePathname();
 
   return (
-    <div className="z-[500]">
+    <div className="z-[100]">
       {!pathname.includes("live") ? <NavigationBar /> : <NavigationBarSlide />}
     </div>
   );

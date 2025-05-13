@@ -111,14 +111,14 @@ function BannerModal({ user, open = false, setOpen }: BannerModalProps) {
   return (
     <div
       onClick={() => setOpen(false)}
-      className={`fixed inset-0 w-full h-full bg-black/40 dark:bg-black/70 z-50 flex items-center justify-center transition-all duration-300 ${
+      className={`fixed inset-0 w-full h-full bg-black/40 dark:bg-black/70 z-[250] flex items-center justify-center transition-all duration-300 ${
         open
           ? "opacity-100 pointer-events-auto"
           : "pointer-events-none opacity-0"
       }`}
     >
       <div
-        className="relative bg-white dark:bg-slate-900 md:max-w-2xl w-full md:h-auto h-full rounded-none md:rounded shadow-2xl p-6 md:p-8 max-h-[100vh] overflow-y-auto"
+        className="relative bg-white dark:bg-slate-900 md:max-w-2xl w-full md:h-auto rounded-none md:rounded shadow-2xl p-6 md:p-8 h-[100vh] overflow-y-auto"
         onClick={(e) => e.stopPropagation()}
       >
         <button
