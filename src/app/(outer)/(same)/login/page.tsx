@@ -12,6 +12,7 @@ import axios from "axios";
 const Login = () => {
   const { setUser } = getUser();
   const router = useRouter();
+
   const [loginCredentials, setLoginCredentials] = useState({
     email: "",
     password: "",
