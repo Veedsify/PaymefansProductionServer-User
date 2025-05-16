@@ -157,7 +157,7 @@ const MediaPanelMediaCard = ({
     media.media_type.startsWith("video")
   ) {
     return (
-      <div className="h-full select-none shadow-md aspect-square w-full object-cover bg-black flex flex-col gap-2 items-center justify-center text-white">
+      <div className="h-full select-none shadow-md aspect-square w-full object-cover bg-black flex flex-col gap-2 items-center justify-center text-center text-sm text-white">
         <h1>Your Media is still processing</h1>
         <small>Please wait for a few minutes</small>
       </div>

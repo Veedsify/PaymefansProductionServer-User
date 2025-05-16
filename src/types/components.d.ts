@@ -230,7 +230,7 @@ export type UploadResponseResponse = {
 
 // MESSAGE INPUT PROPS
 export interface Attachment {
-  type: string;
+  type: "image" | "video";
   extension: string;
   id: string;
   poster?: string;

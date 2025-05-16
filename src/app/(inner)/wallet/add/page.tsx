@@ -25,15 +25,15 @@ const WalletAddBank = () => {
   let [selectedBank, setSelectedBank] = useState<string>("");
   let [bankType, setBankType] = useState<string>("");
   let [selectCountry, setSelectCountry] =
-    useState<keyof typeof acceptedBankTypes>();
+    useState<keyof typeof acceptedBankTypes>("ng");
   const token = getToken();
 
-  const SelectCountry = useCallback(
-    (name: keyof typeof acceptedBankTypes, bankType: string) => {
-      setSelectCountry(name);
-    },
-    []
-  );
+  // const SelectCountry = useCallback(
+  //   (name: keyof typeof acceptedBankTypes, bankType: string) => {
+  //     setSelectCountry("ng");
+  //   },
+  //   []
+  // );
 
   useEffect(() => {
     const validateBannk = (accountNumber: string, selectedBank: string) => {
@@ -135,27 +135,27 @@ const WalletAddBank = () => {
     }
   };
 
-  if (!selectCountry) {
-    return (
-      <>
-        <div className={"flex items-center justify-center p-4 md:p-8 flex-col"}>
-          <h1 className={"md:text-2xl font-semibold leading-tight mb-4"}>
-            Select a country
-          </h1>
-          <CountrySelector
-            acceptedBankCountries={acceptedBankCountries}
-            onCountryChange={SelectCountry}
-          />
-          <div className="text-sm text-gray-500 mt-2">
-            <h2 className="font-bold text-lg mb-3 mt-6">Other Countries</h2>
-          </div>
-        </div>
-        <div className="p-4 md:p-8">
-          <SavedBanks />
-        </div>
-      </>
-    );
-  }
+  // if (!selectCountry) {
+  //   return (
+  //     <>
+  //       <div className={"flex items-center justify-center p-4 md:p-8 flex-col"}>
+  //         <h1 className={"md:text-2xl font-semibold leading-tight mb-4"}>
+  //           Select a country
+  //         </h1>
+  //         <CountrySelector
+  //           acceptedBankCountries={acceptedBankCountries}
+  //           onCountryChange={SelectCountry}
+  //         />
+  //         <div className="text-sm text-gray-500 mt-2">
+  //           <h2 className="font-bold text-lg mb-3 mt-6">Other Countries</h2>
+  //         </div>
+  //       </div>
+  //       <div className="p-4 md:p-8">
+  //         <SavedBanks />
+  //       </div>
+  //     </>
+  //   );
+  // }
 
   if (!bankType || bankType === "") {
     return (
@@ -200,17 +200,15 @@ const WalletAddBank = () => {
             )}
           </div>
         </div>
+        <div className="p-4 md:p-8">
+          <SavedBanks />
+        </div>
       </>
     );
   }
 
   return (
     <div className="p-4 py-8">
-      <div className="flex items-center mb-7 lg:hidden">
-        <span className="font-bold text-xl flex-shrink-0 ">
-          Add Withdrawal Bank
-        </span>
-      </div>
       <div className="flex items-center gap-2 mb-4">
         <span className="font-bold text-xl flex-shrink-0 ">
           Add Withdrawal Bank

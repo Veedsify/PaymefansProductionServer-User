@@ -65,7 +65,11 @@ const MessageBubbleContent: React.FC<MessageBubbleContentProps> = ({
         type: file.type.includes("image") ? "image" : "video",
         open: true,
         ref: index,
-        otherUrl: rawFiles.map((f) => ({ url: f.previewUrl, type: f.type })),
+        otherUrl: rawFiles.map((f) => ({
+          url: f.previewUrl,
+          type: f.type,
+          isBlob: true,
+        })),
         withOptions: true,
       });
     },
@@ -110,7 +114,6 @@ const MessageBubbleContent: React.FC<MessageBubbleContentProps> = ({
 
     async function uploadFilesAndSend() {
       const files: (Attachment | null)[] = [];
-
       for (const item of rawFiles) {
         try {
           const upload = await getUploadUrl(item.file);

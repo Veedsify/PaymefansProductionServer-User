@@ -134,17 +134,23 @@ const PostEditor = React.memo(({ posts }: PostEditorProps) => {
 
   const handlePostSubmit = async () => {
     if ((!content || content.trim() === "") && !media) {
-      toast.error("Post is empty, please write something.");
+      toast.error("Post is empty, please write something.", {
+        id: "post-upload",
+      });
       return;
     }
 
     // Check if all uploads are completed
     if (media?.some((file) => !file.fileId)) {
-      toast.error("Please wait for all uploads to complete.");
+      toast.error("Please wait for all uploads to complete.", {
+        id: "post-upload",
+      });
       return;
     }
 
-    toast.loading("Creating your post...");
+    toast.loading("Creating your post...", {
+      id: "post-upload",
+    });
     console.log("Media", media);
     console.log("Removed Media", removedIds);
     const savePostOptions = {
@@ -159,12 +165,15 @@ const PostEditor = React.memo(({ posts }: PostEditorProps) => {
     };
 
     const res = await SavePost(savePostOptions);
-    toast.dismiss();
 
     if (res.error) {
-      toast.error(res.message);
+      toast.error(res.message, {
+        id: "post-upload",
+      });
     } else {
-      toast.success(POST_CONFIG.POST_CREATED_SUCCESS_MSG);
+      toast.success(POST_CONFIG.POST_CREATED_SUCCESS_MSG, {
+        id: "post-upload",
+      });
       setPostText("");
       setVisibility("Public");
       window.location.href = String(`/profile`);

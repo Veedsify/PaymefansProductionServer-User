@@ -550,7 +550,7 @@ const VideoComponent: React.FC<VideoComponentProps> = ({
 
   if (media.media_state == "processing") {
     return (
-      <div className="h-full select-none shadow-md aspect aspect-[3/4] md:aspect-square w-full object-cover bg-black flex flex-col gap-2 items-center justify-center text-white">
+      <div className="h-full select-none shadow-md aspect aspect-[3/4] md:aspect-square w-full object-cover bg-black flex flex-col font-bold gap-2 items-center text-center text-sm md:text-base p-4 justify-center text-white">
         <h1>Your Media is still processing</h1>
         <small>Please wait for a few minutes</small>
       </div>

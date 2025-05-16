@@ -9,6 +9,7 @@ import {
 } from "lucide-react";
 import { MouseEvent, useCallback, useEffect, useRef, useState } from "react";
 import { useInView } from "react-intersection-observer";
+import CustomSeekBar from "./custom-seek-bar";
 
 const VideoPlayer = ({
   streamUrl,
@@ -216,7 +217,7 @@ const VideoPlayer = ({
   };
 
   return (
-    <div className="w-full overflow-hidden bg-black rounded-xl">
+    <div className="w-full overflow-hidden bg-black">
       <div
         ref={intersectionRef}
         className="relative group"
@@ -233,7 +234,7 @@ const VideoPlayer = ({
           className={`w-full ${className} transition-all duration-300`}
           onTimeUpdate={handleTimeUpdate}
           onLoadedMetadata={() => setDuration(videoRef.current?.duration || 0)}
-          style={{ background: "#18181b" }}
+          style={{ background: "#000000" }}
         ></video>
 
         {/* Loading Spinner Overlay - shown during initial loading */}
@@ -270,7 +271,7 @@ const VideoPlayer = ({
                   e.stopPropagation();
                   togglePlay();
                 }}
-                className="flex items-center justify-center p-3 transition-all duration-200 transform border border-gray-700 rounded-full shadow-lg bg-black/70 hover:bg-black/90 hover:scale-110 aspect-square"
+                className="flex items-center justify-center p-3 transition-all duration-200 transform outline outline-gray-700 rounded-full shadow-lg bg-black/70 hover:bg-black/90 hover:scale-110 aspect-square"
                 aria-label={isPlaying ? "Pause" : "Play"}
                 disabled={isLoading}
               >
@@ -289,7 +290,7 @@ const VideoPlayer = ({
                     setShowResolutionMenu(!showResolutionMenu);
                     e.stopPropagation();
                   }}
-                  className="bg-black/70 hover:bg-black/90 p-2.5 rounded-full shadow-lg transition-all duration-200 flex items-center justify-center border border-gray-700"
+                  className="bg-black hover:bg-black/90 p-2.5 rounded-full shadow-lg transition-all duration-200 flex items-center justify-center border border-gray-700"
                   aria-label="Video quality"
                   disabled={isLoading}
                 >
@@ -310,7 +311,7 @@ const VideoPlayer = ({
 
             {/* Resolution menu popup */}
             {showResolutionMenu && (
-              <div className="absolute right-16 bottom-28 bg-gray-900/95 border border-gray-700 rounded-lg py-2 px-2 shadow-2xl z-30 min-w-[120px] animate-fade-in">
+              <div className="absolute right-16 bottom-28 bg-black border border-gray-700 rounded-lg py-2 px-2 shadow-2xl z-30 min-w-[120px] animate-fade-in">
                 <div className="px-2 pb-1 mb-1 text-xs font-semibold tracking-wide text-gray-300 border-b border-gray-700">
                   Resolution
                 </div>
@@ -334,27 +335,26 @@ const VideoPlayer = ({
             )}
           </>
         )}
-      </div>
+        {/* Controls Panel - Time and seek bar */}
+        {modalOpen && !isLoading && (
+          <div className="absolute bottom-0 z-10 flex flex-col w-full left-0 gap-2 px-6 py-3 text-white bg-gradient-to-t from-black/80 via-black/40 to-transparent">
+            {/* Seek Bar with custom styling */}
+            <CustomSeekBar
+              currentTime={currentTime}
+              duration={duration}
+              onSeek={(newTime) => handleSeek(newTime)}
+              isBuffering={isBuffering}
+            />
 
-      {/* Controls Panel - Time and seek bar */}
-      {modalOpen && !isLoading && (
-        <div className="absolute bottom-0 z-10 flex flex-col w-full gap-2 px-6 py-3 text-white bg-gradient-to-t from-black/80 via-black/40 to-transparent">
-          {/* Seek Bar with custom styling */}
-          <CustomSeekBar
-            currentTime={currentTime}
-            duration={duration}
-            onSeek={(newTime) => handleSeek(newTime)}
-            isBuffering={isBuffering}
-          />
-
-          {/* Time display */}
-          <div className="flex justify-end text-xs font-semibold tracking-wide text-gray-200">
-            <span>{formatTime(currentTime)}</span>
-            <span className="mx-1 opacity-70">/</span>
-            <span>{formatTime(duration)}</span>
+            {/* Time display */}
+            <div className="flex justify-end text-xs font-semibold tracking-wide text-gray-200">
+              <span>{formatTime(currentTime)}</span>
+              <span className="mx-1 opacity-70">/</span>
+              <span>{formatTime(duration)}</span>
+            </div>
           </div>
-        </div>
-      )}
+        )}
+      </div>
     </div>
   );
 };
@@ -364,93 +364,6 @@ const formatTime = (seconds: number) => {
   const min = Math.floor(seconds / 60);
   const sec = Math.floor(seconds % 60);
   return `${min}:${sec < 10 ? "0" : ""}${sec}`;
-};
-
-// Custom SeekBar component with buffering indicator
-interface SeekBarProps {
-  currentTime: number;
-  duration: number;
-  onSeek: (time: number) => void;
-  isBuffering?: boolean;
-}
-
-const CustomSeekBar: React.FC<SeekBarProps> = ({
-  currentTime,
-  duration,
-  onSeek,
-  isBuffering = false,
-}) => {
-  const [isDragging, setIsDragging] = useState(false);
-  const progressRef = useRef<HTMLDivElement | null>(null);
-
-  const handleSeek = (e: MouseEvent<HTMLDivElement>) => {
-    if (!progressRef.current || duration === 0) return;
-
-    const rect = progressRef.current.getBoundingClientRect();
-    const offsetX = e.clientX - rect.left;
-    const newTime = (offsetX / rect.width) * duration;
-
-    onSeek(newTime);
-  };
-
-  return (
-    <div
-      ref={progressRef}
-      className="relative w-full h-1.5 bg-gray-800 rounded-full cursor-pointer group"
-      onMouseDown={() => setIsDragging(true)}
-      onClick={handleSeek}
-      onMouseMove={(e) => isDragging && handleSeek(e)}
-      onMouseUp={() => setIsDragging(false)}
-      onMouseLeave={() => setIsDragging(false)}
-      aria-label="Seek bar"
-      tabIndex={0}
-      role="slider"
-      aria-valuenow={currentTime}
-      aria-valuemin={0}
-      aria-valuemax={duration}
-    >
-      {/* Progress Fill */}
-      <div
-        className={`absolute top-0 left-0 h-full transition-all duration-200 rounded-full bg-gradient-to-r from-blue-400 via-blue-300 to-blue-200 ${
-          isBuffering ? "opacity-60 animate-pulse" : "opacity-100"
-        }`}
-        style={{
-          width: `${duration ? (currentTime / duration) * 100 : 0}%`,
-          transition: "width 0.18s cubic-bezier(0.4,0,0.2,1)",
-        }}
-      ></div>
-
-      {/* Seek Handle */}
-      <div
-        className={`absolute w-3 h-3 bg-white border-2 border-gray-300 shadow-md rounded-full transition-transform duration-200
-      ${isDragging ? "scale-125" : "scale-100"}
-      ${isBuffering ? "animate-pulse" : ""}
-      group-hover:scale-110`}
-        style={{
-          left: `${duration ? (currentTime / duration) * 100 : 0}%`,
-          top: "50%",
-          transform: "translate(-50%, -50%)",
-          zIndex: 2,
-          boxShadow: "0 2px 8px 0 rgba(0,0,0,0.10)",
-          transition:
-            "left 0.18s cubic-bezier(0.4,0,0.2,1), transform 0.18s cubic-bezier(0.4,0,0.2,1)",
-        }}
-      ></div>
-
-      {/* Time marker (dot) */}
-      <div
-        className="absolute w-1.5 h-1.5 bg-gray-400 rounded-full"
-        style={{
-          left: `${duration ? (currentTime / duration) * 100 : 0}%`,
-          top: "50%",
-          transform: "translate(-50%, -50%)",
-          zIndex: 1,
-          opacity: 0.7,
-          transition: "left 0.18s cubic-bezier(0.4,0,0.2,1)",
-        }}
-      ></div>
-    </div>
-  );
 };
 
 export default VideoPlayer;

@@ -21,12 +21,12 @@ const AddPoints = () => {
   const [value, setValue] = useState("");
   const [rates, setRates] = useState<ExchangeRate[]>(currencyRates);
   const [error, setError] = useState(false);
-  const [loading, setLoading] = useState(true);
   const [POINTS_PER_USD, setPointsPerUSD] = useState(0); // Default value
   const PLATFORM_DEPOSITE_FEE = 0.1; // 10% fee
+  let POINTS_PER_NAIRA = 100; // Default value
+
   useEffect(() => {
     const fetchRates = async () => {
-      setLoading(true);
       try {
         const response = await fetch(ROUTE.GET_PLATFROM_EXCHANGE_RATE);
         if (!response.ok) {
@@ -44,8 +44,6 @@ const AddPoints = () => {
       } catch (error) {
         console.error("Error fetching exchange rates:", error);
         setError(true);
-      } finally {
-        setLoading(false);
       }
     };
     // Uncomment the line below to fetch rates from the API
@@ -69,13 +67,8 @@ const AddPoints = () => {
   function balanceToSettle(value: string) {
     let num = value.replace(/\D/g, "");
     const amount = parseInt(num) || 0;
-    // Convert the input amount from user's currency to USD
-    const userCurrency = user?.currency || "USD";
-    const amountInUSD = convertCurrency(amount, userCurrency, "USD");
-    // Apply 10% fee and convert to points (1 USD = 16 points)
-    const pointsAfterFee = Math.floor(amountInUSD * POINTS_PER_USD);
-    console.log(amountInUSD, POINTS_PER_USD, pointsAfterFee);
-    return pointsAfterFee.toLocaleString();
+    const pointsPlusFees = amount / POINTS_PER_NAIRA;
+    return pointsPlusFees.toLocaleString();
   }
   // Get original amount without formatting
   function pricePerPoints(value: string) {
@@ -193,13 +186,6 @@ const AddPoints = () => {
       console.error(error);
     }
   }
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center w-full h-full p-6">
-        <LucideLoader className="w-10 h-10 animate-spin text-primary-dark-pink" />
-      </div>
-    );
-  }
   if (error) {
     return (
       <div className="flex items-center justify-center w-full h-full">
@@ -211,13 +197,12 @@ const AddPoints = () => {
   }
   const inputAmount = parseInt(value.replace(/\D/g, "")) || 0;
   const usdValue = convertCurrency(inputAmount, user?.currency || "USD", "USD");
-  const ngnValue = convertCurrency(inputAmount, user?.currency || "USD", "NGN");
+  const ngnValue = convertCurrency(inputAmount, "NGN", "NGN");
+  const symbol = rates.find((rate) => rate.name === user?.currency)?.symbol;
   return (
     <div>
       <div className="flex items-start gap-2 mb-3">
-        <div className="text-4xl">
-          {rates.find((rate) => rate.name === user?.currency)?.symbol}
-        </div>
+        <div className="text-4xl">{symbol}</div>
         <div className="flex-1">
           <input
             type="text"
@@ -239,7 +224,7 @@ const AddPoints = () => {
                   {PLATFORM_DEPOSITE_FEE * 100}%{" "}
                 </span>
               }{" "}
-              ({rates.find((rate) => rate.name === user?.currency)?.symbol}
+              ({symbol}
               {calculateFee(value)})
             </p>
           </div>
@@ -256,9 +241,9 @@ const AddPoints = () => {
             </p>
           </div>
           <div className="flex justify-between py-2">
-            <p className="text-xl">Total Amount</p>
+            <p className="text-xl">Amount To Pay</p>
             <p className="text-xl font-medium">
-              {rates.find((rate) => rate.name === user?.currency)?.symbol}
+              {symbol}
               {pricePerPoints(value)}
             </p>
           </div>
@@ -283,7 +268,7 @@ const AddPoints = () => {
         <div className="mt-5">
           <button
             onClick={handlePointBuy}
-            className="w-full py-4 font-bold text-white uppercase bg-black rounded-md"
+            className="w-full py-4 font-bold text-white uppercase bg-black rounded-md cursor-pointer"
           >
             Add Points
           </button>

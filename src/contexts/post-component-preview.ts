@@ -3,9 +3,12 @@
 type URL = string;
 type FullScreenPreviewType = {
     url: string, type: string, open: boolean, withOptions?: boolean
-    ref: number, otherUrl: {
+    ref: number,
+    isBlob?: boolean,
+    otherUrl: {
         url: URL;
-        type: string;
+        type: "video" | "image";
+        isBlob?: boolean;
     }[]
 }
 type PostComponentType = {
@@ -13,7 +16,8 @@ type PostComponentType = {
     ref: number
     otherUrl: {
         url: URL;
-        type: string;
+        type: "video" | "image";
+        isBlob?: boolean;
     }[];
     open: boolean;
     type: string | null

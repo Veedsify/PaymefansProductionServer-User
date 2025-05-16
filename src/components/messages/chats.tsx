@@ -67,7 +67,7 @@ const Chats: React.FC<ChatProps> = React.memo(
 
     // Scroll to bottom utility
     const scrollToBottom = useCallback(() => {
-      scrollRef.current?.scrollIntoView({ behavior: "auto", block: "end" });
+      scrollRef.current?.scrollIntoView({ behavior: "instant", block: "end" });
     }, []);
 
     // Track scroll position to determine if user is at bottom
@@ -365,7 +365,7 @@ const Chats: React.FC<ChatProps> = React.memo(
           ))}
         </div>
         {/* Input */}
-        <div className="sticky bottom-0 z-50 p-4 bg-white border-t dark:bg-gray-800 dark:border-gray-950 shrink-0">
+        <div className="sticky bottom-0 z-50 p-4 bg-white border-t border-black/30 dark:bg-gray-800 dark:border-gray-950 shrink-0">
           <MessageInput
             receiver={receiver}
             isFirstMessage={allMessages.length === 0}

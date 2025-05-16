@@ -16,11 +16,10 @@ import PostShareModal from "../sub_components/post-share-component";
 const MenuButtons = () => {
   const pathname = usePathname();
 
-  return (
-    <div className="z-[100]">
-      {!pathname.includes("live") ? <NavigationBar /> : <NavigationBarSlide />}
-    </div>
-  );
+  const paths = ["/live", "/chats"];
+
+  const hideOn = paths.some((path) => pathname.includes(path));
+  return <div className="z-[100]">{!hideOn && <NavigationBar />}</div>;
 };
 
 const NavigationBar = () => {

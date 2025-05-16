@@ -1,13 +1,11 @@
 "use client";
-import {
-  LucideBellRing,
-} from "lucide-react";
+import { LucideBellRing } from "lucide-react";
 import HeaderTitle from "../sub_components/header_title";
 import Image from "next/image";
 import HeaderImgClick from "../sub_components/headerImgClick";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
-import { usePathname,useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 
 const Header = () => {
   const pathname = usePathname();
@@ -47,9 +45,9 @@ const Header = () => {
     >
       <div className="flex items-center">
         {hideOn(["/live"], pathname) && <HeaderTitle />}
-        <button onClick={handleHomeClick}>
+        <button onClick={handleHomeClick} className="cursor-pointer">
           <Image
-            width={150}
+            width={120}
             height={40}
             src="/site/logo3.png"
             alt=""

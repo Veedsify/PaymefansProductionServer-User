@@ -4,6 +4,7 @@ import { useUserAuthContext } from "@/lib/userUseContext";
 import { Attachment, MessageBubbleProps } from "@/types/components";
 import { getSocket } from "./sub/socket";
 import MessageBubbleContent from "./message-bubble-content";
+import { motion } from "framer-motion";
 
 const MessageBubble: React.FC<MessageBubbleProps> = ({
   receiver,
@@ -110,15 +111,16 @@ const MessageBubble: React.FC<MessageBubbleProps> = ({
   );
 
   return (
-    <div
+    <motion.div
+      initial={{ opacity: 0, x: isSender ? 50 : -50 }}
+      animate={{ opacity: 1, x: 0 }}
+      transition={{ type: "spring", stiffness: 300, damping: 30 }}
       className={`flex items-center w-full ${
-        isSender
-          ? "justify-end animate-in-right"
-          : "justify-start animate-in-left"
+        isSender ? "justify-end" : "justify-start"
       }`}
     >
       {Bubble}
-    </div>
+    </motion.div>
   );
 };
 

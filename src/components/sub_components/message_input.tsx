@@ -1,43 +1,42 @@
 "use client";
-import { useUserPointsContext } from "@/contexts/user-points-context";
-import { useUserAuthContext } from "@/lib/userUseContext";
-import { v4 as uuid } from "uuid";
-import { LucidePlus, LucideCamera, LucideSendHorizonal } from "lucide-react";
+
 import {
-  KeyboardEvent,
-  RefObject,
   useCallback,
   useEffect,
   useRef,
   useState,
+  KeyboardEvent,
+  RefObject,
 } from "react";
+import { v4 as uuid } from "uuid";
+import { LucidePlus, LucideCamera, LucideSendHorizonal, X } from "lucide-react";
 import toast from "react-hot-toast";
 import swal from "sweetalert";
-import { useMessagesConversation } from "@/contexts/messages-conversation-context";
-import { Attachment, MessageInputProps } from "@/types/components";
 import axiosInstance from "@/utils/axios";
 import { getToken } from "@/utils/cookie.get";
+import { useUserAuthContext } from "@/lib/userUseContext";
+import { useUserPointsContext } from "@/contexts/user-points-context";
+import { useMessagesConversation } from "@/contexts/messages-conversation-context";
 import { useMediaContext } from "@/contexts/message-media-context";
+import { MessageInputProps, Attachment } from "@/types/components";
 import UploadMediaModal from "./upload-media-modal";
+import MessageInputAttachmentPreview from "./message-input-attachment-preview";
 
-// Utility functions
+// Utility Functions
 const escapeHtml = (str: string) => {
-  return str.replace(/[&<>"']/g, (match) => {
-    const escapeMap: any = {
-      "&": "&amp;",
-      "<": "&lt;",
-      ">": "&gt;",
-      '"': "&quot;",
-      "'": "&#39;",
-    };
-    return escapeMap[match];
-  });
+  const escapeMap: Record<string, string> = {
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    '"': "&quot;",
+    "'": "&#39;",
+  };
+  return str.replace(/[&<>"']/g, (match) => escapeMap[match]);
 };
 
 export const linkify = (text: string) => {
-  if (!text || text.length === 0) return "";
+  if (!text) return "";
   const urlRegex = /(https?:\/\/[^\s]+)/g;
-
   return text.replace(urlRegex, (url) => {
     const escapedUrl = escapeHtml(url);
     const displayUrl =
@@ -52,34 +51,31 @@ const MessageInput = ({
   receiver,
   isFirstMessage,
 }: MessageInputProps) => {
+  // Contexts and Hooks
   const { user } = useUserAuthContext();
-  const ref = useRef<HTMLDivElement>(null);
   const { points } = useUserPointsContext();
   const { conversations } = useMessagesConversation();
+  const { message, setMessage, mediaFiles, addFiles, removeFile, resetAll } =
+    useMediaContext();
   const [isTyping, setIsTyping] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
   const typingTimeout = useRef<number | null>(null);
   const token = getToken();
 
-  // abort controller
-  const { message, setMessage, mediaFiles, openModal, resetAll } =
-    useMediaContext();
-
-  console.log(receiver);
-
+  // Message Sending Logic
   const sendMessageWithAttachment = useCallback(
     async (message: string) => {
-      if (!user) return;
-
-      let attachments: Attachment[] = [];
+      if (!user || !receiver) return;
 
       const generateNumericId = () =>
         Math.floor(Math.random() * 1000000000) + 1;
+
       sendMessage({
         message_id: uuid(),
         message: linkify(message.trim()),
-        attachment: attachments,
+        attachment: [] as Attachment[],
         sender_id: user.user_id,
-        receiver_id: receiver?.user_id,
+        receiver_id: receiver.user_id,
         seen: false,
         rawFiles: mediaFiles,
         triggerSend: true,
@@ -87,12 +83,10 @@ const MessageInput = ({
         created_at: new Date().toString(),
       });
 
-      if (ref.current) {
-        ref.current.innerHTML = "";
-      }
+      if (ref.current) ref.current.innerHTML = "";
       resetAll();
     },
-    [sendMessage, user, mediaFiles, resetAll, receiver?.user_id]
+    [sendMessage, user, mediaFiles, resetAll, receiver]
   );
 
   const resetMessageInput = useCallback(() => {
@@ -101,70 +95,57 @@ const MessageInput = ({
       ref.current.innerHTML = "";
       ref.current.focus();
     }
-  }, [ref, setMessage]);
+  }, [setMessage]);
 
   const handleSendMessage = useCallback(async () => {
-    if (!user) return;
-
-    // If message is empty and no media files, do nothing
-    if (message.trim().length === 0 && mediaFiles.length === 0) return;
+    if (
+      !user ||
+      !receiver ||
+      (message.trim().length === 0 && mediaFiles.length === 0)
+    )
+      return;
 
     try {
-      const pricePerMessage = await axiosInstance
-        .post(
-          "/points/price-per-message",
-          { user_id: receiver.user_id },
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        )
-        .then((res) => res.data.price_per_message);
+      const { data } = await axiosInstance.post(
+        "/points/price-per-message",
+        { user_id: receiver.user_id },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      const pricePerMessage = data.price_per_message;
+      const receiverName =
+        receiver.name.charAt(0).toUpperCase() + receiver.name.slice(1);
 
-      const receiverName = receiver?.name
-        ? receiver.name.charAt(0).toUpperCase() + receiver.name.slice(1)
-        : "";
-
-      // Check if user has enough points
       if (points < pricePerMessage) {
         resetMessageInput();
         return swal({
           icon: "info",
           title: "Insufficient Paypoints",
-          text: `Sorry, you need to have at least ${pricePerMessage.toLocaleString()} paypoints to send a message to ${receiverName}`,
+          text: `Sorry, you need at least ${pricePerMessage.toLocaleString()} paypoints to send a message to ${receiverName}`,
         });
       }
 
-      // Handle first message notice
       if (!conversations[0].lastMessage && pricePerMessage !== 0) {
-        return swal({
+        const isToSend = await swal({
           icon: "info",
           title: "Notice from PayMeFans",
-          text: `Take note sending a message to ${receiverName} would cost you ${pricePerMessage.toLocaleString()} paypoints`,
-        }).then((isToSend) => {
-          if (isToSend) {
-            sendMessageWithAttachment(message);
-          }
+          text: `Sending a message to ${receiverName} costs ${pricePerMessage.toLocaleString()} paypoints`,
         });
+        if (isToSend) sendMessageWithAttachment(message);
+        return;
       }
 
-      // Handle first message special case
       if (isFirstMessage) {
-        return swal({
+        const isToSend = await swal({
           icon: "info",
           title: "Notice from PayMeFans",
-          text: `You are about to send your first message to ${receiver.name}, this would cost you ${pricePerMessage} paypoints`,
+          text: `Your first message to ${receiver.name} costs ${pricePerMessage} paypoints`,
           dangerMode: true,
           buttons: ["Cancel", "Continue"],
-        }).then((isToSend) => {
-          if (isToSend) {
-            sendMessageWithAttachment(message);
-          }
         });
+        if (isToSend) sendMessageWithAttachment(message);
+        return;
       }
 
-      // Normal message sending
       sendMessageWithAttachment(message);
     } catch (error) {
       console.error("Error sending message:", error);
@@ -183,6 +164,7 @@ const MessageInput = ({
     resetMessageInput,
   ]);
 
+  // Typing and Input Handling
   const handleKeyDown = useCallback(
     (event: KeyboardEvent) => {
       if (message.length > 0) {
@@ -190,10 +172,7 @@ const MessageInput = ({
         sendTyping(message);
       }
 
-      if (typingTimeout.current) {
-        clearTimeout(typingTimeout.current);
-      }
-
+      if (typingTimeout.current) clearTimeout(typingTimeout.current);
       typingTimeout.current = window.setTimeout(() => {
         setIsTyping(false);
         sendTyping("");
@@ -209,7 +188,6 @@ const MessageInput = ({
     [sendTyping, message, handleSendMessage]
   );
 
-  // Handle contentEditable synchronization with state
   useEffect(() => {
     const handleInput = (e: Event) => {
       const target = e.target as HTMLDivElement;
@@ -223,7 +201,6 @@ const MessageInput = ({
     };
 
     const messageInput = ref.current;
-
     if (messageInput) {
       messageInput.addEventListener("input", handleInput);
       messageInput.addEventListener("paste", handlePaste);
@@ -237,14 +214,67 @@ const MessageInput = ({
     };
   }, [setMessage]);
 
-  // Show preview badge if we have media files
-  const mediaPreviewBadge =
-    mediaFiles.length > 0 ? (
-      <div className="absolute -top-10 left-1/2 transform -translate-x-1/2 bg-primary-dark-pink text-white px-4 py-2 rounded-full">
-        {mediaFiles.length} {mediaFiles.length === 1 ? "file" : "files"}{" "}
-        selected
-      </div>
-    ) : null;
+  // Media Handling
+  const triggerFileSelect = useCallback(() => {
+    const fileInput = document.getElementById("file-input") as HTMLInputElement;
+    fileInput?.click();
+  }, []);
+
+  const handleFileSelect = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const imageTypes = [
+        "image/png",
+        "image/jpeg",
+        "image/jpg",
+        "image/gif",
+        "image/svg+xml",
+        "image/webp",
+        "image/bmp",
+        "image/tiff",
+        "image/ico",
+      ];
+
+      if (e.target.files) {
+        const selectedFiles = Array.from(e.target.files);
+        const validFiles = selectedFiles.filter(
+          (file) =>
+            imageTypes.includes(file.type) || file.type.startsWith("video/")
+        );
+
+        if (validFiles.length !== selectedFiles.length) {
+          toast.error(
+            "Invalid file type, please select an image or video file"
+          );
+          return;
+        }
+
+        addFiles(e.target.files);
+      }
+    },
+    [addFiles]
+  );
+
+  // Render Components
+  const mediaPreviewBadge = mediaFiles.length > 0 && (
+    <div className="grid grid-cols-6 gap-2 text-white rounded-full">
+      {mediaFiles.map((file, index) => (
+        <div key={index} className="relative w-full aspect-square">
+          <button
+            className="absolute top-1 right-1 bg-red-500 hover:bg-red-600 transition-colors rounded-full p-1 shadow"
+            onClick={() => removeFile(index)}
+            aria-label="Remove media"
+          >
+            <X size={14} stroke="#fff" />
+          </button>
+          <MessageInputAttachmentPreview
+            previewUrl={file?.previewUrl ?? ""}
+            type={file?.type ?? ""}
+            posterUrl={file?.posterUrl ?? ""}
+          />
+        </div>
+      ))}
+    </div>
+  );
 
   if (receiver && !receiver.active_status) {
     return (
@@ -259,29 +289,39 @@ const MessageInput = ({
   return (
     <>
       <div className="bottom-0 lg:ml-4 lg:mr-2 relative max-h-max">
-        {mediaPreviewBadge}
-        <div className="flex mb-2 items-center gap-5 px-6 dark:bg-gray-950 lg:py-2 py-4 lg:rounded-xl">
-          <div
-            ref={ref as RefObject<HTMLDivElement>}
-            contentEditable={true}
-            id="message-input"
-            onKeyDown={handleKeyDown}
-            className="bg-transparent outline-none w-full p-2 border rounded-xl border-black/20 dark:border-gray-600 font-semibold resize-none dark:text-white overflow-auto max-h-24"
-          ></div>
-          <div className="border flex border-black/20 gap-4 rounded-xl p-1.5">
-            <span className="cursor-pointer" onClick={openModal}>
-              <LucidePlus stroke="#CC0DF8" size={25} />
-            </span>
-            <span className="cursor-pointer" onClick={openModal}>
-              <LucideCamera stroke="#CC0DF8" size={25} />
-            </span>
-            <span className="cursor-pointer" onClick={handleSendMessage}>
-              <LucideSendHorizonal stroke="#CC0DF8" size={24} />
-            </span>
+        <div className="flex flex-col w-full gap-2 border border-black/20 rounded-2xl px-2 dark:bg-gray-950 py-2 lg:rounded-xl">
+          {mediaPreviewBadge}
+          <div className="flex items-center justify-between w-full gap-2">
+            <div
+              ref={ref as RefObject<HTMLDivElement>}
+              contentEditable
+              id="message-input"
+              onKeyDown={handleKeyDown}
+              className="bg-transparent outline-none w-full p-2 rounded-xl border-black/20 dark:border-gray-600 font-semibold resize-none dark:text-white overflow-auto max-h-24"
+            />
+            <input
+              type="file"
+              accept="image/*,video/*"
+              className="hidden"
+              id="file-input"
+              onChange={handleFileSelect}
+              multiple
+            />
+            <div className="flex gap-2 rounded-xl p-1.5">
+              <span className="cursor-pointer" onClick={triggerFileSelect}>
+                <LucidePlus stroke="#CC0DF8" size={25} />
+              </span>
+              <span className="cursor-pointer" onClick={triggerFileSelect}>
+                <LucideCamera stroke="#CC0DF8" size={25} />
+              </span>
+              <span className="cursor-pointer ml-2" onClick={handleSendMessage}>
+                <LucideSendHorizonal stroke="#CC0DF8" size={24} />
+              </span>
+            </div>
           </div>
         </div>
       </div>
-      <UploadMediaModal />
+      {/* <UploadMediaModal /> */}
     </>
   );
 };

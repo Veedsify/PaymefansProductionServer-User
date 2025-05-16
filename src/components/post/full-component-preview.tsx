@@ -1,204 +1,88 @@
 "use client";
-import usePostComponent from "@/contexts/post-component-preview";
-import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
+
+import React, { useEffect, useRef, useState, memo } from "react";
 import Image from "next/image";
-import Loader from "../lib_components/loading-animation";
-import { ChevronLeft, ChevronRight, Play, X } from "lucide-react";
 import { Swiper, SwiperClass, SwiperSlide } from "swiper/react";
-import { Navigation, Thumbs, Pagination } from "swiper/modules";
+import { Navigation, Pagination } from "swiper/modules";
+import { ChevronLeft, ChevronRight, X } from "lucide-react";
 import "swiper/css/bundle";
+import { motion } from "framer-motion";
+import usePostComponent from "@/contexts/post-component-preview";
+import Loader from "../lib_components/loading-animation";
 import HLSVideoPlayer from "../sub_components/videoplayer";
 
-const PostComponentPreview = React.memo(() => {
-  const {
-    ref: objectRef,
-    otherUrl,
-    type,
-    open,
-    close,
-    withOptions,
-  } = usePostComponent();
-
-  const [loaded, setLoaded] = useState<boolean>(false);
-  const swiperRef = useRef<SwiperClass | null>(null);
-
-  useEffect(() => {
-    const handleEscKeyPress = (e: KeyboardEvent) => {
-      if (e.key === "Escape" && open) {
-        close();
-      }
-    };
-    window.addEventListener("keydown", handleEscKeyPress);
-    return () => {
-      window.removeEventListener("keydown", handleEscKeyPress);
-    };
-  }, [close, open]);
-
-  // Scroll to the specific slide when objectRef changes
-  useEffect(() => {
-    if (swiperRef.current) {
-      swiperRef.current.slideTo(objectRef, 0, false);
-    }
-  }, [objectRef]);
-
-  // Lock the scroll when the component is open
-  useLayoutEffect(() => {
-    document.body.style.overflow = open ? "hidden" : "auto";
-  }, [open]);
-
-  // Toggle loaded state on image load
-  const handleLoaded = () => setLoaded(true);
-
-  const handlePrevClick = () => {
-    if (swiperRef.current) {
-      swiperRef.current.slidePrev();
-    }
-  };
-
-  const handleNextClick = () => {
-    if (swiperRef.current) {
-      swiperRef.current.slideNext();
-    }
-  };
-
-  if (!open) return null;
-
-  return (
-    <>
-      {open && (
-        <div
-          className={`fixed inset-0 w-full h-dvh z-[999] smooth-opacity select-none ${
-            open ? "active" : ""
-          }`}
-        >
-          <button
-            onClick={close}
-            className="absolute z-50 p-2 text-black bg-white rounded-full shadow-md top-4 right-4"
-          >
-            <X className="md:h-[30px] h-[20px] md:w-[30px] w-[20px]" />
-          </button>
-
-          <Swiper
-            spaceBetween={0}
-            slidesPerView={1}
-            className="h-dvh"
-            modules={[Navigation, Pagination]}
-            draggable={false}
-            onSwiper={(swiper) => (swiperRef.current = swiper)}
-          >
-            {otherUrl.map((item, index) => (
-              <SwiperSlide
-                key={index}
-                className="flex items-center justify-center h-full"
-                onClick={(e) => e.stopPropagation()}
-                onDoubleClick={close}
-              >
-                {item.type === "video" ? (
-                  <VideoPreview
-                    url={item.url}
-                    playAction={
-                      swiperRef.current?.realIndex === index &&
-                      item.type === "video"
-                    }
-                  />
-                ) : (
-                  <>
-                    {!loaded && (
-                      <div className="add-loaders opacity-70">
-                        <Loader />
-                      </div>
-                    )}
-                    <Image
-                      onLoad={handleLoaded}
-                      width={2000}
-                      height={2000}
-                      quality={100}
-                      draggable={false}
-                      src={item.url.trimEnd()}
-                      className={`h-dvh object-contain w-auto transition-all duration-200 border-none animate-in z-10`}
-                      alt="Media Preview"
-                    />
-                  </>
-                )}
-              </SwiperSlide>
-            ))}
-            {/* Custom Navigation */}
-            {otherUrl.length > 1 && (
-              <>
-                <button
-                  onClick={handlePrevClick}
-                  className="absolute z-10 p-2 transform -translate-y-1/2 bg-gray-200 rounded-full opacity-0 pointer-events-none left-4 top-1/2 md:opacity-20 md:pointer-events-auto hover:opacity-100 hover:bg-gray-300"
-                >
-                  <ChevronLeft className="md:h-[30px] h-[20px] md:w-[30px] w-[20px]" />
-                </button>
-                <button
-                  onClick={handleNextClick}
-                  className="absolute z-10 p-2 transform -translate-y-1/2 bg-gray-200 rounded-full opacity-0 pointer-events-none right-4 top-1/2 md:opacity-20 md:pointer-events-auto hover:opacity-100 hover:bg-gray-300"
-                >
-                  <ChevronRight className="md:h-[30px] h-[20px] md:w-[30px] w-[20px]" />
-                </button>
-              </>
-            )}
-          </Swiper>
-        </div>
-      )}
-    </>
-  );
-});
-
-const VideoPreview = ({
-  url,
-  playAction,
-}: {
+// Define types
+interface MediaItem {
   url: string;
+  isBlob?: boolean;
+  type: "image" | "video";
+}
+
+// Navigation Button Props
+interface NavigationButtonProps {
+  direction: "prev" | "next";
+  className: string;
+  ariaLabel: string;
+}
+
+// Video Preview Props
+interface VideoPreviewProps {
+  url: string;
+  isBlob: boolean;
   playAction: boolean;
-}) => {
-  // Handle play/pause action using video element with id
+}
+
+// Video Preview Component
+const VideoPreview = memo(({ url, isBlob, playAction }: VideoPreviewProps) => {
+  const videoRef = useRef<HTMLVideoElement | null>(null);
+
+  // Handle video play/pause based on active slide
   useEffect(() => {
-    const videoElement = document.getElementById(
-      "video_player_full"
-    ) as HTMLVideoElement | null;
-
-    if (!videoElement) return;
-
-    if (playAction) {
-      videoElement.play().catch((error) => {
-        console.error("Error playing video:", error);
-      });
-    } else {
-      videoElement.pause();
+    if (videoRef.current) {
+      if (playAction) {
+        videoRef.current.play().catch((error) => {
+          console.error("Video playback error:", error);
+        });
+      } else {
+        videoRef.current.pause();
+      }
     }
   }, [playAction]);
 
-  // Handle video state changes (play, pause, ended) using video element with id
+  // Handle video looping
   useEffect(() => {
-    const videoElement = document.getElementById(
-      "video_player_full"
-    ) as HTMLVideoElement | null;
+    const video = videoRef.current;
+    if (!video) return;
 
-    if (!videoElement) return;
-
-    const handleStateChange = () => {
-      if (videoElement.ended) {
-        videoElement.currentTime = 0;
-        videoElement.play();
-      }
+    const handleEnded = () => {
+      video.currentTime = 0;
+      video.play().catch((error) => {
+        console.error("Video loop error:", error);
+      });
     };
 
-    // Add event listeners for play, pause, and ended states
-    videoElement.addEventListener("play", handleStateChange);
-    videoElement.addEventListener("pause", handleStateChange);
-    videoElement.addEventListener("ended", handleStateChange);
-
-    return () => {
-      videoElement.removeEventListener("play", handleStateChange);
-      videoElement.removeEventListener("pause", handleStateChange);
-      videoElement.removeEventListener("ended", handleStateChange);
-    };
+    video.addEventListener("ended", handleEnded);
+    return () => video.removeEventListener("ended", handleEnded);
   }, []);
 
+  if (isBlob) {
+    return (
+      <video
+        ref={videoRef}
+        className="h-dvh w-auto object-contain"
+        controls
+        autoPlay={playAction}
+        loop
+        muted
+      >
+        <source src={url} type="video/mp4" />
+        Your browser does not support the video tag.
+      </video>
+    );
+  }
+
   return (
-    <div className="relative">
+    <div className="flex h-full items-center justify-center">
       <HLSVideoPlayer
         streamUrl={url}
         autoPlay={true}
@@ -207,12 +91,151 @@ const VideoPreview = ({
           id: "video_player_full",
           muted: false,
         }}
-        className="object-contain w-full h-dvh max-w-3xl mx-auto transition-all duration-200 scale-100 border-none animate-in fullscreen-video"
+        className="h-dvh w-auto max-w-3xl object-contain transition-all duration-200"
       />
     </div>
   );
-};
+});
+VideoPreview.displayName = "VideoPreview";
 
-// Memoize the component to prevent unnecessary re-renders
+// Navigation Button Component
+const NavigationButton: React.FC<NavigationButtonProps> = ({
+  direction,
+  className,
+  ariaLabel,
+}) => (
+  <button
+    className={`${className} absolute z-10 -translate-y-1/2 rounded-full bg-gray-200 p-2 opacity-0 transition-opacity duration-200 hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-white md:opacity-50`}
+    aria-label={ariaLabel}
+  >
+    {direction === "prev" ? (
+      <ChevronLeft className="h-5 w-5 md:h-6 md:w-6" />
+    ) : (
+      <ChevronRight className="h-5 w-5 md:h-6 md:w-6" />
+    )}
+  </button>
+);
+
+// Main Component
+const PostComponentPreview = memo(() => {
+  const { ref: objectRef, otherUrl, open, close } = usePostComponent();
+  const [loaded, setLoaded] = useState<boolean>(false);
+  const swiperRef = useRef<SwiperClass | null>(null);
+
+  // Handle ESC key to close
+  useEffect(() => {
+    const handleEscKeyPress = (e: KeyboardEvent) => {
+      if (e.key === "Escape" && open) close();
+    };
+    window.addEventListener("keydown", handleEscKeyPress);
+    return () => window.removeEventListener("keydown", handleEscKeyPress);
+  }, [close, open]);
+
+  // Scroll to specific slide when objectRef changes
+  useEffect(() => {
+    if (swiperRef.current && objectRef !== undefined) {
+      swiperRef.current.slideTo(objectRef, 0, false);
+    }
+  }, [objectRef]);
+
+  // Lock scroll when modal is open
+  useEffect(() => {
+    document.body.style.overflow = open ? "hidden" : "";
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [open]);
+
+  // Handle image load
+  const handleLoaded = () => setLoaded(true);
+
+  if (!open) return null;
+
+  return (
+    <div
+      className={`fixed inset-0 z-[999] h-dvh w-full select-none bg-black transition-opacity duration-300 ${
+        open ? "opacity-100" : "opacity-0"
+      }`}
+      role="dialog"
+      aria-modal="true"
+    >
+      {/* Close Button */}
+      <button
+        onClick={close}
+        className="absolute right-4 top-4 z-50 rounded-full bg-white p-2 text-black shadow-md focus:outline-none focus:ring-2 focus:ring-white"
+        aria-label="Close preview"
+      >
+        <X className="h-5 w-5 md:h-6 md:w-6" />
+      </button>
+
+      {/* Swiper Slider */}
+      <Swiper
+        spaceBetween={0}
+        slidesPerView={1}
+        className="h-dvh"
+        modules={[Navigation]}
+        touchRatio={1.5}
+        onSwiper={(swiper) => (swiperRef.current = swiper)}
+        navigation={{
+          prevEl: ".swiper-prev",
+          nextEl: ".swiper-next",
+        }}
+      >
+        {otherUrl.map((item: MediaItem, index: number) => (
+          <SwiperSlide
+            key={index}
+            className="flex h-full items-center justify-center"
+            onDoubleClick={close}
+          >
+            {item.type === "video" ? (
+              <VideoPreview
+                url={item.url}
+                isBlob={item.isBlob || false}
+                playAction={swiperRef.current?.realIndex === index}
+              />
+            ) : (
+              <div className="relative flex h-full items-center justify-center">
+                {!loaded && (
+                  <div className="absolute inset-0 flex items-center justify-center bg-black/50">
+                    <Loader />
+                  </div>
+                )}
+                <Image
+                  src={item.url.trimEnd()}
+                  width={2000}
+                  height={2000}
+                  quality={100}
+                  loading="lazy"
+                  className="h-dvh w-auto object-contain transition-opacity duration-300"
+                  alt={`Media preview ${index + 1}`}
+                  onLoad={handleLoaded}
+                  onError={handleLoaded}
+                  onDragStart={(e) => e.preventDefault()}
+                />
+              </div>
+            )}
+          </SwiperSlide>
+        ))}
+      </Swiper>
+
+      {/* Navigation Buttons */}
+      {otherUrl.length > 1 && (
+        <>
+          <NavigationButton
+            direction="prev"
+            className="swiper-prev left-4 top-1/2"
+            ariaLabel="Previous slide"
+          />
+          <NavigationButton
+            direction="next"
+            className="swiper-next right-4 top-1/2"
+            ariaLabel="Next slide"
+          />
+        </>
+      )}
+    </div>
+  );
+});
+
 PostComponentPreview.displayName = "PostComponentPreview";
 export default PostComponentPreview;
