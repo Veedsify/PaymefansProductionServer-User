@@ -25,12 +25,16 @@ const PointsBuy = ({
   const router = useRouter();
   const handlePointsClick = async (id: string) => {
     if (userPointBalance < points) {
-      toast.error("Sorry, you don't have enough points to support this post");
+      toast.error("Sorry, you don't have enough points to support this post", {
+        id: "buy-points",
+      });
       return;
     }
 
     if (user?.id === userId) {
-      toast.error("You can't buy points for your own post");
+      toast.error("You can't buy points for your own post", {
+        id: "buy-points",
+      });
       return;
     }
 
@@ -49,7 +53,9 @@ const PointsBuy = ({
       } as ButtonList,
     }).then(async (willGift) => {
       if (willGift) {
-        toast.loading("Sending Kindness...");
+        toast.loading("Sending Kindness...", {
+          id: "buy-points",
+        });
 
         const token = getToken();
         const giftPointsToUser = await fetch(
@@ -70,12 +76,12 @@ const PointsBuy = ({
           }
         );
         if (!giftPointsToUser.ok) {
-          toast.dismiss();
-          toast.error("An error occurred while gifting points");
+          toast.error("An error occurred while gifting points", {
+            id: "buy-points",
+          });
         }
         const data = await giftPointsToUser.json();
         if (!data.error) {
-          toast.dismiss();
           swal({
             title: "Success",
             text: `You have successfully gifted ${points} points to this post`,
@@ -83,8 +89,9 @@ const PointsBuy = ({
           });
           router.refresh();
         } else {
-          toast.dismiss();
-          toast.error(data.message);
+          toast.error(data.message, {
+            id: "buy-points",
+          });
         }
       } else {
         toast.dismiss();
@@ -93,7 +100,7 @@ const PointsBuy = ({
   };
   return (
     <div
-      className="cursor-pointer rounded-2xl bg-coins-card-bottom dark:bg-slate-800 dark:border-slate-800 dark:border"
+      className="cursor-pointer rounded-2xl bg-coins-card-bottom dark:bg-slate-800 dark:border-slate-800 dark:border select-none"
       onClick={() => handlePointsClick(points_buy_id)}
     >
       <div className="flex py-5 rounded-tr-2xl rounded-tl-2xl items-center gap-2 justify-center dark:bg-gray-950 bg-white m-[2px]">

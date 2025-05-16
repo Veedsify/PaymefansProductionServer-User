@@ -241,16 +241,14 @@ const WalletPage = () => {
       </div>
       {user?.is_model && user?.Model?.verification_status && (
         <>
-          <div className="bg-black text-white p-6 rounded-2xl shadow mb-4">
-            <small className="text-base font-medium opacity-80">
-              Your Balance
-            </small>
+          <div className="bg-black dark:bg-gray-700 text-white p-6 rounded-2xl shadow mb-4">
+            <small className="text-base font-medium">Your Balance</small>
             <h1 className="text-2xl md:text-4xl font-bold mb-4">
               {calculateAmount()}
             </h1>
             <Link
               href="/wallet/withdraw"
-              className="block text-sm text-center bg-coins-card-bottom px-8 py-3 rounded-lg w-full text-primary-dark-pink font-semibold hover:bg-pink-100 transition"
+              className="block text-sm text-center bg-coins-card-bottom px-8 py-3 rounded-lg w-full text-primary-dark-pink dark:text-white dark:bg-primary-dark-pink font-semibold hover:bg-pink-100 transition dark:hover:bg-pink-700"
             >
               WITHDRAW
             </Link>
@@ -258,7 +256,7 @@ const WalletPage = () => {
           <div>
             <Link
               href="/wallet/add"
-              className="block text-center bg-coins-card-bottom px-8 py-3 rounded-lg w-full text-primary-dark-pink font-semibold my-5 text-sm md:text-base hover:bg-pink-100 transition"
+              className="block text-center bg-coins-card-bottom px-8 py-3 rounded-lg w-full text-primary-dark-pink font-semibold my-5 text-sm md:text-base hover:bg-pink-100 transition dark:text-white dark:bg-primary-dark-pink dark:hover:bg-pink-700"
             >
               SET WITHDRAWAL BANK ACCOUNT
             </Link>

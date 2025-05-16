@@ -161,7 +161,11 @@ const WalletAddBank = () => {
     return (
       <>
         <div className={"flex items-center justify-center p-4 md:p-8 flex-col"}>
-          <h1 className={"md:text-2xl font-semibold leading-tight mb-6"}>
+          <h1
+            className={
+              "md:text-2xl font-semibold leading-tight mb-6 dark:text-white"
+            }
+          >
             Select a bank type
           </h1>
           <div className="flex items-center justify-center gap-4">
@@ -191,7 +195,7 @@ const WalletAddBank = () => {
                         />
                       </div>
                     </span>
-                    <span className="text-gray-600 text-center font-bold">
+                    <span className="text-gray-600 text-center font-bold dark:text-white">
                       {bank.name}
                     </span>
                   </button>
@@ -334,59 +338,64 @@ const SavedBanks = () => {
 
   return banks && banks.length > 0 ? (
     <div className="mt-3">
-      <h2 className="font-bold text-xl mb-6">Saved Bank Accounts</h2>
-      <div className="overflow-x-auto rounded-lg border border-gray-200 shadow-sm">
-        <table className="w-full divide-y divide-gray-200">
-          <thead className="bg-gray-50">
+      <h2 className="font-bold text-xl mb-6 dark:text-white">
+        Saved Bank Accounts
+      </h2>
+      <div className="overflow-x-auto rounded-lg border border-gray-200 shadow-sm dark:border-gray-700">
+        <table className="w-full divide-y divide-gray-200 dark:divide-gray-700">
+          <thead className="bg-gray-50 dark:bg-gray-800 whitespace-nowrap">
             <tr>
-              <th className="px-4 py-3.5 text-left text-sm font-semibold text-gray-900">
+              <th className="px-4 py-3.5 text-left text-sm font-semibold text-gray-900 dark:text-gray-100">
                 S/N
               </th>
-              <th className="px-4 py-3.5 text-left text-sm font-semibold text-gray-900">
+              <th className="px-4 py-3.5 text-left text-sm font-semibold text-gray-900 dark:text-gray-100">
                 Bank
               </th>
-              <th className="px-4 py-3.5 text-left text-sm font-semibold text-gray-900">
+              <th className="px-4 py-3.5 text-left text-sm font-semibold text-gray-900 dark:text-gray-100">
                 Account Number
               </th>
-              <th className="px-4 py-3.5 text-left text-sm font-semibold text-gray-900">
+              <th className="px-4 py-3.5 text-left text-sm font-semibold text-gray-900 dark:text-gray-100">
                 Account Name
               </th>
-              <th className="px-4 py-3.5 text-left text-sm font-semibold text-gray-900">
+              <th className="px-4 py-3.5 text-left text-sm font-semibold text-gray-900 dark:text-gray-100">
                 Bank Type
               </th>
-              <th className="px-4 py-3.5 text-left text-sm font-semibold text-gray-900">
+              <th className="px-4 py-3.5 text-left text-sm font-semibold text-gray-900 dark:text-gray-100">
                 Country
               </th>
-              <th className="px-4 py-3.5 text-left text-sm font-semibold text-gray-900">
+              <th className="px-4 py-3.5 text-left text-sm font-semibold text-gray-900 dark:text-gray-100">
                 <span className="hidden lg:block">Actions</span>
               </th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-gray-200 bg-white">
+          <tbody className="divide-y divide-gray-200 bg-white dark:divide-gray-700 dark:bg-gray-900">
             {banks.map((bank, index) => (
-              <tr key={index} className="hover:bg-gray-50">
-                <td className="whitespace-nowrap px-4 py-3 text-sm text-gray-700">
+              <tr
+                key={index}
+                className="hover:bg-gray-50 dark:hover:bg-gray-800"
+              >
+                <td className="whitespace-nowrap px-4 py-3 text-sm text-gray-700 dark:text-gray-200">
                   {index + 1}
                 </td>
-                <td className="whitespace-nowrap px-4 py-3 text-sm text-gray-700">
+                <td className="whitespace-nowrap px-4 py-3 text-sm text-gray-700 dark:text-gray-200">
                   {bank.bank_name}
                 </td>
-                <td className="whitespace-nowrap px-4 py-3 text-sm text-gray-700">
+                <td className="whitespace-nowrap px-4 py-3 text-sm text-gray-700 dark:text-gray-200">
                   {bank.account_number}
                 </td>
-                <td className="whitespace-nowrap px-4 py-3 text-sm text-gray-700">
+                <td className="whitespace-nowrap px-4 py-3 text-sm text-gray-700 dark:text-gray-200">
                   {bank.account_name}
                 </td>
-                <td className="whitespace-nowrap px-4 py-3 text-sm text-gray-700">
+                <td className="whitespace-nowrap px-4 py-3 text-sm text-gray-700 dark:text-gray-200">
                   {bank.bank_type}
                 </td>
-                <td className="whitespace-nowrap px-4 py-3 text-sm text-gray-700">
+                <td className="whitespace-nowrap px-4 py-3 text-sm text-gray-700 dark:text-gray-200">
                   {bank.bank_country}
                 </td>
                 <td className="whitespace-nowrap px-4 py-3 text-sm">
                   <button
                     onClick={deleteAccount(bank.id)}
-                    className="inline-flex items-center rounded-md bg-red-50 px-2 py-1 text-red-700 hover:bg-red-100 transition-colors"
+                    className="inline-flex items-center rounded-md bg-red-50 px-2 py-1 text-red-700 hover:bg-red-100 transition-colors dark:bg-red-900 dark:text-red-200 dark:hover:bg-red-800"
                   >
                     <LucideTrash2 size={18} className="mr-1" />
                     <span className="hidden lg:inline">Delete</span>

@@ -195,12 +195,14 @@ const Chats: React.FC<ChatProps> = React.memo(
         });
 
         // Optimistically add the new message to the query cache or handle it here if required
-        socket.emit("message-seen", {
-          conversationId,
-          lastMessageId: msg.message_id,
-          userId: user?.user_id,
-          receiver_id: receiver?.user_id,
-        });
+        if (!msg.seen) {
+          socket.emit("message-seen", {
+            conversationId,
+            lastMessageId: msg.message_id,
+            userId: user?.user_id,
+            receiver_id: receiver?.user_id,
+          });
+        }
         // Only scroll if the user is not scrolled up
         if (!userScrolledUp) {
           scrollToBottom();
@@ -264,14 +266,19 @@ const Chats: React.FC<ChatProps> = React.memo(
     ]);
     // Seen handler for last message on mount/change
     useEffect(() => {
-      if (lastMessage && lastMessage.sender_id !== user?.user_id) {
-        socket.emit("message-seen", {
-          conversationId,
-          lastMessageId: lastMessage.message_id,
-          userId: user?.user_id,
-          receiver_id: receiver?.user_id,
+      const markMessagesAsSeen = () => {
+        allMessages.map((message) => {
+          if (message.seen) return; // Already seen
+          if (message.sender_id === user?.user_id) return; // Sender
+          socket.emit("message-seen", {
+            conversationId,
+            lastMessageId: message.message_id,
+            userId: user?.user_id,
+            receiver_id: receiver?.user_id,
+          });
         });
-      }
+      };
+      markMessagesAsSeen();
     }, [lastMessage, user?.user_id, conversationId, receiver?.user_id, socket]);
     // UI
     return (

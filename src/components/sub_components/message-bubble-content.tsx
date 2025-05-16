@@ -319,7 +319,7 @@ const MessageBubbleContent: React.FC<MessageBubbleContentProps> = ({
         <div
           className={`p-4 rounded-3xl font-medium ${
             isSender
-              ? "bg-gray-100 rounded-br-none"
+              ? "bg-gray-100 dark:bg-gray-700 dark:text-white rounded-br-none"
               : "bg-primary-dark-pink text-white rounded-bl-none"
           }`}
         >

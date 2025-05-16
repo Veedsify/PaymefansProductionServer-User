@@ -113,10 +113,10 @@ async function Page({ params }: { params: params }) {
         </div>
       </div>
       <div className={"pt-6 p-4 md:p-8"}>
-        <h2 className="mb-2 text-2xl font-extrabold text-gray-800 md:text-3xl">
+        <h2 className="mb-2 text-2xl font-extrabold text-gray-800 md:text-3xl dark:text-white">
           Show Some Love ❤️
         </h2>
-        <p className="text-lg text-gray-600">
+        <p className="text-lg text-gray-600 dark:text-white">
           Support your favorite creator by sending them coins!
         </p>
       </div>

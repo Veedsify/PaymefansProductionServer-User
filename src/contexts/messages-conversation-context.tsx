@@ -42,7 +42,7 @@ const useProvideConversations = () => {
       queryFn: ({ pageParam = 1 }) => fetchConversations(pageParam),
       getNextPageParam: (lastPage) =>
         lastPage?.hasMore ? lastPage.page + 1 : undefined,
-      staleTime: 1000 * 60 * 5, // 5 minutes
+      staleTime: 1000 * 60, // 5 minutes
       refetchOnMount: false,
       refetchOnWindowFocus: false,
       initialPageParam: 1,

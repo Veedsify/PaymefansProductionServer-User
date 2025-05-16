@@ -9,6 +9,7 @@ import { getToken } from "@/utils/cookie.get";
 import { MessageResult } from "@/types/components";
 import Image from "next/image";
 import { useUserAuthContext } from "@/lib/userUseContext";
+import Link from "next/link";
 
 const MessageSearch = () => {
   const [openSearch, setOpenSearch] = useState(false);
@@ -84,7 +85,7 @@ const MessageSearch = () => {
 
   return (
     <div>
-      <div className="flex align-baseline justify-between border dark:text-white border-gray-400 rounded-md p-4 mb-7 w-full">
+      <div className="flex align-baseline justify-between outline dark:text-white outline-gray-400 rounded-md p-4 mb-7 w-full">
         <input
           onFocus={handleOpenSearch}
           type="text"
@@ -95,7 +96,7 @@ const MessageSearch = () => {
       </div>
 
       {openSearch && (
-        <div className="fixed loaderFade top-0 left-0 z-50 w-full h-full flex flex-col items-center justify-center bg-white dark:bg-gray-950/90 rounded-md duration-300 transition-all ease-in-out">
+        <div className="fixed loaderFade top-0 left-0 w-full h-full flex flex-col items-center justify-center bg-white dark:bg-gray-950/90 rounded-md duration-300 transition-all ease-in-out z-[200]">
           <div
             onClick={handleOpenSearch}
             className="absolute cursor-pointer bottom-0 bg-white dark:bg-gray-900 w-full flex justify-center p-2"
@@ -193,9 +194,12 @@ const MessageSearch = () => {
                           )}
                         </span>
                       </div>
-                      <p className="text-sm text-gray-700 dark:text-gray-300 line-clamp-2 leading-relaxed group-hover:text-blue-700 dark:group-hover:text-blue-300 transition-colors">
+                      <Link
+                        href={`/chats/${result.conversationsId}?message_id=${result.message_id}`}
+                        className="text-sm text-gray-700 dark:text-gray-300 line-clamp-2 leading-relaxed group-hover:text-blue-700 dark:group-hover:text-blue-300 transition-colors cursor-pointer"
+                      >
                         {result.message}
-                      </p>
+                      </Link>
                       {result.attachment && result.attachment.length > 0 && (
                         <span className="inline-flex items-center text-xs text-blue-600 dark:text-blue-400 mt-2 font-medium gap-1">
                           <svg

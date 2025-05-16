@@ -20,7 +20,6 @@ const ConversationComponent = () => {
   const queryClient = useQueryClient();
   useEffect(() => {
     const handlePrefetch = () => {
-      console.log("Invalidating conversations");
       queryClient.invalidateQueries({ queryKey: ["conversations"] });
     };
     socket.on("prefetch-conversations", handlePrefetch);
@@ -125,22 +124,28 @@ const ConversationCard = React.memo(
         })()
       : "";
 
+    const verifiedUsernames = ["@paymefans", "@paymefans1", "@paymefans2"];
+    const isVerified = verifiedUsernames.includes(
+      conversation.receiver.username
+    );
+    const isPayMeFans = conversation.receiver.username === "@paymefans";
+
     return (
       // Improved Conversation Item Component
       <div
         onClick={handleClick}
         className={`
-      group flex items-center p-4 
-      border-b border-gray-200 dark:border-gray-800
-      transition-all duration-200 ease-in-out
-      ${
-        isUnread
-          ? "bg-indigo-50 dark:bg-indigo-900/30 font-medium"
-          : "bg-white dark:bg-gray-950"
-      }
-      hover:bg-primary-light-pink/5 dark:hover:bg-primary-dark-pink/10
-      cursor-pointer
-    `}
+        group flex items-center p-4 
+        border-b border-gray-200 dark:border-gray-800
+        transition-all duration-200 ease-in-out
+        ${
+          isUnread
+            ? "bg-indigo-50 dark:bg-indigo-900/30 font-medium"
+            : "bg-white dark:bg-gray-950"
+        }
+        hover:bg-primary-light-pink/5 dark:hover:bg-primary-dark-pink/10
+        cursor-pointer
+      `}
       >
         {/* Profile Image with Active Status */}
         <Link
@@ -181,14 +186,14 @@ const ConversationCard = React.memo(
             >
               <span className="flex items-center gap-1 truncate">
                 {conversation.receiver.name}
-                {conversation.receiver.username === "@paymefans" && (
+                {isVerified && (
                   <LucideVerified size={16} className="text-yellow-500" />
                 )}
               </span>
             </Link>
 
             {/* Username (hidden on small screens) */}
-            {conversation.receiver.username !== "@paymefans" && (
+            {!isPayMeFans && (
               <Link
                 onClick={(e) => e.stopPropagation()}
                 href={`/${conversation.receiver.username}`}

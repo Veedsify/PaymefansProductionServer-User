@@ -268,7 +268,7 @@ const AddPoints = () => {
         <div className="mt-5">
           <button
             onClick={handlePointBuy}
-            className="w-full py-4 font-bold text-white uppercase bg-black rounded-md cursor-pointer"
+            className="w-full py-4 font-bold text-white uppercase bg-black dark:bg-primary-dark-pink rounded-md cursor-pointer"
           >
             Add Points
           </button>

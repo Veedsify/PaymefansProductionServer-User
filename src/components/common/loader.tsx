@@ -21,7 +21,7 @@ const Loader = () => {
           : "opacity-0 pointer-events-none"
       } fixed z-[999] duration-300 ease-out bg-black min-h-dvh w-full flex items-center justify-center`}
     >
-      <div className="animate-pulse">
+      <div className="flex flex-col items-center justify-center">
         <Image
           width={200}
           height={200}
