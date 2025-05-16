@@ -275,7 +275,7 @@ const Chats: React.FC<ChatProps> = React.memo(
     }, [lastMessage, user?.user_id, conversationId, receiver?.user_id, socket]);
     // UI
     return (
-      <div className="flex flex-col h-[calc(100vh-60px)]">
+      <div className="flex flex-col h-[calc(100vh-40px)]">
         {/* Header */}
         <div className="flex items-center px-5 py-4 border-b border-black/30 dark:border-gray-800 shrink-0">
           <Link href="/messages" className="mr-6 sm:mr-10" aria-label="Back">

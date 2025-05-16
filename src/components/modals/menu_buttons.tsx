@@ -17,15 +17,18 @@ const MenuButtons = () => {
   const pathname = usePathname();
 
   const paths = ["/live", "/chats"];
-
   const hideOn = paths.some((path) => pathname.includes(path));
-  return <div className="z-[100]">{!hideOn && <NavigationBar />}</div>;
+  return (
+    <div className={`z-[100] ${hideOn ? "hidden" : "block"} lg:block`}>
+      <NavigationBar />
+    </div>
+  );
 };
 
 const NavigationBar = () => {
   return (
     <div className="fixed bottom-0 right-0 flex pointer-events-none w-full lg:justify-end">
-      <div className="flex py-7 border-t border-primary-dark-pink/40 dark:border-slate-800 items-center justify-between px-8 md:px-16 dark:bg-gray-950 dark:text-white bg-white w-full lg:w-[37.5%] pointer-events-auto">
+      <div className="flex py-8 border-t border-primary-dark-pink/40 dark:border-slate-800 items-center justify-between px-8 md:px-16 dark:bg-gray-950 dark:text-white bg-white w-full lg:w-[37.5%] pointer-events-auto">
         <Link href="/" className="cursor-pointer">
           <LucideHome />
         </Link>
