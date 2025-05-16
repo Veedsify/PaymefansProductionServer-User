@@ -29,11 +29,15 @@ const BannerComponent = ({ profile_banner }: BannerComponentProps) => {
 
       // Validate file size and type
       if (selectedFile.size > 1024 * 1024 * 10)
-        return toast.error("Image size should be less than 10MB");
+        return toast.error("Image size should be less than 10MB", {
+          id: "banner_upload",
+        });
 
       const acceptedImageTypes = ["image/jpeg", "image/png"];
       if (!acceptedImageTypes.includes(selectedFile.type))
-        return toast.error("Only .jpeg and .png images are allowed");
+        return toast.error("Only .jpeg and .png images are allowed", {
+          id: "banner_upload",
+        });
 
       const url = URL.createObjectURL(selectedFile);
       setFile(selectedFile);
@@ -47,14 +51,14 @@ const BannerComponent = ({ profile_banner }: BannerComponentProps) => {
     // Set initial crop to full image width/height
     const initialCrop = centerCrop(
       makeAspectCrop(
-      {
-        unit: "%",
-        width: 100,
-        height: 100,
-      },
-      1980 / 650, // 1980x650 aspect ratio
-      naturalWidth,
-      naturalHeight
+        {
+          unit: "%",
+          width: 100,
+          height: 100,
+        },
+        1980 / 650, // 1980x650 aspect ratio
+        naturalWidth,
+        naturalHeight
       ),
       naturalWidth,
       naturalHeight
@@ -97,13 +101,17 @@ const BannerComponent = ({ profile_banner }: BannerComponentProps) => {
     if (!file || !imageRef.current || !completedCrop) return;
 
     try {
-      toast.loading("Uploading banner image...");
+      toast.loading("Uploading banner image...", {
+        id: "banner_upload",
+      });
       const croppedImageBlob = await getCroppedImg(
         imageRef.current,
         completedCrop
       );
       if (!croppedImageBlob) {
-        toast.error("Failed to crop image");
+        toast.error("Failed to crop image", {
+          id: "banner_upload",
+        });
         return;
       }
       const formData = new FormData();
@@ -119,14 +127,16 @@ const BannerComponent = ({ profile_banner }: BannerComponentProps) => {
         },
       });
       if (!response.ok) {
-        toast.dismiss();
-        toast.error("Failed to upload banner image");
+        toast.error("Failed to upload banner image", {
+          id: "banner_upload",
+        });
         return;
       }
       const data = await response.json();
       if (data.status) {
-        toast.dismiss();
-        toast.success("Banner image uploaded successfully");
+        toast.success("Banner image uploaded successfully", {
+          id: "banner_upload",
+        });
         router.refresh();
         // Reset state
         setFile(null);
@@ -136,8 +146,9 @@ const BannerComponent = ({ profile_banner }: BannerComponentProps) => {
       }
     } catch (error) {
       console.error(error);
-      toast.dismiss();
-      toast.error("Failed to upload banner image");
+      toast.error("Failed to upload banner image", {
+        id: "banner_upload",
+      });
     }
   };
 
@@ -156,12 +167,12 @@ const BannerComponent = ({ profile_banner }: BannerComponentProps) => {
   };
 
   return (
-    <div className="relative overflow-hidden rounded-lg shadow-lg border border-gray-200">
+    <div className="relative rounded-lg shadow-lg border border-gray-200">
       {imageUrl ? (
-        <div className="relative w-full flex justify-center max-h-[400px] bg-gray-50">
+        <div className="relative w-full flex justify-center overflow-hidden bg-gray-50">
           <ReactCrop
             crop={crop}
-            className="mx-auto w-auto max-h-[400px]"
+            className="mx-auto w-auto"
             onChange={(_, percentCrop) => setCrop(percentCrop)}
             onComplete={(c) => setCompletedCrop(c)}
           >

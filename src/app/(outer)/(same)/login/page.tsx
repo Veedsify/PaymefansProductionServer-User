@@ -41,7 +41,9 @@ const Login = () => {
 
       if (!loginThisUser?.data?.error) {
         if (loginThisUser?.data?.token && !loginThisUser?.data?.tfa) {
-          toast.success(LOGIN_CONFIG.LOGIN_SUCCESSFUL_MSG);
+          toast.success(LOGIN_CONFIG.LOGIN_SUCCESSFUL_MSG, {
+            id: "login",
+          });
           document.cookie = `token=${loginThisUser.data.token}`;
           setUser(loginThisUser.data.user);
           const redirect = new URLSearchParams(window.location.search).get(
@@ -67,12 +69,17 @@ const Login = () => {
         }
         return;
       } else {
-        toast.error(loginThisUser?.data?.message);
+        toast.error(loginThisUser?.data?.message, {
+          id: "login",
+        });
       }
     } catch (error: any) {
       console.error("Error while logging in:", error);
       toast.error(
-        error.response?.data.message || "An error occurred while logging in"
+        error.response?.data.message || "An error occurred while logging in",
+        {
+          id: "login",
+        }
       );
     }
   };
@@ -140,7 +147,7 @@ const Login = () => {
                 placeholder="Password"
               />
             </div>
-            <button className="w-full px-3 py-3 text-sm font-bold text-white rounded-lg bg-primary-dark-pink md:max-w-lg">
+            <button className="w-full px-3 py-3 text-sm font-bold text-white rounded-lg bg-primary-dark-pink md:max-w-lg cursor-pointer hover:bg-primary-dark-pink/80 transition-all duration-200">
               Sign in
             </button>
           </form>

@@ -257,7 +257,7 @@ const LogOutModal: React.FC<{ onClose: () => void }> = ({ onClose }) => {
   };
   return (
     <div
-      className="fixed inset-0 bg-black/50 flex items-center justify-center z-[100]"
+      className="fixed inset-0 bg-black/50 flex items-center justify-center z-[300]"
       onClick={onClose}
     >
       <motion.div

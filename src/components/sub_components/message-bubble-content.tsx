@@ -109,10 +109,9 @@ const MessageBubbleContent: React.FC<MessageBubbleContentProps> = ({
   );
 
   // Upload all raw files and send via socket when done
-  useEffect(() => {
-    if (!rawFiles.length) return;
-
-    async function uploadFilesAndSend() {
+  const uploadFilesAndSend = useCallback(
+    async function () {
+      if (!rawFiles.length) return;
       const files: (Attachment | null)[] = [];
       for (const item of rawFiles) {
         try {
@@ -160,14 +159,14 @@ const MessageBubbleContent: React.FC<MessageBubbleContentProps> = ({
           files.push(null);
         }
       }
-
       const uploadedFiles = files.filter(Boolean) as Attachment[];
       SendSocketMessage(uploadedFiles);
-    }
-
+    },
+    [rawFiles, SendSocketMessage, getUploadUrl]
+  );
+  useEffect(() => {
     uploadFilesAndSend();
-    // eslint-disable-next-line
-  }, [rawFiles, SendSocketMessage, getUploadUrl]);
+  }, [uploadFilesAndSend]);
 
   return (
     <>
@@ -288,18 +287,15 @@ const MessageBubbleContent: React.FC<MessageBubbleContentProps> = ({
                 </div>
               ) : (
                 <div className="relative">
-                  <video
-                    src={file.previewUrl}
-                    muted
-                    playsInline
-                    preload="metadata"
-                    aria-label="Video uploading"
-                    className="w-full object-cover rounded-lg shadow-md group-hover:brightness-75 transition"
-                    poster={file.previewUrl}
-                  />
                   <span className="absolute bottom-2 right-2 bg-white/30 text-xs text-gray-700 px-2 py-1 rounded shadow group-hover:bg-primary-dark-pink group-hover:text-white transition">
                     <LucideVideo className="text-white" size={16} />
                   </span>
+                  <video
+                    src={file.previewUrl}
+                    muted
+                    aria-label="Video uploading"
+                    className="w-full object-cover rounded-lg shadow-md group-hover:brightness-75 transition"
+                  />
                 </div>
               )}
               {progress[file.previewUrl] > 0 && (

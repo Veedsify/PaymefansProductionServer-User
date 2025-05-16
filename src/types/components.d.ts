@@ -36,7 +36,7 @@ export interface PostData {
   post_comments?: number;
   post_shares?: number;
   post_status: string;
-  post_price: string;
+  post_price: number;
   post_reposts?: number;
   post_impressions?: number;
   repost_username?: string;
@@ -565,7 +565,7 @@ export type QuickPostActionsProps = {
   options: {
     content: string;
     post_id: string;
-    price?: string;
+    price?: number;
     post_audience: string;
     username: string;
   };

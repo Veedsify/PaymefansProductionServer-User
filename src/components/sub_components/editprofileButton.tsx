@@ -118,7 +118,7 @@ function BannerModal({ user, open = false, setOpen }: BannerModalProps) {
       }`}
     >
       <div
-        className="relative bg-white dark:bg-slate-900 md:max-w-2xl w-full md:h-auto rounded-none md:rounded shadow-2xl p-6 md:p-8 h-[100vh] overflow-y-auto"
+        className="relative bg-white dark:bg-slate-900 md:max-w-2xl w-full rounded-none md:rounded shadow-2xl p-6 md:p-8 h-dvh overflow-y-auto"
         onClick={(e) => e.stopPropagation()}
       >
         <button
@@ -132,7 +132,7 @@ function BannerModal({ user, open = false, setOpen }: BannerModalProps) {
         <h1 className="mb-6 text-2xl font-bold text-center dark:text-white">
           Edit Profile
         </h1>
-        <div className="flex justify-center mb-5 overflow-hidden rounded-xl">
+        <div className="flex justify-center mb-5 rounded-xl">
           <BannerComponent
             profile_banner={user ? user.profile_banner : "/site/banner.png"}
           />

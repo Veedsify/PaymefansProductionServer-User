@@ -22,6 +22,7 @@ interface PostPageImageProps {
   data: {
     id: string;
     post_status: string;
+    post_price: number;
   };
   media: UserMediaProps;
   postOwnerId: string;
@@ -70,7 +71,8 @@ const PostPageImage: React.FC<PostPageImageProps> = ({
       .filter((item) => item.media_state !== "processing")
       .map((media) => ({
         url: media.url,
-        type: media.media_type,
+        type: media.media_type as "image" | "video",
+        isBlob: false,
       }));
     fullScreenPreview({
       url: media.url,
@@ -217,7 +219,7 @@ const PostPageImage: React.FC<PostPageImageProps> = ({
                     className="w-auto h-5 aspect-square"
                     alt=""
                   />
-                  5,000
+                  {data.post_price}
                 </p>
               ) : (
                 <>

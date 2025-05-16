@@ -105,7 +105,7 @@ const NavigationButton: React.FC<NavigationButtonProps> = ({
   ariaLabel,
 }) => (
   <button
-    className={`${className} absolute z-10 -translate-y-1/2 rounded-full bg-gray-200 p-2 opacity-0 transition-opacity duration-200 hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-white md:opacity-50`}
+    className={`${className} absolute z-10 -translate-y-1/2 rounded-full bg-gray-200 p-2 opacity-0 transition-opacity duration-200 hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-white md:opacity-50 cursor-pointer`}
     aria-label={ariaLabel}
   >
     {direction === "prev" ? (
@@ -162,10 +162,10 @@ const PostComponentPreview = memo(() => {
       {/* Close Button */}
       <button
         onClick={close}
-        className="absolute right-4 top-4 z-50 rounded-full bg-white p-2 text-black shadow-md focus:outline-none focus:ring-2 focus:ring-white"
+        className="absolute right-4 top-4 z-50 rounded-full p-2 text-black cursor-pointer"
         aria-label="Close preview"
       >
-        <X className="h-5 w-5 md:h-6 md:w-6" />
+        <X className="h-6 w-6 md:h-8 md:w-8 text-white" />
       </button>
 
       {/* Swiper Slider */}
