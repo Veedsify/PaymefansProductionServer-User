@@ -73,7 +73,7 @@ export type Post = {
   media: any[];
   post_status: string;
   post_audience: string;
-  post_price: string;
+  post_price: number;
   post_is_visible: boolean;
   post_likes: number;
   post_comments: number;

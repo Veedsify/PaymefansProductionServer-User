@@ -12,7 +12,6 @@ import { useUserAuthContext } from "@/lib/userUseContext";
 import { LikeThisPost } from "@/utils/postinteractions";
 import numeral from "numeral";
 import { PostData } from "@/types/components";
-import PostShareModal from "../sub_components/post-share-component";
 import Link from "next/link";
 import formatNumber from "@/lib/formatnumbers";
 import { usePersonalProfileStore } from "@/contexts/personal-profile-context";

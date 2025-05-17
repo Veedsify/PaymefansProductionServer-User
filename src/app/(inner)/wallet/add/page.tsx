@@ -9,6 +9,7 @@ import {
 } from "@/utils/data/accepted-bank-countries";
 import CountrySelector from "@/components/sub_components/country-selector";
 import Image from "next/image";
+import { BANK_CONFIG } from "@/config/config";
 
 interface BankData {
   slug: string;
@@ -23,7 +24,7 @@ const WalletAddBank = () => {
   let [name, setName] = useState<string>("");
   let [accountNumber, setAccountNumber] = useState<string>("");
   let [selectedBank, setSelectedBank] = useState<string>("");
-  let [bankType, setBankType] = useState<string>("");
+  let [bankType, setBankType] = useState<string>("nuban");
   let [selectCountry, setSelectCountry] =
     useState<keyof typeof acceptedBankTypes>("ng");
   const token = getToken();
@@ -251,7 +252,8 @@ const WalletAddBank = () => {
           {loading && <LucideLoader className="animate-spin" />}
           {name && !loading && <span className="font-bold pl-3">{name}</span>}
         </div>
-        <div className="py-5">
+
+        <div className="mt-6">
           <button
             onClick={handleAddAccount}
             disabled={loading || !name}
@@ -261,6 +263,11 @@ const WalletAddBank = () => {
           >
             Set Bank Account
           </button>
+        </div>
+        <div className="flex items-center gap-2 mt-3 mb-8">
+          <small className="text-red-500 font-semibold">
+            {BANK_CONFIG.PLATFORM_FEE_MESSAGE}
+          </small>
         </div>
       </div>
       {/* SAVED BANKS */}
@@ -342,69 +349,71 @@ const SavedBanks = () => {
         Saved Bank Accounts
       </h2>
       <div className="overflow-x-auto rounded-lg border border-gray-200 shadow-sm dark:border-gray-700">
-        <table className="w-full divide-y divide-gray-200 dark:divide-gray-700">
-          <thead className="bg-gray-50 dark:bg-gray-800 whitespace-nowrap">
-            <tr>
-              <th className="px-4 py-3.5 text-left text-sm font-semibold text-gray-900 dark:text-gray-100">
-                S/N
-              </th>
-              <th className="px-4 py-3.5 text-left text-sm font-semibold text-gray-900 dark:text-gray-100">
-                Bank
-              </th>
-              <th className="px-4 py-3.5 text-left text-sm font-semibold text-gray-900 dark:text-gray-100">
-                Account Number
-              </th>
-              <th className="px-4 py-3.5 text-left text-sm font-semibold text-gray-900 dark:text-gray-100">
-                Account Name
-              </th>
-              <th className="px-4 py-3.5 text-left text-sm font-semibold text-gray-900 dark:text-gray-100">
-                Bank Type
-              </th>
-              <th className="px-4 py-3.5 text-left text-sm font-semibold text-gray-900 dark:text-gray-100">
-                Country
-              </th>
-              <th className="px-4 py-3.5 text-left text-sm font-semibold text-gray-900 dark:text-gray-100">
-                <span className="hidden lg:block">Actions</span>
-              </th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-gray-200 bg-white dark:divide-gray-700 dark:bg-gray-900">
-            {banks.map((bank, index) => (
-              <tr
-                key={index}
-                className="hover:bg-gray-50 dark:hover:bg-gray-800"
-              >
-                <td className="whitespace-nowrap px-4 py-3 text-sm text-gray-700 dark:text-gray-200">
-                  {index + 1}
-                </td>
-                <td className="whitespace-nowrap px-4 py-3 text-sm text-gray-700 dark:text-gray-200">
-                  {bank.bank_name}
-                </td>
-                <td className="whitespace-nowrap px-4 py-3 text-sm text-gray-700 dark:text-gray-200">
-                  {bank.account_number}
-                </td>
-                <td className="whitespace-nowrap px-4 py-3 text-sm text-gray-700 dark:text-gray-200">
-                  {bank.account_name}
-                </td>
-                <td className="whitespace-nowrap px-4 py-3 text-sm text-gray-700 dark:text-gray-200">
-                  {bank.bank_type}
-                </td>
-                <td className="whitespace-nowrap px-4 py-3 text-sm text-gray-700 dark:text-gray-200">
-                  {bank.bank_country}
-                </td>
-                <td className="whitespace-nowrap px-4 py-3 text-sm">
-                  <button
-                    onClick={deleteAccount(bank.id)}
-                    className="inline-flex items-center rounded-md bg-red-50 px-2 py-1 text-red-700 hover:bg-red-100 transition-colors dark:bg-red-900 dark:text-red-200 dark:hover:bg-red-800"
-                  >
-                    <LucideTrash2 size={18} className="mr-1" />
-                    <span className="hidden lg:inline">Delete</span>
-                  </button>
-                </td>
+        <div className="relative h-[30vh] overflow-x-auto">
+          <table className="absolute divide-gray-200 dark:divide-gray-700">
+            <thead className="bg-gray-50 dark:bg-gray-800 whitespace-nowrap">
+              <tr>
+                <th className="px-4 py-3.5 text-left text-sm font-semibold text-gray-900 dark:text-gray-100">
+                  S/N
+                </th>
+                <th className="px-4 py-3.5 text-left text-sm font-semibold text-gray-900 dark:text-gray-100">
+                  Bank
+                </th>
+                <th className="px-4 py-3.5 text-left text-sm font-semibold text-gray-900 dark:text-gray-100">
+                  Account Number
+                </th>
+                <th className="px-4 py-3.5 text-left text-sm font-semibold text-gray-900 dark:text-gray-100">
+                  Account Name
+                </th>
+                <th className="px-4 py-3.5 text-left text-sm font-semibold text-gray-900 dark:text-gray-100">
+                  Bank Type
+                </th>
+                <th className="px-4 py-3.5 text-left text-sm font-semibold text-gray-900 dark:text-gray-100">
+                  Country
+                </th>
+                <th className="px-4 py-3.5 text-left text-sm font-semibold text-gray-900 dark:text-gray-100">
+                  <span className="hidden lg:block">Actions</span>
+                </th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody className="divide-y divide-gray-200 bg-white dark:divide-gray-700 dark:bg-gray-900 whitespace-nowrap">
+              {banks.map((bank, index) => (
+                <tr
+                  key={index}
+                  className="hover:bg-gray-50 dark:hover:bg-gray-800"
+                >
+                  <td className=" px-4 py-3 text-sm text-gray-700 dark:text-gray-200">
+                    {index + 1}
+                  </td>
+                  <td className=" px-4 py-3 text-sm text-gray-700 dark:text-gray-200">
+                    {bank.bank_name}
+                  </td>
+                  <td className=" px-4 py-3 text-sm text-gray-700 dark:text-gray-200">
+                    {bank.account_number}
+                  </td>
+                  <td className=" px-4 py-3 text-sm text-gray-700 dark:text-gray-200">
+                    {bank.account_name}
+                  </td>
+                  <td className=" px-4 py-3 text-sm text-gray-700 dark:text-gray-200">
+                    {bank.bank_type}
+                  </td>
+                  <td className=" px-4 py-3 text-sm text-gray-700 dark:text-gray-200">
+                    {bank.bank_country}
+                  </td>
+                  <td className=" px-4 py-3 text-sm">
+                    <button
+                      onClick={deleteAccount(bank.id)}
+                      className="inline-flex items-center rounded-md bg-red-50 px-2 py-1 text-red-700 hover:bg-red-100 transition-colors dark:bg-red-900 dark:text-red-200 dark:hover:bg-red-800"
+                    >
+                      <LucideTrash2 size={18} className="mr-1" />
+                      <span className="hidden lg:inline">Delete</span>
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   ) : (

@@ -6,7 +6,7 @@ import SupportHelp from "@/components/route_component/support-help";
 const HelpPage = async () => {
     const helpCategories = await getHelpCategories();
     return (
-        <div className={`block p-4 md:p-8 relative h-full`}>
+        <div className={`block p-4 md:p-8 relative h-full z-[200]`}>
             <div className="flex items-center mb-7 lg:hidden">
                 <span className="font-bold text-xl flex-shrink-0 ">Help & Support</span>
             </div>

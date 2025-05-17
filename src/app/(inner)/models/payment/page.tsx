@@ -10,6 +10,7 @@ import {
   LucideChevronDown,
   LucideChevronUp,
   LucideEye,
+  LucideInfo,
   LucideLoader,
   LucideUser,
   LucideUser2,
@@ -92,7 +93,16 @@ const PaymentPage = () => {
           Activate Creator Dashboard
         </h1>
 
-        <div className="max-w-md mx-auto bg-white dark:bg-gray-800 rounded-xl shadow-md overflow-hidden md:max-w-2xl mb-4">
+        <div className="bg-coins-card-bottom max-w-md mx-auto p-4 py-4 md:max-w-2xl mb-4 rounded-xl flex items-center gap-4">
+          <span>
+            <LucideInfo className="text-primary-text-dark-pink" size={30} />
+          </span>
+          <p className="text-sm font-medium text-primary-text-dark-pink">
+            Activate your creator dashboard to get premium access to Creator
+            world and start monetizing your content
+          </p>
+        </div>
+        <div className="max-w-md mx-auto bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden md:max-w-2xl mb-4">
           <div className="md:flex">
             <div className="p-8 w-full">
               <div className="uppercase tracking-wide text-sm text-primary-dark-pink font-semibold">
@@ -110,7 +120,7 @@ const PaymentPage = () => {
                   alt=""
                 />
                 <span className="text-5xl font-extrabold text-primary-dark-pink">
-                  120
+                  100
                 </span>
                 <span className="text-xl text-gray-500 dark:text-gray-400">
                   .00

@@ -191,7 +191,7 @@ const fetchRecentPosts = async (timeRange: any) => {
   const basePosts = [
     {
       id: 1,
-      thumbnail: "/api/placeholder/400/400",
+      thumbnail: "/site/avatar.png",
       likes: 1243,
       comments: 89,
       views: 15620,
@@ -202,7 +202,7 @@ const fetchRecentPosts = async (timeRange: any) => {
     },
     {
       id: 2,
-      thumbnail: "/api/placeholder/400/400",
+      thumbnail: "/site/avatar.png",
       likes: 2431,
       comments: 156,
       views: 28430,
@@ -213,7 +213,7 @@ const fetchRecentPosts = async (timeRange: any) => {
     },
     {
       id: 3,
-      thumbnail: "/api/placeholder/400/400",
+      thumbnail: "/site/avatar.png",
       likes: 984,
       comments: 67,
       views: 12540,
@@ -224,7 +224,7 @@ const fetchRecentPosts = async (timeRange: any) => {
     },
     {
       id: 4,
-      thumbnail: "/api/placeholder/400/400",
+      thumbnail: "/site/avatar.png",
       likes: 1876,
       comments: 124,
       views: 19730,
@@ -235,7 +235,7 @@ const fetchRecentPosts = async (timeRange: any) => {
     },
     {
       id: 5,
-      thumbnail: "/api/placeholder/400/400",
+      thumbnail: "/site/avatar.png",
       likes: 3200,
       comments: 210,
       views: 35600,
@@ -246,7 +246,7 @@ const fetchRecentPosts = async (timeRange: any) => {
     },
     {
       id: 6,
-      thumbnail: "/api/placeholder/400/400",
+      thumbnail: "/site/avatar.png",
       likes: 4200,
       comments: 280,
       views: 45200,
@@ -751,6 +751,8 @@ export default function Analytics() {
                             <Image
                               src={post.thumbnail}
                               alt="Post thumbnail"
+                              width={48}
+                              height={48}
                               className="w-full h-full rounded object-cover"
                               onError={(e: any) => {
                                 e.target.onerror = null;

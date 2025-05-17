@@ -52,8 +52,8 @@ const Verification = async () => {
             <LucideInfo className="text-primary-text-dark-pink" size={30} />
           </span>
           <p className="text-sm font-medium text-primary-text-dark-pink">
-            Note that these photos will appear on your profile for others to see
-            so make them nice.
+            Note that these photos will not appear on your profile and are only
+            for verification purposes.
           </p>
         </div>
         <VerificationPageButton />

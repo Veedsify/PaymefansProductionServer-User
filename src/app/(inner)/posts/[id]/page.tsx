@@ -103,7 +103,11 @@ const Post = React.memo(async ({ params }: PostPageProps) => {
             <div key={index} className="relative">
               <PostPageImage
                 key={index}
-                data={{ id: post?.id, post_status: post?.post_status }}
+                data={{
+                  id: post?.id,
+                  post_status: post?.post_status,
+                  post_price: post?.post_price,
+                }}
                 media={media}
                 indexId={index}
                 postOwnerId={post?.user?.user_id}

@@ -279,7 +279,7 @@ const Chats: React.FC<ChatProps> = React.memo(
         });
       };
       markMessagesAsSeen();
-    }, [lastMessage, user?.user_id, conversationId, receiver?.user_id, socket]);
+    }, [user?.user_id, conversationId, receiver?.user_id, socket, allMessages]);
     // UI
     return (
       <div className="flex flex-col h-[calc(100vh-40px)]">

@@ -55,7 +55,8 @@ const WithDrawInput = ({ points }: { points: number }) => {
     if (amount > maxWithdrawalAmount) {
       const maxAmount = Number(maxWithdrawalAmount).toLocaleString();
       toast.error(
-        `You can only withdraw a maximum of ${defalutCurrency}${maxAmount}`
+        `You can only withdraw a maximum of ${defalutCurrency}${maxAmount}`,
+        { id: "withdraw" }
       );
       return;
     }
@@ -63,7 +64,8 @@ const WithDrawInput = ({ points }: { points: number }) => {
     if (amount < minAmountInNgn) {
       const minAmount = Number(minAmountInNgn).toLocaleString();
       toast.error(
-        `Minimum withdrawal amount is ${defalutCurrency}${minAmount}`
+        `Minimum withdrawal amount is ${defalutCurrency}${minAmount}`,
+        { id: "withdraw" }
       );
       return;
     }
@@ -225,7 +227,7 @@ const WithDrawInput = ({ points }: { points: number }) => {
         <div className="mt-5">
           <button
             onClick={handleWithdrawClick}
-            className="bg-black font-bold uppercase text-white w-full py-4 rounded-md"
+            className="bg-black font-bold uppercase text-white w-full py-4 rounded-md cursor-pointer disabled:cursor-not-allowed disabled:opacity-50"
           >
             Withdraw
           </button>

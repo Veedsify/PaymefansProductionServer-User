@@ -21,6 +21,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { Metadata } from "next";
+import { PiCurrencyDollarSimple } from "react-icons/pi";
 
 export const metadata: Metadata = {
   title: "Profile | Paymefans",
@@ -91,7 +92,7 @@ const ProfilePage = async ({ params }: { params: ParamsProp }) => {
     return <SuspendedUserPage userdata={userdata} />;
 
   const isVerified = VERIFIED_USERS.includes(userdata.username);
-
+  const canTip = !VERIFIED_USERS.includes(userdata.username);
   return (
     <>
       <div className="overflow-hidden">
@@ -114,6 +115,11 @@ const ProfilePage = async ({ params }: { params: ParamsProp }) => {
             className="absolute object-cover md:w-24 md:h-24 w-20 h-20 sm:border-4 border-2 rounded-full md:-top-12 -top-6 border-primary-dark-pink"
           />
           <div className="flex items-center gap-3 sm:p-3 ml-auto p-3">
+            {canTip && (
+              <button className="cursor-pointer">
+                <PiCurrencyDollarSimple className="w-5 h-5 lg:w-6 lg:h-6 font-bold" />
+              </button>
+            )}
             <FollowUserComponent thisuser={user} profileuser={userdata} />
             {userdata.is_model && (
               <CreateSubscriptionButton userdata={userdata} />

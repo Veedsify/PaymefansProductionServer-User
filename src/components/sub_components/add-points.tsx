@@ -132,8 +132,9 @@ const AddPoints = () => {
   }
   async function handlePointBuy() {
     const token = getToken();
-    toast.dismiss();
-    toast.loading(POINTS_CONFIG.POINT_PENDING_PAYMENTS);
+    toast.loading(POINTS_CONFIG.POINT_PENDING_PAYMENTS, {
+      id: "point-purchase",
+    });
     const amount = parseInt(value.replace(/\D/g, "")) || 0;
     // Calculate minimum deposit in user's currency based on NGN 2500 rate
     const minNgn = 2500;
@@ -141,12 +142,14 @@ const AddPoints = () => {
     const minInUserCurrency = convertCurrency(minNgn, "NGN", userCurrency);
     const validate = amount < minInUserCurrency;
     if (!value || validate) {
-      toast.dismiss();
       toast.error(
         `Minimum deposit is ${formatConvertedAmount(
           minInUserCurrency,
           userCurrency
-        )}`
+        )}`,
+        {
+          id: "point-purchase",
+        }
       );
       return;
     }
@@ -171,18 +174,21 @@ const AddPoints = () => {
       }
       const data = await response.json();
       if (data.status) {
-        toast.dismiss();
-        toast.loading(data.message);
+        toast.loading(data.message, {
+          id: "point-purchase",
+        });
         setTimeout(() => {
           window.location.href = data.checkout.authorization_url;
         }, 100);
       } else {
-        toast.dismiss();
-        toast.error(data.message);
+        toast.error(data.message, {
+          id: "point-purchase",
+        });
       }
     } catch (error) {
-      toast.dismiss();
-      toast.error(POINTS_CONFIG.POINTS_PURCHASE_FAILED);
+      toast.error(POINTS_CONFIG.POINTS_PURCHASE_FAILED, {
+        id: "point-purchase",
+      });
       console.error(error);
     }
   }

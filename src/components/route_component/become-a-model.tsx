@@ -11,6 +11,7 @@ import {
   LucideChevronUp,
   LucideEye,
   LucideLoader,
+  LucideLoader2,
   LucideUser,
   LucideUser2,
 } from "lucide-react";
@@ -53,14 +54,15 @@ interface ModelSignUpProps {
 
 const BecomeAModel = () => {
   const router = useRouter();
+  const { user } = useUserAuthContext();
   const [modelSignUpdata, setModelSignUpData] = useState<ModelSignUpProps>({});
   const [dropdown, setDropdown] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [postAudience, setPostAudience] = useState<postAudienceDataProps2>({
     id: 0,
     icon: <LucideEye size={20} className="inline" />,
     name: "Choose Gender",
   });
-  const [loading, setLoading] = useState(true);
 
   const updatePostAudience = (e: MouseEvent<HTMLLIElement>) => {
     const id = e.currentTarget.getAttribute("data-id");
@@ -93,50 +95,30 @@ const BecomeAModel = () => {
     if (!modelSignUpdata.available)
       return toast.error("Please select a if you'd be available for hookup ");
 
-    const loadingToast = toast.loading("Signing you up, please wait...");
-    const res = await modelSignUp({
-      ...modelSignUpdata,
-      gender: postAudience.name?.toLocaleLowerCase(),
-    });
+    try {
+      setLoading(true);
+      const { data } = await modelSignUp({
+        ...modelSignUpdata,
+        gender: postAudience.name?.toLocaleLowerCase(),
+      });
 
-    if (res && res.status === true) {
-      setTimeout(() => {
-        toast.dismiss(loadingToast);
-      }, 2000);
-
-      if (res.url && res.url !== "") {
-        window.location.href = String(res.url);
+      if (data && data.status) {
+        if (data.url && data.url !== "") {
+          window.location.href = String(data.url);
+        }
       }
-    } else {
-      toast.dismiss(loadingToast);
+    } catch (error: any) {
       swal({
         icon: "error",
-        title: "Error",
-        text: res.message,
+        title: "Age Restriction",
+        text: error.response?.data?.message,
       });
+      setLoading(false);
+      console.error(error);
     }
   };
-  const { user } = useUserAuthContext();
 
-  useEffect(() => {
-    if (user) {
-      setLoading(false);
-    }
-  }, [user]);
-
-  if (loading) {
-    return (
-      <div>
-        <div className="m-3 p-8 px-12 rounded-2xl dark:text-white">
-          <div>
-            <LucideLoader size={50} className="mx-auto block animate-spin" />
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  if (user?.is_model && user?.Model?.verification_status === true) {
+  if (user && user?.is_model && user?.Model?.verification_status === true) {
     return (
       <>
         <div>
@@ -287,7 +269,7 @@ const BecomeAModel = () => {
         </div>
         <div className="mt-6">
           <p className="font-medium text-gray-700 dark:text-gray-200 mb-2">
-            Are you available for Hookup?
+            Are you available to Hookup?
           </p>
           <div className="flex gap-6">
             <label
@@ -322,9 +304,19 @@ const BecomeAModel = () => {
         </div>
         <button
           onClick={submitData}
-          className="bg-primary-dark-pink w-full p-3 rounded-xl mt-8 text-white font-semibold shadow-md hover:bg-primary-dark-pink/90 transition cursor-pointer"
+          className="bg-primary-dark-pink w-full p-3 rounded-xl mt-8 text-white font-semibold shadow-md hover:bg-primary-dark-pink/90 transition cursor-pointer flex items-center justify-center disabled:bg-gray-400"
+          disabled={loading}
         >
           Signup
+          {loading && (
+            <span className="ml-2">
+              <LucideLoader2
+                className="animate-spin"
+                size={20}
+                stroke="white"
+              />
+            </span>
+          )}
         </button>
       </div>
     );

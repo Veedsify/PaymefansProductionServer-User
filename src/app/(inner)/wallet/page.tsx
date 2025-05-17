@@ -136,7 +136,7 @@ const WalletPage = () => {
   };
 
   const calculateAmount = () => {
-    if (!points || !rates || !user) return "N/A";
+    if (!points || !rates || !user) return 0;
     const convert = convertCurrency(points, "POINTS", "NGN");
     return convert.toLocaleString("en-US", {
       style: "currency",
@@ -147,7 +147,7 @@ const WalletPage = () => {
   };
 
   const calculateAmountInDollars = () => {
-    if (!points) return "N/A";
+    if (!points) return 0;
     const usd = convertCurrency(points, "POINTS", "USD");
     return usd.toLocaleString("en-US", {
       style: "currency",
