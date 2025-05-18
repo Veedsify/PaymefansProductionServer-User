@@ -1,5 +1,6 @@
 import BannerComponent from "@/components/lib_components/banner_component";
 import EditProfileButton from "@/components/sub_components/editprofileButton";
+import { ProfileCounts } from "@/components/sub_components/profile-count";
 import ProfileTabs from "@/components/sub_components/profile_tabs";
 import { AuthUserProps } from "@/types/user";
 import getUserData from "@/utils/data/user-data";
@@ -99,42 +100,22 @@ const ProfilePage = async () => {
                 Joined{" "}
                 {user?.created_at
                   ? new Date(user.created_at).toLocaleDateString("en-US", {
-                      month: "long",
-                      year: "numeric",
-                    })
+                    month: "long",
+                    year: "numeric",
+                  })
                   : ""}
               </span>
             </span>
           </div>
-
-          <div className="flex gap-2 mb-3 flex-wrap sm:text-base text-sm">
-            <span className="flex gap-2 items-center">
-              <h1 className="font-bold text-sm text-gray-900 dark:text-gray-100">
-                {formatNumber(user?.total_followers)}
-              </h1>
-              <p className="font-medium text-gray-500 dark:text-gray-400 text-sm">
-                Followers
-              </p>
-            </span>
-            <span className="flex gap-2 items-center">
-              <h1 className="font-bold text-sm text-gray-900 dark:text-gray-100">
-                {formatNumber(user?.total_following)}
-              </h1>
-              <p className="font-medium text-gray-500 dark:text-gray-400 text-sm">
-                Following
-              </p>
-            </span>
-            {user?.is_model && (
-              <span className="flex gap-2 items-center">
-                <h1 className="font-bold text-sm text-gray-900 dark:text-gray-100">
-                  {formatNumber(user?.total_subscribers)}
-                </h1>
-                <p className="font-medium text-gray-500 dark:text-gray-400 text-sm">
-                  Subscribers
-                </p>
-              </span>
-            )}
-          </div>
+          {user && (
+            <ProfileCounts
+              followers={user?.total_followers}
+              following={user?.total_following}
+              subscribers={user?.total_subscribers}
+              isModel={user?.is_model}
+              userId={user?.user_id}
+            />
+          )}
         </div>
       </div>
       <ProfileTabs />

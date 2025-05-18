@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo } from "react";
 import { X } from "lucide-react";
 import Image from "next/image";
 import { imageTypes, videoTypes } from "@/lib/filetypes";
@@ -12,52 +12,63 @@ type MediaProps = {
 };
 
 const Media = ({ id, file, removeThisMedia, progress }: MediaProps) => {
-  const [url, setUrl] = useState<string | null>(null);
-  const [uploadProgress, setUploadProgress] = useState<number>(0);
-
-  useEffect(() => {
+  // Memoize URL generation and cleanup for videos
+  const url = useMemo(() => {
     if (imageTypes.includes(file.type)) {
-      const reader = new FileReader();
-      reader.onload = (e) => setUrl(e.target?.result as string);
-      reader.readAsDataURL(file);
+      return URL.createObjectURL(file);
     } else if (videoTypes.includes(file.type)) {
-      const blob = new Blob([file], { type: file.type });
-      setUrl(URL.createObjectURL(blob));
+      return URL.createObjectURL(file);
     }
+    return null;
   }, [file]);
 
   useEffect(() => {
-    setUploadProgress(progress);
-  }, [progress]);
+    return () => {
+      if (url) URL.revokeObjectURL(url);
+    };
+  }, [url]);
+
+  if (!url) {
+    return (
+      <div className="relative">
+        <div className="bg-gray-200 animate-pulse h-32 w-32 rounded-xl"></div>
+      </div>
+    );
+  }
+
+  const isVideo = videoTypes.includes(file.type);
 
   return (
     <div className="relative">
-      {file.type.includes("video") ? (
+      {isVideo ? (
         <video
-          src={url || "/site/loading.gif"}
+          src={url}
+          playsInline
           className="relative object-cover h-auto aspect-square shadow-lg border block rounded-xl z-10"
         />
       ) : (
         <Image
-        unoptimized
-          src={url || "/site/loading.gif"}
-          alt="Media preview"
+          priority
+          src={url}
+          alt={file.name || "Media preview"}
           width={200}
           height={200}
           className="relative object-cover h-auto aspect-square shadow-lg border block rounded-xl z-10"
         />
       )}
       <div className="absolute top-0 right-0 bg-black/50 text-white p-1 w-full h-full rounded-xl flex items-center justify-center z-20">
-        <span
+        <button
           onClick={() => removeThisMedia(id, file.type)}
           className="cursor-pointer"
+          aria-label="Remove media"
+          type="button"
         >
           <X size={20} />
-        </span>
+        </button>
       </div>
-      {uploadProgress >= 0 && (
+      {progress >= 0 && (
         <div className="absolute bottom-2 left-0 right-0 text-white z-20 text-center">
-          <span>{uploadProgress}%</span>
+          <span>{progress}%</span>
         </div>
       )}
     </div>
