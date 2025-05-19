@@ -27,7 +27,7 @@ export function ProfileCounts({
   const [subscriberOpen, setSubscriberOpen] = useState(false);
 
   const toggleOpen = (type: string) => {
-    if (type === "follower") {
+    if (type === "followers") {
       setFollowerOpen(!followerOpen);
       setFollowingOpen(false);
       setSubscriberOpen(false);
@@ -47,7 +47,7 @@ export function ProfileCounts({
       <div className="flex gap-2 mb-3 flex-wrap sm:text-base text-sm select-none">
         <span
           className="flex gap-2 items-center cursor-pointer"
-          onClick={() => toggleOpen("follower")}
+          onClick={() => toggleOpen("followers")}
         >
           <h1 className="font-bold text-sm">{formatNumber(followers)}</h1>
           <p className="font-medium text-gray-500 text-sm">Followers</p>

@@ -4,7 +4,7 @@ import { useInfiniteQuery } from "@tanstack/react-query";
 import { debounce } from "lodash";
 import { LucideLoader2, XIcon } from "lucide-react";
 import Link from "next/link";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { ChangeEvent, useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 const fetchStats = async (
   userId: string | undefined,
@@ -14,7 +14,7 @@ const fetchStats = async (
 ) => {
   const token = getToken()
   const fetchStats = await fetch(
-    `${process.env.NEXT_PUBLIC_TS_EXPRESS_URL}/profile/stats/${userId}/${type}?cursor=${2}&limit=${25}&query=${query}`,
+    `${process.env.NEXT_PUBLIC_TS_EXPRESS_URL}/profile/stats/${userId}/${type}?cursor=${page}&limit=${25}&query=${query}`,
     {
       method: "GET",
       headers: {
@@ -36,17 +36,73 @@ interface ProfileStatsProps {
   type: "followers" | "following" | "subscriber";
 }
 
+const FollowAndUnfollowButton = ({
+  isFollowing,
+  onClick,
+}: {
+  isFollowing: boolean;
+  onClick: () => void;
+}) => {
+  const [isFollowingState, setIsFollowingState] = useState(isFollowing);
+
+  useEffect(() => {
+    setIsFollowingState(isFollowing);
+  }, [isFollowing]);
+
+  const handleClick = () => {
+    setIsFollowingState(!isFollowingState);
+    onClick();
+  };
+
+  return (
+    <button
+      onClick={handleClick}
+      className={`px-4 py-1 rounded-full text-sm font-medium transition ${isFollowingState
+        ? "bg-gray-500 text-white hover:bg-pink-700"
+        : "bg-primary-dark-pink text-white hover:bg-pink-700"
+        }`}
+    >
+      {isFollowingState ? "Unfollow" : "Follow"}
+    </button>
+  );
+}
+
+
 const Profile = ({ user, type, toggleOpen, isFollowing }: {
   user: {
     id: number;
     name: string;
     username: string;
-    avatar: string;
+    profile_image: string;
+    is_following: boolean;
+    profile_banner: string;
   };
   type: "followers" | "following" | "subscriber";
   toggleOpen: (type: string) => void;
   isFollowing: boolean;
 }) => {
+
+
+  const handleFollowThisUser = async () => {
+    const token = getToken()
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_TS_EXPRESS_URL}/profile/follow/${user?.id}`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error("Network response was not ok");
+    }
+    const data = await response.json();
+    return data;
+  };
+
   return (
     <div
       key={user.id}
@@ -54,7 +110,7 @@ const Profile = ({ user, type, toggleOpen, isFollowing }: {
     >
       <Link href={`/${user.username}`}>
         <img
-          src={user.avatar}
+          src={user.profile_image}
           alt="Follower Avatar"
           className="w-12 h-12 rounded-full border border-gray-200 object-cover"
         />
@@ -73,17 +129,12 @@ const Profile = ({ user, type, toggleOpen, isFollowing }: {
       </div>
       {(type === "followers" || type === "following") && (
         <>
-          {
-            isFollowing ? (
-              <button className="px-4 py-1 rounded-full bg-gray-500 text-white text-sm font-medium hover:bg-pink-700 transition" >
-                Unfollow
-              </button>
-            ) : (
-              <button className="px-4 py-1 rounded-full bg-primary-dark-pink text-white text-sm font-medium hover:bg-pink-700 transition">
-                Follow
-              </button>
-            )}
-        </>)}
+          <FollowAndUnfollowButton
+            isFollowing={isFollowing}
+            onClick={handleFollowThisUser}
+          />
+        </>
+      )}
     </div >
   );
 }
@@ -103,23 +154,13 @@ export const ProfileStatsComponent = ({
     return "Subscribers";
   }, [type]);
 
-  const {
-    data,
-    fetchNextPage,
-    hasNextPage,
-    isLoading,
-    isFetchingNextPage,
-    refetch,
-  } = useInfiniteQuery({
+  const { data, fetchNextPage, hasNextPage, isLoading, isFetchingNextPage, refetch } = useInfiniteQuery({
     queryKey: ["stats", userId, type, query],
-    queryFn: async ({ pageParam = 1 }) =>
-      await fetchStats(userId, pageParam, type, query),
-    getNextPageParam: (lastPage) => {
-      return lastPage.nextCursor
-    },
+    queryFn: async ({ pageParam = 1 }) => await fetchStats(userId, pageParam, type, query),
+    getNextPageParam: (lastPage) => lastPage.nextCursor || undefined,
     initialPageParam: 1,
     staleTime: 60 * 1000,
-    enabled: !!userId,
+    enabled: !!userId && query !== undefined, // Only fetch when userId exists and query is defined
   });
 
   const stats = useMemo(
@@ -133,19 +174,22 @@ export const ProfileStatsComponent = ({
   );
 
   const debouncedSearch = useMemo(
-    () =>
-      debounce((value: string) => {
-        setQuery(value);
-      }, 400),
+    () => debounce((value) => setQuery(value), 400),
     []
   );
 
   const handleInputChange = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement>) => {
+    (e: ChangeEvent<HTMLInputElement>) => {
       debouncedSearch(e.target.value);
     },
     [debouncedSearch]
   );
+
+  useEffect(() => {
+    return () => {
+      debouncedSearch.cancel();
+    };
+  }, [debouncedSearch]);
 
   useEffect(() => {
     refetch(); // Will re-trigger fetch with new query key
@@ -200,7 +244,7 @@ export const ProfileStatsComponent = ({
             placeholder:text-gray-400 transition-all duration-200"
           />
         </div>
-        {stats.length === 0 && (
+        {stats.length === 0 && (!isLoading) && (
           <div className="text-center text-gray-500 py-10">
             No {title.toLowerCase()} found.
           </div>
