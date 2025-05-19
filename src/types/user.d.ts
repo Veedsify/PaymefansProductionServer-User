@@ -60,11 +60,11 @@ export type AuthUserProps = {
     hookup: boolean;
     verification_status: boolean;
     verification_state:
-      | " not_started"
-      | "pending"
-      | "approved"
-      | "rejected"
-      | "started";
+    | " not_started"
+    | "pending"
+    | "approved"
+    | "rejected"
+    | "started";
   };
   subscriptions?: number[];
   purchasedPosts?: number[];
@@ -152,6 +152,8 @@ export type ProfileUserProps = {
   active_status: boolean;
   created_at: string;
   updated_at: string;
+  isFollowing: boolean;
+  followsYou: boolean;
   Subscribers: {
     subscriber_id: number;
   }[];

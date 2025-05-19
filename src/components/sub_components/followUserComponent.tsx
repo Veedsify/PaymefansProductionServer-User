@@ -1,44 +1,44 @@
 "use client";
 import { AuthUserProps, ProfileUserProps } from "@/types/user";
-import { checkUserIsFollowing } from "@/utils/data/check-user-is-following";
 import React, { useEffect } from "react";
-import FollowButton from "./sub/button";
-import { getSocket } from "./sub/socket";
 
 type FollowUserProps = {
-  thisuser: AuthUserProps | null;
   profileuser: ProfileUserProps;
 };
 
-const FollowUserComponent: React.FC<FollowUserProps> = ({
-  profileuser,
-  thisuser,
-}) => {
-  const [data, setData] = React.useState(false);
-  const [followId, setFollowId] = React.useState<number | null>(null);
-  const socket = getSocket();
+const FollowUserComponent: React.FC<FollowUserProps> = ({ profileuser }) => {
+  const [isFollowing, setIsFollowing] = React.useState(profileuser.isFollowing);
+  const [followsYou, setFollowsYou] = React.useState(profileuser.followsYou);
 
   useEffect(() => {
-    socket.emit("checkUserIsFollowing", {
-      user_id: profileuser.id,
-      thisuser_id: thisuser?.id,
-    });
-    socket.on("isFollowing", (data) => {
-      setData(data.status);
-      setFollowId(data.followID);
-    });
-    return () => {
-      socket.off("isFollowing");
-    };
-  }, [profileuser, thisuser, socket]);
+    setIsFollowing(profileuser.isFollowing);
+    setFollowsYou(profileuser.followsYou);
+  }, [profileuser.isFollowing, profileuser.followsYou]);
+
+  const followProfile = () => {
+    // TODO: Call your follow/unfollow API
+    // Toggle state for demo purposes
+    setIsFollowing((prev) => !prev);
+  };
+
+  let buttonLabel = "Follow";
+
+  if (isFollowing) {
+    buttonLabel = "Following";
+  } else if (followsYou) {
+    buttonLabel = "Follow Back";
+  }
+
   return (
-    <FollowButton
-      setFollowId={setFollowId}
-      followId={followId}
-      users={{ profile_id: profileuser.id, user_id: thisuser?.id }}
-      status={data}
-      setstatus={setData}
-    />
+    <button
+      onClick={followProfile}
+      className={`sm:px-4 py-1 px-2 rounded outline text-sm font-semibold ${isFollowing
+        ? "outline outline-black text-color"
+        : "bg-black text-white"
+        }`}
+    >
+      {buttonLabel}
+    </button>
   );
 };
 

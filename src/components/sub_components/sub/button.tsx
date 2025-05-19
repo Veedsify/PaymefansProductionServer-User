@@ -41,12 +41,7 @@ const FollowButton = ({
   }, [setstatus, setFollowId, socket]);
 
   return (
-    <button
-      onClick={followProfile}
-      className="sm:px-4 py-1 px-2  text-sm font-semibold border border-black rounded font text-color "
-    >
-      {status ? "Unfollow" : "Follow"}
-    </button>
+    <></>
   );
 };
 

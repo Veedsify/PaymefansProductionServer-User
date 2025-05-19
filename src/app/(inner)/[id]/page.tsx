@@ -6,7 +6,7 @@ import ProfileTabsOther from "@/components/sub_components/profile_tabs_other";
 import ActiveProfileTag from "@/components/sub_components/sub/active-profile-tag";
 import SuspendedUserPage from "@/components/sub_components/suspended";
 
-import {ProfileUserProps} from "@/types/user";
+import { ProfileUserProps } from "@/types/user";
 import getUserProfile from "@/utils/data/profile-data";
 import getUserData from "@/utils/data/user-data";
 
@@ -19,9 +19,9 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import {redirect} from "next/navigation";
-import {Metadata} from "next";
-import {PiCurrencyDollarSimple} from "react-icons/pi";
+import { redirect } from "next/navigation";
+import { Metadata } from "next";
+import { PiCurrencyDollarSimple } from "react-icons/pi";
 
 export const metadata: Metadata = {
     title: "Profile | Paymefans",
@@ -36,24 +36,24 @@ function formatNumber(num: number = 0): string {
 }
 
 // Separate avatar+banner, verified badge and bio to subcomponents for clarity
-function VerifiedBadge({type = "user"}: { type?: "user" | "model" }) {
+function VerifiedBadge({ type = "user" }: { type?: "user" | "model" }) {
     return (
         <span className="relative group cursor-pointer">
-      <Verified stroke={type === "model" ? "purple" : "limegreen"}/>
-      <span
-          className="absolute left-1/2 -translate-x-1/2 mt-2 px-2 py-1 rounded bg-black text-white text-xs opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-10">
-        {type === "model" ? "Model Verified" : "Verified"}
-      </span>
-    </span>
+            <Verified stroke={type === "model" ? "purple" : "limegreen"} />
+            <span
+                className="absolute left-1/2 -translate-x-1/2 mt-2 px-2 py-1 rounded bg-black text-white text-xs opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-10">
+                {type === "model" ? "Model Verified" : "Verified"}
+            </span>
+        </span>
     );
 }
 
 function ProfileCounts({
-                           followers,
-                           following,
-                           subscribers,
-                           isModel,
-                       }: {
+    followers,
+    following,
+    subscribers,
+    isModel,
+}: {
     followers: number;
     following: number;
     subscribers?: number;
@@ -62,19 +62,19 @@ function ProfileCounts({
     return (
         <>
             <div className="flex gap-2 mb-3 flex-wrap sm:text-base text-sm">
-        <span className="flex gap-2 items-center">
-          <h1 className="font-bold text-sm">{formatNumber(followers)}</h1>
-          <p className="font-medium text-gray-500 text-sm">Followers</p>
-        </span>
                 <span className="flex gap-2 items-center">
-          <h1 className="font-bold text-sm">{formatNumber(following)}</h1>
-          <p className="font-medium text-gray-500 text-sm">Following</p>
-        </span>
+                    <h1 className="font-bold text-sm">{formatNumber(followers)}</h1>
+                    <p className="font-medium text-gray-500 text-sm">Followers</p>
+                </span>
+                <span className="flex gap-2 items-center">
+                    <h1 className="font-bold text-sm">{formatNumber(following)}</h1>
+                    <p className="font-medium text-gray-500 text-sm">Following</p>
+                </span>
                 {isModel && subscribers != null && (
                     <span className="flex gap-2 items-center">
-            <h1 className="font-bold text-sm">{formatNumber(subscribers)}</h1>
-            <p className="font-medium text-gray-500 text-sm">Subscribers</p>
-          </span>
+                        <h1 className="font-bold text-sm">{formatNumber(subscribers)}</h1>
+                        <p className="font-medium text-gray-500 text-sm">Subscribers</p>
+                    </span>
                 )}
             </div>
         </>
@@ -84,14 +84,14 @@ function ProfileCounts({
 type ParamsProp = Promise<{ id: string }>;
 const VERIFIED_USERS = ["@paymefans", "@paymefans1", "@paymefans2"];
 
-const ProfilePage = async ({params}: { params: ParamsProp }) => {
-    const {id} = await params;
+const ProfilePage = async ({ params }: { params: ParamsProp }) => {
+    const { id } = await params;
     const user = await getUserData();
-    const userdata = (await getUserProfile({user_id: id})) as ProfileUserProps;
-    if (!userdata) return <UserNotFound userid={id}/>;
+    const userdata = (await getUserProfile({ user_id: id })) as ProfileUserProps;
+    if (!userdata) return <UserNotFound userid={id} />;
     if (user?.id === userdata.id) redirect("/profile");
     if (userdata.active_status === false)
-        return <SuspendedUserPage userdata={userdata}/>;
+        return <SuspendedUserPage userdata={userdata} />;
 
     const isVerified = VERIFIED_USERS.includes(userdata.username);
     const canTip = !VERIFIED_USERS.includes(userdata.username);
@@ -119,14 +119,14 @@ const ProfilePage = async ({params}: { params: ParamsProp }) => {
                     <div className="flex items-center gap-3 sm:p-3 ml-auto p-3">
                         {canTip && (
                             <button className="cursor-pointer">
-                                <PiCurrencyDollarSimple className="w-5 h-5 lg:w-6 lg:h-6 font-bold"/>
+                                <PiCurrencyDollarSimple className="w-5 h-5 lg:w-6 lg:h-6 font-bold" />
                             </button>
                         )}
-                        <FollowUserComponent thisuser={user} profileuser={userdata}/>
+                        <FollowUserComponent profileuser={userdata} />
                         {userdata.is_model && (
-                            <CreateSubscriptionButton userdata={userdata}/>
+                            <CreateSubscriptionButton userdata={userdata} />
                         )}
-                        <CreateConversationButton profileId={userdata.user_id}/>
+                        <CreateConversationButton profileId={userdata.user_id} />
                     </div>
                 </div>
                 {/* Info & bio */}
@@ -135,9 +135,9 @@ const ProfilePage = async ({params}: { params: ParamsProp }) => {
                     <div className="flex flex-col">
                         <h1 className="font-bold flex items-center gap-2">
                             {userdata?.name}
-                            {isVerified && <VerifiedBadge/>}
-                            {userdata.is_model && <VerifiedBadge type="model"/>}
-                            <ActiveProfileTag userid={userdata.username}/>
+                            {isVerified && <VerifiedBadge />}
+                            {userdata.is_model && <VerifiedBadge type="model" />}
+                            <ActiveProfileTag userid={userdata.username} />
                         </h1>
                         <small className="text-gray-500">{userdata?.username}</small>
                     </div>
@@ -168,31 +168,31 @@ const ProfilePage = async ({params}: { params: ParamsProp }) => {
                     {/* Details */}
                     <div
                         className="flex gap-3 flex-wrap text-sm items-center font-semibold text-gray-700 mb-2 dark:text-white">
-            <span className="flex gap-2 items-center">
-              <LucideMapPin className="text-primary-text-dark-pink" size={18}/>
-              <span>Lagos, {userdata.location}</span>
-            </span>
+                        <span className="flex gap-2 items-center">
+                            <LucideMapPin className="text-primary-text-dark-pink" size={18} />
+                            <span>Lagos, {userdata.location}</span>
+                        </span>
                         {userdata.is_model && (
                             <span className="flex items-center gap-2">
-                <LucideLock className="text-primary-text-dark-pink" size={18}/>
-                <span>Model</span>
-              </span>
+                                <LucideLock className="text-primary-text-dark-pink" size={18} />
+                                <span>Model</span>
+                            </span>
                         )}
                         <span className="flex items-center gap-2">
-              <LucideCalendar
-                  className="text-primary-text-dark-pink"
-                  size={18}
-              />
-              <span>
-                Joined{" "}
-                  {userdata.created_at
-                      ? new Date(userdata.created_at).toLocaleDateString("en-US", {
-                          month: "long",
-                          year: "numeric",
-                      })
-                      : ""}
-              </span>
-            </span>
+                            <LucideCalendar
+                                className="text-primary-text-dark-pink"
+                                size={18}
+                            />
+                            <span>
+                                Joined{" "}
+                                {userdata.created_at
+                                    ? new Date(userdata.created_at).toLocaleDateString("en-US", {
+                                        month: "long",
+                                        year: "numeric",
+                                    })
+                                    : ""}
+                            </span>
+                        </span>
                     </div>
                     {/* Counts */}
                     <ProfileCounts
@@ -203,7 +203,7 @@ const ProfilePage = async ({params}: { params: ParamsProp }) => {
                     />
                 </div>
             </div>
-            <ProfileTabsOther userdata={userdata}/>
+            <ProfileTabsOther userdata={userdata} />
         </>
     );
 };
