@@ -68,7 +68,7 @@ export function ProfileCounts({
         )}
       </div>
       {followerOpen && (
-        <ProfileStatsComponent userId={userId} toggleOpen={toggleOpen} type={"follower"} />
+        <ProfileStatsComponent userId={userId} toggleOpen={toggleOpen} type={"followers"} />
       )}
       {followingOpen && (
         <ProfileStatsComponent userId={userId} toggleOpen={toggleOpen} type={"following"} />

@@ -59,63 +59,61 @@ function PostMediaPreview({ submitPost, removeThisMedia }: PostMediaPreviewProps
       }
       const newMediaItems = files.map((file) => ({ file, id: uuid() }));
       setMedia((prev) => [...prev, ...newMediaItems]);
-
-      const uploadTasks = newMediaItems.map(async (mediaItem) => {
-        try {
-          const isVideo = mediaItem.file.type.startsWith("video/");
-          const maxVideoDuration = isVideo ? getMaxDurationBase64(mediaItem.file) : null;
-          const payload: any = {
-            type: isVideo ? "video" : "image",
-            fileName: btoa(`paymefans-${user?.username}-${Date.now()}`),
-            fileSize: mediaItem.file.size,
-            fileType: btoa(mediaItem.file.type),
-            explicitImageType: mediaItem.file.type,
-          };
-          if (isVideo) payload.maxDuration = maxVideoDuration;
-
-          const { data } = await axios.post<UploadResponseResponse>(
-            `${process.env.NEXT_PUBLIC_TS_EXPRESS_URL}/post/media/signed-url`,
-            payload,
-            {
-              headers: {
-                Authorization: `Bearer ${token}`,
-                "Content-Type": "application/json",
-              },
-            }
-          );
-          const { uploadUrl, type, id } = data;
-          if (!id || !uploadUrl) throw new Error("Failed to get upload URL");
-
-          if (type === "video") {
-            const uploadVideo = await tusUploader(mediaItem.file, uploadUrl, mediaItem.id);
-            submitPost({
-              blur: ``,
-              public: `${process.env.NEXT_PUBLIC_CLOUDFLARE_CUSTOMER_SUBDOMAIN}${uploadVideo}/manifest/video.m3u8`,
-              id: uploadVideo,
-              type: "video",
-              fileId: mediaItem.id,
-            });
-          } else if (type === "image") {
-            const uploadImage = await imageUploader(mediaItem.file, uploadUrl, mediaItem.id);
-            const variants = uploadImage.result.variants ?? [];
-            const publicVariant = variants.find((v: string) => v?.includes("/public")) ?? variants[0] ?? "";
-            const blurVariant = variants.find((v: string) => v?.includes("/blur")) ?? variants[0] ?? "";
-            submitPost({
-              blur: blurVariant,
-              public: publicVariant,
-              id: uploadImage.result.id,
-              type: "image",
-              fileId: mediaItem.id,
-            });
-          }
-        } catch (error) {
-          setUploadError((prev) => ({ ...prev, [mediaItem.id]: true }));
-          throw error;
-        }
-      });
-
       try {
-        await Promise.all(uploadTasks);
+
+        try {
+          for (const mediaItem of newMediaItems) {
+            const isVideo = mediaItem.file.type.startsWith("video/");
+            const maxVideoDuration = isVideo ? getMaxDurationBase64(mediaItem.file) : null;
+            const payload: any = {
+              type: isVideo ? "video" : "image",
+              fileName: btoa(`paymefans-${user?.username}-${Date.now()}`),
+              fileSize: mediaItem.file.size,
+              fileType: btoa(mediaItem.file.type),
+              explicitImageType: mediaItem.file.type,
+            };
+            if (isVideo) payload.maxDuration = maxVideoDuration;
+
+            const { data } = await axios.post<UploadResponseResponse>(
+              `${process.env.NEXT_PUBLIC_TS_EXPRESS_URL}/post/media/signed-url`,
+              payload,
+              {
+                headers: {
+                  Authorization: `Bearer ${token}`,
+                  "Content-Type": "application/json",
+                },
+              }
+            );
+            const { uploadUrl, type, id } = data;
+            if (!id || !uploadUrl) throw new Error("Failed to get upload URL");
+
+            if (type === "video") {
+              const uploadVideo = await tusUploader(mediaItem.file, uploadUrl, mediaItem.id);
+              submitPost({
+                blur: ``,
+                public: `${process.env.NEXT_PUBLIC_CLOUDFLARE_CUSTOMER_SUBDOMAIN}${uploadVideo}/manifest/video.m3u8`,
+                id: uploadVideo,
+                type: "video",
+                fileId: mediaItem.id,
+              });
+            } else if (type === "image") {
+              const uploadImage = await imageUploader(mediaItem.file, uploadUrl, mediaItem.id);
+              const variants = uploadImage.result.variants ?? [];
+              const publicVariant = variants.find((v: string) => v?.includes("/public")) ?? variants[0] ?? "";
+              const blurVariant = variants.find((v: string) => v?.includes("/blur")) ?? variants[0] ?? "";
+              submitPost({
+                blur: blurVariant,
+                public: publicVariant,
+                id: uploadImage.result.id,
+                type: "image",
+                fileId: mediaItem.id,
+              });
+            }
+          }
+        } catch (error: any) {
+          throw new Error(error.message);
+        }
+
       } catch {
         toast.error("Some uploads failed.");
       }
@@ -132,7 +130,7 @@ function PostMediaPreview({ submitPost, removeThisMedia }: PostMediaPreviewProps
               file={file.file}
               id={file.id}
               progress={progress[file.id] || 0}
-              removeThisMedia={handleMediaRemove} 
+              removeThisMedia={handleMediaRemove}
             />
           </div>
         ))}

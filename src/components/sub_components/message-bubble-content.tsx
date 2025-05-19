@@ -172,9 +172,8 @@ const MessageBubbleContent: React.FC<MessageBubbleContentProps> = ({
     <>
       {hasAttachments && attachment?.length && (
         <div
-          className={`grid overflow-hidden ${
-            attachment.length >= 4 ? "grid-cols-2" : "grid-cols-1"
-          }`}
+          className={`grid overflow-hidden ${attachment.length >= 4 ? "grid-cols-2" : "grid-cols-1"
+            }`}
         >
           {attachment.map((file: Attachment, idx: number) => (
             <div
@@ -188,28 +187,14 @@ const MessageBubbleContent: React.FC<MessageBubbleContentProps> = ({
             >
               {file.type.includes("image") ? (
                 <div className="relative">
-                  <div
-                    className="absolute inset-0 flex items-center justify-center dark:bg-slate-950 bg-gray-100 z-10 w-full h-full rounded-lg"
-                    style={{ minWidth: 0, minHeight: 0 }}
-                    id={`image-preloader-${file.name}`}
-                  >
-                    <LucideLoader
-                      className="animate-spin text-primary-dark-pink"
-                      size={20}
-                    />
-                  </div>
                   <Image
-                    priority
+                    unoptimized
                     width={300}
                     height={300}
                     onClick={() => handlePreview(file, idx)}
-                    quality={80}
                     src={file.url}
                     alt="Uploaded content"
                     className="w-full object-cover rounded-lg aspect-square group-hover:brightness-90 transition"
-                    onLoad={() =>
-                      removePreloader(`image-preloader-${file.name}`)
-                    }
                   />
                   <span className="absolute bottom-2 right-2 bg-white/30 text-xs text-gray-700 px-2 py-1 rounded shadow group-hover:bg-primary-dark-pink group-hover:text-white transition">
                     <LucideImage className="text-white" size={16} />
@@ -253,9 +238,8 @@ const MessageBubbleContent: React.FC<MessageBubbleContentProps> = ({
       )}
       {hasRawFiles && (
         <div
-          className={`grid overflow-hidden ${
-            rawFiles.length >= 4 ? "grid-cols-2" : "grid-cols-1"
-          }`}
+          className={`grid overflow-hidden ${rawFiles.length >= 4 ? "grid-cols-2" : "grid-cols-1"
+            }`}
         >
           {rawFiles.map((file: MediaFile, idx: number) => (
             <div
@@ -317,16 +301,14 @@ const MessageBubbleContent: React.FC<MessageBubbleContentProps> = ({
       )}
       {hasMessage && (
         <div
-          className={`p-4 rounded-3xl font-medium ${
-            isSender
-              ? "bg-gray-100 dark:bg-gray-700 dark:text-white rounded-br-none"
-              : "bg-primary-dark-pink text-white rounded-bl-none"
-          }`}
+          className={`p-4 rounded-3xl font-medium ${isSender
+            ? "bg-gray-100 dark:bg-gray-700 dark:text-white rounded-br-none"
+            : "bg-primary-dark-pink text-white rounded-bl-none"
+            }`}
         >
           <div
-            className={`leading-relaxed w-full text-wrap ${
-              isSender ? "sender-link-style" : "receiver-link-style"
-            }`}
+            className={`leading-relaxed w-full text-wrap ${isSender ? "sender-link-style" : "receiver-link-style"
+              }`}
             dangerouslySetInnerHTML={{
               __html: message as TrustedHTML,
             }}

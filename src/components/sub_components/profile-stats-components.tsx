@@ -1,4 +1,5 @@
 "use client";
+import { getToken } from "@/utils/cookie.get";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { debounce } from "lodash";
 import { LucideLoader2, XIcon } from "lucide-react";
@@ -11,13 +12,14 @@ const fetchStats = async (
   type: string,
   query: string
 ) => {
+  const token = getToken()
   const fetchStats = await fetch(
-    `${process.env.NEXT_PUBLIC_TS_EXPRESS_URL}/profile/stats/${userId}/${type}?cursor=${page}&limit=${25}&query=${query}`,
+    `${process.env.NEXT_PUBLIC_TS_EXPRESS_URL}/profile/stats/${userId}/${type}?cursor=${2}&limit=${25}&query=${query}`,
     {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+        Authorization: `Bearer ${token}`,
       },
     })
 
@@ -31,7 +33,7 @@ const fetchStats = async (
 interface ProfileStatsProps {
   userId: string | undefined;
   toggleOpen: (type: string) => void;
-  type: "follower" | "following" | "subscriber";
+  type: "followers" | "following" | "subscriber";
 }
 
 const Profile = ({ user, type, toggleOpen, isFollowing }: {
@@ -41,7 +43,7 @@ const Profile = ({ user, type, toggleOpen, isFollowing }: {
     username: string;
     avatar: string;
   };
-  type: "follower" | "following" | "subscriber";
+  type: "followers" | "following" | "subscriber";
   toggleOpen: (type: string) => void;
   isFollowing: boolean;
 }) => {
@@ -69,7 +71,7 @@ const Profile = ({ user, type, toggleOpen, isFollowing }: {
           </span>
         </Link>
       </div>
-      {(type === "follower" || type === "following") && (
+      {(type === "followers" || type === "following") && (
         <>
           {
             isFollowing ? (
@@ -96,7 +98,7 @@ export const ProfileStatsComponent = ({
   const observerRef = useRef<HTMLDivElement>(null);
 
   const title = useMemo(() => {
-    if (type === "follower") return "Followers";
+    if (type === "followers") return "Followers";
     if (type === "following") return "Following";
     return "Subscribers";
   }, [type]);
