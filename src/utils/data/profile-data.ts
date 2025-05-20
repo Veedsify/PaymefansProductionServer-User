@@ -1,14 +1,12 @@
-import { AuthUserProps, ProfileUserProps } from "@/types/user";
-import { redirect } from "next/navigation";
-import { cookies } from "next/headers";
+import { ProfileUserProps } from "@/types/user";
+import { getToken } from "../cookie.get";
 
 type getUserProfileProps = {
     user_id: string;
 };
 
 const getUserProfile = async ({ user_id }: getUserProfileProps) => {
-    const token = (await cookies()).get("token");
-    if (token?.value == '' || token?.value == null) redirect("/login");
+    const token = getToken()
     const res = await fetch(
         `${process.env.NEXT_PUBLIC_TS_EXPRESS_URL}/profile/user`,
         {
@@ -18,19 +16,19 @@ const getUserProfile = async ({ user_id }: getUserProfileProps) => {
             }),
             headers: {
                 "Content-Type": "application/json",
-                Authorization: `Bearer ${token.value}`,
+                Authorization: `Bearer ${token}`,
             },
         }
     );
-    if (res.ok && res.status === 200) {
-        const user = await res.json();
-        if (user.status === true) {
-            return user.user as ProfileUserProps;
-        }
-        return null;
-    } else {
-        return null;
+    if (!res.ok) {
+        throw new Error("Failed to fetch user profile");
     }
-};
+    const data = await res.json();
+    if (data.status) {
+        return data.user as ProfileUserProps;
+    }
+    return null;
+}
+
 
 export default getUserProfile;

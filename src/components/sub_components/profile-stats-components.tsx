@@ -4,6 +4,7 @@ import followUser from "@/utils/data/update/follow";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { debounce } from "lodash";
 import { LucideLoader2, XIcon } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 import { ChangeEvent, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import toast from "react-hot-toast";
@@ -99,7 +100,10 @@ const Profile = ({ user, type, toggleOpen, isFollowing }: {
       className="flex items-center gap-4 p-3 rounded-md hover:bg-gray-100 transition"
     >
       <Link href={`/${user.username}`}>
-        <img
+        <Image
+          width={50}
+          height={50}
+          priority
           src={user.profile_image}
           alt="Follower Avatar"
           className="w-12 h-12 rounded-full border border-gray-200 object-cover"
@@ -158,10 +162,7 @@ export const ProfileStatsComponent = ({
     [data]
   );
 
-  const total = useMemo(
-    () => data?.pages.reduce((acc, page) => page.total, 0) || 0,
-    [data]
-  );
+  const total = data?.pages.reduce((acc, page) => acc + (page.total || 0), 0) || 0;
 
   const debouncedSearch = useMemo(
     () => debounce((value) => setQuery(value), 400),
