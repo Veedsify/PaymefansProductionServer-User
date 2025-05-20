@@ -375,7 +375,7 @@ interface PaginateProps {
 
 export interface Followers {
   user: {
-    id: string;
+    id: number;
     username: string;
     fullname: string;
     profile_image: string;
@@ -445,7 +445,7 @@ interface PreviewTypes {
 interface UserFollowCompProps {
   follower: {
     user: {
-      id: string;
+      id: number;
       username: string;
       fullname: string;
       profile_image: string;

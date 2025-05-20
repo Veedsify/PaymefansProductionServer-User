@@ -1,11 +1,32 @@
 import { UserFollowCompProps } from "@/types/components";
+import followUser from "@/utils/data/update/follow";
 import Image from "next/image";
 import Link from "next/link";
+import { use, useEffect, useState } from "react";
 import { HiOutlineDotsVertical } from "react-icons/hi";
 
 
 
 const UserFollowComp: React.FC<UserFollowCompProps> = ({ follower }) => {
+    const [isFollowing, setIsFollowing] = useState(follower.iAmFollowing);
+
+    useEffect(() => {
+        setIsFollowing(follower.iAmFollowing);
+    }, [follower.iAmFollowing]);
+
+    const handleFollow = async () => {
+        setIsFollowing(!isFollowing);
+        try {
+            const action = isFollowing ? "unfollow" : "follow";
+            await followUser(follower.user.id, action);
+        } catch (error: any) {
+            console.error("Error following/unfollowing user:", error);
+            setIsFollowing(!isFollowing);
+        }
+
+    }
+
+
     return (
         <div className="flex flex-wrap gap-2 items-center p-1 md:px-3 py-3 hover:bg-gray-50 duration-300 ease-in-out rounded-md">
             <Link href={`/${follower.user.username}`}>
@@ -26,10 +47,13 @@ const UserFollowComp: React.FC<UserFollowCompProps> = ({ follower }) => {
                     </span> */}
                 </span>
             </div>
-            <div className="flex gap-1 md:gap-4 items-center ml-auto">
-                <Link href={`/${follower.user.username}`} className={`px-5 py-1 rounded-2xl text-sm ${follower.iAmFollowing ? "bg-gray-100" : "bg-primary-dark-pink text-white"}  font-semibold`}>
-                    {follower.iAmFollowing ? "Following" : "Follow"}
-                </Link>
+            <div
+                onClick={handleFollow}
+                className="flex gap-1 md:gap-4 items-center ml-auto">
+                <button className={`px-5 py-1 rounded-2xl text-sm 
+                    ${isFollowing ? "bg-gray-100 outline outline-black" : "bg-black text-white"}  font-semibold`}>
+                    {isFollowing ? "Following" : "Follow"}
+                </button>
                 <span>
                     <HiOutlineDotsVertical className="cursor-pointer" />
                 </span>

@@ -296,6 +296,7 @@ const MessageInput = ({
               ref={ref as RefObject<HTMLDivElement>}
               contentEditable
               id="message-input"
+              data-placeholder="Type your message..."
               onKeyDown={handleKeyDown}
               className="bg-transparent outline-none w-full p-2 rounded-xl border-black/20 dark:border-gray-600 font-semibold resize-none dark:text-white overflow-auto max-h-24"
             />

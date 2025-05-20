@@ -1,6 +1,8 @@
 "use client";
 import { AuthUserProps, ProfileUserProps } from "@/types/user";
+import followUser from "@/utils/data/update/follow";
 import React, { useEffect } from "react";
+import toast from "react-hot-toast";
 
 type FollowUserProps = {
   profileuser: ProfileUserProps;
@@ -15,10 +17,17 @@ const FollowUserComponent: React.FC<FollowUserProps> = ({ profileuser }) => {
     setFollowsYou(profileuser.followsYou);
   }, [profileuser.isFollowing, profileuser.followsYou]);
 
-  const followProfile = () => {
-    // TODO: Call your follow/unfollow API
-    // Toggle state for demo purposes
-    setIsFollowing((prev) => !prev);
+  const followProfile = async () => {
+    setIsFollowing((prev) => !prev); // Optimistic UI update
+    const action = isFollowing ? "unfollow" : "follow";
+    try {
+      const userId = profileuser.id;
+      await followUser(userId, action);
+    } catch (error) {
+      console.error("Error following/unfollowing user:", error);
+      toast.error(`Failed to ${action} user`);
+      setIsFollowing((prev) => !prev); // Revert state on error
+    }
   };
 
   let buttonLabel = "Follow";

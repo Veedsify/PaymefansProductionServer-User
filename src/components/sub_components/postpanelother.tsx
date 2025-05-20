@@ -16,12 +16,11 @@ import axios from "axios";
 import { getToken } from "@/utils/cookie.get";
 
 const PostPanelOther = ({ userdata }: { userdata: ProfileUserProps }) => {
-  const { user } = useUserAuthContext();
   const postPerPage = Number(process.env.NEXT_PUBLIC_POST_PER_PAGE);
 
   const fetchPosts = async ({ pageParam = 1 }) => {
     const token = getToken();
-    const api = `${process.env.NEXT_PUBLIC_TS_EXPRESS_URL}/post/user/${userdata.id}`;
+    const api = `${process.env.NEXT_PUBLIC_TS_EXPRESS_URL}/post/user/${userdata?.id}`;
     const response = await axios.get(api, {
       params: {
         page: pageParam,
@@ -32,14 +31,13 @@ const PostPanelOther = ({ userdata }: { userdata: ProfileUserProps }) => {
         Authorization: `Bearer ${token}`,
       },
     });
-    console.log(response.data);
     return response.data;
   };
 
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } =
     useInfiniteQuery({
-      queryKey: ["posts-other", userdata.id],
-      queryFn: fetchPosts,
+      queryKey: ["posts-other", userdata?.id],
+      queryFn: async ({ pageParam }) => await fetchPosts({ pageParam }),
       getNextPageParam: (lastPage, allPages) => {
         if (lastPage.hasMore) {
           return allPages.length + 1;

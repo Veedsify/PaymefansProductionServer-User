@@ -1,10 +1,12 @@
 "use client";
 import { getToken } from "@/utils/cookie.get";
+import followUser from "@/utils/data/update/follow";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { debounce } from "lodash";
 import { LucideLoader2, XIcon } from "lucide-react";
 import Link from "next/link";
 import { ChangeEvent, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import toast from "react-hot-toast";
 
 const fetchStats = async (
   userId: string | undefined,
@@ -38,10 +40,10 @@ interface ProfileStatsProps {
 
 const FollowAndUnfollowButton = ({
   isFollowing,
-  onClick,
+  userId,
 }: {
   isFollowing: boolean;
-  onClick: () => void;
+  userId: number;
 }) => {
   const [isFollowingState, setIsFollowingState] = useState(isFollowing);
 
@@ -49,9 +51,17 @@ const FollowAndUnfollowButton = ({
     setIsFollowingState(isFollowing);
   }, [isFollowing]);
 
-  const handleClick = () => {
+  const handleClick = async () => {
     setIsFollowingState(!isFollowingState);
-    onClick();
+    const action = isFollowingState ? "unfollow" : "follow";
+    try {
+      await followUser(userId, action);
+    } catch (error) {
+      console.error("Error following/unfollowing user:", error);
+      toast.error(`Failed to ${action} user`);
+      setIsFollowingState(isFollowingState); // Revert to previous state on error
+    }
+
   };
 
   return (
@@ -59,7 +69,7 @@ const FollowAndUnfollowButton = ({
       onClick={handleClick}
       className={`px-4 py-1 rounded-full text-sm font-medium transition ${isFollowingState
         ? "bg-gray-500 text-white hover:bg-pink-700"
-        : "bg-primary-dark-pink text-white hover:bg-pink-700"
+        : "bg-black text-white hover:bg-pink-700"
         }`}
     >
       {isFollowingState ? "Unfollow" : "Follow"}
@@ -82,26 +92,6 @@ const Profile = ({ user, type, toggleOpen, isFollowing }: {
   isFollowing: boolean;
 }) => {
 
-
-  const handleFollowThisUser = async () => {
-    const token = getToken()
-    const response = await fetch(
-      `${process.env.NEXT_PUBLIC_TS_EXPRESS_URL}/profile/follow/${user?.id}`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
-
-    if (!response.ok) {
-      throw new Error("Network response was not ok");
-    }
-    const data = await response.json();
-    return data;
-  };
 
   return (
     <div
@@ -130,8 +120,8 @@ const Profile = ({ user, type, toggleOpen, isFollowing }: {
       {(type === "followers" || type === "following") && (
         <>
           <FollowAndUnfollowButton
+            userId={user.id}
             isFollowing={isFollowing}
-            onClick={handleFollowThisUser}
           />
         </>
       )}

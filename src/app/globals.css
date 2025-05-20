@@ -517,3 +517,14 @@ img {
     left: 100%;
   }
 }
+
+#message-input {
+  white-space: pre-wrap;
+  position: relative;
+}
+
+#message-input:empty:before {
+  content: attr(data-placeholder);
+  color: #888;
+  pointer-events: none;
+}
