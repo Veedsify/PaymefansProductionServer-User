@@ -48,15 +48,14 @@ const UserFollowComp: React.FC<UserFollowCompProps> = ({ follower }) => {
                 </span>
             </div>
             <div
-                onClick={handleFollow}
                 className="flex gap-1 md:gap-4 items-center ml-auto">
-                <button className={`px-5 py-1 rounded-2xl text-sm 
-                    ${isFollowing ? "bg-gray-100 outline outline-black" : "bg-black text-white"}  font-semibold`}>
+                <button onClick={handleFollow} className={`px-5 py-1 rounded-full text-sm 
+                    ${isFollowing ? "bg-gray-100 outline-1 outline-black" : "bg-black text-white"}  font-semibold`}>
                     {isFollowing ? "Following" : "Follow"}
                 </button>
-                <span>
+                {/* <span>
                     <HiOutlineDotsVertical className="cursor-pointer" />
-                </span>
+                </span> */}
             </div>
         </div>
     );

@@ -8,6 +8,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { ChangeEvent, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import toast from "react-hot-toast";
+import { motion } from "framer-motion";
 
 const fetchStats = async (
   userId: string | undefined,
@@ -208,7 +209,11 @@ export const ProfileStatsComponent = ({
   }, [fetchNextPage, hasNextPage, isFetchingNextPage]);
 
   return (
-    <div
+    <motion.div
+      initial={{ opacity: 0, scale: 1 }}
+      whileInView={{ opacity: 1, scale: 1 }}
+      exit={{ opacity: 0, scale: 0.95 }}
+      transition={{ duration: 0.2 }}
       className="fixed inset-0 bg-black/30 flex justify-center items-center z-[200]"
       onClick={() => toggleOpen(type)}
     >
@@ -247,7 +252,7 @@ export const ProfileStatsComponent = ({
               user={user}
               type={type}
               toggleOpen={toggleOpen}
-              isFollowing={Boolean(user.id % 3)} // Replace with actual following status
+              isFollowing={user.is_following} // Replace with actual following status
             />
           ))}
           {isLoading && (
@@ -262,6 +267,6 @@ export const ProfileStatsComponent = ({
           )}
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 };

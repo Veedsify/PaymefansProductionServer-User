@@ -1,6 +1,6 @@
 import { Call } from "@stream-io/video-react-sdk";
 import React, { ChangeEvent, ReactNode, SetStateAction } from "react";
-import { ProfileUserProps } from "./user";
+import { AuthUserProps, ProfileUserProps } from "./user";
 import { LastMessage } from "./conversations";
 
 // POST COMPONENT PROPS
@@ -58,7 +58,7 @@ export interface PostData {
 }
 
 export interface BannerModalProps {
-  user: any;
+  user: AuthUserProps;
   open: boolean;
   setOpen: React.Dispatch<SetStateAction<boolean>>;
 }

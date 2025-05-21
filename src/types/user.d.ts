@@ -54,6 +54,13 @@ export type AuthUserProps = {
     enable_free_message: boolean;
     two_factor_auth: boolean;
     subscription_price: number;
+    facebook_url: string | null;
+    instagram_url: string | null;
+    twitter_url: string | null;
+    tiktok_url: string | null;
+    youtube_url: string | null;
+    snapchat_url: string | null;
+    telegram_url: string | null;
   };
   following: number;
   Model?: {
@@ -117,6 +124,10 @@ export type UserUpdateProfileType = {
   instagram?: string;
   twitter?: string;
   facebook?: string;
+  tiktok?: string;
+  youtube?: string;
+  snapchat?: string;
+  telegram?: string;
 };
 
 export type ProfileUserProps = {
