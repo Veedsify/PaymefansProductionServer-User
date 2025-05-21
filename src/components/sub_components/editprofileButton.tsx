@@ -229,7 +229,7 @@ function BannerModal({ user, open = false, setOpen }: BannerModalProps) {
                 type="text"
                 onChange={handleInputChange}
                 name="instagram"
-                defaultValue={String(user?.Settings?.instagram_url)}
+                defaultValue={String(user?.Settings?.instagram_url || "")}
                 className="col-span-10 p-3 text-black dark:text-white bg-transparent border-none outline-none placeholder:text-gray-400 dark:placeholder:text-gray-500 text-sm transition"
                 placeholder="https://instagram.com/@paymefans"
               />
@@ -244,7 +244,7 @@ function BannerModal({ user, open = false, setOpen }: BannerModalProps) {
                 type="text"
                 onChange={handleInputChange}
                 name="twitter"
-                defaultValue={String(user?.Settings?.twitter_url)}
+                defaultValue={String(user?.Settings?.twitter_url || "")}
                 className="col-span-10 p-3 text-black dark:text-white bg-transparent border-none outline-none placeholder:text-gray-400 dark:placeholder:text-gray-500 text-sm transition"
                 placeholder="https://twitter.com/@paymefans"
               />
@@ -259,7 +259,7 @@ function BannerModal({ user, open = false, setOpen }: BannerModalProps) {
                 type="text"
                 onChange={handleInputChange}
                 name="facebook"
-                defaultValue={String(user?.Settings?.facebook_url)}
+                defaultValue={String(user?.Settings?.facebook_url || "")}
                 className="col-span-10 p-3 text-black dark:text-white bg-transparent border-none outline-none placeholder:text-gray-400 dark:placeholder:text-gray-500 text-sm transition"
                 placeholder="https://facebook.com/@paymefans"
               />
@@ -274,7 +274,7 @@ function BannerModal({ user, open = false, setOpen }: BannerModalProps) {
                 type="text"
                 onChange={handleInputChange}
                 name="snapchat"
-                defaultValue={String(user?.Settings?.snapchat_url)}
+                defaultValue={String(user?.Settings?.snapchat_url || "")}
                 className="col-span-10 p-3 text-black dark:text-white bg-transparent border-none outline-none placeholder:text-gray-400 dark:placeholder:text-gray-500 text-sm transition"
                 placeholder="https://snapchat.com/@paymefans"
               />
@@ -291,7 +291,7 @@ function BannerModal({ user, open = false, setOpen }: BannerModalProps) {
                 type="text"
                 onChange={handleInputChange}
                 name="tiktok"
-                defaultValue={String(user?.Settings?.tiktok_url)}
+                defaultValue={String(user?.Settings?.tiktok_url || "")}
                 className="col-span-10 p-3 text-black dark:text-white bg-transparent border-none outline-none placeholder:text-gray-400 dark:placeholder:text-gray-500 text-sm transition"
                 placeholder="https://tiktok.com/@paymefans"
               />
@@ -308,7 +308,7 @@ function BannerModal({ user, open = false, setOpen }: BannerModalProps) {
                 type="text"
                 onChange={handleInputChange}
                 name="telegram"
-                defaultValue={String(user?.Settings?.telegram_url)}
+                defaultValue={String(user?.Settings?.telegram_url || "")}
                 className="col-span-10 p-3 text-black dark:text-white bg-transparent border-none outline-none placeholder:text-gray-400 dark:placeholder:text-gray-500 text-sm transition"
                 placeholder="https://t.me/paymefans"
               />
@@ -325,7 +325,7 @@ function BannerModal({ user, open = false, setOpen }: BannerModalProps) {
                 type="text"
                 onChange={handleInputChange}
                 name="youtube"
-                defaultValue={String(user?.Settings?.youtube_url)}
+                defaultValue={String(user?.Settings?.youtube_url || "")}
                 className="col-span-10 p-3 text-black dark:text-white bg-transparent border-none outline-none placeholder:text-gray-400 dark:placeholder:text-gray-500 text-sm transition"
                 placeholder="https://youtube.com/@paymefans"
               />

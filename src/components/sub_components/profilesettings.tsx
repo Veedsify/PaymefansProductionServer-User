@@ -5,11 +5,9 @@ import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import { saveUserSettings } from "@/utils/data/save-user-settings";
-import axios from "axios";
-import { getToken } from "@/utils/cookie.get";
-import useCheckUsername from "../custom-hooks/check-username";
 import { countries } from "@/lib/locations";
 import { PiSnapchatLogoDuotone } from "react-icons/pi";
+import useCheckUsername from "../custom-hooks/check-username";
 
 type ProfileSettingsProps = {
   user: any;
@@ -17,41 +15,55 @@ type ProfileSettingsProps = {
 
 const ProfileSettings = ({ user }: ProfileSettingsProps) => {
   const router = useRouter();
-  const [userData, setUserData] = useState<UserUpdateProfileType>(
-    {} as UserUpdateProfileType
-  );
-  const [usernameCheck, setUsernameCheck] = useState(user.username);
+  const [userData, setUserData] = useState<UserUpdateProfileType>({
+    name: user?.name || "",
+    username: user?.username || "",
+    email: user?.email || "",
+    location: user?.location || "",
+    bio: user?.bio || "",
+    website: user?.website || "",
+    instagram: user?.Settings?.instagram_url || "",
+    twitter: user?.Settings?.twitter_url || "",
+    facebook: user?.Settings?.facebook_url || "",
+    snapchat: user?.Settings?.snapchat_url || "",
+    tiktok: user?.Settings?.tiktok_url || "",
+    telegram: user?.Settings?.telegram_url || "",
+    youtube: user?.Settings?.youtube_url || "",
+  });
+  const [usernameCheck, setUsernameCheck] = useState(user?.username || "");
+  const { message, canSave, error } = useCheckUsername(user, usernameCheck);
+
   const handleInputChange = (
     e: React.ChangeEvent<
       HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
     >
   ) => {
-    setUserData({ ...userData, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    setUserData((prev) => ({ ...prev, [name]: value }));
+    if (name === "username") {
+      setUsernameCheck(value);
+    }
   };
-
-  const { message, canSave } = useCheckUsername(user, usernameCheck);
 
   const handleSaveClick = async () => {
     try {
-      const email = userData.email || user.email;
-      if (!email) {
+      if (!userData.email) {
         return toast.error("Email is required");
       }
       const regex = /^[a-zA-Z0-9._:$!%-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-      if (!regex.test(email)) {
+      if (!regex.test(userData.email)) {
         return toast.error("Invalid email address");
       }
-      userData.email = email;
       const response = await saveUserSettings(userData);
       if (response.ok) {
         toast.success("Profile updated successfully");
         router.refresh();
       } else {
-        console.log(response);
-        return toast.error("Failed to update profile");
+        toast.error("Failed to update profile");
       }
     } catch (error) {
-      console.error(error);
+      console.error("Error saving profile:", error);
+      toast.error("An error occurred while updating profile");
     }
   };
 
@@ -77,7 +89,7 @@ const ProfileSettings = ({ user }: ProfileSettingsProps) => {
             type="text"
             name="name"
             className="w-full border border-gray-300 dark:border-gray-700 p-3 outline-none text-black dark:text-white bg-white dark:bg-gray-800 rounded-lg focus:ring-2 focus:ring-primary-dark-pink transition"
-            defaultValue={user?.name}
+            value={userData.name}
             onChange={handleInputChange}
             placeholder="Name"
           />
@@ -93,7 +105,7 @@ const ProfileSettings = ({ user }: ProfileSettingsProps) => {
             id="location"
             name="location"
             className="w-full border border-gray-300 dark:border-gray-700 p-3 outline-none text-black dark:text-white bg-white dark:bg-gray-800 rounded-lg focus:ring-2 focus:ring-primary-dark-pink transition"
-            defaultValue={user?.location}
+            value={userData.location}
             onChange={handleInputChange}
           >
             <option value="">Select country</option>
@@ -115,18 +127,12 @@ const ProfileSettings = ({ user }: ProfileSettingsProps) => {
             id="username"
             type="text"
             name="username"
-            className={`w-full border p-3 outline-none text-black dark:text-white bg-white dark:bg-gray-800 rounded-lg transition ${message
-              ? "border-red-400 dark:border-red-400"
-              : "border-gray-300 dark:border-gray-700"
-              } focus:ring-2 focus:ring-primary-dark-pink`}
-            onChange={(e) => {
-              setUsernameCheck(e.target.value);
-              handleInputChange(e);
-            }}
-            defaultValue={user?.username}
+            className={`w-full border border-gray-300 dark:border-gray-700 p-3 outline-none text-black dark:text-white bg-white dark:bg-gray-800 rounded-lg focus:ring-2 focus:ring-primary-dark-pink transition`}
+            value={userData.username}
+            onChange={handleInputChange}
             placeholder="Username"
           />
-          {message && (
+          {error && (
             <p className="text-red-500 dark:text-red-400 text-sm mt-1 font-medium">
               {message}
             </p>
@@ -145,7 +151,7 @@ const ProfileSettings = ({ user }: ProfileSettingsProps) => {
             name="email"
             disabled
             readOnly
-            defaultValue={user?.email}
+            value={userData.email}
             className="w-full select-none border border-gray-300 dark:border-gray-700 p-3 outline-none text-black dark:text-white rounded-lg bg-gray-100 dark:bg-gray-800"
             placeholder="Email"
           />
@@ -164,7 +170,7 @@ const ProfileSettings = ({ user }: ProfileSettingsProps) => {
             className="resize-none w-full outline-none border border-gray-300 dark:border-gray-700 p-3 text-black dark:text-white bg-white dark:bg-gray-800 rounded-lg focus:ring-2 focus:ring-primary-dark-pink transition"
             placeholder="Tell us about yourself"
             onChange={handleInputChange}
-            defaultValue={user?.bio || ""}
+            value={userData.bio || ""}
           ></textarea>
         </div>
         <div>
@@ -181,7 +187,7 @@ const ProfileSettings = ({ user }: ProfileSettingsProps) => {
             placeholder="Website"
             name="website"
             onChange={handleInputChange}
-            defaultValue={user?.website || ""}
+            value={userData.website || ""}
           />
         </div>
         <div className="space-y-3">
@@ -194,7 +200,7 @@ const ProfileSettings = ({ user }: ProfileSettingsProps) => {
               type="text"
               onChange={handleInputChange}
               name="instagram"
-              defaultValue={String(user?.Settings?.instagram_url)}
+              value={userData.instagram}
               className="col-span-10 p-3 text-black dark:text-white bg-transparent border-none outline-none placeholder:text-gray-400 dark:placeholder:text-gray-500 text-sm transition"
               placeholder="https://instagram.com/@paymefans"
             />
@@ -209,7 +215,7 @@ const ProfileSettings = ({ user }: ProfileSettingsProps) => {
               type="text"
               onChange={handleInputChange}
               name="twitter"
-              defaultValue={String(user?.Settings?.twitter_url)}
+              value={userData.twitter}
               className="col-span-10 p-3 text-black dark:text-white bg-transparent border-none outline-none placeholder:text-gray-400 dark:placeholder:text-gray-500 text-sm transition"
               placeholder="https://twitter.com/@paymefans"
             />
@@ -224,7 +230,7 @@ const ProfileSettings = ({ user }: ProfileSettingsProps) => {
               type="text"
               onChange={handleInputChange}
               name="facebook"
-              defaultValue={String(user?.Settings?.facebook_url)}
+              value={userData.facebook}
               className="col-span-10 p-3 text-black dark:text-white bg-transparent border-none outline-none placeholder:text-gray-400 dark:placeholder:text-gray-500 text-sm transition"
               placeholder="https://facebook.com/@paymefans"
             />
@@ -239,7 +245,7 @@ const ProfileSettings = ({ user }: ProfileSettingsProps) => {
               type="text"
               onChange={handleInputChange}
               name="snapchat"
-              defaultValue={String(user?.Settings?.snapchat_url)}
+              value={userData.snapchat}
               className="col-span-10 p-3 text-black dark:text-white bg-transparent border-none outline-none placeholder:text-gray-400 dark:placeholder:text-gray-500 text-sm transition"
               placeholder="https://snapchat.com/@paymefans"
             />
@@ -256,7 +262,7 @@ const ProfileSettings = ({ user }: ProfileSettingsProps) => {
               type="text"
               onChange={handleInputChange}
               name="tiktok"
-              defaultValue={String(user?.Settings?.tiktok_url)}
+              value={userData.tiktok}
               className="col-span-10 p-3 text-black dark:text-white bg-transparent border-none outline-none placeholder:text-gray-400 dark:placeholder:text-gray-500 text-sm transition"
               placeholder="https://tiktok.com/@paymefans"
             />
@@ -273,7 +279,7 @@ const ProfileSettings = ({ user }: ProfileSettingsProps) => {
               type="text"
               onChange={handleInputChange}
               name="telegram"
-              defaultValue={String(user?.Settings?.telegram_url)}
+              value={userData.telegram}
               className="col-span-10 p-3 text-black dark:text-white bg-transparent border-none outline-none placeholder:text-gray-400 dark:placeholder:text-gray-500 text-sm transition"
               placeholder="https://t.me/paymefans"
             />
@@ -290,7 +296,7 @@ const ProfileSettings = ({ user }: ProfileSettingsProps) => {
               type="text"
               onChange={handleInputChange}
               name="youtube"
-              defaultValue={String(user?.Settings?.youtube_url)}
+              value={userData.youtube}
               className="col-span-10 p-3 text-black dark:text-white bg-transparent border-none outline-none placeholder:text-gray-400 dark:placeholder:text-gray-500 text-sm transition"
               placeholder="https://youtube.com/@paymefans"
             />
