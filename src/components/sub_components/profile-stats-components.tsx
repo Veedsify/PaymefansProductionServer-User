@@ -98,7 +98,7 @@ const Profile = ({ user, type, toggleOpen, isFollowing }: {
   return (
     <div
       key={user.id}
-      className="flex items-center gap-4 p-3 rounded-md hover:bg-gray-100 transition"
+      className="flex items-center gap-4 p-3 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800 transition"
     >
       <Link href={`/${user.username}`}>
         <Image
@@ -107,17 +107,17 @@ const Profile = ({ user, type, toggleOpen, isFollowing }: {
           priority
           src={user.profile_image}
           alt="Follower Avatar"
-          className="w-12 h-12 rounded-full border border-gray-200 object-cover"
+          className="w-12 h-12 rounded-full border border-gray-200 dark:border-gray-700 object-cover"
         />
       </Link>
       <div className="flex-1">
         <Link href={`/${user.username}`}>
-          <span className="block font-semibold text-gray-900">
+          <span className="block font-semibold text-gray-900 dark:text-white">
             {user.name}
           </span>
         </Link>
         <Link href={`/${user.username}`}>
-          <span className="block text-sm text-gray-500">
+          <span className="block text-sm text-gray-500 dark:text-gray-400">
             {user.username}
           </span>
         </Link>
@@ -214,18 +214,18 @@ export const ProfileStatsComponent = ({
       whileInView={{ opacity: 1, scale: 1 }}
       exit={{ opacity: 0, scale: 0.95 }}
       transition={{ duration: 0.2 }}
-      className="fixed inset-0 bg-black/30 flex justify-center items-center z-[200]"
+      className="fixed inset-0 bg-black/30 dark:bg-black/60 flex justify-center items-center z-[200]"
       onClick={() => toggleOpen(type)}
     >
       <div
-        className="bg-white w-full max-w-xl lg:rounded-lg shadow-lg p-4 h-dvh lg:max-h-[80vh] overflow-y-auto"
+        className="bg-white dark:bg-gray-900 w-full max-w-xl lg:rounded-lg shadow-lg p-4 h-dvh lg:max-h-[80vh] overflow-y-auto"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="flex justify-between items-center border-b border-black/20 pb-2">
-          <h1 className="font-bold text-lg">{title} {total}</h1>
+        <div className="flex justify-between items-center border-b border-black/20 dark:border-white/20 pb-2">
+          <h1 className="font-bold text-lg dark:text-white">{title} {total}</h1>
           <button
             onClick={() => toggleOpen(type)}
-            className="text-gray-500 hover:text-gray-700"
+            className="text-gray-500 hover:text-gray-700 dark:text-gray-300 dark:hover:text-white"
           >
             <XIcon size={24} />
           </button>
@@ -235,13 +235,11 @@ export const ProfileStatsComponent = ({
             type="text"
             onChange={handleInputChange}
             placeholder="Search followers"
-            className="w-full px-4 py-2.5 border border-gray-200 rounded-lg text-sm 
-            focus:outline-none focus:ring-2 focus:ring-primary-dark-pink/50 focus:border-primary-dark-pink
-            placeholder:text-gray-400 transition-all duration-200"
+            className="w-full px-4 py-2.5 border border-gray-200 dark:border-gray-700 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-dark-pink/50 focus:border-primary-dark-pink placeholder:text-gray-400 dark:placeholder:text-gray-500 transition-all duration-200 bg-white dark:bg-gray-800 dark:text-white"
           />
         </div>
         {stats.length === 0 && (!isLoading) && (
-          <div className="text-center text-gray-500 py-10">
+          <div className="text-center text-gray-500 dark:text-gray-400 py-10">
             No {title.toLowerCase()} found.
           </div>
         )}
@@ -252,7 +250,7 @@ export const ProfileStatsComponent = ({
               user={user}
               type={type}
               toggleOpen={toggleOpen}
-              isFollowing={user.is_following} // Replace with actual following status
+              isFollowing={user.is_following}
             />
           ))}
           {isLoading && (

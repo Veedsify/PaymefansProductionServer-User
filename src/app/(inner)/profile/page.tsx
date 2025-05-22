@@ -1,6 +1,7 @@
 import BannerComponent from "@/components/lib_components/banner_component";
 import EditProfileButton from "@/components/sub_components/editprofileButton";
 import { ProfileCounts } from "@/components/sub_components/profile-count";
+import ProfileSocialLinks from "@/components/sub_components/profile-social-links";
 import ProfileTabs from "@/components/sub_components/profile_tabs";
 import { AuthUserProps } from "@/types/user";
 import getUserData from "@/utils/data/user-data";
@@ -79,6 +80,7 @@ const ProfilePage = async () => {
               </Link>
             </>
           )}
+
           <div className="flex gap-3 flex-wrap text-sm items-center font-semibold text-gray-700 dark:text-gray-300 mb-2">
             <span className="flex gap-2 items-center">
               <LucideMapPin className="text-primary-dark-pink" size={18} />
@@ -116,6 +118,7 @@ const ProfilePage = async () => {
               userId={user?.user_id}
             />
           )}
+          <ProfileSocialLinks Settings={user?.Settings} />
         </div>
       </div>
       <ProfileTabs />

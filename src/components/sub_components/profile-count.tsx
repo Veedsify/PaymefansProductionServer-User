@@ -44,7 +44,7 @@ export function ProfileCounts({
 
   return (
     <>
-      <div className="flex gap-2 mb-3 flex-wrap sm:text-base text-sm select-none">
+      <div className="flex gap-2 mb-3 flex-wrap sm:text-base text-sm select-none dark:text-white">
         <span
           className="flex gap-2 items-center cursor-pointer"
           onClick={() => toggleOpen("followers")}

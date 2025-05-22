@@ -28,7 +28,7 @@ const EditProfileButton = ({ user }: { user: any }) => {
     <div>
       <button
         onClick={() => setOpen(!open)}
-        className="px-2 py-1 text-sm font-semibold text-white bg-black border border-black rounded sm:px-4 dark:bg-primary-dark-pink text-color"
+        className="px-2 py-1 text-sm font-semibold text-white bg-black border border-black rounded sm:px-4 dark:bg-primary-dark-pink text-color cursor-pointer"
       >
         Edit Profile
       </button>
@@ -112,17 +112,17 @@ function BannerModal({ user, open = false, setOpen }: BannerModalProps) {
   return (
     <div
       onClick={() => setOpen(false)}
-      className={`fixed inset-0 w-full h-full bg-black/40 dark:bg-black/70 z-[250] flex items-center justify-center transition-all duration-300 ${open
+      className={`fixed inset-0 w-full h-full bg-white dark:bg-gray-950 z-[250] flex items-center justify-center transition-all duration-300 ${open
         ? "opacity-100 pointer-events-auto"
         : "pointer-events-none opacity-0"
         }`}
     >
       <div
-        className="relative bg-white dark:bg-slate-900 md:max-w-2xl w-full rounded-none md:rounded shadow-2xl p-6 md:p-8 h-dvh lg:h-screen overflow-y-auto"
+        className="relative bg-white dark:bg-slate-950 lg:max-w-6xl w-full rounded-none md:rounded p-6 md:p-8 h-dvh lg:h-screen overflow-y-auto"
         onClick={(e) => e.stopPropagation()}
       >
         <button
-          className="absolute text-gray-500 transition-colors top-4 right-4 hover:text-primary-dark-pink"
+          className="absolute text-gray-500 transition-colors top-4 right-4 hover:text-primary-dark-pink cursor-pointer"
           onClick={() => setOpen(false)}
           aria-label="Close"
           type="button"
@@ -132,12 +132,12 @@ function BannerModal({ user, open = false, setOpen }: BannerModalProps) {
         <h1 className="mb-6 text-2xl font-bold text-center dark:text-white">
           Edit Profile
         </h1>
-        <div className="flex justify-center mb-5 rounded-xl">
+        <div className="flex justify-center lg:justify-start mb-5 rounded-xl">
           <BannerComponent
             profile_banner={user ? user.profile_banner : "/site/banner.png"}
           />
         </div>
-        <div className="flex flex-col items-center mb-6">
+        <div className="flex flex-col items-center lg:items-start mb-6">
           <label
             htmlFor="imageUpload"
             className="relative cursor-pointer group"
@@ -172,54 +172,62 @@ function BannerModal({ user, open = false, setOpen }: BannerModalProps) {
             e.preventDefault();
             handleSaveClick();
           }}
-          className="space-y-4"
+          className="space-y-4 lg:grid lg:grid-cols-2 lg:gap-8"
         >
-          <input
-            type="text"
-            onChange={handleInputChange}
-            name="name"
-            defaultValue={user?.name}
-            className="w-full p-3 text-black border border-gray-300 rounded-lg outline-none dark:text-white dark:bg-slate-900 dark:border-slate-700 focus:ring-2 focus:ring-primary-dark-pink"
-            placeholder="Name"
-          />
-          <select
-            name="location"
-            className="w-full p-3 text-black border border-gray-300 rounded-lg outline-none dark:text-white dark:bg-slate-900 dark:border-slate-700 focus:ring-2 focus:ring-primary-dark-pink"
-            defaultValue={user?.location}
-            onChange={handleInputChange}
-          >
-            {countries.map((location) => (
-              <option value={location.name} key={location.code}>
-                {location.name}
-              </option>
-            ))}
-          </select>
-          <input
-            type="email"
-            defaultValue={user?.email ? user?.email : ""}
-            className="hidden w-full p-3 mb-3 text-black border border-gray-300 rounded-lg outline-none select-none dark:text-white dark:bg-slate-900 dark:border-slate-700 cursor-none"
-            name="email"
-            readOnly
-            onChange={handleInputChange}
-            placeholder="Email"
-          />
-          <textarea
-            name="bio"
-            rows={4}
-            onChange={handleInputChange}
-            className="w-full p-3 text-black border border-gray-300 rounded-lg outline-none resize-none dark:text-white dark:bg-slate-900 dark:border-slate-700 focus:ring-2 focus:ring-primary-dark-pink"
-            placeholder="Bio"
-            defaultValue={user?.bio ? user?.bio : ""}
-          ></textarea>
-          <input
-            type="text"
-            onChange={handleInputChange}
-            name="website"
-            defaultValue={user?.website ? user?.website : ""}
-            className="w-full p-3 text-black border border-gray-300 rounded-lg outline-none dark:text-white dark:bg-slate-900 dark:border-slate-700 focus:ring-2 focus:ring-primary-dark-pink"
-            placeholder="Website"
-          />
+          <div className="space-y-4">
+            <h2 className="text-lg font-semibold text-gray-800 dark:text-white">
+              Personal Information
+            </h2>
+            <input
+              type="text"
+              onChange={handleInputChange}
+              name="name"
+              defaultValue={user?.name}
+              className="w-full p-3 text-black border border-gray-300 rounded-lg outline-none dark:text-white dark:bg-slate-900 dark:border-slate-700 focus:ring-2 focus:ring-primary-dark-pink"
+              placeholder="Name"
+            />
+            <select
+              name="location"
+              className="w-full p-3 text-black border border-gray-300 rounded-lg outline-none dark:text-white dark:bg-slate-900 dark:border-slate-700 focus:ring-2 focus:ring-primary-dark-pink"
+              defaultValue={user?.location}
+              onChange={handleInputChange}
+            >
+              {countries.map((location) => (
+                <option value={location.name} key={location.code}>
+                  {location.name}
+                </option>
+              ))}
+            </select>
+            <input
+              type="email"
+              defaultValue={user?.email ? user?.email : ""}
+              className="hidden w-full p-3 mb-3 text-black border border-gray-300 rounded-lg outline-none select-none dark:text-white dark:bg-slate-900 dark:border-slate-700 cursor-none"
+              name="email"
+              readOnly
+              onChange={handleInputChange}
+              placeholder="Email"
+            />
+            <textarea
+              name="bio"
+              rows={4}
+              onChange={handleInputChange}
+              className="w-full p-3 text-black border border-gray-300 rounded-lg outline-none resize-none dark:text-white dark:bg-slate-900 dark:border-slate-700 focus:ring-2 focus:ring-primary-dark-pink"
+              placeholder="Bio"
+              defaultValue={user?.bio ? user?.bio : ""}
+            ></textarea>
+            <input
+              type="text"
+              onChange={handleInputChange}
+              name="website"
+              defaultValue={user?.website ? user?.website : ""}
+              className="w-full p-3 text-black border border-gray-300 rounded-lg outline-none dark:text-white dark:bg-slate-900 dark:border-slate-700 focus:ring-2 focus:ring-primary-dark-pink"
+              placeholder="Website"
+            />
+          </div>
           <div className="space-y-3">
+            <h2 className="text-lg font-semibold text-gray-800 dark:text-white">
+              Social Links
+            </h2>
             {/* Instagram */}
             <div className="grid grid-cols-12 items-center rounded-lg border border-black/10 dark:border-slate-700 bg-gray-50 dark:bg-slate-800 overflow-hidden transition-shadow focus-within:shadow-md group">
               <div className="flex items-center justify-center h-full col-span-2 bg-primary-dark-pink/10 dark:bg-primary-dark-pink/20 py-3 transition group-focus-within:bg-primary-dark-pink/20">
@@ -333,7 +341,7 @@ function BannerModal({ user, open = false, setOpen }: BannerModalProps) {
           </div>
           <button
             type="submit"
-            className="w-full py-3 font-semibold text-white transition-colors rounded-lg shadow bg-primary-dark-pink hover:bg-pink-700 focus:outline-none focus:ring-2 focus:ring-primary-dark-pink"
+            className="w-full py-3 font-semibold text-white transition-colors rounded-lg shadow bg-primary-dark-pink hover:bg-pink-700 focus:outline-none focus:ring-2 focus:ring-primary-dark-pink col-span-2 cursor-pointer"
           >
             Save
           </button>

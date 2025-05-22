@@ -23,6 +23,7 @@ import CreateSubscriptionButton from "@/components/sub_components/create-subscri
 import CreateConversationButton from "@/components/sub_components/create-conversation-button";
 import ProfileTabsOther from "@/components/sub_components/profile_tabs_other";
 import ActiveProfileTag from "@/components/sub_components/sub/active-profile-tag";
+import ProfileSocialLinks from "@/components/sub_components/profile-social-links";
 
 // Utility to format numbers
 const formatNumber = (num: number = 0): string => {
@@ -200,7 +201,6 @@ const ProfilePage = () => {
                             {userdata.website}
                         </Link>
                     )}
-
                     {/* Details */}
                     <div className="flex gap-3 flex-wrap text-sm items-center font-semibold text-gray-700 mb-2 dark:text-white">
                         <span className="flex gap-2 items-center">
@@ -221,8 +221,8 @@ const ProfilePage = () => {
                             />
                             <span>
                                 Joined{" "}
-                                {userdata.created_at
-                                    ? new Date(userdata.created_at).toLocaleDateString("en-US", {
+                                {userdata?.created_at && !isNaN(new Date(userdata.created_at).getTime())
+                                    ? new Date(userdata.created_at).toLocaleString("en-US", {
                                         month: "long",
                                         year: "numeric",
                                     })
@@ -238,6 +238,7 @@ const ProfilePage = () => {
                         subscribers={userdata.total_subscribers}
                         isModel={userdata.is_model}
                     />
+                    <ProfileSocialLinks Settings={userdata?.Settings} />
                 </div>
 
                 {/* Profile Tabs */}

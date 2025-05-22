@@ -240,7 +240,7 @@ const BannerComponent = ({ profile_banner }: BannerComponentProps) => {
           <div className="absolute inset-0 flex items-center justify-center bg-black/40 hover:bg-black/60 transition cursor-pointer">
             <button
               onClick={selectImage}
-              className="flex items-center px-5 py-2 bg-white/90 text-gray-800 font-semibold rounded-lg shadow hover:bg-white"
+              className="flex items-center px-5 py-2 bg-white/90 text-gray-800 font-semibold rounded-lg shadow hover:bg-white cursor-pointer"
             >
               <LucideUpload size={20} className="mr-2" /> Upload Banner
             </button>

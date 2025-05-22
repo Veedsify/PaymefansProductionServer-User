@@ -1,57 +1,45 @@
-import { useState, useEffect, useCallback } from 'react';
+import {useState, useEffect, useCallback} from 'react';
 import axios from 'axios';
-import { AuthUserProps } from '@/types/user';
-import { getToken } from '@/utils/cookie.get';
+import {AuthUserProps} from '@/types/user';
+import {getToken} from '@/utils/cookie.get';
+import _ from "lodash"
 import useDebounce from './debounce'; // Adjust the import path as necessary
 const useCheckUsername = (user: AuthUserProps, usernameCheck: string) => {
     const [canSave, setCanSave] = useState(false);
     const [message, setMessage] = useState("");
+    const [isLoading, setIsloading] = useState(false)
     const [error, setError] = useState(false);
-    const debouncedUsernameCheck = useDebounce(usernameCheck, 300); // Adjust the debounce delay as needed
-    const RunCheckUsername = useCallback(() => {
-        // if (!debouncedUsernameCheck) return;
-        const source = axios.CancelToken.source();
+
+    useEffect(() => {
         const setUpUsernameCheck = async () => {
             try {
+                setIsloading(true)
                 setCanSave(true);
                 setMessage("");
                 const token = getToken();
-                const api = `${process.env.NEXT_PUBLIC_TS_EXPRESS_URL}/settings/check-username?username=${debouncedUsernameCheck}`;
-                if (user.username === debouncedUsernameCheck) {
-                    setCanSave(true);
-                    return;
-                }
+                const api = `${process.env.NEXT_PUBLIC_TS_EXPRESS_URL}/settings/check-username?username=${usernameCheck}`;
                 const response = await axios.post(api, {}, {
                     headers: {
                         "Content-Type": "application/json",
                         "Authorization": `Bearer ${token}`
                     },
-                    cancelToken: source.token
                 });
-                if (response.data.status) {
+                if (!response.data.error) {
                     setError(false);
+                    setMessage(response.data.message)
                     setCanSave(true);
-                } else {
-                    setMessage("Username already exists");
-                    setError(true);
-                    setCanSave(false);
+                    setIsloading(false)
                 }
             } catch (error: any) {
+                setMessage(error.response.data.message || error.response.message || "An Error Occured")
                 setError(true);
-                if (axios.isCancel(error)) {
-                    console.log('Request canceled', error.message);
-                } else {
-                    console.error(error);
-                }
+                setIsloading(false)
+                setCanSave(false)
             }
         };
-        setUpUsernameCheck();
-        // Cleanup function to cancel the request if the component unmounts
-        return () => {
-            source.cancel("Operation canceled by the user.");
-        };
-    }, [user, debouncedUsernameCheck]);
-    useEffect(() => RunCheckUsername(), [RunCheckUsername])
-    return { canSave, message, error };
+
+        setUpUsernameCheck()
+    }, [user, usernameCheck])
+    return {canSave, message, error, isLoading};
 };
 export default useCheckUsername;
