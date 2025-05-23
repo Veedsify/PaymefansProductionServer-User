@@ -38,7 +38,7 @@ const MediaPanelImageCard = React.memo(({ sort }: { sort: string }) => {
   };
 
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } =
-    useInfiniteQuery({  
+    useInfiniteQuery({
       queryKey: ["media"],
       queryFn: fetchMedia,
       getNextPageParam: (lastPage, allPages) => {
@@ -59,14 +59,14 @@ const MediaPanelImageCard = React.memo(({ sort }: { sort: string }) => {
   const sorted = React.useMemo(() => {
     return sort === "all"
       ? allMedia
-      : allMedia.filter((media) => media.media_type === sort);
+      : allMedia.filter((media) => media.media_type === sort)
   }, [allMedia, sort]);
 
   const PreviewImageHandler = (
     media: string,
     type: string,
     isSubscriber: boolean,
-    indexId: number
+    _: number
   ) => {
     if (!isSubscriber) return;
 
@@ -77,11 +77,12 @@ const MediaPanelImageCard = React.memo(({ sort }: { sort: string }) => {
         type: media.media_type,
       }));
 
+    const newIndexId = medias.findIndex((item) => item.url === media);
     fullScreenPreview({
       url: media,
       type,
       open: true,
-      ref: indexId,
+      ref: newIndexId,
       otherUrl: medias,
     });
   };
@@ -117,12 +118,12 @@ const MediaPanelImageCard = React.memo(({ sort }: { sort: string }) => {
           </div>
         )}
         {hasMore && !loading && (
-            <button
+          <button
             className="col-span-3 px-6 py-2 rounded-lg text-sm font-semibold bg-purple-600 text-white hover:bg-purple-700 transition-colors shadow-md focus:outline-none focus:ring-2 focus:ring-purple-400"
             onClick={fetchAdditionalData}
-            >
+          >
             Load More
-            </button>
+          </button>
         )}
         {!hasMore && !loading && (
           <p className="col-span-3 text-gray-500 italic text-center font-medium">

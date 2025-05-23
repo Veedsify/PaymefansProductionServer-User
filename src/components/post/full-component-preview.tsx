@@ -67,22 +67,31 @@ const VideoPreview = memo(({ url, isBlob, playAction }: VideoPreviewProps) => {
 
   if (isBlob) {
     return (
-      <video
-        ref={videoRef}
-        className="h-dvh w-auto object-contain"
-        controls
-        autoPlay={playAction}
-        loop
-        muted
-      >
-        <source src={url} type="video/mp4" />
-        Your browser does not support the video tag.
-      </video>
+      <motion.div className="relative flex h-full items-center justify-center"
+        initial={{ opacity: 0.3, scale: 0.95 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.2 }} >
+        <video
+          ref={videoRef}
+          className="h-dvh w-auto object-contain"
+          controls
+          autoPlay={playAction}
+          loop
+          muted
+        >
+          <source src={url} type="video/mp4" />
+          Your browser does not support the video tag.
+        </video>
+      </motion.div>
     );
   }
 
   return (
-    <div className="flex h-full items-center justify-center">
+    <motion.div
+      initial={{ opacity: 0.3, scale: 0.95 }}
+      animate={{ opacity: 1, scale: 1 }}
+      transition={{ duration: 0.2 }}
+      className="flex h-full items-center justify-center">
       <HLSVideoPlayer
         streamUrl={url}
         autoPlay={true}
@@ -93,7 +102,7 @@ const VideoPreview = memo(({ url, isBlob, playAction }: VideoPreviewProps) => {
         }}
         className="h-dvh w-auto max-w-3xl object-contain transition-all duration-200"
       />
-    </div>
+    </motion.div>
   );
 });
 VideoPreview.displayName = "VideoPreview";
@@ -153,9 +162,8 @@ const PostComponentPreview = memo(() => {
 
   return (
     <div
-      className={`fixed inset-0 z-[999] h-dvh w-full select-none bg-black transition-opacity duration-300 ${
-        open ? "opacity-100" : "opacity-0"
-      }`}
+      className={`fixed inset-0 z-[999] h-dvh w-full select-none bg-black transition-opacity duration-300 ${open ? "opacity-100" : "opacity-0"
+        }`}
       role="dialog"
       aria-modal="true"
     >
@@ -194,7 +202,11 @@ const PostComponentPreview = memo(() => {
                 playAction={swiperRef.current?.realIndex === index}
               />
             ) : (
-              <div className="relative flex h-full items-center justify-center">
+              <motion.div className="relative flex h-full items-center justify-center"
+                initial={{ opacity: 0.3, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.2 }}
+              >
                 {!loaded && (
                   <div className="absolute inset-0 flex items-center justify-center bg-black/50">
                     <Loader />
@@ -212,7 +224,7 @@ const PostComponentPreview = memo(() => {
                   onError={handleLoaded}
                   onDragStart={(e) => e.preventDefault()}
                 />
-              </div>
+              </motion.div>
             )}
           </SwiperSlide>
         ))}

@@ -2,6 +2,7 @@ import WithDrawInput from "@/components/sub_components/withdraw-input";
 import axiosInstance from "@/utils/axios";
 import { getTransactionsData } from "@/utils/data/transactions";
 import getUserData from "@/utils/data/user-data";
+import { LucideArrowRight } from "lucide-react";
 import { cookies } from "next/headers";
 import Image from "next/image";
 import Link from "next/link";
@@ -50,6 +51,14 @@ const Page = async () => {
             <h2 className="font-bold">{user?.name}</h2>
             <p>{user?.username}</p>
           </div>
+        </div>
+        <div>
+          <Link href="/wallet/withdraw/transactions">
+            <button className="bg-primary-dark-pink text-white px-4 text-sm py-2 rounded-lg cursor-pointer hover:bg-primary-dark-pink/80 transition-all duration-200 ease-in-out font-semibold flex gap-2">
+              Withdraw History
+              <LucideArrowRight />
+            </button>
+          </Link>
         </div>
       </div>
       <div className="mb-10 flex align-middle justify-between bg-primary-dark-pink text-white p-5 rounded-xl">

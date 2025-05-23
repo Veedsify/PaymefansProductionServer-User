@@ -53,6 +53,7 @@ export type AuthUserProps = {
     subscription_duration: number;
     enable_free_message: boolean;
     two_factor_auth: boolean;
+    hasPin: boolean;
     subscription_price: number;
     facebook_url: string | null;
     instagram_url: string | null;
