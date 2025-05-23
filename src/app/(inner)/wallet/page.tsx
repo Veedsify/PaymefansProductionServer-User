@@ -8,38 +8,47 @@ import { ExchangeRate } from "@/types/components";
 import { AuthUserProps } from "@/types/user";
 import axiosInstance from "@/utils/axios";
 import { getToken } from "@/utils/cookie.get";
+import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import Image from "next/image";
 import Link from "next/link";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo, useCallback } from "react";
 
 const WalletPage = () => {
   const { user } = useUserAuthContext();
   const [transactions, setTransactions] = useState<any[]>([]);
   const [rates, setRates] = useState<any>(null);
-  const [wallet, setWallet] = useState<number | null>(null);
-  const [points, setPoints] = useState<number | null>(null);
   const [loading, setLoading] = useState(true);
   const token = getToken();
   const { config } = useConfigContext();
+  const { data: points } = useQuery({
+    queryKey: ['points'],
+    queryFn: async () => {
+      const response = await axiosInstance.post(
+        `${process.env.NEXT_PUBLIC_TS_EXPRESS_URL}/auth/points`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      return response.data.points;
+    },
+    enabled: !!token,
+    staleTime: 1000 * 10
+  });
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // Fetch token from cookies (client-side)
-        const cookies = document.cookie.split(";").reduce((acc, cookie) => {
-          const [key, value] = cookie.trim().split("=");
-          acc[key] = value;
-          return acc;
-        }, {} as Record<string, string>);
-        const fetchedToken = cookies["token"];
-
         // Fetch transactions
         const transactionsResponse = await axiosInstance.get(
           `${process.env.NEXT_PUBLIC_TS_EXPRESS_URL}/wallet/transactions`,
           {
             headers: {
-              Authorization: `Bearer ${fetchedToken}`,
+              Authorization: `Bearer ${token}`,
             },
           }
         );
@@ -48,32 +57,6 @@ const WalletPage = () => {
         // Fetch exchange rates
         const ratesResponse = await axios.get(ROUTE.GET_PLATFROM_EXCHANGE_RATE);
         setRates(ratesResponse.data);
-
-        // Fetch wallet
-        const walletResponse = await axiosInstance.post(
-          `${process.env.NEXT_PUBLIC_TS_EXPRESS_URL}/auth/wallet`,
-          {},
-          {
-            headers: {
-              Authorization: `Bearer ${fetchedToken}`,
-              "Content-Type": "application/json",
-            },
-          }
-        );
-        setWallet(walletResponse.data.wallet);
-
-        // Fetch points
-        const pointsResponse = await axiosInstance.post(
-          `${process.env.NEXT_PUBLIC_TS_EXPRESS_URL}/auth/points`,
-          {},
-          {
-            headers: {
-              Authorization: `Bearer ${fetchedToken}`,
-              "Content-Type": "application/json",
-            },
-          }
-        );
-        setPoints(pointsResponse.data.points);
       } catch (error) {
         console.error("Error fetching data:", error);
       } finally {
@@ -84,59 +67,58 @@ const WalletPage = () => {
     fetchData();
   }, []);
 
-  const convertCurrency = (
-    amount: number,
-    fromCurrency: string,
-    toCurrency: string
-  ): number => {
-    if (!rates) return 0;
+  const convertCurrency = useCallback(
+    (amount: number, fromCurrency: string, toCurrency: string): number => {
+      if (!rates) return 0;
 
-    if (fromCurrency == "POINTS" && toCurrency == "NGN") {
-      if (points && config) {
-        const amount = (points * config?.point_conversion_rate_ngn) as number;
-        return amount;
+      if (fromCurrency == "POINTS" && toCurrency == "NGN") {
+        if (points && config) {
+          const amount = (points * config?.point_conversion_rate_ngn) as number;
+          return amount;
+        }
+        return 0;
       }
-      return 0;
-    }
 
-    if (fromCurrency === "POINTS") {
-      const usdAmount =
-        amount /
-        rates.data.find((rate: ExchangeRate) => rate.name === "POINTS")
-          ?.buyValue;
+      if (fromCurrency === "POINTS") {
+        const usdAmount =
+          amount /
+          rates.data.find((rate: ExchangeRate) => rate.name === "POINTS")
+            ?.buyValue;
 
-      const targetRate =
-        rates.data.find((rate: ExchangeRate) => rate.name === toCurrency)
-          ?.buyValue || 1;
+        const targetRate =
+          rates.data.find((rate: ExchangeRate) => rate.name === toCurrency)
+            ?.buyValue || 1;
 
-      return usdAmount * targetRate;
-    }
+        return usdAmount * targetRate;
+      }
 
-    if (fromCurrency === "USD") {
-      const toRate =
-        rates.data.find((rate: ExchangeRate) => rate.name === toCurrency)
-          ?.buyValue || 1;
-      return amount * toRate;
-    } else if (toCurrency === "USD") {
-      const fromRate =
-        rates.data.find((rate: ExchangeRate) => rate.name === fromCurrency)
-          ?.buyValue || 1;
-      return amount / fromRate;
-    } else {
-      const fromRate =
-        rates.data.find((rate: ExchangeRate) => rate.name === fromCurrency)
-          ?.buyValue || 1;
-      const toRate =
-        rates.data.find((rate: ExchangeRate) => rate.name === toCurrency)
-          ?.buyValue || 1;
+      if (fromCurrency === "USD") {
+        const toRate =
+          rates.data.find((rate: ExchangeRate) => rate.name === toCurrency)
+            ?.buyValue || 1;
+        return amount * toRate;
+      } else if (toCurrency === "USD") {
+        const fromRate =
+          rates.data.find((rate: ExchangeRate) => rate.name === fromCurrency)
+            ?.buyValue || 1;
+        return amount / fromRate;
+      } else {
+        const fromRate =
+          rates.data.find((rate: ExchangeRate) => rate.name === fromCurrency)
+            ?.buyValue || 1;
+        const toRate =
+          rates.data.find((rate: ExchangeRate) => rate.name === toCurrency)
+            ?.buyValue || 1;
 
-      const usdAmount = amount / fromRate;
-      return usdAmount * toRate;
-    }
-  };
+        const usdAmount = amount / fromRate;
+        return usdAmount * toRate;
+      }
+    },
+    [rates, points, config]
+  );
 
-  const calculateAmount = () => {
-    if (!points || !rates || !user) return 0;
+  const calculateAmount = useMemo(() => {
+    if (!points || !rates || !user) return '0';
     const convert = convertCurrency(points, "POINTS", "NGN");
     return convert.toLocaleString("en-US", {
       style: "currency",
@@ -144,16 +126,17 @@ const WalletPage = () => {
         rates.data.find((rate: ExchangeRate) => rate.name === user.currency)
           ?.name || "USD",
     });
-  };
+  }, [points, rates, user, convertCurrency]);
 
-  const calculateAmountInDollars = () => {
-    if (!points) return 0;
+  const calculateAmountInDollars = useMemo(() => {
+    if (!points) return '$0.00';
     const usd = convertCurrency(points, "POINTS", "USD");
     return usd.toLocaleString("en-US", {
       style: "currency",
       currency: "USD",
     });
-  };
+  }, [points, convertCurrency]);
+  // ...existing code...
 
   if (loading) {
     <div className="w-full h-1 bg-gray-200 rounded overflow-hidden my-8">
@@ -197,7 +180,7 @@ const WalletPage = () => {
             Your Balance
           </small>
           <h1 className="text-2xl md:text-4xl font-extrabold tracking-tight">
-            {calculateAmount()}
+            {calculateAmount}
           </h1>
         </div>
         <div className="flex self-center mt-4 md:mt-0">
@@ -221,7 +204,7 @@ const WalletPage = () => {
             Your Balance
           </small>
           <h1 className="text-2xl md:text-4xl font-extrabold tracking-tight">
-            {calculateAmountInDollars()}
+            {calculateAmountInDollars}
           </h1>
         </div>
         <div className="flex self-center mt-4 md:mt-0">
@@ -244,7 +227,7 @@ const WalletPage = () => {
           <div className="bg-black dark:bg-gray-700 text-white p-6 rounded-2xl shadow mb-4">
             <small className="text-base font-medium">Your Balance</small>
             <h1 className="text-2xl md:text-4xl font-bold mb-4">
-              {calculateAmount()}
+              {calculateAmount}
             </h1>
             <Link
               href="/wallet/withdraw"
@@ -274,9 +257,8 @@ const WalletPage = () => {
                 <div className="flex justify-between items-center p-2 ">
                   <div>
                     <p
-                      className={`text-sm font-semibold ${
-                        transaction.success ? "text-green-600" : "text-red-500"
-                      }`}
+                      className={`text-sm font-semibold ${transaction.success ? "text-green-600" : "text-red-500"
+                        }`}
                     >
                       {transaction.success
                         ? "Transaction Successful"
@@ -298,9 +280,8 @@ const WalletPage = () => {
                     </div>
                   </div>
                   <p
-                    className={`text-sm font-semibold flex items-center gap-3 ${
-                      transaction.success ? "text-green-600" : "text-red-500"
-                    }`}
+                    className={`text-sm font-semibold flex items-center gap-3 ${transaction.success ? "text-green-600" : "text-red-500"
+                      }`}
                   >
                     +{transaction.points}
                     <Image

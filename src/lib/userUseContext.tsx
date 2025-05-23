@@ -37,20 +37,26 @@ export const UserContextProvider = ({
   user,
   children,
 }: UserContextProviderProps) => {
-  const router = useRouter(); 
+  const router = useRouter();
   const location = usePathname();
   const socket = getSocket();
-
   const [thisUser, setUser] = useState<AuthUserProps | null>(null);
 
   useEffect(() => {
     if (!user) {
       window.location.href = `/login?redirect=${location}`;
-    } else {
-      setUser(user);
-      socket.emit("user_active", user.username);
+      return; // exit early
     }
-  }, [user, router, location, socket]);
+
+    setUser(user);
+    socket.emit("user_active", user.username);
+
+    const intervalId = setInterval(() => {
+      socket.emit("still-active", user?.username);
+    }, 25_000);
+
+    return () => clearInterval(intervalId); // CLEAN UP on unmount or dependency change
+  }, [user, location, socket]);
 
   const updateUser = (newUserData: AuthUserProps) => {
     setUser(newUserData);

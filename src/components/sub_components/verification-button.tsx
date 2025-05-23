@@ -2,7 +2,6 @@
 
 import axiosInstance from "@/utils/axios";
 import { getToken } from "@/utils/cookie.get";
-import axios from "axios";
 import swal from "sweetalert";
 import toast from "react-hot-toast";
 
@@ -46,7 +45,7 @@ const VerificationPageButton = () => {
     <div className="mt-12 flex flex-col justify-center items-center">
       <button
         onClick={handleButtonClick}
-        className="block w-96 text-center px-3 py-3 text-sm font-bold text-white rounded-lg bg-primary-dark-pink"
+        className="block w-96 text-center px-3 py-3 text-sm font-bold text-white rounded-lg bg-primary-dark-pink cursor-pointer"
       >
         VERIFY
       </button>

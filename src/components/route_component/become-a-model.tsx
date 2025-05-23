@@ -5,26 +5,22 @@ import {
   postAudienceDataProps,
   postAudienceDataProps2,
 } from "@/types/components";
-import { modelSignUp } from "@/utils/data/model-signup";
+import { ValidateModelPayment } from "@/utils/data/model-signup";
 import {
   LucideChevronDown,
   LucideChevronUp,
   LucideEye,
-  LucideLoader,
   LucideLoader2,
   LucideUser,
   LucideUser2,
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import PaystackPop from '@paystack/inline-js'
 import { useRouter } from "next/navigation";
 import {
   ChangeEvent,
-  LegacyRef,
   MouseEvent,
-  MutableRefObject,
-  useEffect,
-  useRef,
   useState,
 } from "react";
 import toast from "react-hot-toast";
@@ -82,6 +78,7 @@ const BecomeAModel = () => {
     }));
   };
 
+
   const submitData = async (e: MouseEvent<HTMLButtonElement>) => {
     if (!modelSignUpdata.firstname)
       return toast.error("Please insert a firstname");
@@ -97,24 +94,44 @@ const BecomeAModel = () => {
 
     try {
       setLoading(true);
-      const { data } = await modelSignUp({
-        ...modelSignUpdata,
-        gender: postAudience.name?.toLocaleLowerCase(),
-      });
 
-      if (data && data.status) {
-        if (data.url && data.url !== "") {
-          window.location.href = String(data.url);
-        }
+      async function payWithPaystack() {
+        const popup = new PaystackPop()
+        popup.checkout({
+          key: process.env.NEXT_PUBLIC_PAYSTACK_PUBLIC_KEY as string,
+          amount: Number(10_000 * 100),
+          email: user?.email as string,
+          firstName: modelSignUpdata.firstname,
+          lastName: modelSignUpdata.lastname,
+          onCancel: async function () {
+            swal({
+              icon: "error",
+              title: "Transaction Cancelled",
+              text: "You have cancelled the transaction",
+            });
+            setLoading(false);
+          },
+          onSuccess: async (transaction) => {
+            if (transaction.status) {
+              const data = await ValidateModelPayment(transaction.status, transaction.reference, { ...modelSignUpdata, audience: postAudience.name });
+              setLoading(false);
+              if (!data.error) {
+                toast.success(String(data.message));
+                router.push("/verification");
+              }
+            }
+          }
+        })
       }
+      payWithPaystack()
     } catch (error: any) {
+      console.error(error);
       swal({
         icon: "error",
-        title: "Age Restriction",
-        text: error.response?.data?.message,
+        title: error.response?.data?.errorTitle || "Error",
+        text: error.response?.data?.message || "An error occurred, contact support for help",
       });
       setLoading(false);
-      console.error(error);
     }
   };
 
@@ -226,11 +243,10 @@ const BecomeAModel = () => {
               )}
             </button>
             <div
-              className={`absolute z-10 w-full left-0 mt-2 transition-all duration-200 ${
-                dropdown
-                  ? "opacity-100 translate-y-0 pointer-events-auto"
-                  : "opacity-0 -translate-y-2 pointer-events-none"
-              }`}
+              className={`absolute z-10 w-full left-0 mt-2 transition-all duration-200 ${dropdown
+                ? "opacity-100 translate-y-0 pointer-events-auto"
+                : "opacity-0 -translate-y-2 pointer-events-none"
+                }`}
             >
               <ul className="bg-white dark:bg-gray-800 rounded-xl shadow-md text-left w-full border border-gray-200 dark:border-gray-700">
                 {postAudienceData.map((audience) => (
