@@ -70,8 +70,8 @@ const WithDrawInput = ({ points }: { points: number }) => {
       return;
     }
     setWithDrawStore({
-      platfromFee: parseInt(calculateFee(value).replace(/\D/g, "")),
-      amountToSettle: parseInt(balanceToSettle(value).replace(/\D/g, "")),
+      platformFee: calculateFeeAmount(value),
+      amountToSettle: balanceToSettleAmount(value),
       amountInUsd: usdValue,
       amountInNgn: ngnValue,
       localCurrency: withdrawCurrency,
@@ -145,6 +145,18 @@ const WithDrawInput = ({ points }: { points: number }) => {
   function balanceToSettle(value: string) {
     let num = value.replace(/\D/g, "");
     return (parseInt(num) * (1 - FEE_PERCENTAGE)).toLocaleString();
+  }
+
+  // Calculate platform fee as number
+  function calculateFeeAmount(value: string) {
+    let num = value.replace(/\D/g, "");
+    return Math.floor(parseInt(num) * FEE_PERCENTAGE);
+  }
+
+  // Calculate amount to withdraw after fee as number
+  function balanceToSettleAmount(value: string) {
+    let num = value.replace(/\D/g, "");
+    return Math.floor(parseInt(num) * (1 - FEE_PERCENTAGE));
   }
 
   if (loading) {

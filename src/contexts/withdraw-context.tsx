@@ -8,7 +8,7 @@ interface UserBank {
   account_name: string;
 }
 type WithdrawValuesProps = {
-  platfromFee: number;
+  platformFee: number;
   amountToSettle: number;
   amountInUsd: number;
   amountInNgn: number;
@@ -24,7 +24,7 @@ type WithdrawStore = {
 
 export const useWithdrawStore = create<WithdrawStore>((set) => ({
   withdrawValues: {
-    platfromFee: 0,
+    platformFee: 0,
     amountToSettle: 0,
     amountInUsd: 0,
     amountInNgn: 0,
@@ -34,7 +34,7 @@ export const useWithdrawStore = create<WithdrawStore>((set) => ({
   clearWithdrawStore: () =>
     set(() => ({
       withdrawValues: {
-        platfromFee: 0,
+        platformFee: 0,
         amountToSettle: 0,
         amountInUsd: 0,
         amountInNgn: 0,

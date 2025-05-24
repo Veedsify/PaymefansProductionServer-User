@@ -9,6 +9,7 @@ import swal from "sweetalert";
 import VerifyWithdrawalPin from "@/components/sub_components/verify-withdrawal-pin";
 import { useUserAuthContext } from "@/lib/userUseContext";
 import axios from "axios";
+import { getToken } from "@/utils/cookie.get";
 
 const WithdrawConfirmPage = () => {
   const [loading, setLoading] = React.useState(true);
@@ -21,9 +22,11 @@ const WithdrawConfirmPage = () => {
   const [step, setStep] = React.useState<"create" | "verify">(user?.Settings?.hasPin ? "verify" : "create");
   const { config } = useConfigContext();
   const router = useRouter();
+
   useEffect(() => {
+    setStep(user?.Settings?.hasPin ? "verify" : "create");
     setLoading(false);
-  }, []);
+  }, [user?.Settings?.hasPin]);
 
   useEffect(() => {
     if (withdrawValues && withdrawValues?.amountInNgn === 0) {
@@ -44,9 +47,21 @@ const WithdrawConfirmPage = () => {
     setPinModal(!pinModal);
   };
 
-  const handleWithdraw = async ({ action }: { action: "create" | "verify" }) => {
+  const handleWithdraw = async ({ action, pin }: { action: "create" | "verify"; pin: string }) => {
+    const token = getToken()
+
     if (pin.length !== 4) {
       setError("Please enter a valid PIN");
+      return;
+    }
+
+    if (isNaN(withdrawValues?.amountInNgn) || withdrawValues?.amountInNgn <= 0) {
+      setError("Invalid withdrawal amount.");
+      return;
+    }
+
+    if (isNaN(parseInt(pin)) || pin.length !== 4) {
+      setError("Please enter a valid 4-digit PIN.");
       return;
     }
 
@@ -56,6 +71,7 @@ const WithdrawConfirmPage = () => {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`,
         },
         data: JSON.stringify({
           userId: user?.id,
@@ -72,8 +88,8 @@ const WithdrawConfirmPage = () => {
         return;
       }
 
-      swal({
-        title: "Success",
+      await swal({
+        title: "success",
         text: response.data.message,
         icon: "success",
         buttons: ['OK'],
@@ -91,12 +107,12 @@ const WithdrawConfirmPage = () => {
     }
   }
 
-  const setPinValue = (val: string) => {
+  const setPinValue = async (val: string) => {
     if (val.length === 4) {
       setPin(val);
       setPinModal(false);
       setProcessing(true);
-      handleWithdraw({ action: "verify" });
+      await handleWithdraw({ action: "verify", pin: val });
     } else {
       setError("Please enter a valid PIN");
     }
@@ -110,7 +126,7 @@ const WithdrawConfirmPage = () => {
     setPin(pin);
     setPinModal(false);
     setProcessing(true);
-    handleWithdraw({ action: "create" });
+    await handleWithdraw({ action: "create", pin });
   }
 
   const cancelWithdraw = async () => {

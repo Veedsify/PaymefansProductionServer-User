@@ -50,8 +50,8 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const user = await getUserData();
 
+  const user = await getUserData();
   if (user && !user.active_status) {
     return (
       <html>

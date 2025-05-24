@@ -17,6 +17,7 @@ const getUserData = async (): Promise<AuthUserProps | null> => {
         },
       }
     );
+
     if (res.status === 200 && res.data?.user) {
       return res.data.user as AuthUserProps;
     }
