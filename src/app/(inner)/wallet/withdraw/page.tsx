@@ -53,8 +53,8 @@ const Page = async () => {
           </div>
         </div>
         <div>
-          <Link href="/wallet/withdraw/transactions">
-            <button className="bg-primary-dark-pink text-white px-4 text-sm py-2 rounded-lg cursor-pointer hover:bg-primary-dark-pink/80 transition-all duration-200 ease-in-out font-semibold flex gap-2">
+          <Link href="/wallet/withdraw/history">
+            <button className="bg-primary-dark-pink text-white px-4 text-sm py-2 rounded-lg cursor-pointer hover:bg-primary-dark-pink/80 transition-all duration-200 ease-in-out font-semibold flex items-center gap-2">
               Withdraw History
               <LucideArrowRight />
             </button>
