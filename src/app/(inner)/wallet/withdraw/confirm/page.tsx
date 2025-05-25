@@ -40,7 +40,6 @@ const WithdrawConfigPage = () => {
   // Update step when user PIN status changes
   useEffect(() => {
     setStep(user?.hasPin ? "verify" : "create");
-    console.log("User has PIN:", user?.hasPin);
   }, [user?.hasPin]);
 
   const amountInNgn = Number(withdrawValues?.amountInNgn).toLocaleString();
