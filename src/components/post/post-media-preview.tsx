@@ -12,6 +12,7 @@ import axios from "axios";
 import { getMaxDurationBase64 } from "@/utils/get-video-max-duration";
 import UploadImageToCloudflare from "../../utils/cloudflare-image-uploader";
 import UploadWithTus from "@/utils/tusUploader";
+import { usePostMediaUploadContext } from "@/contexts/post-media-upload-context";
 
 type PostMediaPreviewProps = {
   submitPost: (image: UploadedImageProp) => void;
@@ -22,6 +23,7 @@ function PostMediaPreview({ submitPost, removeThisMedia }: PostMediaPreviewProps
   const [media, setMedia] = useState<Array<{ file: File; id: string }>>([]);
   const [progress, setProgress] = useState<{ [key: string]: number }>({});
   const [uploadError, setUploadError] = useState<{ [key: string]: boolean }>({});
+  const { setMediaUploadComplete } = usePostMediaUploadContext()
   const { user } = useUserAuthContext();
   const token = getToken();
 
@@ -62,7 +64,7 @@ function PostMediaPreview({ submitPost, removeThisMedia }: PostMediaPreviewProps
       try {
 
         try {
-          for (const mediaItem of newMediaItems) {
+          for (const [index, mediaItem] of newMediaItems.entries()) {
             const isVideo = mediaItem.file.type.startsWith("video/");
             const maxVideoDuration = isVideo ? getMaxDurationBase64(mediaItem.file) : null;
             const payload: any = {
@@ -96,6 +98,9 @@ function PostMediaPreview({ submitPost, removeThisMedia }: PostMediaPreviewProps
                 type: "video",
                 fileId: mediaItem.id,
               });
+              if (index === newMediaItems.length - 1) {
+                setMediaUploadComplete(true); // Set upload complete after last item
+              }
             } else if (type === "image") {
               const uploadImage = await imageUploader(mediaItem.file, uploadUrl, mediaItem.id);
               const variants = uploadImage.result.variants ?? [];
@@ -108,6 +113,9 @@ function PostMediaPreview({ submitPost, removeThisMedia }: PostMediaPreviewProps
                 type: "image",
                 fileId: mediaItem.id,
               });
+              if (index === newMediaItems.length - 1) {
+                setMediaUploadComplete(true); // Set upload complete after last item
+              }
             }
           }
         } catch (error: any) {
