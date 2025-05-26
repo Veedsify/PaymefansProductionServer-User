@@ -153,9 +153,7 @@ const MediaPanelMediaCard = ({
   const { user: authUser } = useUserAuthContext();
   const isCreator = media.post.user.id === authUser?.id;
   // const isAdmin = user.role === "admin";
-  const isSubscribed = authUser?.subscriptions?.includes(
-    media.post.user.id as number
-  );
+  const isSubscribed = media.isSubscribed
   const hasPaid = authUser?.purchasedPosts?.includes(media.post?.id as number);
   // Determine visibility
   const canView =

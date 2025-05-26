@@ -33,7 +33,7 @@ async function Page({ params }: { params: params }) {
 
   const isCreator = post?.user.id === user?.id;
   // const isAdmin = user.role === "admin";
-  const isSubscribed = user?.subscriptions?.includes(post.user?.id as number);
+  const isSubscribed = post.isSubscribed;
   const hasPaid = user?.purchasedPosts?.includes(post?.id as number);
 
   // Determine visibility

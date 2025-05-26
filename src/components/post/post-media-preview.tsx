@@ -126,7 +126,7 @@ function PostMediaPreview({ submitPost, removeThisMedia }: PostMediaPreviewProps
         toast.error("Some uploads failed.");
       }
     },
-    [user, token, media.length, submitPost, tusUploader, imageUploader]
+    [user, token, media.length, submitPost, tusUploader, imageUploader, setMediaUploadComplete]
   );
 
   return (

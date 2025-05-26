@@ -88,7 +88,7 @@ export default function ConfirmWithdrawPage() {
   // Handle redirect logic in useEffect
   useEffect(() => {
     if (
-      withdrawValues.platfromFee === 0 ||
+      withdrawValues.platformFee === 0 ||
       withdrawValues.amountToSettle === 0
     ) {
       router.push("/wallet/withdraw");
@@ -98,7 +98,7 @@ export default function ConfirmWithdrawPage() {
   }, [
     getBanks,
     router,
-    withdrawValues.platfromFee,
+    withdrawValues.platformFee,
     withdrawValues.amountToSettle,
   ]);
 

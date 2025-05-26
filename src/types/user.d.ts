@@ -74,7 +74,6 @@ export type AuthUserProps = {
     | "rejected"
     | "started";
   };
-  subscriptions?: number[];
   purchasedPosts?: number[];
 };
 

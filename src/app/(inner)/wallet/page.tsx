@@ -65,7 +65,7 @@ const WalletPage = () => {
     };
 
     fetchData();
-  }, []);
+  }, [token]);
 
   const convertCurrency = useCallback(
     (amount: number, fromCurrency: string, toCurrency: string): number => {

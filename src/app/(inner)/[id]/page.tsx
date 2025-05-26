@@ -8,6 +8,7 @@ import { PiCurrencyDollarSimple } from "react-icons/pi";
 import {
     LucideCalendar,
     LucideLink,
+    LucideLoader2,
     LucideLock,
     LucideMapPin,
     Verified,
@@ -113,7 +114,10 @@ const ProfilePage = () => {
     }, [user, userdata, router]);
 
     if (loading) {
-        return <div className="text-center py-10">Loading...</div>;
+        return <div className="text-center py-10 flex items-center flex-col justify-center">
+            <LucideLoader2 size={30} className="animate-spin" stroke="purple" />
+            <p className="mt-2">Loading profile...</p>
+        </div>;
     }
 
     if (error || !params.id || !userdata) {

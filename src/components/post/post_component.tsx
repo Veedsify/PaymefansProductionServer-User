@@ -71,10 +71,8 @@ const PostComponent: React.FC<PostComponentProps> = ({
   const socket = getSocket();
 
   // --- Permission/role checks --- //
+  const isSubscribed = data.isSubscribed;
   const isCreator = user?.id === authUser?.id;
-  const isSubscribed = authUser?.subscriptions?.includes(
-    data.user?.id as number
-  );
   const hasPaid = authUser?.purchasedPosts?.includes(data?.id as number);
   // const isAdmin = user.role === "admin"; // Default commented
 

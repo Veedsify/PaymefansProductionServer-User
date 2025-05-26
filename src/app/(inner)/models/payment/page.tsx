@@ -1,26 +1,12 @@
 "use client";
-import { countries } from "@/lib/locations";
 import { useUserAuthContext } from "@/lib/userUseContext";
 import {
-  postAudienceDataProps,
-  postAudienceDataProps2,
-} from "@/types/components";
-import { modelSignUp } from "@/utils/data/model-signup";
-import {
-  LucideChevronDown,
-  LucideChevronUp,
-  LucideEye,
   LucideInfo,
-  LucideLoader,
-  LucideUser,
-  LucideUser2,
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 
 const PaymentPage = () => {
-  const router = useRouter();
   const { user } = useUserAuthContext();
 
   if (user?.is_model && user?.Model?.verification_status === true) {
