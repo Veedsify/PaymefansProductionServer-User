@@ -46,6 +46,7 @@ export interface PostData {
   created_at: Date;
   likedByme: boolean;
   isSubscribed: boolean;
+  wasReposted: boolean;
   media: UserMediaProps[];
   user?: {
     id: number;

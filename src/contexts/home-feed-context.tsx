@@ -84,6 +84,7 @@ export type Post = {
   UserMedia: UserMedia[];
   likedByme: boolean;
   isSubscribed: boolean;
+  wasReposted: boolean;
   score?: number;
 };
 

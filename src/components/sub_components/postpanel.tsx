@@ -12,8 +12,7 @@ import { getToken } from "@/utils/cookie.get";
 async function fetchPost(pageNumber: number) {
   const token = getToken();
   const api = `${process.env.NEXT_PUBLIC_TS_EXPRESS_URL}/post/my-posts`;
-  // const postPerPage = process.env.NEXT_PUBLIC_POST_PER_PAGE as string;
-  const postPerPage = "3";
+  const postPerPage = process.env.NEXT_PUBLIC_POST_PER_PAGE as string;
   let cancel;
   const res = await axios<any, AxiosResponse>(api, {
     method: "GET",
@@ -44,7 +43,7 @@ const PostPanel = () => {
     queryFn: ({ pageParam = 1 }: { pageParam?: number }) =>
       fetchPost(Number(pageParam)),
     getNextPageParam: (lastPage, allPages) => {
-      
+
       return lastPage?.hasMore ? allPages.length + 1 : undefined;
     },
     initialPageParam: 1,
