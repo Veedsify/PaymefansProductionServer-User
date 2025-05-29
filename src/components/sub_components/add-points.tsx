@@ -1,6 +1,7 @@
 "use client";
 import { POINTS_CONFIG } from "@/config/config";
 import ROUTE from "@/config/routes";
+import { useConfigContext } from "@/contexts/configs-context";
 import { useUserAuthContext } from "@/lib/userUseContext";
 import { ExchangeRate } from "@/types/components";
 import { getToken } from "@/utils/cookie.get";
@@ -22,6 +23,8 @@ const AddPoints = () => {
   const [rates, setRates] = useState<ExchangeRate[]>(currencyRates);
   const [error, setError] = useState(false);
   const [POINTS_PER_USD, setPointsPerUSD] = useState(0); // Default value
+  const { config } = useConfigContext()
+
   const PLATFORM_DEPOSITE_FEE = 0.1; // 10% fee
   let POINTS_PER_NAIRA = 100; // Default value
 
@@ -77,7 +80,7 @@ const AddPoints = () => {
   // Calculate platform fee (10% of input), supports decimals
   function calculateFee(value: string) {
     const amount = getCleanAmount(value);
-    return (amount * PLATFORM_DEPOSITE_FEE).toLocaleString(undefined, {
+    return (amount * (config?.platform_deposit_fee ?? PLATFORM_DEPOSITE_FEE)).toLocaleString(undefined, {
       minimumFractionDigits: 2,
       maximumFractionDigits: 2,
     });

@@ -19,6 +19,8 @@ type Configs = {
   app_description: string;
   app_logo: string;
   default_currency: string;
+  platform_deposit_fee: number;
+  platform_withdrawal_fee: number;
   default_rate: number;
   default_symbol: string;
   point_conversion_rate: number;
