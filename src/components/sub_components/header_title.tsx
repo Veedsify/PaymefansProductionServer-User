@@ -1,5 +1,5 @@
 "use client";
-import {usePathname} from "next/navigation";
+import { usePathname } from "next/navigation";
 import React from "react";
 
 const PATHNAME_TITLES: { [key: string]: string } = {

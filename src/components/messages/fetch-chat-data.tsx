@@ -1,6 +1,4 @@
 "use client";
-
-import { useInfiniteQuery } from "@tanstack/react-query";
 import { fetchConversationMessages } from "@/utils/data/get-conversation-messages";
 import Chats from "./chats";
 import { useRouter } from "next/navigation";
@@ -9,6 +7,7 @@ import { useEffect, useCallback, useState } from "react";
 import { getSocket } from "../sub_components/sub/socket";
 import _ from "lodash";
 import { MediaProvider } from "@/contexts/message-media-context";
+import NoSsrWrapper from "@/providers/no-ssr-wrapper";
 
 const FetchChatData = ({ stringId }: { stringId: string }) => {
   const socket = getSocket();

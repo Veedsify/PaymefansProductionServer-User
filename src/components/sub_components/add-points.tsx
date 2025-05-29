@@ -18,7 +18,7 @@ export const currencyRates = [
 ];
 const AddPoints = () => {
   const { user } = useUserAuthContext();
-  const [value, setValue] = useState("");
+  const [value, setValue] = useState("");   // User entry (formatted)
   const [rates, setRates] = useState<ExchangeRate[]>(currencyRates);
   const [error, setError] = useState(false);
   const [POINTS_PER_USD, setPointsPerUSD] = useState(0); // Default value
@@ -34,7 +34,6 @@ const AddPoints = () => {
         }
         const data = await response.json();
         if (data.data.length > 0) {
-          console.log(data);
           setRates(data.data);
           const pointRate =
             data.data.find((rate: ExchangeRate) => rate.name == "POINTS")
@@ -46,39 +45,62 @@ const AddPoints = () => {
         setError(true);
       }
     };
-    // Uncomment the line below to fetch rates from the API
     fetchRates();
   }, []);
-  // Format the input value with commas
+
+  // Format number nicely (decimals and thousands), eg: "1,234.56"
   const formatNumber = (num: string) => {
-    return num.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    if (!num) return "";
+    // Only one decimal separation
+    let parts = num.split(".");
+    // Clean leading zeros
+    parts[0] = parts[0].replace(/^0+(\d)/, "$1") || "0";
+    parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    return parts.length === 2 ? parts.join(".") : parts[0];
   };
-  // Handle input change
+
+  // Allow only digits and at most one decimal dot
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    let inputValue = e.target.value.replace(/\D/g, "");
+    let inputValue = e.target.value.replace(/[^0-9.]/g, "");
+    // Prevent multiple decimals
+    let parts = inputValue.split(".");
+    if (parts.length > 2) inputValue = parts[0] + "." + parts.slice(1).join("");
     setValue(formatNumber(inputValue));
   };
-  // Calculate platform fee (10% of input)
+
+  // Convert the formatted string value ("1,234.56") to float safely
+  function getCleanAmount(val: string): number {
+    if (!val) return 0;
+    let num = val.replace(/,/g, "");
+    return parseFloat(num) || 0;
+  }
+  // Calculate platform fee (10% of input), supports decimals
   function calculateFee(value: string) {
-    let num = value.replace(/\D/g, "");
-    return (parseInt(num) * PLATFORM_DEPOSITE_FEE).toLocaleString();
+    const amount = getCleanAmount(value);
+    return (amount * PLATFORM_DEPOSITE_FEE).toLocaleString(undefined, {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    });
   }
-  // Calculate points received
+  // Points received (input), dec as float
   function balanceToSettle(value: string) {
-    let num = value.replace(/\D/g, "");
-    const amount = parseInt(num) || 0;
+    const amount = getCleanAmount(value);
     const pointsPlusFees = amount / POINTS_PER_NAIRA;
-    return pointsPlusFees.toLocaleString();
+    return pointsPlusFees.toLocaleString(undefined, {
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
+    });
   }
-  // Get original amount without formatting
+  // Amount to Pay: input + fee
   function pricePerPoints(value: string) {
-    let num = value.replace(/\D/g, "");
-    const fee = calculateFee(value);
-    return Number(
-      parseInt(num) + parseInt(fee.replace(/\D/g, ""))
-    ).toLocaleString();
+    const amount = getCleanAmount(value);
+    const fee = getCleanAmount(calculateFee(value));
+    return (amount + fee).toLocaleString(undefined, {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    });
   }
-  // Convert local currency amount to target currency
+  // Convert local currency amount to target currency (no change)
   function convertCurrency(
     amount: number,
     fromCurrency: string,
@@ -88,8 +110,8 @@ const AddPoints = () => {
       // Convert points to USD first (16 points = $1)
       const usdAmount =
         amount /
-        (rates.find((rate: ExchangeRate) => rate.name === "POINTS")?.buyValue ??
-          16);
+        (rates.find((rate: ExchangeRate) => rate.name === "POINTS")
+          ?.buyValue ?? 16);
       // Then convert USD to target currency
       const targetRate =
         rates.find((rate: ExchangeRate) => rate.name === toCurrency)
@@ -122,7 +144,8 @@ const AddPoints = () => {
       return usdAmount * toRate;
     }
   }
-  // Format converted amount for display
+
+  // Format converted amount for display (with currency symbol and decimals)
   function formatConvertedAmount(amount: number, currency: string): string {
     const symbol = rates.find((rate) => rate.name === currency)?.symbol || "";
     return `${symbol}${amount.toLocaleString(undefined, {
@@ -130,12 +153,13 @@ const AddPoints = () => {
       maximumFractionDigits: 2,
     })}`;
   }
+
   async function handlePointBuy() {
     const token = getToken();
     toast.loading(POINTS_CONFIG.POINT_PENDING_PAYMENTS, {
       id: "point-purchase",
     });
-    const amount = parseInt(value.replace(/\D/g, "")) || 0;
+    const amount = getCleanAmount(value);
     // Calculate minimum deposit in user's currency based on NGN 2500 rate
     const minNgn = 2500;
     const userCurrency = user?.currency || "USD";
@@ -192,6 +216,7 @@ const AddPoints = () => {
       console.error(error);
     }
   }
+
   if (error) {
     return (
       <div className="flex items-center justify-center w-full h-full">
@@ -201,10 +226,12 @@ const AddPoints = () => {
       </div>
     );
   }
-  const inputAmount = parseInt(value.replace(/\D/g, "")) || 0;
+
+  const inputAmount = getCleanAmount(value);
   const usdValue = convertCurrency(inputAmount, user?.currency || "USD", "USD");
   const ngnValue = convertCurrency(inputAmount, "NGN", "NGN");
   const symbol = rates.find((rate) => rate.name === user?.currency)?.symbol;
+
   return (
     <div>
       <div className="flex items-start gap-2 mb-3">
@@ -214,9 +241,10 @@ const AddPoints = () => {
             type="text"
             value={value}
             onChange={handleChange}
-            pattern="[0-9]*"
+            pattern="^\d*\.?\d*$"
             placeholder="0"
             className="w-full p-0 text-6xl font-bold border-none outline-none md:text-9xl"
+            inputMode="decimal"
           />
         </div>
       </div>
@@ -225,11 +253,9 @@ const AddPoints = () => {
           <div className="flex justify-between py-2">
             <p className="text-xl">Platform Fee</p>
             <p className="text-xl font-medium">
-              {
-                <span className="text-primary-dark-pink">
-                  {PLATFORM_DEPOSITE_FEE * 100}%{" "}
-                </span>
-              }{" "}
+              <span className="text-primary-dark-pink">
+                {PLATFORM_DEPOSITE_FEE * 100}%{" "}
+              </span>
               ({symbol}
               {calculateFee(value)})
             </p>

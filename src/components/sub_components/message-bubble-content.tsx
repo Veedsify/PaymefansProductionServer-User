@@ -188,7 +188,6 @@ const MessageBubbleContent: React.FC<MessageBubbleContentProps> = ({
               {file.type.includes("image") ? (
                 <div className="relative">
                   <Image
-                    unoptimized
                     width={300}
                     height={300}
                     onClick={() => handlePreview(file, idx)}

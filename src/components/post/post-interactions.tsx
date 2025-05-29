@@ -24,6 +24,34 @@ type PostCompInteractionsProps = {
   data: PostData | undefined;
 };
 
+interface PostRepostProps {
+  repostThisPost: () => void;
+  repostCount: number;
+  isReposted: boolean;
+}
+
+const PostRepost = ({ repostThisPost, repostCount, isReposted }: PostRepostProps) => {
+  const [wasReposted, setWasReposted] = useState(isReposted);
+  const [postReposts, setPostReposts] = useState(repostCount);
+
+  const handleRepost = useCallback(() => {
+    repostThisPost();
+    setWasReposted(!wasReposted);
+    setPostReposts(prev => wasReposted ? prev - 1 : prev + 1);
+  }, [repostThisPost, wasReposted]);
+
+  return (
+    <span
+      onClick={handleRepost}
+      className={`flex items-center gap-1 text-sm font-medium cursor-pointer ${wasReposted ? " text-primary-dark-pink" : ""}`}
+    >
+      <LucideRepeat2 className={`w-5 h-5 lg:w-6 lg:h-6 `} />
+      {postReposts}
+    </span>
+  );
+}
+
+
 export const PostCompInteractions = ({ data }: PostCompInteractionsProps) => {
   const { likePost: likeThisPost, unlikePost } = usePersonalProfileStore();
   const [isShareModalOpen, setIsShareModalOpen] = useState(false);
@@ -35,7 +63,7 @@ export const PostCompInteractions = ({ data }: PostCompInteractionsProps) => {
   const token = getToken();
   const router = useRouter();
 
-  const RepostThisPost = useCallback(async () => {
+  const repostThisPost = useCallback(async () => {
     try {
       const repost = await axiosInstance.post(
         `/post/repost/${data?.post_id}`,
@@ -48,13 +76,15 @@ export const PostCompInteractions = ({ data }: PostCompInteractionsProps) => {
         }
       );
       if (repost.status === 200) {
-        toast.success(repost.data.message);
+        toast.success(repost.data.message, {
+          id: "repost",
+        });
         router.refresh();
       }
     } catch (error: any) {
-      swal(error.response.data.message, {
-        icon: "info",
-      });
+      toast.error(error?.response?.data?.message || "Failed to repost", {
+        id: "repost-error",
+      })
     }
   }, [router, data?.post_id, token]);
 
@@ -101,13 +131,11 @@ export const PostCompInteractions = ({ data }: PostCompInteractionsProps) => {
           <LucideMessageSquare className="w-5 h-5 lg:w-6 lg:h-6" />
           {data?.post_comments}
         </span>
-        <span
-          onClick={RepostThisPost}
-          className="flex items-center gap-1 text-sm font-medium cursor-pointer"
-        >
-          <LucideRepeat2 className="w-5 h-5 lg:w-6 lg:h-6" />
-          {data?.post_reposts}
-        </span>
+        <PostRepost
+          repostThisPost={repostThisPost}
+          repostCount={data?.post_reposts || 0}
+          isReposted={data?.wasReposted || false}
+        />
         {data && data.post_audience !== "private" && data.user?.is_model && (
           <Link
             href={`/posts/points/${data.post_id}/`}
