@@ -1,6 +1,6 @@
 import React from "react";
 import { X } from "lucide-react";
-import { MediaFile } from "@/types/message-components";
+import { MediaFile } from "@/types/MessageComponents";
 
 interface FileUploadProgressProps {
   files: MediaFile[];

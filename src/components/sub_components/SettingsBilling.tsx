@@ -1,9 +1,9 @@
 "use client"
 import Image from "next/image";
 import Toggle from "./Checked";
-import SubscriptionState from "./subscriptionState";
-import { useUserAuthContext } from "@/lib/userUseContext";
-import { useSettingsBillingContext } from "@/contexts/settings-billing-context";
+import SubscriptionState from "./SubscriptionState";
+import { useUserAuthContext } from "@/lib/UserUseContext";
+import { useSettingsBillingContext } from "@/contexts/SettingsBillingContext";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 

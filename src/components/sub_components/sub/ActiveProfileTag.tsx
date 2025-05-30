@@ -3,9 +3,9 @@
 import {
   ActiveProfileTagProps,
   handleActiveUsersProps,
-} from "@/types/components";
+} from "@/types/Components";
 import { useEffect, useState } from "react";
-import { getSocket } from "./socket";
+import { getSocket } from "./Socket";
 
 const ActiveProfileTag = ({
   userid: username,

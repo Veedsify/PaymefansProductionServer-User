@@ -1,4 +1,4 @@
-import { useCartStore } from "@/contexts/store-context";
+import { useCartStore } from "@/contexts/StoreContext";
 import { useState } from "react";
 import toast from "react-hot-toast";
 

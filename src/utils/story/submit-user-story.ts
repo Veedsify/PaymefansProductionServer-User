@@ -1,6 +1,6 @@
-import { StoryType } from "@/contexts/story-context";
+import { StoryType } from "@/contexts/StoryContext";
 import axios from "axios";
-import { getToken } from "../cookie.get";
+import { getToken } from "../Cookie";
 
 async function SubmitUserStory(stories: StoryType[]) {     
      const token = getToken();

@@ -1,12 +1,12 @@
 "use client";
-import { getUser } from "@/lib/user";
+import { getUser } from "@/lib/User";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import axios from "axios";
-import { getToken } from "@/utils/cookie.get";
+import { getToken } from "@/utils/Cookie";
 import { LOGIN_CONFIG } from "@/config/config";
 import { LucideLoader } from "lucide-react";
 import _ from "lodash";

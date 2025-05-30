@@ -1,5 +1,5 @@
-import { useUserAuthContext } from "@/lib/userUseContext";
-import { StreamStatsProp } from "@/types/components";
+import { useUserAuthContext } from "@/lib/UserUseContext";
+import { StreamStatsProp } from "@/types/Components";
 import {
   LucideChevronLeft,
   LucideChevronRight,
@@ -14,7 +14,7 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import { useState } from "react";
-import LiveStreamSockets from "@/components/custom-hooks/live-stream-sockets";
+import LiveStreamSocket from "@/components/custom-hooks/LiveStreamSocket";
 import numeral from "numeral";
 
 const StreamStats = ({
@@ -32,7 +32,7 @@ const StreamStats = ({
   const [isStatsOpen, setStatsOpen] = useState<boolean>(false);
   const { user } = useUserAuthContext();
   const toggleStats = () => setStatsOpen(!isStatsOpen);
-  const { views, likes, commentsCount } = LiveStreamSockets({
+  const { views, likes, commentsCount } = LiveStreamSocket({
     streamId: streamData.stream_id,
   });
   return (

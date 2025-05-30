@@ -1,6 +1,6 @@
 "use client";
 import { getSocket } from "@/components/sub_components/sub/Socket";
-import { useUserAuthContext } from "@/lib/userUseContext";
+import { useUserAuthContext } from "@/lib/UserUseContext";
 import {
   createContext,
   ReactNode,
@@ -15,10 +15,10 @@ interface UserPointsContextValue {
   updatePoints: (newPoints: number) => void;
 }
 
-const UserPointsContext = createContext<UserPointsContextValue | null>(null);
+const PointsContext = createContext<UserPointsContextValue | null>(null);
 
 export const useUserPointsContext = () => {
-  const context = useContext(UserPointsContext);
+  const context = useContext(PointsContext);
   if (!context) {
     throw new Error(
       "useUserPointsContext must be used within a UserPointsContextProvider or points is undefined"
@@ -70,8 +70,8 @@ export const UserPointsContextProvider = ({
   };
 
   return (
-    <UserPointsContext.Provider value={{ points, updatePoints }}>
+    <PointsContext.Provider value={{ points, updatePoints }}>
       {children}
-    </UserPointsContext.Provider>
+    </PointsContext.Provider>
   );
 };

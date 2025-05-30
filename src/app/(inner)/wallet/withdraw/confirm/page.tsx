@@ -1,15 +1,15 @@
 "use client";
-import { useConfigContext } from "@/contexts/configs-context";
-import { useWithdrawStore } from "@/contexts/withdraw-context";
+import { useConfigContext } from "@/contexts/ConfigContext";
+import { useWithdrawStore } from "@/contexts/WithDrawContext";
 import { LucideDollarSign, LucideLoader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useCallback } from "react";
 import { motion } from "framer-motion";
 import swal from "sweetalert";
-import VerifyWithdrawalPin from "@/components/sub_components/verify-withdrawal-pin";
-import { useUserAuthContext } from "@/lib/userUseContext";
+import VerifyWithdrawalPin from "@/components/sub_components/VerifyWithdrawalPin";
+import { useUserAuthContext } from "@/lib/UserUseContext";
 import axios from "axios";
-import { getToken } from "@/utils/cookie.get";
+import { getToken } from "@/utils/Cookie";
 
 const WithdrawConfigPage = () => {
   const [loading, setLoading] = React.useState(true);

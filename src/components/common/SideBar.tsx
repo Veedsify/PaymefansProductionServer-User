@@ -1,5 +1,5 @@
 "use client";
-import { useSideBarContext } from "@/lib/pageContexts";
+import { useSideBarContext } from "@/lib/PageContext";
 import {
   LucideSettings,
   LucideLogOut,
@@ -23,12 +23,12 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import Image from "next/image";
 import swal from "sweetalert";
-import { useUserAuthContext } from "@/lib/userUseContext";
-import PointsCount from "../sub_components/sub/point-count";
-import NotificationSidebarLink from "../sub_components/sub/notification-sidebar-link";
-import useThemeToggle from "../sub_components/sub/theme-toggle";
-import axiosInstance from "@/utils/axios";
-import { useMessagesConversation } from "@/contexts/messages-conversation-context";
+import { useUserAuthContext } from "@/lib/UserUseContext";
+import PointsCount from "../sub_components/sub/PointCount";
+import NotificationSideBarLink from "../sub_components/sub/NotificationSideBarLink";
+import useThemeToggle from "../sub_components/sub/ThemeToggle";
+import axiosInstance from "@/utils/Axios";
+import { useMessagesConversation } from "@/contexts/MessageConversationContext";
 import { motion } from "framer-motion";
 
 const SideBar = React.memo(() => {
@@ -169,7 +169,7 @@ const SideBar = React.memo(() => {
                 </Link>
               </>
             )}
-            <NotificationSidebarLink />
+            <NotificationSideBarLink />
             {user?.is_model && user.Model?.verification_status == false && (
               <Link
                 href="/verification"

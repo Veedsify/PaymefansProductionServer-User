@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 import { HiCamera } from "react-icons/hi";
-import axiosServer from '@/utils/axios';
-import { getToken } from "@/utils/cookie.get";
+import axiosServer from '@/utils/Axios';
+import { getToken } from "@/utils/Cookie";
 import { AxiosError } from "axios";
 import toast from "react-hot-toast";
-import { useStoryStore } from "@/contexts/story-context";
+import { useStoryStore } from "@/contexts/StoryContext";
 
 const StoryUploadForm = () => {
     const [selected, setSelected] = useState<File[]>([])

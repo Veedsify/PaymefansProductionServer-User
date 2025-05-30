@@ -1,4 +1,4 @@
-import FetchChatData from "@/components/messages/fetch-chat-data";
+import FetchChatData from "@/components/messages/FetchChatData";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {

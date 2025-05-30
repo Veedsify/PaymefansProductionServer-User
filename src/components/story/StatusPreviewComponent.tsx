@@ -1,11 +1,11 @@
 "use client";
-import { StoryPreviewProps } from "@/types/components";
+import { StoryPreviewProps } from "@/types/Components";
 import { Swiper, SwiperClass, SwiperSlide } from "swiper/react";
 import "swiper/css/bundle";
 import Image from "next/image";
-import StoryPreviewControlls from "./status-preview-controls";
+import StoryPreviewControlls from "./StatusPreviewControls";
 import { useCallback, useEffect, useRef, useState } from "react";
-import StoriesHeader from "./stories_header";
+import StoriesHeader from "./StatusHeader";
 import VideoPlayer from "../sub_components/videoplayer";
 
 const StoryPreviewComponent = ({

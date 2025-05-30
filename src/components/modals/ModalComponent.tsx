@@ -1,5 +1,5 @@
 "use client";
-import { useModalContext } from "@/lib/pageContexts";
+import { useModalContext } from "@/lib/PageContext";
 import {
   LucideSquarePen,
   LucideImage,

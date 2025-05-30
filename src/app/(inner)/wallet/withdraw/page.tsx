@@ -1,7 +1,7 @@
-import WithDrawInput from "@/components/sub_components/withdraw-input";
-import axiosInstance from "@/utils/axios";
-import { getTransactionsData } from "@/utils/data/transactions";
-import getUserData from "@/utils/data/user-data";
+import WithdrawalInput from "@/components/sub_components/WithdrawalInput";
+import axiosInstance from "@/utils/Axios";
+import { getTransactionsData } from "@/utils/data/Transactions";
+import getUserData from "@/utils/data/UserData";
 import { LucideArrowRight } from "lucide-react";
 import { cookies } from "next/headers";
 import Image from "next/image";
@@ -83,7 +83,7 @@ const Page = async () => {
           </div>
         </div>
       </div>
-      <WithDrawInput points={points} />
+      <WithdrawalInput points={points} />
     </div>
   );
 };

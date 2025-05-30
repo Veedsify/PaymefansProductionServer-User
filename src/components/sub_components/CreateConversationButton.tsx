@@ -1,6 +1,6 @@
 "use client";
-import { useUserAuthContext } from "@/lib/userUseContext";
-import { createNewConversation } from "@/utils/data/create-conversation";
+import { useUserAuthContext } from "@/lib/UserUseContext";
+import { createNewConversation } from "@/utils/data/CreateConversation";
 import { LucideMail } from "lucide-react";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";

@@ -12,7 +12,7 @@ import "swiper/css/navigation";
 import toast from "react-hot-toast";
 import { X } from "lucide-react";
 import MediaPreviewer from "../sub_components/UploadMediaPreview";
-import { Attachment, UploadMediaCompProps } from "@/types/components";
+import { Attachment, UploadMediaCompProps } from "@/types/Components";
 
 const UploadMediaComponent: React.FC<UploadMediaCompProps> = ({
   open,

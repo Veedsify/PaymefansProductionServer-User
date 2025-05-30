@@ -1,9 +1,9 @@
 import {useState, useEffect, useCallback} from 'react';
 import axios from 'axios';
-import {AuthUserProps} from '@/types/user';
-import {getToken} from '@/utils/cookie.get';
+import {AuthUserProps} from '@/types/User';
+import {getToken} from '@/utils/Cookie';
 import _ from "lodash"
-import useDebounce from './debounce'; // Adjust the import path as necessary
+import useDebounce from './Debounce'; // Adjust the import path as necessary
 const useCheckUsername = (user: AuthUserProps, usernameCheck: string) => {
     const [canSave, setCanSave] = useState(false);
     const [message, setMessage] = useState("");

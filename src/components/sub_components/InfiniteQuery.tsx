@@ -1,5 +1,5 @@
 "use client"
-import {getToken} from '@/utils/cookie.get';
+import {getToken} from '@/utils/Cookie';
 import {useInfiniteQuery, useQuery} from '@tanstack/react-query';
 import axios, {AxiosResponse} from 'axios';
 

@@ -1,4 +1,4 @@
-import { UserMediaProps, UserPostPropsOther } from "@/types/components";
+import { UserMediaProps, UserPostPropsOther } from "@/types/Components";
 import { create } from "zustand";
 import _ from "lodash";
 

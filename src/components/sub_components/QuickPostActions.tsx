@@ -4,11 +4,11 @@ import {
 } from "lucide-react";
 import { MouseEvent, RefObject, useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { useUserAuthContext } from "@/lib/userUseContext";
+import { useUserAuthContext } from "@/lib/UserUseContext";
 import swal from "sweetalert";
-import axiosInstance from "@/utils/axios";
-import { QuickPostActionsProps } from "@/types/components";
-import QuickPostActionHooks from "@/utils/quick-actions-actions";
+import axiosInstance from "@/utils/Axios";
+import { QuickPostActionsProps } from "@/types/Components";
+import QuickPostActionHooks from "@/utils/PostActions";
 
 const QuickPostActions = ({ options }: QuickPostActionsProps) => {
   const [open, setOpen] = useState(false);

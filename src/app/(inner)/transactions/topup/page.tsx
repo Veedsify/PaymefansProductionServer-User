@@ -1,4 +1,4 @@
-import { getTransactionsData } from "@/utils/data/transactions";
+import { getTransactionsData } from "@/utils/data/Transactions";
 import { cookies } from "next/headers";
 import Image from "next/image";
 const Transactions = async () => {

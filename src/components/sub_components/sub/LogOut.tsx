@@ -1,6 +1,6 @@
 "use client";
 
-import axiosInstance from "@/utils/axios";
+import axiosInstance from "@/utils/Axios";
 import { useRouter } from "next/navigation";
 
 const LogoutButton = ({

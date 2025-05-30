@@ -1,10 +1,10 @@
-import BannerComponent from "@/components/lib_components/banner_component";
-import EditProfileButton from "@/components/sub_components/editprofileButton";
-import { ProfileCounts } from "@/components/sub_components/profile-count";
-import ProfileSocialLinks from "@/components/sub_components/profile-social-links";
-import ProfileTabs from "@/components/sub_components/profile_tabs";
-import { AuthUserProps } from "@/types/user";
-import getUserData from "@/utils/data/user-data";
+import BannerComponent from "@/components/lib_components/BannerComponent";
+import EditProfileButton from "@/components/sub_components/EditProfileButton";
+import { ProfileCounts } from "@/components/sub_components/ProfileCount";
+import ProfileSocialLinks from "@/components/sub_components/ProfileSocialLinks";
+import ProfileTabs from "@/components/sub_components/ProfileTabs";
+import { AuthUserProps } from "@/types/User";
+import getUserData from "@/utils/data/UserData";
 
 import {
   LucideCalendar,

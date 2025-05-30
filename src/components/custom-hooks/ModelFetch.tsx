@@ -1,7 +1,7 @@
 "use client"
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { getToken } from "@/utils/cookie.get";
+import { getToken } from "@/utils/Cookie";
 
 export default function ModelsFetch(pageNumber: number, search: string) {
     const [models, setModels] = useState<any[]>([]);

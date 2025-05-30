@@ -1,8 +1,8 @@
 "use client"
-import {StoryMediaFetchProps} from "@/types/components";
+import {StoryMediaFetchProps} from "@/types/Components";
 import {useEffect, useState} from "react";
 import axios, {CancelToken} from "axios";
-import {getToken} from "@/utils/cookie.get";
+import {getToken} from "@/utils/Cookie";
 import lodash from "lodash";
 
 const StoryMediaFetch = ({page}: StoryMediaFetchProps) => {

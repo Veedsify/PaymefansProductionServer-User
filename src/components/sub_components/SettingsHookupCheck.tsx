@@ -1,6 +1,6 @@
 "use client"
-import { useUserAuthContext } from "@/lib/userUseContext"
-import { updateHookupData } from "@/utils/data/update-hookup-data"
+import { useUserAuthContext } from "@/lib/UserUseContext"
+import { updateHookupData } from "@/utils/data/UpdateHookupData"
 import { useRouter } from "next/navigation"
 import toast from "react-hot-toast";
 

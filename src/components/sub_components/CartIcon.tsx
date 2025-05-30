@@ -1,6 +1,6 @@
 "use client";
-import { useCartStore } from "@/contexts/store-context";
-import { useToggleWishList } from "@/contexts/toggle-wishlist";
+import { useCartStore } from "@/contexts/StoreContext";
+import { useToggleWishList } from "@/contexts/ToggleWishlist";
 import { Heart, ShoppingCart } from "lucide-react";
 import Link from "next/link";
 

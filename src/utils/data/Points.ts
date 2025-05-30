@@ -1,5 +1,5 @@
 "use client"
-import axiosInstance from "../axios";
+import axiosInstance from "../Axios";
 
 const getUserPoints = async () => {
     const res = await axiosInstance.post(

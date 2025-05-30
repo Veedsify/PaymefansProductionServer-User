@@ -1,8 +1,8 @@
 "use client"
 
-import { useUserAuthContext } from "@/lib/userUseContext"
-import { AuthUserProps } from "@/types/user"
-import { checkUserIsSubscriber } from "@/utils/data/check-user-is-subscriber"
+import { useUserAuthContext } from "@/lib/UserUseContext"
+import { AuthUserProps } from "@/types/User"
+import { checkUserIsSubscriber } from "@/utils/data/CheckUserIsSubscriber"
 import Link from "next/link"
 import { useEffect, useState } from "react"
 import toast from "react-hot-toast"

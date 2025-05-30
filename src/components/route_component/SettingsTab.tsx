@@ -1,14 +1,14 @@
 "use client";
 
 import {Tab, TabList, TabPanel, Tabs} from "react-tabs";
-import ProfileSettings from "../sub_components/profilesettings";
-import Settingsbilling from "../sub_components/settingsbilling";
-import SettingSecurity from "../sub_components/settingsecurity";
-import {AuthUserProps} from "@/types/user";
+import ProfileSettings from "../sub_components/ProfileSettings";
+import Settingsbilling from "../sub_components/SettingsBilling";
+import SettingsSecurity from "../sub_components/SettingsSecurity";
+import {AuthUserProps} from "@/types/User";
 import {MouseEvent, useEffect, useState} from "react";
 import {useSearchParams} from "next/navigation";
-import {SettingsBillingProvider} from "@/contexts/settings-billing-context";
-import {useUserAuthContext} from "@/lib/userUseContext";
+import {SettingsBillingProvider} from "@/contexts/SettingsBillingContext";
+import {useUserAuthContext} from "@/lib/UserUseContext";
 
 
 const SettingsTab = ({user}: { user: AuthUserProps | null }) => {
@@ -68,7 +68,7 @@ const SettingsTab = ({user}: { user: AuthUserProps | null }) => {
                     <ProfileSettings user={user}/>
                 </TabPanel>
                 <TabPanel>
-                    <SettingSecurity/>
+                    <SettingsSecurity/>
                 </TabPanel>
                 {(authuser?.is_model &&
                     authuser.Model?.verification_status === true) && (

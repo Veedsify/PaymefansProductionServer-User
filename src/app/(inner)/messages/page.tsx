@@ -1,7 +1,7 @@
-import ConversationComponent from "@/components/sub_components/conversation-components";
-import MessageCounter from "@/components/sub_components/message-counter";
-import MessageSearch from "@/components/sub_components/message-search";
-import { MessagesConversationProvider } from "@/contexts/messages-conversation-context";
+import ConversationComponent from "@/components/sub_components/ConversationComponent";
+import MessageCounter from "@/components/messages/MessageCounter";
+import MessageSearch from "@/components/messages/MessageSearch";
+import { MessagesConversationProvider } from "@/contexts/MessageConversationContext";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {

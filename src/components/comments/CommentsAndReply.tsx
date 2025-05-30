@@ -1,8 +1,8 @@
 "use client"
 import { useState } from "react"
-import CommentsHolder from "./comments"
-import ReplyPostComponent from "./reply-post-textarea"
-import { Comment, PostData } from "@/types/components";
+import CommentsHolder from "./Comments"
+import ReplyPostComponent from "./ReplyTextarea"
+import { Comment, PostData } from "@/types/Components";
 import { useRouter } from "next/navigation";
 
 

@@ -6,12 +6,12 @@ import Link from "next/link";
 import { ChangeEvent, useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import StreamStats from "../sub_components/StreamStats";
-import { AuthUserProps } from "@/types/user";
+import { AuthUserProps } from "@/types/User";
 import swal from "sweetalert";
 import { useRouter } from "next/navigation";
-import { streamDataProps } from "@/types/components";
-import axiosInstance from "@/utils/axios";
-import { getToken } from "@/utils/cookie.get";
+import { streamDataProps } from "@/types/Components";
+import axiosInstance from "@/utils/Axios";
+import { getToken } from "@/utils/Cookie";
 
 const StreamDeckCamera = ({
   thisUser,

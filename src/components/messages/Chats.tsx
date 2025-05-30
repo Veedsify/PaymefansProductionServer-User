@@ -10,16 +10,16 @@ import {
   LucideLoader2,
   LucideVerified,
 } from "lucide-react";
-import MessageBubble from "../sub_components/message_bubble";
-import MessageInput from "../sub_components/message_input";
-import { useUserAuthContext } from "@/lib/userUseContext";
-import { getSocket } from "../sub_components/sub/socket";
+import MessageBubble from "./MessageBubble";
+import MessageInput from "./MessageInput";
+import { useUserAuthContext } from "@/lib/UserUseContext";
+import { getSocket } from "../sub_components/sub/Socket";
 import swal from "sweetalert";
-import { MediaFile, Message } from "@/types/components";
-import ActiveProfileTag from "../sub_components/sub/active-profile-tag";
-import { MediaProvider } from "@/contexts/message-media-context";
+import { MediaFile, Message } from "@/types/Components";
+import ActiveProfileTag from "../sub_components/sub/ActiveProfileTag";
+import { MediaProvider } from "@/contexts/MessageMediaContext";
 import { useInView } from "react-intersection-observer";
-import Loader from "../lib_components/loading-animation";
+import Loader from "../lib_components/LoadingAnimation";
 
 // Types
 interface ChatProps {

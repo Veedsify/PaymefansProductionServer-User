@@ -1,13 +1,13 @@
-import { RespostPanelProps } from "@/types/components";
-import { formatDate } from "@/utils/format-date";
-import PostComponent from "../post/post_component";
+import { RespostPanelProps } from "@/types/Components";
+import { formatDate } from "@/utils/FormatDate";
+import PostComponent from "../post/PostComponent";
 import { useEffect, useState } from "react";
 import { useInView } from "react-intersection-observer";
-import { useUserAuthContext } from "@/lib/userUseContext";
-import RepostPanelFetch from "../custom-hooks/repost-panel-fetch";
+import { useUserAuthContext } from "@/lib/UserUseContext";
+import RepostPanelFetch from "../custom-hooks/RepostPanelFetch";
 import { LucideLoader } from "lucide-react";
 import axios, { AxiosResponse } from "axios";
-import { getToken } from "@/utils/cookie.get";
+import { getToken } from "@/utils/Cookie";
 import { useInfiniteQuery } from "@tanstack/react-query";
 const RepostPanel = ({ userdata }: RespostPanelProps) => {
   async function fetchPost(pageNumber: number) {

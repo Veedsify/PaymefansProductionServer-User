@@ -1,13 +1,13 @@
 "use client";
-import { getToken } from "@/utils/cookie.get";
+import { getToken } from "@/utils/Cookie";
 import { LucideLoader, LucideTrash2 } from "lucide-react";
 import React, { useEffect, useState, useCallback } from "react";
 import swal from "sweetalert";
 import {
   acceptedBankCountries,
   acceptedBankTypes,
-} from "@/utils/data/accepted-bank-countries";
-import CountrySelector from "@/components/sub_components/country-selector";
+} from "@/utils/data/AcceptedBankCountries";
+import CountrySelector from "@/components/sub_components/CountrySelector";
 import Image from "next/image";
 import { BANK_CONFIG } from "@/config/config";
 

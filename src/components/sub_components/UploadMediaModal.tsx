@@ -3,7 +3,7 @@ import { useCallback, useRef, useState } from "react";
 import { X, ChevronRight } from "lucide-react";
 import Image from "next/image";
 import toast from "react-hot-toast";
-import { useMediaContext } from "@/contexts/message-media-context";
+import { useMediaContext } from "@/contexts/MessageMediaContext";
 import { Navigation } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";

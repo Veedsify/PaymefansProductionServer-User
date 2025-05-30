@@ -1,8 +1,8 @@
-import ModelsPageSearch from "@/components/models/models-page-search";
-import ModelsSubscription from "@/components/sub_components/models_subscription";
-import { AllModelsProps, AuthUserProps } from "@/types/user";
-import getSideModels from "@/utils/data/get-sidemodels";
-import getUserData from "@/utils/data/user-data";
+import ModelsPageSearch from "@/components/models/ModelsPageSearch";
+import ModelsSubscription from "@/components/sub_components/ModelsSubscription";
+import { AllModelsProps, AuthUserProps } from "@/types/User";
+import getSideModels from "@/utils/data/GetSideModels";
+import getUserData from "@/utils/data/UserData";
 import { LucideArrowUp, LucideSearch } from "lucide-react";
 
 const ModelsPage = async () => {

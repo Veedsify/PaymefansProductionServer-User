@@ -7,7 +7,7 @@ import {
   useEffect,
   useState,
 } from "react";
-import { MediaContextState } from "@/types/message-components";
+import { MediaContextState } from "@/types/MessageComponents";
 import ROUTE from "@/config/routes";
 import { useRouter } from "next/navigation";
 

@@ -1,7 +1,7 @@
 "use client";
-import CartIcon from "@/components/sub_components/cart-icon";
-import { StoreProduct } from "@/types/components";
-import fetchStoreProducts from "@/utils/data/fetch-store-products";
+import CartIcon from "@/components/sub_components/CartIcon";
+import { StoreProduct } from "@/types/Components";
+import fetchStoreProducts from "@/utils/data/FetchStoreProducts";
 import { ShoppingCart } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";

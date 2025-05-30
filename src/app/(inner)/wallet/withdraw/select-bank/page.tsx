@@ -1,6 +1,6 @@
 "use client";
-import { useWithdrawStore } from "@/contexts/withdraw-context";
-import { getToken } from "@/utils/cookie.get";
+import { useWithdrawStore } from "@/contexts/WithDrawContext";
+import { getToken } from "@/utils/Cookie";
 import { LucideBuilding2, LucideLoader2 } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";

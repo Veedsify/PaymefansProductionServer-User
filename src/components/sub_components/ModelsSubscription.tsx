@@ -1,4 +1,4 @@
-import { AllModelsProps } from "@/types/user";
+import { AllModelsProps } from "@/types/User";
 import Image from "next/image";
 import Link from "next/link";
 import { useMemo } from "react";

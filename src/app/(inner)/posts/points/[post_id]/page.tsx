@@ -1,17 +1,17 @@
-import getAllPoints from "@/utils/data/get-points";
-import PointsBuy from "@/components/sub_components/points";
+import getAllPoints from "@/utils/data/GetPoints";
+import PointsBuy from "@/components/sub_components/Points";
 import Image from "next/image";
 import Link from "next/link";
-import { formatDate } from "@/utils/format-date";
+import { formatDate } from "@/utils/FormatDate";
 import { LucideEye, LucideLock, LucideUsers } from "lucide-react";
-import QuickPostActions from "@/components/sub_components/quick_post_actions";
-import PostPageImage from "@/components/sub_components/postpage-image";
+import QuickPostActions from "@/components/sub_components/QuickPostActions";
+import PostPageImage from "@/components/post/PostPageImage";
 import React from "react";
 import { cookies } from "next/headers";
 import axios from "axios";
 import { redirect } from "next/navigation";
-import getUserData from "@/utils/data/user-data";
-import { getPost } from "@/utils/data/getpost";
+import getUserData from "@/utils/data/UserData";
+import { getPost } from "@/utils/data/GetPost";
 
 type Points = {
   points: number;

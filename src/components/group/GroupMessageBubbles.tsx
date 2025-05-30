@@ -125,7 +125,7 @@ const GroupMessageBubbles: React.FC = () => {
           className={`flex items-end gap-3 ${message.isSender ? "justify-end" : "justify-start"}`}
         >
           {!message.isSender && (
-            <Link href="/">
+            <Link href="/client/public">
               <Image
                 width={40}
                 height={40}
@@ -167,7 +167,7 @@ const GroupMessageBubbles: React.FC = () => {
           </div>
 
           {message.isSender && (
-            <Link href="/">
+            <Link href="/client/public">
               <Image
                 width={40}
                 height={40}

@@ -1,5 +1,5 @@
 import {create} from "zustand"
-import {UserPostProps} from "@/types/components";
+import {UserPostProps} from "@/types/Components";
 import _ from "lodash";
 
 type ProfileRepostContext = {

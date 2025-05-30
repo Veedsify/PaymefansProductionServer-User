@@ -1,7 +1,7 @@
-import SettingsTab from "@/components/route_component/settingstab";
+import SettingsTab from "@/components/route_component/SettingsTab";
 import { Metadata } from "next";
 import Image from "next/image";
-import getUserData from "@/utils/data/user-data";
+import getUserData from "@/utils/data/UserData";
 
 export const metadata: Metadata = {
     title: "Setings & Privacy | Paymefans",

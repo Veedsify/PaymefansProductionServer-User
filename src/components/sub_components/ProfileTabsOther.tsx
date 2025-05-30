@@ -2,13 +2,13 @@
 import { useState } from "react";
 import { Tab, Tabs, TabList, TabPanel } from "react-tabs";
 import { LucideImage, LucideLock, LucidePodcast, LucideRepeat2 } from "lucide-react";
-import PostPanelOther from "./postpanelother";
-import MediaPanelOther from "./mediapanelother";
-import { ProfileUserProps } from "@/types/user";
-import RepostPanel from "./repost_panel";
-import PostPanel from "@/components/sub_components/postpanel";
-import MediaPanel from "@/components/sub_components/mediapanel";
-import PrivatePanelOther from "./privatepanelother";
+import PostPanelOther from "../post/PostPanelOther";
+import MediaPanelOther from "../media/MediaPanelOther";
+import { ProfileUserProps } from "@/types/User";
+import RepostPanel from "./RepostPanel";
+import PostPanel from "@/components/post/PostPanel";
+import MediaPanel from "@/components/media/MediaPanel";
+import PrivatePanelOther from "./PrivatePanelOther";
 const ProfileTabsOther = ({ userdata }: { userdata: ProfileUserProps }) => {
     const [activeTab, setActiveTab] = useState(0);
 

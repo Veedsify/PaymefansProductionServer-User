@@ -1,18 +1,18 @@
 "use client";
 import React, { useState, useRef, useCallback } from "react";
-import { useUserAuthContext } from "@/lib/userUseContext";
+import { useUserAuthContext } from "@/lib/UserUseContext";
 import { POST_CONFIG } from "@/config/config";
 import { v4 as uuid } from "uuid";
-import { getToken } from "@/utils/cookie.get";
-import { UploadedImageProp, UploadResponseResponse } from "@/types/components";
+import { getToken } from "@/utils/Cookie";
+import { UploadedImageProp, UploadResponseResponse } from "@/types/Components";
 import toast from "react-hot-toast";
 import AddNewPostMedia from "../sub_components/sub/AddNewPostMedia";
-import Media from "@/components/common/media-preview-post";
+import Media from "@/components/common/MediaPreviewPost";
 import axios from "axios";
-import { getMaxDurationBase64 } from "@/utils/get-video-max-duration";
-import UploadImageToCloudflare from "../../utils/cloudflare-image-uploader";
-import UploadWithTus from "@/utils/tusUploader";
-import { usePostMediaUploadContext } from "@/contexts/post-media-upload-context";
+import { getMaxDurationBase64 } from "@/utils/GetVideoMaxDuration";
+import UploadImageToCloudflare from "../../utils/CloudflareImageUploader";
+import UploadWithTus from "@/utils/TusUploader";
+import { usePostMediaUploadContext } from "@/contexts/PostMediaUploadContext";
 
 type PostMediaPreviewProps = {
   submitPost: (image: UploadedImageProp) => void;

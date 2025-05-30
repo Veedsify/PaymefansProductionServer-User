@@ -1,9 +1,9 @@
 "use client";
-import { getSocket } from "@/components/sub_components/sub/socket";
-import { useUserPointsContext } from "@/contexts/user-points-context";
-import { useUserAuthContext } from "@/lib/userUseContext";
-import { getToken } from "@/utils/cookie.get";
-import { SubscribeToUser } from "@/utils/data/subscribe-to-user";
+import { getSocket } from "@/components/sub_components/sub/Socket";
+import { useUserPointsContext } from "@/contexts/PointsContext";
+import { useUserAuthContext } from "@/lib/UserUseContext";
+import { getToken } from "@/utils/Cookie";
+import { SubscribeToUser } from "@/utils/data/SubscribeToUser";
 import axios from "axios";
 import Image from "next/image";
 import Link from "next/link";
@@ -12,7 +12,7 @@ import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import swal from "sweetalert";
 import numeral from "numeral";
-import getFormattedStringFromDays from "@/utils/data/calculate-days";
+import getFormattedStringFromDays from "@/utils/data/CalculateDays";
 
 type SubscribeProps = {
   params: {

@@ -1,20 +1,20 @@
 "use client";
 import { POINTS_CONFIG } from "@/config/config";
 import ROUTE from "@/config/routes";
-import { useUserAuthContext } from "@/lib/userUseContext";
-import { ExchangeRate } from "@/types/components";
-import { currencyRates as defaultRates } from "./AddPoints";
+import { useUserAuthContext } from "@/lib/UserUseContext";
+import { ExchangeRate } from "@/types/Components";
+import { currencyRates as defaultRates } from "../points/AddPoints";
 import { LucideLoader } from "lucide-react";
 import { ChangeEvent, useEffect, useState } from "react";
 import toast from "react-hot-toast";
-import { useWithdrawStore } from "@/contexts/withdraw-context";
+import { useWithdrawStore } from "@/contexts/WithDrawContext";
 import { useRouter } from "next/navigation";
-import { useConfigContext } from "@/contexts/configs-context";
+import { useConfigContext } from "@/contexts/ConfigContext";
 
 // You can adjust or import this from a common place
 const FEE_PERCENTAGE = 0.25; // 20% fee
 
-const WithDrawInput = ({ points }: { points: number }) => {
+const WithdrawalInput = ({ points }: { points: number }) => {
   const { user } = useUserAuthContext();
   const [value, setValue] = useState("");
   const [rates, setRates] = useState<ExchangeRate[]>(defaultRates);
@@ -249,4 +249,4 @@ const WithDrawInput = ({ points }: { points: number }) => {
   );
 };
 
-export default WithDrawInput;
+export default WithdrawalInput;

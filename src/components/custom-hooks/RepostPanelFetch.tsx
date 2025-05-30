@@ -1,5 +1,5 @@
-import { RespotPanelFetchProps, UserPostProps } from "@/types/components";
-import { getToken } from "@/utils/cookie.get";
+import { RespotPanelFetchProps, UserPostProps } from "@/types/Components";
+import { getToken } from "@/utils/Cookie";
 import axios, { AxiosResponse } from "axios";
 import { useEffect, useState } from "react";
 import _ from "lodash";

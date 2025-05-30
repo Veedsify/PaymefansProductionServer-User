@@ -1,4 +1,4 @@
-import { AuthUserProps } from "@/types/user";
+import { AuthUserProps } from "@/types/User";
 import Image from "next/image";
 import Link from "next/link";
 

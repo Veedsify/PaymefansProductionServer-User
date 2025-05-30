@@ -2,7 +2,7 @@
 import { useState, useEffect, useRef, ChangeEvent } from "react";
 import { ChevronDown } from "lucide-react";
 import Image from "next/image";
-import { acceptedBankTypes } from "@/utils/data/accepted-bank-countries";
+import { acceptedBankTypes } from "@/utils/data/AcceptedBankCountries";
 
 type CountrySelectorProps = {
   acceptedBankCountries: {

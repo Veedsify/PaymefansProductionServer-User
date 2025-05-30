@@ -1,12 +1,12 @@
 "use client";
-import { useUserAuthContext } from "@/lib/userUseContext";
-import PostComponent from "../post/post_component";
+import { useUserAuthContext } from "@/lib/UserUseContext";
+import PostComponent from "../post/PostComponent";
 import React, { useEffect } from "react";
-import { formatDate } from "@/utils/format-date";
+import { formatDate } from "@/utils/FormatDate";
 import { useInView } from "react-intersection-observer";
 import { LucideLoader } from "lucide-react";
 import { useInfiniteQuery } from "@tanstack/react-query";
-import { getToken } from "@/utils/cookie.get";
+import { getToken } from "@/utils/Cookie";
 import axios, { AxiosResponse } from "axios";
 
 async function fetchPrivatePost(pageNumber: number) {

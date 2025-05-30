@@ -1,9 +1,9 @@
 "use client";
 import Link from "next/link"
 import { LucideBell } from "lucide-react"
-import { useNotificationStore } from "@/contexts/notification-context";
+import { useNotificationStore } from "@/contexts/NotificationContext";
 import { useEffect, useState } from "react";
-const NotificationSidebarLink = () => {
+const NotificationSideBarLink = () => {
      const { totalNotifications } = useNotificationStore()
      return (
           <span>
@@ -19,4 +19,4 @@ const NotificationSidebarLink = () => {
      );
 }
 
-export default NotificationSidebarLink;
+export default NotificationSideBarLink;

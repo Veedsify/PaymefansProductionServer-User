@@ -1,5 +1,5 @@
 "use client";
-import { useUserAuthContext } from "@/lib/userUseContext";
+import { useUserAuthContext } from "@/lib/UserUseContext";
 import {
   LucideInfo,
 } from "lucide-react";

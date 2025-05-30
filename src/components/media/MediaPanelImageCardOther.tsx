@@ -8,8 +8,8 @@ import { getToken } from "@/utils/Cookie";
 import { ProfileUserProps } from "@/types/User";
 import { useUserAuthContext } from "@/lib/UserUseContext";
 import { MediaDataTypeOtherProps } from "@/types/Components";
-import HLSVideoPlayer from "./videoplayer";
-import { LockedMediaOverlay } from "./sub/LockedMediaOverlay";
+import HLSVideoPlayer from "../sub_components/videoplayer";
+import { LockedMediaOverlay } from "../sub_components/sub/LockedMediaOverlay";
 import { useOtherMediaContext } from "@/contexts/ProfileMediaContext";
 import { useInfiniteQuery } from "@tanstack/react-query";
 const getUniqueItems = (arr: MediaDataTypeOtherProps[]) => {

@@ -9,13 +9,13 @@ import {
   Loader2,
 } from "lucide-react";
 import { useParams, useSearchParams } from "next/navigation";
-import { Product } from "@/types/components";
-import fetchSingleProduct from "@/utils/data/fetch-single-product";
-import CartIcon from "@/components/sub_components/cart-icon";
+import { Product } from "@/types/Components";
+import fetchSingleProduct from "@/utils/data/FetchSingleProduct";
+import CartIcon from "@/components/sub_components/CartIcon";
 import numeral from "numeral";
-import Loader from "@/components/lib_components/loading-animation";
+import Loader from "@/components/lib_components/LoadingAnimation";
 import Link from "next/link";
-import { useCartStore } from "@/contexts/store-context";
+import { useCartStore } from "@/contexts/StoreContext";
 import toast from "react-hot-toast";
 import Image from "next/image";
 

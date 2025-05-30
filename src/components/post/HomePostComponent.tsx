@@ -1,9 +1,9 @@
 "use client";
-import { formatDate } from "@/utils/format-date";
-import FetchHomeFeedPosts from "../custom-hooks/fetch-home-feed-posts";
-import PostComponent from "./post_component";
+import { formatDate } from "@/utils/FormatDate";
+import FetchHomeFeedPosts from "../custom-hooks/FetchHomeFeedPosts";
+import PostComponent from "./PostComponent";
 import LoadingPost from "../sub_components/LoadingPost";
-import { useHomeFeedStore } from "@/contexts/home-feed-context";
+import { useHomeFeedStore } from "@/contexts/HomeFeedContext";
 
 const HomePostComponent = () => {
   const { loading, error } = FetchHomeFeedPosts();

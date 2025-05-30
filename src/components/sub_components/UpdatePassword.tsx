@@ -1,6 +1,6 @@
 "use client";
 
-import { getToken } from "@/utils/cookie.get";
+import { getToken } from "@/utils/Cookie";
 import axios from "axios";
 import { ChangeEvent, useState } from "react";
 import toast from "react-hot-toast";

@@ -1,10 +1,10 @@
 "use client";
 import React from "react";
 import { DyteProvider, useDyteClient } from "@dytesdk/react-web-core";
-import StreamDeckCamera from "./stream-deck-camera";
-import useLivestreamStore from "@/contexts/livestream-context";
-import { useUserAuthContext } from "@/lib/userUseContext";
-import { streamDataProps } from "@/types/components";
+import StreamDeckCamera from "./StreamDeckCamera";
+import useLivestreamStore from "@/contexts/LiveStreamContext";
+import { useUserAuthContext } from "@/lib/UserUseContext";
+import { streamDataProps } from "@/types/Components";
 import { useEffect } from "react";
 
 const GetLivestream = () => {

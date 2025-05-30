@@ -5,13 +5,13 @@ import {
   LucideUsers,
 } from "lucide-react";
 import Link from "next/link";
-import SettingsHookupCheck from "./settings-hookup-check";
-import UpdatePasswords from "./update-password";
-import { useUserAuthContext } from "@/lib/userUseContext";
+import SettingsHookupCheck from "./SettingsHookupCheck";
+import UpdatePasswords from "./UpdatePassword";
+import { useUserAuthContext } from "@/lib/UserUseContext";
 import Toggle from "./Checked";
-import TwoFactorAuth from "./settings-two-factor-auth";
+import TwoFactorAuth from "./SettingsTwoFactorAuth";
 
-const SettingSecurity = () => {
+const SettingsSecurity = () => {
   const { user } = useUserAuthContext();
   return (
     <div className=" bg-white dark:bg-gray-950 rounded-xl transition-colors duration-300">
@@ -110,4 +110,4 @@ const SettingSecurity = () => {
   );
 };
 
-export default SettingSecurity;
+export default SettingsSecurity;

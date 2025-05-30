@@ -1,4 +1,4 @@
-import GroupConversations from "@/components/route_component/group-conversations";
+import GroupConversations from "@/components/route_component/GroupConversations";
 import { LucideSearch } from "lucide-react";
 
 const Groups = () => {

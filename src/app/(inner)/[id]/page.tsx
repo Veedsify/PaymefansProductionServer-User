@@ -14,17 +14,17 @@ import {
     Verified,
 } from "lucide-react";
 
-import { useUserAuthContext } from "@/lib/userUseContext";
-import { ProfileUserProps } from "@/types/user";
-import getUserProfile from "@/utils/data/profile-data";
-import UserNotFound from "@/components/common/usernotfound";
-import SuspendedUserPage from "@/components/sub_components/suspended";
-import FollowUserComponent from "@/components/sub_components/followUserComponent";
-import CreateSubscriptionButton from "@/components/sub_components/create-subscription-button";
-import CreateConversationButton from "@/components/sub_components/create-conversation-button";
-import ProfileTabsOther from "@/components/sub_components/profile_tabs_other";
-import ActiveProfileTag from "@/components/sub_components/sub/active-profile-tag";
-import ProfileSocialLinks from "@/components/sub_components/profile-social-links";
+import { useUserAuthContext } from "@/lib/UserUseContext";
+import { ProfileUserProps } from "@/types/User";
+import getUserProfile from "@/utils/data/ProfileData";
+import UserNotFound from "@/components/common/UserNotFound";
+import SuspendedUserPage from "@/components/sub_components/Suspended";
+import FollowUserComponent from "@/components/sub_components/FollowUserComponent";
+import CreateSubscriptionButton from "@/components/sub_components/CreateSubscriptionButton";
+import CreateConversationButton from "@/components/sub_components/CreateConversationButton";
+import ProfileTabsOther from "@/components/sub_components/ProfileTabsOther";
+import ActiveProfileTag from "@/components/sub_components/sub/ActiveProfileTag";
+import ProfileSocialLinks from "@/components/sub_components/ProfileSocialLinks";
 
 // Utility to format numbers
 const formatNumber = (num: number = 0): string => {

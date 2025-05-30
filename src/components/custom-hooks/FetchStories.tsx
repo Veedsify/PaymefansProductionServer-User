@@ -1,6 +1,6 @@
 "use client";
-import { UserData } from "@/types/story";
-import { getToken } from "@/utils/cookie.get";
+import { UserData } from "@/types/Story";
+import { getToken } from "@/utils/Cookie";
 import { useEffect, useState } from "react";
 
 const useFetchStories = () => {

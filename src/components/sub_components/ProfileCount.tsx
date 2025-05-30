@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { ProfileStatsComponent } from "./profile-stats-components";
+import { ProfileStatsComponent } from "./ProfileStatsComponent";
 
 function formatNumber(num: number = 0): string {
   if (num >= 1e9) return (num / 1e9).toFixed(1) + "B";

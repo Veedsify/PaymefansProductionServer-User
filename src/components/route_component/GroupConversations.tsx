@@ -1,4 +1,4 @@
-import GroupMessageComponent from "../sub_components/GroupMessageComponent";
+import GroupMessageComponent from "../group/GroupMessageComponent";
 
 const GroupConversations = () => {
   return (

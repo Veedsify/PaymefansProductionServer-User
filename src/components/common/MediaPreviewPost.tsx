@@ -2,7 +2,7 @@
 import React, { useEffect, useMemo } from "react";
 import { X } from "lucide-react";
 import Image from "next/image";
-import { imageTypes, videoTypes } from "@/lib/filetypes";
+import { imageTypes, videoTypes } from "@/lib/FileTypes";
 
 type MediaProps = {
   id: string;

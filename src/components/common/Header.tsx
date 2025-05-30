@@ -1,8 +1,8 @@
 "use client";
 import { LucideBellRing } from "lucide-react";
-import HeaderTitle from "../sub_components/header_title";
+import HeaderTitle from "../sub_components/HeaderTitle";
 import Image from "next/image";
-import HeaderImgClick from "../sub_components/headerImgClick";
+import HeaderImgClick from "../sub_components/HeaderImageClick";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";

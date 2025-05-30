@@ -1,9 +1,9 @@
 "use client"
-import { useNewPostStore } from "@/contexts/new-post-context";
+import { useNewPostStore } from "@/contexts/NewPostContext";
 import { useRouter } from "next/navigation";
 import swal from "sweetalert";
 
-export const PostCancelComp = () => {
+export const PostCancel = () => {
     const router = useRouter()
     const { clearAll } = useNewPostStore();
     const confirmCancel = () => {

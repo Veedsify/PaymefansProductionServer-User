@@ -1,6 +1,6 @@
 "use client";
 
-import { useToggleWishList } from "@/contexts/toggle-wishlist";
+import { useToggleWishList } from "@/contexts/ToggleWishlist";
 import { X } from "lucide-react";
 
 const WishList = () => {

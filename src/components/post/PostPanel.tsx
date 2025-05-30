@@ -1,6 +1,6 @@
 "use client";
 import { useUserAuthContext } from "@/lib/UserUseContext";
-import PostComponent from "../post/PostComponent";
+import PostComponent from "./PostComponent";
 import React, { useEffect, useState } from "react";
 import { formatDate } from "@/utils/FormatDate";
 import PostPanelFetch from "../custom-hooks/PostPanelFetch";

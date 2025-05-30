@@ -3,7 +3,7 @@ import ROUTE from "@/config/routes";
 import { X } from "lucide-react";
 import { useState } from "react";
 
-const SuspendedSupportTicketForm = ({
+const AccountSuspendedSupportTicket = ({
   user,
   open = false,
   close,
@@ -170,4 +170,4 @@ const SuspendedSupportTicketForm = ({
   );
 };
 
-export default SuspendedSupportTicketForm;
+export default AccountSuspendedSupportTicket;

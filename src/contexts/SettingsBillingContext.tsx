@@ -1,4 +1,4 @@
-import { getToken } from "@/utils/cookie.get";
+import { getToken } from "@/utils/Cookie";
 import { useRouter } from "next/navigation";
 import { createContext, useContext, useEffect, useState } from "react";
 import toast from "react-hot-toast";

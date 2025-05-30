@@ -8,11 +8,11 @@ import { UserMediaProps } from "@/types/Components";
 import Link from "next/link";
 import { LucideLock } from "lucide-react";
 import { useRouter } from "next/navigation";
-import HLSVideoPlayer from "./videoplayer";
+import HLSVideoPlayer from "../sub_components/videoplayer";
 import { MouseEvent } from "react";
 import { useInView } from "react-intersection-observer";
 import { useUserAuthContext } from "@/lib/UserUseContext";
-import { getSocket } from "./sub/Socket";
+import { getSocket } from "../sub_components/sub/Socket";
 
 // Define props type for the component
 interface PostPageImageProps {

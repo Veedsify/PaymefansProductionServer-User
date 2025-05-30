@@ -8,15 +8,15 @@ import {
   LucideShare,
 } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
-import { useUserAuthContext } from "@/lib/userUseContext";
-import { LikeThisPost } from "@/utils/postinteractions";
+import { useUserAuthContext } from "@/lib/UserUseContext";
+import { LikeThisPost } from "@/utils/PostInteractions";
 import numeral from "numeral";
-import { PostData } from "@/types/components";
+import { PostData } from "@/types/Components";
 import Link from "next/link";
-import formatNumber from "@/lib/formatnumbers";
-import { usePersonalProfileStore } from "@/contexts/personal-profile-context";
-import axiosInstance from "@/utils/axios";
-import { getToken } from "@/utils/cookie.get";
+import formatNumber from "@/lib/FormatNumbers";
+import { usePersonalProfileStore } from "@/contexts/PersonalProfileContext";
+import axiosInstance from "@/utils/Axios";
+import { getToken } from "@/utils/Cookie";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 

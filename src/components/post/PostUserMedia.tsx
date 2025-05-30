@@ -2,7 +2,7 @@
 import { X } from "lucide-react";
 import Image from "next/image";
 import React, { Dispatch, SetStateAction, useCallback, useEffect } from "react";
-import { UserMediaProps } from "@/types/components";
+import { UserMediaProps } from "@/types/Components";
 
 function PostUserMedia({
      medias,

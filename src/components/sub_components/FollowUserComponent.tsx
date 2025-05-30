@@ -1,6 +1,6 @@
 "use client";
-import { AuthUserProps, ProfileUserProps } from "@/types/user";
-import followUser from "@/utils/data/update/follow";
+import { AuthUserProps, ProfileUserProps } from "@/types/User";
+import followUser from "@/utils/data/update/Follow";
 import React, { useEffect } from "react";
 import toast from "react-hot-toast";
 

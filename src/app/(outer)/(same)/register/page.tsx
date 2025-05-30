@@ -1,13 +1,13 @@
 "use client";
-import {countries} from "@/lib/locations";
-import {useUser} from "@/lib/userContext";
-import {UserRegisterType} from "@/types/user";
+import {countries} from "@/lib/Locations";
+import {useUser} from "@/lib/UserContext";
+import {UserRegisterType} from "@/types/User";
 import Image from "next/image";
 import Link from "next/link";
 import {useRouter} from "next/navigation";
 import {ChangeEvent, FormEvent, MouseEvent, useEffect, useState} from "react";
 import toast from "react-hot-toast";
-import {getToken} from "@/utils/cookie.get";
+import {getToken} from "@/utils/Cookie";
 import {LucideLoader2} from "lucide-react";
 
 const Register = () => {

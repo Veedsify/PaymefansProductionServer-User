@@ -23,7 +23,7 @@ interface PaymentValidationResponse {
  * @param data The model signup data
  * @returns The API response
  */
-export const ModelSignUp = async (data: ModelSignUpProps): Promise<AxiosResponse> => {
+export const ModelSignup = async (data: ModelSignUpProps): Promise<AxiosResponse> => {
     const token = getToken();
 
     try {
@@ -90,7 +90,7 @@ export const ValidateModelPayment = async (
         }
 
         // If payment is successful, proceed with model signup
-        const signupResponse = await ModelSignUp(modelData);
+        const signupResponse = await ModelSignup(modelData);
 
         if (!signupResponse || signupResponse.status !== 200) {
             throw new Error("Model signup failed after successful payment");

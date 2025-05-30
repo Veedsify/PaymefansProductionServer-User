@@ -1,8 +1,8 @@
 "use client"
-import CoinUsedUp from "@/components/sub_components/coinpurchase/cancelled";
-import CoinProcessing from "@/components/sub_components/coinpurchase/processing";
-import CoinPurchaseSuccessful from "@/components/sub_components/coinpurchase/successful";
-import axiosInstance from "@/utils/axios";
+import CoinUsedUp from "@/components/sub_components/coinpurchase/Cancelled";
+import CoinProcessing from "@/components/sub_components/coinpurchase/Processing";
+import CoinPurchaseSuccessful from "@/components/sub_components/coinpurchase/Successful";
+import axiosInstance from "@/utils/Axios";
 import {
     FetchQueryOptions
 } from "@tanstack/react-query"

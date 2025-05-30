@@ -1,5 +1,5 @@
 import axios, { AxiosProgressEvent } from "axios";
-import { getToken } from "./cookie.get";
+import { getToken } from "./Cookie";
 import ROUTE from "@/config/routes";
 import toast from "react-hot-toast";
 import { RemovedMediaIdProps, UploadedImageProp } from "@/types/Components";

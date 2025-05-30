@@ -7,8 +7,8 @@ import { Navigation, Pagination } from "swiper/modules";
 import { ChevronLeft, ChevronRight, X } from "lucide-react";
 import "swiper/css/bundle";
 import { motion } from "framer-motion";
-import usePostComponent from "@/contexts/post-component-preview";
-import Loader from "../lib_components/loading-animation";
+import usePostComponent from "@/contexts/PostComponentPreview";
+import Loader from "../lib_components/LoadingAnimation";
 import HLSVideoPlayer from "../sub_components/videoplayer";
 
 // Define types

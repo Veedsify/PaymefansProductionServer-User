@@ -3,11 +3,11 @@ import { LucideSearch } from "lucide-react";
 import ModelsSubscription from "../sub_components/ModelsSubscription";
 import HookupSubscription from "../sub_components/HookupSubscription";
 import Link from "next/link";
-import { AuthUserProps } from "@/types/user";
+import { AuthUserProps } from "@/types/User";
 import {
   ModelLoader,
   HookUpLoader,
-} from "@/components/loaders.tsx/modelloader";
+} from "@/components/loaders.tsx/ModelLoader";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { getSocket } from "../sub_components/sub/Socket";

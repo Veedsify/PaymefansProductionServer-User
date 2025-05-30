@@ -1,5 +1,5 @@
 import axios from "axios";
-import StreamDeck from "@/components/stream/stream-deck";
+import StreamDeck from "@/components/stream/StreamDeck";
 // import { streamDataProps } from "@/types/components";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";

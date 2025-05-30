@@ -1,7 +1,7 @@
 "use client";
 import "@stream-io/video-react-sdk/dist/css/styles.css";
-import VideoStreamer from "@/components/video/video_streamer";
-import axiosInstance from "@/utils/axios";
+import VideoStreamer from "@/components/video/VideoStreamer";
+import axiosInstance from "@/utils/Axios";
 import {
   StreamCall,
   StreamTheme,
@@ -13,7 +13,7 @@ import {
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import swal from "sweetalert";
-import StreamNotLive from "@/components/stream/stream-not-live";
+import StreamNotLive from "@/components/stream/StreamNotLive";
 const apiKey = process.env.NEXT_PUBLIC_GETTREAM_KEY as string;
 
 const user: User = {

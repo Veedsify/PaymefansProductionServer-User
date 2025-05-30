@@ -1,7 +1,7 @@
 "use client";
 import ROUTE from "@/config/routes";
-import { useHomeFeedStore } from "@/contexts/home-feed-context";
-import { fetchHomePosts } from "@/utils/data/fetch-home-post";
+import { useHomeFeedStore } from "@/contexts/HomeFeedContext";
+import { fetchHomePosts } from "@/utils/data/FetchHomePost";
 import { useEffect, useState } from "react";
 
 const FetchHomeFeedPosts = () => {

@@ -1,6 +1,6 @@
 "use client";
 import ROUTE from "@/config/routes";
-import { getToken } from "@/utils/cookie.get";
+import { getToken } from "@/utils/Cookie";
 import axios from "axios";
 import { LucideUpload } from "lucide-react";
 import Image from "next/image";

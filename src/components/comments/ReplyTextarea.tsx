@@ -1,14 +1,14 @@
 "use client";
-import { useUserAuthContext } from "@/lib/userUseContext";
+import { useUserAuthContext } from "@/lib/UserUseContext";
 import { LucideCamera, LucideLoader, LucideSend, X } from "lucide-react";
 import Image from "next/image";
 import React, { ChangeEvent, useCallback, useState } from "react";
-import { imageTypes } from "@/lib/filetypes";
+import { imageTypes } from "@/lib/FileTypes";
 import toast from "react-hot-toast";
-import { getToken } from "../../utils/cookie.get";
+import { getToken } from "../../utils/Cookie";
 import axios from "axios";
 import { useRouter } from "next/navigation";
-import { FileHolderProps, ReplyPostProps } from "@/types/components";
+import { FileHolderProps, ReplyPostProps } from "@/types/Components";
 import { POST_CONFIG } from "@/config/config";
 
 const FilesHolder = React.memo(({ file, remove }: FileHolderProps) => {

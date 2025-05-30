@@ -9,7 +9,7 @@ import {
 } from "lucide-react";
 import { MouseEvent, useCallback, useEffect, useRef, useState } from "react";
 import { useInView } from "react-intersection-observer";
-import CustomSeekBar from "./custom-seek-bar";
+import CustomSeekBar from "./CustomSeekBar";
 
 const VideoPlayer = ({
   streamUrl,

@@ -1,7 +1,7 @@
 "use client";
 
 import React, { SetStateAction, useEffect, useState } from "react";
-import { getSocket } from "./socket";
+import { getSocket } from "./Socket";
 
 type FollowButtonsProps = {
   status: boolean;

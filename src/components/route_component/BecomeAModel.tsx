@@ -1,11 +1,11 @@
 "use client";
-import { countries } from "@/lib/locations";
-import { useUserAuthContext } from "@/lib/userUseContext";
+import { countries } from "@/lib/Locations";
+import { useUserAuthContext } from "@/lib/UserUseContext";
 import {
   postAudienceDataProps,
   postAudienceDataProps2,
-} from "@/types/components";
-import { ValidateModelPayment } from "@/utils/data/model-signup";
+} from "@/types/Components";
+import { ValidateModelPayment } from "@/utils/data/ModelSignup";
 import {
   LucideChevronDown,
   LucideChevronUp,

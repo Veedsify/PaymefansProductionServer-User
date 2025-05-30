@@ -2,14 +2,14 @@
 // import { LucideHeart, LucideSend, LucideShare2 } from "lucide-react";
 // import Image from "next/image";
 // import Link from "next/link";
-// import LiveStreamSockets from "../custom-hooks/live-stream-sockets";
+// import LiveStreamSocket from "../custom-hooks/live-stream-sockets";
 // import { useEffect } from "react";
 // import { useUserAuthContext } from "@/lib/userUseContext";
 // import { socket2 } from "./sub/socket";
 
 // const VideoStreamStats = ({ streamId }: { streamId: string | string[] }) => {
 //   const { user } = useUserAuthContext();
-//   const { views, likes } = LiveStreamSockets({ streamId });
+//   const { views, likes } = LiveStreamSocket({ streamId });
 
 //   useEffect(() => {
 //     socket2.on("stream-connected", (data) => {

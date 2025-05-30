@@ -1,13 +1,13 @@
 "use client";
-import { fetchConversationMessages } from "@/utils/data/get-conversation-messages";
-import Chats from "./chats";
+import { fetchConversationMessages } from "@/utils/data/GetConversationMessages";
+import Chats from "./Chats";
 import { useRouter } from "next/navigation";
-import { Message } from "@/types/components";
+import { Message } from "@/types/Components";
 import { useEffect, useCallback, useState } from "react";
 import { getSocket } from "../sub_components/sub/Socket";
 import _ from "lodash";
-import { MediaProvider } from "@/contexts/message-media-context";
-import NoSsrWrapper from "@/providers/no-ssr-wrapper";
+import { MediaProvider } from "@/contexts/MessageMediaContext";
+import NoSsrWrapper from "@/providers/NoSSRWrapper";
 
 const FetchChatData = ({ stringId }: { stringId: string }) => {
   const socket = getSocket();

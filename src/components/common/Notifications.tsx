@@ -2,8 +2,8 @@
 import {
   NotificationIcontypes,
   useNotificationStore,
-} from "@/contexts/notification-context";
-import { getToken } from "@/utils/cookie.get";
+} from "@/contexts/NotificationContext";
+import { getToken } from "@/utils/Cookie";
 import axios from "axios";
 import { LucideLoader } from "lucide-react";
 import { useRouter } from "next/navigation";

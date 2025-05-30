@@ -1,7 +1,7 @@
-import { AuthUserProps } from "@/types/user";
+import { AuthUserProps } from "@/types/User";
 import axios from "axios";
-import { getToken } from "./cookie.get";
-import { PostData } from "@/types/components";
+import { getToken } from "./Cookie";
+import { PostData } from "@/types/Components";
 let token = getToken();
 
 const axionsIns = axios.create({

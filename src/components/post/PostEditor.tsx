@@ -1,6 +1,6 @@
 "use client";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { useUserAuthContext } from "@/lib/userUseContext";
+import { useUserAuthContext } from "@/lib/UserUseContext";
 import {
   LucideChevronDown,
   LucideChevronUp,
@@ -11,19 +11,19 @@ import { HiOutlineEye } from "react-icons/hi";
 import Image from "next/image";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
-import { SavePost } from "@/utils/save-post";
+import { SavePost } from "@/utils/SavePost";
 import { POST_CONFIG } from "@/config/config";
-import PostMediaPreview from "./post-media-preview";
+import PostMediaPreview from "./PostMediaPreview";
 import {
   PostEditorProps,
   UploadedImageProp,
   UserMediaProps,
   PostAudienceDataProps,
   RemovedMediaIdProps,
-} from "@/types/components";
-import { useNewPostStore } from "@/contexts/new-post-context";
+} from "@/types/Components";
+import { useNewPostStore } from "@/contexts/NewPostContext";
 import { PostCancel } from "@/components/sub_components/sub/PostCancel";
-import { usePostMediaUploadContext } from "@/contexts/post-media-upload-context";
+import { usePostMediaUploadContext } from "@/contexts/PostMediaUploadContext";
 
 const PostEditor = React.memo(({ posts }: PostEditorProps) => {
   const router = useRouter();

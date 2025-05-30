@@ -1,7 +1,7 @@
 "use client";
 
-import axiosInstance from "@/utils/axios";
-import { getToken } from "@/utils/cookie.get";
+import axiosInstance from "@/utils/Axios";
+import { getToken } from "@/utils/Cookie";
 import swal from "sweetalert";
 import toast from "react-hot-toast";
 

@@ -1,6 +1,6 @@
 "use client"
 import { LucideArrowDown, LucideArrowUp, LucideLoader, LucideSearch } from "lucide-react"
-import ModelsFetch from "../custom-hooks/model-fetch"
+import ModelsFetch from "../custom-hooks/ModelFetch"
 import { ChangeEvent, useCallback, useState } from "react"
 import ModelsSubscription from "../sub_components/ModelsSubscription"
 

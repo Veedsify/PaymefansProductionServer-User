@@ -1,8 +1,8 @@
 "use client"
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { getToken } from "@/utils/cookie.get";
-import { PostData, UserPostProps } from "@/types/components";
+import { getToken } from "@/utils/Cookie";
+import { PostData, UserPostProps } from "@/types/Components";
 
 export default function PostCommentFetch(pageNumber: number) {
     const [posts, setPosts] = useState<UserPostProps[]>([]);

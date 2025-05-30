@@ -1,9 +1,9 @@
 "use client";
 
-import { imageTypes, videoTypes } from "@/lib/filetypes";
-import { useUserAuthContext } from "@/lib/userUseContext";
-import { generatePosterFromVideo } from "@/lib/video-poster";
-import { getToken } from "@/utils/cookie.get";
+import { imageTypes, videoTypes } from "@/lib/FileTypes";
+import { useUserAuthContext } from "@/lib/UserUseContext";
+import { generatePosterFromVideo } from "@/lib/VideoPoster";
+import { getToken } from "@/utils/Cookie";
 import { LucideChevronRight } from "lucide-react";
 import Image from "next/image";
 import { RefObject, useCallback, useEffect, useRef, useState } from "react";
@@ -11,7 +11,7 @@ import { Navigation } from "swiper/modules";
 import { Swiper } from "swiper/react";
 import { SwiperSlide } from "swiper/react";
 import toast from "react-hot-toast";
-import { MediaPreviewProps, PreviewTypes } from "@/types/components";
+import { MediaPreviewProps, PreviewTypes } from "@/types/Components";
 import axios from "axios";
 
 const MediaPreviewer: React.FC<MediaPreviewProps> = ({

@@ -6,19 +6,19 @@ import {
     LucideLoader, LucideLoader2,
     LucideMessageSquare,
 } from "lucide-react";
-import ReplyPostComponent from "./reply-post-textarea";
+import ReplyPostComponent from "./ReplyTextarea";
 import moment from "moment";
-import usePostComponent from "@/contexts/post-component-preview";
+import usePostComponent from "@/contexts/PostComponentPreview";
 import Link from "next/link";
 import {useCallback, useEffect, useRef, useState} from "react";
 import {
     PostCommentAttachments,
     PostCompomentProps,
     PostData,
-} from "@/types/components";
+} from "@/types/Components";
 import {useInView} from "react-intersection-observer";
 import _ from "lodash";
-import {getUserComments} from "@/utils/data/get-post-comments";
+import {getUserComments} from "@/utils/data/GetPostComments";
 import {useRouter} from "next/navigation";
 
 interface Comment {

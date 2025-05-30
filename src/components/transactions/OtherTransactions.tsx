@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { getToken } from "@/utils/cookie.get";
+import { getToken } from "@/utils/Cookie";
 
 const formatDate = (isoDateString: string) => {
   const date = new Date(isoDateString);

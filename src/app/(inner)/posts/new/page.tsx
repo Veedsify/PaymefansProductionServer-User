@@ -1,4 +1,4 @@
-import PostEditor from '@/components/post/post-editor';
+import PostEditor from '@/components/post/PostEditor';
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {

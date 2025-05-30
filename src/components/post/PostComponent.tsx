@@ -23,11 +23,11 @@ import {
 } from "lucide-react";
 import { HiPlay } from "react-icons/hi";
 
-import usePostComponent from "@/contexts/post-component-preview";
+import usePostComponent from "@/contexts/PostComponentPreview";
 import QuickPostActions from "../sub_components/QuickPostActions";
-import { PostCompInteractions } from "./post-interactions";
+import { PostCompInteractions } from "./PostInteractions";
 import HLSVideoPlayer from "../sub_components/videoplayer";
-import { useUserAuthContext } from "@/lib/userUseContext";
+import { useUserAuthContext } from "@/lib/UserUseContext";
 import { getSocket } from "../sub_components/sub/Socket";
 
 import {
@@ -35,7 +35,7 @@ import {
   PostComponentProps,
   UserMediaProps,
   VideoComponentProps,
-} from "@/types/components";
+} from "@/types/Components";
 
 // ---------- Helper component functions ---------- //
 

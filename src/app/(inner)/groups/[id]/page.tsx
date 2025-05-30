@@ -1,5 +1,5 @@
 "use client";
-import GroupMessageBubbles from "@/components/sub_components/group-message-bubbles";
+import GroupMessageBubbles from "@/components/group/GroupMessageBubbles";
 import {
   LucideArrowLeft,
   LucideCamera,

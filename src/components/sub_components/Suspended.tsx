@@ -8,8 +8,8 @@ import {
   Lock,
 } from "lucide-react";
 import Image from "next/image";
-import { ProfileUserProps } from "@/types/user";
-import SuspendedSupportTicketForm from "@/components/sub_components/sub/suspended-support-ticket-form";
+import { ProfileUserProps } from "@/types/User";
+import AccountSuspendedSupportTicket from "@/components/sub_components/sub/AccountSuspendedSupportTicket";
 
 const SuspendedUserPage = ({ userdata }: { userdata: ProfileUserProps }) => {
   return (

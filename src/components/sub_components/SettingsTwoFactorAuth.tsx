@@ -1,9 +1,9 @@
 "use client";
 
-import { useUserAuthContext } from "@/lib/userUseContext";
+import { useUserAuthContext } from "@/lib/UserUseContext";
 import { useEffect, useState } from "react";
 import Toggle from "./Checked";
-import { getToken } from "@/utils/cookie.get";
+import { getToken } from "@/utils/Cookie";
 import toast from "react-hot-toast";
 import _ from "lodash"
 

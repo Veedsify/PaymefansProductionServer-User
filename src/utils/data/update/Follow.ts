@@ -1,4 +1,4 @@
-import { getToken } from "@/utils/cookie.get";
+import { getToken } from "@/utils/Cookie";
 
 export default async function followUser(userId: number, action: "follow" | "unfollow") {
     const token = getToken();

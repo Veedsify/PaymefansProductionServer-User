@@ -1,4 +1,4 @@
-import { StoryHeaderProps } from "@/types/components";
+import { StoryHeaderProps } from "@/types/Components";
 import Image from "next/image";
 import Link from "next/link";
 

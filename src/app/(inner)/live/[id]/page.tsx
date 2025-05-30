@@ -1,12 +1,12 @@
 "use client";
 import { DyteProvider, useDyteClient } from "@dytesdk/react-web-core";
-import axiosInstance from "@/utils/axios";
+import axiosInstance from "@/utils/Axios";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import swal from "sweetalert";
-import StreamNotLive from "@/components/stream/stream-not-live";
+import StreamNotLive from "@/components/stream/StreamNotLive";
 import axios from "axios";
-import VideoStreamer from "@/components/video/video_streamer";
+import VideoStreamer from "@/components/video/VideoStreamer";
 
 const ViewStream = () => {
   const [meeting, initMeeting] = useDyteClient();

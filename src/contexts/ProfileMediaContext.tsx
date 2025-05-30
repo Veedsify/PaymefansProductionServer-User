@@ -1,4 +1,4 @@
-import {MediaDataType, MediaDataTypeOtherProps} from "@/types/components";
+import {MediaDataType, MediaDataTypeOtherProps} from "@/types/Components";
 import {create} from "zustand";
 import _ from "lodash";
 

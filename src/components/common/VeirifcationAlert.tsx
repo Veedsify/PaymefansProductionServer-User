@@ -1,8 +1,8 @@
 "use client"
-import { useUserAuthContext } from "@/lib/userUseContext";
+import { useUserAuthContext } from "@/lib/UserUseContext";
 import Link from "next/link";
 
-const VerificationAlert = () => {
+const VeirifcationAlert = () => {
     const { user } = useUserAuthContext()
 
     if (user && user.is_model && !user.Model?.verification_status) {
@@ -22,4 +22,4 @@ const VerificationAlert = () => {
     }
 }
 
-export default VerificationAlert;
+export default VeirifcationAlert;

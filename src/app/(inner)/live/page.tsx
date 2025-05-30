@@ -1,5 +1,5 @@
 // import CreateLiveStream from "@/components/sub_components/sub/create-live-stream";
-import getUserData from "@/utils/data/user-data";
+import getUserData from "@/utils/data/UserData";
 import { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";

@@ -1,7 +1,7 @@
-import { ImageVerification } from "@/components/sub_components/imageVerification";
-import VerificationPageButton from "@/components/sub_components/verification-button";
-import VideoVerification from "@/components/sub_components/videoverification";
-import getUserData from "@/utils/data/user-data";
+import { ImageVerification } from "@/components/sub_components/ImageVerification";
+import VerificationPageButton from "@/components/sub_components/VerificationButton";
+import VideoVerification from "@/components/sub_components/VideoVerification";
+import getUserData from "@/utils/data/UserData";
 import { LucideInfo } from "lucide-react";
 import { Metadata } from "next";
 import Image from "next/image";

@@ -1,6 +1,6 @@
 "use client"
 import { useState } from "react";
-import SetSubscription from "./setsubscription";
+import SetSubscription from "./SetSubscription";
 
 
 const SubscriptionState = () => {

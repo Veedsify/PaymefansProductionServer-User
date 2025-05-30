@@ -1,15 +1,15 @@
-import CommentsAndReply from "@/components/comments/comments-and-reply";
-import { PostCompInteractions } from "@/components/post/post-interactions";
-import PostPageImage from "@/components/sub_components/postpage-image";
-import QuickPostActions from "@/components/sub_components/quick_post_actions";
-import { formatDate } from "@/utils/format-date";
+import CommentsAndReply from "@/components/comments/CommentsAndReply";
+import { PostCompInteractions } from "@/components/post/PostInteractions";
+import PostPageImage from "@/components/post/PostPageImage";
+import QuickPostActions from "@/components/sub_components/QuickPostActions";
+import { formatDate } from "@/utils/FormatDate";
 import { LucideEye, LucideLock, LucideUsers } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import getUserData from "@/utils/data/user-data";
-import { AuthUserProps } from "@/types/user";
+import getUserData from "@/utils/data/UserData";
+import { AuthUserProps } from "@/types/User";
 import React, { ReactNode } from "react";
-import { getPost } from "@/utils/data/getpost";
+import { getPost } from "@/utils/data/GetPost";
 
 interface PostPageProps {
   params: Promise<{

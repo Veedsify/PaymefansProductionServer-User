@@ -1,13 +1,13 @@
 "use client";
 import React, { useEffect, useState, useCallback, useMemo } from "react";
-import StoryMediaFetch from "@/components/custom-hooks/story-media-fetch";
+import StoryMediaFetch from "@/components/custom-hooks/StoryMediaFetch";
 import { LucideCheck, LucideLoader, LucidePlay } from "lucide-react";
 import Image from "next/image";
 import { useInView } from "react-intersection-observer";
-import { useStoryStore } from "@/contexts/story-context";
+import { useStoryStore } from "@/contexts/StoryContext";
 import VideoPlayer from "../sub_components/videoplayer";
 
-const StoryMediaPanel = () => {
+const StatusMediaPanel = () => {
   const [page, setPage] = useState(1);
   const { loading, error, hasMore, media } = StoryMediaFetch({ page });
   const { ref, inView } = useInView({ threshold: 1 });
@@ -131,4 +131,4 @@ const StoryMediaItem = React.memo(({ data }: { data: any }) => {
 
 StoryMediaItem.displayName = "StoryMediaItem";
 
-export default StoryMediaPanel;
+export default StatusMediaPanel;

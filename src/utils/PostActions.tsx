@@ -7,10 +7,10 @@ import {
   LucideTrash,
   Repeat2,
 } from "lucide-react";
-import axiosInstance from "./A";
+import axiosInstance from "./Axios";
 import { MouseEvent, useCallback } from "react";
 import { OwnerOption, QuickPostActionsProps } from "@/types/Components";
-import { getToken } from "./cookie.get";
+import { getToken } from "./Cookie";
 import toast from "react-hot-toast";
 import { usePathname, useRouter } from "next/navigation";
 import swal from "sweetalert";

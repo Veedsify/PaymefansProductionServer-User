@@ -1,16 +1,16 @@
 "use client";
-import { SelectMoreProps } from "@/types/components";
+import { SelectMoreProps } from "@/types/Components";
 import { LucideArrowRight, LucideCheck, LucidePlay, X } from "lucide-react";
 import Image from "next/image";
 import React, { useEffect, useState, useMemo, useCallback } from "react";
 import { Tab, TabList, TabPanel, Tabs } from "react-tabs";
-import StoryMediaPanel from "@/components/story/story-media-panel";
-import { useStoryStore } from "../../contexts/story-context";
+import StatusMediaPanel from "@/components/story/StatusMediaPanel";
+import { useStoryStore } from "../../contexts/StoryContext";
 import StoryUploadForm from "../sub_components/StoryUploadForm";
 import HLSVideoPlayer from "../sub_components/videoplayer";
-import StoryCaptionComponent from "./story-caption-component";
+import StoryCaptionComponent from "./StoryCaptionComponent";
 
-function StoryComponent() {
+function StatusComponent() {
   const videoRef = React.useRef<HTMLVideoElement>(null);
   const [openMore, setOpenMore] = useState<boolean>(true);
   const [openStoryCaption, setStoryCaption] = useState(false);
@@ -128,7 +128,7 @@ const SelectMoreItems = React.memo(
 
           <div className="h-full">
             {activeTab === "new" && <StoryUploadForm />}
-            {activeTab === "media" && <StoryMediaPanel />}
+            {activeTab === "media" && <StatusMediaPanel />}
           </div>
         </div>
       </div>
@@ -138,4 +138,4 @@ const SelectMoreItems = React.memo(
 
 SelectMoreItems.displayName = "SelectMoreItems";
 
-export default StoryComponent;
+export default StatusComponent;

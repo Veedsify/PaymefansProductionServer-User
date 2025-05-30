@@ -1,6 +1,6 @@
 "use client";
-import { getToken } from "@/utils/cookie.get";
-import followUser from "@/utils/data/update/follow";
+import { getToken } from "@/utils/Cookie";
+import followUser from "@/utils/data/update/Follow";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { debounce } from "lodash";
 import { LucideLoader2, XIcon } from "lucide-react";

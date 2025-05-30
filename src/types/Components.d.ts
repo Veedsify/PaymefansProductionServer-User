@@ -1,7 +1,7 @@
 import { Call } from "@stream-io/video-react-sdk";
 import React, { ChangeEvent, ReactNode, SetStateAction } from "react";
-import { AuthUserProps, ProfileUserProps } from "./user";
-import { LastMessage } from "./conversations";
+import { AuthUserProps, ProfileUserProps } from "./User";
+import { LastMessage } from "./Conversations";
 
 // POST COMPONENT PROPS
 export type PostShareModalProps = {

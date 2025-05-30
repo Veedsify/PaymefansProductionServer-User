@@ -1,7 +1,7 @@
-import ContactSupportModal from "@/components/sub_components/contact-support-modal";
-import {getHelpCategories} from "@/utils/data/getHelpCategories";
-import {HelpCategoryProp} from "@/types/components";
-import SupportHelp from "@/components/route_component/support-help";
+import ContactSupportModal from "@/components/sub_components/ContactSupportModal";
+import {getHelpCategories} from "@/utils/data/GetHelpCategories";
+import {HelpCategoryProp} from "@/types/Components";
+import SupportHelp from "@/components/route_component/SupportHelp";
 
 const HelpPage = async () => {
     const helpCategories = await getHelpCategories();

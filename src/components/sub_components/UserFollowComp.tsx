@@ -1,5 +1,5 @@
-import { UserFollowCompProps } from "@/types/components";
-import followUser from "@/utils/data/update/follow";
+import { UserFollowCompProps } from "@/types/Components";
+import followUser from "@/utils/data/update/Follow";
 import Image from "next/image";
 import Link from "next/link";
 import { use, useEffect, useState } from "react";

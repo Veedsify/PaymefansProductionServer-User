@@ -1,7 +1,7 @@
 "use client";
-import {useUserPointsContext} from "@/contexts/user-points-context";
-import {useUserAuthContext} from "@/lib/userUseContext";
-import {getToken} from "@/utils/cookie.get";
+import {useUserPointsContext} from "@/contexts/PointsContext";
+import {useUserAuthContext} from "@/lib/UserUseContext";
+import {getToken} from "@/utils/Cookie";
 import Image from "next/image";
 import {useRouter} from "next/navigation";
 import toast from "react-hot-toast";

@@ -5,9 +5,9 @@ import React, {
   useCallback,
   ReactNode,
 } from "react";
-import { generatePosterFromVideo } from "@/lib/video-poster";
-import { imageTypes, videoTypes } from "@/lib/filetypes";
-import { MediaContextState, MediaFile } from "@/types/message-components";
+import { generatePosterFromVideo } from "@/lib/VideoPoster";
+import { imageTypes, videoTypes } from "@/lib/FileTypes";
+import { MediaContextState, MediaFile } from "@/types/MessageComponents";
 
 const MediaContext = createContext<MediaContextState | undefined>(undefined);
 

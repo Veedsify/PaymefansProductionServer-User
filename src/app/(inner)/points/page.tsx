@@ -1,6 +1,6 @@
-import PointsBuy from "@/components/sub_components/points";
-import getAllPoints from "@/utils/data/get-points";
-import AddPoints from "@/components/sub_components/add-points";
+import PointsBuy from "@/components/sub_components/Points";
+import getAllPoints from "@/utils/data/GetPoints";
+import AddPoints from "@/components/points/AddPoints";
 
 type Points = {
     points: number;

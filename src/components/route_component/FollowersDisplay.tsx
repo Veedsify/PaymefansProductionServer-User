@@ -2,8 +2,8 @@
 
 import { useRef, useEffect, useState, useCallback } from "react";
 import UserFollowComp from "../sub_components/UserFollowComp";
-import { getToken } from "@/utils/cookie.get";
-import { Followers, PaginateProps } from "@/types/components";
+import { getToken } from "@/utils/Cookie";
+import { Followers, PaginateProps } from "@/types/Components";
 
 const FollowersDisplay = () => {
     const [paginate, setPaginate] = useState<PaginateProps>({

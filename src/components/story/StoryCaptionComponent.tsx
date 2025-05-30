@@ -6,15 +6,15 @@ import "swiper/css/pagination";
 import "swiper/css/navigation";
 // import required modules
 import { Navigation, Pagination } from "swiper/modules";
-import { StoryType, useStoryStore } from "@/contexts/story-context";
+import { StoryType, useStoryStore } from "@/contexts/StoryContext";
 
 import Image from "next/image";
 import { FileSignature, LucideSend, Text } from "lucide-react";
-import { StoryCaptionComponentProps } from "@/types/components";
+import { StoryCaptionComponentProps } from "@/types/Components";
 import { useState } from "react";
 import SubmitUserStory from "@/utils/story/submit-user-story";
 import toast from "react-hot-toast";
-import { fontFamilies } from "@/lib/story/fontfamilies";
+import { fontFamilies } from "@/lib/story/FontFamilies";
 
 const StoryCaptionComponent = ({ close }: StoryCaptionComponentProps) => {
   const { story, addcCaptionToStory } = useStoryStore();

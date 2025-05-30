@@ -1,8 +1,8 @@
 "use client";
-import { useCartStore } from "@/contexts/store-context";
+import { useCartStore } from "@/contexts/StoreContext";
 import { LucideTrash, X } from "lucide-react";
 import Image from "next/image";
-import CustomCartPageHooks from "../custom-hooks/custom-cart-hooks";
+import CustomCartPageHooks from "../custom-hooks/CustomCartHooks";
 import { ChangeEvent, useEffect, useState } from "react";
 
 const CartComponent = () => {

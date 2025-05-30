@@ -1,6 +1,6 @@
 "use client";
-import { getUser } from "@/lib/user";
-import axiosServer from "@/utils/axios";
+import { getUser } from "@/lib/User";
+import axiosServer from "@/utils/Axios";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";

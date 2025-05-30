@@ -1,9 +1,9 @@
 "use client"
 import { useCallback, useEffect, useState } from "react";
-import { getToken } from "@/utils/cookie.get";
-import { LiveStreamSocketProps } from "@/types/components";
+import { getToken } from "@/utils/Cookie";
+import { LiveStreamSocketProps } from "@/types/Components";
 import { getSocket } from "@/components/sub_components/sub/Socket";
-import { useUserAuthContext } from "@/lib/userUseContext";
+import { useUserAuthContext } from "@/lib/UserUseContext";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 
@@ -14,7 +14,7 @@ type LiveStreamJoinProps = {
         socket_id: string
     }[]
 }
-const LiveStreamSockets = ({ streamId }: LiveStreamSocketProps) => {
+const LiveStreamSocket = ({ streamId }: LiveStreamSocketProps) => {
     const [views, setViews] = useState(0)
     const [likes, setLikes] = useState(0)
     const { user } = useUserAuthContext()
@@ -57,4 +57,4 @@ const LiveStreamSockets = ({ streamId }: LiveStreamSocketProps) => {
 
     return { views, likes, commentsCount }
 }
-export default LiveStreamSockets
+export default LiveStreamSocket

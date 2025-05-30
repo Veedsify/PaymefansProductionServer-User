@@ -1,13 +1,13 @@
 "use client";
 
-import OtherTransactions from "@/components/transactions/other-transactions";
+import OtherTransactions from "@/components/transactions/OtherTransactions";
 import ROUTE from "@/config/routes";
-import { useConfigContext } from "@/contexts/configs-context";
-import { useUserAuthContext } from "@/lib/userUseContext";
-import { ExchangeRate } from "@/types/components";
-import { AuthUserProps } from "@/types/user";
-import axiosInstance from "@/utils/axios";
-import { getToken } from "@/utils/cookie.get";
+import { useConfigContext } from "@/contexts/ConfigContext";
+import { useUserAuthContext } from "@/lib/UserUseContext";
+import { ExchangeRate } from "@/types/Components";
+import { AuthUserProps } from "@/types/User";
+import axiosInstance from "@/utils/Axios";
+import { getToken } from "@/utils/Cookie";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import Image from "next/image";

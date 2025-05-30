@@ -3,11 +3,11 @@ import { Loader2, LucidePlus } from "lucide-react";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import swal from "sweetalert";
-import { useUserAuthContext } from "@/lib/userUseContext";
+import { useUserAuthContext } from "@/lib/UserUseContext";
 import Link from "next/link";
-import StoryPreviewComponent from "./status-preview-component";
-import useFetchStories from "../custom-hooks/fetch-stories";
-import { Story } from "@/types/story";
+import StoryPreviewComponent from "./StatusPreviewComponent";
+import useFetchStories from "../custom-hooks/FetchStories";
+import { Story } from "@/types/Story";
 import { debounce } from "lodash";
 
 const StatusComponent = () => {

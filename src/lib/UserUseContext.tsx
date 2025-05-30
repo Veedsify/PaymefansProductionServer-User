@@ -1,7 +1,7 @@
 "use client";
 
-import { getSocket } from "@/components/sub_components/sub/socket";
-import { AuthUserProps } from "@/types/user";
+import { getSocket } from "@/components/sub_components/sub/Socket";
+import { AuthUserProps } from "@/types/User";
 import { usePathname, useRouter } from "next/navigation";
 import {
   createContext,

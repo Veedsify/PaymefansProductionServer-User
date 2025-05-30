@@ -7,14 +7,14 @@ import {
   useMemo,
   ReactNode,
 } from "react";
-import { useUserAuthContext } from "@/lib/userUseContext";
+import { useUserAuthContext } from "@/lib/UserUseContext";
 import { getSocket } from "@/components/sub_components/sub/Socket";
 import { MESSAGE_CONFIG } from "@/config/config";
-import { getToken } from "@/utils/cookie.get";
+import { getToken } from "@/utils/Cookie";
 import axios from "axios";
 import { useInfiniteQuery, useQueryClient } from "@tanstack/react-query";
 
-const MessagesConversationContext = createContext<ReturnType<
+const MessageConversationContext = createContext<ReturnType<
   typeof useProvideConversations
 > | null>(null);
 
@@ -79,14 +79,14 @@ export const MessagesConversationProvider = ({
   }, [userid, username, socket]);
 
   return (
-    <MessagesConversationContext.Provider value={value}>
+    <MessageConversationContext.Provider value={value}>
       {children}
-    </MessagesConversationContext.Provider>
+    </MessageConversationContext.Provider>
   );
 };
 
 export const useMessagesConversation = () => {
-  const context = useContext(MessagesConversationContext);
+  const context = useContext(MessageConversationContext);
   if (!context) {
     throw new Error(
       "useMessagesConversation must be used within a MessagesConversationProvider"

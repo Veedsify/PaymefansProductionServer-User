@@ -1,13 +1,13 @@
 "use client";
 import {Facebook, Instagram, LucideLoader2, Twitter} from "lucide-react";
-import {UserUpdateProfileType} from "@/types/user";
+import {UserUpdateProfileType} from "@/types/User";
 import React, {useRef, useState} from "react";
 import toast from "react-hot-toast";
 import {useRouter} from "next/navigation";
-import {saveUserSettings} from "@/utils/data/save-user-settings";
-import {countries} from "@/lib/locations";
+import {saveUserSettings} from "@/utils/data/SaveUserSettings";
+import {countries} from "@/lib/Locations";
 import {PiSnapchatLogoDuotone} from "react-icons/pi";
-import useCheckUsername from "../custom-hooks/check-username";
+import useCheckUsername from "../custom-hooks/CheckUsername";
 
 type ProfileSettingsProps = {
     user: any;

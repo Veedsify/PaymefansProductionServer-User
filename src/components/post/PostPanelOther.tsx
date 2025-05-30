@@ -1,9 +1,9 @@
 "use client";
-import PostComponent from "../post/PostComponent";
-import LoadingPost from "./LoadingPost";
+import PostComponent from "./PostComponent";
+import LoadingPost from "../sub_components/LoadingPost";
 import { formatDate } from "@/utils/FormatDate";
 import { useCallback, useEffect, useState } from "react";
-import { fetchItemsOther } from "./InfiniteQuery";
+import { fetchItemsOther } from "../sub_components/InfiniteQuery";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { useUserAuthContext } from "@/lib/UserUseContext";
 import { ProfileUserProps } from "@/types/User";

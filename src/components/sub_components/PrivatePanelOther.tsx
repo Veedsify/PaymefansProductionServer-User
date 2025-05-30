@@ -1,13 +1,13 @@
 "use client";
-import PostComponent from "../post/post_component";
-import LoadingPost from "./loading_post";
-import { formatDate } from "@/utils/format-date";
+import PostComponent from "../post/PostComponent";
+import LoadingPost from "./LoadingPost";
+import { formatDate } from "@/utils/FormatDate";
 import { useCallback, useEffect, useState } from "react";
-import { useUserAuthContext } from "@/lib/userUseContext";
-import { ProfileUserProps } from "@/types/user";
+import { useUserAuthContext } from "@/lib/UserUseContext";
+import { ProfileUserProps } from "@/types/User";
 import { useInView } from "react-intersection-observer";
 import { LucideLoader } from "lucide-react";
-import PrivatePanelFetchOther from "../custom-hooks/private-panel-other-fetch";
+import PrivatePanelFetchOther from "../custom-hooks/PrivatePanelOtherFetch";
 
 const PrivatePanelOther = ({ userdata }: { userdata: ProfileUserProps }) => {
   const [page, setPage] = useState(1);

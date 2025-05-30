@@ -1,10 +1,10 @@
 "use client";
-import { useNewPostStore } from "@/contexts/new-post-context";
+import { useNewPostStore } from "@/contexts/NewPostContext";
 import { MdOutlinePermMedia } from "react-icons/md";
 import toast from "react-hot-toast";
 import Toggle from "../Checked";
-import { imageTypes, videoTypes } from "@/lib/filetypes";
-import { useUserAuthContext } from "@/lib/userUseContext";
+import { imageTypes, videoTypes } from "@/lib/FileTypes";
+import { useUserAuthContext } from "@/lib/UserUseContext";
 import { POST_CONFIG } from "@/config/config";
 const {
   MODEL_POST_LIMIT,
@@ -15,7 +15,7 @@ const {
   USER_POST_LIMIT_ERROR_MSG,
 } = POST_CONFIG;
 
-const NewPostMediaAdd = ({
+const AddNewPostMedia = ({
   handleFileSelect,
 }: {
   handleFileSelect: (files: File[]) => void;
@@ -94,4 +94,4 @@ const NewPostMediaAdd = ({
   );
 };
 
-export default NewPostMediaAdd;
+export default AddNewPostMedia;

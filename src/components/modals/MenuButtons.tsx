@@ -1,5 +1,5 @@
 "use client";
-import { useModalContext } from "@/lib/pageContexts";
+import { useModalContext } from "@/lib/PageContext";
 import {
   LucideChevronDown,
   LucideChevronUp,
@@ -12,7 +12,7 @@ import {
 import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import PostShareModal from "../sub_components/PostShareComponent";
+import PostShareModal from "../post/PostShareComponent";
 const MenuButtons = () => {
   const pathname = usePathname();
 

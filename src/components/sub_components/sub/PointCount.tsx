@@ -1,7 +1,7 @@
 "use client";
 
-import { useUserPointsContext } from "@/contexts/user-points-context";
-import { GetUserPointBalance } from "@/utils/data/get-user-point-balance";
+import { useUserPointsContext } from "@/contexts/PointsContext";
+import { GetUserPointBalance } from "@/utils/data/GetUserPointBalance";
 import { useQuery } from "@tanstack/react-query";
 import Image from "next/image";
 import { useEffect } from "react";

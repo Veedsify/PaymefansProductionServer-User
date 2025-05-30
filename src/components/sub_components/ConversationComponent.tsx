@@ -1,16 +1,16 @@
 "use client";
-import { useUserAuthContext } from "@/lib/userUseContext";
-import { LastMessage } from "@/types/conversations";
+import { useUserAuthContext } from "@/lib/UserUseContext";
+import { LastMessage } from "@/types/Conversations";
 import { LucideLink2, LucideLoader, LucideVerified } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { MouseEvent, useEffect, useState } from "react";
-import ActiveProfileTag from "./sub/active-profile-tag";
+import ActiveProfileTag from "./sub/ActiveProfileTag";
 import { useInView } from "react-intersection-observer";
-import { getSocket } from "./sub/socket";
-import { Conversation } from "@/types/components";
-import { useMessagesConversation } from "@/contexts/messages-conversation-context";
+import { getSocket } from "./sub/Socket";
+import { Conversation } from "@/types/Components";
+import { useMessagesConversation } from "@/contexts/MessageConversationContext";
 import { useQueryClient } from "@tanstack/react-query";
 
 const ConversationComponent = () => {

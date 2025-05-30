@@ -1,4 +1,4 @@
-import StoryComponent from "@/components/story/story-component";
+import StatusComponent from "@/components/story/StatusComponent";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -15,7 +15,7 @@ const StoryPage = () => {
             <p className="mb-10 max-w-[550px] mx-auto dark:text-white">
                 stories stay live for 24 hours
             </p>
-            <StoryComponent />
+            <StatusComponent />
         </div>
     );
 }

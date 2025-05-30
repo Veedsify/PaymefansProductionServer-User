@@ -7,9 +7,9 @@ import {
   Phone,
   Loader2,
 } from "lucide-react";
-import LogoutButton from "@/components/sub_components/sub/logout";
+import LogoutButton from "@/components/sub_components/sub/LogOut";
 import Link from "next/link";
-import SuspendedSupportTicketForm from "./sub/suspended-support-ticket-form";
+import AccountSuspendedSupportTicket from "./sub/AccountSuspendedSupportTicket";
 import React, { useEffect } from "react";
 const UserAccountSupendedScreen = ({ user }: { user: any }) => {
   const [open, setOpen] = React.useState(false);
@@ -120,7 +120,7 @@ const UserAccountSupendedScreen = ({ user }: { user: any }) => {
           </div>
         </div>
       </div>
-      <SuspendedSupportTicketForm open={open} close={handleClose} user={user} />
+      <AccountSuspendedSupportTicket open={open} close={handleClose} user={user} />
     </>
   );
 };

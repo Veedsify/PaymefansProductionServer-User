@@ -1,5 +1,5 @@
 "use client";
-import LiveStreamSockets from "../custom-hooks/live-stream-sockets";
+import LiveStreamSocket from "../custom-hooks/LiveStreamSocket";
 // import VideoStreamStats from "../sub_components/video-stream-stats";
 
 interface VideoStreamerProps {

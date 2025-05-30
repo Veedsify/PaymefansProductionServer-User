@@ -1,5 +1,5 @@
 "use client";
-import { UserUpdateProfileType } from "@/types/user";
+import { UserUpdateProfileType } from "@/types/User";
 import axios from "axios";
 import {
   Facebook,
@@ -13,12 +13,12 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
-import BannerComponent from "../lib_components/banner_component";
-import { getToken } from "@/utils/cookie.get";
+import BannerComponent from "../lib_components/BannerComponent";
+import { getToken } from "@/utils/Cookie";
 import { PROFILE_CONFIG } from "@/config/config";
 import ROUTE from "@/config/routes";
-import { BannerModalProps } from "@/types/components";
-import { countries } from "@/lib/locations";
+import { BannerModalProps } from "@/types/Components";
+import { countries } from "@/lib/Locations";
 import { PiSnapchatLogoDuotone } from "react-icons/pi";
 
 const EditProfileButton = ({ user }: { user: any }) => {

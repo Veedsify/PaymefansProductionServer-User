@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { UserRegisterType } from "../types/user";
+import { UserRegisterType } from "../types/User";
 import { createJSONStorage, persist } from "zustand/middleware";
 
 export type UserState = {

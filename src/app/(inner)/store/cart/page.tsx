@@ -1,4 +1,4 @@
-import CartComponent from "@/components/modals/cart-component";
+import CartComponent from "@/components/modals/CartComponent";
 import Link from "next/link";
 
 const page = () => {
