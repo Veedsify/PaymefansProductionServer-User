@@ -11,7 +11,7 @@ import axios, { AxiosResponse } from "axios";
 
 async function fetchPrivatePost(pageNumber: number) {
   const token = getToken();
-  const api = `${process.env.NEXT_PUBLIC_TS_EXPRESS_URL}/post/my-private-posts`;
+  const api = `${process.env.NEXT_PUBLIC_TS_EXPRESS_URL}/post/personal/private-post`;
   const postPerPage = process.env.NEXT_PUBLIC_POST_PER_PAGE as string;
   let cancel: any;
   const response = await axios<any, AxiosResponse>(api, {

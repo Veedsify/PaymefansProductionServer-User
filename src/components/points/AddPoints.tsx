@@ -19,11 +19,11 @@ export const currencyRates = [
 ];
 const AddPoints = () => {
   const { user } = useUserAuthContext();
-  const [value, setValue] = useState("");   // User entry (formatted)
+  const [value, setValue] = useState(""); // User entry (formatted)
   const [rates, setRates] = useState<ExchangeRate[]>(currencyRates);
   const [error, setError] = useState(false);
   const [POINTS_PER_USD, setPointsPerUSD] = useState(0); // Default value
-  const { config } = useConfigContext()
+  const { config } = useConfigContext();
 
   const PLATFORM_DEPOSITE_FEE = 0.1; // 10% fee
   let POINTS_PER_NAIRA = 100; // Default value
@@ -80,7 +80,9 @@ const AddPoints = () => {
   // Calculate platform fee (10% of input), supports decimals
   function calculateFee(value: string) {
     const amount = getCleanAmount(value);
-    return (amount * (config?.platform_deposit_fee ?? PLATFORM_DEPOSITE_FEE)).toLocaleString(undefined, {
+    return (
+      amount * (config?.platform_deposit_fee ?? PLATFORM_DEPOSITE_FEE)
+    ).toLocaleString(undefined, {
       minimumFractionDigits: 2,
       maximumFractionDigits: 2,
     });
@@ -113,8 +115,8 @@ const AddPoints = () => {
       // Convert points to USD first (16 points = $1)
       const usdAmount =
         amount /
-        (rates.find((rate: ExchangeRate) => rate.name === "POINTS")
-          ?.buyValue ?? 16);
+        (rates.find((rate: ExchangeRate) => rate.name === "POINTS")?.buyValue ??
+          16);
       // Then convert USD to target currency
       const targetRate =
         rates.find((rate: ExchangeRate) => rate.name === toCurrency)

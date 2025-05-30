@@ -18,13 +18,12 @@ const getUniqueItems = (arr: MediaDataType[]) => {
 };
 
 const MediaPanelImageCard = React.memo(({ sort }: { sort: string }) => {
-
   const { fullScreenPreview } = usePostComponent();
   const token = getToken();
 
   const fetchMedia = async ({ pageParam = 1 }) => {
     const res = await fetch(
-      `${process.env.NEXT_PUBLIC_TS_EXPRESS_URL}/post/media?page=${pageParam}&limit=${process.env.NEXT_PUBLIC_POST_MEDIA_PER_PAGE}`,
+      `${process.env.NEXT_PUBLIC_TS_EXPRESS_URL}/post/personal/media?page=${pageParam}&limit=${process.env.NEXT_PUBLIC_POST_MEDIA_PER_PAGE}`,
       {
         method: "GET",
         headers: {
@@ -59,7 +58,7 @@ const MediaPanelImageCard = React.memo(({ sort }: { sort: string }) => {
   const sorted = React.useMemo(() => {
     return sort === "all"
       ? allMedia
-      : allMedia.filter((media) => media.media_type === sort)
+      : allMedia.filter((media) => media.media_type === sort);
   }, [allMedia, sort]);
 
   const PreviewImageHandler = (

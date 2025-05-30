@@ -14,13 +14,7 @@ import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import swal from "sweetalert";
 import { useInView } from "react-intersection-observer";
-import {
-  DollarSign,
-  LucideEye,
-  LucideLock,
-  LucidePlus,
-  LucideUsers,
-} from "lucide-react";
+import { LucideEye, LucideLock, LucidePlus, LucideUsers } from "lucide-react";
 import { HiPlay } from "react-icons/hi";
 
 import usePostComponent from "@/contexts/PostComponentPreview";
@@ -36,6 +30,9 @@ import {
   UserMediaProps,
   VideoComponentProps,
 } from "@/types/Components";
+import payForPost from "@/utils/data/PayForPost";
+import { useUserPointsContext } from "@/contexts/PointsContext";
+import { useQueryClient } from "@tanstack/react-query";
 
 // ---------- Helper component functions ---------- //
 
@@ -65,9 +62,10 @@ const PostComponent: React.FC<PostComponentProps> = ({
 }) => {
   const router = useRouter();
   const { ref, inView } = useInView({ threshold: 0.5, triggerOnce: true });
-
+  const { points } = useUserPointsContext();
   const { fullScreenPreview } = usePostComponent();
   const { user: authUser } = useUserAuthContext();
+  const queryClient = useQueryClient();
   const socket = getSocket();
 
   // --- Permission/role checks --- //
@@ -148,8 +146,8 @@ const PostComponent: React.FC<PostComponentProps> = ({
       if (willSubscribe) router.push(`/subscribe/${user.user_id}`);
     });
 
-  const promptPayment = () =>
-    swal({
+  const promptPayment = async () =>
+    await swal({
       title: "This post is locked",
       text: `You need to pay ${data.post_price} coins to view this post.`,
       icon: "warning",
@@ -160,11 +158,31 @@ const PostComponent: React.FC<PostComponentProps> = ({
           className: "bg-primary-dark-pink text-white",
         },
       },
-    }).then((willPay) => {
-      if (willPay) router.push(`/posts/${data.post_id}`);
+    }).then(async (willPay) => {
+      if (willPay) {
+        const price = Number(data.post_price);
+        if (price > points) {
+          return toast.error(
+            "You don't have enough points to pay for this post",
+            {
+              id: "pay-for-post",
+            }
+          );
+        }
+        const pay = await payForPost({ price, postId: data.id });
+        if (pay.error) {
+          return toast.error(pay.message, {
+            id: "pay-for-post",
+          });
+        }
+        await queryClient.invalidateQueries({
+          queryKey: ["user-points", user.id],
+        });
+        router.refresh();
+      }
     });
 
-  const onPostClick = (e: MouseEvent) => {
+  const onPostClick = async (e: MouseEvent) => {
     const target = e.target as HTMLElement;
     if (
       target instanceof HTMLAnchorElement ||
@@ -173,23 +191,25 @@ const PostComponent: React.FC<PostComponentProps> = ({
       return;
     e.preventDefault();
 
-    if (data.post_audience === "subscribers" && !(isSubscribed || isCreator))
+    if (data.post_audience === "subscribers" && !(isSubscribed || isCreator)) {
       return promptSubscription();
+    }
+
+    if (
+      data.post_audience === "price" &&
+      !(data.user?.user_id === authUser?.user_id)
+    ) {
+      return promptPayment();
+    }
 
     if (data.post_status !== "approved") {
-      swal({
+      await swal({
         title: "This post is still processing",
         text: "Only you can view this. Post anytime — the borders will disappear when it's fully ready.",
         icon: "warning",
       });
       return;
     }
-
-    if (
-      data.post_audience === "price" &&
-      !(data.user?.user_id === authUser?.user_id)
-    )
-      return promptPayment();
 
     router.push(`/posts/${data.post_id}`);
   };
@@ -215,7 +235,7 @@ const PostComponent: React.FC<PostComponentProps> = ({
     }
   };
 
-  const imageLength = data?.media?.length;
+  const mediaLength = data?.media?.length;
 
   return (
     <div className="px-2 py-6 duration-300  md:px-5">
@@ -276,12 +296,13 @@ const PostComponent: React.FC<PostComponentProps> = ({
         ></div>
         {/* Media Grid */}
         <div
-          className={`grid gap-3 ${data.media.length === 2
-            ? "grid-cols-2"
-            : data.media.length >= 3
+          className={`grid gap-3 ${
+            data.media.length === 2
+              ? "grid-cols-2"
+              : data.media.length >= 3
               ? "grid-cols-3"
               : "grid-cols-1"
-            }`}
+          }`}
         >
           {data.media.slice(0, 3).map((media: UserMediaProps, i) => (
             <MediaGridItem
@@ -290,7 +311,7 @@ const PostComponent: React.FC<PostComponentProps> = ({
               i={i}
               data={data}
               canView={canView}
-              imageLength={imageLength}
+              mediaLength={mediaLength}
               handleNonSubscriberClick={handleNonSubscriberClick}
               handleMediaClick={handleMediaClick}
               isSubscribed={isSubscribed}
@@ -312,7 +333,7 @@ const MediaGridItem = ({
   i,
   data,
   canView,
-  imageLength,
+  mediaLength,
   handleNonSubscriberClick,
   handleMediaClick,
   isSubscribed,
@@ -321,7 +342,7 @@ const MediaGridItem = ({
   i: number;
   data: any;
   canView: boolean | undefined;
-  imageLength: number;
+  mediaLength: number;
   handleNonSubscriberClick: (e: MouseEvent) => void;
   handleMediaClick: (media: {
     url: string;
@@ -333,16 +354,9 @@ const MediaGridItem = ({
   // Locked overlays for paid/subscriber content
   const lockedOverlay = (type: "price" | "subscribers") => (
     <div className="absolute inset-0 z-10 flex items-center justify-center overflow-hidden rounded-lg bg-black/20">
-      <Image
-        src={media.blur ? media.blur.trimEnd() : "/site/blur.jpg"}
-        alt=""
-        width={300}
-        height={300}
-        className="w-full aspect-[3/4] md:aspect-square object-cover absolute inset-0"
-      />
-      <span className="flex flex-col items-center justify-center gap-2 text-white">
+      <span className="flex flex-col items-center justify-center gap-2 text-white w-full h-full">
         {type === "price" && i === 0 ? (
-          <p className="flex items-center justify-center gap-2 text-base font-bold leading-4 text-center">
+          <p className="flex items-center justify-center gap-2 text- lg:text-lg font-bold leading-4 text-center">
             <Image
               width={20}
               height={20}
@@ -363,8 +377,9 @@ const MediaGridItem = ({
 
   return (
     <div
-      className={`relative rounded-xl overflow-hidden ${data.post_status !== "approved" ? "border-fuchsia-500 border-2" : ""
-        }`}
+      className={`relative rounded-xl overflow-hidden ${
+        data.post_status !== "approved" ? "border-fuchsia-500 border-2" : ""
+      }`}
       onClick={handleNonSubscriberClick}
     >
       {media.media_type === "video" ? (
@@ -374,7 +389,6 @@ const MediaGridItem = ({
             alt=""
             width={300}
             height={300}
-            unoptimized
             priority
             blurDataURL={media.blur}
             className="w-full h-full rounded-lg aspect-[3/4] md:aspect-square object-cover cursor-pointer"
@@ -391,7 +405,6 @@ const MediaGridItem = ({
         <Image
           src={media.blur}
           alt={data.post}
-          unoptimized
           width={400}
           height={400}
           priority
@@ -411,7 +424,7 @@ const MediaGridItem = ({
           href={
             data.post_audience === "private" ? "#" : `/posts/${data.post_id}`
           }
-          className="flex flex-col absolute inset-0 items-center justify-center rounded-lg aspect-[3/4] md:aspect-square bg-gray-500/70 cursor-pointer select-none"
+          className="flex flex-col absolute inset-0 items-center justify-center rounded-lg aspect-[3/4] md:aspect-square bg-white/70 cursor-pointer select-none"
         >
           <div>
             <LucidePlus
@@ -422,15 +435,15 @@ const MediaGridItem = ({
             />
           </div>
           <p className="text-lg font-bold text-white select-none">
-            {imageLength - 3} more
+            {mediaLength - 3} more
           </p>
         </Link>
       )}
       {/* Locked Overlays */}
-      {!canView && data.post_audience === "price" && lockedOverlay("price")}
       {!canView &&
         data.post_audience === "subscribers" &&
         lockedOverlay("subscribers")}
+      {!canView && data.post_audience === "price" && lockedOverlay("price")}
     </div>
   );
 };

@@ -27,7 +27,7 @@ const Post = React.memo(async ({ params }: PostPageProps) => {
 
   const isCreator = post?.user.id === user?.id;
   // const isAdmin = user.role === "admin";
-  const isSubscribed = post.isSubscribed
+  const isSubscribed = post.isSubscribed;
   const hasPaid = user?.purchasedPosts?.includes(post?.id as number);
 
   // Determine visibility
@@ -107,6 +107,7 @@ const Post = React.memo(async ({ params }: PostPageProps) => {
                   id: post?.id,
                   post_status: post?.post_status,
                   post_price: post?.post_price,
+                  userId: post?.user?.id,
                 }}
                 media={media}
                 indexId={index}

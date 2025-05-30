@@ -37,9 +37,29 @@ const PostEditor = React.memo(({ posts }: PostEditorProps) => {
   const [editedMedia, setEditedMedia] = useState<UserMediaProps[]>([]);
   const [removedIds, setRemovedIds] = useState<RemovedMediaIdProps[]>([]);
   const [media, setMedia] = useState<UploadedImageProp[] | null>(null);
-  const { mediaUploadComplete, setMediaUploadComplete } = usePostMediaUploadContext()
+  const { mediaUploadComplete, setMediaUploadComplete } =
+    usePostMediaUploadContext();
+
   const setPriceHandler = (value: string) => {
-    const priceValue = parseFloat(value.replace(/[^0-9.]/g, ""));
+    const priceValue = parseInt(value.replace(/[^0-9.]/g, ""));
+    if (priceValue < 0) {
+      toast.error("Price cannot be negative.", {
+        id: "post-price-error",
+      });
+      return;
+    }
+    if (isNaN(priceValue)) {
+      toast.error("Invalid price value.", {
+        id: "post-price-error",
+      });
+      return;
+    }
+    if (priceValue > 100000) {
+      toast.error("Price cannot exceed 100,000.", {
+        id: "post-price-error",
+      });
+      return;
+    }
     setPrice(priceValue);
   };
 
@@ -59,17 +79,17 @@ const PostEditor = React.memo(({ posts }: PostEditorProps) => {
         },
         ...(user?.is_model && user.Model?.verification_status
           ? [
-            {
-              id: 2,
-              name: "Subscribers",
-              icon: <LucideUsers size={20} className="inline" />,
-            },
-            {
-              id: 3,
-              name: "Price",
-              icon: <DollarSign size={20} className="inline" />,
-            },
-          ]
+              {
+                id: 2,
+                name: "Subscribers",
+                icon: <LucideUsers size={20} className="inline" />,
+              },
+              {
+                id: 3,
+                name: "Price",
+                icon: <DollarSign size={20} className="inline" />,
+              },
+            ]
           : []),
       ] as PostAudienceDataProps[],
     [user]
@@ -141,6 +161,13 @@ const PostEditor = React.memo(({ posts }: PostEditorProps) => {
       return;
     }
 
+    if (String(visibility.toLowerCase()) === "price" && price <= 0) {
+      toast.error("Please set a price for your post.", {
+        id: "post-price-error",
+      });
+      return;
+    }
+
     if (!mediaUploadComplete) {
       toast.error("Please wait for all media uploads to complete.", {
         id: "post-upload",
@@ -159,12 +186,14 @@ const PostEditor = React.memo(({ posts }: PostEditorProps) => {
     toast.loading("Creating your post...", {
       id: "post-upload",
     });
+
     const savePostOptions = {
       data: {
         media: media || [],
         content: postText,
         visibility: visibility.toLowerCase(),
         removedMedia: removedIds,
+        price: price > 0 ? price : undefined,
       },
       action: posts?.post_id ? "update" : "create",
       post_id: posts?.post_id || "",
@@ -278,10 +307,11 @@ const AudienceDropdown = React.memo(
             )}
           </span>
           <div
-            className={`absolute w-full left-0 mt-0 transition-all duration-300 ${dropdown
-              ? "opacity-100 -translate-y-0 pointer-events-auto"
-              : "opacity-0 -translate-y-4 pointer-events-none"
-              }`}
+            className={`absolute w-full left-0 mt-0 transition-all duration-300 ${
+              dropdown
+                ? "opacity-100 -translate-y-0 pointer-events-auto"
+                : "opacity-0 -translate-y-4 pointer-events-none"
+            }`}
           >
             <ul className="bg-white dark:bg-gray-950 rounded-2xl overflow-hidden mt-2 border border-gray-800 text-left w-full">
               {postAudienceData.map((audience) => (

@@ -106,7 +106,7 @@ async function Page({ params }: { params: params }) {
               media={media}
               indexId={index}
               canView={canView as boolean}
-              postOwnerId={post?.user?.user_id}
+              postOwnerId={post?.user?.id}
               medias={post?.UserMedia}
             />
           ))}

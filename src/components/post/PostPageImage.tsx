@@ -13,6 +13,10 @@ import { MouseEvent } from "react";
 import { useInView } from "react-intersection-observer";
 import { useUserAuthContext } from "@/lib/UserUseContext";
 import { getSocket } from "../sub_components/sub/Socket";
+import { useUserPointsContext } from "@/contexts/PointsContext";
+import toast from "react-hot-toast";
+import payForPost from "@/utils/data/PayForPost";
+import { useQueryClient } from "@tanstack/react-query";
 
 // Define props type for the component
 interface PostPageImageProps {
@@ -23,6 +27,7 @@ interface PostPageImageProps {
     id: string;
     post_status: string;
     post_price: number;
+    userId: number;
   };
   media: UserMediaProps;
   postOwnerId: string;
@@ -40,6 +45,8 @@ const PostPageImage: React.FC<PostPageImageProps> = ({
   const { fullScreenPreview } = usePostComponent();
   const { user: authUser } = useUserAuthContext();
   const [canplay, setCanplay] = useState(false);
+  const { points } = useUserPointsContext();
+  const queryClient = useQueryClient();
   const { ref, inView } = useInView({
     threshold: 0.5,
     triggerOnce: true,
@@ -112,7 +119,7 @@ const PostPageImage: React.FC<PostPageImageProps> = ({
   const handlePriceClick = (e: MouseEvent<HTMLDivElement>) => {
     e.preventDefault();
     swal({
-      title: "You need to pay 5,000 coins to view this post",
+      title: `You need to pay ${data.post_price} points to view this post`,
       icon: "warning",
       buttons: {
         cancel: true,
@@ -121,9 +128,27 @@ const PostPageImage: React.FC<PostPageImageProps> = ({
           className: "bg-primary-dark-pink text-white",
         },
       },
-    }).then((willSubscribe) => {
+    }).then(async (willSubscribe) => {
       if (willSubscribe) {
-        router.push(`/wallet`);
+        const price = Number(data.post_price);
+        if (price > points) {
+          return toast.error(
+            "You don't have enough points to pay for this post",
+            {
+              id: "pay-for-post",
+            }
+          );
+        }
+        const pay = await payForPost({ price, postId: data.userId });
+        if (pay.error) {
+          return toast.error(pay.message, {
+            id: "pay-for-post",
+          });
+        }
+        await queryClient.invalidateQueries({
+          queryKey: ["user-points", data.userId],
+        });
+        router.refresh();
       }
     });
   };
@@ -168,7 +193,6 @@ const PostPageImage: React.FC<PostPageImageProps> = ({
         </div>
       ) : (
         <Image
-          unoptimized
           height={300}
           priority
           width={300}

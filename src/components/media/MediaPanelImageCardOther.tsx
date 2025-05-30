@@ -33,7 +33,7 @@ const MediaPanelImageCardOther = React.memo(
     const { fullScreenPreview } = usePostComponent();
     const fetchMedia = async ({ pageParam = 1 }) => {
       const res = await fetch(
-        `${process.env.NEXT_PUBLIC_TS_EXPRESS_URL}/post/media/${userdata.id}?page=1&limit=${process.env.NEXT_PUBLIC_POST_MEDIA_PER_PAGE}`,
+        `${process.env.NEXT_PUBLIC_TS_EXPRESS_URL}/post/other/media/${userdata.id}?page=1&limit=${process.env.NEXT_PUBLIC_POST_MEDIA_PER_PAGE}`,
         {
           method: "GET",
           headers: {
@@ -153,7 +153,7 @@ const MediaPanelMediaCard = ({
   const { user: authUser } = useUserAuthContext();
   const isCreator = media.post.user.id === authUser?.id;
   // const isAdmin = user.role === "admin";
-  const isSubscribed = media.isSubscribed
+  const isSubscribed = media.isSubscribed;
   const hasPaid = authUser?.purchasedPosts?.includes(media.post?.id as number);
   // Determine visibility
   const canView =

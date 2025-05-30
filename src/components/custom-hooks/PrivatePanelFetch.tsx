@@ -23,7 +23,7 @@ export default function PrivatePanelFetch(pageNumber: number) {
     setLoading(true);
     setError(false);
     const token = getToken();
-    const api = `${process.env.NEXT_PUBLIC_TS_EXPRESS_URL}/post/my-private-posts`;
+    const api = `${process.env.NEXT_PUBLIC_TS_EXPRESS_URL}/post/personal/private-post`;
     const postPerPage = process.env.NEXT_PUBLIC_POST_PER_PAGE as string;
 
     axios<any, AxiosResponse>(api, {

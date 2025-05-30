@@ -25,8 +25,8 @@ const RepostPanelFetch = ({
     const token = getToken();
     const api =
       userdata && userdata.id
-        ? `${process.env.NEXT_PUBLIC_TS_EXPRESS_URL}/post/reposts/${userdata.id}`
-        : `${process.env.NEXT_PUBLIC_TS_EXPRESS_URL}/post/my-reposts`;
+        ? `${process.env.NEXT_PUBLIC_TS_EXPRESS_URL}/post/other/reposts/${userdata.id}`
+        : `${process.env.NEXT_PUBLIC_TS_EXPRESS_URL}/post/personal/reposts`;
 
     const postPerPage = parseInt(
       process.env.NEXT_PUBLIC_POST_PER_PAGE || "5",
@@ -53,7 +53,7 @@ const RepostPanelFetch = ({
           return;
         }
         setHasMore(hasMore);
-        setPosts(prev => _.uniqBy([...prev, ...data], "post_id"));
+        setPosts((prev) => _.uniqBy([...prev, ...data], "post_id"));
         setTotalResults(res.data.total);
         setLoading(false);
       })
