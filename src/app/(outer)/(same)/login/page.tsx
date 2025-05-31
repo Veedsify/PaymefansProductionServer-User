@@ -8,10 +8,27 @@ import { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { LOGIN_CONFIG } from "@/config/config";
 import axios from "axios";
+import ParentalGuide from "@/components/common/ParentalGuide";
 
 const Login = () => {
   const { setUser } = getUser();
+  const [acceptedTerms, setAcceptedTerms] = useState(false);
+  // Add a new state to track when acceptedTerms has been read:
+  const [hasCheckedAcceptedTerms, setHasCheckedAcceptedTerms] = useState(false);
   const router = useRouter();
+
+  const acceptTerms = async () => {
+    localStorage.setItem("termsAccepted", "true");
+    setAcceptedTerms(true);
+  };
+
+  useEffect(() => {
+    const terms = localStorage.getItem("termsAccepted");
+    if (terms) {
+      setAcceptedTerms(terms === "true");
+    }
+    setHasCheckedAcceptedTerms(true);
+  }, []);
 
   const [loginCredentials, setLoginCredentials] = useState({
     email: "",
@@ -41,7 +58,7 @@ const Login = () => {
 
       if (!loginThisUser?.data?.error) {
         if (loginThisUser?.data?.token && !loginThisUser?.data?.tfa) {
-          toast.dismiss()
+          toast.dismiss();
           toast.success(LOGIN_CONFIG.LOGIN_SUCCESSFUL_MSG, {
             id: "login",
           });
@@ -84,6 +101,16 @@ const Login = () => {
       );
     }
   };
+
+  // $SELECTION_PLACEHOLDER$ code:
+  if (!hasCheckedAcceptedTerms) {
+    return <div className="min-h-screen bg-black"></div>;
+  }
+
+  if (!acceptedTerms && typeof window !== "undefined") {
+    return <ParentalGuide setAcceptedTerms={acceptTerms} />;
+  }
+
   return (
     <div className="min-h-dvh lg:p-0 bg-black p-5">
       <div className="lg:grid grid-cols-2 items-start justify-center mx-auto">

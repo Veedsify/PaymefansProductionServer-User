@@ -199,6 +199,7 @@ type UserPostPropsOther = {
   UserMedia: UserMediaProps[];
   likedByme: boolean;
   isSubscribed: boolean
+  wasReposted: boolean;
   user: {
     id: number;
     name: string;

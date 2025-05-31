@@ -149,7 +149,7 @@ const PostComponent: React.FC<PostComponentProps> = ({
   const promptPayment = async () =>
     await swal({
       title: "This post is locked",
-      text: `You need to pay ${data.post_price} coins to view this post.`,
+      text: `You need to pay ${data.post_price} points to view this post.`,
       icon: "warning",
       buttons: {
         cancel: true,
