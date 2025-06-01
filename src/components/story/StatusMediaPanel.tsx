@@ -54,7 +54,7 @@ const StoryMediaItem = React.memo(({ data }: { data: any }) => {
   // Memoize selected state instead of using useState
   const selected = useMemo(
     () => story.some((item) => item.id === data.id),
-    [story, data.id],
+    [story, data.id]
   );
 
   const handleSelect = useCallback(() => {
@@ -62,6 +62,7 @@ const StoryMediaItem = React.memo(({ data }: { data: any }) => {
       removeFromStory(data.id);
     } else {
       addToStory({
+        index: 0,
         id: data.id,
         media_type: data.media_type,
         media_url: data.url,
@@ -93,7 +94,7 @@ const StoryMediaItem = React.memo(({ data }: { data: any }) => {
             />
           )}
           <VideoPlayer
-          allOthers={{onClick: handleSelect, muted: true}}
+            allOthers={{ onClick: handleSelect, muted: true }}
             streamUrl={data.url}
             className={`object-cover rounded-xl cursor-pointer ${
               selected ? "p-[2px] saturate-100" : "saturate-0"

@@ -63,9 +63,12 @@ const CustomSwiper = ({
   const totalSlides = children.length;
   const minSwipeDistance = 50;
 
-  const slideChange = (newIndex: number) => {
-    setEditingSlide(newIndex);
-  };
+  const slideChange = useCallback(
+    (newIndex: number) => {
+      setEditingSlide(newIndex);
+    },
+    [setEditingSlide]
+  );
 
   const goToSlide = useCallback(
     (index: number) => {
@@ -76,11 +79,17 @@ const CustomSwiper = ({
       slideChange(index);
       setTimeout(() => setIsTransitioning(false), 300);
     },
-    [totalSlides, isTransitioning, onSlideChange]
+    [totalSlides, isTransitioning, onSlideChange, slideChange]
   );
 
-  const nextSlide = () => goToSlide(currentSlide + 1);
-  const prevSlide = () => goToSlide(currentSlide - 1);
+  const nextSlide = useCallback(
+    () => goToSlide(currentSlide + 1),
+    [goToSlide, currentSlide]
+  );
+  const prevSlide = useCallback(
+    () => goToSlide(currentSlide - 1),
+    [goToSlide, currentSlide]
+  );
 
   const onTouchStart = (e: React.TouchEvent) => {
     setTouchEnd(null);
@@ -108,7 +117,7 @@ const CustomSwiper = ({
     };
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [currentSlide]);
+  }, [currentSlide, nextSlide, prevSlide]);
 
   return (
     <div className="relative w-full h-full overflow-hidden rounded-xl bg-gradient-to-br from-gray-900 to-black shadow-2xl">
@@ -221,30 +230,42 @@ const DraggableElement = ({
   };
 
   // Move drag
-  const handleMove = (clientX: number, clientY: number) => {
-    if (!isDragging || !containerRef.current) return;
-    const rect = containerRef.current.getBoundingClientRect();
-    const deltaX = clientX - dragStart.x;
-    const deltaY = clientY - dragStart.y;
-    const moved = Math.abs(deltaX) > 2 || Math.abs(deltaY) > 2;
-    setDragMoved(moved);
-    if (!moved) return;
-    const deltaXPercent = (deltaX / rect.width) * 100;
-    const deltaYPercent = (deltaY / rect.height) * 100;
-    const newX = Math.max(5, Math.min(95, initialPosition.x + deltaXPercent));
-    const newY = Math.max(5, Math.min(95, initialPosition.y + deltaYPercent));
-    onPositionChange(element.id, { x: newX, y: newY });
-  };
+  const handleMove = useCallback(
+    (clientX: number, clientY: number) => {
+      if (!isDragging || !containerRef.current) return;
+      const rect = containerRef.current.getBoundingClientRect();
+      const deltaX = clientX - dragStart.x;
+      const deltaY = clientY - dragStart.y;
+      const moved = Math.abs(deltaX) > 2 || Math.abs(deltaY) > 2;
+      setDragMoved(moved);
+      if (!moved) return;
+      const deltaXPercent = (deltaX / rect.width) * 100;
+      const deltaYPercent = (deltaY / rect.height) * 100;
+      const newX = Math.max(5, Math.min(95, initialPosition.x + deltaXPercent));
+      const newY = Math.max(5, Math.min(95, initialPosition.y + deltaYPercent));
+      onPositionChange(element.id, { x: newX, y: newY });
+    },
+    [
+      isDragging,
+      containerRef,
+      dragStart.x,
+      dragStart.y,
+      initialPosition.x,
+      initialPosition.y,
+      onPositionChange,
+      element.id,
+    ]
+  );
 
   // End drag or tap
-  const handleEnd = () => {
+  const handleEnd = useCallback(() => {
     setIsDragging(false);
     if (!dragMoved) {
       setIsEditing(true);
       onSelect(element.id);
     }
     setDragMoved(false);
-  };
+  }, [dragMoved, onSelect, element.id]);
 
   // Mouse/touch handlers
   useEffect(() => {
@@ -266,7 +287,14 @@ const DraggableElement = ({
       document.removeEventListener("touchmove", handleTouchMove);
       document.removeEventListener("touchend", handleTouchEnd);
     };
-  }, [isDragging, dragStart, initialPosition, dragMoved]);
+  }, [
+    isDragging,
+    dragStart,
+    initialPosition,
+    dragMoved,
+    handleEnd,
+    handleMove,
+  ]);
 
   // Main render
   return (

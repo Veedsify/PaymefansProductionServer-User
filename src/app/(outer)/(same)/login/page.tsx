@@ -17,7 +17,7 @@ const Login = () => {
   const [hasCheckedAcceptedTerms, setHasCheckedAcceptedTerms] = useState(false);
   const router = useRouter();
 
-  const acceptTerms = async () => {
+  const handleAcceptTerms = async () => {
     localStorage.setItem("termsAccepted", "true");
     setAcceptedTerms(true);
   };
@@ -107,12 +107,11 @@ const Login = () => {
     return <div className="min-h-screen bg-black"></div>;
   }
 
-  if (!acceptedTerms && typeof window !== "undefined") {
-    return <ParentalGuide setAcceptedTerms={acceptTerms} />;
-  }
-
   return (
     <div className="min-h-dvh lg:p-0 bg-black p-5">
+      {!acceptedTerms && typeof window !== "undefined" && (
+        <ParentalGuide setAcceptedTerms={handleAcceptTerms} />
+      )}
       <div className="lg:grid grid-cols-2 items-start justify-center mx-auto">
         <div className="min-h-dvh hidden lg:block relative">
           <Image
@@ -121,7 +120,7 @@ const Login = () => {
             priority
             src="/images/auth_image.jpeg"
             alt="Login Image"
-            className="h-full absolute object-cover inset-0 w-full "
+            className="h-full absolute object-cover inset-0 w-full aspect-square"
           />
           <div
             style={{
@@ -135,10 +134,10 @@ const Login = () => {
         </div>
         <div className="h-full lg:p-14 2xl:p-28">
           <div className="max-w-screen-xl pt-12 mx-auto mb-24 md:mt-16">
-            <Link href="/client/public">
+            <Link href="/">
               <Image
                 width={150}
-                height={150}
+                height={25}
                 priority
                 className="h-auto w-[150px]"
                 src="/site/logo.svg"

@@ -2,13 +2,19 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 interface ParentalGuideProps {
   setAcceptedTerms: (accepted: boolean) => void;
 }
 const ParentalGuide = ({ setAcceptedTerms }: ParentalGuideProps) => {
+  const router = useRouter();
+  const handleCancelClick = () => {
+    router.push("https://google.com");
+  };
+
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-70 backdrop-blur-sm">
+    <div className="fixed inset-0 z-[200] flex items-center justify-center bg-black/80 backdrop-blur-sm">
       <div className="bg-white dark:bg-gray-800 p-10 rounded-2xl shadow-2xl max-w-lg w-full mx-4 border border-gray-300 dark:border-gray-700">
         <div className="text-center mb-8">
           <Image
@@ -62,8 +68,11 @@ const ParentalGuide = ({ setAcceptedTerms }: ParentalGuideProps) => {
           </Link>
         </div>
 
-        <div className="mt-8 flex justify-center">
-          <button className="px-8 py-2 bg-gray-500 hover:bg-gray-600 text-white font-semibold rounded-lg transition transform hover:scale-105 duration-200 shadow-md cursor-pointer">
+        <div className="mt-8 flex justify-center gap-4">
+          <button
+            onClick={handleCancelClick}
+            className="px-8 py-2 bg-gray-500 hover:bg-gray-600 text-white font-semibold rounded-lg transition transform hover:scale-105 duration-200 shadow-md cursor-pointer"
+          >
             Cancel
           </button>
           <button
