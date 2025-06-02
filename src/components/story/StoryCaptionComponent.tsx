@@ -120,7 +120,7 @@ const CustomSwiper = ({
   }, [currentSlide, nextSlide, prevSlide]);
 
   return (
-    <div className="relative w-full h-full overflow-hidden rounded-xl bg-gradient-to-br from-gray-900 to-black shadow-2xl">
+    <div className="relative w-full h-full overflow-hidden rounded-xl bg-black shadow-2xl">
       {/* Slides Container */}
       <div
         ref={swiperRef}
@@ -752,7 +752,7 @@ const StoryCaptionComponent = ({ close }: StoryCaptionComponentProps) => {
   const { story } = useStoryStore();
 
   return (
-    <div className="flex flex-col items-center fixed justify-center inset-0 w-full min-h-dvh bg-gradient-to-br from-black/90 via-purple-900/20 to-black/90 z-[200] select-none">
+    <div className="flex flex-col items-center fixed justify-center inset-0 w-full min-h-dvh bg-black/70 z-[200] select-none">
       <div
         className="p-4 flex justify-center items-center w-full flex-1"
         onClick={(e) => {
