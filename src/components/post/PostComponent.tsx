@@ -175,6 +175,9 @@ const PostComponent: React.FC<PostComponentProps> = ({
             id: "pay-for-post",
           });
         }
+        toast.success(pay.message, {
+          id: "pay-for-post",
+        });
         await queryClient.invalidateQueries({
           queryKey: ["user-points", user.id],
         });

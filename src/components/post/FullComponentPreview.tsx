@@ -7,24 +7,55 @@ import React, {
   memo,
   useCallback,
   useMemo,
+  useReducer,
 } from "react";
 import Image from "next/image";
 import { Swiper, SwiperClass, SwiperSlide } from "swiper/react";
 import { Navigation, Pagination, Keyboard, A11y } from "swiper/modules";
 import { ChevronLeft, ChevronRight, X } from "lucide-react";
 import "swiper/css/bundle";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import usePostComponent from "@/contexts/PostComponentPreview";
 import Loader from "../lib_components/LoadingAnimation";
 import HLSVideoPlayer from "../sub_components/videoplayer";
 
-// Define types
+// Optional Sentry import
+let Sentry: any;
+try {
+  Sentry = require("@sentry/react");
+} catch {
+  Sentry = { captureException: console.error, captureMessage: console.warn };
+}
+
+// Centralized constants
+const CONSTANTS = {
+  ANIMATION_DURATION: 100,
+  ANIMATION_DURATION_SEC: 100 / 1000,
+  IMAGE_DIMENSIONS: { width: 1500, height: 1500 },
+  SWIPER_CONFIG: {
+    spaceBetween: 0,
+    slidesPerView: 1,
+    touchRatio: 1.5,
+    speed: 200,
+    threshold: 15,
+    longSwipesRatio: 0.5,
+    watchSlidesProgress: true,
+  },
+  PRELOAD_RANGE: 2,
+  IMAGE_QUALITY: {
+    HIGH: 90,
+    MEDIUM: 75,
+    LOW: 50,
+  },
+};
+
+// Types
 interface MediaItem {
   url: string;
   isBlob?: boolean;
   type: "image" | "video";
-  alt?: string; // Added for better accessibility
-  thumbnailUrl?: string; // Added for performance optimization
+  alt?: string;
+  thumbnailUrl?: string;
 }
 
 interface NavigationButtonProps {
@@ -32,13 +63,14 @@ interface NavigationButtonProps {
   className: string;
   ariaLabel: string;
   onClick?: () => void;
+  disabled?: boolean;
 }
 
 interface VideoPreviewProps {
   url: string;
   isBlob: boolean;
   playAction: boolean;
-  index: number; // Added for better debugging/tracking
+  index: number;
 }
 
 interface ImagePreviewProps {
@@ -49,195 +81,297 @@ interface ImagePreviewProps {
   onError: () => void;
 }
 
-// Constants for better maintainability
-const ANIMATION_DURATION = 200;
-const SWIPER_CONFIG = {
-  spaceBetween: 0,
-  slidesPerView: 1 as const,
-  touchRatio: 1.5,
-  speed: 300,
-  threshold: 10,
-  longSwipesRatio: 0.5,
+// Media loading state reducer
+type MediaState = { loaded: Set<number>; errors: Set<number> };
+type MediaAction =
+  | { type: "LOAD_SUCCESS"; index: number }
+  | { type: "LOAD_ERROR"; index: number }
+  | { type: "RESET" };
+
+const mediaReducer = (state: MediaState, action: MediaAction): MediaState => {
+  switch (action.type) {
+    case "LOAD_SUCCESS":
+      return { ...state, loaded: new Set([...state.loaded, action.index]) };
+    case "LOAD_ERROR":
+      return {
+        ...state,
+        errors: new Set([...state.errors, action.index]),
+        loaded: new Set([...state.loaded, action.index]),
+      };
+    case "RESET":
+      return { loaded: new Set(), errors: new Set() };
+    default:
+      return state;
+  }
 };
 
-// Video Preview Component with improved error handling and performance
+// Error boundary
+class MediaErrorBoundary extends React.Component<{
+  children: React.ReactNode;
+  fallback?: React.ReactNode;
+}> {
+  state = { hasError: false };
+
+  static getDerivedStateFromError() {
+    return { hasError: true };
+  }
+
+  componentDidCatch(error: Error, info: React.ErrorInfo) {
+    Sentry.captureException(error, {
+      extra: { componentStack: info.componentStack },
+    });
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return (
+        this.props.fallback || (
+          <div className="flex h-full items-center justify-center text-white">
+            <div className="text-center space-y-4">
+              <div className="text-6xl">⚠️</div>
+              <p className="text-lg">Media unavailable</p>
+              <p className="text-sm text-gray-400">Failed to render media</p>
+            </div>
+          </div>
+        )
+      );
+    }
+    return this.props.children;
+  }
+}
+
+// Preload media utility
+const preloadMedia = (url: string, type: "image" | "video") => {
+  if (type === "image") {
+    const img = new window.Image();
+    img.src = url;
+  } else {
+    const video = document.createElement("video");
+    video.preload = "metadata";
+    video.src = url;
+  }
+};
+
+// Video Preview
 const VideoPreview = memo(
   ({ url, isBlob, playAction, index }: VideoPreviewProps) => {
     const videoRef = useRef<HTMLVideoElement | null>(null);
-    const [isLoading, setIsLoading] = useState(true);
-    const [hasError, setHasError] = useState(false);
+    const [status, setStatus] = useState<"loading" | "ready" | "error">(
+      "loading"
+    );
 
-    // Memoized video handlers
     const handleVideoLoad = useCallback(() => {
-      setIsLoading(false);
-      setHasError(false);
+      setTimeout(() => setStatus("ready"), 100);
     }, []);
 
     const handleVideoError = useCallback(() => {
-      setIsLoading(false);
-      setHasError(true);
-      console.error(`Video failed to load at index ${index}:`, url);
+      setStatus("error");
+      Sentry.captureMessage(`Video failed to load at index ${index}`, {
+        extra: { url, index },
+      });
     }, [index, url]);
 
     const handleVideoEnded = useCallback(() => {
-      if (videoRef.current) {
-        videoRef.current.currentTime = 0;
-        videoRef.current.play().catch((error) => {
-          console.error("Video loop error:", error);
-        });
+      const video = videoRef.current;
+      if (video && status === "ready") {
+        video.currentTime = 0;
+        video
+          .play()
+          .catch((e) =>
+            Sentry.captureMessage(`Auto-replay failed: ${e.message}`)
+          );
       }
-    }, []);
+    }, [status]);
 
-    // Handle video play/pause based on active slide
+    useEffect(() => {
+      const video = videoRef.current;
+      if (!video || status !== "ready") return;
+
+      const playVideo = async () => {
+        if (playAction) {
+          try {
+            await video.play();
+          } catch (err: any) {
+            Sentry.captureMessage(`Playback prevented: ${err.message}`);
+          }
+        } else {
+          video.pause();
+        }
+      };
+      playVideo();
+    }, [playAction, status]);
+
     useEffect(() => {
       const video = videoRef.current;
       if (!video) return;
 
-      if (playAction) {
-        video.play().catch((error) => {
-          console.error("Video playback error:", error);
-          setHasError(true);
-        });
-      } else {
-        video.pause();
-      }
-    }, [playAction]);
-
-    // Handle video looping
-    useEffect(() => {
-      const video = videoRef.current;
-      if (!video) return;
-
-      video.addEventListener("ended", handleVideoEnded);
-      video.addEventListener("loadeddata", handleVideoLoad);
-      video.addEventListener("error", handleVideoError);
+      const abortController = new AbortController();
+      video.addEventListener("ended", handleVideoEnded, {
+        signal: abortController.signal,
+      });
+      video.addEventListener("loadeddata", handleVideoLoad, {
+        signal: abortController.signal,
+      });
+      video.addEventListener("error", handleVideoError, {
+        signal: abortController.signal,
+      });
 
       return () => {
-        video.removeEventListener("ended", handleVideoEnded);
-        video.removeEventListener("loadeddata", handleVideoLoad);
-        video.removeEventListener("error", handleVideoError);
+        abortController.abort();
+        video.pause();
+        video.removeAttribute("src");
+        video.load();
+        if (isBlob) URL.revokeObjectURL(url);
       };
-    }, [handleVideoEnded, handleVideoLoad, handleVideoError]);
+    }, [handleVideoEnded, handleVideoLoad, handleVideoError, url, isBlob]);
 
-    if (hasError) {
-      return (
-        <div className="flex h-full items-center justify-center text-white">
-          <div className="text-center">
-            <p className="mb-2">Failed to load video</p>
-            <button
-              onClick={() => window.location.reload()}
-              className="text-blue-400 hover:text-blue-300"
-            >
-              Reload page
-            </button>
-          </div>
-        </div>
-      );
-    }
-
-    const motionProps = {
-      initial: { opacity: 0.3, scale: 0.95 },
-      animate: { opacity: 1, scale: 1 },
-      exit: { opacity: 0, scale: 0.95 },
-      transition: { duration: ANIMATION_DURATION / 1000 },
-    };
-
-    if (isBlob) {
+    if (status === "error") {
       return (
         <motion.div
-          className="relative flex h-full items-center justify-center"
-          {...motionProps}
+          className="flex h-full items-center justify-center text-white"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.3 }}
         >
-          {isLoading && (
-            <div className="absolute inset-0 flex items-center justify-center">
-              <Loader />
-            </div>
-          )}
-          <video
-            ref={videoRef}
-            className="h-dvh w-auto object-contain"
-            controls
-            autoPlay={playAction}
-            loop
-            muted
-            playsInline
-            preload="metadata"
-            aria-label={`Video ${index + 1}`}
-          >
-            <source src={url} type="video/mp4" />
-            Your browser does not support the video tag.
-          </video>
+          <div className="text-center space-y-4">
+            <div className="text-6xl">🎥</div>
+            <p className="text-lg">Video unavailable</p>
+            <p className="text-sm text-gray-400">
+              This video could not be loaded
+            </p>
+          </div>
         </motion.div>
       );
     }
 
     return (
       <motion.div
-        className="flex h-full items-center justify-center"
-        {...motionProps}
+        className="relative flex h-full items-center justify-center"
+        initial={{ opacity: 0, scale: 0.95 }}
+        animate={{ opacity: 1, scale: 1 }}
+        exit={{ opacity: 0, scale: 0.95 }}
+        transition={{
+          duration: CONSTANTS.ANIMATION_DURATION_SEC,
+          type: "spring",
+        }}
       >
-        {isLoading && (
-          <div className="absolute inset-0 flex items-center justify-center">
-            <Loader />
-          </div>
+        <AnimatePresence>
+          {status === "loading" && (
+            <motion.div
+              className="absolute inset-0 flex items-center justify-center z-10"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0, transition: { duration: 0.2 } }}
+            >
+              <Loader />
+            </motion.div>
+          )}
+        </AnimatePresence>
+        {isBlob ? (
+          <video
+            ref={videoRef}
+            className="h-dvh w-auto object-contain"
+            controls
+            loop
+            muted
+            playsInline
+            preload={playAction ? "metadata" : "none"}
+            aria-label={`Video ${index + 1}`}
+          >
+            <source src={url} type="video/mp4" />
+            Your browser does not support the video tag.
+          </video>
+        ) : (
+          <HLSVideoPlayer
+            streamUrl={url}
+            autoPlay={playAction}
+            modalOpen={true}
+            allOthers={{ id: `video_player_full_${index}`, muted: false }}
+            className="h-dvh w-auto max-w-3xl object-contain transition-all duration-200"
+          />
         )}
-        <HLSVideoPlayer
-          streamUrl={url}
-          autoPlay={playAction}
-          modalOpen={true}
-          allOthers={{
-            id: `video_player_full_${index}`,
-            muted: false,
-          }}
-          className="h-dvh w-auto max-w-3xl object-contain transition-all duration-200"
-        />
       </motion.div>
     );
   }
 );
 VideoPreview.displayName = "VideoPreview";
 
-// Image Preview Component for better separation of concerns
+// Image Preview
 const ImagePreview = memo(
   ({ url, alt, index, onLoad, onError }: ImagePreviewProps) => {
-    const [isLoading, setIsLoading] = useState(true);
+    const [status, setStatus] = useState<"loading" | "ready" | "error">(
+      "loading"
+    );
+    const isSlowNetwork =
+      typeof navigator !== "undefined" &&
+      (navigator as any).connection?.saveData;
 
     const handleImageLoad = useCallback(() => {
-      setIsLoading(false);
-      onLoad();
+      setTimeout(() => {
+        setStatus("ready");
+        onLoad();
+      }, 100);
     }, [onLoad]);
 
     const handleImageError = useCallback(() => {
-      setIsLoading(false);
+      setStatus("error");
       onError();
-      console.error(`Image failed to load at index ${index}:`, url);
+      Sentry.captureMessage(`Image failed to load at index ${index}`, {
+        extra: { url, index },
+      });
     }, [onError, index, url]);
+
+    const imageQuality = useMemo(
+      () =>
+        isSlowNetwork
+          ? CONSTANTS.IMAGE_QUALITY.LOW
+          : index < 3
+          ? CONSTANTS.IMAGE_QUALITY.HIGH
+          : CONSTANTS.IMAGE_QUALITY.MEDIUM,
+      [index, isSlowNetwork]
+    );
+
+    const sizes = "(max-width: 640px) 100vw, (max-width: 1024px) 80vw, 70vw";
 
     return (
       <motion.div
         className="relative flex h-full items-center justify-center"
-        initial={{ opacity: 0.3, scale: 0.95 }}
+        initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
         exit={{ opacity: 0, scale: 0.95 }}
-        transition={{ duration: ANIMATION_DURATION / 1000 }}
+        transition={{
+          duration: CONSTANTS.ANIMATION_DURATION_SEC,
+          type: "spring",
+        }}
       >
-        {isLoading && (
-          <div className="absolute inset-0 flex items-center justify-center bg-black/50">
-            <Loader />
-          </div>
-        )}
+        <AnimatePresence>
+          {status === "loading" && (
+            <motion.div
+              className="absolute inset-0 flex items-center justify-center bg-black/20 z-10"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0, transition: { duration: 0.2 } }}
+            >
+              <Loader />
+            </motion.div>
+          )}
+        </AnimatePresence>
         <Image
-          src={url.trimEnd()}
-          width={2000}
-          height={2000}
-          quality={90} // Reduced from 100 for better performance
-          className="h-dvh w-auto object-contain transition-opacity duration-300"
-          alt={alt || `Media preview ${index + 1}`}
+          src={url.trim()}
+          width={CONSTANTS.IMAGE_DIMENSIONS.width}
+          height={CONSTANTS.IMAGE_DIMENSIONS.height}
+          quality={imageQuality}
+          className={`h-dvh w-auto object-contain transition-opacity duration-200 ${
+            status === "loading" ? "opacity-0" : "opacity-100"
+          }`}
+          alt={alt}
           onLoad={handleImageLoad}
           onError={handleImageError}
           onDragStart={(e) => e.preventDefault()}
-          sizes="100vw"
-          priority
+          sizes={sizes}
+          priority={index < 2}
+          unoptimized={url.startsWith("blob:")}
+          loading={index < 2 ? "eager" : "lazy"}
         />
       </motion.div>
     );
@@ -245,64 +379,141 @@ const ImagePreview = memo(
 );
 ImagePreview.displayName = "ImagePreview";
 
-// Navigation Button Component with improved accessibility
-const NavigationButton = memo<NavigationButtonProps>(
-  ({ direction, className, ariaLabel, onClick }) => (
-    <button
-      className={`${className} absolute z-10 -translate-y-1/2 rounded-full bg-black/50 backdrop-blur-sm p-3 text-white opacity-0 transition-all duration-200 hover:bg-black/70 hover:opacity-100 focus:opacity-100 focus:outline-none focus:ring-2 focus:ring-white/50 md:opacity-60 cursor-pointer active:scale-95`}
+// Navigation Button
+const NavigationButton = memo(
+  ({
+    direction,
+    className,
+    ariaLabel,
+    onClick,
+    disabled,
+  }: NavigationButtonProps) => (
+    <motion.button
+      className={`${className} absolute z-10 -translate-y-1/2 rounded-full bg-black/70 backdrop-blur-sm p-3 text-white transition-colors duration-200 hover:bg-black/90 focus:outline-none focus:ring-2 focus:ring-white/50 ${
+        disabled ? "opacity-30 cursor-not-allowed" : "hover:scale-110"
+      }`}
       aria-label={ariaLabel}
       onClick={onClick}
+      disabled={disabled}
       type="button"
+      whileHover={{ scale: 1.1 }}
+      whileTap={{ scale: 0.95 }}
     >
       {direction === "prev" ? (
         <ChevronLeft className="h-5 w-5 md:h-6 md:w-6" />
       ) : (
         <ChevronRight className="h-5 w-5 md:h-6 md:w-6" />
       )}
-    </button>
+    </motion.button>
   )
 );
 NavigationButton.displayName = "NavigationButton";
 
-// Main Component with improved performance and accessibility
+// Main Component
 const PostComponentPreview = memo(() => {
   const { ref: objectRef, otherUrl, open, close } = usePostComponent();
-  const [loadedImages, setLoadedImages] = useState<Set<number>>(new Set());
-  const [currentSlide, setCurrentSlide] = useState(0);
   const swiperRef = useRef<SwiperClass | null>(null);
+  const [currentSlide, setCurrentSlide] = useState(0);
+  const [mediaState, dispatchMedia] = useReducer(mediaReducer, {
+    loaded: new Set<number>(),
+    errors: new Set<number>(),
+  });
+  const shouldReduceMotion = useReducedMotion();
 
-  // Memoized handlers for better performance
+  // Validate media items
+  const validateMediaItem = useCallback(
+    (item: any, index: number): MediaItem => {
+      if (!item?.url || typeof item.url !== "string") {
+        Sentry.captureMessage(`Invalid media item URL at index ${index}`, {
+          extra: { item },
+        });
+        return {
+          url: "/fallback-image.jpg",
+          type: "image",
+          alt: `Media preview ${index + 1}`,
+        };
+      }
+      return {
+        ...item,
+        type: ["image", "video"].includes(item.type) ? item.type : "image",
+        alt: item.alt || `Media preview ${index + 1}`,
+      };
+    },
+    []
+  );
+
+  const mediaItems = useMemo(() => {
+    if (!Array.isArray(otherUrl)) return [];
+    return otherUrl.map((item, index) => validateMediaItem(item, index));
+  }, [otherUrl, validateMediaItem]);
+
+  const { totalSlides, isFirstSlide, isLastSlide } = useMemo(
+    () => ({
+      totalSlides: mediaItems.length,
+      isFirstSlide: currentSlide === 0,
+      isLastSlide: currentSlide === mediaItems.length - 1,
+    }),
+    [mediaItems.length, currentSlide]
+  );
+
+  const shouldLoadSlide = useCallback(
+    (index: number) =>
+      Math.abs(index - currentSlide) <= CONSTANTS.PRELOAD_RANGE,
+    [currentSlide]
+  );
+
+  // Preload media
+  useEffect(() => {
+    mediaItems.forEach((item, index) => {
+      if (shouldLoadSlide(index) && !mediaState.loaded.has(index)) {
+        preloadMedia(item.url, item.type);
+      }
+    });
+  }, [currentSlide, mediaItems, mediaState.loaded]);
+
+  // Handlers
   const handleClose = useCallback(() => {
     close();
+    setCurrentSlide(0);
+    dispatchMedia({ type: "RESET" });
+    setTimeout(() => {
+      if (swiperRef.current) swiperRef.current.slideTo(0, 0, false);
+    }, CONSTANTS.ANIMATION_DURATION);
   }, [close]);
 
   const handleImageLoad = useCallback((index: number) => {
-    setLoadedImages((prev) => new Set(prev).add(index));
+    dispatchMedia({ type: "LOAD_SUCCESS", index });
   }, []);
 
   const handleImageError = useCallback((index: number) => {
-    setLoadedImages((prev) => new Set(prev).add(index));
+    dispatchMedia({ type: "LOAD_ERROR", index });
   }, []);
 
   const handleSlideChange = useCallback((swiper: SwiperClass) => {
-    setCurrentSlide(swiper.realIndex);
+    setCurrentSlide(swiper.activeIndex);
   }, []);
 
   const handlePrevSlide = useCallback(() => {
-    swiperRef.current?.slidePrev();
-  }, []);
+    if (!isFirstSlide && swiperRef.current) swiperRef.current.slidePrev();
+  }, [isFirstSlide]);
 
   const handleNextSlide = useCallback(() => {
-    swiperRef.current?.slideNext();
-  }, []);
+    if (!isLastSlide && swiperRef.current) swiperRef.current.slideNext();
+  }, [isLastSlide]);
 
-  // Handle keyboard events
+  // Keyboard navigation
   useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (!open) return;
+    if (!open) return;
 
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (
+        e.target instanceof HTMLInputElement ||
+        e.target instanceof HTMLTextAreaElement
+      )
+        return;
       switch (e.key) {
         case "Escape":
+          e.preventDefault();
           handleClose();
           break;
         case "ArrowLeft":
@@ -310,9 +521,6 @@ const PostComponentPreview = memo(() => {
           handlePrevSlide();
           break;
         case "ArrowRight":
-          e.preventDefault();
-          handleNextSlide();
-          break;
         case " ":
           e.preventDefault();
           handleNextSlide();
@@ -324,152 +532,124 @@ const PostComponentPreview = memo(() => {
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [open, handleClose, handlePrevSlide, handleNextSlide]);
 
-  // Scroll to specific slide when objectRef changes
+  // Initialize slide position
   useEffect(() => {
-    if (swiperRef.current && objectRef !== undefined) {
-      swiperRef.current.slideTo(objectRef, 0, false);
-      setCurrentSlide(objectRef);
+    if (swiperRef.current && typeof objectRef === "number" && open) {
+      const targetSlide = Math.max(0, Math.min(objectRef, totalSlides - 1));
+      swiperRef.current.slideTo(targetSlide, 0, false);
+      setCurrentSlide(targetSlide);
     }
-  }, [objectRef]);
+  }, [objectRef, totalSlides, open]);
 
-  // Lock scroll when modal is open
+  // Control body scroll
   useEffect(() => {
     if (open) {
+      const originalOverflow = document.body.style.overflow;
       document.body.style.overflow = "hidden";
-      document.body.style.paddingRight = "0px"; // Prevent layout shift
-    } else {
-      document.body.style.overflow = "";
-      document.body.style.paddingRight = "";
+      return () => {
+        document.body.style.overflow = originalOverflow;
+      };
     }
-
-    return () => {
-      document.body.style.overflow = "";
-      document.body.style.paddingRight = "";
-    };
   }, [open]);
 
-  // Memoized swiper configuration
-  const swiperModules = useMemo(() => [Navigation, Keyboard, A11y], []);
-
-  const swiperProps = useMemo(
-    () => ({
-      ...SWIPER_CONFIG,
-      modules: swiperModules,
-      onSwiper: (swiper: SwiperClass) => {
-        swiperRef.current = swiper;
-      },
-      onSlideChange: handleSlideChange,
-      keyboard: {
-        enabled: true,
-        onlyInViewport: false,
-      },
-      a11y: {
-        prevSlideMessage: "Previous slide",
-        nextSlideMessage: "Next slide",
-        slideLabelMessage: "Slide {{index}} of {{slidesLength}}",
-      },
-    }),
-    [swiperModules, handleSlideChange]
-  );
-
-  if (!open) return null;
+  if (!mediaItems.length) return null;
 
   return (
     <AnimatePresence>
-      <motion.div
-        className="fixed inset-0 z-[999] h-dvh w-full select-none bg-black"
-        role="dialog"
-        aria-modal="true"
-        aria-label="Media preview"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-        transition={{ duration: 0.3 }}
-      >
-        {/* Close Button */}
-        <button
-          onClick={handleClose}
-          className="absolute right-4 top-4 z-50 rounded-full bg-black/50 backdrop-blur-sm p-2 text-white transition-all duration-200 hover:bg-black/70 focus:outline-none focus:ring-2 focus:ring-white/50 cursor-pointer active:scale-95"
-          aria-label="Close preview"
-          type="button"
+      {open && (
+        <motion.div
+          role="dialog"
+          aria-labelledby="media-preview-title"
+          className="fixed inset-0 z-[9999] flex h-full w-full items-center justify-center bg-black/90"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{
+            duration: shouldReduceMotion ? 0 : CONSTANTS.ANIMATION_DURATION_SEC,
+            type: "spring",
+          }}
+          onClick={(e) => e.target === e.currentTarget && handleClose()}
         >
-          <X className="h-6 w-6 md:h-8 md:w-8" />
-        </button>
-
-        {/* Media Counter */}
-        {otherUrl.length > 1 && (
-          <div className="absolute left-4 top-4 z-50 rounded-full bg-black/50 backdrop-blur-sm px-3 py-1 text-sm text-white">
-            {currentSlide + 1} / {otherUrl.length}
+          <div className="sr-only" id="media-preview-title">
+            Media Preview Modal
           </div>
-        )}
-
-        {/* Swiper Slider */}
-        <Swiper {...swiperProps} className="h-dvh">
-          {otherUrl.map((item: MediaItem, index: number) => (
-            <SwiperSlide
-              key={`${item.url}-${index}`} // More stable key
-              className="flex h-full items-center justify-center"
-              onDoubleClick={handleClose}
+          <button
+            className="absolute top-4 right-4 z-20 rounded-full bg-black/60 p-2 text-white hover:bg-black/80 focus:outline-none focus:ring-2 focus:ring-white/50 transition-colors"
+            onClick={handleClose}
+            aria-label="Close preview"
+          >
+            <X className="h-5 w-5" />
+          </button>
+          {totalSlides > 1 && (
+            <div
+              aria-live="polite"
+              className="absolute top-4 left-1/2 -translate-x-1/2 z-20 rounded-full bg-black/60 px-3 py-1 text-white text-sm"
             >
-              {item.type === "video" ? (
-                <VideoPreview
-                  url={item.url}
-                  isBlob={item.isBlob || false}
-                  playAction={currentSlide === index}
-                  index={index}
-                />
-              ) : (
-                <ImagePreview
-                  url={item.url}
-                  alt={item.alt || `Media preview ${index + 1}`}
-                  index={index}
-                  onLoad={() => handleImageLoad(index)}
-                  onError={() => handleImageError(index)}
-                />
-              )}
-            </SwiperSlide>
-          ))}
-        </Swiper>
-
-        {/* Navigation Buttons */}
-        {otherUrl.length > 1 && (
-          <>
-            <NavigationButton
-              direction="prev"
-              className="left-4 top-1/2"
-              ariaLabel="Previous slide"
-              onClick={handlePrevSlide}
-            />
-            <NavigationButton
-              direction="next"
-              className="right-4 top-1/2"
-              ariaLabel="Next slide"
-              onClick={handleNextSlide}
-            />
-          </>
-        )}
-
-        {/* Progress Indicator */}
-        {otherUrl.length > 1 && (
-          <div className="absolute bottom-4 left-1/2 z-50 lg:flex hidden -translate-x-1/2 space-x-2">
-            {otherUrl.map((_, index) => (
-              <button
-                key={index}
-                className={`h-2 w-8 rounded-full transition-all duration-200 ${
-                  index === currentSlide
-                    ? "bg-white"
-                    : "bg-white/40 hover:bg-white/60"
-                }`}
-                onClick={() => swiperRef.current?.slideTo(index)}
-                aria-label={`Go to slide ${index + 1}`}
-              />
+              {currentSlide + 1} / {totalSlides}
+            </div>
+          )}
+          <Swiper
+            {...CONSTANTS.SWIPER_CONFIG}
+            modules={[Navigation, Pagination, Keyboard, A11y]}
+            onSwiper={(swiper) => (swiperRef.current = swiper)}
+            onSlideChange={handleSlideChange}
+            className="relative h-full w-full"
+            keyboard={{ enabled: true }}
+            a11y={{
+              prevSlideMessage: "Previous slide",
+              nextSlideMessage: "Next slide",
+            }}
+          >
+            {mediaItems.map((item, index) => (
+              <SwiperSlide
+                key={`media-${index}-${item.url.slice(-20)}`}
+                className="flex items-center justify-center"
+              >
+                <MediaErrorBoundary>
+                  {shouldLoadSlide(index) &&
+                    (item.type === "image" ? (
+                      <ImagePreview
+                        url={item.url}
+                        alt={item.alt || `Media preview ${index + 1}`}
+                        index={index}
+                        onLoad={() => handleImageLoad(index)}
+                        onError={() => handleImageError(index)}
+                      />
+                    ) : (
+                      <VideoPreview
+                        url={item.url}
+                        isBlob={!!item.isBlob}
+                        playAction={currentSlide === index}
+                        index={index}
+                      />
+                    ))}
+                </MediaErrorBoundary>
+              </SwiperSlide>
             ))}
-          </div>
-        )}
-      </motion.div>
+          </Swiper>
+          {totalSlides > 1 && (
+            <>
+              <NavigationButton
+                direction="prev"
+                className="left-2 top-1/2"
+                ariaLabel="Previous slide"
+                onClick={handlePrevSlide}
+                disabled={isFirstSlide}
+              />
+              <NavigationButton
+                direction="next"
+                className="right-2 top-1/2"
+                ariaLabel="Next slide"
+                onClick={handleNextSlide}
+                disabled={isLastSlide}
+              />
+            </>
+          )}
+        </motion.div>
+      )}
     </AnimatePresence>
   );
 });
-
 PostComponentPreview.displayName = "PostComponentPreview";
+
 export default PostComponentPreview;

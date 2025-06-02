@@ -24,7 +24,7 @@ interface PostPageImageProps {
   medias: UserMediaProps[];
   canView: boolean;
   data: {
-    id: string;
+    id: number;
     post_status: string;
     post_price: number;
     userId: number;
@@ -139,12 +139,15 @@ const PostPageImage: React.FC<PostPageImageProps> = ({
             }
           );
         }
-        const pay = await payForPost({ price, postId: data.userId });
+        const pay = await payForPost({ price, postId: data.id });
         if (pay.error) {
           return toast.error(pay.message, {
             id: "pay-for-post",
           });
         }
+        toast.success(pay.message, {
+          id: "pay-for-post",
+        });
         await queryClient.invalidateQueries({
           queryKey: ["user-points", data.userId],
         });

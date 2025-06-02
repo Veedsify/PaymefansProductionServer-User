@@ -106,7 +106,7 @@ const WithdrawConfigPage = () => {
           // Use Next.js router instead of window.location for better SPA behavior
           clearWithdrawStore();
           router.refresh();
-          router.push("/wallet");
+          router.push("/wallet/history");
         }
       });
 
