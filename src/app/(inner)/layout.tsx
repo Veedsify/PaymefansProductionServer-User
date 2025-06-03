@@ -20,11 +20,11 @@ import { GeistSans } from "geist/font/sans";
 import { MessagesConversationProvider } from "@/contexts/MessageConversationContext";
 import UserAccountSupendedScreen from "@/components/sub_components/UserAccountSuspendedScreen";
 import ConfigProvider from "@/contexts/ConfigContext";
-import { Inter } from "next/font/google";
+import { Instrument_Sans } from "next/font/google";
 import Head from "next/head";
 
-const font = Inter({
-  weight: ["200", "300", "400", "500", "600", "700", "800"],
+const font = Instrument_Sans({
+  weight: ["400", "500", "600", "700"],
   subsets: ["latin", "latin-ext"],
   display: "swap",
 });
@@ -50,13 +50,12 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-
   const user = await getUserData();
   if (user && !user.active_status) {
     return (
       <html>
         <body
-          className={`bg-white dark:bg-gray-950 min-h-dvh flex items-center justify-center ${GeistSans.className}`}
+          className={`bg-white dark:bg-gray-950 min-h-dvh flex items-center justify-center ${font.className}`}
         >
           <UserAccountSupendedScreen user={user} />
         </body>
@@ -89,11 +88,7 @@ export default async function RootLayout({
         <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
         <meta property="og:image" content="/site/logo.svg" />
       </head>
-      <body
-        className={`
-          ${GeistSans.className}
-                 dark:bg-gray-950 min-h-dvh`}
-      >
+      <body className={`dark:bg-gray-950 min-h-dvh`}>
         <ConfigProvider>
           <UserContextProvider user={user}>
             <QueryProvider>

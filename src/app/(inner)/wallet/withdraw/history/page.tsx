@@ -12,7 +12,8 @@ const fetchWithdrawalHostory = async ({ cursor }: { cursor: number }) => {
       queryParams.set("cursor", String(cursor));
     }
     const response = await axios.get(
-      `${process.env.NEXT_PUBLIC_TS_EXPRESS_URL
+      `${
+        process.env.NEXT_PUBLIC_TS_EXPRESS_URL
       }/wallet/history?${queryParams.toString()}`,
       {
         headers: {
@@ -53,7 +54,7 @@ const WithdrawalHistory = () => {
       </div>
     );
   }
-  if (isFetchingNextPage || isLoading) {
+  if (isLoading) {
     return (
       <div className="flex items-center justify-center p-8">
         <LucideLoader2 className="animate-spin text-primary-dark-pink" />
@@ -94,33 +95,40 @@ const WithdrawalHistory = () => {
                 <div className="flex-1">
                   <div className="flex items-center justify-between mb-2">
                     <h3 className="font-semibold text-gray-900">
-                      {withdrawal.amount.toLocaleString("en-US", {
+                      {(withdrawal.amount * 0.75).toLocaleString("en-US", {
                         style: "currency",
                         currency: "NGN",
                       })}
                     </h3>
-
                   </div>
 
-                  <div className="text-sm text-gray-600 space-y-1">
+                  <div className="text-sm text-gray-600 space-y-1 text-wrap">
                     <p>
-                      Bank Withdrawal: {" "}
-                      <span className="font-semibold">
+                      Bank Withdrawal: &nbsp;
+                      <span className="font-semibold w-full inline-block">
                         {withdrawal.bank.bank_name || "N/A"}
                       </span>
                     </p>
                     <p>
                       Date:{" "}
-                      {new Date(withdrawal.created_at).toLocaleDateString("en-US", {
-                        year: "numeric",
-                        month: "long",
-                        day: "numeric",
-                      })}
+                      {new Date(withdrawal.created_at).toLocaleDateString(
+                        "en-US",
+                        {
+                          year: "numeric",
+                          month: "long",
+                          day: "numeric",
+                        }
+                      )}
                     </p>
-                    <p>Reference: {withdrawal.reference}</p>
+                    <p className="">
+                      Reference:{" "}
+                      <span className="text-xs md:text-sm text-primary-text-dark-pink font-semibold">
+                        {withdrawal.reference}
+                      </span>
+                    </p>
                   </div>
                 </div>
-                <div className="flex-shrink-0">
+                <div className="md:flex-row flex-col gap-2 flex justify-center items-center">
                   <span
                     className={`px-2 py-1 rounded-full text-xs font-medium 
                       ${getStatusClass(withdrawal.status)}`}
@@ -128,9 +136,11 @@ const WithdrawalHistory = () => {
                     {withdrawal.status.charAt(0).toUpperCase() +
                       withdrawal.status.slice(1)}
                   </span>
-                  <button className="ml-4 p-2 text-gray-500 hover:text-gray-700 rounded-xl text-xs bg-gray-100 dark:bg-gray-900 transition-colors cursor-pointer">
-                    Report Issue
-                  </button>
+                  {withdrawal.status !== "completed" && (
+                    <button className="ml-4 p-2 text-gray-500 hover:text-gray-700 rounded-xl text-xs bg-gray-100 dark:bg-gray-900 transition-colors cursor-pointer text-nowrap">
+                      Report Issue
+                    </button>
+                  )}
                 </div>
               </div>
             </div>
@@ -146,6 +156,12 @@ const WithdrawalHistory = () => {
             >
               {isFetchingNextPage ? "Loading..." : "Load More"}
             </button>
+          </div>
+        )}
+
+        {isFetchingNextPage && (
+          <div className="flex items-center justify-center p-4">
+            <LucideLoader2 className="animate-spin text-primary-dark-pink" />
           </div>
         )}
 
