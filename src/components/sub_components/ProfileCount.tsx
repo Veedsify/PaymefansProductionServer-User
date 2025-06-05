@@ -35,7 +35,7 @@ export function ProfileCounts({
       setFollowingOpen(!followingOpen);
       setFollowerOpen(false);
       setSubscriberOpen(false);
-    } else if (type === "subscriber") {
+    } else if (type === "subscribers") {
       setSubscriberOpen(!subscriberOpen);
       setFollowerOpen(false);
       setFollowingOpen(false);
@@ -52,15 +52,17 @@ export function ProfileCounts({
           <h1 className="font-bold text-sm">{formatNumber(followers)}</h1>
           <p className="font-medium text-gray-500 text-sm">Followers</p>
         </span>
-        <span className="flex gap-2 items-center cursor-pointer"
+        <span
+          className="flex gap-2 items-center cursor-pointer"
           onClick={() => toggleOpen("following")}
         >
           <h1 className="font-bold text-sm">{formatNumber(following)}</h1>
           <p className="font-medium text-gray-500 text-sm">Following</p>
         </span>
         {isModel && subscribers != null && (
-          <span className="flex gap-2 items-center cursor-pointer"
-            onClick={() => toggleOpen("subscriber")}
+          <span
+            className="flex gap-2 items-center cursor-pointer"
+            onClick={() => toggleOpen("subscribers")}
           >
             <h1 className="font-bold text-sm">{formatNumber(subscribers)}</h1>
             <p className="font-medium text-gray-500 text-sm">Subscribers</p>
@@ -68,13 +70,25 @@ export function ProfileCounts({
         )}
       </div>
       {followerOpen && (
-        <ProfileStatsComponent userId={userId} toggleOpen={toggleOpen} type={"followers"} />
+        <ProfileStatsComponent
+          userId={userId}
+          toggleOpen={toggleOpen}
+          type={"followers"}
+        />
       )}
       {followingOpen && (
-        <ProfileStatsComponent userId={userId} toggleOpen={toggleOpen} type={"following"} />
+        <ProfileStatsComponent
+          userId={userId}
+          toggleOpen={toggleOpen}
+          type={"following"}
+        />
       )}
       {subscriberOpen && (
-        <ProfileStatsComponent userId={userId} toggleOpen={toggleOpen} type={"subscriber"} />
+        <ProfileStatsComponent
+          userId={userId}
+          toggleOpen={toggleOpen}
+          type={"subscribers"}
+        />
       )}
     </>
   );

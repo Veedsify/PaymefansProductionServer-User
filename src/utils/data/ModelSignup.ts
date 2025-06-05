@@ -23,7 +23,7 @@ interface PaymentValidationResponse {
  * @param data The model signup data
  * @returns The API response
  */
-export const ModelSignup = async (data: ModelSignUpProps): Promise<AxiosResponse> => {
+const ModelSignup = async (data: ModelSignUpProps): Promise<AxiosResponse> => {
     const token = getToken();
 
     try {

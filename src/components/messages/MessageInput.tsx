@@ -34,7 +34,7 @@ const escapeHtml = (str: string) => {
   return str.replace(/[&<>"']/g, (match) => escapeMap[match]);
 };
 
-export const linkify = (text: string) => {
+const linkify = (text: string) => {
   if (!text) return "";
   const urlRegex = /(https?:\/\/[^\s]+)/g;
   return text.replace(urlRegex, (url) => {

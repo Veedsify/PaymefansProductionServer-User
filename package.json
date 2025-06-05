@@ -6,12 +6,12 @@
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "knip": "knip"
   },
   "dependencies": {
     "@dytesdk/react-web-core": "^2.4.3",
     "@paystack/inline-js": "^2.22.4",
-    "@prisma/client": "^6.5.0",
     "@tailwindcss/postcss": "^4.0.15",
     "@tanstack/react-query": "^5.69.0",
     "@types/lodash": "^4.17.16",
@@ -25,7 +25,6 @@
     "moment": "^2.30.1",
     "next": "^15.2.3",
     "numeral": "^2.0.6",
-    "prisma": "^6.5.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "react-hot-toast": "^2.5.2",
@@ -43,15 +42,14 @@
     "zustand": "^5.0.3"
   },
   "devDependencies": {
-    "@types/node": "^22.13.11",
+    "@types/node": "^22.15.29",
     "@types/react": "^19.0.12",
     "@types/react-dom": "^19.0.4",
     "@types/uuid": "^10.0.0",
-    "autoprefixer": "^10.4.21",
     "eslint": "^9.22.0",
     "eslint-config-next": "15.2.3",
+    "knip": "^5.60.1",
     "postcss": "^8.5.3",
-    "tailwindcss": "^4.0.15",
-    "typescript": "^5.8.2"
+    "typescript": "^5.8.3"
   }
 }

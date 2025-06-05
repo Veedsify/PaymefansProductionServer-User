@@ -83,7 +83,7 @@ const StatusComponent = () => {
   );
 };
 
-export const Status = ({
+const Status = ({
   islive,
   data,
 }: {
@@ -158,7 +158,7 @@ export const Status = ({
     </div>
   );
 };
-export const UserStatus = () => {
+const UserStatus = () => {
   const { user } = useUserAuthContext();
   return (
     <div className="block relative">
@@ -186,7 +186,7 @@ export const UserStatus = () => {
   );
 };
 
-export const StatusModal = ({
+const StatusModal = ({
   open,
   setStoriesOpen,
   stories: userStories,

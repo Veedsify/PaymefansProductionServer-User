@@ -42,7 +42,7 @@ type CameraModeContextType = {
   setCameraMode: (value: CameraMode) => void;
 };
 
-export const useCameraModeContext = create<CameraModeContextType>()(
+const useCameraModeContext = create<CameraModeContextType>()(
   persist(
     (set) => ({
       cameraState: "environment",

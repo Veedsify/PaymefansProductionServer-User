@@ -37,7 +37,7 @@ type PersonalPrivateContext = {
   repostPost: (postId: string) => void;
 };
 
-export const usePersonalPrivateStore = create<PersonalPrivateContext>(
+const usePersonalPrivateStore = create<PersonalPrivateContext>(
   (set) => ({
     posts: [],
     setPosts: (post: Post[]) =>

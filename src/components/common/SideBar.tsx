@@ -151,7 +151,7 @@ const SideBar = React.memo(() => {
               <p>Store</p>
             </Link>
 
-            {user?.is_model && (
+            {(user?.is_model || user?.admin) && (
               <>
                 {/*<Link*/}
                 {/*  href="/live"*/}

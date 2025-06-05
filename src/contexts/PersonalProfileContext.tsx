@@ -93,7 +93,7 @@ type OtherProfileContext = {
   repostPost: (postId: string) => void;
 };
 
-export const useOtherProfilePostsStore = create<OtherProfileContext>((set) => ({
+const useOtherProfilePostsStore = create<OtherProfileContext>((set) => ({
   setPosts: (posts: UserPostPropsOther[]) =>
     set((state) => ({ posts: _.uniqBy([...state.posts, ...posts], "id") })),
   posts: [],

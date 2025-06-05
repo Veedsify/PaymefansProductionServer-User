@@ -33,7 +33,7 @@ const FilesHolder = React.memo(({ file, remove }: FileHolderProps) => {
 });
 FilesHolder.displayName = "FilesHolder";
 
-export const ReplyPostComponent = ({ options }: ReplyPostProps) => {
+const ReplyPostComponent = ({ options }: ReplyPostProps) => {
   const { user } = useUserAuthContext();
   const [replyPostOpen, setReplyPostOpen] = useState(false);
   const [typedComment, setTypedComment] = useState("");

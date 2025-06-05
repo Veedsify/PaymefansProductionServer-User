@@ -6,7 +6,14 @@ import { debounce } from "lodash";
 import { LucideLoader2, XIcon } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { ChangeEvent, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import {
+  ChangeEvent,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import toast from "react-hot-toast";
 import { motion } from "framer-motion";
 
@@ -16,28 +23,31 @@ const fetchStats = async (
   type: string,
   query: string
 ) => {
-  const token = getToken()
+  const token = getToken();
   const fetchStats = await fetch(
-    `${process.env.NEXT_PUBLIC_TS_EXPRESS_URL}/profile/stats/${userId}/${type}?cursor=${page}&limit=${25}&query=${query}`,
+    `${
+      process.env.NEXT_PUBLIC_TS_EXPRESS_URL
+    }/profile/stats/${userId}/${type}?cursor=${page}&limit=${25}&query=${query}`,
     {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
       },
-    })
+    }
+  );
 
   if (!fetchStats.ok) {
     throw new Error("Network response was not ok");
   }
   const data = await fetchStats.json();
-  return data
+  return data;
 };
 
 interface ProfileStatsProps {
   userId: string | undefined;
   toggleOpen: (type: string) => void;
-  type: "followers" | "following" | "subscriber";
+  type: "followers" | "following" | "subscribers";
 }
 
 const FollowAndUnfollowButton = ({
@@ -63,24 +73,28 @@ const FollowAndUnfollowButton = ({
       toast.error(`Failed to ${action} user`);
       setIsFollowingState(isFollowingState); // Revert to previous state on error
     }
-
   };
 
   return (
     <button
       onClick={handleClick}
-      className={`px-4 py-1 rounded-full text-sm font-medium transition ${isFollowingState
-        ? "bg-gray-500 text-white hover:bg-pink-700"
-        : "bg-black text-white hover:bg-pink-700"
-        }`}
+      className={`px-4 py-1 rounded-full text-sm font-medium transition ${
+        isFollowingState
+          ? "bg-gray-500 text-white hover:bg-pink-700"
+          : "bg-black text-white hover:bg-pink-700"
+      }`}
     >
       {isFollowingState ? "Unfollow" : "Follow"}
     </button>
   );
-}
+};
 
-
-const Profile = ({ user, type, toggleOpen, isFollowing }: {
+const Profile = ({
+  user,
+  type,
+  toggleOpen,
+  isFollowing,
+}: {
   user: {
     id: number;
     name: string;
@@ -89,12 +103,10 @@ const Profile = ({ user, type, toggleOpen, isFollowing }: {
     is_following: boolean;
     profile_banner: string;
   };
-  type: "followers" | "following" | "subscriber";
+  type: "followers" | "following" | "subscribers";
   toggleOpen: (type: string) => void;
   isFollowing: boolean;
 }) => {
-
-
   return (
     <div
       key={user.id}
@@ -124,16 +136,12 @@ const Profile = ({ user, type, toggleOpen, isFollowing }: {
       </div>
       {(type === "followers" || type === "following") && (
         <>
-          <FollowAndUnfollowButton
-            userId={user.id}
-            isFollowing={isFollowing}
-          />
+          <FollowAndUnfollowButton userId={user.id} isFollowing={isFollowing} />
         </>
       )}
-    </div >
+    </div>
   );
-}
-
+};
 
 export const ProfileStatsComponent = ({
   userId,
@@ -149,9 +157,17 @@ export const ProfileStatsComponent = ({
     return "Subscribers";
   }, [type]);
 
-  const { data, fetchNextPage, hasNextPage, isLoading, isFetchingNextPage, refetch } = useInfiniteQuery({
+  const {
+    data,
+    fetchNextPage,
+    hasNextPage,
+    isLoading,
+    isFetchingNextPage,
+    refetch,
+  } = useInfiniteQuery({
     queryKey: ["stats", userId, type, query],
-    queryFn: async ({ pageParam = 1 }) => await fetchStats(userId, pageParam, type, query),
+    queryFn: async ({ pageParam = 1 }) =>
+      await fetchStats(userId, pageParam, type, query),
     getNextPageParam: (lastPage) => lastPage.nextCursor || undefined,
     initialPageParam: 1,
     staleTime: 60 * 1000,
@@ -163,7 +179,8 @@ export const ProfileStatsComponent = ({
     [data]
   );
 
-  const total = data?.pages.reduce((acc, page) => acc + (page.total || 0), 0) || 0;
+  const total =
+    data?.pages.reduce((acc, page) => acc + (page.total || 0), 0) || 0;
 
   const debouncedSearch = useMemo(
     () => debounce((value) => setQuery(value), 400),
@@ -222,7 +239,9 @@ export const ProfileStatsComponent = ({
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex justify-between items-center border-b border-black/20 dark:border-white/20 pb-2">
-          <h1 className="font-bold text-lg dark:text-white">{title} {total}</h1>
+          <h1 className="font-bold text-lg dark:text-white">
+            {title} {total}
+          </h1>
           <button
             onClick={() => toggleOpen(type)}
             className="text-gray-500 hover:text-gray-700 dark:text-gray-300 dark:hover:text-white"
@@ -238,7 +257,7 @@ export const ProfileStatsComponent = ({
             className="w-full px-4 py-2.5 border border-gray-200 dark:border-gray-700 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-dark-pink/50 focus:border-primary-dark-pink placeholder:text-gray-400 dark:placeholder:text-gray-500 transition-all duration-200 bg-white dark:bg-gray-800 dark:text-white"
           />
         </div>
-        {stats.length === 0 && (!isLoading) && (
+        {stats.length === 0 && !isLoading && (
           <div className="text-center text-gray-500 dark:text-gray-400 py-10">
             No {title.toLowerCase()} found.
           </div>
@@ -255,12 +274,21 @@ export const ProfileStatsComponent = ({
           ))}
           {isLoading && (
             <div className="py-6 text-center flex justify-center">
-              <LucideLoader2 className="animate-spin text-primary-dark-pink" size={24} />
+              <LucideLoader2
+                className="animate-spin text-primary-dark-pink"
+                size={24}
+              />
             </div>
           )}
           {hasNextPage && (
-            <div ref={observerRef} className="py-6 text-center flex justify-center">
-              <LucideLoader2 className="animate-spin text-primary-dark-pink" size={24} />
+            <div
+              ref={observerRef}
+              className="py-6 text-center flex justify-center"
+            >
+              <LucideLoader2
+                className="animate-spin text-primary-dark-pink"
+                size={24}
+              />
             </div>
           )}
         </div>

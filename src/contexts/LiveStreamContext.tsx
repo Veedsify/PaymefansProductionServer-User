@@ -15,7 +15,7 @@ type LivestreamState = {
      setStreamData: (streamData: { title: string; userId: string; callId: string, streamId: string, token: string, name:string }) => void;
 };
 
-export const useLivestreamStore = create<LivestreamState>()
+const useLivestreamStore = create<LivestreamState>()
      (persist((set) => ({
           isLive: false,
           streamData: {
