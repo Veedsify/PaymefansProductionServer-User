@@ -14,6 +14,7 @@ const PATHNAME_TITLES: { [key: string]: string } = {
   live: "Live",
   models: "Models/Creators",
   "groups/settings": "Settings",
+  "settings/subscribers": "Active Subscribers",
   settings: "Settings & Privacy",
   hookup: "Hookup",
   verification: "Public Verification",
