@@ -176,7 +176,7 @@ const ProfilePage = () => {
             </button>
           )}
           <FollowUserComponent profileuser={userdata} />
-          {userdata.is_model && (
+          {userdata.is_model && user?.id !== userdata.id && (
             <CreateSubscriptionButton userdata={userdata} />
           )}
           <CreateConversationButton profileId={userdata.user_id} />
