@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
 
-export type UserState = {
+type UserState = {
   user: any | null;
   setUser: (user: any | null) => void;
 };

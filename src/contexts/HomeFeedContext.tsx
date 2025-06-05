@@ -1,6 +1,6 @@
 import { create } from "zustand";
 
-export type User = {
+type User = {
   id: number;
   email: string;
   name: string;
@@ -17,7 +17,7 @@ export type User = {
   total_followers: number;
 };
 
-export type UserMedia = {
+type UserMedia = {
   id: number;
   media_id: string;
   post_id: number;
@@ -34,7 +34,7 @@ export type UserMedia = {
   index: number;
 };
 
-export type PostLike = {
+type PostLike = {
   id: number;
   like_id: number;
   user_id: number;
@@ -43,7 +43,7 @@ export type PostLike = {
   updated_at: string;
 };
 
-export type PostComment = {
+type PostComment = {
   id: number;
   comment_id: string;
   user_id: number;
@@ -53,7 +53,7 @@ export type PostComment = {
   updated_at: string;
 };
 
-export type UserRepost = {
+type UserRepost = {
   id: number;
   repost_id: string;
   user_id: number;
@@ -62,7 +62,7 @@ export type UserRepost = {
   updated_at: string;
 };
 
-export type Post = {
+type Post = {
   id: number;
   post_id: string;
   was_repost: boolean;
@@ -88,7 +88,7 @@ export type Post = {
   score?: number;
 };
 
-export type HomeStoreFeed = {
+type HomeStoreFeed = {
   posts: Post[];
   addToPosts: (posts: Post[]) => void;
 };
@@ -99,7 +99,7 @@ export const useHomeFeedStore = create<HomeStoreFeed>((set) => ({
     set((state) => {
       const uniquePosts = posts.filter(
         (newPost) =>
-          !state.posts.some((existingPost) => existingPost.id === newPost.id),
+          !state.posts.some((existingPost) => existingPost.id === newPost.id)
       );
       let currentposts = [...state.posts, ...uniquePosts];
       return { posts: currentposts };

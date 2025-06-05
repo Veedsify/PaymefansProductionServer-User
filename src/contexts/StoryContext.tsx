@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
 
-export interface CaptionElement {
+interface CaptionElement {
   id: string;
   type: "text" | "link";
   content: string;

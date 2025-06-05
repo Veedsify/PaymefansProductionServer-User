@@ -78,9 +78,7 @@ type ConfigContextProps = {
   updateConfig: (config: Configs) => void;
 };
 
-export const ConfigContext = createContext<ConfigContextProps | undefined>(
-  undefined
-);
+const ConfigContext = createContext<ConfigContextProps | undefined>(undefined);
 
 export const useConfigContext = (): ConfigContextProps => {
   const context = useContext(ConfigContext);

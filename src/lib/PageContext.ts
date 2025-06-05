@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
 
-export type SideBarContextType = {
+type SideBarContextType = {
   sideBarState: boolean;
   setSideBar: (value: boolean) => void;
 };
@@ -23,7 +23,7 @@ export const useSideBarContext = create<SideBarContextType>()(
 );
 
 // MODAL CONTEXT
-export type ModalContextType = {
+type ModalContextType = {
   modalState: boolean;
   setModal: () => void;
 };

@@ -70,7 +70,7 @@ const StoryPreviewControlls = ({
   );
 };
 
-export const ProgressBar = ({
+const ProgressBar = ({
   slideIndex,
   mainIndex,
   duration,

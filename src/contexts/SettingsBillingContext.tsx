@@ -8,7 +8,7 @@ interface SettingsBillingProps {
   current_data: Settings;
 }
 
-export interface Settings {
+interface Settings {
   subscription: boolean;
   subscription_price: number;
   subscription_duration: number;
@@ -16,7 +16,7 @@ export interface Settings {
   enable_free_message: boolean;
 }
 
-export interface SettingsBillingContextProps {
+interface SettingsBillingContextProps {
   settings: Settings;
   saveSettings: () => void;
   setSubscription: (state: Settings) => void;
