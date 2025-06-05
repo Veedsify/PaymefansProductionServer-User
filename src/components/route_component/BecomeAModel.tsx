@@ -16,13 +16,9 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import PaystackPop from '@paystack/inline-js'
+import PaystackPop from "@paystack/inline-js";
 import { useRouter } from "next/navigation";
-import {
-  ChangeEvent,
-  MouseEvent,
-  useState,
-} from "react";
+import { ChangeEvent, MouseEvent, useState } from "react";
 import toast from "react-hot-toast";
 import swal from "sweetalert";
 
@@ -47,6 +43,8 @@ interface ModelSignUpProps {
   available?: string;
   audience?: string;
 }
+
+const popup = new PaystackPop();
 
 const BecomeAModel = () => {
   const router = useRouter();
@@ -78,7 +76,6 @@ const BecomeAModel = () => {
     }));
   };
 
-
   const submitData = async (e: MouseEvent<HTMLButtonElement>) => {
     if (!modelSignUpdata.firstname)
       return toast.error("Please insert a firstname");
@@ -94,42 +91,43 @@ const BecomeAModel = () => {
 
     try {
       setLoading(true);
-
-      async function payWithPaystack() {
-        const popup = new PaystackPop()
-        popup.checkout({
-          key: process.env.NEXT_PUBLIC_PAYSTACK_PUBLIC_KEY as string,
-          amount: Number(10_000 * 100),
-          email: user?.email as string,
-          firstName: modelSignUpdata.firstname,
-          lastName: modelSignUpdata.lastname,
-          onCancel: async function () {
-            swal({
-              icon: "error",
-              title: "Transaction Cancelled",
-              text: "You have cancelled the transaction",
-            });
+      popup.checkout({
+        key: String(process.env.NEXT_PUBLIC_PAYSTACK_PUBLIC_KEY),
+        amount: Number(10_000 * 100),
+        email: user?.email as string,
+        firstName: modelSignUpdata.firstname,
+        lastName: modelSignUpdata.lastname,
+        onCancel: async function () {
+          swal({
+            icon: "error",
+            title: "Transaction Cancelled",
+            text: "You have cancelled the transaction",
+          });
+          setLoading(false);
+        },
+        onSuccess: async (transaction: any) => {
+          if (transaction.status) {
+            const data = await ValidateModelPayment(
+              transaction.status,
+              transaction.reference,
+              { ...modelSignUpdata, audience: postAudience.name }
+            );
             setLoading(false);
-          },
-          onSuccess: async (transaction) => {
-            if (transaction.status) {
-              const data = await ValidateModelPayment(transaction.status, transaction.reference, { ...modelSignUpdata, audience: postAudience.name });
-              setLoading(false);
-              if (!data.error) {
-                toast.success(String(data.message));
-                router.push("/verification");
-              }
+            if (!data.error) {
+              toast.success(String(data.message));
+              router.push("/verification");
             }
           }
-        })
-      }
-      payWithPaystack()
+        },
+      });
     } catch (error: any) {
       console.error(error);
       swal({
         icon: "error",
         title: error.response?.data?.errorTitle || "Error",
-        text: error.response?.data?.message || "An error occurred, contact support for help",
+        text:
+          error.response?.data?.message ||
+          "An error occurred, contact support for help",
       });
       setLoading(false);
     }
@@ -243,10 +241,11 @@ const BecomeAModel = () => {
               )}
             </button>
             <div
-              className={`absolute z-10 w-full left-0 mt-2 transition-all duration-200 ${dropdown
-                ? "opacity-100 translate-y-0 pointer-events-auto"
-                : "opacity-0 -translate-y-2 pointer-events-none"
-                }`}
+              className={`absolute z-10 w-full left-0 mt-2 transition-all duration-200 ${
+                dropdown
+                  ? "opacity-100 translate-y-0 pointer-events-auto"
+                  : "opacity-0 -translate-y-2 pointer-events-none"
+              }`}
             >
               <ul className="bg-white dark:bg-gray-800 rounded-xl shadow-md text-left w-full border border-gray-200 dark:border-gray-700">
                 {postAudienceData.map((audience) => (
@@ -318,6 +317,7 @@ const BecomeAModel = () => {
             </label>
           </div>
         </div>
+        <div id="payment-buttons"></div>
         <button
           onClick={submitData}
           className="bg-primary-dark-pink w-full p-3 rounded-xl mt-8 text-white font-semibold shadow-md hover:bg-primary-dark-pink/90 transition cursor-pointer flex items-center justify-center disabled:bg-gray-400"

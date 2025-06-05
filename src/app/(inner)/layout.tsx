@@ -20,11 +20,11 @@ import { GeistSans } from "geist/font/sans";
 import { MessagesConversationProvider } from "@/contexts/MessageConversationContext";
 import UserAccountSupendedScreen from "@/components/sub_components/UserAccountSuspendedScreen";
 import ConfigProvider from "@/contexts/ConfigContext";
-import { Instrument_Sans } from "next/font/google";
+import { Geist } from "next/font/google";
 import Head from "next/head";
 
-const font = Instrument_Sans({
-  weight: ["400", "500", "600", "700"],
+const font = Geist({
+  weight: ["200", "300", "400", "500", "600", "700", "800", "900"],
   subsets: ["latin", "latin-ext"],
   display: "swap",
 });
@@ -88,7 +88,7 @@ export default async function RootLayout({
         <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
         <meta property="og:image" content="/site/logo.svg" />
       </head>
-      <body className={`dark:bg-gray-950 min-h-dvh`}>
+      <body className={`dark:bg-gray-950 min-h-dvh ${font.className}`}>
         <ConfigProvider>
           <UserContextProvider user={user}>
             <QueryProvider>

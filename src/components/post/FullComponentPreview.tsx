@@ -19,14 +19,6 @@ import usePostComponent from "@/contexts/PostComponentPreview";
 import Loader from "../lib_components/LoadingAnimation";
 import HLSVideoPlayer from "../sub_components/videoplayer";
 
-// Optional Sentry import
-let Sentry: any;
-try {
-  Sentry = require("@sentry/react");
-} catch {
-  Sentry = { captureException: console.error, captureMessage: console.warn };
-}
-
 // Centralized constants
 const CONSTANTS = {
   ANIMATION_DURATION: 100,
@@ -116,12 +108,6 @@ class MediaErrorBoundary extends React.Component<{
     return { hasError: true };
   }
 
-  componentDidCatch(error: Error, info: React.ErrorInfo) {
-    Sentry.captureException(error, {
-      extra: { componentStack: info.componentStack },
-    });
-  }
-
   render() {
     if (this.state.hasError) {
       return (
@@ -166,9 +152,7 @@ const VideoPreview = memo(
 
     const handleVideoError = useCallback(() => {
       setStatus("error");
-      Sentry.captureMessage(`Video failed to load at index ${index}`, {
-        extra: { url, index },
-      });
+      console.warn(`Video failed to load at index ${index}`);
     }, [index, url]);
 
     const handleVideoEnded = useCallback(() => {
@@ -178,7 +162,7 @@ const VideoPreview = memo(
         video
           .play()
           .catch((e) =>
-            Sentry.captureMessage(`Auto-replay failed: ${e.message}`)
+            console.warn(`Video ended but could not replay: ${e.message}`)
           );
       }
     }, [status]);
@@ -192,7 +176,8 @@ const VideoPreview = memo(
           try {
             await video.play();
           } catch (err: any) {
-            Sentry.captureMessage(`Playback prevented: ${err.message}`);
+            console.warn(`Video play failed: ${err.message}`);
+            setStatus("error");
           }
         } else {
           video.pause();
@@ -316,9 +301,7 @@ const ImagePreview = memo(
     const handleImageError = useCallback(() => {
       setStatus("error");
       onError();
-      Sentry.captureMessage(`Image failed to load at index ${index}`, {
-        extra: { url, index },
-      });
+      console.warn(`Image failed to load at index ${index}: ${url}`);
     }, [onError, index, url]);
 
     const imageQuality = useMemo(
@@ -424,9 +407,7 @@ const PostComponentPreview = memo(() => {
   const validateMediaItem = useCallback(
     (item: any, index: number): MediaItem => {
       if (!item?.url || typeof item.url !== "string") {
-        Sentry.captureMessage(`Invalid media item URL at index ${index}`, {
-          extra: { item },
-        });
+        console.warn(`Invalid media item at index ${index}`, item);
         return {
           url: "/fallback-image.jpg",
           type: "image",
