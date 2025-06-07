@@ -20,10 +20,10 @@ import { GeistSans } from "geist/font/sans";
 import { MessagesConversationProvider } from "@/contexts/MessageConversationContext";
 import UserAccountSupendedScreen from "@/components/sub_components/UserAccountSuspendedScreen";
 import ConfigProvider from "@/contexts/ConfigContext";
-import { Geist } from "next/font/google";
+import { Inter } from "next/font/google";
 import Head from "next/head";
 
-const font = Geist({
+const font = Inter({
   weight: ["200", "300", "400", "500", "600", "700", "800", "900"],
   subsets: ["latin", "latin-ext"],
   display: "swap",
