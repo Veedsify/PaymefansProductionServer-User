@@ -168,7 +168,7 @@ const PostEditor = React.memo(({ posts }: PostEditorProps) => {
       return;
     }
 
-    if (!mediaUploadComplete) {
+    if (!mediaUploadComplete && media && media?.length > 0) {
       toast.error("Please wait for all media uploads to complete.", {
         id: "post-upload",
       });
