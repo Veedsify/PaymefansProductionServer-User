@@ -7,9 +7,10 @@ import {
   useState,
   KeyboardEvent,
   RefObject,
+  useMemo,
 } from "react";
 import { v4 as uuid } from "uuid";
-import { LucidePlus, LucideCamera, LucideSendHorizonal, X } from "lucide-react";
+import { LucidePlus, LucideCamera, LucideSendHorizonal } from "lucide-react";
 import toast from "react-hot-toast";
 import swal from "sweetalert";
 import axiosInstance from "@/utils/Axios";
@@ -19,8 +20,7 @@ import { useUserPointsContext } from "@/contexts/PointsContext";
 import { useMessagesConversation } from "@/contexts/MessageConversationContext";
 import { useMediaContext } from "@/contexts/MessageMediaContext";
 import { MessageInputProps, Attachment } from "@/types/Components";
-import UploadMediaModal from "../sub_components/UploadMediaModal";
-import MessageInputAttachmentPreview from "./MessageInputAttachmentPreview";
+import MessageMediaPreview from "./MessageMediaPreview";
 
 // Utility Functions
 const escapeHtml = (str: string) => {
@@ -62,6 +62,40 @@ const MessageInput = ({
   const typingTimeout = useRef<number | null>(null);
   const token = getToken();
 
+  // Added for upload tracking
+  const [uploadedMediaData, setUploadedMediaData] = useState<Attachment[]>([]);
+  const [uploadStatuses, setUploadStatuses] = useState<
+    Record<number, "idle" | "uploading" | "completed" | "error">
+  >({});
+
+  // Check if all uploads are complete
+  const allUploadsComplete = useMemo(
+    () =>
+      mediaFiles.length === 0 ||
+      mediaFiles.every((_, i) => uploadStatuses[i] === "completed"),
+    [mediaFiles, uploadStatuses]
+  );
+
+  // Handlers for upload status and results
+  const handleUploadComplete = useCallback(
+    (index: number, uploadedData: Attachment) => {
+      setUploadedMediaData((prev) => {
+        const next = [...prev];
+        next[index] = uploadedData;
+        return next;
+      });
+      setUploadStatuses((prev) => ({ ...prev, [index]: "completed" }));
+    },
+    []
+  );
+
+  const handleUploadStatusChange = useCallback(
+    (index: number, status: "idle" | "uploading" | "completed" | "error") => {
+      setUploadStatuses((prev) => ({ ...prev, [index]: status }));
+    },
+    []
+  );
+
   // Message Sending Logic
   const sendMessageWithAttachment = useCallback(
     async (message: string) => {
@@ -73,7 +107,7 @@ const MessageInput = ({
       sendMessage({
         message_id: uuid(),
         message: linkify(message.trim()),
-        attachment: [] as Attachment[],
+        attachment: uploadedMediaData.filter(Boolean),
         sender_id: user.user_id,
         receiver_id: receiver.user_id,
         seen: false,
@@ -85,8 +119,10 @@ const MessageInput = ({
 
       if (ref.current) ref.current.innerHTML = "";
       resetAll();
+      setUploadedMediaData([]);
+      setUploadStatuses({});
     },
-    [sendMessage, user, mediaFiles, resetAll, receiver]
+    [sendMessage, user, mediaFiles, resetAll, receiver, uploadedMediaData]
   );
 
   const resetMessageInput = useCallback(() => {
@@ -104,6 +140,12 @@ const MessageInput = ({
       (message.trim().length === 0 && mediaFiles.length === 0)
     )
       return;
+
+    // Prevent sending if uploads are not complete
+    if (!allUploadsComplete) {
+      toast.error("Please wait for all uploads to finish before sending.");
+      return;
+    }
 
     try {
       const { data } = await axiosInstance.post(
@@ -162,6 +204,7 @@ const MessageInput = ({
     token,
     mediaFiles.length,
     resetMessageInput,
+    allUploadsComplete,
   ]);
 
   // Typing and Input Handling
@@ -180,12 +223,16 @@ const MessageInput = ({
 
       if (event.key === "Enter" && !event.shiftKey) {
         event.preventDefault();
-        handleSendMessage();
-        setIsTyping(false);
-        sendTyping("");
+        if (allUploadsComplete) {
+          handleSendMessage();
+          setIsTyping(false);
+          sendTyping("");
+        } else {
+          toast.error("Please wait for all uploads to finish before sending.");
+        }
       }
     },
-    [sendTyping, message, handleSendMessage]
+    [sendTyping, message, handleSendMessage, allUploadsComplete]
   );
 
   useEffect(() => {
@@ -254,27 +301,21 @@ const MessageInput = ({
     [addFiles]
   );
 
-  // Render Components
-  const mediaPreviewBadge = mediaFiles.length > 0 && (
-    <div className="grid grid-cols-6 gap-2 text-white rounded-full">
-      {mediaFiles.map((file, index) => (
-        <div key={index} className="relative w-full aspect-square">
-          <button
-            className="absolute top-1 right-1 bg-red-500 hover:bg-red-600 transition-colors rounded-full p-1 shadow"
-            onClick={() => removeFile(index)}
-            aria-label="Remove media"
-          >
-            <X size={14} stroke="#fff" />
-          </button>
-          <MessageInputAttachmentPreview
-            previewUrl={file?.previewUrl ?? ""}
-            type={file?.type ?? ""}
-            posterUrl={file?.posterUrl ?? ""}
-          />
-        </div>
-      ))}
-    </div>
-  );
+  // Only run this effect when mediaFiles array ACTUALLY changes
+  useEffect(() => {
+    // Update uploadedMediaData to match the current mediaFiles length
+    setUploadedMediaData((prev) =>
+      mediaFiles.map((_, idx) => prev[idx] || undefined)
+    );
+    setUploadStatuses((prev) => {
+      const next: typeof prev = {};
+      mediaFiles.forEach((_, idx) => {
+        next[idx] = prev[idx] || "idle";
+      });
+      return next;
+    });
+    // Only depend on mediaFiles, not mediaFiles.length
+  }, [mediaFiles]);
 
   if (receiver && !receiver.active_status) {
     return (
@@ -290,7 +331,20 @@ const MessageInput = ({
     <>
       <div className="bottom-0 lg:ml-4 lg:mr-2 relative max-h-max">
         <div className="flex flex-col w-full gap-2 border border-black/20 rounded-2xl px-2 dark:bg-gray-950 py-2 lg:rounded-xl">
-          {mediaPreviewBadge}
+          <div className="grid grid-cols-6 gap-2 text-white rounded-full">
+            {mediaFiles.map((file, index) => (
+              <MessageMediaPreview
+                key={index}
+                index={index}
+                file={file}
+                removeFile={removeFile}
+                onUploadComplete={(data) => handleUploadComplete(index, data)}
+                onUploadStatusChange={(status) =>
+                  handleUploadStatusChange(index, status)
+                }
+              />
+            ))}
+          </div>
           <div className="flex items-center justify-between w-full gap-2">
             <div
               ref={ref as RefObject<HTMLDivElement>}
@@ -315,14 +369,18 @@ const MessageInput = ({
               <span className="cursor-pointer" onClick={triggerFileSelect}>
                 <LucideCamera stroke="#CC0DF8" size={25} />
               </span>
-              <span className="cursor-pointer ml-2" onClick={handleSendMessage}>
+              <span
+                className={`cursor-pointer ml-2 ${
+                  !allUploadsComplete ? "opacity-50 pointer-events-none" : ""
+                }`}
+                onClick={allUploadsComplete ? handleSendMessage : undefined}
+              >
                 <LucideSendHorizonal stroke="#CC0DF8" size={24} />
               </span>
             </div>
           </div>
         </div>
       </div>
-      {/* <UploadMediaModal /> */}
     </>
   );
 };

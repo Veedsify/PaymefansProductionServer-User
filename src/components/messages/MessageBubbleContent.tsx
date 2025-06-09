@@ -76,104 +76,105 @@ const MessageBubbleContent: React.FC<MessageBubbleContentProps> = ({
     [rawFiles, fullScreenPreview]
   );
 
-  // Get signed upload URL (image/video)
-  const token = getToken();
-  const getUploadUrl = useCallback(
-    async (file: File): Promise<UploadResponseResponse> => {
-      if (!file) throw new Error("File is not defined");
-      const isVideo = file.type.startsWith("video/");
-      const maxVideoDuration = isVideo ? getMaxDurationBase64(file) : null;
-      const payload: any = {
-        type: isVideo ? "video" : "image",
-        fileName: btoa(`paymefans-attachment-${user?.username}-${Date.now()}`),
-        fileSize: file.size,
-        fileType: btoa(file.type),
-        explicitImageType: file.type,
-      };
-      if (isVideo && maxVideoDuration) payload.maxDuration = maxVideoDuration;
+  // // Get signed upload URL (image/video)
+  // const token = getToken();
+  // const getUploadUrl = useCallback(
+  //   async (file: File): Promise<UploadResponseResponse> => {
+  //     if (!file) throw new Error("File is not defined");
+  //     const isVideo = file.type.startsWith("video/");
+  //     const maxVideoDuration = isVideo ? getMaxDurationBase64(file) : null;
+  //     const payload: any = {
+  //       type: isVideo ? "video" : "image",
+  //       fileName: btoa(`paymefans-attachment-${user?.username}-${Date.now()}`),
+  //       fileSize: file.size,
+  //       fileType: btoa(file.type),
+  //       explicitImageType: file.type,
+  //     };
+  //     if (isVideo && maxVideoDuration) payload.maxDuration = maxVideoDuration;
 
-      const response = await axios.post(
-        `${process.env.NEXT_PUBLIC_TS_EXPRESS_URL}/post/media/signed-url`,
-        payload,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-        }
-      );
-      if (response.data.error) throw new Error(response.data.message);
-      return response.data as UploadResponseResponse;
-    },
-    [token, user]
-  );
+  //     const response = await axios.post(
+  //       `${process.env.NEXT_PUBLIC_TS_EXPRESS_URL}/post/media/signed-url`,
+  //       payload,
+  //       {
+  //         headers: {
+  //           Authorization: `Bearer ${token}`,
+  //           "Content-Type": "application/json",
+  //         },
+  //       }
+  //     );
+  //     if (response.data.error) throw new Error(response.data.message);
+  //     return response.data as UploadResponseResponse;
+  //   },
+  //   [token, user]
+  // );
 
-  // Upload all raw files and send via socket when done
-  const uploadFilesAndSend = useCallback(
-    async function () {
-      if (!rawFiles.length) return;
-      const files: (Attachment | null)[] = [];
-      for (const item of rawFiles) {
-        try {
-          const upload = await getUploadUrl(item.file);
-          if (item.type === "image" && upload.type.includes("image")) {
-            const imgRes = await UploadImageToCloudflare({
-              file: item.file,
-              id: item.previewUrl,
-              uploadUrl: upload.uploadUrl,
-              setProgress,
-              setUploadError,
-            });
-            files.push({
-              url: imgRes.result?.variants.find((v: string) =>
-                v.includes("/public")
-              ),
-              id: imgRes.result?.id,
-              poster: "",
-              name: imgRes.result?.id,
-              type: "image",
-              extension: path.extname(item.file.name),
-              size: item.file.size,
-            });
-          } else if (item.type === "video" && upload.type.includes("video")) {
-            const mediaId = await UploadWithTus(
-              item.file,
-              upload.uploadUrl,
-              item.previewUrl,
-              setProgress,
-              setUploadError
-            );
-            files.push({
-              url: `${process.env.NEXT_PUBLIC_CLOUDFLARE_CUSTOMER_SUBDOMAIN}${mediaId}/manifest/video.m3u8`,
-              type: "video",
-              id: mediaId,
-              poster: "",
-              name: mediaId,
-              extension: path.extname(item.file.name),
-              size: item.file.size,
-            });
-          } else {
-            files.push(null);
-          }
-        } catch (err) {
-          files.push(null);
-        }
-      }
-      const uploadedFiles = files.filter(Boolean) as Attachment[];
-      SendSocketMessage(uploadedFiles);
-    },
-    [rawFiles, SendSocketMessage, getUploadUrl]
-  );
-  useEffect(() => {
-    uploadFilesAndSend();
-  }, [uploadFilesAndSend]);
+  // // Upload all raw files and send via socket when done
+  // const uploadFilesAndSend = useCallback(
+  //   async function () {
+  //     if (!rawFiles.length) return;
+  //     const files: (Attachment | null)[] = [];
+  //     for (const item of rawFiles) {
+  //       try {
+  //         const upload = await getUploadUrl(item.file);
+  //         if (item.type === "image" && upload.type.includes("image")) {
+  //           const imgRes = await UploadImageToCloudflare({
+  //             file: item.file,
+  //             id: item.previewUrl,
+  //             uploadUrl: upload.uploadUrl,
+  //             setProgress,
+  //             setUploadError,
+  //           });
+  //           files.push({
+  //             url: imgRes.result?.variants.find((v: string) =>
+  //               v.includes("/public")
+  //             ),
+  //             id: imgRes.result?.id,
+  //             poster: "",
+  //             name: imgRes.result?.id,
+  //             type: "image",
+  //             extension: path.extname(item.file.name),
+  //             size: item.file.size,
+  //           });
+  //         } else if (item.type === "video" && upload.type.includes("video")) {
+  //           const mediaId = await UploadWithTus(
+  //             item.file,
+  //             upload.uploadUrl,
+  //             item.previewUrl,
+  //             setProgress,
+  //             setUploadError
+  //           );
+  //           files.push({
+  //             url: `${process.env.NEXT_PUBLIC_CLOUDFLARE_CUSTOMER_SUBDOMAIN}${mediaId}/manifest/video.m3u8`,
+  //             type: "video",
+  //             id: mediaId,
+  //             poster: "",
+  //             name: mediaId,
+  //             extension: path.extname(item.file.name),
+  //             size: item.file.size,
+  //           });
+  //         } else {
+  //           files.push(null);
+  //         }
+  //       } catch (err) {
+  //         files.push(null);
+  //       }
+  //     }
+  //     const uploadedFiles = files.filter(Boolean) as Attachment[];
+  //     SendSocketMessage(uploadedFiles);
+  //   },
+  //   [rawFiles, SendSocketMessage, getUploadUrl]
+  // );
+  // useEffect(() => {
+  //   uploadFilesAndSend();
+  // }, [uploadFilesAndSend]);
 
   return (
     <>
       {hasAttachments && attachment?.length && (
         <div
-          className={`grid overflow-hidden ${attachment.length >= 4 ? "grid-cols-2" : "grid-cols-1"
-            }`}
+          className={`grid overflow-hidden ${
+            attachment.length >= 4 ? "grid-cols-2" : "grid-cols-1"
+          }`}
         >
           {attachment.map((file: Attachment, idx: number) => (
             <div
@@ -237,8 +238,9 @@ const MessageBubbleContent: React.FC<MessageBubbleContentProps> = ({
       )}
       {hasRawFiles && (
         <div
-          className={`grid overflow-hidden ${rawFiles.length >= 4 ? "grid-cols-2" : "grid-cols-1"
-            }`}
+          className={`grid overflow-hidden ${
+            rawFiles.length >= 4 ? "grid-cols-2" : "grid-cols-1"
+          }`}
         >
           {rawFiles.map((file: MediaFile, idx: number) => (
             <div
@@ -300,14 +302,16 @@ const MessageBubbleContent: React.FC<MessageBubbleContentProps> = ({
       )}
       {hasMessage && (
         <div
-          className={`p-4 rounded-3xl font-medium ${isSender
-            ? "bg-gray-100 dark:bg-gray-700 dark:text-white rounded-br-none"
-            : "bg-primary-dark-pink text-white rounded-bl-none"
-            }`}
+          className={`p-4 rounded-3xl font-medium ${
+            isSender
+              ? "bg-gray-100 dark:bg-gray-700 dark:text-white rounded-br-none"
+              : "bg-primary-dark-pink text-white rounded-bl-none"
+          }`}
         >
           <div
-            className={`leading-relaxed w-full text-wrap ${isSender ? "sender-link-style" : "receiver-link-style"
-              }`}
+            className={`leading-relaxed w-full text-wrap ${
+              isSender ? "sender-link-style" : "receiver-link-style"
+            }`}
             dangerouslySetInnerHTML={{
               __html: message as TrustedHTML,
             }}

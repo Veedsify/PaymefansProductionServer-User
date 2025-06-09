@@ -8,6 +8,7 @@ import React, {
 import { generatePosterFromVideo } from "@/lib/VideoPoster";
 import { imageTypes, videoTypes } from "@/lib/FileTypes";
 import { MediaContextState, MediaFile } from "@/types/MessageComponents";
+import _ from "lodash";
 
 const MediaContext = createContext<MediaContextState | undefined>(undefined);
 
@@ -17,6 +18,7 @@ export const MediaProvider: React.FC<{ children: ReactNode }> = ({
   const [mediaFiles, setMediaFiles] = useState<MediaFile[]>([]);
   const [message, setMessage] = useState<string>("");
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [removeFileArray, setRemoveFileArray] = useState<string[]>([]);
 
   const addFiles = useCallback(async (files: FileList) => {
     const newMediaFiles: MediaFile[] = [];
@@ -46,7 +48,7 @@ export const MediaProvider: React.FC<{ children: ReactNode }> = ({
     setMediaFiles((prev) => [...prev, ...newMediaFiles]);
   }, []);
 
-  const removeFile = useCallback((index: number) => {
+  const removeFile = useCallback((index: number, id: string) => {
     setMediaFiles((prev) => {
       const newFiles = [...prev];
       // Revoke the URL to prevent memory leaks
@@ -58,6 +60,7 @@ export const MediaProvider: React.FC<{ children: ReactNode }> = ({
         URL.revokeObjectURL(newFiles[index].posterUrl!);
       }
       newFiles.splice(index, 1);
+      setRemoveFileArray((prevArray) => _.uniq([...prevArray, id]));
       return newFiles;
     });
   }, []);

@@ -524,7 +524,7 @@ const BecomeAModel = () => {
         {/* Availability */}
         <div>
           <p className="font-medium text-gray-700 dark:text-gray-200 mb-2">
-            Are you available for bookings?
+            Are you available hookup?
           </p>
           <div className="flex gap-6">
             <label className="inline-flex cursor-pointer items-center font-medium gap-2 text-gray-600 dark:text-gray-300">

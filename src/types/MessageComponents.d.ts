@@ -32,7 +32,7 @@ export interface MediaContextState {
   message: string;
   isModalOpen: boolean;
   addFiles: (files: FileList) => void;
-  removeFile: (index: number) => void;
+  removeFile: (index: number, id: string) => void;
   setMessage: (message: string) => void;
   openModal: () => void;
   closeModal: () => void;
@@ -52,5 +52,13 @@ export const imageTypes = [
   "image/tiff",
   "image/ico",
 ];
+
+
+export type MessageMediaPreViewProps = {
+  index: number;
+  file: MediaFile;
+  removeFile: (index: number, id: string) => void;
+  setMediaCount?: (index: number) => void; // Optional for media count management
+}
 
 export const videoTypes = ["video/mp4", "video/webm", "video/ogg"];
