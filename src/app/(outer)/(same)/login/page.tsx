@@ -58,7 +58,6 @@ const Login = () => {
 
       if (!loginThisUser?.data?.error) {
         if (loginThisUser?.data?.token && !loginThisUser?.data?.tfa) {
-          toast.dismiss();
           toast.success(LOGIN_CONFIG.LOGIN_SUCCESSFUL_MSG, {
             id: "login",
           });

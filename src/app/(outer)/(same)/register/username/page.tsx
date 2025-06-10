@@ -65,7 +65,9 @@ const ChooseUserName = () => {
   const createNewUser = useCallback(
     async (e: React.FormEvent<HTMLFormElement>) => {
       e.preventDefault();
-      toast.loading(REGISTER_CONFIG.REGISTERING_MSG);
+      toast.loading(REGISTER_CONFIG.REGISTERING_MSG, {
+        id: "register",
+      });
       try {
         if (ref.current?.value) {
           const createUser = await axios(
@@ -87,36 +89,35 @@ const ChooseUserName = () => {
               },
             }
           );
-          if (createUser.data.status === true) {
+
+          const { data } = createUser;
+
+          if (!data.error) {
             setUser(null);
-            await new Promise((resolve) => setTimeout(resolve, 500));
-            toast.dismiss();
-            toast.success(REGISTER_CONFIG.REGISTER_SUCCESSFUL_MSG);
-            router.push("/login");
+            toast.success(REGISTER_CONFIG.REGISTER_SUCCESSFUL_MSG, {
+              id: "register",
+            });
+
+            // Handle two-factor authentication flow
+            if (data.tfa && !data.token) {
+              router.push("/verify");
+              return;
+            }
+
+            // Handle successful registration with token
+            if (!data.tfa && data.token) {
+              document.cookie = `token=${data.token}`;
+              router.push("/");
+              return;
+            }
+          } else {
+            toast.error(data.message || "Registration failed", {
+              id: "register",
+            });
           }
 
-          if (createUser.data.status === false) {
-            await new Promise((resolve) => setTimeout(resolve, 500));
-            toast.dismiss();
-            toast.error(createUser.data.message);
-            return;
-            // swal({
-            //   title: "Error",
-            //   text: createUser.data.message,
-            //   icon: "error",
-            //   buttons: {
-            //     cancel: false,
-            //     confirm: {
-            //       text: "Ok",
-            //       value: true,
-            //       visible: true,
-            //       className:
-            //         "bg-primary-dark-pink text-white rounded-lg font-bold text-sm",
-            //       closeModal: true,
-            //     },
-            //   },
-            // });
-          }
+          // Fallback redirect to login
+          router.push("/login");
         }
       } catch (err) {
         return swal({
