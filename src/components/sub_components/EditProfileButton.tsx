@@ -112,10 +112,11 @@ function BannerModal({ user, open = false, setOpen }: BannerModalProps) {
   return (
     <div
       onClick={() => setOpen(false)}
-      className={`fixed inset-0 w-full h-full bg-white dark:bg-gray-950 z-[250] flex items-center justify-center transition-all duration-300 ${open
-        ? "opacity-100 pointer-events-auto"
-        : "pointer-events-none opacity-0"
-        }`}
+      className={`fixed inset-0 w-full h-full bg-white dark:bg-gray-950 z-[250] flex items-center justify-center transition-all duration-300 ${
+        open
+          ? "opacity-100 pointer-events-auto"
+          : "pointer-events-none opacity-0"
+      }`}
     >
       <div
         className="relative bg-white dark:bg-slate-950 lg:max-w-6xl w-full rounded-none md:rounded p-6 md:p-8 h-dvh lg:h-screen overflow-y-auto"
@@ -142,7 +143,7 @@ function BannerModal({ user, open = false, setOpen }: BannerModalProps) {
             htmlFor="imageUpload"
             className="relative cursor-pointer group"
           >
-            <div className="relative inline-block p-1 mb-2 overflow-hidden transition-all border-4 border-dotted rounded-full border-primary-dark-pink/40 dark:border-slate-700 group-hover:border-primary-dark-pink">
+            <div className="relative inline-block p-1 mb-2 overflow-hidden transition-all border-4 border-dotted rounded-full border-black/40 dark:border-slate-700 group-hover:border-primary-dark-pink">
               <Image
                 src={
                   file
@@ -276,7 +277,10 @@ function BannerModal({ user, open = false, setOpen }: BannerModalProps) {
             {/* Snapchat */}
             <div className="grid grid-cols-12 items-center rounded-lg border border-black/10 dark:border-slate-700 bg-gray-50 dark:bg-slate-800 overflow-hidden transition-shadow focus-within:shadow-md group">
               <div className="flex items-center justify-center h-full col-span-2 bg-primary-dark-pink/10 dark:bg-primary-dark-pink/20 py-3 transition group-focus-within:bg-primary-dark-pink/20">
-                <PiSnapchatLogoDuotone className="text-primary-dark-pink dark:text-white w-6 h-6" size={20} />
+                <PiSnapchatLogoDuotone
+                  className="text-primary-dark-pink dark:text-white w-6 h-6"
+                  size={20}
+                />
               </div>
               <input
                 type="text"
@@ -291,7 +295,13 @@ function BannerModal({ user, open = false, setOpen }: BannerModalProps) {
             {/* TikTok */}
             <div className="grid grid-cols-12 items-center rounded-lg border border-black/10 dark:border-slate-700 bg-gray-50 dark:bg-slate-800 overflow-hidden transition-shadow focus-within:shadow-md group">
               <div className="flex items-center justify-center h-full col-span-2 bg-primary-dark-pink/10 dark:bg-primary-dark-pink/20 py-3 transition group-focus-within:bg-primary-dark-pink/20">
-                <svg width="24" height="24" fill="currentColor" className="text-primary-dark-pink dark:text-white w-6 h-6" viewBox="0 0 24 24">
+                <svg
+                  width="24"
+                  height="24"
+                  fill="currentColor"
+                  className="text-primary-dark-pink dark:text-white w-6 h-6"
+                  viewBox="0 0 24 24"
+                >
                   <path d="M12.75 2h2.25a.75.75 0 0 1 .75.75v1.5a3.75 3.75 0 0 0 3.75 3.75h1.5a.75.75 0 0 1 .75.75v2.25a.75.75 0 0 1-.75.75h-1.5A6.75 6.75 0 0 1 13.5 5.25V2.75A.75.75 0 0 1 12.75 2zm-2.25 5.25A6.75 6.75 0 1 0 17.25 14v-2.25a.75.75 0 0 0-.75-.75h-2.25a.75.75 0 0 0-.75.75v2.25a3.75 3.75 0 1 1-3.75-3.75h.75a.75.75 0 0 0 .75-.75V7.25a.75.75 0 0 0-.75-.75h-.75z" />
                 </svg>
               </div>
@@ -308,7 +318,13 @@ function BannerModal({ user, open = false, setOpen }: BannerModalProps) {
             {/* Telegram */}
             <div className="grid grid-cols-12 items-center rounded-lg border border-black/10 dark:border-slate-700 bg-gray-50 dark:bg-slate-800 overflow-hidden transition-shadow focus-within:shadow-md group">
               <div className="flex items-center justify-center h-full col-span-2 bg-primary-dark-pink/10 dark:bg-primary-dark-pink/20 py-3 transition group-focus-within:bg-primary-dark-pink/20">
-                <svg width="24" height="24" fill="currentColor" className="text-primary-dark-pink dark:text-white w-6 h-6" viewBox="0 0 24 24">
+                <svg
+                  width="24"
+                  height="24"
+                  fill="currentColor"
+                  className="text-primary-dark-pink dark:text-white w-6 h-6"
+                  viewBox="0 0 24 24"
+                >
                   <path d="M21.944 4.667a1.5 1.5 0 0 0-1.6-.217L3.6 11.25a1.5 1.5 0 0 0 .1 2.8l3.7 1.3 1.4 4.2a1.5 1.5 0 0 0 2.7.2l2-3.3 3.8 2.8a1.5 1.5 0 0 0 2.4-1l2-12a1.5 1.5 0 0 0-.756-1.583zM9.8 17.1l-1.1-3.3 7.2-6.5-6.1 7.7zm2.7 1.2l-1.1-3.3 2.7 2zm6.2-1.2-3.8-2.8 4.6-7.2z" />
                 </svg>
               </div>
@@ -325,7 +341,13 @@ function BannerModal({ user, open = false, setOpen }: BannerModalProps) {
             {/* YouTube */}
             <div className="grid grid-cols-12 items-center rounded-lg border border-black/10 dark:border-slate-700 bg-gray-50 dark:bg-slate-800 overflow-hidden transition-shadow focus-within:shadow-md group">
               <div className="flex items-center justify-center h-full col-span-2 bg-primary-dark-pink/10 dark:bg-primary-dark-pink/20 py-3 transition group-focus-within:bg-primary-dark-pink/20">
-                <svg width="24" height="24" fill="currentColor" className="text-primary-dark-pink dark:text-white w-6 h-6" viewBox="0 0 24 24">
+                <svg
+                  width="24"
+                  height="24"
+                  fill="currentColor"
+                  className="text-primary-dark-pink dark:text-white w-6 h-6"
+                  viewBox="0 0 24 24"
+                >
                   <path d="M21.8 8.001a2.75 2.75 0 0 0-1.94-1.94C18.1 6 12 6 12 6s-6.1 0-7.86.06a2.75 2.75 0 0 0-1.94 1.94A28.2 28.2 0 0 0 2 12a28.2 28.2 0 0 0 .2 3.999 2.75 2.75 0 0 0 1.94 1.94C5.9 18 12 18 12 18s6.1 0 7.86-.06a2.75 2.75 0 0 0 1.94-1.94A28.2 28.2 0 0 0 22 12a28.2 28.2 0 0 0-.2-3.999zM10 15.5v-7l6 3.5-6 3.5z" />
                 </svg>
               </div>

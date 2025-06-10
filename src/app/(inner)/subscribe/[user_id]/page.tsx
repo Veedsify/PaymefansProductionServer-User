@@ -181,7 +181,7 @@ const Subscribe = () => {
                 (tier, index) => (
                   <div
                     key={tier.id}
-                    className="group relative p-8 border border-gray-200 rounded-3xl shadow-sm hover:shadow-2xl hover:border-primary-dark-pink/40 transition-all duration-300 flex flex-col justify-between bg-gradient-to-br from-white via-gray-50 to-pink-50 overflow-hidden"
+                    className="group relative p-8 border border-gray-200 rounded-3xl shadow-sm hover:shadow-2xl hover:border-black/40 transition-all duration-300 flex flex-col justify-between bg-gradient-to-br from-white via-gray-50 to-pink-50 overflow-hidden"
                   >
                     {/* Decorative background pattern */}
                     <div className="absolute inset-0 pointer-events-none">

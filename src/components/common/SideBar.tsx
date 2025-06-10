@@ -49,7 +49,7 @@ const SideBar = React.memo(() => {
   return (
     <>
       <div
-        className={`lg:ml-auto dark:bg-gray-950 bg-white h-dvh lg:h-dvh fixed lg:sticky top-0 z-[200] lg:z-[200] overflow-auto smart-width p-4 shadow-xl lg:shadow-none lg:border-r border-primary-dark-pink/40 transition-transform duration-300 ease-in-out dark:text-white dark:border-slate-800/100 ${
+        className={`lg:ml-auto dark:bg-gray-950 bg-white h-dvh lg:h-dvh fixed lg:sticky top-0 z-[200] lg:z-[200] overflow-auto smart-width p-4 shadow-xl lg:shadow-none lg:border-r border-black/40 transition-transform duration-300 ease-in-out dark:text-white dark:border-slate-800/100 ${
           sideBarState ? "-translate-x-0" : "-translate-x-full lg:translate-x-0"
         }`}
       >
@@ -188,7 +188,7 @@ const SideBar = React.memo(() => {
                 <p>Become A Model</p>
               </Link>
             )}
-            <hr className="mt-8 mb-8 dark:border-slate-800 border-primary-dark-pink/40" />
+            <hr className="mt-8 mb-8 dark:border-slate-800 border-black/40" />
             <Link
               href="/help"
               className="flex items-center gap-5 p-2 mb-2 transition-all duration-200 hover:bg-gray-200 dark:hover:bg-gray-900 rounded-xl"

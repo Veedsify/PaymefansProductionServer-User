@@ -57,13 +57,13 @@ const SideModels = () => {
     <div className="p-4 lg:block hidden lg:col-span-3 dark:text-white">
       <div className="max-w-[450px]">
         <div className="relative overflow-auto mb-8">
-          <label className="flex justify-between border dark:border-slate-700 dark:text-white border-primary-dark-pink/40 rounded-md pr-5 overflow-hidden">
+          <label className="flex justify-between border dark:border-slate-700 dark:text-white border-black/40 rounded-md pr-5 overflow-hidden">
             <input
               onKeyDown={handleSearchKeyDown}
               type="search"
               name="q"
               id="search"
-              className="p-4 dark:bg-slate-950 w-full border-primary-dark-pink/40 outline-none"
+              className="p-4 dark:bg-slate-950 w-full border-black/40 outline-none"
               placeholder="Search"
             />
             <button>
@@ -104,7 +104,7 @@ const SideModels = () => {
           </div>
         </div>
 
-        <hr className="dark:border-slate-800 border-primary-dark-pink/40" />
+        <hr className="dark:border-slate-800 border-black/40" />
 
         <div className="flex align-middle justify-between my-8">
           <span className="font-bold">Hookup</span>

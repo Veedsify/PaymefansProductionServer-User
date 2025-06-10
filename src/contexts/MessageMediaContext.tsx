@@ -3,68 +3,88 @@ import React, {
   useContext,
   useState,
   useCallback,
+  useMemo,
+  useEffect,
   ReactNode,
 } from "react";
 import { generatePosterFromVideo } from "@/lib/VideoPoster";
 import { imageTypes, videoTypes } from "@/lib/FileTypes";
 import { MediaContextState, MediaFile } from "@/types/MessageComponents";
-import _ from "lodash";
+
+// Define stricter types for MediaFile
+interface StrictMediaFile extends MediaFile {
+  file: File;
+  type: "image" | "video";
+  previewUrl: string;
+  posterUrl?: string;
+}
 
 const MediaContext = createContext<MediaContextState | undefined>(undefined);
 
 export const MediaProvider: React.FC<{ children: ReactNode }> = ({
   children,
 }) => {
-  const [mediaFiles, setMediaFiles] = useState<MediaFile[]>([]);
+  const [mediaFiles, setMediaFiles] = useState<StrictMediaFile[]>([]);
   const [message, setMessage] = useState<string>("");
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-  const [removeFileArray, setRemoveFileArray] = useState<string[]>([]);
 
+  // Add files with concurrent poster generation and error handling
   const addFiles = useCallback(async (files: FileList) => {
-    const newMediaFiles: MediaFile[] = [];
+    try {
+      const newMediaFilesPromises = Array.from(files).map(async (file) => {
+        if (
+          !imageTypes.includes(file.type) &&
+          !videoTypes.includes(file.type)
+        ) {
+          throw new Error(`Unsupported file type: ${file.type}`);
+        }
 
-    for (let i = 0; i < files.length; i++) {
-      const file = files[i];
-      const previewUrl = URL.createObjectURL(file);
+        const previewUrl = URL.createObjectURL(file);
+        let mediaFile: StrictMediaFile = {
+          file,
+          type: imageTypes.includes(file.type) ? "image" : "video",
+          previewUrl,
+          posterUrl: imageTypes.includes(file.type) ? previewUrl : undefined,
+        };
 
-      if (imageTypes.includes(file.type)) {
-        newMediaFiles.push({
-          file,
-          type: "image",
-          previewUrl,
-          posterUrl: previewUrl,
-        });
-      } else if (videoTypes.includes(file.type)) {
-        const posterUrl = await generatePosterFromVideo(file);
-        newMediaFiles.push({
-          file,
-          type: "video",
-          previewUrl,
-          posterUrl,
-        });
-      }
+        if (videoTypes.includes(file.type)) {
+          try {
+            const posterUrl = await generatePosterFromVideo(file);
+            mediaFile = { ...mediaFile, posterUrl };
+          } catch (error) {
+            console.error(`Failed to generate poster for ${file.name}:`, error);
+            URL.revokeObjectURL(previewUrl); // Clean up on failure
+            throw error;
+          }
+        }
+
+        return mediaFile;
+      });
+
+      const newMediaFiles = await Promise.all(newMediaFilesPromises);
+      setMediaFiles((prev) => [...prev, ...newMediaFiles]);
+    } catch (error) {
+      console.error("Error adding files:", error);
+      // Notify user (e.g., via toast, not included here)
     }
-
-    setMediaFiles((prev) => [...prev, ...newMediaFiles]);
   }, []);
 
+  // Remove file with proper cleanup
   const removeFile = useCallback((index: number, id: string) => {
     setMediaFiles((prev) => {
+      if (index < 0 || index >= prev.length) return prev;
       const newFiles = [...prev];
-      // Revoke the URL to prevent memory leaks
-      URL.revokeObjectURL(newFiles[index].previewUrl);
-      if (
-        newFiles[index].posterUrl &&
-        newFiles[index].posterUrl !== newFiles[index].previewUrl
-      ) {
-        URL.revokeObjectURL(newFiles[index].posterUrl!);
+      const file = newFiles[index];
+      URL.revokeObjectURL(file.previewUrl);
+      if (file.posterUrl && file.posterUrl !== file.previewUrl) {
+        URL.revokeObjectURL(file.posterUrl);
       }
       newFiles.splice(index, 1);
-      setRemoveFileArray((prevArray) => _.uniq([...prevArray, id]));
       return newFiles;
     });
   }, []);
 
+  // Modal controls
   const openModal = useCallback(() => {
     setIsModalOpen(true);
   }, []);
@@ -73,6 +93,7 @@ export const MediaProvider: React.FC<{ children: ReactNode }> = ({
     setIsModalOpen(false);
   }, []);
 
+  // Revoke all URLs
   const revokeUrls = useCallback(() => {
     mediaFiles.forEach((file) => {
       URL.revokeObjectURL(file.previewUrl);
@@ -80,29 +101,57 @@ export const MediaProvider: React.FC<{ children: ReactNode }> = ({
         URL.revokeObjectURL(file.posterUrl);
       }
     });
+    setMediaFiles([]);
   }, [mediaFiles]);
 
+  // Reset all state
   const resetAll = useCallback(() => {
-    setMediaFiles([]);
+    revokeUrls();
     setMessage("");
     setIsModalOpen(false);
-  }, []);
+  }, [revokeUrls]);
+
+  // Clean up URLs on unmount or mediaFiles change
+  useEffect(() => {
+    return () => {
+      mediaFiles.forEach((file) => {
+        URL.revokeObjectURL(file.previewUrl);
+        if (file.posterUrl && file.posterUrl !== file.previewUrl) {
+          URL.revokeObjectURL(file.posterUrl);
+        }
+      });
+    };
+  }, [mediaFiles]);
+
+  // Memoize context value to prevent unnecessary re-renders
+  const contextValue = useMemo(
+    () => ({
+      mediaFiles,
+      message,
+      isModalOpen,
+      addFiles,
+      removeFile,
+      setMessage,
+      openModal,
+      closeModal,
+      resetAll,
+      revokeUrls,
+    }),
+    [
+      mediaFiles,
+      message,
+      isModalOpen,
+      addFiles,
+      removeFile,
+      openModal,
+      closeModal,
+      resetAll,
+      revokeUrls,
+    ]
+  );
 
   return (
-    <MediaContext.Provider
-      value={{
-        mediaFiles,
-        message,
-        isModalOpen,
-        addFiles,
-        removeFile,
-        setMessage,
-        openModal,
-        closeModal,
-        resetAll,
-        revokeUrls,
-      }}
-    >
+    <MediaContext.Provider value={contextValue}>
       {children}
     </MediaContext.Provider>
   );

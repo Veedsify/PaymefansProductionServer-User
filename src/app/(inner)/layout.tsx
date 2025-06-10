@@ -1,7 +1,5 @@
 import "../globals.css";
 import type { Metadata } from "next";
-// import { Inter } from "next/font/google";
-import localFont from "next/font/local";
 import MenuButtons from "@/components/modals/MenuButtons";
 import SideModels from "@/components/models/SideModels";
 import Header from "@/components/common/Header";
@@ -16,17 +14,15 @@ import { UserPointsContextProvider } from "@/contexts/PointsContext";
 import Loader from "@/components/common/Loader";
 import ToggleWishListProvider from "@/contexts/ToggleWishlist";
 import WishList from "@/components/sub_components/WishList";
-import { GeistSans } from "geist/font/sans";
 import { MessagesConversationProvider } from "@/contexts/MessageConversationContext";
 import UserAccountSupendedScreen from "@/components/sub_components/UserAccountSuspendedScreen";
 import ConfigProvider from "@/contexts/ConfigContext";
 import { Inter } from "next/font/google";
-import Head from "next/head";
 
 const font = Inter({
-  weight: ["200", "300", "400", "500", "600", "700", "800", "900"],
-  subsets: ["latin", "latin-ext"],
-  display: "swap",
+  weight: ["200", "300", "400", "500", "600", "700", "800"],
+  subsets: ["latin"],
+  display: "block",
 });
 
 export const metadata: Metadata = {

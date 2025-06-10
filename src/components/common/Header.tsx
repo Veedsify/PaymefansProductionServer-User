@@ -41,7 +41,7 @@ const Header = () => {
     <header
       className={`${
         hideOn(["/live"], pathname) && "px-4 lg:px-8 py-3"
-      } absolute z-50 w-full bg-primary-dark-pink lg:bg-white dark:bg-gray-950 dark:text-white border-b border-primary-dark-pink/40 dark:border-slate-800/100`}
+      } absolute z-50 w-full bg-primary-dark-pink lg:bg-white dark:bg-gray-950 dark:text-white border-b border-black/40 dark:border-slate-800/100`}
     >
       <div className="flex items-center">
         {hideOn(["/live"], pathname) && <HeaderTitle />}
