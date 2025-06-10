@@ -128,7 +128,7 @@ export default async function RootLayout({
                           <Header />
                           <div className="grid lg:grid-cols-6 pt-[66px] lg:pt-[48px] h-dvh">
                             <div className="flex flex-col h-full col-span-3">
-                              <div className="w-full h-full md:border-r border-primary-dark-pink/40 dark:border-slate-800">
+                              <div className="w-full h-full md:border-r border-black/40 dark:border-slate-800">
                                 {children}
                               </div>
                             </div>

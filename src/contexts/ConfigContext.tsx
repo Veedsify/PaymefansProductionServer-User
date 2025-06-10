@@ -7,7 +7,6 @@ import {
   useEffect,
   useState,
 } from "react";
-import { MediaContextState } from "@/types/MessageComponents";
 import ROUTE from "@/config/routes";
 import { useRouter } from "next/navigation";
 
@@ -97,7 +96,6 @@ export default function ConfigProvider({ children }: { children: ReactNode }) {
         const response = await fetch(ROUTE.GET_SYSTEM_CONFIGS);
         const data = await response.json();
         setConfig(data.data);
-        console.log("System Configs: ", data);
       } catch (error: any) {
         router.push("/error?error=fetch_configs");
         throw new Error("Error fetching configs: " + error.message);

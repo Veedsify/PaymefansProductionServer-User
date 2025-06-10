@@ -202,8 +202,12 @@ const PostEditor = React.memo(({ posts }: PostEditorProps) => {
     const res = await SavePost(savePostOptions);
 
     if (res.error) {
-      toast.error(res.message, {
-        id: "post-upload",
+      swal({
+        title: "Error",
+        text: res.message,
+        icon: "error",
+        buttons: ["Cancel", "Retry"],
+        dangerMode: true,
       });
     } else {
       toast.success(POST_CONFIG.POST_CREATED_SUCCESS_MSG, {
@@ -228,7 +232,7 @@ const PostEditor = React.memo(({ posts }: PostEditorProps) => {
           <PostCancel />
           <button
             onClick={handlePostSubmit}
-            className="bg-primary-dark-pink text-white p-1 px-6 rounded ml-auto text-sm font-medium"
+            className="bg-primary-dark-pink text-white p-2 px-8 rounded ml-auto text-sm font-semibold cursor-pointer"
           >
             Post
           </button>
