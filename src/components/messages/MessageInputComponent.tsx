@@ -160,8 +160,19 @@ const MessageInputComponent = React.memo(
 
         // Add the new message to the chat store
         addNewMessage(newMessage);
-        socket.emit("new-message", newMessage);
         resetMessageInput();
+
+        if (
+          newMessage &&
+          newMessage?.rawFiles &&
+          newMessage.rawFiles.length > 0
+        ) {
+          return toast.error(
+            "Please wait for the media files to finish uploading before sending the message."
+          );
+        }
+
+        socket.emit("new-message", newMessage);
       } catch (error) {
         console.error("Error sending message:", error);
         toast.error("Failed to send message");

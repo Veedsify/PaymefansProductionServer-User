@@ -59,6 +59,7 @@ const MessageBubble: React.FC<MessageBubbleProps> = ({
     function sendMessageSeen() {
       if (!message) return;
       if (seen && !inView) return;
+      if (message.sender_id === user?.user_id) return;
       socket.emit("message-seen", {
         conversationId,
         lastMessageId: message?.message_id,

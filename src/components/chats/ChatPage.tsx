@@ -2,6 +2,7 @@ import Link from "next/link";
 import ActiveProfileTag from "../sub_components/sub/ActiveProfileTag";
 import {
   LucideArrowLeft,
+  LucideChevronUp,
   LucideGrip,
   LucideLoader2,
   LucideVerified,
@@ -12,7 +13,7 @@ import {
   FetchConversationReceiver,
   GetConversationMessages,
 } from "@/utils/data/GetConversationMessages";
-import React, { useEffect, useMemo } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import MessageBubble from "../messages/MessageBubble";
 import { useInView } from "react-intersection-observer";
@@ -21,6 +22,7 @@ import { useChatStore } from "@/contexts/ChatContext";
 import MessageInputComponent from "../messages/MessageInputComponent";
 import { getSocket } from "../sub_components/sub/Socket";
 import { useUserStore } from "@/lib/UserUseContext";
+import { reverse } from "lodash";
 
 const ChatPage = ({ conversationId }: { conversationId: string }) => {
   const router = useRouter();
@@ -29,11 +31,9 @@ const ChatPage = ({ conversationId }: { conversationId: string }) => {
   const messages = useChatStore((state) => state.messages);
   const addNewMessage = useChatStore((state) => state.addNewMessage);
   const paginateMessages = useChatStore((state) => state.paginateMessages);
+  const resetMessages = useChatStore((state) => state.resetMessages);
   const updateSeenMessages = useChatStore((state) => state.updateSeenMessages);
   const socket = getSocket();
-  const { ref: loadMoreRef, inView } = useInView({
-    threshold: 1,
-  });
   const {
     data: receiverData,
     isError,
@@ -58,35 +58,84 @@ const ChatPage = ({ conversationId }: { conversationId: string }) => {
   if (!receiver && isError) {
     router.push("/messages");
   }
-  const {
-    data: conversationMessages,
-    isError: IsMessageError,
-    isLoading: IsMessageLoading,
-    isFetchingNextPage,
-    fetchNextPage,
-  } = useInfiniteQuery({
-    queryKey: ["chatMessages", conversationId],
-    queryFn: ({ pageParam }) =>
-      GetConversationMessages({ conversationId, cursor: pageParam }),
-    getNextPageParam: (lastPage) => {
-      if (lastPage.nextCursor) {
-        return lastPage.nextCursor;
+
+  const [chatMessages, setChatMessages] = useState<Message[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [nextCursor, setNextCursor] = useState<number | undefined>();
+  const [hasMore, setHasMore] = useState(true);
+
+  // Fetch first page on mount or conversationId change
+  useEffect(() => {
+    if (!conversationId) return;
+    const fetchMessages = async () => {
+      setLoading(true);
+      setError(null);
+      try {
+        const res = await GetConversationMessages({
+          conversationId,
+          cursor: undefined,
+        });
+        setChatMessages(res.messages);
+        setNextCursor(res.nextCursor ?? null);
+        setHasMore(!!res.nextCursor);
+      } catch (err: any) {
+        setError(err);
+      } finally {
+        setLoading(false);
       }
-      return null;
-    },
-    refetchInterval: false,
-    refetchOnMount: true,
-    initialPageParam: undefined,
-    enabled: !!conversationId,
-  });
+    };
+
+    fetchMessages();
+  }, [conversationId]);
+
+  // Function to fetch the next page
+  const fetchNextPage = async () => {
+    if (!nextCursor || !hasMore) return;
+
+    setLoading(true);
+    setError(null);
+    try {
+      const res = await GetConversationMessages({
+        conversationId,
+        cursor: nextCursor,
+      });
+      setChatMessages((prev) => [...prev, ...res.messages]);
+      setNextCursor(res.nextCursor ?? null);
+      setHasMore(!!res.nextCursor);
+    } catch (err: any) {
+      setError(err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const paginatedMessages = conversationMessages?.pages.flatMap(
-      (page) => page.messages
-    ) as Message[];
+    return () => {
+      // Cleanup function to reset messages when component unmounts
+      paginateMessages([]);
+      setChatMessages([]);
+      setNextCursor(undefined);
+      setHasMore(false);
+      setLoading(false);
+      setError(null);
+    };
+  }, []);
+  // Optional side effect to paginate externally
+  useEffect(() => {
+    paginateMessages(chatMessages);
+  }, [chatMessages, paginateMessages]);
 
-    paginateMessages(paginatedMessages);
-  }, [conversationMessages, paginateMessages]);
+  useEffect(() => {
+    return () => {
+      setNextCursor(undefined);
+      setHasMore(false);
+      setLoading(false);
+      setError(null);
+      setChatMessages([]);
+      resetMessages();
+    };
+  }, []); // cleanup only on unmount
 
   useEffect(() => {
     // Event: New message
@@ -143,6 +192,14 @@ const ChatPage = ({ conversationId }: { conversationId: string }) => {
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [conversationId, user?.user_id, receiver?.user_id]);
+
+  if (error) {
+    return (
+      <div className="flex items-center justify-center h-full">
+        <p className="text-red-500">Error loading your conversations</p>
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col h-full ">
@@ -205,10 +262,22 @@ const ChatPage = ({ conversationId }: { conversationId: string }) => {
         className="flex-1 max-h-[calc(100dvh-230px)] p-4 space-y-4 overflow-y-auto overflow-x-hidden bg-white dark:bg-gray-950"
         ref={messagesContainerRef}
       >
-        <div ref={loadMoreRef}></div>
-        {isFetchingNextPage && (
-          <div className="flex items-center justify-center w-full py-4">
-            <LucideLoader2 className="text-primary-dark-pink h-6 w-6 animate-spin" />
+        {hasMore && (
+          <div className="flex items-center justify-center mb-2">
+            <button
+              disabled={loading}
+              onClick={() => fetchNextPage()}
+              className="flex items-center justify-center h-7 w-7 aspect-square rounded-full cursor-pointer bg-primary-dark-pink"
+            >
+              {loading ? (
+                <LucideLoader2
+                  className="text-white h-4 w-4 animate-spin"
+                  size={20}
+                />
+              ) : (
+                <LucideChevronUp stroke="#ffffff" size={20} />
+              )}
+            </button>
           </div>
         )}
         {messages?.map((message) => (

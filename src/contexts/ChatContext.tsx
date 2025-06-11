@@ -14,6 +14,7 @@ interface ChatState {
   updateSeenMessages: (messageIds: string[]) => void;
   setIsTyping: (isTyping: boolean) => void;
   resetAllMedia: () => void;
+  resetMessages: () => void;
 }
 
 function setIsTyping(set: (fn: (state: ChatState) => ChatState) => void) {
@@ -83,6 +84,17 @@ function removeMediaFile(
   };
 }
 
+function resetMessages(
+  set: (fn: (state: ChatState) => ChatState) => void
+): () => void {
+  return () => {
+    set((state) => ({
+      ...state,
+      messages: [],
+    }));
+  };
+}
+
 function resetAllMedia(
   set: (fn: (state: ChatState) => ChatState) => void
 ): () => void {
@@ -106,4 +118,5 @@ export const useChatStore = create<ChatState>((set) => ({
   updateSeenMessages: updateSeenMessages(set),
   setIsTyping: setIsTyping(set),
   resetAllMedia: resetAllMedia(set),
+  resetMessages: resetMessages(set),
 }));

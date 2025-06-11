@@ -80,7 +80,6 @@ const BecomeAModel = () => {
 
   // Memoized values
   const reference = searchParams.get("reference");
-  const isPaymentCallback = Boolean(reference);
 
   const userStatus = useMemo(() => {
     if (!user) return "loading";
@@ -93,7 +92,7 @@ const BecomeAModel = () => {
 
   // Handle payment callback
   useEffect(() => {
-    if (!isPaymentCallback) {
+    if (!reference) {
       setIsPageLoading(false);
       return;
     }
@@ -126,7 +125,7 @@ const BecomeAModel = () => {
     };
 
     handlePaymentCallback();
-  }, [isPaymentCallback, reference, router]);
+  }, [reference, router]);
 
   // Form validation
   const validateForm = useCallback((): FormErrors => {
