@@ -23,6 +23,11 @@ const ChooseUserName = () => {
     }
   };
 
+  function isValidUsername(username: string) {
+    const regex = /^[a-zA-Z0-9_]{1,20}$/;
+    return regex.test(username);
+  }
+
   const checkForUsername = async () => {
     if (!ref.current?.value) {
       setButtonActive(false);
@@ -31,6 +36,18 @@ const ChooseUserName = () => {
     }
     if (ref.current.value.length < 5) {
       setMessage("Username requires minimum 5 characters");
+      setButtonActive(false);
+      return;
+    }
+
+    if (ref.current.value.length > 20) {
+      setMessage("Username cannot be more than 20 characters");
+      setButtonActive(false);
+      return;
+    }
+
+    if (!isValidUsername(ref.current.value)) {
+      setMessage("Username can only contain letters, numbers, and underscores");
       setButtonActive(false);
       return;
     }
