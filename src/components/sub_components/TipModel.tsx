@@ -127,7 +127,7 @@ const TipModel = ({
         }
       });
     },
-    [points, pointBalance, user, userdata, router]
+    [points, pointBalance, user, userdata, router, close]
   );
 
   return (

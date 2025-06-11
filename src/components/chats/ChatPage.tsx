@@ -18,14 +18,19 @@ import MessageBubble from "../messages/MessageBubble";
 import { useInView } from "react-intersection-observer";
 import { Message } from "@/types/Components";
 import { useChatStore } from "@/contexts/ChatContext";
-import MessageInput from "../messages/MessageInput";
 import MessageInputComponent from "../messages/MessageInputComponent";
+import { getSocket } from "../sub_components/sub/Socket";
+import { useUserStore } from "@/lib/UserUseContext";
 
 const ChatPage = ({ conversationId }: { conversationId: string }) => {
   const router = useRouter();
+  const user = useUserStore((state) => state.user);
   const messagesContainerRef = React.useRef<HTMLDivElement>(null);
   const messages = useChatStore((state) => state.messages);
+  const addNewMessage = useChatStore((state) => state.addNewMessage);
   const paginateMessages = useChatStore((state) => state.paginateMessages);
+  const updateSeenMessages = useChatStore((state) => state.updateSeenMessages);
+  const socket = getSocket();
   const { ref: loadMoreRef, inView } = useInView({
     threshold: 1,
   });
@@ -41,6 +46,8 @@ const ChatPage = ({ conversationId }: { conversationId: string }) => {
         cursor: 1,
         pageParam: 1, // Assuming pageParam is always 1 for initial load
       }),
+    refetchInterval: false,
+    refetchOnMount: true,
     enabled: !!conversationId,
   });
   const receiver = receiverData?.receiver;
@@ -54,7 +61,7 @@ const ChatPage = ({ conversationId }: { conversationId: string }) => {
   const {
     data: conversationMessages,
     isError: IsMessageError,
-    isLoading: IsMessageLoadin,
+    isLoading: IsMessageLoading,
     isFetchingNextPage,
     fetchNextPage,
   } = useInfiniteQuery({
@@ -67,6 +74,8 @@ const ChatPage = ({ conversationId }: { conversationId: string }) => {
       }
       return null;
     },
+    refetchInterval: false,
+    refetchOnMount: true,
     initialPageParam: undefined,
     enabled: !!conversationId,
   });
@@ -79,8 +88,64 @@ const ChatPage = ({ conversationId }: { conversationId: string }) => {
     paginateMessages(paginatedMessages);
   }, [conversationMessages, paginateMessages]);
 
+  useEffect(() => {
+    // Event: New message
+    const handleMessageReceived = (msg: Message) => {
+      addNewMessage(msg);
+      if (!msg.seen) {
+        socket.emit("message-seen", {
+          conversationId,
+          lastMessageId: msg.message_id,
+          userId: user?.user_id,
+          receiver_id: receiver?.user_id,
+        });
+      }
+      // Only scroll if the user is not scrolled up
+      // if (!userScrolledUp) {
+      //   scrollToBottom();
+      // }
+    };
+    // Event: Error
+    const handleMessageError = () => {
+      swal({
+        title: "Error",
+        text: "The last message didn't go through. Refresh and try again.",
+        icon: "error",
+        buttons: {
+          cancel: true,
+          confirm: {
+            text: "Refresh",
+            className: "bg-primary-dark-pink text-white",
+          },
+        },
+      }).then((refresh) => {
+        if (refresh) window.location.reload();
+      });
+    };
+
+    // Event: Message seen
+    const handleMessageSeenUpdated = ({ messageId }: { messageId: string }) => {
+      updateSeenMessages([messageId]);
+    };
+
+    // Join conversation and set up listeners
+    socket.emit("join", conversationId);
+    socket.on("message", handleMessageReceived);
+    socket.on("message-error", handleMessageError);
+    // socket.on("sender-typing", handleSenderTyping);
+    socket.on("message-seen-updated", handleMessageSeenUpdated);
+    // Clean up
+    return () => {
+      socket.off("message", handleMessageReceived);
+      socket.off("message-error", handleMessageError);
+      // socket.off("sender-typing", handleSenderTyping);
+      socket.off("message-seen-updated", handleMessageSeenUpdated);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [conversationId, user?.user_id, receiver?.user_id]);
+
   return (
-    <>
+    <div className="flex flex-col h-full ">
       <div className="flex items-center px-5 py-4 border-b border-black/30 dark:border-gray-800 shrink-0">
         <Link href="/messages" className="mr-6 sm:mr-10" aria-label="Back">
           <LucideArrowLeft
@@ -137,7 +202,7 @@ const ChatPage = ({ conversationId }: { conversationId: string }) => {
         </div>
       </div>
       <div
-        className="flex-1 p-4 space-y-4 overflow-y-auto max-h-[calc(100dvh-215px)] overflow-x-hidden bg-white dark:bg-gray-950"
+        className="flex-1 max-h-[calc(100dvh-230px)] p-4 space-y-4 overflow-y-auto overflow-x-hidden bg-white dark:bg-gray-950"
         ref={messagesContainerRef}
       >
         <div ref={loadMoreRef}></div>
@@ -169,11 +234,11 @@ const ChatPage = ({ conversationId }: { conversationId: string }) => {
       <div className="sticky bottom-0 z-50 p-4 bg-white border-t border-black/30 dark:bg-gray-800 dark:border-gray-950 shrink-0">
         <MessageInputComponent
           receiver={receiver}
+          conversationId={conversationId}
           isFirstMessage={messages.length === 0}
-          sendMessage={() => {}} // Use the new sendMessage function
         />
       </div>
-    </>
+    </div>
   );
 };
 

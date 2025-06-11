@@ -21,6 +21,7 @@ export interface MessageInputProps {
 
 // New types for the unified components
 export interface MediaFile {
+  id: string; // Unique identifier for the media file
   file: File;
   type: "image" | "video";
   previewUrl: string;
@@ -57,8 +58,6 @@ export const imageTypes = [
 export type MessageMediaPreViewProps = {
   index: number;
   file: MediaFile;
-  removeFile: (index: number, id: string) => void;
-  setMediaCount?: (index: number) => void; // Optional for media count management
 }
 
 export const videoTypes = ["video/mp4", "video/webm", "video/ogg"];

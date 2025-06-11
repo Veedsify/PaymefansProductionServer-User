@@ -153,7 +153,7 @@ const VideoPreview = memo(
     const handleVideoError = useCallback(() => {
       setStatus("error");
       console.warn(`Video failed to load at index ${index}`);
-    }, [index, url]);
+    }, [index]);
 
     const handleVideoEnded = useCallback(() => {
       const video = videoRef.current;
@@ -450,7 +450,7 @@ const PostComponentPreview = memo(() => {
         preloadMedia(item.url, item.type);
       }
     });
-  }, [currentSlide, mediaItems, mediaState.loaded]);
+  }, [currentSlide, mediaItems, mediaState.loaded, shouldLoadSlide]);
 
   // Handlers
   const handleClose = useCallback(() => {

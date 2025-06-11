@@ -19,19 +19,11 @@ const MessageBubbleContent: React.FC<MessageBubbleContentProps> = ({
   hasAttachments,
   hasMessage,
   hasRawFiles,
-  SendSocketMessage,
   attachment = [],
   rawFiles = [],
   isSender,
 }) => {
   const { fullScreenPreview } = usePostComponent();
-  const { user } = useUserAuthContext();
-  const [progress, setProgress] = useState<Record<string, number>>({});
-  const [uploadError, setUploadError] = useState<Record<string, boolean>>({});
-
-  const removePreloader = (id: string) => {
-    document.getElementById(id)?.remove();
-  };
 
   // Media preview handlers
   const handlePreview = useCallback(
@@ -67,98 +59,6 @@ const MessageBubbleContent: React.FC<MessageBubbleContentProps> = ({
     },
     [rawFiles, fullScreenPreview]
   );
-
-  // // Get signed upload URL (image/video)
-  // const token = getToken();
-  // const getUploadUrl = useCallback(
-  //   async (file: File): Promise<UploadResponseResponse> => {
-  //     if (!file) throw new Error("File is not defined");
-  //     const isVideo = file.type.startsWith("video/");
-  //     const maxVideoDuration = isVideo ? getMaxDurationBase64(file) : null;
-  //     const payload: any = {
-  //       type: isVideo ? "video" : "image",
-  //       fileName: btoa(`paymefans-attachment-${user?.username}-${Date.now()}`),
-  //       fileSize: file.size,
-  //       fileType: btoa(file.type),
-  //       explicitImageType: file.type,
-  //     };
-  //     if (isVideo && maxVideoDuration) payload.maxDuration = maxVideoDuration;
-
-  //     const response = await axios.post(
-  //       `${process.env.NEXT_PUBLIC_TS_EXPRESS_URL}/post/media/signed-url`,
-  //       payload,
-  //       {
-  //         headers: {
-  //           Authorization: `Bearer ${token}`,
-  //           "Content-Type": "application/json",
-  //         },
-  //       }
-  //     );
-  //     if (response.data.error) throw new Error(response.data.message);
-  //     return response.data as UploadResponseResponse;
-  //   },
-  //   [token, user]
-  // );
-
-  // // Upload all raw files and send via socket when done
-  // const uploadFilesAndSend = useCallback(
-  //   async function () {
-  //     if (!rawFiles.length) return;
-  //     const files: (Attachment | null)[] = [];
-  //     for (const item of rawFiles) {
-  //       try {
-  //         const upload = await getUploadUrl(item.file);
-  //         if (item.type === "image" && upload.type.includes("image")) {
-  //           const imgRes = await UploadImageToCloudflare({
-  //             file: item.file,
-  //             id: item.previewUrl,
-  //             uploadUrl: upload.uploadUrl,
-  //             setProgress,
-  //             setUploadError,
-  //           });
-  //           files.push({
-  //             url: imgRes.result?.variants.find((v: string) =>
-  //               v.includes("/public")
-  //             ),
-  //             id: imgRes.result?.id,
-  //             poster: "",
-  //             name: imgRes.result?.id,
-  //             type: "image",
-  //             extension: path.extname(item.file.name),
-  //             size: item.file.size,
-  //           });
-  //         } else if (item.type === "video" && upload.type.includes("video")) {
-  //           const mediaId = await UploadWithTus(
-  //             item.file,
-  //             upload.uploadUrl,
-  //             item.previewUrl,
-  //             setProgress,
-  //             setUploadError
-  //           );
-  //           files.push({
-  //             url: `${process.env.NEXT_PUBLIC_CLOUDFLARE_CUSTOMER_SUBDOMAIN}${mediaId}/manifest/video.m3u8`,
-  //             type: "video",
-  //             id: mediaId,
-  //             poster: "",
-  //             name: mediaId,
-  //             extension: path.extname(item.file.name),
-  //             size: item.file.size,
-  //           });
-  //         } else {
-  //           files.push(null);
-  //         }
-  //       } catch (err) {
-  //         files.push(null);
-  //       }
-  //     }
-  //     const uploadedFiles = files.filter(Boolean) as Attachment[];
-  //     SendSocketMessage(uploadedFiles);
-  //   },
-  //   [rawFiles, SendSocketMessage, getUploadUrl]
-  // );
-  // useEffect(() => {
-  //   uploadFilesAndSend();
-  // }, [uploadFilesAndSend]);
 
   return (
     <>
@@ -273,19 +173,6 @@ const MessageBubbleContent: React.FC<MessageBubbleContentProps> = ({
                     aria-label="Video uploading"
                     className="w-full object-cover rounded-lg shadow-md group-hover:brightness-75 transition"
                   />
-                </div>
-              )}
-              {progress[file.previewUrl] > 0 && (
-                <div className="absolute top-3 right-3 flex items-center justify-center w-12 h-12 z-10">
-                  <ProgressCircle
-                    progress={progress[file.previewUrl] || 0}
-                    size={20}
-                  />
-                  <span className="absolute text-[10px] text-white font-semibold drop-shadow">
-                    {progress[file.previewUrl] < 100
-                      ? `${progress[file.previewUrl]}%`
-                      : ""}
-                  </span>
                 </div>
               )}
             </div>

@@ -257,13 +257,14 @@ export interface Message {
 }
 
 export interface MessageInputProps {
-  sendMessage: ({ }: Message) => void;
   receiver: any;
+  conversationId: string;
   isFirstMessage: boolean;
 }
 
 // New types for the unified components
 export interface MediaFile {
+  id: string;
   file: File;
   type: "image" | "video";
   previewUrl: string;
@@ -275,7 +276,6 @@ type MessageBubbleContentProps = {
   message?: string;
   hasAttachments: boolean;
   hasMessage: boolean;
-  SendSocketMessage: (attachment: Attachment[]) => void;
   hasRawFiles: boolean;
   attachment: Attachment[] | null;
   rawFiles?: MediaFile[] | [];

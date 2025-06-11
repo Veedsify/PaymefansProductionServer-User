@@ -7,7 +7,6 @@ import {
   useState,
   KeyboardEvent,
   RefObject,
-  useMemo,
 } from "react";
 import { v4 as uuid } from "uuid";
 import { LucidePlus, LucideCamera, LucideSendHorizonal } from "lucide-react";
@@ -17,11 +16,19 @@ import axiosInstance from "@/utils/Axios";
 import { getToken } from "@/utils/Cookie";
 import { useUserAuthContext } from "@/lib/UserUseContext";
 import { useMessagesConversation } from "@/contexts/MessageConversationContext";
-import { MessageInputProps, Attachment } from "@/types/Components";
+import {
+  MessageInputProps,
+  Attachment,
+  MediaFile,
+  Message,
+} from "@/types/Components";
 import MessageMediaPreview from "./MessageMediaPreview";
 import React from "react";
 import { useChatStore } from "@/contexts/ChatContext";
 import { usePointsStore } from "@/contexts/PointsContext";
+import { getSocket } from "../sub_components/sub/Socket";
+import GenerateVideoPoster from "@/utils/GenerateVideoPoster";
+import { imageTypes } from "@/lib/FileTypes";
 
 // Utility Functions
 const escapeHtml = (str: string) => {
@@ -47,34 +54,27 @@ const linkify = (text: string) => {
 };
 
 const MessageInputComponent = React.memo(
-  ({ sendMessage, receiver, isFirstMessage }: MessageInputProps) => {
+  ({ receiver, isFirstMessage, conversationId }: MessageInputProps) => {
     // Contexts and Hooks
     const { user } = useUserAuthContext();
     const points = usePointsStore((state) => state.points);
     const { conversations } = useMessagesConversation();
-    // const { message, setMessage, mediaFiles, addFiles, removeFile, resetAll } =
-    //   useMediaContext();
+    const [message, setMessage] = useState<string>("");
     const ref = useRef<HTMLDivElement>(null);
     const setIsTyping = useChatStore((state) => state.setIsTyping);
     const token = getToken();
+    const socket = getSocket(user?.username);
+    const addNewMessage = useChatStore((state) => state.addNewMessage);
+    const mediaFiles = useChatStore((state) => state.mediaFiles);
+    const setMediaFiles = useChatStore((state) => state.setMediaFiles);
 
-    // State for uploaded media and statuses
-    const [uploadedMediaData, setUploadedMediaData] = useState<
-      Record<string, Attachment>
-    >({});
-    const [uploadStatuses, setUploadStatuses] = useState<
-      Record<string, "idle" | "uploading" | "completed" | "error">
-    >({});
-
-    // // Check if all uploads are complete
-    // const allUploadsComplete = useMemo(
-    //   () =>
-    //     mediaFiles.length === 0 ||
-    //     mediaFiles.every(
-    //       (file) => uploadStatuses[file.previewUrl] === "completed"
-    //     ),
-    //   [mediaFiles, uploadStatuses]
-    // );
+    const resetMessageInput = useCallback(() => {
+      setMessage("");
+      if (ref.current) {
+        ref.current.innerHTML = "";
+        ref.current.focus();
+      }
+    }, [setMessage]);
 
     // Debounce typing indicator
     const debounce = <T extends (...args: any[]) => void>(
@@ -88,204 +88,137 @@ const MessageInputComponent = React.memo(
       };
     };
 
-    const debouncedSendTyping = useCallback(
-      debounce((msg: string) => {
-        if (msg.length > 0) {
+    const debouncedSendTyping = useCallback(() => {
+      return debounce((message: string) => {
+        if (message.length > 0) {
           setIsTyping(true);
         } else {
           setIsTyping(false);
         }
-      }, 500),
-      [setIsTyping]
-    );
+      }, 500);
+    }, [setIsTyping]);
 
-    // Handlers for upload status and results
-    const handleUploadComplete = useCallback(
-      (fileKey: string, uploadedData: Attachment) => {
-        setUploadedMediaData((prev) => ({ ...prev, [fileKey]: uploadedData }));
-        setUploadStatuses((prev) => ({ ...prev, [fileKey]: "completed" }));
-      },
-      []
-    );
+    const handleSendMessage = useCallback(async () => {
+      if (
+        !user ||
+        !receiver ||
+        (message.trim().length === 0 && mediaFiles.length === 0)
+      ) {
+        return;
+      }
 
-    const handleUploadStatusChange = useCallback(
-      (
-        fileKey: string,
-        status: "idle" | "uploading" | "completed" | "error"
-      ) => {
-        setUploadStatuses((prev) => {
-          if (prev[fileKey] === status) return prev;
-          return { ...prev, [fileKey]: status };
-        });
-      },
-      []
-    );
+      try {
+        const { data } = await axiosInstance.post(
+          "/points/price-per-message",
+          { user_id: receiver.user_id },
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
+        const pricePerMessage = data.price_per_message;
+        const receiverName =
+          receiver.name.charAt(0).toUpperCase() + receiver.name.slice(1);
 
-    // Reset input field
-    // const resetMessageInput = useCallback(() => {
-    //   setMessage("");
-    //   if (ref.current) {
-    //     ref.current.innerHTML = "";
-    //     ref.current.focus();
-    //   }
-    // }, [setMessage]);
+        if (points < pricePerMessage) {
+          resetMessageInput();
+          return swal({
+            icon: "info",
+            title: "Insufficient Paypoints",
+            text: `Sorry, you need at least ${pricePerMessage.toLocaleString()} paypoints to send a message to ${receiverName}`,
+          });
+        }
+        if (isFirstMessage) {
+          const isToSend = await swal({
+            icon: "info",
+            title: "Notice from PayMeFans",
+            text: `Your first message to ${receiverName} costs ${pricePerMessage} paypoints`,
+            dangerMode: true,
+            buttons: ["Cancel", "Continue"],
+          });
+          if (!isToSend) return;
+        }
+        if (!conversations[0]?.lastMessage && pricePerMessage !== 0) {
+          const isToSend = await swal({
+            icon: "info",
+            title: "Notice from PayMeFans",
+            text: `Sending a message to ${receiverName} costs ${pricePerMessage.toLocaleString()} paypoints`,
+          });
+          if (!isToSend) return;
+        }
 
-    // Message Sending Logic
-    // const sendMessageWithAttachment = useCallback(
-    //   async (msg: string) => {
-    //     if (!user || !receiver) return;
+        const newMessage: Message = {
+          id: Math.random(),
+          message_id: uuid(),
+          sender_id: user.user_id,
+          receiver_id: receiver.user_id,
+          conversationId: conversationId,
+          message: linkify(escapeHtml(message)),
+          attachment: [],
+          rawFiles: mediaFiles,
+          triggerSend: true,
+          created_at: new Date().toISOString(),
+          seen: false,
+        };
 
-    //     const generateNumericId = () =>
-    //       Math.floor(Math.random() * 1000000000) + 1;
-
-    //     // Filter valid attachments
-    //     const attachments = mediaFiles
-    //       .map((file) => uploadedMediaData[file.previewUrl])
-    //       .filter(
-    //         (attachment): attachment is Attachment =>
-    //           !!attachment && !!attachment.url
-    //       );
-
-    //     if (mediaFiles.length > 0 && attachments.length === 0) {
-    //       toast.error("Some media files failed to upload. Please try again.");
-    //       return;
-    //     }
-
-    //     sendMessage({
-    //       message_id: uuid(),
-    //       message: linkify(msg.trim()),
-    //       attachment: attachments,
-    //       sender_id: user.user_id,
-    //       receiver_id: receiver.user_id,
-    //       seen: false,
-    //       rawFiles: mediaFiles,
-    //       triggerSend: true,
-    //       id: generateNumericId(),
-    //       created_at: new Date().toString(),
-    //     });
-
-    //     resetMessageInput();
-    //     setUploadedMediaData({});
-    //     setUploadStatuses({});
-    //   },
-    //   [sendMessage, user, mediaFiles, resetAll, receiver, uploadedMediaData]
-    // );
-
-    // const handleSendMessage = useCallback(async () => {
-    //   if (
-    //     !user ||
-    //     !receiver ||
-    //     (message.trim().length === 0 && mediaFiles.length === 0)
-    //   ) {
-    //     return;
-    //   }
-
-    //   if (!allUploadsComplete) {
-    //     toast.error("Please wait for all uploads to finish before sending.");
-    //     return;
-    //   }
-
-    //   try {
-    //     const { data } = await axiosInstance.post(
-    //       "/points/price-per-message",
-    //       { user_id: receiver.user_id },
-    //       { headers: { Authorization: `Bearer ${token}` } }
-    //     );
-    //     const pricePerMessage = data.price_per_message;
-    //     const receiverName =
-    //       receiver.name.charAt(0).toUpperCase() + receiver.name.slice(1);
-
-    //     if (points < pricePerMessage) {
-    //       resetMessageInput();
-    //       return swal({
-    //         icon: "info",
-    //         title: "Insufficient Paypoints",
-    //         text: `Sorry, you need at least ${pricePerMessage.toLocaleString()} paypoints to send a message to ${receiverName}`,
-    //       });
-    //     }
-
-    //     if (!conversations[0]?.lastMessage && pricePerMessage !== 0) {
-    //       const isToSend = await swal({
-    //         icon: "info",
-    //         title: "Notice from PayMeFans",
-    //         text: `Sending a message to ${receiverName} costs ${pricePerMessage.toLocaleString()} paypoints`,
-    //       });
-    //       if (!isToSend) return;
-    //     } else if (isFirstMessage) {
-    //       const isToSend = await swal({
-    //         icon: "info",
-    //         title: "Notice from PayMeFans",
-    //         text: `Your first message to ${receiverName} costs ${pricePerMessage} paypoints`,
-    //         dangerMode: true,
-    //         buttons: ["Cancel", "Continue"],
-    //       });
-    //       if (!isToSend) return;
-    //     }
-
-    //     await sendMessageWithAttachment(message);
-    //   } catch (error) {
-    //     console.error("Error sending message:", error);
-    //     toast.error("Failed to send message");
-    //   }
-    // }, [
-    //   user,
-    //   receiver,
-    //   points,
-    //   conversations,
-    //   sendMessageWithAttachment,
-    //   message,
-    //   isFirstMessage,
-    //   token,
-    //   mediaFiles.length,
-    //   resetMessageInput,
-    //   allUploadsComplete,
-    // ]);
+        // Add the new message to the chat store
+        addNewMessage(newMessage);
+        socket.emit("new-message", newMessage);
+        resetMessageInput();
+      } catch (error) {
+        console.error("Error sending message:", error);
+        toast.error("Failed to send message");
+      }
+    }, [
+      conversationId,
+      socket,
+      resetMessageInput,
+      user,
+      receiver,
+      points,
+      addNewMessage,
+      conversations,
+      message,
+      isFirstMessage,
+      token,
+      mediaFiles,
+    ]);
 
     // Typing and Input Handling
-    // const handleKeyDown = useCallback(
-    //   (event: KeyboardEvent) => {
-    //     debouncedSendTyping(message);
+    const handleKeyDown = useCallback(
+      (event: KeyboardEvent) => {
+        debouncedSendTyping();
+        if (event.key === "Enter" && !event.shiftKey) {
+          event.preventDefault();
+          setIsTyping(false);
+          handleSendMessage();
+        }
+      },
+      [debouncedSendTyping, handleSendMessage, setIsTyping]
+    );
 
-    //     if (event.key === "Enter" && !event.shiftKey) {
-    //       event.preventDefault();
-    //       setIsTyping(false);
-    //       if (allUploadsComplete) {
-    //         handleSendMessage();
-    //       } else {
-    //         toast.error(
-    //           "Please wait for all uploads to finish before sending."
-    //         );
-    //       }
-    //     }
-    //   },
-    //   [debouncedSendTyping, handleSendMessage, message, allUploadsComplete]
-    // );
+    useEffect(() => {
+      const handleInput = (e: Event) => {
+        const target = e.target as HTMLDivElement;
+        setMessage(target.innerHTML);
+      };
 
-    // useEffect(() => {
-    //   const handleInput = (e: Event) => {
-    //     const target = e.target as HTMLDivElement;
-    //     // setMessage(target.innerHTML);
-    //   };
+      const handlePaste = (e: ClipboardEvent) => {
+        e.preventDefault();
+        const text = e.clipboardData?.getData("text/plain");
+        document.execCommand("insertText", false, text);
+      };
 
-    //   const handlePaste = (e: ClipboardEvent) => {
-    //     e.preventDefault();
-    //     const text = e.clipboardData?.getData("text/plain");
-    //     document.execCommand("insertText", false, text);
-    //   };
+      const messageInput = ref.current;
+      if (messageInput) {
+        messageInput.addEventListener("input", handleInput);
+        messageInput.addEventListener("paste", handlePaste);
+      }
 
-    //   const messageInput = ref.current;
-    //   if (messageInput) {
-    //     messageInput.addEventListener("input", handleInput);
-    //     messageInput.addEventListener("paste", handlePaste);
-    //   }
-
-    //   return () => {
-    //     if (messageInput) {
-    //       messageInput.removeEventListener("input", handleInput);
-    //       messageInput.removeEventListener("paste", handlePaste);
-    //     }
-    //   };
-    // }, [setMessage]);
+      return () => {
+        if (messageInput) {
+          messageInput.removeEventListener("input", handleInput);
+          messageInput.removeEventListener("paste", handlePaste);
+        }
+      };
+    }, [setMessage]);
 
     // Media Handling
     const triggerFileSelect = useCallback(() => {
@@ -293,65 +226,68 @@ const MessageInputComponent = React.memo(
         "file-input"
       ) as HTMLInputElement;
       fileInput?.click();
-    }, []);
 
-    // const handleFileSelect = useCallback(
-    //   (e: React.ChangeEvent<HTMLInputElement>) => {
-    //     const imageTypes = [
-    //       "image/png",
-    //       "image/jpeg",
-    //       "image/jpg",
-    //       "image/gif",
-    //       "image/svg+xml",
-    //       "image/webp",
-    //       "image/bmp",
-    //       "image/tiff",
-    //       "image/ico",
-    //     ];
+      // Remove any existing event listeners to prevent duplicates
+      const handleFileChange = async (e: Event) => {
+        const target = e.target as HTMLInputElement;
+        const files = target.files;
 
-    //     if (e.target.files) {
-    //       const selectedFiles = Array.from(e.target.files);
-    //       const validFiles = selectedFiles.filter(
-    //         (file) =>
-    //           imageTypes.includes(file.type) || file.type.startsWith("video/")
-    //       );
+        if (!files || files.length === 0) return;
 
-    //       if (validFiles.length !== selectedFiles.length) {
-    //         toast.error(
-    //           "Invalid file type, please select an image or video file"
-    //         );
-    //         return;
-    //       }
+        const selectedFiles = Array.from(files);
+        const validFiles = selectedFiles.filter(
+          (file) =>
+            imageTypes.includes(file.type) || file.type.startsWith("video/")
+        );
 
-    //     //   addFiles(e.target.files);
-    //     }
-    //   },
-    //   [addFiles]
-    // );
+        if (validFiles.length !== selectedFiles.length) {
+          toast.error(
+            "Invalid file type, please select an image or video file"
+          );
+          return;
+        }
 
-    // Sync uploadedMediaData and uploadStatuses with mediaFiles
-    // useEffect(() => {
-    //   setUploadedMediaData((prev) => {
-    //     const next: Record<string, Attachment> = {};
-    //     // mediaFiles.forEach((file) => {
-    //     //   if (prev[file.previewUrl]) {
-    //     //     next[file.previewUrl] = prev[file.previewUrl];
-    //     //   }
-    //     // });
-    //     return next;
-    //   });
+        await Promise.all(
+          validFiles.map(async (file) => {
+            const previewUrl = URL.createObjectURL(file);
+            const type: "image" | "video" = file.type.startsWith("video/")
+              ? "video"
+              : "image";
 
-    //   setUploadStatuses((prev) => {
-    //     const next: Record<
-    //       string,
-    //       "idle" | "uploading" | "completed" | "error"
-    //     > = {};
-    //     // mediaFiles.forEach((file) => {
-    //     //   next[file.previewUrl] = prev[file.previewUrl] || "idle";
-    //     // });
-    //     return next;
-    //   });
-    // }, [mediaFiles]);
+            let posterUrl: string | undefined;
+
+            // Generate poster/thumbnail for videos
+            if (type === "video") {
+              try {
+                posterUrl = await GenerateVideoPoster(file);
+              } catch (error) {
+                console.warn("Failed to generate video poster:", error);
+              }
+            }
+
+            const mediafile = {
+              id: uuid(),
+              file,
+              type,
+              previewUrl,
+              posterUrl,
+            };
+
+            if (setMediaFiles) {
+              setMediaFiles(mediafile);
+            }
+            return mediafile;
+          })
+        );
+
+        // Clean up: reset the input value so the same file can be selected again
+        target.value = "";
+        // Remove the event listener after handling
+        fileInput.removeEventListener("change", handleFileChange);
+      };
+
+      fileInput.addEventListener("change", handleFileChange);
+    }, [setMediaFiles]);
 
     if (receiver && !receiver.active_status) {
       return (
@@ -366,8 +302,10 @@ const MessageInputComponent = React.memo(
     return (
       <div className="bottom-0 lg:ml-4 lg:mr-2 relative max-h-max">
         <div className="flex flex-col w-full gap-2 border border-black/20 rounded-2xl px-2 dark:bg-gray-950 py-2 lg:rounded-xl">
-          <div className="grid grid-cols-6 gap-2 text-white rounded-full">
-            {/* MessageMediaPreview */}
+          <div className="grid grid-cols-6 p-0 gap-2 text-white rounded-full">
+            {mediaFiles.map((file: MediaFile, index: number) => (
+              <MessageMediaPreview key={index} index={index} file={file} />
+            ))}
           </div>
           <div className="flex items-center justify-between w-full gap-2">
             <div
@@ -375,7 +313,7 @@ const MessageInputComponent = React.memo(
               contentEditable
               id="message-input"
               data-placeholder="Type your message..."
-              //   onKeyDown={handleKeyDown}
+              onKeyDown={handleKeyDown}
               className="bg-transparent outline-none w-full p-2 rounded-xl border-black/20 dark:border-gray-600 font-semibold resize-none dark:text-white overflow-auto max-h-24"
             />
             <input
@@ -393,14 +331,9 @@ const MessageInputComponent = React.memo(
               <span className="cursor-pointer" onClick={triggerFileSelect}>
                 <LucideCamera stroke="#CC0DF8" size={25} />
               </span>
-              <span
-              // className={`cursor-pointer ml-2 ${
-              //   !allUploadsComplete ? "opacity-50 pointer-events-none" : ""
-              // }`}
-              // onClick={allUploadsComplete ? handleSendMessage : undefined}
-              >
+              <button onClick={handleSendMessage} className="cursor-pointer">
                 <LucideSendHorizonal stroke="#CC0DF8" size={24} />
-              </span>
+              </button>
             </div>
           </div>
         </div>
@@ -408,5 +341,7 @@ const MessageInputComponent = React.memo(
     );
   }
 );
+
+MessageInputComponent.displayName = "MessageInputComponent";
 
 export default MessageInputComponent;

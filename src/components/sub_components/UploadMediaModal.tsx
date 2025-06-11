@@ -178,7 +178,6 @@ const UploadMediaModal: React.FC = () => {
                     <button
                       onClick={(e) => {
                         e.stopPropagation();
-                        removeFile(index);
                         // Update active index if needed
                         if (index === activeFileIndex) {
                           setActiveFileIndex(Math.max(0, index - 1));

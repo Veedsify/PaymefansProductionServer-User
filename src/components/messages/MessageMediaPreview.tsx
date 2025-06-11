@@ -4,15 +4,14 @@ import { MessageMediaPreViewProps } from "@/types/MessageComponents";
 import MessageInputAttachmentPreview from "./MessageInputAttachmentPreview";
 import { X } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { getToken } from "@/utils/Cookie";
-import axios from "axios";
-import { UploadResponseResponse, Attachment } from "@/types/Components";
-import { getMaxDurationBase64 } from "@/utils/GetVideoMaxDuration";
+import { Attachment } from "@/types/Components";
 import { useUserAuthContext } from "@/lib/UserUseContext";
 import UploadImageToCloudflare from "@/utils/CloudflareImageUploader";
 import UploadWithTus from "@/utils/TusUploader";
 import path from "path";
 import React from "react";
+import { GetUploadUrl } from "@/utils/GetMediaUploadUrl";
+import { useChatStore } from "@/contexts/ChatContext";
 
 // Upload status tracking
 const uploadStatusMap = new Map<
@@ -23,66 +22,17 @@ const uploadStatusMap = new Map<
   }
 >();
 
-const token = getToken();
-
-const GetUploadUrl = async (
-  file: File,
-  user: { username: string }
-): Promise<UploadResponseResponse> => {
-  if (!file) throw new Error("File is not defined");
-  const isVideo = file.type.startsWith("video/");
-  const maxVideoDuration = isVideo ? await getMaxDurationBase64(file) : null;
-  const payload: any = {
-    type: isVideo ? "video" : "image",
-    fileName: btoa(`paymefans-attachment-${user?.username}-${Date.now()}`),
-    fileSize: file.size,
-    fileType: btoa(file.type),
-    explicitImageType: file.type,
-  };
-  if (isVideo && maxVideoDuration) payload.maxDuration = maxVideoDuration;
-
-  try {
-    const response = await axios.post(
-      `${process.env.NEXT_PUBLIC_TS_EXPRESS_URL}/post/media/signed-url`,
-      payload,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-      }
-    );
-    if (response.data.error) {
-      throw new Error(response.data.message || "Failed to get upload URL");
-    }
-    return response.data as UploadResponseResponse;
-  } catch (error) {
-    console.error("Error getting upload URL:", error);
-    throw new Error("Failed to get upload URL. Please try again.");
-  }
-};
-
-interface MessageMediaPreviewProps extends MessageMediaPreViewProps {
-  onUploadComplete?: (data: Attachment) => void;
-  onUploadStatusChange?: (
-    status: "idle" | "uploading" | "completed" | "error"
-  ) => void;
-}
+interface MessageMediaPreviewProps extends MessageMediaPreViewProps {}
 
 const MessageMediaPreview = React.memo(
-  ({
-    file: item,
-    removeFile,
-    index,
-    onUploadComplete,
-    onUploadStatusChange,
-  }: MessageMediaPreviewProps) => {
+  ({ file: item, index }: MessageMediaPreviewProps) => {
     const [progress, setProgress] = useState(0);
     const [uploadStatus, setUploadStatus] = useState<
       "idle" | "uploading" | "completed" | "error"
     >("idle");
+    const removeMediaFile = useChatStore((state) => state.removeMediaFile);
     const { user } = useUserAuthContext();
-    const fileKey = item.previewUrl;
+    const fileKey = item.id;
     const lastStatusRef = useRef(uploadStatus);
 
     // Progress and error helpers
@@ -139,9 +89,9 @@ const MessageMediaPreview = React.memo(
         setUploadStatus(existingStatus.status);
         if (existingStatus.status === "completed") {
           setProgress(100);
-          if (existingStatus.result && onUploadComplete) {
-            onUploadComplete(existingStatus.result);
-          }
+          // if (existingStatus.result && onUploadComplete) {
+          //   onUploadComplete(existingStatus.result);
+          // }
         }
       } else {
         (async () => {
@@ -149,7 +99,7 @@ const MessageMediaPreview = React.memo(
           try {
             uploadStatusMap.set(fileKey, { status: "uploading" });
             setUploadStatus("uploading");
-            onUploadStatusChange?.("uploading");
+            // onUploadStatusChange?.("uploading");
 
             const upload = await GetUploadUrl(item.file, {
               username: user?.username || "unknown",
@@ -157,59 +107,59 @@ const MessageMediaPreview = React.memo(
 
             let result: Attachment | null = null;
 
-            if (item.type === "image" && upload.type.includes("image")) {
-              const imgRes = await UploadImageToCloudflare({
-                file: item.file,
-                id: item.previewUrl,
-                uploadUrl: upload.uploadUrl,
-                setProgress: updateProgress,
-                setUploadError: updateError,
-              });
+            // if (item.type === "image" && upload.type.includes("image")) {
+            //   const imgRes = await UploadImageToCloudflare({
+            //     file: item.file,
+            //     id: item.previewUrl,
+            //     uploadUrl: upload.uploadUrl,
+            //     setProgress: updateProgress,
+            //     setUploadError: updateError,
+            //   });
 
-              result = {
-                url: imgRes.result?.variants.find((v: string) =>
-                  v.includes("/public")
-                ),
-                id: imgRes.result?.id,
-                poster: "",
-                name: imgRes.result?.id,
-                type: "image",
-                extension: path.extname(item.file.name),
-                size: item.file.size,
-              };
-            } else if (item.type === "video" && upload.type.includes("video")) {
-              const mediaId = await UploadWithTus(
-                item.file,
-                upload.uploadUrl,
-                item.previewUrl,
-                updateProgress,
-                updateError
-              );
+            //   result = {
+            //     url: imgRes.result?.variants.find((v: string) =>
+            //       v.includes("/public")
+            //     ),
+            //     id: imgRes.result?.id,
+            //     poster: "",
+            //     name: imgRes.result?.id,
+            //     type: "image",
+            //     extension: path.extname(item.file.name),
+            //     size: item.file.size,
+            //   };
+            // } else if (item.type === "video" && upload.type.includes("video")) {
+            //   const mediaId = await UploadWithTus(
+            //     item.file,
+            //     upload.uploadUrl,
+            //     item.previewUrl,
+            //     updateProgress,
+            //     updateError
+            //   );
 
-              result = {
-                url: `${process.env.NEXT_PUBLIC_CLOUDFLARE_CUSTOMER_SUBDOMAIN}${mediaId}/manifest/video.m3u8`,
-                type: "video",
-                id: mediaId,
-                poster: "",
-                name: mediaId,
-                extension: path.extname(item.file.name),
-                size: item.file.size,
-              };
-            }
+            //   result = {
+            //     url: `${process.env.NEXT_PUBLIC_CLOUDFLARE_CUSTOMER_SUBDOMAIN}${mediaId}/manifest/video.m3u8`,
+            //     type: "video",
+            //     id: mediaId,
+            //     poster: "",
+            //     name: mediaId,
+            //     extension: path.extname(item.file.name),
+            //     size: item.file.size,
+            //   };
+            // }
 
             if (!cancelled && result) {
               uploadStatusMap.set(fileKey, { status: "completed", result });
               setUploadStatus("completed");
               setProgress(100);
-              onUploadStatusChange?.("completed");
-              if (onUploadComplete) onUploadComplete(result);
+              // onUploadStatusChange?.("completed");
+              // if (onUploadComplete) onUploadComplete(result);
             }
           } catch (err) {
             if (!cancelled) {
               console.error("Error uploading file:", err);
               uploadStatusMap.set(fileKey, { status: "error" });
               setUploadStatus("error");
-              onUploadStatusChange?.("error");
+              // onUploadStatusChange?.("error");
             }
           }
         })();
@@ -224,30 +174,25 @@ const MessageMediaPreview = React.memo(
           uploadStatusMap.delete(fileKey);
         }
       };
-    }, [
-      fileKey,
-      item,
-      onUploadComplete,
-      updateProgress,
-      updateError,
-      user?.username,
-      onUploadStatusChange,
-    ]);
+    }, [fileKey, item, updateProgress, updateError, user?.username]);
 
     // Notify parent of status changes
     useEffect(() => {
-      if (onUploadStatusChange && lastStatusRef.current !== uploadStatus) {
-        onUploadStatusChange(uploadStatus);
-        lastStatusRef.current = uploadStatus;
-      }
-    }, [uploadStatus, onUploadStatusChange]);
+      // if (onUploadStatusChange && lastStatusRef.current !== uploadStatus) {
+      //   onUploadStatusChange(uploadStatus);
+      //   lastStatusRef.current = uploadStatus;
+      // }
+    }, [
+      uploadStatus,
+      // onUploadStatusChange
+    ]);
 
     const handleRemove = () => {
       uploadStatusMap.delete(fileKey);
-      removeFile(index ?? 0, item.previewUrl);
+      removeMediaFile(item.id);
     };
 
-    if (!item.previewUrl) {
+    if (!item.id) {
       return (
         <div className="relative w-full aspect-square bg-gray-200 text-gray-500 flex items-center justify-center">
           <p>Invalid preview</p>
@@ -306,5 +251,7 @@ const MessageMediaPreview = React.memo(
     );
   }
 );
+
+MessageMediaPreview.displayName = "MessageMediaPreview";
 
 export default MessageMediaPreview;

@@ -307,7 +307,7 @@ const BecomeAModel = () => {
         />
         <div>
           <h1 className="text-center mt-6 mb-8 font-bold md:text-3xl text-2xl">
-            You're already a verified model on Paymefans
+            You&apos;re already a verified model on Paymefans
           </h1>
           <div className="text-center">
             <Link
@@ -338,7 +338,7 @@ const BecomeAModel = () => {
             Verification Pending
           </h1>
           <p className="text-center mb-6">
-            You've already signed up as a model on Paymefans.
+            You&apos;ve already signed up as a model on Paymefans.
             <br />
             Please complete your verification to start earning.
           </p>
@@ -418,11 +418,9 @@ const BecomeAModel = () => {
             type="date"
             name="dob"
             value={formData.dob || ""}
-            max={
-              new Date(Date.now() - 18 * 365 * 24 * 60 * 60 * 1000)
-                .toISOString()
-                .split("T")[0]
-            }
+            max={new Date(
+              Date.now() - 18 * 365 * 24 * 60 * 60 * 1000
+            ).toISOString()}
             className={`border p-4 w-full rounded-lg font-semibold outline-none focus:ring-2 focus:ring-primary-dark-pink transition ${
               formErrors.dob
                 ? "border-red-500 dark:border-red-500"
@@ -448,9 +446,6 @@ const BecomeAModel = () => {
                 : "border-gray-300 dark:border-gray-700"
             }`}
             onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-            aria-expanded={isDropdownOpen}
-            aria-haspopup="listbox"
-            aria-invalid={!!formErrors.audience}
           >
             <span className="flex gap-2 items-center text-sm font-semibold">
               {selectedGender.icon} {selectedGender.name}

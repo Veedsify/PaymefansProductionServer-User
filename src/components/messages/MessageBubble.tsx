@@ -5,6 +5,7 @@ import { Attachment, MessageBubbleProps } from "@/types/Components";
 import { getSocket } from "../sub_components/sub/Socket";
 import MessageBubbleContent from "./MessageBubbleContent";
 import { motion } from "framer-motion";
+import { useInView } from "react-intersection-observer";
 
 const MessageBubble: React.FC<MessageBubbleProps> = ({
   receiver,
@@ -22,6 +23,7 @@ const MessageBubble: React.FC<MessageBubbleProps> = ({
   const hasAttachments = attachment && attachment.length > 0 ? true : false;
   const hasRawFiles = rawFiles.length > 0;
   const hasMessage = Boolean(message?.message?.trim());
+  const { ref, inView } = useInView({ threshold: 1, triggerOnce: true });
 
   // Format date string for chat bubble
   const dateString = useMemo(() => {
@@ -50,41 +52,36 @@ const MessageBubble: React.FC<MessageBubbleProps> = ({
   }, [date]);
 
   // Prevent duplicate socket sends for the same message
-  const sentRef = useRef(false);
   const socket = getSocket();
-  const handleSendSocketMessage = useCallback(
-    (attachments?: Attachment[]) => {
-      if (sentRef.current) return;
-      sentRef.current = true;
-      socket.emit("new-message", {
-        id: message?.id,
-        message_id: message?.message_id,
-        message: message?.message,
-        sender_id: message?.sender_id,
-        attachment: attachments ?? [],
-        seen: false,
-        created_at: new Date().toISOString(),
-        receiver_id: receiver?.user_id,
-        conversationId,
-        date: message?.created_at,
-      });
-    },
-    [message, receiver?.user_id, conversationId, socket]
-  );
 
   // // Handle triggerSend for text-only messages
-  // useEffect(() => {
-  //   if (triggerSend && !rawFiles.length) {
-  //     handleSendSocketMessage([]);
-  //   }
-  // }, [triggerSend, rawFiles, handleSendSocketMessage]);
+  useEffect(() => {
+    function sendMessageSeen() {
+      if (!message) return;
+      if (seen && !inView) return;
+      socket.emit("message-seen", {
+        conversationId,
+        lastMessageId: message?.message_id,
+        userId: user?.user_id,
+        receiver_id: receiver?.user_id,
+      });
+    }
+    sendMessageSeen();
+  }, [
+    message,
+    conversationId,
+    seen,
+    user?.user_id,
+    receiver?.user_id,
+    socket,
+    inView,
+  ]);
 
   // Bubble content with time & seen
   const Bubble = (
-    <div className="max-w-[85%] md:max-w-[60%] ">
+    <div className="max-w-[85%] md:max-w-[60%] " ref={ref}>
       <MessageBubbleContent
         isSender={isSender}
-        SendSocketMessage={handleSendSocketMessage}
         hasAttachments={hasAttachments}
         hasMessage={hasMessage}
         hasRawFiles={hasRawFiles}

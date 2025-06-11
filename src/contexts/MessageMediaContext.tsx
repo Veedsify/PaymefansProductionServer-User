@@ -10,7 +10,7 @@ import React, {
 import { generatePosterFromVideo } from "@/lib/VideoPoster";
 import { imageTypes, videoTypes } from "@/lib/FileTypes";
 import { MediaContextState, MediaFile } from "@/types/MessageComponents";
-
+import crypto from "crypto"; // Ensure crypto is available in your environment
 // Define stricter types for MediaFile
 interface StrictMediaFile extends MediaFile {
   file: File;
@@ -41,6 +41,7 @@ export const MediaProvider: React.FC<{ children: ReactNode }> = ({
 
         const previewUrl = URL.createObjectURL(file);
         let mediaFile: StrictMediaFile = {
+          id: crypto.randomUUID(),
           file,
           type: imageTypes.includes(file.type) ? "image" : "video",
           previewUrl,
