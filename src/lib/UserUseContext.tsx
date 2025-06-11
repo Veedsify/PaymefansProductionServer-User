@@ -2,30 +2,24 @@
 
 import { getSocket } from "@/components/sub_components/sub/Socket";
 import { AuthUserProps } from "@/types/User";
-import { usePathname, useRouter } from "next/navigation";
-import {
-  createContext,
-  ReactNode,
-  useContext,
-  useEffect,
-  useState,
-} from "react";
+import { usePathname } from "next/navigation";
+import { ReactNode, useEffect } from "react";
+import { create } from "zustand";
 
-interface UserContextValue {
+interface UserState {
   user: AuthUserProps | null;
-  updateUser: (newUserData: AuthUserProps) => void;
+  setUser: (user: AuthUserProps | null) => void;
 }
 
-const UserContext = createContext<UserContextValue | null>(null);
+export const useUserStore = create<UserState>((set) => ({
+  user: null,
+  setUser: (user) => set({ user }),
+}));
 
 export const useUserAuthContext = () => {
-  const context = useContext(UserContext);
-  if (!context) {
-    throw new Error(
-      "useUserAuthContext must be used within a UserContextProvider"
-    );
-  }
-  return context;
+  const user = useUserStore((state) => state.user);
+  const setUser = useUserStore((state) => state.setUser);
+  return { user, updateUser: setUser };
 };
 
 interface UserContextProviderProps {
@@ -37,34 +31,22 @@ export const UserContextProvider = ({
   user,
   children,
 }: UserContextProviderProps) => {
-  const router = useRouter();
   const location = usePathname();
-  const socket = getSocket();
-  const [thisUser, setUser] = useState<AuthUserProps | null>(null);
+  const setUser = useUserStore((state) => state.setUser);
+  const socket = getSocket(user?.username ?? null);
 
   useEffect(() => {
     if (!user) {
       window.location.href = `/login?redirect=${location}`;
-      return; // exit early
+      return;
     }
-
     setUser(user);
-    socket.emit("user_active", user.username);
-
     const intervalId = setInterval(() => {
       socket.emit("still-active", user?.username);
-    }, 25_000);
+    }, 10_000);
 
-    return () => clearInterval(intervalId); // CLEAN UP on unmount or dependency change
-  }, [user, location, socket]);
+    return () => clearInterval(intervalId);
+  }, [user, location, socket, setUser]);
 
-  const updateUser = (newUserData: AuthUserProps) => {
-    setUser(newUserData);
-  };
-
-  return (
-    <UserContext.Provider value={{ user: thisUser, updateUser }}>
-      {children}
-    </UserContext.Provider>
-  );
+  return <>{children}</>;
 };

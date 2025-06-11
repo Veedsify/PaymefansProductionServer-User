@@ -1,6 +1,6 @@
 "use client";
 
-import { useUserPointsContext } from "@/contexts/PointsContext";
+import { usePointsStore } from "@/contexts/PointsContext";
 import { GetUserPointBalance } from "@/utils/data/GetUserPointBalance";
 import { useQuery } from "@tanstack/react-query";
 import Image from "next/image";
@@ -11,13 +11,13 @@ interface PointsCountProps {
 }
 
 const PointsCount = ({ user }: PointsCountProps) => {
-  const { updatePoints } = useUserPointsContext();
+  const updatePoints = usePointsStore((state) => state.updatePoints);
   const { isLoading, data } = useQuery({
     queryKey: ["user"],
     queryFn: async () => {
       return await GetUserPointBalance(user.id);
     },
-    staleTime: 100,
+    staleTime: 1000,
   });
 
   useEffect(() => {

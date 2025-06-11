@@ -1,6 +1,5 @@
 "use client";
 import { getSocket } from "@/components/sub_components/sub/Socket";
-import { useUserPointsContext } from "@/contexts/PointsContext";
 import { useUserAuthContext } from "@/lib/UserUseContext";
 import { getToken } from "@/utils/Cookie";
 import { SubscribeToUser } from "@/utils/data/SubscribeToUser";
@@ -13,6 +12,7 @@ import toast from "react-hot-toast";
 import swal from "sweetalert";
 import numeral from "numeral";
 import getFormattedStringFromDays from "@/utils/data/CalculateDays";
+import { usePointsStore } from "@/contexts/PointsContext";
 
 type SubscribeProps = {
   params: {
@@ -49,7 +49,7 @@ const Subscribe = () => {
   const token = getToken();
   const [profileUser, setProfileUser] = useState<ProfileUser>();
   const router = useRouter();
-  const { points } = useUserPointsContext();
+  const points = usePointsStore((state) => state.points);
   const socket = getSocket();
   if (user?.user_id === params.user_id) {
     router.push("/profile");

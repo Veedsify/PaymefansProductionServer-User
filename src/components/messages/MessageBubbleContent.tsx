@@ -12,14 +12,7 @@ import HLSVideoPlayer from "../sub_components/videoplayer";
 import Image from "next/image";
 import { HiPlay } from "react-icons/hi";
 import { LucideImage, LucideLoader, LucideVideo } from "lucide-react";
-import UploadImageToCloudflare from "@/utils/CloudflareImageUploader";
-import { getMaxDurationBase64 } from "@/utils/GetVideoMaxDuration";
-import axios from "axios";
-import { getToken } from "@/utils/Cookie";
-import UploadWithTus from "@/utils/TusUploader";
 import ProgressCircle from "../sub_components/FileUploadProgress";
-import VideoPlayer from "../sub_components/videoplayer";
-import { useMediaContext } from "@/contexts/MessageMediaContext";
 
 const MessageBubbleContent: React.FC<MessageBubbleContentProps> = ({
   message,
@@ -35,7 +28,6 @@ const MessageBubbleContent: React.FC<MessageBubbleContentProps> = ({
   const { user } = useUserAuthContext();
   const [progress, setProgress] = useState<Record<string, number>>({});
   const [uploadError, setUploadError] = useState<Record<string, boolean>>({});
-  const { resetAll } = useMediaContext();
 
   const removePreloader = (id: string) => {
     document.getElementById(id)?.remove();

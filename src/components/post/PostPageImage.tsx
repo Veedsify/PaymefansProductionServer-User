@@ -13,10 +13,10 @@ import { MouseEvent } from "react";
 import { useInView } from "react-intersection-observer";
 import { useUserAuthContext } from "@/lib/UserUseContext";
 import { getSocket } from "../sub_components/sub/Socket";
-import { useUserPointsContext } from "@/contexts/PointsContext";
 import toast from "react-hot-toast";
 import payForPost from "@/utils/data/PayForPost";
 import { useQueryClient } from "@tanstack/react-query";
+import { usePointsStore } from "@/contexts/PointsContext";
 
 // Define props type for the component
 interface PostPageImageProps {
@@ -45,7 +45,7 @@ const PostPageImage: React.FC<PostPageImageProps> = ({
   const { fullScreenPreview } = usePostComponent();
   const { user: authUser } = useUserAuthContext();
   const [canplay, setCanplay] = useState(false);
-  const { points } = useUserPointsContext();
+  const points = usePointsStore((state) => state.points);
   const queryClient = useQueryClient();
   const { ref, inView } = useInView({
     threshold: 0.5,

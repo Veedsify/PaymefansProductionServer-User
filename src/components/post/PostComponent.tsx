@@ -31,8 +31,8 @@ import {
   VideoComponentProps,
 } from "@/types/Components";
 import payForPost from "@/utils/data/PayForPost";
-import { useUserPointsContext } from "@/contexts/PointsContext";
 import { useQueryClient } from "@tanstack/react-query";
+import { usePointsStore } from "@/contexts/PointsContext";
 
 // ---------- Helper component functions ---------- //
 
@@ -62,7 +62,7 @@ const PostComponent: React.FC<PostComponentProps> = ({
 }) => {
   const router = useRouter();
   const { ref, inView } = useInView({ threshold: 0.5, triggerOnce: true });
-  const { points } = useUserPointsContext();
+  const points = usePointsStore((state) => state.points);
   const { fullScreenPreview } = usePostComponent();
   const { user: authUser } = useUserAuthContext();
   const queryClient = useQueryClient();

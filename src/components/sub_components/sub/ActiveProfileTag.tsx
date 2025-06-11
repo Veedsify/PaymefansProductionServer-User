@@ -7,13 +7,24 @@ import {
 import { useEffect, useState } from "react";
 import { getSocket } from "./Socket";
 
+// Store state per userid
+const activeStateMap = new Map<
+  string,
+  { active: boolean; lastActivityTime: number }
+>();
+
 const ActiveProfileTag = ({
   userid: username,
   withText,
   scale,
 }: ActiveProfileTagProps) => {
-  const [active, setActive] = useState(false);
-  const [lastActivityTime, setLastActivityTime] = useState<number>(Date.now());
+  // Initialize from map or defaults
+  const [active, setActive] = useState(
+    () => activeStateMap.get(username)?.active ?? false
+  );
+  const [lastActivityTime, setLastActivityTime] = useState(
+    () => activeStateMap.get(username)?.lastActivityTime ?? Date.now()
+  );
   const verifiedUsers = ["@paymefans", "@paymefans1", "@paymefans2"];
   const shouldHide = !verifiedUsers.includes(username);
 
@@ -22,14 +33,20 @@ const ActiveProfileTag = ({
   useEffect(() => {
     if (!socket.active) {
       setActive(false);
+      activeStateMap.set(username, { active: false, lastActivityTime });
       return;
     }
 
     const handleActiveUsers = (users: handleActiveUsersProps[]) => {
+      console.log("Active users received:", users);
       const isActive = users.some((user) => user.username === username);
       setActive(isActive);
       if (isActive) {
-        setLastActivityTime(Date.now());
+        const now = Date.now();
+        setLastActivityTime(now);
+        activeStateMap.set(username, { active: true, lastActivityTime: now });
+      } else {
+        activeStateMap.set(username, { active: false, lastActivityTime });
       }
     };
 
@@ -38,21 +55,26 @@ const ActiveProfileTag = ({
     return () => {
       socket.off("active_users", handleActiveUsers);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [username, socket]);
+
+  useEffect(() => {
+    activeStateMap.set(username, { active, lastActivityTime });
+  }, [active, lastActivityTime, username]);
 
   useEffect(() => {
     const checkForInactivity = () => {
       if (Date.now() - lastActivityTime > 10000) {
-        // 10 seconds of inactivity
         socket.emit("inactive");
         setActive(false);
+        activeStateMap.set(username, { active: false, lastActivityTime });
       }
     };
 
     const intervalId = setInterval(checkForInactivity, 1000);
 
     return () => clearInterval(intervalId);
-  }, [lastActivityTime, socket]);
+  }, [lastActivityTime, socket, username]);
 
   return (
     <div className="flex items-center gap-2">

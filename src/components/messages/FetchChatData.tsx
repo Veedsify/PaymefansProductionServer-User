@@ -1,5 +1,5 @@
 "use client";
-import { fetchConversationMessages } from "@/utils/data/GetConversationMessages";
+import { FetchConversationData } from "@/utils/data/GetConversationMessages";
 import Chats from "./Chats";
 import { useRouter } from "next/navigation";
 import { Message } from "@/types/Components";
@@ -28,7 +28,7 @@ const FetchChatData = ({ stringId }: { stringId: string }) => {
       try {
         if (cursor === 1) return;
         setIsFetchingNextPage(true);
-        const res = await fetchConversationMessages({
+        const res = await FetchConversationData({
           pageParam,
           conversationId,
           cursor,

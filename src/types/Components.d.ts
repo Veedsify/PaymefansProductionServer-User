@@ -258,7 +258,6 @@ export interface Message {
 
 export interface MessageInputProps {
   sendMessage: ({ }: Message) => void;
-  sendTyping: (value: string) => void;
   receiver: any;
   isFirstMessage: boolean;
 }

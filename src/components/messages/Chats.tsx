@@ -20,6 +20,7 @@ import ActiveProfileTag from "../sub_components/sub/ActiveProfileTag";
 import { MediaProvider } from "@/contexts/MessageMediaContext";
 import { useInView } from "react-intersection-observer";
 import Loader from "../lib_components/LoadingAnimation";
+import { useChatStore } from "@/contexts/ChatContext";
 
 // Types
 interface ChatProps {
@@ -54,7 +55,9 @@ const Chats: React.FC<ChatProps> = React.memo(
     const { user } = useUserAuthContext();
     const scrollRef = useRef<HTMLDivElement>(null);
     const typingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
-    const [typing, setTyping] = React.useState("");
+    const [typing, setTyping] = React.useState(false);
+    const isTyping = useChatStore((state) => state.isTyping);
+    const setIsTyping = useChatStore((state) => state.setIsTyping);
     const { ref: loadMoreRef, inView } = useInView({
       threshold: 1,
     });
@@ -131,32 +134,38 @@ const Chats: React.FC<ChatProps> = React.memo(
     );
 
     // Typing handler: emits and manages local typing state
-    const sendTyping = useCallback(
-      (value: string) => {
+    useEffect(() => {
+      function sendTyping() {
+        if (!user || !conversationId || !socket) return;
         if (typingTimeoutRef.current) clearTimeout(typingTimeoutRef.current);
         socket.emit("typing", {
           sender_id: user?.user_id,
-          value,
+          value: true,
           conversationId,
         });
-        typingTimeoutRef.current = setTimeout(() => setTyping(""), 10000);
-      },
-      [user?.user_id, conversationId, socket]
-    );
+        typingTimeoutRef.current = setTimeout(() => setIsTyping(false), 1000);
+      }
+      sendTyping();
+    }, [user?.user_id, conversationId, socket, isTyping]);
+
     // Handle showing "typing..." when other user is typing
     const handleSenderTyping = useCallback(
-      ({ sender_id, value }: { sender_id: string; value: string }) => {
+      ({ sender_id, value }: { sender_id: string; value: boolean }) => {
         if (sender_id !== user?.user_id) {
-          setTyping(value);
+          setTyping(true);
           if (value) {
             if (typingTimeoutRef.current)
               clearTimeout(typingTimeoutRef.current);
-            typingTimeoutRef.current = setTimeout(() => setTyping(""), 10000);
+            typingTimeoutRef.current = setTimeout(
+              () => setTyping(false),
+              10000
+            );
           }
         }
       },
       [user?.user_id]
     );
+
     // Optimistic message creation
     const sendMessage = useCallback(
       async (msg: Message) => {
@@ -377,7 +386,6 @@ const Chats: React.FC<ChatProps> = React.memo(
             receiver={receiver}
             isFirstMessage={allMessages.length === 0}
             sendMessage={sendMessage} // Use the new sendMessage function
-            sendTyping={sendTyping} // Pass the typing handler
           />
         </div>
       </div>

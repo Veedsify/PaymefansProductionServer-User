@@ -1,6 +1,5 @@
 "use client";
 
-import { useUserPointsContext } from "@/contexts/PointsContext";
 import { useUserAuthContext } from "@/lib/UserUseContext";
 import { getToken } from "@/utils/Cookie";
 import getAllPoints from "@/utils/data/GetPoints";
@@ -12,6 +11,7 @@ import swal from "sweetalert";
 import toast from "react-hot-toast";
 import { ButtonList } from "sweetalert/typings/modules/options/buttons";
 import { LucideLoader2, X } from "lucide-react";
+import { usePointsStore } from "@/contexts/PointsContext";
 type Points = {
   points: number;
   amount: number;
@@ -26,7 +26,7 @@ const TipModel = ({
 }) => {
   const [loading, setLoading] = useState<boolean>(true);
   const [points, setPoints] = useState<Points[]>([]);
-  const { points: pointBalance } = useUserPointsContext();
+  const { points: pointBalance } = usePointsStore();
   const { user } = useUserAuthContext();
   const router = useRouter();
   useEffect(() => {

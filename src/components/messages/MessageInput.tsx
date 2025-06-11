@@ -16,12 +16,13 @@ import swal from "sweetalert";
 import axiosInstance from "@/utils/Axios";
 import { getToken } from "@/utils/Cookie";
 import { useUserAuthContext } from "@/lib/UserUseContext";
-import { useUserPointsContext } from "@/contexts/PointsContext";
 import { useMessagesConversation } from "@/contexts/MessageConversationContext";
 import { useMediaContext } from "@/contexts/MessageMediaContext";
 import { MessageInputProps, Attachment } from "@/types/Components";
 import MessageMediaPreview from "./MessageMediaPreview";
 import React from "react";
+import { useChatStore } from "@/contexts/ChatContext";
+import { usePointsStore } from "@/contexts/PointsContext";
 
 // Utility Functions
 const escapeHtml = (str: string) => {
@@ -47,20 +48,15 @@ const linkify = (text: string) => {
 };
 
 const MessageInput = React.memo(
-  ({
-    sendMessage,
-    sendTyping,
-    receiver,
-    isFirstMessage,
-  }: MessageInputProps) => {
+  ({ sendMessage, receiver, isFirstMessage }: MessageInputProps) => {
     // Contexts and Hooks
     const { user } = useUserAuthContext();
-    const { points } = useUserPointsContext();
+    const points = usePointsStore((state) => state.points);
     const { conversations } = useMessagesConversation();
     const { message, setMessage, mediaFiles, addFiles, removeFile, resetAll } =
       useMediaContext();
-    const [isTyping, setIsTyping] = useState(false);
     const ref = useRef<HTMLDivElement>(null);
+    const setIsTyping = useChatStore((state) => state.setIsTyping);
     const token = getToken();
 
     // State for uploaded media and statuses
@@ -97,13 +93,11 @@ const MessageInput = React.memo(
       debounce((msg: string) => {
         if (msg.length > 0) {
           setIsTyping(true);
-          sendTyping(msg);
         } else {
           setIsTyping(false);
-          sendTyping("");
         }
       }, 500),
-      [sendTyping]
+      [setIsTyping]
     );
 
     // Handlers for upload status and results
@@ -255,10 +249,9 @@ const MessageInput = React.memo(
 
         if (event.key === "Enter" && !event.shiftKey) {
           event.preventDefault();
+          setIsTyping(false);
           if (allUploadsComplete) {
             handleSendMessage();
-            setIsTyping(false);
-            debouncedSendTyping("");
           } else {
             toast.error(
               "Please wait for all uploads to finish before sending."

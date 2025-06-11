@@ -10,7 +10,6 @@ import QueryProvider from "@/providers/QueryProvider";
 import getUserData from "@/utils/data/UserData";
 import PostComponentPreview from "@/components/post/FullComponentPreview";
 import { UserContextProvider } from "@/lib/UserUseContext";
-import { UserPointsContextProvider } from "@/contexts/PointsContext";
 import Loader from "@/components/common/Loader";
 import ToggleWishListProvider from "@/contexts/ToggleWishlist";
 import WishList from "@/components/sub_components/WishList";
@@ -89,56 +88,54 @@ export default async function RootLayout({
           <UserContextProvider user={user}>
             <QueryProvider>
               <MessagesConversationProvider>
-                <UserPointsContextProvider>
-                  <Loader />
-                  <Toaster
-                    toastOptions={{
-                      duration: 5000,
-                      style: {
-                        fontSize: "14px",
-                        fontWeight: "500",
-                        border: "1px solid #CC0DF8",
-                        borderRadius: "100vmax",
-                      },
-                    }}
-                  />
-                  <SonnerToast
-                    richColors
-                    position="top-center"
-                    toastOptions={{
-                      closeButton: true,
-                      duration: 10000,
-                      style: {
-                        fontSize: "16px",
-                        borderRadius: "100vmax",
-                      },
-                    }}
-                  />
-                  <div className="relative grid h-dvh lg:grid-cols-8">
-                    <MessagesConversationProvider>
-                      <ToggleWishListProvider>
-                        <div className="col-span-2">
-                          <SideBar />
-                        </div>
-                        <div className="relative h-dvh col-span-6 overflow-auto border-r border-pink-50">
-                          <Header />
-                          <div className="grid lg:grid-cols-6 pt-[66px] lg:pt-[48px] h-dvh">
-                            <div className="flex flex-col h-full col-span-3">
-                              <div className="w-full h-full md:border-r border-black/40 dark:border-slate-800">
-                                {children}
-                              </div>
+                <Loader />
+                <Toaster
+                  toastOptions={{
+                    duration: 5000,
+                    style: {
+                      fontSize: "14px",
+                      fontWeight: "500",
+                      border: "1px solid #CC0DF8",
+                      borderRadius: "100vmax",
+                    },
+                  }}
+                />
+                <SonnerToast
+                  richColors
+                  position="top-center"
+                  toastOptions={{
+                    closeButton: true,
+                    duration: 10000,
+                    style: {
+                      fontSize: "16px",
+                      borderRadius: "100vmax",
+                    },
+                  }}
+                />
+                <div className="relative grid h-dvh lg:grid-cols-8">
+                  <MessagesConversationProvider>
+                    <ToggleWishListProvider>
+                      <div className="col-span-2">
+                        <SideBar />
+                      </div>
+                      <div className="relative h-dvh col-span-6 overflow-auto border-r border-pink-50">
+                        <Header />
+                        <div className="grid lg:grid-cols-6 pt-[66px] lg:pt-[48px] h-dvh">
+                          <div className="flex flex-col h-full col-span-3">
+                            <div className="w-full h-full md:border-r border-black/40 dark:border-slate-800">
+                              {children}
                             </div>
-                            <SideModels />
                           </div>
+                          <SideModels />
                         </div>
-                        <WishList />
-                      </ToggleWishListProvider>
-                    </MessagesConversationProvider>
-                    <MenuButtons />
-                    {/* <ModalComponent /> */}
-                  </div>
-                  <PostComponentPreview />
-                </UserPointsContextProvider>
+                      </div>
+                      <WishList />
+                    </ToggleWishListProvider>
+                  </MessagesConversationProvider>
+                  <MenuButtons />
+                  {/* <ModalComponent /> */}
+                </div>
+                <PostComponentPreview />
               </MessagesConversationProvider>
             </QueryProvider>
           </UserContextProvider>
