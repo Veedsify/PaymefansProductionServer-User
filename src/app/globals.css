@@ -17,10 +17,6 @@ html {
   font-size: 92.5%;
 }
 
-body {
-  font-family: 'Mona Sans', sans-serif;
-}
-
 ::selection {
   background: #fcc1ff;
   color: #000000;

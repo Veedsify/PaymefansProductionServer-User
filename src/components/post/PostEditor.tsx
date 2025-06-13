@@ -1,5 +1,11 @@
 "use client";
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+  useRef,
+} from "react";
 import { useUserAuthContext } from "@/lib/UserUseContext";
 import {
   LucideChevronDown,
@@ -25,8 +31,83 @@ import { useNewPostStore } from "@/contexts/NewPostContext";
 import { PostCancel } from "@/components/sub_components/sub/PostCancel";
 import { usePostMediaUploadContext } from "@/contexts/PostMediaUploadContext";
 
+// Types for mentions
+interface MentionUser {
+  id: string;
+  username: string;
+  displayName: string;
+  avatar?: string;
+  isVerified?: boolean;
+}
+
+interface MentionSuggestion extends MentionUser {
+  highlighted?: boolean;
+}
+
+// Example mock data
+const mockUsers: MentionUser[] = [
+  {
+    id: "1",
+    username: "johndoe",
+    displayName: "John Doe",
+    avatar: "/site/avatar.png",
+    isVerified: true,
+  },
+  {
+    id: "2",
+    username: "janesmith",
+    displayName: "Jane Smith",
+    avatar: "/site/avatar.png",
+    isVerified: false,
+  },
+  {
+    id: "3",
+    username: "alexjohnson",
+    displayName: "Alex Johnson",
+    avatar: "/site/avatar.png",
+    isVerified: true,
+  },
+  {
+    id: "4",
+    username: "sarahwilson",
+    displayName: "Sarah Wilson",
+    avatar: "/site/avatar.png",
+    isVerified: false,
+  },
+];
+
+function parseContentToHtml(text: string, mentions: MentionUser[]): string {
+  if (!text) return "";
+
+  const location = window.location.origin;
+
+  // Convert line breaks to <br/>
+  let htmlContent = text.replace(/\n/g, "<br/>");
+
+  // Convert URLs into clickable links
+  const urlRegex =
+    /\b((https?:\/\/)?((www\.)?[\w-]+\.[a-z]{2,})(:\d+)?(\/[^\s<]*)?(\?[^\s<]*)?(#[^\s<]*)?)(?![^<]*>|[^<>]*<\/)/gi;
+
+  htmlContent = htmlContent.replace(urlRegex, (match, url) => {
+    const hyperlink = url.startsWith("http") ? url : `https://${url}`;
+    return `<a href="${hyperlink}" class="text-primary-dark-pink" target="_blank" rel="noopener noreferrer">${url}</a>`;
+  });
+
+  // Replace mention text with mention links
+  mentions.forEach((m) => {
+    const mentionRegex = new RegExp(`@${m.username}(?![A-Za-z0-9_-])`, "g");
+    htmlContent = htmlContent.replace(
+      mentionRegex,
+      `<a href="${location}/@${m.username}" class="text-primary-dark-pink" rel="noopener noreferrer">@${m.username}</a>`
+    );
+  });
+
+  return htmlContent;
+}
+
 const PostEditor = React.memo(({ posts }: PostEditorProps) => {
   const router = useRouter();
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
   const [dropdown, setDropdown] = useState(false);
   const [wordLimit, setWordLimit] = useState(1000);
   const [content, setContent] = useState<string>("");
@@ -40,35 +121,26 @@ const PostEditor = React.memo(({ posts }: PostEditorProps) => {
   const { mediaUploadComplete, setMediaUploadComplete } =
     usePostMediaUploadContext();
 
-  const setPriceHandler = (value: string) => {
-    const priceValue = parseInt(value.replace(/[^0-9.]/g, ""));
-    if (priceValue < 0) {
-      toast.error("Price cannot be negative.", {
-        id: "post-price-error",
-      });
-      return;
-    }
-    if (isNaN(priceValue)) {
-      toast.error("Invalid price value.", {
-        id: "post-price-error",
-      });
-      return;
-    }
-    if (priceValue > 100000) {
-      toast.error("Price cannot exceed 100,000.", {
-        id: "post-price-error",
-      });
-      return;
-    }
-    setPrice(priceValue);
-  };
+  // Mentions state
+  const [showMentions, setShowMentions] = useState(false);
+  const [mentionQuery, setMentionQuery] = useState("");
+  const [mentionSuggestions, setMentionSuggestions] = useState<
+    MentionSuggestion[]
+  >([]);
+  const [selectedMentionIndex, setSelectedMentionIndex] = useState(0);
+  const [cursorPosition, setCursorPosition] = useState(0);
+  const [mentionStartPos, setMentionStartPos] = useState(0);
+  const [mentions, setMentions] = useState<MentionUser[]>([]);
+  const [isMentionLoading, setIsMentionLoading] = useState(false);
 
+  // Post audience
   const [postAudience, setPostAudience] = useState<PostAudienceDataProps>({
     id: 1,
     name: "Public",
     icon: <HiOutlineEye size={20} className="inline" />,
   });
 
+  // Audience options
   const postAudienceData: PostAudienceDataProps[] = useMemo(
     () =>
       [
@@ -95,6 +167,149 @@ const PostEditor = React.memo(({ posts }: PostEditorProps) => {
     [user]
   );
 
+  // User search simulation
+  const searchUsers = useCallback(
+    async (query: string): Promise<MentionUser[]> => {
+      setIsMentionLoading(true);
+      return new Promise((resolve) => {
+        setTimeout(() => {
+          const filteredUsers = mockUsers.filter(
+            (u) =>
+              u.username.toLowerCase().includes(query.toLowerCase()) ||
+              u.displayName.toLowerCase().includes(query.toLowerCase())
+          );
+          setIsMentionLoading(false);
+          resolve(filteredUsers);
+        }, 300);
+      });
+    },
+    []
+  );
+
+  // Mention search
+  useEffect(() => {
+    if (mentionQuery.length > 0) {
+      searchUsers(mentionQuery).then((users) => {
+        setMentionSuggestions(
+          users.map((user, index) => ({ ...user, highlighted: index === 0 }))
+        );
+        setSelectedMentionIndex(0);
+      });
+    } else {
+      setMentionSuggestions([]);
+    }
+  }, [mentionQuery, searchUsers]);
+
+  // Textarea changes
+  const handleTextareaChange = useCallback(
+    (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+      const text = e.target.value;
+      const cursorPos = e.target.selectionStart || 0;
+
+      if (text.length > 1000) {
+        e.target.value = text.slice(0, 1000);
+        setWordLimit(0);
+        return;
+      } else {
+        setWordLimit(1000 - text.length);
+      }
+
+      setContent(text);
+      setPostText(text);
+      setCursorPosition(cursorPos);
+
+      const textBeforeCursor = text.substring(0, cursorPos);
+      const lastAtIndex = textBeforeCursor.lastIndexOf("@");
+      if (lastAtIndex !== -1) {
+        const textAfterAt = textBeforeCursor.substring(lastAtIndex + 1);
+        const hasSpaceAfterAt =
+          textAfterAt.includes(" ") || textAfterAt.includes("\n");
+        // Show mention suggestions if not followed by space/new line
+        if (!hasSpaceAfterAt && textAfterAt.length <= 20) {
+          setShowMentions(true);
+          setMentionQuery(textAfterAt);
+          setMentionStartPos(lastAtIndex);
+        } else {
+          setShowMentions(false);
+          setMentionQuery("");
+        }
+      } else {
+        setShowMentions(false);
+        setMentionQuery("");
+      }
+    },
+    [setPostText]
+  );
+
+  // Keydown navigation
+  const handleKeyDown = useCallback(
+    (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+      if (showMentions && mentionSuggestions.length > 0) {
+        switch (e.key) {
+          case "ArrowDown":
+            e.preventDefault();
+            setSelectedMentionIndex((prev) =>
+              prev < mentionSuggestions.length - 1 ? prev + 1 : 0
+            );
+            break;
+          case "ArrowUp":
+            e.preventDefault();
+            setSelectedMentionIndex((prev) =>
+              prev > 0 ? prev - 1 : mentionSuggestions.length - 1
+            );
+            break;
+          case "Enter":
+          case "Tab":
+            e.preventDefault();
+            selectMention(mentionSuggestions[selectedMentionIndex]);
+            break;
+          case "Escape":
+            setShowMentions(false);
+            setMentionQuery("");
+            break;
+        }
+      }
+    },
+    [showMentions, mentionSuggestions, selectedMentionIndex]
+  );
+
+  // Mention selection
+  const selectMention = useCallback(
+    (mentionedUser: MentionUser) => {
+      if (!textareaRef.current) return;
+
+      // Prevent multiple mentions of the same user
+      if (mentions.find((m) => m.id === mentionedUser.id)) {
+        toast.error(`@${mentionedUser.username} is already mentioned.`, {
+          id: "mention-duplicate",
+        });
+        return;
+      }
+      const textarea = textareaRef.current;
+      const currentText = textarea.value;
+      const beforeMention = currentText.substring(0, mentionStartPos);
+      const afterMention = currentText.substring(cursorPosition);
+      const newText = `${beforeMention}@${mentionedUser.username} ${afterMention}`;
+      const newCursorPos = mentionStartPos + mentionedUser.username.length + 2;
+
+      textarea.value = newText;
+      setContent(newText);
+      setPostText(newText);
+
+      setMentions((prev) => [...prev, mentionedUser]);
+      setShowMentions(false);
+      setMentionQuery("");
+
+      textarea.focus();
+      setTimeout(() => {
+        textarea.setSelectionRange(newCursorPos, newCursorPos);
+        setCursorPosition(newCursorPos);
+      }, 0);
+    },
+    [mentionStartPos, cursorPosition, mentions, setPostText]
+  );
+
+  // Preload existing post data
   useEffect(() => {
     if (posts) {
       setPostText(posts.content);
@@ -113,6 +328,7 @@ const PostEditor = React.memo(({ posts }: PostEditorProps) => {
     }
   }, [posts, setPostText, setVisibility, postAudienceData]);
 
+  // Media attachments
   const handleMediaAttachment = useCallback((image: UploadedImageProp) => {
     setMedia((prevMedia) => [...(prevMedia || []), image]);
   }, []);
@@ -121,29 +337,13 @@ const PostEditor = React.memo(({ posts }: PostEditorProps) => {
     setMedia((prevMedia) =>
       prevMedia ? prevMedia.filter((file) => file.fileId !== id) : null
     );
-    const removeId = media?.find((media) => media.fileId === id);
+    const removeId = media?.find((med) => med.fileId === id);
     if (removeId) {
-      setRemovedIds((prevIds) => {
-        return [...prevIds, { id: removeId.id, type: type }];
-      });
+      setRemovedIds((prevIds) => [...prevIds, { id: removeId.id, type }]);
     }
   };
 
-  const checkLimit = useCallback(
-    (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-      const count = e.target.value.length;
-      if (count > 1000) {
-        e.target.value = e.target.value.slice(0, 1000);
-        setWordLimit(0);
-      } else {
-        setWordLimit(1000 - count);
-      }
-      setPostText(e.target.value);
-      setContent(e.target.value);
-    },
-    [setPostText]
-  );
-
+  // Update audience
   const updatePostAudience = useCallback(
     (audience: PostAudienceDataProps) => {
       setPostAudience(audience);
@@ -153,6 +353,30 @@ const PostEditor = React.memo(({ posts }: PostEditorProps) => {
     [setVisibility]
   );
 
+  const setPriceHandler = (value: string) => {
+    const priceValue = parseInt(value.replace(/[^0-9.]/g, ""));
+    if (priceValue < 0) {
+      toast.error("Price cannot be negative.", {
+        id: "post-price-error",
+      });
+      return;
+    }
+    if (isNaN(priceValue)) {
+      toast.error("Invalid price value.", {
+        id: "post-price-error",
+      });
+      return;
+    }
+    if (priceValue > 100000) {
+      toast.error("Price cannot exceed 100,000.", {
+        id: "post-price-error",
+      });
+      return;
+    }
+    setPrice(priceValue);
+  };
+
+  // Submit post
   const handlePostSubmit = async () => {
     if ((!content || content.trim() === "") && !media) {
       toast.error("Post is empty, please write something.", {
@@ -160,22 +384,18 @@ const PostEditor = React.memo(({ posts }: PostEditorProps) => {
       });
       return;
     }
-
-    if (String(visibility.toLowerCase()) === "price" && price <= 0) {
+    if (visibility.toLowerCase() === "price" && price <= 0) {
       toast.error("Please set a price for your post.", {
         id: "post-price-error",
       });
       return;
     }
-
-    if (!mediaUploadComplete && media && media?.length > 0) {
+    if (!mediaUploadComplete && media && media.length > 0) {
       toast.error("Please wait for all media uploads to complete.", {
         id: "post-upload",
       });
       return;
     }
-
-    // Check if all uploads are completed
     if (media?.some((file) => !file.fileId)) {
       toast.error("Please wait for all uploads to complete.", {
         id: "post-upload",
@@ -187,20 +407,23 @@ const PostEditor = React.memo(({ posts }: PostEditorProps) => {
       id: "post-upload",
     });
 
+    // Convert to HTML
+    const finalHtmlContent = parseContentToHtml(postText, mentions);
+
     const savePostOptions = {
       data: {
         media: media || [],
-        content: postText,
+        content: finalHtmlContent,
         visibility: visibility.toLowerCase(),
         removedMedia: removedIds,
         price: price > 0 ? price : undefined,
+        mentions: mentions,
       },
       action: posts?.post_id ? "update" : "create",
       post_id: posts?.post_id || "",
     };
 
     const res = await SavePost(savePostOptions);
-
     if (res.error) {
       swal({
         title: "Error",
@@ -222,12 +445,13 @@ const PostEditor = React.memo(({ posts }: PostEditorProps) => {
       setRemovedIds([]);
       setMediaUploadComplete(false);
       setPrice(0);
+      setMentions([]);
     }
   };
 
   return (
     <>
-      <div className="md:p-8 p-4 dark:text-white">
+      <div className="md:p-8 p-4 dark:text-white relative">
         <div className="flex items-center mb-6">
           <PostCancel />
           <button
@@ -254,12 +478,117 @@ const PostEditor = React.memo(({ posts }: PostEditorProps) => {
             updatePostAudience={updatePostAudience}
           />
         </div>
-        <textarea
-          className="block dark:bg-gray-950 dark:text-white rounded-md mb-3 leading-relaxed text-gray-700 font-medium w-full resize-none outline-none mt-3 overflow-auto"
-          placeholder="What’s on your mind?"
-          defaultValue={postText}
-          onChange={checkLimit}
-        />
+
+        <div className="relative mt-3">
+          <textarea
+            ref={textareaRef}
+            className="block dark:bg-gray-950 dark:text-white rounded-md mb-3 leading-relaxed text-gray-700 font-medium w-full resize-none outline-none overflow-auto"
+            placeholder="What's on your mind? Use @ to mention someone..."
+            defaultValue={postText}
+            onChange={handleTextareaChange}
+            onKeyDown={handleKeyDown}
+          />
+
+          {showMentions && (
+            <div
+              className="absolute z-50 w-full bg-white dark:bg-gray-800 
+                          border border-gray-300 dark:border-gray-700 
+                          rounded-md shadow-lg max-h-60 overflow-y-auto p-1"
+              style={{ top: "100%", left: 0 }}
+            >
+              {isMentionLoading ? (
+                <div className="p-3 text-center text-sm text-gray-500 dark:text-gray-400">
+                  Loading...
+                </div>
+              ) : mentionSuggestions.length > 0 ? (
+                mentionSuggestions.map((user, index) => (
+                  <div
+                    key={user.id}
+                    className={`flex items-center gap-3 p-3 cursor-pointer rounded-md transition-colors
+                      ${
+                        index === selectedMentionIndex
+                          ? "bg-gray-100 dark:bg-gray-700"
+                          : "hover:bg-gray-50 dark:hover:bg-gray-700"
+                      }`}
+                    onClick={() => selectMention(user)}
+                    onMouseEnter={() => setSelectedMentionIndex(index)}
+                  >
+                    <Image
+                      src={user.avatar || "/site/avatar.png"}
+                      alt={user.displayName}
+                      width={32}
+                      height={32}
+                      className="w-8 h-8 rounded-full"
+                    />
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2">
+                        <p className="text-sm font-medium text-gray-900 dark:text-white truncate">
+                          {user.displayName}
+                        </p>
+                        {user.isVerified && (
+                          <svg
+                            className="w-4 h-4 text-blue-500"
+                            fill="currentColor"
+                            viewBox="0 0 20 20"
+                          >
+                            <path
+                              fillRule="evenodd"
+                              d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                              clipRule="evenodd"
+                            />
+                          </svg>
+                        )}
+                      </div>
+                      <p className="text-xs text-gray-500 dark:text-gray-400">
+                        @{user.username}
+                      </p>
+                    </div>
+                  </div>
+                ))
+              ) : (
+                <div className="p-3 text-center text-sm text-gray-500 dark:text-gray-400">
+                  No users found
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+
+        {mentions.length > 0 && (
+          <div className="mb-3">
+            <p className="text-xs text-gray-500 dark:text-gray-400 mb-2">
+              Mentioned users:
+            </p>
+            <div className="flex flex-wrap gap-2">
+              {mentions.map((mention) => (
+                <div
+                  key={mention.id}
+                  className="flex items-center gap-2 bg-gray-100 dark:bg-gray-800 rounded-full px-3 py-1 text-sm"
+                >
+                  <Image
+                    src={mention.avatar || "/site/avatar.png"}
+                    alt={mention.displayName}
+                    width={20}
+                    height={20}
+                    className="w-5 h-5 rounded-full"
+                  />
+                  <span>@{mention.username}</span>
+                  <button
+                    onClick={() =>
+                      setMentions((prev) =>
+                        prev.filter((m) => m.id !== mention.id)
+                      )
+                    }
+                    className="text-gray-500 hover:text-red-500 ml-1"
+                  >
+                    ×
+                  </button>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
         <div className="mt-10">
           <p className="text-xs text-gray-400 font-medium">
             {wordLimit} characters remaining
@@ -276,9 +605,7 @@ const PostEditor = React.memo(({ posts }: PostEditorProps) => {
 
 PostEditor.displayName = "PostEditor";
 
-export default PostEditor;
-
-// Extracted AudienceDropdown Component
+// AudienceDropdown
 const AudienceDropdown = React.memo(
   ({
     postAudience,
@@ -303,7 +630,7 @@ const AudienceDropdown = React.memo(
         >
           <span className="flex justify-start text-left gap-3 items-center font-medium text-sm p-2 transition-all duration-300 cursor-pointer w-40">
             {postAudience?.icon}
-            <span className={"flex-1"}>{postAudience?.name}</span>
+            <span className="flex-1">{postAudience?.name}</span>
             {dropdown ? (
               <LucideChevronUp size={20} />
             ) : (
@@ -311,7 +638,7 @@ const AudienceDropdown = React.memo(
             )}
           </span>
           <div
-            className={`absolute w-full left-0 mt-0 transition-all duration-300 ${
+            className={`absolute w-full left-0 mt-0 transition-all duration-300 z-10 ${
               dropdown
                 ? "opacity-100 -translate-y-0 pointer-events-auto"
                 : "opacity-0 -translate-y-4 pointer-events-none"
@@ -322,7 +649,7 @@ const AudienceDropdown = React.memo(
                 <li
                   key={audience.id}
                   onClick={() => updatePostAudience(audience)}
-                  className="p-3 pr-5 text-sm flex items-center gap-2 text-gray-600 dark:text-gray-400 font-medium dark:hover:bg-slate-800 hover:bg-violet-50"
+                  className="p-3 pr-5 text-sm flex items-center gap-2 text-gray-600 dark:text-gray-400 font-medium dark:hover:bg-slate-800 hover:bg-violet-50 cursor-pointer"
                 >
                   {audience.icon}
                   {audience.name}
@@ -344,7 +671,7 @@ const AudienceDropdown = React.memo(
               type="text"
               onChange={(e) => setPrice(e.target.value)}
               placeholder="Price"
-              className="outline-0 border-0 rounded-3xl px-1 text-base py-[6px] text-gray-800 dark:text-gray-200 "
+              className="outline-0 border-0 rounded-3xl px-1 text-base py-[6px] text-gray-800 dark:text-gray-200"
             />
           </div>
         )}
@@ -354,3 +681,5 @@ const AudienceDropdown = React.memo(
 );
 
 AudienceDropdown.displayName = "AudienceDropdown";
+
+export default PostEditor;
