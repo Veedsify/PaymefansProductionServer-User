@@ -729,3 +729,12 @@ export type ExchangeRate = {
   name: string;
   symbol: string;
 };
+
+// Types for mentions
+export interface MentionUser {
+  id: string;
+  username: string;
+  name: string;
+  avatar?: string;
+  isVerified?: boolean;
+}

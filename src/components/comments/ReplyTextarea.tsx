@@ -17,69 +17,16 @@ import axios from "axios";
 import { useRouter } from "next/navigation";
 import { FileHolderProps, ReplyPostProps } from "@/types/Components";
 import { POST_CONFIG } from "@/config/config";
+import FetchMentions from "@/utils/data/FetchMentions";
+import ParseContentToHtml from "@/utils/ParseHtmlContent";
 
 // Mock user data for @mentions (example)
 interface MentionUser {
   id: string;
   username: string;
-  displayName: string;
+  name: string;
   avatar?: string;
   isVerified?: boolean;
-}
-
-const mockUsers: MentionUser[] = [
-  {
-    id: "1",
-    username: "sammy",
-    displayName: "Sammy Developer",
-    avatar: "/site/avatar.png",
-    isVerified: true,
-  },
-  {
-    id: "2",
-    username: "johnny",
-    displayName: "Johnny Test",
-    avatar: "/site/avatar.png",
-    isVerified: false,
-  },
-  {
-    id: "3",
-    username: "alex",
-    displayName: "Alex Blum",
-    avatar: "/site/avatar.png",
-    isVerified: true,
-  },
-  {
-    id: "4",
-    username: "jessica",
-    displayName: "Jessica Parker",
-    avatar: "/site/avatar.png",
-    isVerified: false,
-  },
-];
-
-// Convert mention and link text to HTML
-function parseCommentToHtml(text: string, mentions: MentionUser[]): string {
-  if (!text) return "";
-  const location = window.location.origin;
-  // Convert URLs to clickable links
-  const urlRegex =
-    /\b((https?:\/\/)?((www\.)?[\w-]+\.[a-z]{2,})(:\d+)?(\/[^\s<]*)?(\?[^\s<]*)?(#[^\s<]*)?)(?![^<]*>|[^<>]*<\/)/gi;
-  let htmlContent = text.replace(urlRegex, (url) => {
-    const hyperlink = url.startsWith("http") ? url : `https://${url}`;
-    return `<a href="${hyperlink}" target="_blank" class="text-primary-dark-pink" rel="noopener noreferrer">${url}</a>`;
-  });
-
-  // Replace mention text with mention links
-  mentions.forEach((m) => {
-    const mentionRegex = new RegExp(`@${m.username}(?![A-Za-z0-9_-])`, "g");
-    htmlContent = htmlContent.replace(
-      mentionRegex,
-      `<a href="${location}/@${m.username}" class="text-primary-dark-pink" rel="noopener noreferrer">@${m.username}</a>`
-    );
-  });
-
-  return htmlContent;
 }
 
 const FilesHolder = React.memo(({ file, remove }: FileHolderProps) => {
@@ -133,12 +80,8 @@ const ReplyPostComponent = ({ options }: ReplyPostProps) => {
     async (query: string): Promise<MentionUser[]> => {
       setIsMentionLoading(true);
       return new Promise((resolve) => {
-        setTimeout(() => {
-          const filteredUsers = mockUsers.filter(
-            (u) =>
-              u.username.toLowerCase().includes(query.toLowerCase()) ||
-              u.displayName.toLowerCase().includes(query.toLowerCase())
-          );
+        setTimeout(async () => {
+          const filteredUsers = await FetchMentions(query);
           setIsMentionLoading(false);
           resolve(filteredUsers);
         }, 300);
@@ -242,7 +185,7 @@ const ReplyPostComponent = ({ options }: ReplyPostProps) => {
       const currentText = typedComment;
       const beforeMention = currentText.substring(0, mentionStartPos);
       const afterMention = currentText.substring(cursorPosition);
-      const newText = `${beforeMention}@${mentionedUser.username} ${afterMention}`;
+      const newText = `${beforeMention}${mentionedUser.username} ${afterMention}`;
       const newCursorPos = mentionStartPos + mentionedUser.username.length + 2;
 
       setTypedComment(newText);
@@ -299,12 +242,12 @@ const ReplyPostComponent = ({ options }: ReplyPostProps) => {
       const url = `${process.env.NEXT_PUBLIC_TS_EXPRESS_URL}/comments/new`;
 
       // Parse final text to HTML (for links & mentions)
-      const finalHtmlContent = parseCommentToHtml(typedComment, mentions);
+      const finalHtmlContent = ParseContentToHtml(typedComment, mentions);
 
       const formData = new FormData();
       formData.append("post_id", options?.post_id);
       formData.append("postId", String(options?.id));
-      formData.append("comment", finalHtmlContent);
+      formData.append("comment", typedComment);
       formData.append("reply_to", options?.reply_to || "");
       if (options.parentId) {
         formData.append("parentId", options.parentId);
@@ -393,14 +336,14 @@ const ReplyPostComponent = ({ options }: ReplyPostProps) => {
                 >
                   <Image
                     src={userItem.avatar || "/site/avatar.png"}
-                    alt={userItem.displayName}
+                    alt={userItem.name}
                     width={28}
                     height={28}
                     className="rounded-full"
                   />
                   <div className="flex-1 min-w-0">
                     <p className="text-sm text-gray-900 dark:text-white truncate">
-                      {userItem.displayName}
+                      {userItem.name}
                       {userItem.isVerified && (
                         <svg
                           className="w-4 h-4 inline-block ml-1 text-blue-500"
@@ -416,7 +359,7 @@ const ReplyPostComponent = ({ options }: ReplyPostProps) => {
                       )}
                     </p>
                     <p className="text-xs text-gray-500 dark:text-gray-400">
-                      @{userItem.username}
+                      {userItem.username}
                     </p>
                   </div>
                 </div>

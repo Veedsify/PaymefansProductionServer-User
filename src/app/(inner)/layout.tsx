@@ -17,6 +17,7 @@ import { MessagesConversationProvider } from "@/contexts/MessageConversationCont
 import UserAccountSupendedScreen from "@/components/sub_components/UserAccountSuspendedScreen";
 import ConfigProvider from "@/contexts/ConfigContext";
 import { Bricolage_Grotesque } from "next/font/google";
+import GetLocationContext from "@/contexts/GetLocationContext";
 
 const font = Bricolage_Grotesque({
   weight: ["200", "300", "400", "500", "600", "700", "800"],
@@ -86,58 +87,60 @@ export default async function RootLayout({
       <body className={`dark:bg-gray-950 min-h-dvh ${font.className}`}>
         <ConfigProvider>
           <UserContextProvider user={user}>
-            <QueryProvider>
-              <MessagesConversationProvider>
-                <Loader />
-                <Toaster
-                  toastOptions={{
-                    duration: 5000,
-                    style: {
-                      fontSize: "14px",
-                      fontWeight: "500",
-                      border: "1px solid #CC0DF8",
-                      borderRadius: "100vmax",
-                    },
-                  }}
-                />
-                <SonnerToast
-                  richColors
-                  position="top-center"
-                  toastOptions={{
-                    closeButton: true,
-                    duration: 10000,
-                    style: {
-                      fontSize: "16px",
-                      borderRadius: "100vmax",
-                    },
-                  }}
-                />
-                <div className="relative grid h-dvh lg:grid-cols-8">
-                  <MessagesConversationProvider>
-                    <ToggleWishListProvider>
-                      <div className="col-span-2">
-                        <SideBar />
-                      </div>
-                      <div className="relative h-dvh col-span-6 overflow-auto border-r border-pink-50">
-                        <Header />
-                        <div className="grid lg:grid-cols-6 pt-[66px] lg:pt-[48px] h-dvh">
-                          <div className="flex flex-col h-full col-span-3">
-                            <div className="w-full h-full md:border-r border-black/40 dark:border-slate-800">
-                              {children}
-                            </div>
-                          </div>
-                          <SideModels />
+            <GetLocationContext user={user}>
+              <QueryProvider>
+                <MessagesConversationProvider>
+                  <Loader />
+                  <Toaster
+                    toastOptions={{
+                      duration: 5000,
+                      style: {
+                        fontSize: "14px",
+                        fontWeight: "500",
+                        border: "1px solid #CC0DF8",
+                        borderRadius: "100vmax",
+                      },
+                    }}
+                  />
+                  <SonnerToast
+                    richColors
+                    position="top-center"
+                    toastOptions={{
+                      closeButton: true,
+                      duration: 10000,
+                      style: {
+                        fontSize: "16px",
+                        borderRadius: "100vmax",
+                      },
+                    }}
+                  />
+                  <div className="relative grid h-dvh lg:grid-cols-8">
+                    <MessagesConversationProvider>
+                      <ToggleWishListProvider>
+                        <div className="col-span-2">
+                          <SideBar />
                         </div>
-                      </div>
-                      <WishList />
-                    </ToggleWishListProvider>
-                  </MessagesConversationProvider>
-                  <MenuButtons />
-                  {/* <ModalComponent /> */}
-                </div>
-                <PostComponentPreview />
-              </MessagesConversationProvider>
-            </QueryProvider>
+                        <div className="relative h-dvh col-span-6 overflow-auto border-r border-pink-50">
+                          <Header />
+                          <div className="grid lg:grid-cols-6 pt-[66px] lg:pt-[48px] h-dvh">
+                            <div className="flex flex-col h-full col-span-3">
+                              <div className="w-full h-full md:border-r border-black/40 dark:border-slate-800">
+                                {children}
+                              </div>
+                            </div>
+                            <SideModels />
+                          </div>
+                        </div>
+                        <WishList />
+                      </ToggleWishListProvider>
+                    </MessagesConversationProvider>
+                    <MenuButtons />
+                    {/* <ModalComponent /> */}
+                  </div>
+                  <PostComponentPreview />
+                </MessagesConversationProvider>
+              </QueryProvider>
+            </GetLocationContext>
           </UserContextProvider>
         </ConfigProvider>
       </body>

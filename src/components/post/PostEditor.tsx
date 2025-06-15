@@ -26,83 +26,15 @@ import {
   UserMediaProps,
   PostAudienceDataProps,
   RemovedMediaIdProps,
+  MentionUser,
 } from "@/types/Components";
 import { useNewPostStore } from "@/contexts/NewPostContext";
 import { PostCancel } from "@/components/sub_components/sub/PostCancel";
 import { usePostMediaUploadContext } from "@/contexts/PostMediaUploadContext";
-
-// Types for mentions
-interface MentionUser {
-  id: string;
-  username: string;
-  displayName: string;
-  avatar?: string;
-  isVerified?: boolean;
-}
+import FetchMentions from "@/utils/data/FetchMentions";
 
 interface MentionSuggestion extends MentionUser {
   highlighted?: boolean;
-}
-
-// Example mock data
-const mockUsers: MentionUser[] = [
-  {
-    id: "1",
-    username: "johndoe",
-    displayName: "John Doe",
-    avatar: "/site/avatar.png",
-    isVerified: true,
-  },
-  {
-    id: "2",
-    username: "janesmith",
-    displayName: "Jane Smith",
-    avatar: "/site/avatar.png",
-    isVerified: false,
-  },
-  {
-    id: "3",
-    username: "alexjohnson",
-    displayName: "Alex Johnson",
-    avatar: "/site/avatar.png",
-    isVerified: true,
-  },
-  {
-    id: "4",
-    username: "sarahwilson",
-    displayName: "Sarah Wilson",
-    avatar: "/site/avatar.png",
-    isVerified: false,
-  },
-];
-
-function parseContentToHtml(text: string, mentions: MentionUser[]): string {
-  if (!text) return "";
-
-  const location = window.location.origin;
-
-  // Convert line breaks to <br/>
-  let htmlContent = text.replace(/\n/g, "<br/>");
-
-  // Convert URLs into clickable links
-  const urlRegex =
-    /\b((https?:\/\/)?((www\.)?[\w-]+\.[a-z]{2,})(:\d+)?(\/[^\s<]*)?(\?[^\s<]*)?(#[^\s<]*)?)(?![^<]*>|[^<>]*<\/)/gi;
-
-  htmlContent = htmlContent.replace(urlRegex, (match, url) => {
-    const hyperlink = url.startsWith("http") ? url : `https://${url}`;
-    return `<a href="${hyperlink}" class="text-primary-dark-pink" target="_blank" rel="noopener noreferrer">${url}</a>`;
-  });
-
-  // Replace mention text with mention links
-  mentions.forEach((m) => {
-    const mentionRegex = new RegExp(`@${m.username}(?![A-Za-z0-9_-])`, "g");
-    htmlContent = htmlContent.replace(
-      mentionRegex,
-      `<a href="${location}/@${m.username}" class="text-primary-dark-pink" rel="noopener noreferrer">@${m.username}</a>`
-    );
-  });
-
-  return htmlContent;
 }
 
 const PostEditor = React.memo(({ posts }: PostEditorProps) => {
@@ -172,12 +104,8 @@ const PostEditor = React.memo(({ posts }: PostEditorProps) => {
     async (query: string): Promise<MentionUser[]> => {
       setIsMentionLoading(true);
       return new Promise((resolve) => {
-        setTimeout(() => {
-          const filteredUsers = mockUsers.filter(
-            (u) =>
-              u.username.toLowerCase().includes(query.toLowerCase()) ||
-              u.displayName.toLowerCase().includes(query.toLowerCase())
-          );
+        setTimeout(async () => {
+          const filteredUsers = await FetchMentions(query);
           setIsMentionLoading(false);
           resolve(filteredUsers);
         }, 300);
@@ -289,7 +217,7 @@ const PostEditor = React.memo(({ posts }: PostEditorProps) => {
       const currentText = textarea.value;
       const beforeMention = currentText.substring(0, mentionStartPos);
       const afterMention = currentText.substring(cursorPosition);
-      const newText = `${beforeMention}@${mentionedUser.username} ${afterMention}`;
+      const newText = `${beforeMention}${mentionedUser.username} ${afterMention}`;
       const newCursorPos = mentionStartPos + mentionedUser.username.length + 2;
 
       textarea.value = newText;
@@ -408,12 +336,11 @@ const PostEditor = React.memo(({ posts }: PostEditorProps) => {
     });
 
     // Convert to HTML
-    const finalHtmlContent = parseContentToHtml(postText, mentions);
 
     const savePostOptions = {
       data: {
         media: media || [],
-        content: finalHtmlContent,
+        content: postText,
         visibility: visibility.toLowerCase(),
         removedMedia: removedIds,
         price: price > 0 ? price : undefined,
@@ -515,7 +442,7 @@ const PostEditor = React.memo(({ posts }: PostEditorProps) => {
                   >
                     <Image
                       src={user.avatar || "/site/avatar.png"}
-                      alt={user.displayName}
+                      alt={user.name}
                       width={32}
                       height={32}
                       className="w-8 h-8 rounded-full"
@@ -523,7 +450,7 @@ const PostEditor = React.memo(({ posts }: PostEditorProps) => {
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2">
                         <p className="text-sm font-medium text-gray-900 dark:text-white truncate">
-                          {user.displayName}
+                          {user.name}
                         </p>
                         {user.isVerified && (
                           <svg
@@ -540,7 +467,7 @@ const PostEditor = React.memo(({ posts }: PostEditorProps) => {
                         )}
                       </div>
                       <p className="text-xs text-gray-500 dark:text-gray-400">
-                        @{user.username}
+                        {user.username}
                       </p>
                     </div>
                   </div>
@@ -567,12 +494,12 @@ const PostEditor = React.memo(({ posts }: PostEditorProps) => {
                 >
                   <Image
                     src={mention.avatar || "/site/avatar.png"}
-                    alt={mention.displayName}
+                    alt={mention.name}
                     width={20}
                     height={20}
                     className="w-5 h-5 rounded-full"
                   />
-                  <span>@{mention.username}</span>
+                  <span>{mention.username}</span>
                   <button
                     onClick={() =>
                       setMentions((prev) =>
