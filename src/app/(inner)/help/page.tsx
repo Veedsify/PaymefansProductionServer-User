@@ -13,7 +13,7 @@ const HelpPage = async () => {
 
       <header className="bg-primary-text-dark-pink text-white rounded-xl py-6">
         <div className="container mx-auto px-4 flex justify-between items-center">
-          <h1 className=" text-2xl lg:text-3xl font-bold">Help Center</h1>
+          <h1 className="text-xl lg:text-3xl font-bold">Help Center</h1>
           <ContactSupportModal />
         </div>
       </header>
