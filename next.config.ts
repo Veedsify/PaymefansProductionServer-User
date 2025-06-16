@@ -42,11 +42,6 @@ const nextConfig: NextConfig = {
       },
       {
         protocol: "https",
-        hostname: "d3dmrzkhiwq4ar.cloudfront.net",
-        pathname: "/**",
-      },
-      {
-        protocol: "https",
         hostname: "images.unsplash.com",
         pathname: "/**",
       },
@@ -60,31 +55,8 @@ const nextConfig: NextConfig = {
         hostname: "flagcdn.com",
         pathname: "/**",
       },
-      {
-        protocol: "http",
-        hostname: "23.20.241.255",
-        pathname: "/**",
-      },
     ],
   },
-  // Enable COOP/COEP headers for SharedArrayBuffer support (needed for FFmpeg.wasm)
-  async headers() {
-    return [
-      {
-        source: '/(.*)',
-        headers: [
-          {
-            key: 'Cross-Origin-Embedder-Policy',
-            value: 'require-corp',
-          },
-          {
-            key: 'Cross-Origin-Opener-Policy',
-            value: 'same-origin',
-          },
-        ],
-      },
-    ];
-  },
-};
+}
 
 export default nextConfig;

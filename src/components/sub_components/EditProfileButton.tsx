@@ -49,6 +49,12 @@ function BannerModal({ user, open = false, setOpen }: BannerModalProps) {
       HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
     >
   ) => {
+    if (e.target.name === "bio") {
+      if (e.target.value.length > 1000) {
+        toast.error("Bio cannot exceed 1000 characters.");
+        return;
+      }
+    }
     setUserData({ ...userData, [e.target.name]: e.target.value });
   };
 
@@ -66,6 +72,13 @@ function BannerModal({ user, open = false, setOpen }: BannerModalProps) {
   };
 
   const handleSaveClick = async () => {
+    if (userData.bio && userData.bio.length > 1000) {
+      toast.error("Bio cannot exceed 1000 characters.", {
+        id: "profile-update-toast",
+      });
+      return;
+    }
+
     const formData = new FormData();
     for (const key in userData) {
       if (Object.prototype.hasOwnProperty.call(userData, key)) {
@@ -88,11 +101,17 @@ function BannerModal({ user, open = false, setOpen }: BannerModalProps) {
         return response;
       };
 
-      toast.promise(updateProfile(formData), {
-        loading: PROFILE_CONFIG.PROFILE_UPDATING_MSG,
-        success: PROFILE_CONFIG.PROFILE_UPDATED_SUCCESS_MSG,
-        error: PROFILE_CONFIG.PROFILE_UPDATED_ERROR_MSG,
-      });
+      toast.promise(
+        updateProfile(formData),
+        {
+          loading: PROFILE_CONFIG.PROFILE_UPDATING_MSG,
+          success: PROFILE_CONFIG.PROFILE_UPDATED_SUCCESS_MSG,
+          error: PROFILE_CONFIG.PROFILE_UPDATED_ERROR_MSG,
+        },
+        {
+          id: "profile-update-toast",
+        }
+      );
     } catch (error) {
       console.error(error);
     }
@@ -210,6 +229,7 @@ function BannerModal({ user, open = false, setOpen }: BannerModalProps) {
             />
             <textarea
               name="bio"
+              maxLength={1000}
               rows={4}
               onChange={handleInputChange}
               className="w-full p-3 text-black border border-gray-300 rounded-lg outline-none resize-none dark:text-white dark:bg-slate-900 dark:border-slate-700 focus:ring-2 focus:ring-primary-dark-pink"

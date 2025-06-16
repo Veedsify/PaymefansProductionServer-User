@@ -184,7 +184,7 @@ const ProfilePage = () => {
       </div>
 
       {/* Info & Bio */}
-      <div className="flex flex-col gap-2 px-2 mt-2 mb-12 md:px-5 dark:text-white">
+      <div className="flex flex-col gap-2 px-2 mt-2 mb-6 md:px-5 dark:text-white">
         {/* Name, Badges, and Tag */}
         <div className="flex flex-col">
           <h1 className="font-bold flex items-center gap-2 text-lg">

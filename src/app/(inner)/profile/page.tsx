@@ -48,7 +48,7 @@ const ProfilePage = async () => {
             <EditProfileButton user={user} />
           </div>
         </div>
-        <div className="flex flex-col gap-2 px-2 mt-2 mb-12 md:px-5 items-start">
+        <div className="flex flex-col gap-2 px-2 mt-2 mb-6 md:px-5 items-start">
           <div className="flex flex-col">
             <h1 className="font-bold text-gray-900 dark:text-gray-100">
               {user?.name ? user.name : ""}
@@ -102,9 +102,9 @@ const ProfilePage = async () => {
                 Joined{" "}
                 {user?.created_at
                   ? new Date(user.created_at).toLocaleDateString("en-US", {
-                    month: "long",
-                    year: "numeric",
-                  })
+                      month: "long",
+                      year: "numeric",
+                    })
                   : ""}
               </span>
             </span>

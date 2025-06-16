@@ -13,6 +13,7 @@ import { ButtonList } from "sweetalert/typings/modules/options/buttons";
 import { LucideLoader2, X } from "lucide-react";
 import { usePointsStore } from "@/contexts/PointsContext";
 type Points = {
+  id: number;
   points: number;
   amount: number;
   points_buy_id: string;
@@ -178,7 +179,7 @@ const TipModel = ({
         <div className="grid grid-cols-3 gap-4">
           {points.map((point) => (
             <div
-              key={point.points_buy_id}
+              key={point.id}
               className="cursor-pointer rounded-2xl bg-coins-card-bottom dark:bg-slate-800 dark:border-slate-800 dark:border select-none"
               onClick={() => handlePointsClick(point.points_buy_id)}
             >

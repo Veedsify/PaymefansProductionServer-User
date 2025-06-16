@@ -99,7 +99,7 @@ const PostComponent: React.FC<PostComponentProps> = ({
     if (data.post_audience === "price" && !hasPaid && !isCreator) {
       return "<p class='text-sm text-emerald-500'>This post is only available to paid users</p>";
     }
-    if (text.length >= 200) return text.slice(0, 200) + "...";
+    if (text.length >= 1000) return text.slice(0, 1000) + "...";
     return text;
   }, [data.post, isSubscribed, hasPaid, isCreator, data.post_audience]);
 
