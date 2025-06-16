@@ -14,7 +14,6 @@ import RepostPanel from "./RepostPanel";
 import PostPanel from "@/components/post/PostPanel";
 import MediaPanel from "@/components/media/MediaPanel";
 import PrivatePanelOther from "./PrivatePanelOther";
-import { AnimatePresence } from "framer-motion";
 const ProfileTabsOther = ({ userdata }: { userdata: ProfileUserProps }) => {
   const [activeTab, setActiveTab] = useState(0);
 
@@ -46,28 +45,26 @@ const ProfileTabsOther = ({ userdata }: { userdata: ProfileUserProps }) => {
       {/* Tab List */}
       <div className={"relative"}>
         <div className="flex items-center text-center border-b border-black/30 dark:border-slate-600 dark:text-white relative">
-          <AnimatePresence>
-            {tabs.map((tab, index) => (
-              <button
-                key={index}
-                className={`flex-1 outline-none cursor-pointer py-4 transition-colors ${
-                  activeTab === index
-                    ? "text-primary-dark-pink"
-                    : "text-gray-500 hover:text-gray-700 dark:hover:text-gray-300"
-                }`}
-                onClick={() => setActiveTab(index)}
-              >
-                <span className="inline-flex flex-col items-center justify-center gap-1">
-                  <span className="flex items-center gap-2">
-                    {tab.icon}
-                    <span className="text-sm font-medium hidden sm:inline-block">
-                      {tab.label}
-                    </span>
+          {tabs.map((tab, index) => (
+            <button
+              key={index}
+              className={`flex-1 outline-none cursor-pointer py-4 transition-colors ${
+                activeTab === index
+                  ? "text-primary-dark-pink"
+                  : "text-gray-500 hover:text-gray-700 dark:hover:text-gray-300"
+              }`}
+              onClick={() => setActiveTab(index)}
+            >
+              <span className="inline-flex flex-col items-center justify-center gap-1">
+                <span className="flex items-center gap-2">
+                  {tab.icon}
+                  <span className="text-sm font-medium hidden sm:inline-block">
+                    {tab.label}
                   </span>
                 </span>
-              </button>
-            ))}
-          </AnimatePresence>
+              </span>
+            </button>
+          ))}
         </div>
 
         {/* Active Indicator */}
@@ -81,9 +78,7 @@ const ProfileTabsOther = ({ userdata }: { userdata: ProfileUserProps }) => {
       </div>
 
       {/* Tab Content */}
-      <div className="mt-4">
-        <AnimatePresence>{tabs[activeTab].content}</AnimatePresence>
-      </div>
+      <div className="mt-4">{tabs[activeTab].content}</div>
     </div>
   );
 };

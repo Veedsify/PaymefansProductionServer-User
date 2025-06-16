@@ -10,7 +10,6 @@ import {
   LucideRepeat2,
 } from "lucide-react";
 import PrivatePanel from "./PrivatePanel";
-import { AnimatePresence } from "framer-motion";
 
 const ProfileTabs = () => {
   const [activeTab, setActiveTab] = useState(0);
@@ -42,30 +41,28 @@ const ProfileTabs = () => {
     <div className="px-3 md:px-5 relative">
       {/* Tab List */}
       <div className={"relative"}>
-        <AnimatePresence>
-          <div className="flex items-center text-center border-b border-black/30 dark:border-slate-600 dark:text-white relative">
-            {tabs.map((tab, index) => (
-              <button
-                key={index}
-                className={`flex-1 outline-none cursor-pointer py-4 transition-colors ${
-                  activeTab === index
-                    ? "text-primary-dark-pink"
-                    : "text-gray-500 hover:text-gray-700 dark:hover:text-gray-300"
-                }`}
-                onClick={() => setActiveTab(index)}
-              >
-                <span className="inline-flex flex-col items-center justify-center gap-1">
-                  <span className="flex items-center gap-2">
-                    {tab.icon}
-                    <span className="text-sm font-medium hidden sm:inline-block">
-                      {tab.label}
-                    </span>
+        <div className="flex items-center text-center border-b border-black/30 dark:border-slate-600 dark:text-white relative">
+          {tabs.map((tab, index) => (
+            <button
+              key={index}
+              className={`flex-1 outline-none cursor-pointer py-4 transition-colors ${
+                activeTab === index
+                  ? "text-primary-dark-pink"
+                  : "text-gray-500 hover:text-gray-700 dark:hover:text-gray-300"
+              }`}
+              onClick={() => setActiveTab(index)}
+            >
+              <span className="inline-flex flex-col items-center justify-center gap-1">
+                <span className="flex items-center gap-2">
+                  {tab.icon}
+                  <span className="text-sm font-medium hidden sm:inline-block">
+                    {tab.label}
                   </span>
                 </span>
-              </button>
-            ))}
-          </div>
-        </AnimatePresence>
+              </span>
+            </button>
+          ))}
+        </div>
 
         {/* Active Indicator */}
         <div
@@ -78,9 +75,7 @@ const ProfileTabs = () => {
       </div>
 
       {/* Tab Content */}
-      <div className="mt-4">
-        <AnimatePresence>{tabs[activeTab].content}</AnimatePresence>
-      </div>
+      <div className="mt-4">{tabs[activeTab].content}</div>
     </div>
   );
 };
