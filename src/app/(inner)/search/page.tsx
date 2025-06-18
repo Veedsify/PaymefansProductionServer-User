@@ -1,12 +1,13 @@
 "use client";
 
+import axios from "axios";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   LucideSearch,
   User,
   Hash,
   MessageCircle,
-  Image,
+  Image as LucideImage,
   Video,
   Heart,
   Repeat2,
@@ -22,241 +23,138 @@ import {
 import { useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
 import toast from "react-hot-toast";
+import { getToken } from "@/utils/Cookie";
+const token = getToken();
+import Image from "next/image";
+import { formatDate } from "@/utils/FormatDate";
+import PostComponent from "@/components/post/PostComponent";
+import { MediaPanelMediaCard } from "@/components/media/MediaPanelImageCardOther";
+import { MediaDataTypeOtherProps } from "@/types/Components";
+import usePostComponent from "@/contexts/PostComponentPreview";
+import Link from "next/link";
 
 const searchFunction = async (query: string) => {
-  console.log("Searching...", query);
+  try {
+    const search = [
+      async () => {
+        const response = await axios.get(
+          `${process.env.NEXT_PUBLIC_TS_EXPRESS_URL}/search/platform?query=${query}&category=users`,
+          {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        return response.data.results;
+      },
+
+      async () => {
+        const response = await axios.get(
+          `${process.env.NEXT_PUBLIC_TS_EXPRESS_URL}/search/platform?query=${query}&category=posts`,
+          {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        return response.data.results;
+      },
+
+      async () => {
+        const response = await axios.get(
+          `${process.env.NEXT_PUBLIC_TS_EXPRESS_URL}/search/platform?query=${query}&category=media`,
+          {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        return response.data.results;
+      },
+    ];
+
+    const results = await Promise.all(search.map((fn) => fn()));
+    return {
+      users: results[0],
+      posts: results[1],
+      media: results[2],
+      error: false,
+    };
+  } catch (error) {
+    console.error("Search error:", error);
+    return { users: [], posts: [], media: [], error: true };
+  }
 };
-
-const mockUsers = [
-  {
-    id: 1,
-    name: "John Doe",
-    username: "johndoe",
-    avatar:
-      "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face",
-    coverImage:
-      "https://images.unsplash.com/photo-1519681393784-d120267933ba?w=800&h=300&fit=crop",
-    followers: "1.2K",
-    following: "340",
-    posts: "156",
-    bio: "Frontend Developer | React Enthusiast | Coffee Lover ☕",
-    location: "San Francisco, CA",
-    website: "johndoe.dev",
-    joinedDate: "March 2020",
-    verified: true,
-  },
-  {
-    id: 2,
-    name: "Jane Smith",
-    username: "janesmith",
-    avatar:
-      "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&h=150&fit=crop&crop=face",
-    coverImage:
-      "https://images.unsplash.com/photo-1519125323398-675f0ddb6308?w=800&h=300&fit=crop",
-    followers: "856",
-    following: "124",
-    posts: "89",
-    bio: "Digital Artist & UI/UX Designer 🎨 Creating beautiful experiences",
-    location: "New York, NY",
-    website: "janesmith.art",
-    joinedDate: "July 2021",
-    verified: false,
-  },
-  {
-    id: 3,
-    name: "Tech Guru",
-    username: "techguru",
-    avatar:
-      "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face",
-    coverImage:
-      "https://images.unsplash.com/photo-1518770660439-4636190af475?w=800&h=300&fit=crop",
-    followers: "45.2K",
-    following: "1.2K",
-    posts: "2.1K",
-    bio: "Tech Evangelist | Startup Mentor | Building the future 🚀",
-    location: "Austin, TX",
-    website: "techguru.io",
-    joinedDate: "January 2019",
-    verified: true,
-  },
-  {
-    id: 4,
-    name: "Sarah Johnson",
-    username: "sarahj",
-    avatar:
-      "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=150&h=150&fit=crop&crop=face",
-    coverImage:
-      "https://images.unsplash.com/photo-1519817650390-64a93db51149?w=800&h=300&fit=crop",
-    followers: "3.7K",
-    following: "512",
-    posts: "421",
-    bio: "Photographer | Travel Enthusiast | Storyteller",
-    location: "Seattle, WA",
-    website: "sarahjphotography.com",
-    joinedDate: "November 2018",
-    verified: true,
-  },
-  {
-    id: 5,
-    name: "Alex Chen",
-    username: "alexchen",
-    avatar:
-      "https://images.unsplash.com/photo-1566492031773-4f4e44671857?w=150&h=150&fit=crop&crop=face",
-    coverImage:
-      "https://images.unsplash.com/photo-1517649763962-0c623066013b?w=800&h=300&fit=crop",
-    followers: "8.9K",
-    following: "231",
-    posts: "312",
-    bio: "Data Scientist | AI Researcher | Coffee Addict",
-    location: "Boston, MA",
-    website: "alexchen.ai",
-    joinedDate: "May 2020",
-    verified: false,
-  },
-  {
-    id: 6,
-    name: "Emma Wilson",
-    username: "emmawilson",
-    avatar:
-      "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&h=150&fit=crop&crop=face",
-    coverImage:
-      "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&h=300&fit=crop",
-    followers: "2.3K",
-    following: "189",
-    posts: "267",
-    bio: "Marketing Strategist | Content Creator | Dog Mom 🐕",
-    location: "Denver, CO",
-    website: "emmawilson.com",
-    joinedDate: "September 2021",
-    verified: false,
-  },
-];
-
-const mockPosts = [
-  {
-    id: 1,
-    user: "John Doe",
-    username: "johndoe",
-    avatar:
-      "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=40&h=40&fit=crop&crop=face",
-    content:
-      "Just built an amazing React app! The new features in Next.js 14 are incredible. Can't wait to share more about this project. #coding #react #nextjs",
-    images: [
-      "https://images.unsplash.com/photo-1633356122544-f134324a6cee?w=800&h=600&fit=crop",
-      "https://images.unsplash.com/photo-1627398242454-45a1465c2479?w=800&h=600&fit=crop",
-    ],
-    time: "2h",
-    likes: 245,
-    retweets: 12,
-    replies: 45,
-    verified: true,
-  },
-  {
-    id: 2,
-    user: "Jane Smith",
-    username: "janesmith",
-    avatar:
-      "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=40&h=40&fit=crop&crop=face",
-    content:
-      "Beautiful sunset today! Nature never fails to amaze me. Sometimes you just need to step away from the screen and appreciate the world around us. 🌅✨",
-    images: [
-      "https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=800&h=600&fit=crop",
-    ],
-    time: "4h",
-    likes: 1128,
-    retweets: 234,
-    replies: 89,
-    verified: false,
-  },
-  {
-    id: 3,
-    user: "Tech Guru",
-    username: "techguru",
-    avatar:
-      "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=40&h=40&fit=crop&crop=face",
-    content:
-      "The future of web development is looking bright with these new technologies! AI is revolutionizing how we build applications. What are your thoughts on the latest trends?",
-    images: [
-      "https://images.unsplash.com/photo-1555255707-c07966088b7b?w=800&h=600&fit=crop",
-      "https://images.unsplash.com/photo-1518770660439-4636190af475?w=800&h=600&fit=crop",
-      "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=800&h=600&fit=crop",
-    ],
-    time: "6h",
-    likes: 2834,
-    retweets: 1205,
-    replies: 456,
-    verified: true,
-  },
-  {
-    id: 4,
-    user: "Sarah Johnson",
-    username: "sarahj",
-    avatar:
-      "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=40&h=40&fit=crop&crop=face",
-    content:
-      "Just published my new photography series 'Urban Landscapes'. Check it out on my website! #photography #art #urban",
-    images: [
-      "https://images.unsplash.com/photo-1477959858617-67f85cf4f1df?w=800&h=600&fit=crop",
-      "https://images.unsplash.com/photo-1449824913935-59a10b8d2000?w=800&h=600&fit=crop",
-      "https://images.unsplash.com/photo-1470004914212-05527e49370b?w=800&h=600&fit=crop",
-      "https://images.unsplash.com/photo-1487958449943-2429e8be8625?w=800&h=600&fit=crop",
-    ],
-    time: "8h",
-    likes: 3421,
-    retweets: 876,
-    replies: 213,
-    verified: true,
-  },
-];
-
-const mockMedia = [
-  {
-    id: 1,
-    image:
-      "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&h=600&fit=crop",
-    user: "Sarah Johnson",
-    username: "sarahj",
-    caption: "Exploring urban jungles 🏙️ #photography",
-    time: "1d",
-  },
-  {
-    id: 2,
-    image:
-      "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800&h=600&fit=crop",
-    user: "Jane Smith",
-    username: "janesmith",
-    caption: "Chasing sunsets by the sea 🌅 #nature",
-    time: "2d",
-  },
-  {
-    id: 3,
-    image:
-      "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=800&h=600&fit=crop",
-    user: "Tech Guru",
-    username: "techguru",
-    caption: "Tech meets art in this setup ⚙️ #tech",
-    time: "3d",
-  },
-];
 
 const SearchPage = () => {
   const params = useSearchParams();
   const ref = useRef<HTMLInputElement>(null);
   const search = useSearchParams();
-  const [searchQuery, setSearchQuery] = useState<string>("");
+  const [searchQuery, setSearchQuery] = useState<string>(search.get("q") || "");
   const [activeTab, setActiveTab] = useState<string>("all");
   const [loading, setLoading] = useState<boolean>(false);
+  const [posts, setPosts] = useState<any[]>([]);
+  const [users, setUsers] = useState<any[]>([]);
+  const [media, setMedia] = useState<any[]>([]);
+  const { fullScreenPreview } = usePostComponent();
+  // useEffect(() => {
+  //   if (ref.current) {
+  //     const query = search.get("q") || "";
+  //     ref.current.value = query;
+  //     ref.current.focus();
+  //     if (query.length > 0) {
+  //       searchFunction(query)
+  //         .then((results) => {
+  //           if (results.error) {
+  //             toast.error("Error fetching search results. Please try again.", {
+  //               id: "search",
+  //             });
+  //           } else {
+  //             setSearchQuery(query);
+  //             setLoading(false);
+  //           }
+  //         })
+  //         .catch((error) => {
+  //           console.error("Search error:", error);
+  //           toast.error("Error fetching search results. Please try again.", {
+  //             id: "search",
+  //           });
+  //           setLoading(false);
+  //         });
+  //     }
+  //   }
+  // }, [ref, search]);
 
-  useEffect(() => {
-    if (ref.current) {
-      const query = search.get("q") || "";
-      ref.current.value = query;
-      ref.current.focus();
-      if (query.length > 0) {
-        searchFunction(query);
-      }
-    }
-  }, [ref, search]);
+  const previewImageHandler = (
+    m: MediaDataTypeOtherProps,
+    type: string,
+    isSubscriber: boolean,
+    indexId: number
+  ) => {
+    if (m.accessible_to === "subscribers" && !isSubscriber) return;
+    const filteredMedias = media
+      .filter((item) => item.media_state !== "processing")
+      .filter((media) => media.accessible_to !== "price")
+      .filter(
+        (media) => !(media.accessible_to === "subscribers" && !isSubscriber)
+      );
+    // Get the new index after filtering
+    const newIndexId = filteredMedias.findIndex((item) => item.id === m.id);
+    const medias = filteredMedias.map((media) => ({
+      url: media.url,
+      type: media.media_type,
+    }));
+    fullScreenPreview({
+      url: m.url,
+      type,
+      open: true,
+      ref: newIndexId, // Use new index
+      otherUrl: medias,
+    });
+  };
 
   const handleTypingSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.value.trim().length === 0) {
@@ -264,30 +162,70 @@ const SearchPage = () => {
     }
     setLoading(true);
     setSearchQuery(e.target.value);
-    setTimeout(() => {
-      setLoading(false);
-    }, 1000);
   };
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      if (searchQuery) {
-        searchFunction(searchQuery);
-      }
-    }, 1000);
-    return () => clearTimeout(timer);
+    if (!searchQuery) return;
+
+    const delayDebounce = setTimeout(() => {
+      searchFunction(searchQuery)
+        .then((results) => {
+          if (results.error) {
+            toast.error("Error fetching search results. Please try again.", {
+              id: "search",
+            });
+          } else {
+            setPosts(results.posts || []);
+            setUsers(results.users || []);
+            setMedia(results.media || []);
+            setLoading(false);
+          }
+        })
+        .catch((error) => {
+          console.error("Search error:", error);
+          toast.error("Error fetching search results. Please try again.", {
+            id: "search",
+          });
+          setLoading(false);
+        });
+    }, 300); // debounce delay (ms)
+
+    return () => clearTimeout(delayDebounce);
   }, [searchQuery]);
 
   const HandleSearch = useCallback(() => {
-    toast.loading(`Searching for ${searchQuery} ...`);
+    if (searchQuery.trim().length === 0) {
+      toast.error("Please enter a search query.");
+      return;
+    }
+    setLoading(true);
+    searchFunction(searchQuery)
+      .then((results) => {
+        if (results.error) {
+          toast.error("Error fetching search results. Please try again.", {
+            id: "search",
+          });
+        } else {
+          setPosts(results.posts || []);
+          setUsers(results.users || []);
+          setMedia(results.media || []);
+          setLoading(false);
+        }
+      })
+      .catch((error) => {
+        console.error("Search error:", error);
+        toast.error("Error fetching search results. Please try again.", {
+          id: "search",
+        });
+        setLoading(false);
+      });
   }, [searchQuery]);
 
   const tabs = [
     { id: "all", label: "All", icon: Hash },
     { id: "people", label: "People", icon: User },
     { id: "posts", label: "Posts", icon: MessageCircle },
-    { id: "media", label: "Media", icon: Image },
-    { id: "videos", label: "Videos", icon: Video },
+    { id: "media", label: "Media", icon: LucideImage },
   ];
 
   return (
@@ -307,6 +245,7 @@ const SearchPage = () => {
                 type="text"
                 name="Search"
                 id="search"
+                defaultValue={searchQuery}
                 onChange={handleTypingSearch}
                 className="w-full py-4 pl-14 pr-14 bg-transparent border-0 focus:ring-0 outline-none text-gray-700 dark:text-gray-200 placeholder-gray-400 text-base"
                 placeholder="Search PaymeFans..."
@@ -346,7 +285,7 @@ const SearchPage = () => {
                         onClick={() => setActiveTab(tab.id)}
                         whileHover={{ scale: 1.02 }}
                         whileTap={{ scale: 0.98 }}
-                        className={`flex items-center px-6 py-3 rounded-lg  text-sm font-medium shadow-sm
+                        className={`flex items-center px-6 py-3 rounded-lg text-sm font-medium shadow-sm transition-all duration-200
                           ${
                             activeTab === tab.id
                               ? "bg-primary-dark-pink text-white shadow-lg shadow-primary-dark-pink/25"
@@ -365,383 +304,398 @@ const SearchPage = () => {
         </AnimatePresence>
 
         {/* Content */}
-        <AnimatePresence mode="wait">
-          {!loading && searchQuery && mockUsers.length && mockPosts.length ? (
-            <motion.div
-              key="results"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              transition={{ duration: 0.5, ease: "easeOut" }}
-              className="space-y-16"
-            >
-              {/* People Section */}
-              {(activeTab === "all" || activeTab === "people") && (
-                <motion.div
-                  initial={{ y: 30, opacity: 0 }}
-                  animate={{ y: 0, opacity: 1 }}
-                  transition={{ duration: 0.6, ease: "easeOut" }}
-                >
-                  <h3 className="text-2xl font-medium mb-8 flex items-center text-gray-800 dark:text-gray-200">
-                    <User className="mr-3" size={24} />
-                    People
-                  </h3>
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6">
-                    {mockUsers.map((user, index) => (
-                      <motion.div
-                        key={user.id}
-                        initial={{ opacity: 0, y: 40 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{
-                          duration: 0.5,
-                          delay: index * 0.1,
-                          ease: "easeOut",
-                        }}
-                        whileHover={{ y: -8, scale: 1.02 }}
-                        className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm hover:shadow-xl  overflow-hidden group"
-                      >
-                        <div className="relative h-32">
-                          <img
-                            src={user.coverImage}
-                            alt="Cover"
-                            className="w-full h-full object-cover"
-                          />
-                          <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"></div>
-                          <div className="absolute -bottom-8 left-6">
-                            <div className="relative">
-                              <img
-                                src={user.avatar}
-                                alt={user.name}
-                                className="w-16 h-16 rounded-full border-4 border-white dark:border-gray-800 object-cover shadow-lg"
-                              />
-                              {user.verified && (
-                                <div className="absolute -bottom-1 -right-1 bg-primary-dark-pink rounded-full p-1">
-                                  <Verified className="w-3 h-3 text-white" />
-                                </div>
-                              )}
-                            </div>
-                          </div>
-                        </div>
-                        <div className="p-6 pt-10">
-                          <div className="flex items-center justify-between mb-3">
-                            <div>
-                              <h4 className="font-semibold text-lg text-gray-900 dark:text-gray-100">
-                                {user.name}
-                              </h4>
-                              <p className="text-gray-500 text-sm">
-                                @{user.username}
-                              </p>
-                            </div>
-                            <button className="p-2 rounded-full text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 ">
-                              <MoreHorizontal size={18} />
-                            </button>
-                          </div>
-                          <p className="text-gray-600 dark:text-gray-300 text-sm mb-4 line-clamp-2 leading-relaxed">
-                            {user.bio}
-                          </p>
-                          <div className="flex items-center text-gray-500 text-xs mb-4 space-x-4">
-                            {user.location && (
-                              <span className="flex items-center">
-                                <MapPin size={12} className="mr-1" />
-                                {user.location}
-                              </span>
-                            )}
-                            <span className="flex items-center">
-                              <Calendar size={12} className="mr-1" />
-                              {user.joinedDate}
-                            </span>
-                          </div>
-                          <div className="flex justify-between text-sm mb-6">
-                            <div className="text-center">
-                              <div className="font-semibold text-gray-900 dark:text-gray-100">
-                                {user.posts}
-                              </div>
-                              <div className="text-gray-500 text-xs">Posts</div>
-                            </div>
-                            <div className="text-center">
-                              <div className="font-semibold text-gray-900 dark:text-gray-100">
-                                {user.followers}
-                              </div>
-                              <div className="text-gray-500 text-xs">
-                                Followers
-                              </div>
-                            </div>
-                            <div className="text-center">
-                              <div className="font-semibold text-gray-900 dark:text-gray-100">
-                                {user.following}
-                              </div>
-                              <div className="text-gray-500 text-xs">
-                                Following
-                              </div>
-                            </div>
-                          </div>
-                          <motion.button
-                            whileHover={{ scale: 1.02 }}
-                            whileTap={{ scale: 0.98 }}
-                            className="w-full py-3 bg-primary-dark-pink hover:bg-primary-text-dark-pink text-white rounded-xl text-sm font-medium transition-all duration-200 shadow-md hover:shadow-lg cursor-pointer"
-                          >
-                            Follow
-                          </motion.button>
-                        </div>
-                      </motion.div>
-                    ))}
-                  </div>
-                </motion.div>
-              )}
+        <div className="mt-8">
+          <AnimatePresence mode="wait">
+            {/* Loading State */}
+            {loading && searchQuery && (
+              <motion.div
+                key="loading"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                transition={{ duration: 0.3, ease: "easeOut" }}
+                className="text-center py-32"
+              >
+                <div className="inline-flex items-center justify-center w-16 h-16 bg-primary-dark-pink/10 rounded-full mb-6">
+                  <LucideLoader2 className="animate-spin text-primary-dark-pink w-8 h-8" />
+                </div>
+                <h3 className="text-xl font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  Searching...
+                </h3>
+                <p className="text-gray-500">
+                  Finding results for "{searchQuery}"
+                </p>
+              </motion.div>
+            )}
 
-              {/* Posts Section */}
-              {(activeTab === "all" || activeTab === "posts") && (
+            {/* Results Found */}
+            {!loading &&
+              searchQuery &&
+              (posts.length > 0 || users.length > 0 || media.length > 0) && (
                 <motion.div
-                  initial={{ y: 30, opacity: 0 }}
-                  animate={{ y: 0, opacity: 1 }}
-                  transition={{ duration: 0.6, ease: "easeOut" }}
+                  key="results"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -20 }}
+                  transition={{ duration: 0.5, ease: "easeOut" }}
+                  className="space-y-20"
                 >
-                  <h3 className="text-2xl font-medium mb-8 flex items-center text-gray-800 dark:text-gray-200">
-                    <MessageCircle className="mr-3" size={24} />
-                    Posts
-                  </h3>
-                  <div className="space-y-6">
-                    {mockPosts.map((post, index) => (
-                      <motion.div
-                        key={post.id}
-                        initial={{ opacity: 0, y: 30 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{
-                          duration: 1,
-                          delay: index * 0.1,
-                          ease: "easeOut",
-                        }}
-                        whileHover={{ y: -2 }}
-                        className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm hover:shadow-lg  overflow-hidden"
+                  {/* People Section */}
+                  {(activeTab === "all" || activeTab === "people") &&
+                    users.length > 0 && (
+                      <motion.section
+                        initial={{ y: 30, opacity: 0 }}
+                        animate={{ y: 0, opacity: 1 }}
+                        transition={{ duration: 0.6, ease: "easeOut" }}
+                        className="space-y-8"
                       >
-                        <div className="p-6">
-                          <div className="flex items-start space-x-4">
-                            <img
-                              src={post.avatar}
-                              alt={post.user}
-                              className="w-12 h-12 rounded-full object-cover ring-2 ring-gray-100 dark:ring-gray-700"
+                        <div className="flex items-center justify-between">
+                          <h2 className="text-3xl font-semibold flex items-center text-gray-800 dark:text-gray-200">
+                            <User
+                              className="mr-3 text-primary-dark-pink"
+                              size={28}
                             />
-                            <div className="flex-1 min-w-0">
-                              <div className="flex items-center space-x-2 mb-2">
-                                <h4 className="font-semibold text-gray-900 dark:text-gray-100">
-                                  {post.user}
-                                </h4>
-                                {post.verified && (
-                                  <Verified className="w-4 h-4 text-primary-dark-pink" />
-                                )}
-                                <span className="text-gray-500 text-sm">
-                                  @{post.username}
-                                </span>
-                                <span className="text-gray-400">·</span>
-                                <span className="text-gray-400 text-sm">
-                                  {post.time}
-                                </span>
-                              </div>
-                              <p className="text-gray-800 dark:text-gray-200 mb-4 leading-relaxed">
-                                {post.content}
-                              </p>
-                            </div>
-                            <button className="p-2 rounded-full text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-all duration-200">
-                              <MoreHorizontal size={18} />
-                            </button>
-                          </div>
-                          {post.images && post.images.length > 0 && (
-                            <div
-                              className={`mb-4 rounded-xl overflow-hidden ${
-                                post.images.length === 1
-                                  ? "max-h-96"
-                                  : post.images.length === 2
-                                  ? "grid grid-cols-2 gap-2 max-h-80"
-                                  : post.images.length === 3
-                                  ? "grid grid-cols-2 gap-2 max-h-96"
-                                  : "grid grid-cols-2 gap-2 max-h-96"
-                              }`}
+                            People
+                          </h2>
+                          <span className="text-sm text-gray-500 bg-gray-100 dark:bg-gray-800 px-3 py-1 rounded-full">
+                            {users.length} result{users.length !== 1 ? "s" : ""}
+                          </span>
+                        </div>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                          {users.map((user, index) => (
+                            <motion.div
+                              key={user.id}
+                              initial={{ opacity: 0, y: 40 }}
+                              animate={{ opacity: 1, y: 0 }}
+                              transition={{
+                                duration: 0.5,
+                                delay: index * 0.1,
+                                ease: "easeOut",
+                              }}
+                              whileHover={{ y: -8, scale: 1.02 }}
+                              className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden group border border-gray-100 dark:border-gray-700"
                             >
-                              {post.images.map((image, imgIndex) => (
-                                <div
-                                  key={imgIndex}
-                                  className={`relative ${
-                                    post.images.length === 3 && imgIndex === 0
-                                      ? "row-span-2"
-                                      : ""
-                                  }`}
-                                >
-                                  <img
-                                    src={image}
-                                    alt={`Post image ${imgIndex + 1}`}
-                                    className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
-                                  />
-                                  {post.images.length === 4 &&
-                                    imgIndex === 3 && (
-                                      <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-                                        <span className="text-white text-lg font-semibold">
-                                          +{post.images.length - 3}
-                                        </span>
+                              <div className="relative h-36">
+                                <Image
+                                  width={800}
+                                  height={300}
+                                  src={user.profile_banner}
+                                  alt="Cover"
+                                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                                />
+                                <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent"></div>
+                                <div className="absolute -bottom-10 left-6">
+                                  <div className="relative">
+                                    <Image
+                                      height={80}
+                                      width={80}
+                                      src={user.profile_image}
+                                      alt={user.name}
+                                      className="w-20 h-20 rounded-full border-4 border-white dark:border-gray-800 object-cover shadow-lg"
+                                    />
+                                    {user.is_model && (
+                                      <div className="absolute -bottom-1 -right-1 bg-primary-dark-pink rounded-full p-1.5">
+                                        <Verified className="w-3.5 h-3.5 text-white" />
                                       </div>
                                     )}
-                                </div>
-                              ))}
-                            </div>
-                          )}
-                          <div className="flex items-center justify-between pt-4 border-t border-gray-100 dark:border-gray-700">
-                            {[
-                              {
-                                icon: MessageCircle,
-                                count: post.replies,
-                                color: "blue",
-                              },
-                              {
-                                icon: Repeat2,
-                                count: post.retweets,
-                                color: "green",
-                              },
-                              { icon: Heart, count: post.likes, color: "red" },
-                              { icon: Share, count: null, color: "blue" },
-                            ].map((action, actionIndex) => {
-                              const Icon = action.icon;
-                              return (
-                                <motion.button
-                                  key={actionIndex}
-                                  whileHover={{ scale: 1.05 }}
-                                  whileTap={{ scale: 0.95 }}
-                                  className={`flex items-center space-x-1 hover:text-${action.color}-500 transition-colors group`}
-                                >
-                                  <div
-                                    className={`p-2 rounded-full group-hover:bg-${action.color}-100 dark:group-hover:bg-${action.color}-900/30 transition-colors`}
-                                  >
-                                    <Icon size={16} />
                                   </div>
-                                  {action.count && (
-                                    <span className="text-sm">
-                                      {action.count}
+                                </div>
+                              </div>
+                              <div className="p-6 pt-12">
+                                <div className="flex items-start justify-between mb-4">
+                                  <div className="flex-1">
+                                    <h4 className="font-semibold text-xl text-gray-900 dark:text-gray-100 mb-1">
+                                      {user.name}
+                                    </h4>
+                                    <p className="text-gray-500 text-sm">
+                                      {user.username}
+                                    </p>
+                                  </div>
+                                  <button className="p-2 rounded-full text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+                                    <MoreHorizontal size={20} />
+                                  </button>
+                                </div>
+
+                                {user.bio && (
+                                  <p className="text-gray-600 dark:text-gray-300 text-sm mb-6 line-clamp-3 leading-relaxed">
+                                    {user.bio}
+                                  </p>
+                                )}
+
+                                <div className="flex items-center text-gray-500 text-xs mb-6 space-x-6">
+                                  {user.location && (
+                                    <span className="flex items-center">
+                                      <MapPin size={14} className="mr-1.5" />
+                                      {user.location}, {user.country}
                                     </span>
                                   )}
+                                  <span className="flex items-center">
+                                    <Calendar size={14} className="mr-1.5" />
+                                    Joined{" "}
+                                    {new Date(
+                                      user.created_at
+                                    ).toLocaleDateString("en-US", {
+                                      year: "numeric",
+                                      month: "long",
+                                    })}
+                                  </span>
+                                </div>
+
+                                <div className="grid grid-cols-3 gap-4 text-center mb-6 py-4 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
+                                  <div>
+                                    <div className="font-bold text-lg text-gray-900 dark:text-gray-100">
+                                      {user.total_followers?.toLocaleString() ||
+                                        0}
+                                    </div>
+                                    <div className="text-gray-500 text-xs">
+                                      Followers
+                                    </div>
+                                  </div>
+                                  {user.is_model && (
+                                    <div>
+                                      <div className="font-bold text-lg text-gray-900 dark:text-gray-100">
+                                        {user.total_subscribers?.toLocaleString() ||
+                                          0}
+                                      </div>
+                                      <div className="text-gray-500 text-xs">
+                                        Subscribers
+                                      </div>
+                                    </div>
+                                  )}
+                                  <div>
+                                    <div className="font-bold text-lg text-gray-900 dark:text-gray-100">
+                                      {user.total_following?.toLocaleString() ||
+                                        0}
+                                    </div>
+                                    <div className="text-gray-500 text-xs">
+                                      Following
+                                    </div>
+                                  </div>
+                                </div>
+
+                                <motion.button
+                                  whileHover={{ scale: 1.02 }}
+                                  whileTap={{ scale: 0.98 }}
+                                  className="w-full py-3.5 bg-primary-dark-pink hover:bg-primary-text-dark-pink text-white rounded-xl text-sm font-semibold transition-all duration-200 shadow-md hover:shadow-lg"
+                                >
+                                  Follow
                                 </motion.button>
-                              );
-                            })}
-                          </div>
+                              </div>
+                            </motion.div>
+                          ))}
                         </div>
-                      </motion.div>
-                    ))}
-                  </div>
-                </motion.div>
-              )}
+                      </motion.section>
+                    )}
 
-              {/* Media Section */}
-              {(activeTab === "all" || activeTab === "media") && (
-                <motion.div
-                  key="media"
-                  initial={{ y: 30, opacity: 0 }}
-                  animate={{ y: 0, opacity: 1 }}
-                  transition={{ duration: 0.6, ease: "easeOut" }}
-                >
-                  <h3 className="text-2xl font-medium mb-8 flex items-center text-gray-800 dark:text-gray-200">
-                    <Image className="mr-3" size={24} />
-                    Media
-                  </h3>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {mockMedia.map((media, index) => (
-                      <motion.div
-                        key={media.id}
-                        initial={{ opacity: 0, y: 30 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{
-                          duration: 0.5,
-                          delay: index * 0.1,
-                          ease: "easeOut",
-                        }}
-                        whileHover={{ y: -4, scale: 1.02 }}
-                        className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm hover:shadow-lg  overflow-hidden"
+                  {/* Posts Section */}
+                  {(activeTab === "all" || activeTab === "posts") &&
+                    posts.length > 0 && (
+                      <motion.section
+                        initial={{ y: 30, opacity: 0 }}
+                        animate={{ y: 0, opacity: 1 }}
+                        transition={{ duration: 0.6, ease: "easeOut" }}
+                        className="space-y-8"
                       >
-                        <div className="relative overflow-hidden">
-                          <img
-                            src={media.image}
-                            alt={media.caption}
-                            className="w-full h-48 object-cover hover:scale-110 transition-transform duration-500"
-                          />
+                        <div className="flex items-center justify-between">
+                          <h2 className="text-3xl font-semibold flex items-center text-gray-800 dark:text-gray-200">
+                            <MessageCircle
+                              className="mr-3 text-primary-dark-pink"
+                              size={28}
+                            />
+                            Posts
+                          </h2>
+                          <span className="text-sm text-gray-500 bg-gray-100 dark:bg-gray-800 px-3 py-1 rounded-full">
+                            {posts.length} result{posts.length !== 1 ? "s" : ""}
+                          </span>
                         </div>
-                        <div className="p-4">
-                          <p className="text-gray-800 dark:text-gray-200 text-sm mb-3 line-clamp-2 leading-relaxed">
-                            {media.caption}
-                          </p>
-                          <div className="flex items-center justify-between text-gray-500 text-xs">
-                            <div className="flex items-center space-x-2">
-                              <img
-                                src={
-                                  mockUsers.find(
-                                    (u) => u.username === media.username
-                                  )?.avatar
-                                }
-                                alt={media.user}
-                                className="w-6 h-6 rounded-full object-cover"
+                        <div className="space-y-8">
+                          {posts.map((post, index) => (
+                            <motion.div
+                              key={post.id}
+                              initial={{ opacity: 0, y: 30 }}
+                              animate={{ opacity: 1, y: 0 }}
+                              transition={{
+                                duration: 0.6,
+                                delay: index * 0.1,
+                                ease: "easeOut",
+                              }}
+                              whileHover={{ y: -2 }}
+                              className="transform transition-transform duration-200"
+                            >
+                              <PostComponent
+                                user={{
+                                  id: post?.user?.id,
+                                  user_id: post?.user?.user_id,
+                                  name: post?.user?.name,
+                                  link: `/${post?.user?.username}`,
+                                  username: post?.user?.username,
+                                  image: post?.user?.profile_image,
+                                }}
+                                data={{
+                                  ...post,
+                                  post: post?.content,
+                                  media: post?.UserMedia,
+                                  time: formatDate(new Date(post?.created_at)),
+                                }}
                               />
-                              <span className="font-medium">{media.user}</span>
-                            </div>
-                            <span>{media.time}</span>
-                          </div>
+                            </motion.div>
+                          ))}
                         </div>
-                      </motion.div>
-                    ))}
+                      </motion.section>
+                    )}
+
+                  {/* Media Section */}
+                  {(activeTab === "all" || activeTab === "media") &&
+                    media.length > 0 && (
+                      <motion.section
+                        initial={{ y: 30, opacity: 0 }}
+                        animate={{ y: 0, opacity: 1 }}
+                        transition={{ duration: 0.6, ease: "easeOut" }}
+                        className="space-y-8"
+                      >
+                        <div className="flex items-center justify-between">
+                          <h2 className="text-3xl font-semibold flex items-center text-gray-800 dark:text-gray-200">
+                            <LucideImage
+                              className="mr-3 text-primary-dark-pink"
+                              size={28}
+                            />
+                            Media
+                          </h2>
+                          <span className="text-sm text-gray-500 bg-gray-100 dark:bg-gray-800 px-3 py-1 rounded-full">
+                            {media.length} result{media.length !== 1 ? "s" : ""}
+                          </span>
+                        </div>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                          {media.map((m, index) => (
+                            <motion.div
+                              key={m.id}
+                              initial={{ opacity: 0, y: 30 }}
+                              animate={{ opacity: 1, y: 0 }}
+                              transition={{
+                                duration: 0.5,
+                                delay: index * 0.1,
+                                ease: "easeOut",
+                              }}
+                              whileHover={{ y: -4, scale: 1.02 }}
+                              className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden border border-gray-100 dark:border-gray-700 group"
+                            >
+                              <div className="relative overflow-hidden">
+                                <MediaPanelMediaCard
+                                  media={{
+                                    ...m,
+                                    isSubscribed: true,
+                                  }}
+                                  PreviewImageHandler={previewImageHandler}
+                                  indexId={index}
+                                />
+                              </div>
+                              <div className="p-4 space-y-3">
+                                <Link href={`/posts/${m.post.post_id}`}>
+                                  <p className="text-gray-800 dark:text-gray-200 text-sm line-clamp-2 leading-relaxed hover:text-primary-dark-pink transition-colors">
+                                    {m.post.content}
+                                  </p>
+                                </Link>
+                                <div className="flex items-center justify-between text-gray-500 text-xs pt-2 border-t border-gray-100 dark:border-gray-700">
+                                  <div className="flex items-center space-x-2">
+                                    <img
+                                      src={m.user.profile_image}
+                                      alt={m.user.name}
+                                      className="w-6 h-6 rounded-full object-cover"
+                                    />
+                                    <span className="font-medium truncate">
+                                      {m.user.name}
+                                    </span>
+                                  </div>
+                                  <span className="text-xs">
+                                    {formatDate(m.created_at)}
+                                  </span>
+                                </div>
+                              </div>
+                            </motion.div>
+                          ))}
+                        </div>
+                      </motion.section>
+                    )}
+                </motion.div>
+              )}
+
+            {/* No Results Found */}
+            {!loading &&
+              searchQuery &&
+              posts.length === 0 &&
+              users.length === 0 &&
+              media.length === 0 && (
+                <motion.div
+                  key="no-results"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -20 }}
+                  transition={{ duration: 0.5, ease: "easeOut" }}
+                  className="text-center py-32"
+                >
+                  <div className="w-32 h-32 bg-gradient-to-br from-gray-100 to-gray-50 dark:from-gray-800 dark:to-gray-700 rounded-full flex items-center justify-center mx-auto mb-8">
+                    <LucideSearch size={48} className="text-gray-400" />
+                  </div>
+                  <h3 className="text-2xl font-semibold text-gray-700 dark:text-gray-300 mb-3">
+                    No results found
+                  </h3>
+                  <p className="text-gray-500 max-w-md mx-auto mb-6">
+                    We couldn't find anything for "
+                    <span className="font-medium">{searchQuery}</span>". Try
+                    using different keywords or check your spelling.
+                  </p>
+                  <div className="space-y-2 text-sm text-gray-400">
+                    <p>Try searching for:</p>
+                    <div className="flex flex-wrap justify-center gap-2">
+                      <span className="bg-gray-100 dark:bg-gray-800 px-3 py-1 rounded-full">
+                        usernames
+                      </span>
+                      <span className="bg-gray-100 dark:bg-gray-800 px-3 py-1 rounded-full">
+                        hashtags
+                      </span>
+                      <span className="bg-gray-100 dark:bg-gray-800 px-3 py-1 rounded-full">
+                        keywords
+                      </span>
+                    </div>
                   </div>
                 </motion.div>
               )}
 
-              {/* Videos Section */}
-              {activeTab === "videos" && (
-                <motion.div
-                  key="videos"
-                  initial={{ y: 30, opacity: 0 }}
-                  animate={{ y: 0, opacity: 1 }}
-                  transition={{ duration: 0.5, ease: "easeOut" }}
-                  className="text-center py-20"
-                >
-                  <div className="w-24 h-24 bg-gray-100 dark:bg-gray-800 rounded-full flex items-center justify-center mx-auto mb-6">
-                    <Video size={36} className="text-gray-400" />
-                  </div>
-                  <h3 className="text-xl font-medium text-gray-600 dark:text-gray-400 mb-3">
-                    No videos found
-                  </h3>
-                  <p className="text-gray-500">
-                    No video results for "{searchQuery}"
-                  </p>
-                </motion.div>
-              )}
-            </motion.div>
-          ) : !loading ? (
-            <motion.div
-              key="empty"
-              initial={{ y: 30, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              exit={{ opacity: 0, y: -20 }}
-              transition={{ duration: 0.5, ease: "easeOut" }}
-              className="text-center py-20"
-            >
-              <div className="w-24 h-24 bg-blue-50 dark:bg-blue-900/20 rounded-full flex items-center justify-center mx-auto mb-6">
-                <LucideSearch size={36} className="text-primary-dark-pink" />
-              </div>
-              <h3 className="text-2xl font-medium text-gray-700 dark:text-gray-300 mb-3">
-                Search PaymeFans
-              </h3>
-              <p className="text-gray-500 max-w-md mx-auto">
-                Find people, posts, and more on PaymeFans. Start typing to see
-                results.
-              </p>
-            </motion.div>
-          ) : (
-            <motion.div
-              key="empty"
-              initial={{ y: 30, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              exit={{ opacity: 0, y: -20 }}
-              transition={{ duration: 0.5, ease: "easeOut" }}
-              className="text-center py-20"
-            >
-              <div>
-                <LucideLoader2 className="animate-spin text-primary-dark-pink w-12 h-12 mx-auto mb-4" />
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
+            {/* Initial State */}
+            {!loading && !searchQuery && (
+              <motion.div
+                key="initial"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                transition={{ duration: 0.5, ease: "easeOut" }}
+                className="text-center py-32"
+              >
+                <div className="w-32 h-32 bg-gradient-to-br from-primary-dark-pink/10 to-primary-dark-pink/5 rounded-full flex items-center justify-center mx-auto mb-8">
+                  <LucideSearch size={48} className="text-primary-dark-pink" />
+                </div>
+                <h3 className="text-3xl font-semibold text-gray-700 dark:text-gray-300 mb-4">
+                  Discover PaymeFans
+                </h3>
+                <p className="text-gray-500 max-w-lg mx-auto mb-8 text-lg">
+                  Search for people, posts, and media content. Connect with
+                  creators and discover amazing content.
+                </p>
+                <div className="flex flex-wrap justify-center gap-2 text-sm">
+                  <span className="bg-primary-dark-pink/10 text-primary-dark-pink px-4 py-2 rounded-full font-medium">
+                    People
+                  </span>
+                  <span className="bg-primary-dark-pink/10 text-primary-dark-pink px-4 py-2 rounded-full font-medium">
+                    Posts
+                  </span>
+                  <span className="bg-primary-dark-pink/10 text-primary-dark-pink px-4 py-2 rounded-full font-medium">
+                    Media
+                  </span>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
       </div>
     </div>
   );

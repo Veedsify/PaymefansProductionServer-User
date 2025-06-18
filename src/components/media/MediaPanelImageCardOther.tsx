@@ -145,7 +145,7 @@ const MediaPanelImageCardOther = React.memo(
     );
   }
 );
-const MediaPanelMediaCard = ({
+export const MediaPanelMediaCard = ({
   media,
   PreviewImageHandler,
   indexId,
