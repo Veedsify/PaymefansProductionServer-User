@@ -240,18 +240,6 @@ const VideoPreview = memo(
           type: "spring",
         }}
       >
-        <AnimatePresence>
-          {status === "loading" && (
-            <motion.div
-              className="absolute inset-0 flex items-center justify-center z-10"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0, transition: { duration: 0.2 } }}
-            >
-              <Loader />
-            </motion.div>
-          )}
-        </AnimatePresence>
         {isBlob ? (
           <video
             ref={videoRef}

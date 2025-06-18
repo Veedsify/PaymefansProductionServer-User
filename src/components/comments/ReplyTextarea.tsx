@@ -249,6 +249,7 @@ const ReplyPostComponent = ({ options }: ReplyPostProps) => {
       formData.append("postId", String(options?.id));
       formData.append("comment", typedComment);
       formData.append("reply_to", options?.reply_to || "");
+      formData.append("mentions", JSON.stringify(mentions));
       if (options.parentId) {
         formData.append("parentId", options.parentId);
       }

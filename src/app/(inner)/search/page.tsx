@@ -17,6 +17,7 @@ import {
   ExternalLink,
   Verified,
   LucideBot,
+  LucideLoader2,
 } from "lucide-react";
 import { useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -244,6 +245,7 @@ const SearchPage = () => {
   const search = useSearchParams();
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [activeTab, setActiveTab] = useState<string>("all");
+  const [loading, setLoading] = useState<boolean>(false);
 
   useEffect(() => {
     if (ref.current) {
@@ -257,7 +259,14 @@ const SearchPage = () => {
   }, [ref, search]);
 
   const handleTypingSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.value.trim().length === 0) {
+      return setSearchQuery("");
+    }
+    setLoading(true);
     setSearchQuery(e.target.value);
+    setTimeout(() => {
+      setLoading(false);
+    }, 1000);
   };
 
   useEffect(() => {
@@ -292,7 +301,7 @@ const SearchPage = () => {
           className="sticky top-0 z-20 bg-white dark:bg-gray-950 py-6 -mx-2"
         >
           <div className="relative mx-auto">
-            <div className="relative overflow-hidden rounded-full bg-white dark:bg-gray-800 shadow hover:shadow-xl transition-shadow duration-300 border border-primary-dark-pink/15">
+            <div className="relative overflow-hidden rounded-lg bg-white dark:bg-gray-800 shadow hover:shadow-xl transition-shadow duration-300 border border-primary-dark-pink/15">
               <input
                 ref={ref}
                 type="text"
@@ -308,7 +317,7 @@ const SearchPage = () => {
               />
               <button
                 onClick={HandleSearch}
-                className="absolute right-4 top-1/2 transform -translate-y-1/2 p-2 rounded-full text-gray-400 hover:text-primary-dark-pink hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-all duration-200"
+                className="absolute right-4 top-1/2 transform -translate-y-1/2 p-2 rounded-lg text-gray-400 hover:text-primary-dark-pink hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-all duration-200"
               >
                 <LucideSearch size={18} />
               </button>
@@ -337,7 +346,7 @@ const SearchPage = () => {
                         onClick={() => setActiveTab(tab.id)}
                         whileHover={{ scale: 1.02 }}
                         whileTap={{ scale: 0.98 }}
-                        className={`flex items-center px-6 py-3 rounded-full transition-all duration-300 text-sm font-medium shadow-sm
+                        className={`flex items-center px-6 py-3 rounded-lg  text-sm font-medium shadow-sm
                           ${
                             activeTab === tab.id
                               ? "bg-primary-dark-pink text-white shadow-lg shadow-primary-dark-pink/25"
@@ -357,7 +366,7 @@ const SearchPage = () => {
 
         {/* Content */}
         <AnimatePresence mode="wait">
-          {searchQuery ? (
+          {!loading && searchQuery && mockUsers.length && mockPosts.length ? (
             <motion.div
               key="results"
               initial={{ opacity: 0, y: 20 }}
@@ -389,7 +398,7 @@ const SearchPage = () => {
                           ease: "easeOut",
                         }}
                         whileHover={{ y: -8, scale: 1.02 }}
-                        className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden group"
+                        className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm hover:shadow-xl  overflow-hidden group"
                       >
                         <div className="relative h-32">
                           <img
@@ -423,7 +432,7 @@ const SearchPage = () => {
                                 @{user.username}
                               </p>
                             </div>
-                            <button className="p-2 rounded-full text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-all duration-200">
+                            <button className="p-2 rounded-full text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 ">
                               <MoreHorizontal size={18} />
                             </button>
                           </div>
@@ -498,12 +507,12 @@ const SearchPage = () => {
                         initial={{ opacity: 0, y: 30 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{
-                          duration: 0.5,
+                          duration: 1,
                           delay: index * 0.1,
                           ease: "easeOut",
                         }}
                         whileHover={{ y: -2 }}
-                        className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden"
+                        className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm hover:shadow-lg  overflow-hidden"
                       >
                         <div className="p-6">
                           <div className="flex items-start space-x-4">
@@ -642,7 +651,7 @@ const SearchPage = () => {
                           ease: "easeOut",
                         }}
                         whileHover={{ y: -4, scale: 1.02 }}
-                        className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden"
+                        className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm hover:shadow-lg  overflow-hidden"
                       >
                         <div className="relative overflow-hidden">
                           <img
@@ -698,7 +707,7 @@ const SearchPage = () => {
                 </motion.div>
               )}
             </motion.div>
-          ) : (
+          ) : !loading ? (
             <motion.div
               key="empty"
               initial={{ y: 30, opacity: 0 }}
@@ -717,6 +726,19 @@ const SearchPage = () => {
                 Find people, posts, and more on PaymeFans. Start typing to see
                 results.
               </p>
+            </motion.div>
+          ) : (
+            <motion.div
+              key="empty"
+              initial={{ y: 30, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.5, ease: "easeOut" }}
+              className="text-center py-20"
+            >
+              <div>
+                <LucideLoader2 className="animate-spin text-primary-dark-pink w-12 h-12 mx-auto mb-4" />
+              </div>
             </motion.div>
           )}
         </AnimatePresence>
