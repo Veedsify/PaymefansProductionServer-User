@@ -2,31 +2,67 @@ import { AllModelsProps } from "@/types/User";
 import Image from "next/image";
 import Link from "next/link";
 import { useMemo } from "react";
+import { motion } from "framer-motion";
 
 const ModelsSubscription = ({ model }: { model: any }) => {
-    const memoizedModelSubscription = useMemo(() => {
-        return (
-            <div className="flex flex-col items-center gap-2 select-none ">
-                <Link href={`/${model?.username}`}>
-                    <Image
-                        width={100}
-                        height={100}
-                        priority
-                        src={model?.profile_image}
-                        alt={model ? model.fullname : ""}
-                        className="object-cover w-20 h-20 rounded-full lg:w-24 lg:h-24 aspect-square"
-                    />
-                </Link>
-                <p className="text-sm font-bold dark:text-white text-center">{model?.username}</p>
-                <div className="text-sm text-center">
-                    <span className="block text-xs text-center text-slate-500 dark:text-slate-200 ">Monthly</span>
-                </div>
-                <button className="block w-full px-3 py-1 text-xs font-semibold text-white rounded-md bg-primary-dark-pink">Subscribe</button>
-            </div>
-        );
-    }, [model]);
+  const memoizedModelSubscription = useMemo(() => {
+    return (
+      <motion.div
+        className="flex flex-col items-center gap-2 select-none"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.3 }}
+        whileHover={{ scale: 1.05 }}
+      >
+        <Link href={`/${model?.username}`}>
+          <motion.div
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 0.95 }}
+            transition={{ type: "spring", stiffness: 300 }}
+          >
+            <Image
+              width={100}
+              height={100}
+              priority
+              src={model?.profile_image}
+              alt={model ? model.fullname : ""}
+              className="object-cover w-20 h-20 rounded-full lg:w-24 lg:h-24 aspect-square"
+            />
+          </motion.div>
+        </Link>
+        <motion.p
+          className="text-sm font-bold dark:text-white text-center"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.1 }}
+        >
+          {model?.username}
+        </motion.p>
+        <motion.div
+          className="text-sm text-center"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.2 }}
+        >
+          <span className="block text-xs text-center text-slate-500 dark:text-slate-200">
+            Monthly
+          </span>
+        </motion.div>
+        <motion.button
+          className="block w-full px-3 py-1 text-xs font-semibold text-white rounded-md bg-primary-dark-pink cursor-pointer"
+          whileHover={{ scale: 1.05, backgroundColor: "#e91e63" }}
+          whileTap={{ scale: 0.95 }}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.3 }}
+        >
+          Subscribe
+        </motion.button>
+      </motion.div>
+    );
+  }, [model]);
 
-    return memoizedModelSubscription;
-}
+  return memoizedModelSubscription;
+};
 
 export default ModelsSubscription;

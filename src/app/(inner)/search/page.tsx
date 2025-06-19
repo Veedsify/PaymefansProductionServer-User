@@ -157,15 +157,16 @@ const SearchPage = () => {
   };
 
   const handleTypingSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.value.trim().length === 0) {
+    if (e.target.value.trim().length <= 2) {
       return setSearchQuery("");
     }
-    setLoading(true);
-    setSearchQuery(e.target.value);
+      setLoading(true);
+      setSearchQuery(e.target.value);
+      return;
   };
 
   useEffect(() => {
-    if (!searchQuery) return;
+    if (!searchQuery || searchQuery.length <= 2) return;
 
     const delayDebounce = setTimeout(() => {
       searchFunction(searchQuery)
@@ -285,7 +286,7 @@ const SearchPage = () => {
                         onClick={() => setActiveTab(tab.id)}
                         whileHover={{ scale: 1.02 }}
                         whileTap={{ scale: 0.98 }}
-                        className={`flex items-center px-6 py-3 rounded-lg text-sm font-medium shadow-sm transition-all duration-200
+                        className={`flex items-center px-6 py-3 rounded-lg text-sm font-medium shadow-sm transition-all duration-200 cursor-pointer
                           ${
                             activeTab === tab.id
                               ? "bg-primary-dark-pink text-white shadow-lg shadow-primary-dark-pink/25"
@@ -323,7 +324,9 @@ const SearchPage = () => {
                   Searching...
                 </h3>
                 <p className="text-gray-500">
-                  Finding results for "{searchQuery}"
+                  {searchQuery.length <= 2
+                    ? `Search Query: "${searchQuery}" is too short`
+                    : "Finding results for " + `"${searchQuery}"`}
                 </p>
               </motion.div>
             )}
@@ -350,7 +353,7 @@ const SearchPage = () => {
                         className="space-y-8"
                       >
                         <div className="flex items-center justify-between">
-                          <h2 className="text-3xl font-semibold flex items-center text-gray-800 dark:text-gray-200">
+                          <h2 className="text-xl font-semibold flex items-center text-gray-800 dark:text-gray-200">
                             <User
                               className="mr-3 text-primary-dark-pink"
                               size={28}
@@ -476,7 +479,7 @@ const SearchPage = () => {
                                 <motion.button
                                   whileHover={{ scale: 1.02 }}
                                   whileTap={{ scale: 0.98 }}
-                                  className="w-full py-3.5 bg-primary-dark-pink hover:bg-primary-text-dark-pink text-white rounded-xl text-sm font-semibold transition-all duration-200 shadow-md hover:shadow-lg"
+                                  className="w-full py-3.5 bg-primary-dark-pink hover:bg-primary-text-dark-pink text-white rounded-xl text-sm font-semibold transition-all duration-200 shadow-md hover:shadow-lg cursor-pointer"
                                 >
                                   Follow
                                 </motion.button>
@@ -497,7 +500,7 @@ const SearchPage = () => {
                         className="space-y-8"
                       >
                         <div className="flex items-center justify-between">
-                          <h2 className="text-3xl font-semibold flex items-center text-gray-800 dark:text-gray-200">
+                          <h2 className="text-xl font-semibold flex items-center text-gray-800 dark:text-gray-200">
                             <MessageCircle
                               className="mr-3 text-primary-dark-pink"
                               size={28}
@@ -554,7 +557,7 @@ const SearchPage = () => {
                         className="space-y-8"
                       >
                         <div className="flex items-center justify-between">
-                          <h2 className="text-3xl font-semibold flex items-center text-gray-800 dark:text-gray-200">
+                          <h2 className="text-xl font-semibold flex items-center text-gray-800 dark:text-gray-200">
                             <LucideImage
                               className="mr-3 text-primary-dark-pink"
                               size={28}
