@@ -23,7 +23,7 @@ const StoriesHeader = ({
     );
   };
   return (
-    <div className="absolute top-1 w-full left-0 z-50">
+    <div className="absolute top-3 w-full left-0 z-50">
       <div className="w-full bg-gradient-to-b from-[rgba(0,0,0,0.2)] to-[rgba(0,0,0,0.0)]">
         <div className="flex items-center justify-between px-4 py-3 md:py-5 bg-transparent">
           {/* Left side - Profile info */}

@@ -160,9 +160,9 @@ const SearchPage = () => {
     if (e.target.value.trim().length <= 2) {
       return setSearchQuery("");
     }
-      setLoading(true);
-      setSearchQuery(e.target.value);
-      return;
+    setLoading(true);
+    setSearchQuery(e.target.value);
+    return;
   };
 
   useEffect(() => {
@@ -246,6 +246,7 @@ const SearchPage = () => {
                 type="text"
                 name="Search"
                 id="search"
+                autoComplete={"false"}
                 defaultValue={searchQuery}
                 onChange={handleTypingSearch}
                 className="w-full py-4 pl-14 pr-14 bg-transparent border-0 focus:ring-0 outline-none text-gray-700 dark:text-gray-200 placeholder-gray-400 text-base"
@@ -389,15 +390,22 @@ const SearchPage = () => {
                                 <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent"></div>
                                 <div className="absolute -bottom-10 left-6">
                                   <div className="relative">
-                                    <Image
-                                      height={80}
-                                      width={80}
-                                      src={user.profile_image}
-                                      alt={user.name}
-                                      className="w-20 h-20 rounded-full border-4 border-white dark:border-gray-800 object-cover shadow-lg"
-                                    />
+                                    <Link href={`/${user.username}`}>
+                                      <Image
+                                        height={80}
+                                        width={80}
+                                        src={user.profile_image}
+                                        alt={user.name}
+                                        className="w-20 h-20 rounded-full border-4 border-white dark:border-gray-800 object-cover shadow-lg"
+                                      />
+                                    </Link>
                                     {user.is_model && (
-                                      <div className="absolute -bottom-1 -right-1 bg-primary-dark-pink rounded-full p-1.5">
+                                      <div className="absolute bottom-1 right-1 bg-primary-dark-pink rounded-full p-1">
+                                        <Verified className="w-3.5 h-3.5 text-white" />
+                                      </div>
+                                    )}
+                                    {user.admin && (
+                                      <div className="absolute bottom-1 right-1 bg-yellow-500 rounded-full p-1">
                                         <Verified className="w-3.5 h-3.5 text-white" />
                                       </div>
                                     )}
@@ -408,10 +416,14 @@ const SearchPage = () => {
                                 <div className="flex items-start justify-between mb-4">
                                   <div className="flex-1">
                                     <h4 className="font-semibold text-xl text-gray-900 dark:text-gray-100 mb-1">
-                                      {user.name}
+                                      <Link href={`/${user.username}`}>
+                                        {user.name}
+                                      </Link>
                                     </h4>
                                     <p className="text-gray-500 text-sm">
-                                      {user.username}
+                                      <Link href={`/${user.username}`}>
+                                        {user.username}
+                                      </Link>
                                     </p>
                                   </div>
                                   <button className="p-2 rounded-full text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
@@ -429,7 +441,7 @@ const SearchPage = () => {
                                   {user.location && (
                                     <span className="flex items-center">
                                       <MapPin size={14} className="mr-1.5" />
-                                      {user.location}, {user.country}
+                                      {user.location} | {user.country}
                                     </span>
                                   )}
                                   <span className="flex items-center">

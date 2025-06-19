@@ -1,5 +1,5 @@
 "use client";
-import { StoryPreviewProps } from "@/types/Components";
+import { Story, StoryPreviewProps } from "@/types/Components";
 import { Swiper, SwiperClass, SwiperSlide } from "swiper/react";
 import "swiper/css/bundle";
 import Image from "next/image";
@@ -8,6 +8,65 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import StoriesHeader from "./StatusHeader";
 import VideoPlayer from "../sub_components/videoplayer";
 
+// Caption Element Component
+const CaptionElement = ({ element }: { element: any }) => {
+  const handleClick = () => {
+    if (element.type === "link" && element.url) {
+      window.open(element.url, "_blank");
+    }
+  };
+
+  const elementStyle = {
+    position: "absolute" as const,
+    left: `${element.position.x}%`,
+    top: `${element.position.y}%`,
+    transform: "translate(-50%, -50%)",
+    fontFamily: "Inter",
+    fontSize: element.style.fontSize,
+    fontWeight: element.style.fontWeight,
+    color: element.style.color,
+    textAlign: element.style.textAlign,
+    fontStyle: element.style.fontStyle || "normal",
+    textDecoration: element.style.textDecoration || "none",
+    cursor: element.type === "link" ? "pointer" : "default",
+    userSelect: "none" as any,
+    pointerEvents: (element.type === "link" ? "auto" : "none") as any,
+    textShadow: "1px 1px 2px rgba(0,0,0,0.8)", // Better readability on images/videos
+    zIndex: 100,
+    maxWidth: "80%",
+    wordWrap: "break-word" as any,
+  };
+
+  return (
+    <div
+      style={elementStyle}
+      onClick={handleClick}
+      className={`
+        ${element.type === "link" ? "hover:opacity-80 transition-opacity" : ""}
+        ${element.type === "link" ? "underline" : ""}
+      `}
+    >
+      {element.content}
+    </div>
+  );
+};
+
+// Caption Overlay Component
+const CaptionOverlay = ({ story }: { story: Story }) => {
+  const parsedCaptionElements = JSON.parse(story.captionElements);
+  if (!parsedCaptionElements || parsedCaptionElements.length === 0) {
+    return null;
+  }
+
+  return (
+    <div className="absolute inset-0 pointer-events-none z-50 w-full h-full">
+      {parsedCaptionElements.map((element: any) => (
+        <CaptionElement key={element.id} element={element} />
+      ))}
+    </div>
+  );
+};
+
 const StoryPreviewComponent = ({
   className,
   onAllStoriesEnd,
@@ -15,8 +74,8 @@ const StoryPreviewComponent = ({
 }: StoryPreviewProps) => {
   const swiperRef = useRef<SwiperClass | null>(null);
   const videoRef = useRef<HTMLVideoElement | null>(null);
-  const [resetSwiper, setResetSwiper] = useState(false);
   const [activeIndex, setActiveIndex] = useState(0);
+  const [swiperKey, setSwiperKey] = useState(0);
 
   // Memoize the function to prevent unnecessary rerenders
   const moveToNextSlide = useCallback(() => {
@@ -25,41 +84,28 @@ const StoryPreviewComponent = ({
     if (swiperRef.current.isEnd) {
       // Handle end of slides
       onAllStoriesEnd().then(() => {
-        // Use requestAnimationFrame instead of setTimeout for better performance
-        requestAnimationFrame(() => {
-          if (swiperRef.current) {
-            swiperRef.current.slideTo(0, 0, false);
-            setResetSwiper(true);
-          }
-        });
+        setActiveIndex(0);
+        setSwiperKey((prev) => prev + 1); // Force swiper re-render
       });
     } else {
-      // Handle next slide
-      requestAnimationFrame(() => {
-        if (swiperRef.current) {
-          swiperRef.current.slideNext(300, true);
-          setActiveIndex(swiperRef.current.activeIndex);
-        }
-      });
+      swiperRef.current.slideNext(300, true);
     }
   }, [onAllStoriesEnd]);
 
   const moveToPrevSlide = useCallback(() => {
-    if (swiperRef.current) {
-      // Reset video if it's playing
-      if (videoRef.current) {
-        videoRef.current.pause();
-        videoRef.current.currentTime = 0;
-      }
+    if (!swiperRef.current) return;
 
-      // If at beginning of slides and trying to go back, wrap to end
-      if (swiperRef.current.activeIndex === 0) {
-        swiperRef.current.slideTo(stories.length - 1, 300, true);
-      } else {
-        swiperRef.current.slidePrev(300, true);
-      }
+    // Reset video if it's playing
+    if (videoRef.current) {
+      videoRef.current.pause();
+      videoRef.current.currentTime = 0;
+    }
 
-      setActiveIndex(swiperRef.current.activeIndex);
+    // If at beginning of slides and trying to go back, wrap to end
+    if (swiperRef.current.activeIndex === 0) {
+      swiperRef.current.slideTo(stories.length - 1, 300, true);
+    } else {
+      swiperRef.current.slidePrev(300, true);
     }
   }, [stories.length]);
 
@@ -95,10 +141,8 @@ const StoryPreviewComponent = ({
 
       // Reset any playing videos
       document.querySelectorAll("video").forEach((video) => {
-        if (video !== videoRef.current) {
-          video.pause();
-          video.currentTime = 0;
-        }
+        video.pause();
+        video.currentTime = 0;
       });
 
       // Find the video in the current slide and update videoRef
@@ -108,7 +152,9 @@ const StoryPreviewComponent = ({
         if (video) {
           videoRef.current = video as HTMLVideoElement;
           // Small timeout to ensure DOM is ready
-          setTimeout(() => PlayVideo(true), 50);
+          setTimeout(() => PlayVideo(true), 100);
+        } else {
+          videoRef.current = null;
         }
       }
     },
@@ -118,34 +164,27 @@ const StoryPreviewComponent = ({
   // Preload adjacent slides for smoother transitions
   useEffect(() => {
     const preloadAdjacentSlides = () => {
-      if (!stories || !swiperRef.current) return;
+      if (!stories || stories.length === 0) return;
 
-      const currentIndex = swiperRef.current.activeIndex;
       const nextIndex =
-        currentIndex + 1 < stories.length ? currentIndex + 1 : null;
-      const prevIndex = currentIndex - 1 >= 0 ? currentIndex - 1 : null;
+        activeIndex + 1 < stories.length ? activeIndex + 1 : null;
+      const prevIndex = activeIndex - 1 >= 0 ? activeIndex - 1 : null;
 
-      // Preload next image/video
-      if (nextIndex !== null && stories[nextIndex].type === "image") {
+      // Preload next image
+      if (nextIndex !== null && stories[nextIndex].media_type === "image") {
         const img = new window.Image();
-        img.src = stories[nextIndex].url;
+        img.src = stories[nextIndex].media_url;
       }
 
-      // Preload previous image/video
-      if (prevIndex !== null && stories[prevIndex].type === "image") {
+      // Preload previous image
+      if (prevIndex !== null && stories[prevIndex].media_type === "image") {
         const img = new window.Image();
-        img.src = stories[prevIndex].url;
+        img.src = stories[prevIndex].media_url;
       }
     };
 
     preloadAdjacentSlides();
   }, [activeIndex, stories]);
-
-  useEffect(() => {
-    if (resetSwiper) {
-      setResetSwiper(false); // Reset the flag after rendering
-    }
-  }, [resetSwiper]);
 
   // Reset component when unmounting
   useEffect(() => {
@@ -159,118 +198,131 @@ const StoryPreviewComponent = ({
     };
   }, []);
 
-  // When active slide changes, ensure proper cleanup and setup
-  useEffect(() => {
-    // Cleanup previous video if exists
-    document.querySelectorAll("video").forEach((video) => {
-      if (video !== videoRef.current) {
-        video.pause();
-        video.currentTime = 0;
-      }
-    });
-
-    // Reset swiper when needed
-    if (resetSwiper) {
-      setResetSwiper(false);
-      // Force reload active content
-      if (videoRef.current && stories[activeIndex]?.type === "video") {
-        videoRef.current.load();
-        PlayVideo(true);
-      }
-    }
-  }, [resetSwiper, activeIndex, stories, PlayVideo]);
+  // Early return if no stories
+  if (!stories || stories.length === 0) {
+    return (
+      <div
+        className={`relative flex flex-col items-center justify-center min-h-dvh bg-black ${className}`}
+      >
+        <p className="text-white">No stories available</p>
+      </div>
+    );
+  }
 
   return (
     <div
       className={`relative flex flex-col items-center justify-center min-h-dvh bg-black ${className}`}
     >
-      {stories.length > 0 && (
-        <div className="w-full mx-auto z-20 absolute top-0 left-1/2 -translate-x-1/2">
-          <StoriesHeader
-            username={stories[activeIndex].user.username}
-            timestamp={stories[activeIndex].created_at}
-            profileImage={stories[activeIndex].user.profile_image.trimEnd()}
+      {/* Header */}
+      <div className="lg:max-w-3xl w-full mx-auto z-20 absolute top-0 left-1/2 -translate-x-1/2">
+        <StoriesHeader
+          username={stories[activeIndex]?.user?.username || ""}
+          timestamp={stories[activeIndex]?.created_at || ""}
+          profileImage={
+            stories[activeIndex]?.user?.profile_image?.trimEnd() || ""
+          }
+        />
+      </div>
+
+      {/* Main Content Area */}
+      <div className="relative lg:max-w-3xl w-full h-dvh flex items-center justify-center">
+        {/* Controls */}
+        <div className="absolute w-full mx-auto left-1/2 -translate-x-1/2 top-2 pointer-events-none z-[550]">
+          <StoryPreviewControlls
+            type={stories[activeIndex]?.media_type || "image"}
+            moveToNextSlide={moveToNextSlide}
+            playVideoOnLoad={PlayIfVideo}
+            clickToPlay={() =>
+              PlayVideo(stories[activeIndex]?.media_type === "video")
+            }
+            stories={stories}
+            index={activeIndex}
+            moveToPrevSlide={moveToPrevSlide}
           />
         </div>
-      )}
-      <div className="relative w-full h-dvh flex items-center justify-center">
-        {stories.length > 0 && (
-          <div className="absolute w-full mx-auto left-1/2 -translate-x-1/2 top-4 pointer-events-none z-[550]">
-            <StoryPreviewControlls
-              type={stories[activeIndex].type}
-              moveToNextSlide={moveToNextSlide}
-              playVideoOnLoad={PlayIfVideo}
-              clickToPlay={() =>
-                PlayVideo(stories[activeIndex].type === "video")
-              }
-              stories={stories}
-              index={activeIndex}
-              moveToPrevSlide={moveToPrevSlide}
-            />
-          </div>
-        )}
-        <Swiper
-          key={`stories-swiper-${activeIndex}-${stories.length}-${resetSwiper}`}
-          spaceBetween={0}
-          slidesPerView={1}
-          draggable={false}
-          onSwiper={(swiper) => (swiperRef.current = swiper)}
-          className="w-full h-full flex items-center justify-center"
-          onSlideChange={handleSlideChange}
-          speed={300}
-          initialSlide={activeIndex}
-        >
-          {stories.map((story, index) => (
-            <SwiperSlide
-              className="flex items-center justify-center w-full h-full bg-black"
-              key={`${story.url}-${index}`}
-            >
-              <div className="flex items-center justify-center w-full h-full">
-                {story.type === "image" && (
-                  <div className="relative w-full h-full flex items-center justify-center">
-                    <Image
-                      src={story.url}
-                      alt={story?.caption ? story.caption : ""}
-                      fill
-                      style={{ objectFit: "contain" }}
-                      quality={100}
-                      priority={index === activeIndex}
-                      loading={index === activeIndex ? "eager" : "lazy"}
-                      className="rounded-lg shadow-lg bg-black"
-                    />
-                  </div>
-                )}
-                {story.type === "video" && (
-                  <div className="relative w-full h-full flex items-center justify-center">
-                    <VideoPlayer
-                      modalOpen={false}
-                      autoPlay={index === activeIndex}
-                      allOthers={{
-                        playsInline: true,
-                        muted: false,
-                        controls: false,
-                        loop: false,
-                        preload: index === activeIndex ? "auto" : "metadata",
-                        onEnded: () => moveToNextSlide(),
-                        style: {
-                          width: "100%",
-                          height: "100%",
-                          maxHeight: "calc(100vh - 120px)",
-                          objectFit: "contain",
-                          background: "black",
-                          borderRadius: "0.75rem",
-                          boxShadow: "0 4px 24px rgba(0,0,0,0.7)",
-                        },
-                      }}
-                      className="w-full h-full rounded-lg shadow-lg bg-black"
-                      streamUrl={story.url}
-                    />
-                  </div>
-                )}
-              </div>
-            </SwiperSlide>
-          ))}
-        </Swiper>
+
+        {/* Swiper Container */}
+        <div className="w-full h-full">
+          <Swiper
+            key={swiperKey}
+            spaceBetween={0}
+            slidesPerView={1}
+            allowTouchMove={true}
+            onSwiper={(swiper) => {
+              swiperRef.current = swiper;
+            }}
+            className="w-full h-full"
+            onSlideChange={handleSlideChange}
+            speed={300}
+            initialSlide={activeIndex}
+            watchSlidesProgress={true}
+          >
+            {stories.map((story, index) => (
+              <SwiperSlide
+                className="flex items-center justify-center w-full h-full bg-black"
+                key={`${story.media_url}-${index}-${swiperKey}`}
+              >
+                <div className="relative flex items-center justify-center w-full h-full max-w-full max-h-full">
+                  {story.media_type === "image" ? (
+                    <div className="relative w-full h-full flex items-center justify-center">
+                      <Image
+                        src={story.media_url}
+                        alt={story?.caption || "Story image"}
+                        fill
+                        style={{ objectFit: "contain" }}
+                        quality={100}
+                        priority={index === activeIndex}
+                        loading={index === activeIndex ? "eager" : "lazy"}
+                        className="rounded-lg shadow-lg bg-black z-30"
+                        onError={(e) => {
+                          console.error(
+                            "Image failed to load:",
+                            story.media_url
+                          );
+                        }}
+                      />
+                      {/* Caption Overlay for Images */}
+                      <CaptionOverlay story={story} />
+                    </div>
+                  ) : story.media_type === "video" ? (
+                    <div className="relative w-full h-full flex items-center justify-center">
+                      <VideoPlayer
+                        modalOpen={false}
+                        autoPlay={index === activeIndex}
+                        allOthers={{
+                          className: "z-30",
+                          playsInline: true,
+                          muted: false,
+                          controls: false,
+                          loop: false,
+                          preload: index === activeIndex ? "auto" : "metadata",
+                          onEnded: () => moveToNextSlide(),
+                          style: {
+                            width: "100%",
+                            height: "100%",
+                            maxHeight: "calc(100vh - 120px)",
+                            objectFit: "contain",
+                            background: "black",
+                            borderRadius: "0.75rem",
+                            boxShadow: "0 4px 24px rgba(0,0,0,0.7)",
+                          },
+                        }}
+                        className="w-full h-full rounded-lg shadow-lg bg-black"
+                        streamUrl={story.media_url}
+                      />
+                      {/* Caption Overlay for Videos */}
+                      <CaptionOverlay story={story} />
+                    </div>
+                  ) : (
+                    <div className="flex items-center justify-center w-full h-full text-white">
+                      <p>Unsupported media type</p>
+                    </div>
+                  )}
+                </div>
+              </SwiperSlide>
+            ))}
+          </Swiper>
+        </div>
       </div>
     </div>
   );

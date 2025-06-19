@@ -1,6 +1,7 @@
 import React, { ChangeEvent, ReactNode, SetStateAction } from "react";
 import { AuthUserProps, ProfileUserProps } from "./User";
 import { LastMessage } from "./Conversations";
+import { StoryType } from "@/contexts/StoryContext";
 
 // POST COMPONENT PROPS
 export type PostShareModalProps = {
@@ -470,19 +471,18 @@ interface SelectMoreProps {
   handleOpenMore: () => void;
 }
 
-type Story = {
-  id?: number;
-  url: string;
-  caption?: string;
-  user: {
-    id: number;
-    username: string;
-    profile_image: string;
-  };
+interface Story {
   created_at: string;
-  type: string;
+  media_url: string;
+  media_type: string;
+  captionElements: string;
+  caption: string;
   duration: number;
-};
+  user: {
+    profile_image: string;
+    username: string;
+  }
+}
 
 type StoryPreviewProps = {
   className: string;

@@ -1,14 +1,13 @@
 "use client";
-import { Loader2, LucidePlus } from "lucide-react";
+import { Loader2, LucidePlus, X } from "lucide-react";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import swal from "sweetalert";
 import { useUserAuthContext } from "@/lib/UserUseContext";
 import Link from "next/link";
-import StoryPreviewComponent from "./StatusPreviewComponent";
 import useFetchStories from "../custom-hooks/FetchStories";
 import { Story } from "@/types/Story";
-import { debounce } from "lodash";
+import StatusModal from "./StatusModal";
 
 const StatusComponent = () => {
   const { stories, loading } = useFetchStories();
@@ -183,57 +182,6 @@ const UserStatus = () => {
         Your status
       </div>
     </div>
-  );
-};
-
-const StatusModal = ({
-  open,
-  setStoriesOpen,
-  stories: userStories,
-}: {
-  open: boolean;
-  stories: Story[];
-  setStoriesOpen: React.Dispatch<React.SetStateAction<boolean>>;
-}) => {
-  const stories = userStories.flatMap((story) =>
-    story.StoryMedia.map((media) => ({
-      type: media.media_type,
-      url: media.url,
-      duration: media.duration ? media.duration : 5000,
-      created_at: media.created_at,
-      user: story.user,
-    }))
-  );
-
-  const closeStoryModal = async () => {
-    setStoriesOpen(false);
-  };
-
-  if (!open) return null;
-
-  return (
-    <>
-      <div
-        className={`fixed bg-black/90 inset-0 z-50 w-full h-dvh md:h-dvh p-3 flex items-center justify-center ${
-          open
-            ? "pointer-events-auto opacity-100 visible"
-            : "opacity-0 pointer-events-none invisible"
-        }`}
-        onClick={closeStoryModal}
-      >
-        <div
-          className="max-w-screen-md min-h-dvh flex flex-col mx-auto"
-          onClick={(e) => e.stopPropagation()}
-        >
-          <StoryPreviewComponent
-            className={"object-contain w-full h-full relative"}
-            onAllStoriesEnd={closeStoryModal}
-            stories={stories}
-            key={stories.map((story) => story.url).join(",")} // Adding a unique key to force re-render
-          />
-        </div>
-      </div>
-    </>
   );
 };
 

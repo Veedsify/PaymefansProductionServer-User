@@ -40,9 +40,10 @@ export type StoryMedia = {
      media_type: string;
      filename: string;
      duration: number;
-     captionStyle: CaptionStyle | null;
+     caption: string;
+     captionElements: string;
      story_content: string | null;
-     url: string;
+     media_url: string;
      user_id: number;
      created_at: string;
      updated_at: string;
