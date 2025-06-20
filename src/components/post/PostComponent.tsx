@@ -35,7 +35,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { usePointsStore } from "@/contexts/PointsContext";
 
 // ---------- Helper component functions ---------- //
-
+// Audience icon component to display different icons based on audience type
 function AudienceIcon({ audience }: { audience: string }): JSX.Element | null {
   switch (audience) {
     case "public":
@@ -127,7 +127,13 @@ const PostComponent: React.FC<PostComponentProps> = ({
           })),
       });
     },
-    [isSubscribed, data.post_audience, data.media, isCreator, fullScreenPreview]
+    [
+      isSubscribed,
+      data.post_audience,
+      data.media,
+      isCreator,
+      fullScreenPreview,
+    ],
   );
 
   // --- Click post routing logic --- //
@@ -166,7 +172,7 @@ const PostComponent: React.FC<PostComponentProps> = ({
             "You don't have enough points to pay for this post",
             {
               id: "pay-for-post",
-            }
+            },
           );
         }
         const pay = await payForPost({ price, postId: data.id });
@@ -299,13 +305,12 @@ const PostComponent: React.FC<PostComponentProps> = ({
         ></div>
         {/* Media Grid */}
         <div
-          className={`grid gap-3 ${
-            data.media.length === 2
+          className={`grid gap-3 ${data.media.length === 2
               ? "grid-cols-2"
               : data.media.length >= 3
-              ? "grid-cols-3"
-              : "grid-cols-1"
-          }`}
+                ? "grid-cols-3"
+                : "grid-cols-1"
+            }`}
         >
           {data.media.slice(0, 3).map((media: UserMediaProps, i) => (
             <MediaGridItem
@@ -380,9 +385,8 @@ const MediaGridItem = ({
 
   return (
     <div
-      className={`relative rounded-xl overflow-hidden ${
-        data.post_status !== "approved" ? "border-fuchsia-500 border-2" : ""
-      }`}
+      className={`relative rounded-xl overflow-hidden ${data.post_status !== "approved" ? "border-fuchsia-500 border-2" : ""
+        }`}
       onClick={handleNonSubscriberClick}
     >
       {media.media_type === "video" ? (
@@ -484,7 +488,7 @@ const VideoComponent: React.FC<VideoComponentProps> = ({
       return;
     }
     const videoElement = document.getElementById(
-      "video_player_post"
+      "video_player_post",
     ) as HTMLVideoElement | null;
     if (videoElement) {
       if (playing) {
@@ -507,7 +511,7 @@ const VideoComponent: React.FC<VideoComponentProps> = ({
 
   useEffect(() => {
     const videoElement = document.getElementById(
-      "video_player_post"
+      "video_player_post",
     ) as HTMLVideoElement | null;
     if (!videoElement) return;
     const handleVideoEnd = () => {
