@@ -47,6 +47,7 @@ export interface PostData {
   likedByme: boolean;
   isSubscribed: boolean;
   wasReposted: boolean;
+  hasPaid: boolean;
   media: UserMediaProps[];
   user?: {
     id: number;
@@ -422,6 +423,7 @@ type MediaDataTypeOtherProps = {
   media_id: string;
   accessible_to: string;
   isSubscribed: boolean;
+  hasPaid: boolean;
   post: {
     id: number;
     user: {

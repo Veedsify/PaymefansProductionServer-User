@@ -10,7 +10,6 @@ import { useUserAuthContext } from "@/lib/UserUseContext";
 import { MediaDataTypeOtherProps } from "@/types/Components";
 import HLSVideoPlayer from "../sub_components/videoplayer";
 import { LockedMediaOverlay } from "../sub_components/sub/LockedMediaOverlay";
-import { useOtherMediaContext } from "@/contexts/ProfileMediaContext";
 import { useInfiniteQuery } from "@tanstack/react-query";
 const getUniqueItems = (arr: MediaDataTypeOtherProps[]) => {
   const uniqueMap = new Map();
@@ -154,7 +153,7 @@ export const MediaPanelMediaCard = ({
   const isCreator = media.post.user.id === authUser?.id;
   // const isAdmin = user.role === "admin";
   const isSubscribed = media.isSubscribed;
-  const hasPaid = authUser?.purchasedPosts?.includes(media.post?.id as number);
+  const hasPaid = media.hasPaid;
   // Determine visibility
   const canView =
     // isAdmin || // Admin sees all

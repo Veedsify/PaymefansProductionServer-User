@@ -1,6 +1,7 @@
 "use client";
 
 import React, {
+  JSX,
   MouseEvent,
   ReactNode,
   useCallback,
@@ -71,7 +72,7 @@ const PostComponent: React.FC<PostComponentProps> = ({
   // --- Permission/role checks --- //
   const isSubscribed = data.isSubscribed;
   const isCreator = user?.id === authUser?.id;
-  const hasPaid = authUser?.purchasedPosts?.includes(data?.id as number);
+  const hasPaid = data.hasPaid
   // const isAdmin = user.role === "admin"; // Default commented
 
   const canView =

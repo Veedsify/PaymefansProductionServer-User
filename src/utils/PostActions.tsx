@@ -228,9 +228,16 @@ const QuickPostActionHooks = ({ options }: QuickPostActionsProps) => {
           },
         }
       );
-      if (repost.status === 200) {
-        toast.success(repost.data.message);
+      if (repost.status === 200 && repost.data.error === false) {
+        toast.success(repost.data.message, {
+          id: "repost",
+        });
         router.refresh();
+      }
+      if (repost.status === 200 && repost.data.error) {
+        toast.error(repost.data.message, {
+          id: "repost-error",
+        });
       }
     } catch (error: any) {
       swal(error.response.data.message, {

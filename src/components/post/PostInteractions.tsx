@@ -75,11 +75,16 @@ export const PostCompInteractions = ({ data }: PostCompInteractionsProps) => {
           },
         }
       );
-      if (repost.status === 200) {
+      if (repost.status === 200 && repost.data.error === false) {
         toast.success(repost.data.message, {
           id: "repost",
         });
         router.refresh();
+      }
+      if (repost.status === 200 && repost.data.error === true) {
+        toast.error(repost.data.message, {
+          id: "repost-error",
+        });
       }
     } catch (error: any) {
       toast.error(error?.response?.data?.message || "Failed to repost", {

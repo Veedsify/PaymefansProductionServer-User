@@ -124,6 +124,7 @@ const ProductPreview = () => {
             <div className="relative aspect-[3/4] bg-slate-100 dark:bg-slate-800 rounded-lg overflow-hidden">
               <Image
                 width={640}
+                unoptimized 
                 height={480}
                 src={product.images[selectedImage]?.image_url}
                 alt={`Product view ${selectedImage + 1}`}
