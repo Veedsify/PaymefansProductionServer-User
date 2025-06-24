@@ -120,7 +120,7 @@ const ChatPage = ({ conversationId }: { conversationId: string }) => {
       setLoading(false);
       setError(null);
     };
-  }, []);
+  }, [paginateMessages]);
   // Optional side effect to paginate externally
   useEffect(() => {
     paginateMessages(chatMessages);
@@ -135,7 +135,7 @@ const ChatPage = ({ conversationId }: { conversationId: string }) => {
       setChatMessages([]);
       resetMessages();
     };
-  }, []); // cleanup only on unmount
+  }, [resetMessages]); // cleanup only on unmount
 
   useEffect(() => {
     // Event: New message

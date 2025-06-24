@@ -73,7 +73,7 @@ export interface PostCommentAttachments {
 }
 
 export interface PostCompomentProps {
-  id: number;
+  _id: any;
   date: string;
   profile_image: string;
   name: string;
@@ -87,6 +87,7 @@ export interface PostCompomentProps {
   likes: number;
   impressions: number;
   username: string;
+  likedByme: boolean;
 }
 
 export interface UserMediaProps {
@@ -201,6 +202,7 @@ type UserPostPropsOther = {
   likedByme: boolean;
   isSubscribed: boolean
   wasReposted: boolean;
+  hasPaid: boolean;
   user: {
     id: number;
     name: string;

@@ -135,39 +135,6 @@ const ReplyPostComponent = ({ options }: ReplyPostProps) => {
       }
     }
   }, []);
-
-  // Keydown for mention navigation
-  const handleKeyDown = useCallback(
-    (e: KeyboardEvent<HTMLInputElement>) => {
-      if (showMentions && mentionSuggestions.length > 0) {
-        switch (e.key) {
-          case "ArrowDown":
-            e.preventDefault();
-            setSelectedMentionIndex((prev) =>
-              prev < mentionSuggestions.length - 1 ? prev + 1 : 0
-            );
-            break;
-          case "ArrowUp":
-            e.preventDefault();
-            setSelectedMentionIndex((prev) =>
-              prev > 0 ? prev - 1 : mentionSuggestions.length - 1
-            );
-            break;
-          case "Enter":
-          case "Tab":
-            e.preventDefault();
-            selectMention(mentionSuggestions[selectedMentionIndex]);
-            break;
-          case "Escape":
-            setShowMentions(false);
-            setMentionQuery("");
-            break;
-        }
-      }
-    },
-    [showMentions, mentionSuggestions, selectedMentionIndex]
-  );
-
   // Select mention
   const selectMention = useCallback(
     (mentionedUser: MentionUser) => {
@@ -202,6 +169,37 @@ const ReplyPostComponent = ({ options }: ReplyPostProps) => {
       }, 0);
     },
     [mentionStartPos, cursorPosition, typedComment, mentions]
+  );
+  // Keydown for mention navigation
+  const handleKeyDown = useCallback(
+    (e: KeyboardEvent<HTMLInputElement>) => {
+      if (showMentions && mentionSuggestions.length > 0) {
+        switch (e.key) {
+          case "ArrowDown":
+            e.preventDefault();
+            setSelectedMentionIndex((prev) =>
+              prev < mentionSuggestions.length - 1 ? prev + 1 : 0
+            );
+            break;
+          case "ArrowUp":
+            e.preventDefault();
+            setSelectedMentionIndex((prev) =>
+              prev > 0 ? prev - 1 : mentionSuggestions.length - 1
+            );
+            break;
+          case "Enter":
+          case "Tab":
+            e.preventDefault();
+            selectMention(mentionSuggestions[selectedMentionIndex]);
+            break;
+          case "Escape":
+            setShowMentions(false);
+            setMentionQuery("");
+            break;
+        }
+      }
+    },
+    [showMentions, mentionSuggestions, selectedMentionIndex, selectMention]
   );
 
   // File handling

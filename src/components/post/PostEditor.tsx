@@ -169,38 +169,6 @@ const PostEditor = React.memo(({ posts }: PostEditorProps) => {
     [setPostText]
   );
 
-  // Keydown navigation
-  const handleKeyDown = useCallback(
-    (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-      if (showMentions && mentionSuggestions.length > 0) {
-        switch (e.key) {
-          case "ArrowDown":
-            e.preventDefault();
-            setSelectedMentionIndex((prev) =>
-              prev < mentionSuggestions.length - 1 ? prev + 1 : 0
-            );
-            break;
-          case "ArrowUp":
-            e.preventDefault();
-            setSelectedMentionIndex((prev) =>
-              prev > 0 ? prev - 1 : mentionSuggestions.length - 1
-            );
-            break;
-          case "Enter":
-          case "Tab":
-            e.preventDefault();
-            selectMention(mentionSuggestions[selectedMentionIndex]);
-            break;
-          case "Escape":
-            setShowMentions(false);
-            setMentionQuery("");
-            break;
-        }
-      }
-    },
-    [showMentions, mentionSuggestions, selectedMentionIndex]
-  );
-
   // Mention selection
   const selectMention = useCallback(
     (mentionedUser: MentionUser) => {
@@ -235,6 +203,37 @@ const PostEditor = React.memo(({ posts }: PostEditorProps) => {
       }, 0);
     },
     [mentionStartPos, cursorPosition, mentions, setPostText]
+  );
+  // Keydown navigation
+  const handleKeyDown = useCallback(
+    (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+      if (showMentions && mentionSuggestions.length > 0) {
+        switch (e.key) {
+          case "ArrowDown":
+            e.preventDefault();
+            setSelectedMentionIndex((prev) =>
+              prev < mentionSuggestions.length - 1 ? prev + 1 : 0
+            );
+            break;
+          case "ArrowUp":
+            e.preventDefault();
+            setSelectedMentionIndex((prev) =>
+              prev > 0 ? prev - 1 : mentionSuggestions.length - 1
+            );
+            break;
+          case "Enter":
+          case "Tab":
+            e.preventDefault();
+            selectMention(mentionSuggestions[selectedMentionIndex]);
+            break;
+          case "Escape":
+            setShowMentions(false);
+            setMentionQuery("");
+            break;
+        }
+      }
+    },
+    [showMentions, mentionSuggestions, selectedMentionIndex, selectMention]
   );
 
   // Preload existing post data

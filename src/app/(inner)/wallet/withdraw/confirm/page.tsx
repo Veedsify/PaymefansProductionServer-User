@@ -201,7 +201,7 @@ const WithdrawConfigPage = () => {
           </div>
           <div className="flex justify-between py-4 border-b border-black/30">
             <span className="font-medium text-primary-dark-pink">
-              Amount to Settle:
+              Amount to Receive:
             </span>
             <span className="text-primary-900 font-semibold text-lg">
               {config?.default_symbol}

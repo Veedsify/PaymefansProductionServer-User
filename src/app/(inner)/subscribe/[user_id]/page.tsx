@@ -176,12 +176,17 @@ const Subscribe = () => {
           ) &&
           profileUser.ModelSubscriptionPack.ModelSubscriptionTier.length >
             0 && (
-            <div className="grid items-stretch xl:grid-cols-2 2xl:grid-cols-3 gap-8 mt-12">
+            <div className={`grid xl:grid-cols-2 2xl:grid-cols-2 gap-4 mt-12`}>
               {profileUser.ModelSubscriptionPack.ModelSubscriptionTier.map(
                 (tier, index) => (
                   <div
                     key={tier.id}
-                    className="group relative p-8 border border-gray-200 rounded-3xl shadow-sm hover:shadow-2xl hover:border-black/40 transition-all duration-300 flex flex-col justify-between bg-gradient-to-br from-white via-gray-50 to-pink-50 overflow-hidden"
+                    className={`group relative p-6 border border-gray-200 rounded-3xl shadow-sm hover:shadow-2xl hover:border-black/40 transition-all duration-300 flex flex-col justify-between bg-gradient-to-br from-white via-gray-50 to-pink-50 overflow-hidden ${
+                      profileUser.ModelSubscriptionPack.ModelSubscriptionTier
+                        .length === 1
+                        ? "col-span-3"
+                        : "col-span-1"
+                    }`}
                   >
                     {/* Decorative background pattern */}
                     <div className="absolute inset-0 pointer-events-none">
@@ -227,7 +232,7 @@ const Subscribe = () => {
                       onClick={() => subscribeToUser(tier.id)}
                       className="relative block w-full py-4 px-6 bg-gradient-to-r from-primary-dark-pink via-pink-500 to-primary-dark-pink text-white font-bold rounded-xl shadow-lg
                 hover:from-pink-600 hover:to-primary-dark-pink/90 hover:scale-105 active:scale-100 transition-all duration-200
-                focus:outline-none focus:ring-2 focus:ring-primary-dark-pink/40"
+                focus:outline-none focus:ring-2 focus:ring-primary-dark-pink/40 text-nowrap cursor-pointer"
                     >
                       Subscribe Now
                     </button>

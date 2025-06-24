@@ -612,7 +612,9 @@ const SearchPage = () => {
                                 </Link>
                                 <div className="flex items-center justify-between text-gray-500 text-xs pt-2 border-t border-gray-100 dark:border-gray-700">
                                   <div className="flex items-center space-x-2">
-                                    <img
+                                    <Image
+                                      width={24}
+                                      height={24}
                                       src={m.user.profile_image}
                                       alt={m.user.name}
                                       className="w-6 h-6 rounded-full object-cover"
@@ -655,9 +657,9 @@ const SearchPage = () => {
                     No results found
                   </h3>
                   <p className="text-gray-500 max-w-md mx-auto mb-6">
-                    We couldn't find anything for "
-                    <span className="font-medium">{searchQuery}</span>". Try
-                    using different keywords or check your spelling.
+                    We couldn&apos;t find anything for &quot;
+                    <span className="font-medium">{searchQuery}</span> &quot;.
+                    Try using different keywords or check your spelling.
                   </p>
                   <div className="space-y-2 text-sm text-gray-400">
                     <p>Try searching for:</p>

@@ -207,7 +207,7 @@ const PostComponent: React.FC<PostComponentProps> = ({
 
     if (
       data.post_audience === "price" &&
-      !(data.user?.user_id === authUser?.user_id)
+      !(isCreator || hasPaid)
     ) {
       return promptPayment();
     }
@@ -239,7 +239,7 @@ const PostComponent: React.FC<PostComponentProps> = ({
         icon: "warning",
       });
     }
-    if (data.post_audience === "price" && !(isCreator || hasPaid)) {
+    if (data.post_audience === "price" && (!isCreator && !hasPaid)) {
       e.preventDefault();
       return promptPayment();
     }

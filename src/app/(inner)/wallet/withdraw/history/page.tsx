@@ -71,7 +71,7 @@ const WithdrawalHistory = () => {
             <h3 className="font-medium">Something went wrong</h3>
           </div>
           <p className="text-gray-600 text-sm leading-relaxed">
-            We couldn't fetch your withdrawal history. Please try again later.
+            We couldn&apos;t fetch your withdrawal history. Please try again later.
           </p>
         </div>
       </div>

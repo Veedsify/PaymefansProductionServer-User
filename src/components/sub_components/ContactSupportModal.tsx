@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 import React, { SetStateAction, useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import Image from "next/image";
 
 // Helper types
 type Message = {
@@ -241,7 +242,7 @@ const Modal = ({ show, setShow }: ContactModalProps) => {
               </div>
               <div>
                 <h1 className="text-2xl font-bold">Support Center</h1>
-                <p className="text-white/80">We're here to help you succeed</p>
+                <p className="text-white/80">We&apos;re here to help you succeed</p>
               </div>
             </div>
             <button
@@ -295,7 +296,7 @@ const Modal = ({ show, setShow }: ContactModalProps) => {
                     Get in Touch
                   </h2>
                   <p className="text-lg text-gray-600 dark:text-gray-300">
-                    Send us a message and we'll respond within 24 hours
+                    Send us a message and we&apos;ll respond within 24 hours
                   </p>
                 </div>
 
@@ -398,7 +399,9 @@ const Modal = ({ show, setShow }: ContactModalProps) => {
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-4">
                     <div className="relative">
-                      <img
+                      <Image
+                        width={48}
+                        height={48}
                         src={currentAgent.avatar}
                         alt={currentAgent.name}
                         className="w-12 h-12 rounded-full border-2 border-white shadow-md"
@@ -455,7 +458,9 @@ const Modal = ({ show, setShow }: ContactModalProps) => {
                     {msg.sender === "support" && (
                       <div className="flex flex-col items-center">
                         <div className="relative">
-                          <img
+                          <Image
+                            width={40}
+                            height={40}
                             src={currentAgent.avatar}
                             alt="Support"
                             className="w-10 h-10 rounded-full border-2 border-gray-200 dark:border-gray-600 shadow-sm"
@@ -524,7 +529,9 @@ const Modal = ({ show, setShow }: ContactModalProps) => {
                     </div>
 
                     {msg.sender === "user" && (
-                      <img
+                      <Image
+                        width={40}
+                        height={40}
                         src={AVATAR_USER}
                         alt="You"
                         className="w-10 h-10 rounded-full border-2 border-gray-200 dark:border-gray-600 shadow-sm"
@@ -541,7 +548,9 @@ const Modal = ({ show, setShow }: ContactModalProps) => {
                     className="flex items-end gap-4 justify-start"
                   >
                     <div className="relative">
-                      <img
+                      <Image
+                        width={40}
+                        height={40}
                         src={currentAgent.avatar}
                         alt="Support"
                         className="w-10 h-10 rounded-full border-2 border-gray-200 dark:border-gray-600 shadow-sm"

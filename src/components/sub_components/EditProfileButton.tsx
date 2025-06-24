@@ -175,7 +175,7 @@ function BannerModal({ user, open = false, setOpen }: BannerModalProps) {
                 className="object-cover w-24 h-24 rounded-full aspect-square"
                 priority
               />
-              <div className="absolute inset-0 flex items-center justify-center transition-opacity rounded-full opacity-15 bg-black/30 group-hover:opacity-100">
+              <div className="absolute inset-0 flex items-center justify-center transition-opacity rounded-full opacity-70 bg-black/30 group-hover:opacity-100">
                 <LucideCamera size={22} className="text-white" />
               </div>
             </div>
