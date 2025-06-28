@@ -13,8 +13,8 @@ import {
   FetchConversationReceiver,
   GetConversationMessages,
 } from "@/utils/data/GetConversationMessages";
-import React, { useEffect, useMemo, useState } from "react";
-import { useRouter } from "next/navigation";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import MessageBubble from "../messages/MessageBubble";
 import { useInView } from "react-intersection-observer";
 import { Message } from "@/types/Components";
@@ -23,9 +23,12 @@ import MessageInputComponent from "../messages/MessageInputComponent";
 import { getSocket } from "../sub_components/sub/Socket";
 import { useUserStore } from "@/lib/UserUseContext";
 import { reverse } from "lodash";
+import { getToken } from "@/utils/Cookie";
+import toast from "react-hot-toast";
 
 const ChatPage = ({ conversationId }: { conversationId: string }) => {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const user = useUserStore((state) => state.user);
   const messagesContainerRef = React.useRef<HTMLDivElement>(null);
   const messages = useChatStore((state) => state.messages);
@@ -34,6 +37,11 @@ const ChatPage = ({ conversationId }: { conversationId: string }) => {
   const resetMessages = useChatStore((state) => state.resetMessages);
   const updateSeenMessages = useChatStore((state) => state.updateSeenMessages);
   const socket = getSocket();
+  const [isUserScrolledUp, setIsUserScrolledUp] = useState(false);
+  const [highlightedMessageId, setHighlightedMessageId] = useState<
+    string | null
+  >(null);
+  const [isSearchingMessage, setIsSearchingMessage] = useState(false);
   const {
     data: receiverData,
     isError,
@@ -49,11 +57,12 @@ const ChatPage = ({ conversationId }: { conversationId: string }) => {
     refetchInterval: false,
     refetchOnMount: true,
     enabled: !!conversationId,
+    staleTime: 1000 * 60 * 10, // 10 minutes - receiver data doesn't change often
   });
   const receiver = receiverData?.receiver;
   const profilePicture = useMemo(
     () => receiver?.profile_image || "/site/avatar.png",
-    [receiver]
+    [receiver],
   );
   if (!receiver && isError) {
     router.push("/messages");
@@ -140,8 +149,11 @@ const ChatPage = ({ conversationId }: { conversationId: string }) => {
   useEffect(() => {
     // Event: New message
     const handleMessageReceived = (msg: Message) => {
+      console.log("📨 New message received via socket:", msg.message_id);
       addNewMessage(msg);
-      if (!msg.seen) {
+
+      // Mark message as seen if user is viewing this conversation
+      if (!msg.seen && msg.conversationId === conversationId) {
         socket.emit("message-seen", {
           conversationId,
           lastMessageId: msg.message_id,
@@ -149,26 +161,65 @@ const ChatPage = ({ conversationId }: { conversationId: string }) => {
           receiver_id: receiver?.user_id,
         });
       }
-      // Only scroll if the user is not scrolled up
-      // if (!userScrolledUp) {
-      //   scrollToBottom();
-      // }
+
+      // Auto-scroll if user is at bottom and no message is currently highlighted
+      if (!isUserScrolledUp && !highlightedMessageId) {
+        setTimeout(() => scrollToBottom(), 100);
+      }
     };
     // Event: Error
-    const handleMessageError = () => {
+    const handleMessageError = (errorData: any) => {
+      let title = "Error";
+      let text = "The last message didn't go through. Refresh and try again.";
+      let showRefresh = true;
+
+      if (errorData && errorData.error) {
+        switch (errorData.error) {
+          case "INSUFFICIENT_POINTS":
+            title = "Insufficient Points";
+            text =
+              errorData.message ||
+              `You need more points to send this message. You have ${
+                errorData.currentPoints || 0
+              } points but need ${errorData.requiredPoints || 0} points.`;
+            showRefresh = false;
+            break;
+          case "USERS_NOT_FOUND":
+            title = "User Not Found";
+            text = "Unable to find the recipient. Please try again.";
+            showRefresh = false;
+            break;
+          default:
+            text =
+              errorData.message ||
+              "An error occurred while sending this message.";
+            break;
+        }
+      }
+
+      const buttons = showRefresh
+        ? {
+            cancel: true,
+            confirm: {
+              text: "Refresh",
+              className: "bg-primary-dark-pink text-white",
+            },
+          }
+        : {
+            cancel: false,
+            confirm: {
+              text: "OK",
+              className: "bg-primary-dark-pink text-white",
+            },
+          };
+
       swal({
-        title: "Error",
-        text: "The last message didn't go through. Refresh and try again.",
+        title,
+        text,
         icon: "error",
-        buttons: {
-          cancel: true,
-          confirm: {
-            text: "Refresh",
-            className: "bg-primary-dark-pink text-white",
-          },
-        },
+        buttons,
       }).then((refresh) => {
-        if (refresh) window.location.reload();
+        if (refresh && showRefresh) window.location.reload();
       });
     };
 
@@ -181,17 +232,203 @@ const ChatPage = ({ conversationId }: { conversationId: string }) => {
     socket.emit("join", conversationId);
     socket.on("message", handleMessageReceived);
     socket.on("message-error", handleMessageError);
-    // socket.on("sender-typing", handleSenderTyping);
     socket.on("message-seen-updated", handleMessageSeenUpdated);
+
+    // Handle typing indicators (optional enhancement)
+    const handleTyping = (data: { sender_id: string; value: boolean }) => {
+      // You can implement typing indicator UI here
+      console.log("👤 Typing indicator:", data);
+    };
+
+    socket.on("sender-typing", handleTyping);
+
     // Clean up
     return () => {
       socket.off("message", handleMessageReceived);
       socket.off("message-error", handleMessageError);
-      // socket.off("sender-typing", handleSenderTyping);
       socket.off("message-seen-updated", handleMessageSeenUpdated);
+      socket.off("sender-typing", handleTyping);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [conversationId, user?.user_id, receiver?.user_id]);
+  }, [
+    conversationId,
+    user?.user_id,
+    receiver?.user_id,
+    isUserScrolledUp,
+    highlightedMessageId,
+    addNewMessage,
+    updateSeenMessages,
+  ]);
+
+  // Auto-scroll functions
+  const scrollToBottom = useCallback(() => {
+    if (messagesContainerRef.current) {
+      messagesContainerRef.current.scrollTo({
+        top: messagesContainerRef.current.scrollHeight,
+        behavior: "smooth",
+      });
+    }
+  }, []);
+
+  const handleScroll = useCallback(() => {
+    if (messagesContainerRef.current) {
+      const { scrollTop, scrollHeight, clientHeight } =
+        messagesContainerRef.current;
+      const isScrolledToBottom = scrollHeight - scrollTop <= clientHeight + 50; // 50px threshold
+      setIsUserScrolledUp(!isScrolledToBottom);
+    }
+  }, []);
+
+  // Auto-scroll when new messages arrive (if user is at bottom)
+  useEffect(() => {
+    if (messages.length > 0 && !isUserScrolledUp) {
+      setTimeout(() => scrollToBottom(), 100); // Small delay to ensure DOM is updated
+    }
+  }, [messages.length, isUserScrolledUp, scrollToBottom]);
+
+  // Function to search for a specific message in the conversation
+  const searchForSpecificMessage = useCallback(
+    async (messageId: string) => {
+      try {
+        const token = getToken();
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_TS_EXPRESS_URL}/conversations/search/messages/${conversationId}`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({ q: messageId }),
+          },
+        );
+
+        if (response.ok) {
+          const searchResult = await response.json();
+          return searchResult.messages?.find(
+            (msg: Message) =>
+              msg.message_id === messageId || String(msg.id) === messageId,
+          );
+        }
+      } catch (error) {
+        console.error("Error searching for specific message:", error);
+      }
+      return null;
+    },
+    [conversationId],
+  );
+
+  // Handle searched message from URL
+  useEffect(() => {
+    const messageId = searchParams.get("message_id");
+    if (!messageId) return;
+
+    // Function to search for message and scroll to it
+    const findAndScrollToMessage = () => {
+      // Try both message_id formats
+      const messageElement =
+        document.getElementById(messageId) ||
+        document.getElementById(String(messageId)) ||
+        document.querySelector(`[id="${messageId}"]`);
+
+      if (messageElement && messagesContainerRef.current) {
+        messageElement.scrollIntoView({
+          behavior: "smooth",
+          block: "center",
+        });
+        setHighlightedMessageId(messageId);
+
+        // Remove highlight after 3 seconds
+        setTimeout(() => setHighlightedMessageId(null), 3000);
+
+        // Remove message_id from URL without page reload
+        const url = new URL(window.location.href);
+        url.searchParams.delete("message_id");
+        window.history.replaceState({}, "", url.toString());
+        return true;
+      }
+      return false;
+    };
+
+    // Function to recursively load messages until target is found
+    const loadMessagesUntilFound = async (maxAttempts = 5) => {
+      let attempts = 0;
+
+      while (attempts < maxAttempts) {
+        // Check if message exists in current messages
+        if (findAndScrollToMessage()) {
+          return;
+        }
+
+        // If no more messages to load, stop trying
+        if (!hasMore || loading) {
+          break;
+        }
+
+        // Try to load more messages
+        try {
+          await fetchNextPage();
+          attempts++;
+          // Wait a bit for messages to render
+          await new Promise((resolve) => setTimeout(resolve, 300));
+        } catch (error) {
+          console.error("Error loading more messages:", error);
+          break;
+        }
+      }
+
+      // If we still haven't found the message through pagination, try searching
+      const foundMessage = await searchForSpecificMessage(messageId);
+      if (foundMessage) {
+        // If found through search, we need to reload the conversation
+        // to include this message context - for now just highlight if it's now visible
+        setTimeout(() => {
+          if (findAndScrollToMessage()) {
+            return;
+          }
+        }, 500);
+      } else {
+        // Show a toast notification that the message wasn't found
+        toast.error("Message not found or may have been deleted", {
+          duration: 3000,
+        });
+      }
+
+      // If we still haven't found the message, remove the URL parameter
+      const url = new URL(window.location.href);
+      url.searchParams.delete("message_id");
+      window.history.replaceState({}, "", url.toString());
+    };
+
+    // Only start searching if we have messages loaded
+    if (messages.length > 0) {
+      setIsSearchingMessage(true);
+      // Small delay to ensure messages are rendered
+      setTimeout(() => {
+        loadMessagesUntilFound().finally(() => {
+          setIsSearchingMessage(false);
+        });
+      }, 500);
+    }
+  }, [
+    messages.length,
+    searchParams,
+    hasMore,
+    loading,
+    fetchNextPage,
+    searchForSpecificMessage,
+  ]);
+
+  // Scroll to bottom on initial load
+  useEffect(() => {
+    if (messages.length > 0) {
+      // Check if there's a message_id in URL first
+      const messageId = searchParams.get("message_id");
+      if (!messageId) {
+        setTimeout(() => scrollToBottom(), 100);
+      }
+    }
+  }, [conversationId, searchParams]); // Only on conversation change
 
   if (error) {
     return (
@@ -234,10 +471,9 @@ const ChatPage = ({ conversationId }: { conversationId: string }) => {
               )}
             </Link>
             <div className="flex items-center gap-1 text-xs text-gray-500 dark:text-gray-400">
-              <ActiveProfileTag
-                userid={receiver?.username as string}
-                withText
-              />
+              {receiver?.username && (
+                <ActiveProfileTag userid={receiver.username} withText />
+              )}
               {/* {typing && (
                 <span className="text-primary-dark-pink">typing...</span>
               )} */}
@@ -261,7 +497,16 @@ const ChatPage = ({ conversationId }: { conversationId: string }) => {
       <div
         className="flex-1 max-h-[calc(100dvh-230px)] p-4 space-y-4 overflow-y-auto overflow-x-hidden bg-white dark:bg-gray-950"
         ref={messagesContainerRef}
+        onScroll={handleScroll}
       >
+        {isSearchingMessage && (
+          <div className="flex items-center justify-center py-4">
+            <div className="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
+              <LucideLoader2 className="animate-spin" size={16} />
+              <span>Searching for message...</span>
+            </div>
+          </div>
+        )}
         {hasMore && (
           <div className="flex items-center justify-center mb-2">
             <button
@@ -283,7 +528,12 @@ const ChatPage = ({ conversationId }: { conversationId: string }) => {
         {messages?.map((message) => (
           <div
             key={message.id} // Use `id` for optimistic messages
-            className="message-bubble"
+            className={`message-bubble transition-all duration-700 ${
+              highlightedMessageId ===
+              (message.message_id || String(message.id))
+                ? "bg-[#fcf1ff] dark:bg-[#fcf1ff]/40 py-2 rounded"
+                : ""
+            }`}
             id={String(message.message_id || message.id)}
           >
             <MessageBubble

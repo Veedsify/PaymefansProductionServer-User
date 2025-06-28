@@ -6,6 +6,7 @@ import {
   LucidePlay,
   LucideSettings,
   LucideLoader,
+  LucideLoaderCircle,
 } from "lucide-react";
 import { MouseEvent, useCallback, useEffect, useRef, useState } from "react";
 import { useInView } from "react-intersection-observer";
@@ -256,8 +257,8 @@ const VideoPlayer = ({
         {/* Buffering Indicator - shown during playback buffering */}
         {!isLoading && isBuffering && (
           <div className="absolute inset-0 flex items-center justify-center bg-black/30">
-            <div className="p-3 bg-black/70 rounded-full">
-              <LucideLoader className="w-8 h-8 text-gray-400 animate-spin" />
+            <div className="p-3 bg-black/50 rounded-full">
+              <LucideLoaderCircle className="w-8 h-8 text-gray-200 animate-spin" />
             </div>
           </div>
         )}

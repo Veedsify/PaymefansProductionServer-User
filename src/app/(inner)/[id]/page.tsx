@@ -139,7 +139,7 @@ const ProfilePage = () => {
     return <UserNotFound userid={params.id || "unknown"} />;
   }
 
-  if (userdata.active_status === false) {
+  if (!userdata.active_status) {
     return <SuspendedUserPage userdata={userdata} />;
   }
 
@@ -191,7 +191,9 @@ const ProfilePage = () => {
             {userdata.name}
             {isVerified && <VerifiedBadge />}
             {userdata.is_model && <VerifiedBadge type="model" />}
-            <ActiveProfileTag userid={userdata.username} />
+            {userdata.username && (
+              <ActiveProfileTag userid={userdata.username} />
+            )}
           </h1>
           <small className="text-gray-500">{userdata.username}</small>
         </div>

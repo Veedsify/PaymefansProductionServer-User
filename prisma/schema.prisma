@@ -46,7 +46,8 @@ model User {
   total_followers   Int       @default(0)
   total_following   Int       @default(0)
   total_subscribers Int       @default(0)
-  active_status      Boolean   @default(true)
+  active_status     Boolean   @default(true)
+  show_active       Boolean   @default(true)
   created_at        DateTime  @default(now())
   updated_at        DateTime  @updatedAt
 }

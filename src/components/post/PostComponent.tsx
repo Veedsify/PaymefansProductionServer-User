@@ -119,6 +119,8 @@ const PostComponent: React.FC<PostComponentProps> = ({
         type: media.media_type,
         open: true,
         ref: media.index,
+        watermarkEnabled: !!data.watermark_enabled,
+        username: data.user?.username,
         otherUrl: data.media
           .filter((item) => item.media_state !== "processing")
           .map((media) => ({

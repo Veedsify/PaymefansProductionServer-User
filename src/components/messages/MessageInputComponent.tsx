@@ -29,6 +29,8 @@ import { usePointsStore } from "@/contexts/PointsContext";
 import { getSocket } from "../sub_components/sub/Socket";
 import GenerateVideoPoster from "@/utils/GenerateVideoPoster";
 import { imageTypes } from "@/lib/FileTypes";
+import { useMediaUpload } from "@/hooks/useMediaUpload";
+import { monitorUploadStatus } from "@/utils/DebugVideoUpload";
 
 // Utility Functions
 const escapeHtml = (str: string) => {
@@ -60,6 +62,7 @@ const MessageInputComponent = React.memo(
     const points = usePointsStore((state) => state.points);
     const { conversations } = useMessagesConversation();
     const [message, setMessage] = useState<string>("");
+    const [isSending, setIsSending] = useState(false);
     const ref = useRef<HTMLDivElement>(null);
     const setIsTyping = useChatStore((state) => state.setIsTyping);
     const token = getToken();
@@ -67,6 +70,28 @@ const MessageInputComponent = React.memo(
     const addNewMessage = useChatStore((state) => state.addNewMessage);
     const mediaFiles = useChatStore((state) => state.mediaFiles);
     const setMediaFiles = useChatStore((state) => state.setMediaFiles);
+    const resetAllMedia = useChatStore((state) => state.resetAllMedia);
+
+    // Media upload hook
+    const {
+      areAllUploadsComplete,
+      hasUploadErrors,
+      getCompletedAttachments,
+      getUploadProgress,
+    } = useMediaUpload();
+
+    // Debug monitoring for uploads
+    useEffect(() => {
+      if (mediaFiles.length > 0) {
+        console.log(
+          "🔍 Starting upload monitoring for",
+          mediaFiles.length,
+          "files"
+        );
+        const cleanup = monitorUploadStatus(mediaFiles, 2000);
+        return cleanup;
+      }
+    }, [mediaFiles.length]);
 
     const resetMessageInput = useCallback(() => {
       setMessage("");
@@ -102,10 +127,20 @@ const MessageInputComponent = React.memo(
       if (
         !user ||
         !receiver ||
-        (message.trim().length === 0 && mediaFiles.length === 0)
+        (message.trim().length === 0 && mediaFiles.length === 0) ||
+        isSending
       ) {
         return;
       }
+
+      // Prevent sending if uploads are in progress
+      if (mediaFiles.length > 0 && !areAllUploadsComplete()) {
+        // Optionally, show a toast or message to the user
+        console.warn("Please wait for all uploads to complete.");
+        return;
+      }
+
+      setIsSending(true);
 
       try {
         const { data } = await axiosInstance.post(
@@ -122,7 +157,7 @@ const MessageInputComponent = React.memo(
           return swal({
             icon: "info",
             title: "Insufficient Paypoints",
-            text: `Sorry, you need at least ${pricePerMessage.toLocaleString()} paypoints to send a message to ${receiverName}`,
+            text: `You have ${points} points but need ${pricePerMessage.toLocaleString()} paypoints to send a message to ${receiverName}`,
           });
         }
         if (isFirstMessage) {
@@ -144,6 +179,75 @@ const MessageInputComponent = React.memo(
           if (!isToSend) return;
         }
 
+        // Wait for all uploads to complete before proceeding
+        if (mediaFiles.length > 0) {
+          console.log("⏳ Waiting for uploads to complete...");
+          console.log("📊 Current upload status:", {
+            totalFiles: mediaFiles.length,
+            allComplete: areAllUploadsComplete(),
+            hasErrors: hasUploadErrors(),
+            fileStatuses: mediaFiles.map((f) => ({
+              id: f.id,
+              status: f.uploadStatus,
+              progress: f.uploadProgress,
+              type: f.type,
+            })),
+          });
+
+          // Wait for all uploads to complete with proper polling
+          let maxWaitTime = 60000; // 60 seconds max wait
+          let waitTime = 0;
+          const pollInterval = 500; // Check every 500ms
+
+          while (!areAllUploadsComplete() && waitTime < maxWaitTime) {
+            await new Promise((resolve) => setTimeout(resolve, pollInterval));
+            waitTime += pollInterval;
+
+            // Log progress every 5 seconds
+            if (waitTime % 5000 === 0) {
+              console.log(`⏳ Still waiting... ${waitTime / 1000}s elapsed`, {
+                allComplete: areAllUploadsComplete(),
+                fileStatuses: mediaFiles.map((f) => ({
+                  id: f.id,
+                  progress: f.uploadProgress,
+                  status: f.uploadStatus,
+                })),
+              });
+            }
+          }
+
+          // Final check - if still not complete after max wait time, show error
+          if (!areAllUploadsComplete()) {
+            console.error(
+              "❌ Upload timeout - not all files completed uploading"
+            );
+            console.error("📊 Final status:", {
+              fileStatuses: mediaFiles.map((f) => ({
+                id: f.id,
+                status: f.uploadStatus,
+                progress: f.uploadProgress,
+              })),
+            });
+            toast.error("Upload failed. Please try again.");
+            return;
+          }
+
+          // Check for upload errors
+          if (hasUploadErrors()) {
+            console.error("❌ Upload errors detected");
+            toast.error("Some files failed to upload. Please try again.");
+            return;
+          }
+
+          console.log("✅ All uploads completed successfully!");
+        }
+
+        console.log(
+          "✅ All upload checks passed, getting completed attachments"
+        );
+        const attachments = getCompletedAttachments();
+        console.log("📎 Completed attachments:", attachments);
+
         const newMessage: Message = {
           id: Math.random(),
           message_id: uuid(),
@@ -151,36 +255,47 @@ const MessageInputComponent = React.memo(
           receiver_id: receiver.user_id,
           conversationId: conversationId,
           message: linkify(escapeHtml(message)),
-          attachment: [],
+          attachment: attachments,
           rawFiles: mediaFiles,
           triggerSend: true,
           created_at: new Date().toISOString(),
           seen: false,
         };
 
-        // Add the new message to the chat store
+        // Add the new message to the chat store immediately for optimistic UI
         addNewMessage(newMessage);
+
+        // Reset input and media
         resetMessageInput();
+        resetAllMedia();
 
-        if (
-          newMessage &&
-          newMessage?.rawFiles &&
-          newMessage.rawFiles.length > 0
-        ) {
-          return toast.error(
-            "Please wait for the media files to finish uploading before sending the message."
-          );
-        }
-
+        // Emit to socket
+        console.log("🚀 Emitting message to socket:", {
+          message_id: newMessage.message_id,
+          hasAttachments: attachments.length > 0,
+        });
         socket.emit("new-message", newMessage);
-      } catch (error) {
+      } catch (error: any) {
         console.error("Error sending message:", error);
-        toast.error("Failed to send message");
+        if (error?.response?.data?.error === "INSUFFICIENT_POINTS") {
+          swal({
+            icon: "info",
+            title: "Insufficient Paypoints",
+            text:
+              error.response.data.message ||
+              `You don't have enough points to send this message`,
+          });
+        } else {
+          toast.error("Failed to send message");
+        }
+      } finally {
+        setIsSending(false);
       }
     }, [
       conversationId,
       socket,
       resetMessageInput,
+      resetAllMedia,
       user,
       receiver,
       points,
@@ -190,6 +305,10 @@ const MessageInputComponent = React.memo(
       isFirstMessage,
       token,
       mediaFiles,
+      areAllUploadsComplete,
+      hasUploadErrors,
+      getCompletedAttachments,
+      isSending,
     ]);
 
     // Typing and Input Handling
@@ -276,12 +395,14 @@ const MessageInputComponent = React.memo(
               }
             }
 
-            const mediafile = {
+            const mediafile: MediaFile = {
               id: uuid(),
               file,
               type,
               previewUrl,
               posterUrl,
+              uploadStatus: "idle",
+              uploadProgress: 0,
             };
 
             if (setMediaFiles) {
@@ -310,8 +431,36 @@ const MessageInputComponent = React.memo(
       );
     }
 
+    const uploadProgress = getUploadProgress();
+
     return (
       <div className="bottom-0 lg:ml-4 lg:mr-2 relative max-h-max">
+        {mediaFiles.length > 0 && !areAllUploadsComplete() && (
+          <div className="mb-2 p-2 bg-blue-50 dark:bg-blue-900/30 rounded-lg border border-blue-200 dark:border-blue-700">
+            <div className="flex items-center justify-between text-sm">
+              <span className="text-blue-700 dark:text-blue-300">
+                {mediaFiles.some((f) => f.uploadProgress === 99)
+                  ? `Processing files... ${uploadProgress.completed}/${uploadProgress.total}`
+                  : `Uploading files... ${uploadProgress.completed}/${uploadProgress.total}`}
+              </span>
+              <span className="text-blue-600 dark:text-blue-400 font-medium">
+                {mediaFiles.some((f) => f.uploadProgress === 99)
+                  ? "Processing..."
+                  : `${uploadProgress.percentage}%`}
+              </span>
+            </div>
+            <div className="mt-1 w-full bg-blue-200 dark:bg-blue-800 rounded-full h-1.5">
+              <div
+                className={`h-1.5 rounded-full transition-all duration-300 ${
+                  mediaFiles.some((f) => f.uploadProgress === 99)
+                    ? "bg-yellow-500 animate-pulse"
+                    : "bg-blue-600 dark:bg-blue-400"
+                }`}
+                style={{ width: `${uploadProgress.percentage}%` }}
+              />
+            </div>
+          </div>
+        )}
         <div className="flex flex-col w-full gap-2 border border-black/20 rounded-2xl px-2 dark:bg-gray-950 py-2 lg:rounded-xl">
           <div className="grid grid-cols-6 p-0 gap-2 text-white rounded-full">
             {mediaFiles.map((file: MediaFile, index: number) => (
@@ -332,18 +481,51 @@ const MessageInputComponent = React.memo(
               accept="image/*,video/*"
               className="hidden"
               id="file-input"
-              // onChange={handleFileSelect}
               multiple
             />
             <div className="flex gap-2 rounded-xl p-1.5">
-              <span className="cursor-pointer" onClick={triggerFileSelect}>
+              <span
+                className={`cursor-pointer ${
+                  isSending ? "opacity-50 cursor-not-allowed" : ""
+                }`}
+                onClick={isSending ? undefined : triggerFileSelect}
+              >
                 <LucidePlus stroke="#CC0DF8" size={25} />
               </span>
-              <span className="cursor-pointer" onClick={triggerFileSelect}>
+              <span
+                className={`cursor-pointer ${
+                  isSending ? "opacity-50 cursor-not-allowed" : ""
+                }`}
+                onClick={isSending ? undefined : triggerFileSelect}
+              >
                 <LucideCamera stroke="#CC0DF8" size={25} />
               </span>
-              <button onClick={handleSendMessage} className="cursor-pointer">
-                <LucideSendHorizonal stroke="#CC0DF8" size={24} />
+              <button
+                onClick={handleSendMessage}
+                className={`cursor-pointer ${
+                  (mediaFiles.length > 0 && !areAllUploadsComplete()) ||
+                  isSending
+                    ? "opacity-50 cursor-not-allowed"
+                    : ""
+                }`}
+                disabled={
+                  (mediaFiles.length > 0 && !areAllUploadsComplete()) ||
+                  isSending
+                }
+              >
+                {isSending ? (
+                  <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-pink-500"></div>
+                ) : (
+                  <LucideSendHorizonal
+                    stroke={
+                      (mediaFiles.length > 0 && !areAllUploadsComplete()) ||
+                      isSending
+                        ? "#9CA3AF"
+                        : "#CC0DF8"
+                    }
+                    size={24}
+                  />
+                )}
               </button>
             </div>
           </div>

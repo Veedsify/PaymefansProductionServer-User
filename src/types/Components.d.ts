@@ -1,4 +1,4 @@
-import React, { ChangeEvent, ReactNode, SetStateAction } from "react";
+  import React, { ChangeEvent, ReactNode, SetStateAction } from "react";
 import { AuthUserProps, ProfileUserProps } from "./User";
 import { LastMessage } from "./Conversations";
 import { StoryType } from "@/contexts/StoryContext";
@@ -48,6 +48,7 @@ export interface PostData {
   isSubscribed: boolean;
   wasReposted: boolean;
   hasPaid: boolean;
+  watermark_enabled?: boolean;
   media: UserMediaProps[];
   user?: {
     id: number;
@@ -200,7 +201,7 @@ type UserPostPropsOther = {
   post_reposts: number;
   UserMedia: UserMediaProps[];
   likedByme: boolean;
-  isSubscribed: boolean
+  isSubscribed: boolean;
   wasReposted: boolean;
   hasPaid: boolean;
   user: {
@@ -273,6 +274,9 @@ export interface MediaFile {
   type: "image" | "video";
   previewUrl: string;
   posterUrl?: string; // For videos
+  uploadStatus?: "idle" | "uploading" | "completed" | "error";
+  uploadProgress?: number;
+  attachment?: Attachment; // Result after successful upload
 }
 
 // MESSAGE BUBBLE CONTENT PROPS
@@ -344,6 +348,7 @@ export interface PostAudienceDataProps {
   name: "Public" | "Subscribers" | "Price";
   icon: React.JSX.Element;
 }
+
 type postAudienceDataProps2 = {
   id: number;
   name: string;
@@ -408,8 +413,11 @@ type MediaDataType = {
   media_state: "completed" | "processing";
   locked: boolean;
   media_type: string;
-  duation: string;
+  duration: string;
   poster?: string;
+  post: {
+    watermark_enabled: boolean;
+  };
 };
 
 // MEDIA PANEL IMAGE CARD OTHER PROPS
@@ -485,7 +493,7 @@ interface Story {
   user: {
     profile_image: string;
     username: string;
-  }
+  };
 }
 
 type StoryPreviewProps = {
@@ -514,13 +522,9 @@ interface StoryCaptionComponentProps {
 
 // Active Profile Tag Props
 type ActiveProfileTagProps = {
-  userid: string;
+  userid: string | undefined;
   scale?: number;
   withText?: boolean;
-};
-
-type handleActiveUsersProps = {
-  username: string;
 };
 
 type MediaDeviceInfo = {
@@ -624,7 +628,7 @@ type StoreAllProductsResponse = {
   hasMore: boolean;
   perPage: number;
   data: StoreProduct[];
-}
+};
 
 export type Product = {
   id: number;
@@ -724,6 +728,7 @@ export interface MessageResult {
   receiver: User;
   Conversations: Conversation;
 }
+
 // Exchange rate
 
 export type ExchangeRate = {

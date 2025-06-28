@@ -40,7 +40,7 @@ const MessageBubbleContent: React.FC<MessageBubbleContentProps> = ({
         withOptions: true,
       });
     },
-    [attachment, fullScreenPreview]
+    [attachment, fullScreenPreview],
   );
   const handleRawPreview = useCallback(
     (file: MediaFile, index: number) => {
@@ -57,12 +57,100 @@ const MessageBubbleContent: React.FC<MessageBubbleContentProps> = ({
         withOptions: true,
       });
     },
-    [rawFiles, fullScreenPreview]
+    [rawFiles, fullScreenPreview],
   );
 
   return (
     <>
-      {hasAttachments && attachment?.length && (
+      {/*
+        Rendering priority:
+        1. If sender and has rawFiles (uploading), show rawFiles with upload progress
+        2. Otherwise, show attachments (completed uploads)
+        3. Don't show rawFiles for receivers as they'll be undefined
+      */}
+      {hasRawFiles &&
+      isSender &&
+      rawFiles.some((file) => file.uploadStatus !== "completed") ? (
+        <div
+          className={`grid overflow-hidden ${
+            rawFiles.length >= 4 ? "grid-cols-2" : "grid-cols-1"
+          }`}
+        >
+          {rawFiles.map((file: MediaFile, idx: number) => (
+            <div
+              key={file.previewUrl || idx}
+              className="p-2 cursor-pointer relative group transition-transform duration-200 hover:scale-105"
+              onClick={() => handleRawPreview(file, idx)}
+              tabIndex={0}
+              aria-label={
+                file.type.includes("image")
+                  ? "Image upload preview"
+                  : "Video upload preview"
+              }
+              role="button"
+            >
+              {file.type.includes("image") ? (
+                <div className="relative">
+                  <Image
+                    priority
+                    width={300}
+                    height={300}
+                    quality={80}
+                    src={file.previewUrl}
+                    alt="Uploading image"
+                    className="w-full object-cover rounded-lg aspect-square shadow-md group-hover:brightness-90 transition"
+                  />
+                  <span className="absolute bottom-2 right-2 bg-white/30 text-xs text-gray-700 px-2 py-1 rounded shadow group-hover:bg-primary-dark-pink group-hover:text-white transition">
+                    <LucideImage className="text-white" size={16} />
+                  </span>
+                  {/* Upload progress indicator */}
+                  {file.uploadStatus === "uploading" && (
+                    <div className="absolute inset-0 bg-black/50 flex items-center justify-center rounded-lg">
+                      <div className="text-white text-sm font-medium flex flex-col items-center">
+                        <div className="mb-1">
+                          {file.uploadProgress === 99
+                            ? "Processing..."
+                            : `${file.uploadProgress || 0}%`}
+                        </div>
+                        {file.uploadProgress === 99 && (
+                          <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                        )}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              ) : (
+                <div className="relative">
+                  <span className="absolute bottom-2 right-2 bg-white/30 text-xs text-gray-700 px-2 py-1 rounded shadow group-hover:bg-primary-dark-pink group-hover:text-white transition">
+                    <LucideVideo className="text-white" size={16} />
+                  </span>
+                  <video
+                    src={file.previewUrl}
+                    muted
+                    aria-label="Video uploading"
+                    className="w-full object-cover rounded-lg shadow-md group-hover:brightness-75 transition aspect-square"
+                  />
+                  {/* Upload progress indicator */}
+                  {file.uploadStatus === "uploading" && (
+                    <div className="absolute inset-0 bg-black/50 flex items-center justify-center rounded-lg">
+                      <div className="text-white text-sm font-medium flex flex-col items-center">
+                        <div className="mb-1">
+                          {file.uploadProgress === 99
+                            ? "Processing..."
+                            : `${file.uploadProgress || 0}%`}
+                        </div>
+                        {file.uploadProgress === 99 && (
+                          <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                        )}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+      ) : hasAttachments && attachment?.length ? (
         <div
           className={`grid overflow-hidden ${
             attachment.length >= 4 ? "grid-cols-2" : "grid-cols-1"
@@ -127,58 +215,7 @@ const MessageBubbleContent: React.FC<MessageBubbleContentProps> = ({
             </div>
           ))}
         </div>
-      )}
-      {hasRawFiles && (
-        <div
-          className={`grid overflow-hidden ${
-            rawFiles.length >= 4 ? "grid-cols-2" : "grid-cols-1"
-          }`}
-        >
-          {rawFiles.map((file: MediaFile, idx: number) => (
-            <div
-              key={file.previewUrl || idx}
-              className="p-2 cursor-pointer relative group transition-transform duration-200 hover:scale-105"
-              onClick={() => handleRawPreview(file, idx)}
-              tabIndex={0}
-              aria-label={
-                file.type.includes("image")
-                  ? "Image upload preview"
-                  : "Video upload preview"
-              }
-              role="button"
-            >
-              {file.type.includes("image") ? (
-                <div className="relative">
-                  <Image
-                    priority
-                    width={300}
-                    height={300}
-                    quality={80}
-                    src={file.previewUrl}
-                    alt="Uploading image"
-                    className="w-full object-cover rounded-lg aspect-square shadow-md group-hover:brightness-90 transition"
-                  />
-                  <span className="absolute bottom-2 right-2 bg-white/30 text-xs text-gray-700 px-2 py-1 rounded shadow group-hover:bg-primary-dark-pink group-hover:text-white transition">
-                    <LucideImage className="text-white" size={16} />
-                  </span>
-                </div>
-              ) : (
-                <div className="relative">
-                  <span className="absolute bottom-2 right-2 bg-white/30 text-xs text-gray-700 px-2 py-1 rounded shadow group-hover:bg-primary-dark-pink group-hover:text-white transition">
-                    <LucideVideo className="text-white" size={16} />
-                  </span>
-                  <video
-                    src={file.previewUrl}
-                    muted
-                    aria-label="Video uploading"
-                    className="w-full object-cover rounded-lg shadow-md group-hover:brightness-75 transition"
-                  />
-                </div>
-              )}
-            </div>
-          ))}
-        </div>
-      )}
+      ) : null}
       {hasMessage && (
         <div
           className={`p-4 rounded-3xl font-medium ${

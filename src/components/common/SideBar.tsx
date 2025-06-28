@@ -17,6 +17,7 @@ import {
   AlertTriangle,
   LogOutIcon,
   LucideLoader2,
+  Moon,
 } from "lucide-react";
 import React, { useContext, useEffect, useState } from "react";
 import Link from "next/link";
@@ -113,7 +114,7 @@ const SideBar = React.memo(() => {
             </Link>
             <Link
               href="/wallet"
-              className="p-2 px-8 text-xs font-semibold text-black bg-white border border-gray-600 rounded"
+              className="p-2 px-8 text-xs font-semibold text-black dark:text-white bg-white dark:bg-gray-800 border border-gray-600 dark:border-gray-500 rounded"
             >
               Wallet
             </Link>
@@ -210,20 +211,46 @@ const SideBar = React.memo(() => {
               <LucideLogOut />
               <p>Logout</p>
             </span>
-            <div className="flex justify-end">
-              <button
-                onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-              >
-                {theme == "dark" ? (
-                  <span className="inline-block p-2 mb-2 rounded-full border ">
-                    <LucideMoon stroke="white" size={20} />
+            <div className="flex justify-center mt-14 mb-4">
+              <div className="w-1/2">
+                <div className="flex items-center justify-center mb-2">
+                  <span className="text-xs font-medium dark:text-white text-gray-600">
+                    Theme
                   </span>
-                ) : (
-                  <span className="inline-block p-2 mb-2 rounded-full border border-amber-400">
-                    <LucideLightbulb stroke="gold" size={20} />
-                  </span>
-                )}
-              </button>
+                </div>
+                <button
+                  onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+                  className="relative w-full h-6 bg-gray-200 dark:bg-gray-800 rounded-full transition-colors duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-primary-dark-pink focus:ring-opacity-50"
+                >
+                  <div
+                    className={`absolute top-0.5 left-0.5 h-5 w-1/2 bg-white dark:bg-gray-700 rounded-full shadow-md transform transition-transform duration-300 ease-in-out flex items-center justify-center ${
+                      theme === "dark" ? "translate-x-full" : "translate-x-0"
+                    }`}
+                  >
+                    {theme === "dark" ? (
+                      <LucideMoon stroke="white" size={12} />
+                    ) : (
+                      <LucideLightbulb stroke="gold" size={12} />
+                    )}
+                  </div>
+                  <div className="flex items-center justify-between px-2 h-full">
+                    <span
+                      className={`text-xs font-medium transition-colors ${
+                        theme === "light" ? "text-gray-900" : "text-gray-400"
+                      }`}
+                    >
+                      Light
+                    </span>
+                    <span
+                      className={`text-xs font-medium transition-colors ${
+                        theme === "dark" ? "text-white" : "text-gray-400"
+                      }`}
+                    >
+                      Dark
+                    </span>
+                  </div>
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -272,19 +299,21 @@ const LogOutModal: React.FC<{ onClose: () => void }> = ({ onClose }) => {
           transformOrigin: "center",
         }}
         onClick={(e) => e.stopPropagation()}
-        className="bg-white rounded-xl p-6 max-w-sm w-full mx-4"
+        className="bg-white dark:bg-gray-900 rounded-xl p-6 max-w-sm w-full mx-4"
       >
-        <div className="flex items-center justify-center w-12 h-12 rounded-full bg-red-100 mx-auto mb-4">
-          <LogOutIcon className="text-red-600" />
+        <div className="flex items-center justify-center w-12 h-12 rounded-full bg-red-100 dark:bg-red-900/30 mx-auto mb-4">
+          <LogOutIcon className="text-red-600 dark:text-red-400" />
         </div>
-        <h3 className="text-xl font-bold text-gray-800 text-center">Logout</h3>
-        <p className="text-gray-600 mt-3 text-center">
+        <h3 className="text-xl font-bold text-gray-800 dark:text-white text-center">
+          Logout
+        </h3>
+        <p className="text-gray-600 dark:text-gray-300 mt-3 text-center">
           Are you sure you want to log out? This will end your current session.
         </p>
         <div className="mt-6 flex gap-6 justify-end">
           <button
             onClick={onClose}
-            className="px-4 py-2 text-gray-700 font-medium rounded-lg hover:bg-gray-100 cursor-pointer"
+            className="px-4 py-2 text-gray-700 dark:text-gray-300 font-medium rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 cursor-pointer"
           >
             Cancel
           </button>

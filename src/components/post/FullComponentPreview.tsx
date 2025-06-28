@@ -18,9 +18,10 @@ import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import usePostComponent from "@/contexts/PostComponentPreview";
 import Loader from "../lib_components/LoadingAnimation";
 import HLSVideoPlayer from "../sub_components/videoplayer";
+import { ImagePreview } from "./ImagePreviewWithCanvas";
 
 // Centralized constants
-const CONSTANTS = {
+export const CONSTANTS = {
   ANIMATION_DURATION: 100,
   ANIMATION_DURATION_SEC: 100 / 1000,
   IMAGE_DIMENSIONS: { width: 1500, height: 1500 },
@@ -269,86 +270,86 @@ const VideoPreview = memo(
 );
 VideoPreview.displayName = "VideoPreview";
 
-// Image Preview
-const ImagePreview = memo(
-  ({ url, alt, index, onLoad, onError }: ImagePreviewProps) => {
-    const [status, setStatus] = useState<"loading" | "ready" | "error">(
-      "loading"
-    );
-    const isSlowNetwork =
-      typeof navigator !== "undefined" &&
-      (navigator as any).connection?.saveData;
+// // Image Preview
+// const ImagePreview = memo(
+//   ({ url, alt, index, onLoad, onError }: ImagePreviewProps) => {
+//     const [status, setStatus] = useState<"loading" | "ready" | "error">(
+//       "loading"
+//     );
+//     const isSlowNetwork =
+//       typeof navigator !== "undefined" &&
+//       (navigator as any).connection?.saveData;
 
-    const handleImageLoad = useCallback(() => {
-      setTimeout(() => {
-        setStatus("ready");
-        onLoad();
-      }, 100);
-    }, [onLoad]);
+//     const handleImageLoad = useCallback(() => {
+//       setTimeout(() => {
+//         setStatus("ready");
+//         onLoad();
+//       }, 100);
+//     }, [onLoad]);
 
-    const handleImageError = useCallback(() => {
-      setStatus("error");
-      onError();
-      console.warn(`Image failed to load at index ${index}: ${url}`);
-    }, [onError, index, url]);
+//     const handleImageError = useCallback(() => {
+//       setStatus("error");
+//       onError();
+//       console.warn(`Image failed to load at index ${index}: ${url}`);
+//     }, [onError, index, url]);
 
-    const imageQuality = useMemo(
-      () =>
-        isSlowNetwork
-          ? CONSTANTS.IMAGE_QUALITY.LOW
-          : index < 3
-          ? CONSTANTS.IMAGE_QUALITY.HIGH
-          : CONSTANTS.IMAGE_QUALITY.MEDIUM,
-      [index, isSlowNetwork]
-    );
+//     const imageQuality = useMemo(
+//       () =>
+//         isSlowNetwork
+//           ? CONSTANTS.IMAGE_QUALITY.LOW
+//           : index < 3
+//           ? CONSTANTS.IMAGE_QUALITY.HIGH
+//           : CONSTANTS.IMAGE_QUALITY.MEDIUM,
+//       [index, isSlowNetwork]
+//     );
 
-    const sizes = "(max-width: 640px) 100vw, (max-width: 1024px) 80vw, 70vw";
+//     const sizes = "(max-width: 640px) 100vw, (max-width: 1024px) 80vw, 70vw";
 
-    return (
-      <motion.div
-        className="relative flex h-full items-center justify-center"
-        initial={{ opacity: 0, scale: 0.95 }}
-        animate={{ opacity: 1, scale: 1 }}
-        exit={{ opacity: 0, scale: 0.95 }}
-        transition={{
-          duration: CONSTANTS.ANIMATION_DURATION_SEC,
-          type: "spring",
-        }}
-      >
-        <AnimatePresence>
-          {status === "loading" && (
-            <motion.div
-              className="absolute inset-0 flex items-center justify-center bg-black/20 z-10"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0, transition: { duration: 0.2 } }}
-            >
-              <Loader />
-            </motion.div>
-          )}
-        </AnimatePresence>
-        <Image
-          src={url.trim()}
-          width={CONSTANTS.IMAGE_DIMENSIONS.width}
-          height={CONSTANTS.IMAGE_DIMENSIONS.height}
-          quality={imageQuality}
-          className={`h-dvh w-auto object-contain transition-opacity duration-200 ${
-            status === "loading" ? "opacity-0" : "opacity-100"
-          }`}
-          alt={alt}
-          onLoad={handleImageLoad}
-          onError={handleImageError}
-          onDragStart={(e) => e.preventDefault()}
-          sizes={sizes}
-          priority={index < 2}
-          unoptimized={url.startsWith("blob:")}
-          loading={index < 2 ? "eager" : "lazy"}
-        />
-      </motion.div>
-    );
-  }
-);
-ImagePreview.displayName = "ImagePreview";
+//     return (
+//       <motion.div
+//         className="relative flex h-full items-center justify-center"
+//         initial={{ opacity: 0, scale: 0.95 }}
+//         animate={{ opacity: 1, scale: 1 }}
+//         exit={{ opacity: 0, scale: 0.95 }}
+//         transition={{
+//           duration: CONSTANTS.ANIMATION_DURATION_SEC,
+//           type: "spring",
+//         }}
+//       >
+//         <AnimatePresence>
+//           {status === "loading" && (
+//             <motion.div
+//               className="absolute inset-0 flex items-center justify-center bg-black/20 z-10"
+//               initial={{ opacity: 0 }}
+//               animate={{ opacity: 1 }}
+//               exit={{ opacity: 0, transition: { duration: 0.2 } }}
+//             >
+//               <Loader />
+//             </motion.div>
+//           )}
+//         </AnimatePresence>
+//         <Image
+//           src={url.trim()}
+//           width={CONSTANTS.IMAGE_DIMENSIONS.width}
+//           height={CONSTANTS.IMAGE_DIMENSIONS.height}
+//           quality={imageQuality}
+//           className={`h-dvh w-auto object-contain transition-opacity duration-200 ${
+//             status === "loading" ? "opacity-0" : "opacity-100"
+//           }`}
+//           alt={alt}
+//           onLoad={handleImageLoad}
+//           onError={handleImageError}
+//           onDragStart={(e) => e.preventDefault()}
+//           sizes={sizes}
+//           priority={index < 2}
+//           unoptimized={url.startsWith("blob:")}
+//           loading={index < 2 ? "eager" : "lazy"}
+//         />
+//       </motion.div>
+//     );
+//   }
+// );
+// ImagePreview.displayName = "ImagePreview";
 
 // Navigation Button
 const NavigationButton = memo(
@@ -382,7 +383,14 @@ NavigationButton.displayName = "NavigationButton";
 
 // Main Component
 const PostComponentPreview = memo(() => {
-  const { ref: objectRef, otherUrl, open, close } = usePostComponent();
+  const {
+    ref: objectRef,
+    otherUrl,
+    open,
+    close,
+    username,
+    watermarkEnabled,
+  } = usePostComponent();
   const swiperRef = useRef<SwiperClass | null>(null);
   const [currentSlide, setCurrentSlide] = useState(0);
   const [mediaState, dispatchMedia] = useReducer(mediaReducer, {
@@ -529,7 +537,7 @@ const PostComponentPreview = memo(() => {
         <motion.div
           role="dialog"
           aria-labelledby="media-preview-title"
-          className="fixed inset-0 z-[9999] flex h-full w-full items-center justify-center bg-black/90"
+          className="fixed inset-0 z-[9999] flex h-full w-full items-center justify-center bg-black"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
@@ -543,7 +551,7 @@ const PostComponentPreview = memo(() => {
             Media Preview Modal
           </div>
           <button
-            className="absolute top-4 right-4 z-20 rounded-full bg-black/60 p-2 text-white hover:bg-black/80 focus:outline-none focus:ring-2 focus:ring-white/50 transition-colors"
+            className="absolute top-4 right-4 z-20 rounded-full bg-black p-2 text-white hover:bg-black/80 focus:outline-none focus:ring-2 focus:ring-white/50 transition-colors"
             onClick={handleClose}
             aria-label="Close preview"
           >
@@ -578,11 +586,13 @@ const PostComponentPreview = memo(() => {
                   {shouldLoadSlide(index) &&
                     (item.type === "image" ? (
                       <ImagePreview
-                        url={item.url}
+                      url={item.url}
+                      username={username}
                         alt={item.alt || `Media preview ${index + 1}`}
                         index={index}
                         onLoad={() => handleImageLoad(index)}
                         onError={() => handleImageError(index)}
+                        shouldWatermark={watermarkEnabled}
                       />
                     ) : (
                       <VideoPreview

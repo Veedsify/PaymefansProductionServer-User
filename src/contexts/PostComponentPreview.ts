@@ -9,7 +9,9 @@ type FullScreenPreviewType = {
         url: URL;
         type: "video" | "image";
         isBlob?: boolean;
-    }[]
+    }[],
+    username?: string;
+    watermarkEnabled?: boolean;
 }
 type PostComponentType = {
     url: URL;
@@ -21,9 +23,11 @@ type PostComponentType = {
     }[];
     open: boolean;
     type: string | null
+    watermarkEnabled?: boolean;
     close: () => void;
+    username?: string;
     withOptions?: boolean;
-    fullScreenPreview: ({ url, open, type, withOptions, ref, otherUrl }: FullScreenPreviewType) => void
+    fullScreenPreview: ({ url, open, type, withOptions, ref, otherUrl, username, watermarkEnabled }: FullScreenPreviewType) => void
 };
 
 const usePostComponent = create<PostComponentType>((set) => ({
@@ -32,9 +36,11 @@ const usePostComponent = create<PostComponentType>((set) => ({
     open: false,
     type: "",
     otherUrl: [],
+    username: "",
+    watermarkEnabled: false,
     withOptions: false,
     close: () => set({ open: false, withOptions: false, url: "", type: "", ref: 0, otherUrl: [] }),
-    fullScreenPreview: ({ url, type, open, ref, otherUrl, withOptions }) => set({ url, type, open, withOptions, ref, otherUrl: otherUrl })
+    fullScreenPreview: ({ url, type, open, ref, otherUrl, withOptions, username, watermarkEnabled }) => set({ url, type, open, withOptions, ref, otherUrl: otherUrl, watermarkEnabled, username})
 }));
 
 export default usePostComponent;

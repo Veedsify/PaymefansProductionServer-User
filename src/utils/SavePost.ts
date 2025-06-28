@@ -10,6 +10,7 @@ type SavePostType = {
         content: string,
         visibility: string,
         removedMedia: RemovedMediaIdProps[],
+        isWaterMarkEnabled?: boolean;
     };
     action: string;
     post_id: string;

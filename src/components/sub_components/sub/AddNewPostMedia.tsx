@@ -6,6 +6,7 @@ import Toggle from "../Checked";
 import { imageTypes, videoTypes } from "@/lib/FileTypes";
 import { useUserAuthContext } from "@/lib/UserUseContext";
 import { POST_CONFIG } from "@/config/config";
+import { usePostEditorContext } from "@/contexts/PostEditorContext";
 const {
   MODEL_POST_LIMIT,
   IMAGE_FILE_SIZE_LIMIT,
@@ -21,6 +22,7 @@ const AddNewPostMedia = ({
   handleFileSelect: (files: File[]) => void;
 }) => {
   const { user } = useUserAuthContext();
+  const { setWatermarkEnabled } = usePostEditorContext();
   const handleImageSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files as FileList;
     if (files) {
@@ -67,6 +69,10 @@ const AddNewPostMedia = ({
       }
     }
   };
+
+  const handleWaterMarkEnabled = (value: boolean) => {
+    setWatermarkEnabled(value);
+  };
   return (
     <>
       <div className="md:px-8 border-y border-black/30 py-3 px-4 w-full dark:text-white flex md:justify-start gap-3 items-center">
@@ -86,7 +92,7 @@ const AddNewPostMedia = ({
           name="attachments"
         />
         <div className="flex items-center gap-3">
-          <Toggle state={false} />
+          <Toggle state={false} set={handleWaterMarkEnabled} />
           <small>enable watermark</small>
         </div>
       </div>

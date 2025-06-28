@@ -103,6 +103,8 @@ const Post = React.memo(async ({ params }: PostPageProps) => {
             <div key={index} className="relative">
               <PostPageImage
                 key={index}
+                username={post?.user.username}
+                showWaterMark={post.watermark_enabled}
                 data={{
                   id: post?.id,
                   post_status: post?.post_status,

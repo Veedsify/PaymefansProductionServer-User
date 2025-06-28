@@ -85,8 +85,8 @@ const MessageBubble: React.FC<MessageBubbleProps> = ({
         isSender={isSender}
         hasAttachments={hasAttachments}
         hasMessage={hasMessage}
-        hasRawFiles={hasRawFiles}
-        rawFiles={rawFiles}
+        hasRawFiles={hasRawFiles && isSender}
+        rawFiles={isSender ? rawFiles : []}
         attachment={attachment}
         message={message?.message?.trim() || ""}
       />

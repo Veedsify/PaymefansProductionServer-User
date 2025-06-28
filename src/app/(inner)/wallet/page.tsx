@@ -249,7 +249,7 @@ const WalletPage = () => {
       {transactions && transactions.length > 0 && (
         <div>
           <h2 className="text-xl font-semibold mt-10 mb-10 dark:text-white">
-            Transactions
+            Purchase History
           </h2>
           <div className="grid gap-4">
             {transactions.map((transaction: any, i: number) => (

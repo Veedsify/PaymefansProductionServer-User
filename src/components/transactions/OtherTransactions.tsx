@@ -66,7 +66,7 @@ const OtherTransactions = React.memo(() => {
   return (
     <section aria-labelledby="other-transactions">
       <h2 className="text-xl font-semibold mt-10 mb-10 dark:text-white">
-        Other Transactions
+        Transactions
       </h2>
 
       <div className="grid gap-4">

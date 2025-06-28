@@ -40,6 +40,7 @@ export type AuthUserProps = {
   total_following: number;
   total_subscribers: number;
   active_status: boolean;
+  show_active: boolean;
   created_at: Date;
   updated_at: Date;
   iat: number;
@@ -68,11 +69,11 @@ export type AuthUserProps = {
     hookup: boolean;
     verification_status: boolean;
     verification_state:
-    | " not_started"
-    | "pending"
-    | "approved"
-    | "rejected"
-    | "started";
+      | " not_started"
+      | "pending"
+      | "approved"
+      | "rejected"
+      | "started";
   };
   purchasedPosts?: number[];
 };
@@ -108,6 +109,7 @@ export type AllModelsProps = {
   total_following: number;
   total_subscribers: number;
   active_status: boolean;
+  show_active: boolean;
   created_at: Date;
   updated_at: Date;
   iat: number;
@@ -162,6 +164,7 @@ export type ProfileUserProps = {
   total_following: number;
   total_subscribers: number;
   active_status: boolean;
+  show_active: boolean;
   created_at: string;
   updated_at: string;
   isFollowing: boolean;
@@ -180,7 +183,7 @@ export type ProfileUserProps = {
     youtube_url: string | null;
     snapchat_url: string | null;
     telegram_url: string | null;
-  }
+  };
   Subscribers: {
     subscriber_id: number;
   }[];

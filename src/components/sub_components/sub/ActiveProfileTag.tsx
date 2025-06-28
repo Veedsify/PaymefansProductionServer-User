@@ -1,53 +1,38 @@
 "use client";
 
-import {
-  ActiveProfileTagProps,
-  handleActiveUsersProps,
-} from "@/types/Components";
-import { useEffect, useState } from "react";
+import { ActiveProfileTagProps } from "@/types/Components";
+import { useEffect } from "react";
 import { getSocket } from "./Socket";
+import { useActiveUsersManager } from "@/context/ActiveUsersManagerContext";
 
-// Store state per userid
-const activeStateMap = new Map<
-  string,
-  { active: boolean; lastActivityTime: number }
->();
-
+// ActiveProfileTag component
 const ActiveProfileTag = ({
   userid: username,
   withText,
   scale,
 }: ActiveProfileTagProps) => {
-  // Initialize from map or defaults
-  const [active, setActive] = useState(
-    () => activeStateMap.get(username)?.active ?? false
-  );
-  const [lastActivityTime, setLastActivityTime] = useState(
-    () => activeStateMap.get(username)?.lastActivityTime ?? Date.now()
-  );
-  const verifiedUsers = ["@paymefans", "@paymefans1", "@paymefans2"];
-  const shouldHide = !verifiedUsers.includes(username);
+  // Handle undefined/null username - return early to prevent any processing
+  if (!username || username.trim() === "") {
+    return null; // Don't render anything if no valid username
+  }
 
-  const socket = getSocket();
+  const isActive = useActiveUsersManager((state) => state.isActive(username));
+  const updateActiveUsers = useActiveUsersManager(
+    (state) => state.updateActiveUsers
+  );
 
   useEffect(() => {
-    if (!socket.active) {
-      setActive(false);
-      activeStateMap.set(username, { active: false, lastActivityTime });
+    if (!username || username.trim() === "") {
       return;
     }
 
-    const handleActiveUsers = (users: handleActiveUsersProps[]) => {
-      console.log("Active users received:", users);
-      const isActive = users.some((user) => user.username === username);
-      setActive(isActive);
-      if (isActive) {
-        const now = Date.now();
-        setLastActivityTime(now);
-        activeStateMap.set(username, { active: true, lastActivityTime: now });
-      } else {
-        activeStateMap.set(username, { active: false, lastActivityTime });
-      }
+    const socket = getSocket(username);
+    if (socket.connected) {
+      socket.emit("get-active-users");
+    }
+    const handleActiveUsers = (users: any) => {
+      console.log("🚀 Active users received:", users);
+      updateActiveUsers(users);
     };
 
     socket.on("active_users", handleActiveUsers);
@@ -55,40 +40,29 @@ const ActiveProfileTag = ({
     return () => {
       socket.off("active_users", handleActiveUsers);
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [username, socket]);
-
-  useEffect(() => {
-    activeStateMap.set(username, { active, lastActivityTime });
-  }, [active, lastActivityTime, username]);
-
-  useEffect(() => {
-    const checkForInactivity = () => {
-      if (Date.now() - lastActivityTime > 10000) {
-        socket.emit("inactive");
-        setActive(false);
-        activeStateMap.set(username, { active: false, lastActivityTime });
-      }
-    };
-
-    const intervalId = setInterval(checkForInactivity, 1000);
-
-    return () => clearInterval(intervalId);
-  }, [lastActivityTime, socket, username]);
+  }, [username, updateActiveUsers]);
 
   return (
     <div className="flex items-center gap-2">
-      {shouldHide && (
+      {
         <>
           <span
             style={{ scale: scale ? scale : 1 }}
-            className={`p-1 ${
-              active ? "bg-green-500" : "bg-gray-300"
+            className={`p-1 transition-colors duration-200 ${
+              isActive ? "bg-green-500" : "bg-gray-300"
             } inline-block w-1 h-1 rounded-full`}
           ></span>
-          {withText && <p>{active ? "Online" : "Offline"}</p>}
+          {withText && (
+            <p
+              className={`transition-colors duration-200 ${
+                isActive ? "text-green-600" : "text-gray-500"
+              }`}
+            >
+              {isActive ? "Online" : "Offline"}
+            </p>
+          )}
         </>
-      )}
+      }
     </div>
   );
 };

@@ -85,6 +85,7 @@ type Post = {
   likedByme: boolean;
   isSubscribed: boolean;
   wasReposted: boolean;
+  watermark_enabled?: boolean;
   hasPaid: boolean;
   score?: number;
 };

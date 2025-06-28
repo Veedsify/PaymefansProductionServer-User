@@ -10,6 +10,7 @@ import { LockedMediaOverlay } from "../sub_components/sub/LockedMediaOverlay";
 import _, { set } from "lodash";
 import { useProfileMediaContext } from "@/contexts/ProfileMediaContext";
 import { useInfiniteQuery } from "@tanstack/react-query";
+import {useUserAuthContext} from "@/lib/UserUseContext";
 
 const getUniqueItems = (arr: MediaDataType[]) => {
   const uniqueMap = new Map();
@@ -19,6 +20,7 @@ const getUniqueItems = (arr: MediaDataType[]) => {
 
 const MediaPanelImageCard = React.memo(({ sort }: { sort: string }) => {
   const { fullScreenPreview } = usePostComponent();
+  const {user} = useUserAuthContext();
   const token = getToken();
 
   const fetchMedia = async ({ pageParam = 1 }) => {
@@ -65,7 +67,8 @@ const MediaPanelImageCard = React.memo(({ sort }: { sort: string }) => {
     media: string,
     type: string,
     isSubscriber: boolean,
-    _: number
+    _: number,
+    watermarkEnabled: boolean,
   ) => {
     if (!isSubscriber) return;
 
@@ -78,6 +81,8 @@ const MediaPanelImageCard = React.memo(({ sort }: { sort: string }) => {
 
     const newIndexId = medias.findIndex((item) => item.url === media);
     fullScreenPreview({
+      username: user?.username,
+      watermarkEnabled:watermarkEnabled,
       url: media,
       type,
       open: true,
@@ -140,7 +145,8 @@ interface MediaPanelMediaCardProps {
     media: string,
     type: string,
     isSubscriber: boolean,
-    indexId: number
+    indexId: number,
+      watermarkEnabled: boolean
   ) => void;
   isSubscriber: boolean;
   indexId: number;
@@ -180,7 +186,8 @@ const MediaPanelMediaCard = ({
                   media.url,
                   media.media_type,
                   isSubscriber,
-                  indexId
+                  indexId,
+                    media.post.watermark_enabled,
                 ),
             }}
           />
@@ -190,7 +197,8 @@ const MediaPanelMediaCard = ({
                 media.url,
                 media.media_type,
                 isSubscriber,
-                indexId
+                indexId,
+                  media.post.watermark_enabled,
               )
             }
             className="absolute bg-black/20 w-full h-full inset-0 cursor-pointer flex items-center justify-center"
@@ -208,7 +216,8 @@ const MediaPanelMediaCard = ({
               media.url,
               media.media_type,
               isSubscriber,
-              indexId
+              indexId,
+                media.post.watermark_enabled,
             )
           }
           src={isSubscriber ? media.url : media.blur}

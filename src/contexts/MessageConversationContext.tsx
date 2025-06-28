@@ -36,17 +36,52 @@ const fetchConversations = async (page: number) => {
 };
 
 const useProvideConversations = () => {
+  const queryClient = useQueryClient();
+
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage } =
     useInfiniteQuery({
       queryKey: ["conversations"],
       queryFn: ({ pageParam = 1 }) => fetchConversations(pageParam),
       getNextPageParam: (lastPage) =>
         lastPage?.hasMore ? lastPage.page + 1 : undefined,
-      staleTime: 1000 * 60, // 5 minutes
+      staleTime: 1000 * 60 * 5, // 5 minutes
       refetchOnMount: false,
       refetchOnWindowFocus: false,
       initialPageParam: 1,
     });
+
+  // Listen for socket events to invalidate conversations and update unread count
+  useEffect(() => {
+    const socket = getSocket();
+
+    // Handle conversation prefetch events
+    const handlePrefetchConversations = () => {
+      queryClient.invalidateQueries({ queryKey: ["conversations"] });
+    };
+
+    // Handle unread count updates
+    const handleUnreadCountUpdate = (data: { unreadCount: number }) => {
+      queryClient.setQueryData(["conversations"], (oldData: any) => {
+        if (!oldData) return oldData;
+
+        // Update the unread count in the first page
+        const newPages = [...oldData.pages];
+        if (newPages[0]) {
+          newPages[0] = { ...newPages[0], unreadCount: data.unreadCount };
+        }
+
+        return { ...oldData, pages: newPages };
+      });
+    };
+
+    socket.on("prefetch-conversations", handlePrefetchConversations);
+    socket.on("unread-count-updated", handleUnreadCountUpdate);
+
+    return () => {
+      socket.off("prefetch-conversations", handlePrefetchConversations);
+      socket.off("unread-count-updated", handleUnreadCountUpdate);
+    };
+  }, [queryClient]);
 
   return {
     conversations: data?.pages.flatMap((p) => p.conversations) || [],

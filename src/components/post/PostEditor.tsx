@@ -32,6 +32,7 @@ import { useNewPostStore } from "@/contexts/NewPostContext";
 import { PostCancel } from "@/components/sub_components/sub/PostCancel";
 import { usePostMediaUploadContext } from "@/contexts/PostMediaUploadContext";
 import FetchMentions from "@/utils/data/FetchMentions";
+import { usePostEditorContext } from "@/contexts/PostEditorContext";
 
 interface MentionSuggestion extends MentionUser {
   highlighted?: boolean;
@@ -52,6 +53,9 @@ const PostEditor = React.memo(({ posts }: PostEditorProps) => {
   const [media, setMedia] = useState<UploadedImageProp[] | null>(null);
   const { mediaUploadComplete, setMediaUploadComplete } =
     usePostMediaUploadContext();
+  const isWaterMarkEnabled = usePostEditorContext(
+    (state) => state.isWaterMarkEnabled
+  );
 
   // Mentions state
   const [showMentions, setShowMentions] = useState(false);
@@ -335,7 +339,6 @@ const PostEditor = React.memo(({ posts }: PostEditorProps) => {
     });
 
     // Convert to HTML
-
     const savePostOptions = {
       data: {
         media: media || [],
@@ -344,6 +347,7 @@ const PostEditor = React.memo(({ posts }: PostEditorProps) => {
         removedMedia: removedIds,
         price: price > 0 ? price : undefined,
         mentions: mentions,
+        isWaterMarkEnabled,
       },
       action: posts?.post_id ? "update" : "create",
       post_id: posts?.post_id || "",
