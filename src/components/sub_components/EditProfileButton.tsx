@@ -6,12 +6,13 @@ import {
   Instagram,
   LucideCamera,
   LucideInstagram,
+  LucideLoader2,
   Twitter,
   X,
 } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import toast from "react-hot-toast";
 import BannerComponent from "../lib_components/BannerComponent";
 import { getToken } from "@/utils/Cookie";
@@ -20,6 +21,7 @@ import ROUTE from "@/config/routes";
 import { BannerModalProps } from "@/types/Components";
 import { countries } from "@/lib/Locations";
 import { PiSnapchatLogoDuotone } from "react-icons/pi";
+import useCheckUsername from "../custom-hooks/CheckUsername";
 
 const EditProfileButton = ({ user }: { user: any }) => {
   const [open, setOpen] = useState(false);
@@ -40,20 +42,43 @@ const EditProfileButton = ({ user }: { user: any }) => {
 function BannerModal({ user, open = false, setOpen }: BannerModalProps) {
   const [file, setFile] = useState<File | null>(null);
   const [userData, setUserData] = useState<UserUpdateProfileType>(
-    {} as UserUpdateProfileType
+    {} as UserUpdateProfileType,
   );
+  const [usernameCheck, setUsernameCheck] = useState("");
+  const { message, canSave, error, isLoading } = useCheckUsername(
+    user,
+    usernameCheck,
+  );
+
+  const usernameTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
   const router = useRouter();
 
   const handleInputChange = (
     e: React.ChangeEvent<
       HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
-    >
+    >,
   ) => {
     if (e.target.name === "bio") {
       if (e.target.value.length > 1000) {
         toast.error("Bio cannot exceed 1000 characters.");
         return;
       }
+    }
+    if (e.target.name === "username") {
+      if (e.target.value.length > 20) {
+        toast.error("Username cannot exceed 20 characters.");
+        return;
+      }
+    }
+    const { name, value } = e.target;
+    if (name === "username") {
+      if (usernameTimeoutRef.current) {
+        clearTimeout(usernameTimeoutRef.current);
+      }
+      usernameTimeoutRef.current = setTimeout(() => {
+        setUsernameCheck(value);
+      }, 300);
     }
     setUserData({ ...userData, [e.target.name]: e.target.value });
   };
@@ -110,7 +135,7 @@ function BannerModal({ user, open = false, setOpen }: BannerModalProps) {
         },
         {
           id: "profile-update-toast",
-        }
+        },
       );
     } catch (error) {
       console.error(error);
@@ -190,7 +215,9 @@ function BannerModal({ user, open = false, setOpen }: BannerModalProps) {
         <form
           onSubmit={(e) => {
             e.preventDefault();
-            handleSaveClick();
+            if (canSave) {
+              handleSaveClick();
+            }
           }}
           className="space-y-4 lg:grid lg:grid-cols-2 lg:gap-8"
         >
@@ -206,6 +233,36 @@ function BannerModal({ user, open = false, setOpen }: BannerModalProps) {
               className="w-full p-3 text-black border border-gray-300 rounded-lg outline-none dark:text-white dark:bg-slate-900 dark:border-slate-700 focus:ring-2 focus:ring-primary-dark-pink"
               placeholder="Name"
             />
+            <div>
+              <label
+                className="block mb-1 font-semibold text-gray-700 dark:text-gray-200"
+                htmlFor="username"
+              >
+                Username
+              </label>
+              <input
+                id="username"
+                type="text"
+                name="username"
+                defaultValue={user?.username}
+                className={`w-full border border-gray-300 dark:border-gray-700 p-3 outline-none text-black dark:text-white bg-white dark:bg-gray-800 rounded-lg focus:ring-2 focus:ring-primary-dark-pink transition`}
+                onChange={handleInputChange}
+                placeholder="Username"
+              />
+              {isLoading && (
+                <div className={"py-2"}>
+                  <LucideLoader2
+                    size={10}
+                    className={"animate-spin text-primary-dark-pink"}
+                  />
+                </div>
+              )}
+              {error && (
+                <p className="text-red-500 dark:text-red-400 text-sm mt-1 font-medium">
+                  {message}
+                </p>
+              )}
+            </div>
             <select
               name="location"
               className="w-full p-3 text-black border border-gray-300 rounded-lg outline-none dark:text-white dark:bg-slate-900 dark:border-slate-700 focus:ring-2 focus:ring-primary-dark-pink"

@@ -3,10 +3,10 @@ import { formatDate } from "@/utils/FormatDate";
 import PostComponent from "./PostComponent";
 import LoadingPost from "../sub_components/LoadingPost";
 import { useHomeFeedInfinite } from "@/hooks/useHomeFeedInfinite";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { useInView } from "react-intersection-observer";
 
-const HomePostComponent = () => {
+const HomePostInfinite = () => {
   const {
     data,
     fetchNextPage,
@@ -134,8 +134,15 @@ const HomePostComponent = () => {
           </div>
         )}
       </div>
+
+      {/* Background refresh indicator */}
+      {data?.pages.some((page, index) => index === 0) && (
+        <div className="fixed top-4 right-4 z-50">
+          {/* You can add a subtle indicator here when background refresh happens */}
+        </div>
+      )}
     </div>
   );
 };
 
-export default HomePostComponent;
+export default HomePostInfinite;
