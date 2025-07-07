@@ -10,6 +10,7 @@ import UpdatePasswords from "./UpdatePassword";
 import { useUserAuthContext } from "@/lib/UserUseContext";
 import Toggle from "./Checked";
 import TwoFactorAuth from "./SettingsTwoFactorAuth";
+import DeleteAccount from "../settings/DeleteAccount";
 
 const SettingsSecurity = () => {
   const { user } = useUserAuthContext();
@@ -92,20 +93,7 @@ const SettingsSecurity = () => {
         </p>
       </div>
 
-      <div className="mt-10">
-        <h2 className="mb-4 font-bold text-lg text-gray-900 dark:text-gray-100">
-          Delete Account
-        </h2>
-        <p className="text-gray-700 dark:text-gray-300">
-          To delete your account please contact support:&nbsp;
-          <a
-            className="text-primary-dark-pink underline hover:text-primary-pink dark:text-primary-dark-pink"
-            href="mailto:support@paymefans.com"
-          >
-            support@paymefans.com
-          </a>
-        </p>
-      </div>
+     <DeleteAccount />
     </div>
   );
 };
