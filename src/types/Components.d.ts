@@ -1,4 +1,4 @@
-  import React, { ChangeEvent, ReactNode, SetStateAction } from "react";
+import React, { ChangeEvent, ReactNode, SetStateAction } from "react";
 import { AuthUserProps, ProfileUserProps } from "./User";
 import { LastMessage } from "./Conversations";
 import { StoryType } from "@/contexts/StoryContext";
@@ -49,8 +49,9 @@ export interface PostData {
   wasReposted: boolean;
   hasPaid: boolean;
   watermark_enabled?: boolean;
+  UserMedia: UserMediaProps[];
   media: UserMediaProps[];
-  user?: {
+  user: {
     id: number;
     name: string;
     username: string;

@@ -136,6 +136,8 @@ const PostComponent: React.FC<PostComponentProps> = ({
       data.media,
       isCreator,
       fullScreenPreview,
+      data.watermark_enabled,
+      data?.user?.username
     ],
   );
 

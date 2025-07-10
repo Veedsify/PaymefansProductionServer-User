@@ -12,14 +12,9 @@ const ModelsSubscription = ({ model }: { model: any }) => {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.3 }}
-        whileHover={{ scale: 1.05 }}
       >
         <Link href={`/${model?.username}`}>
-          <motion.div
-            whileHover={{ scale: 1.1 }}
-            whileTap={{ scale: 0.95 }}
-            transition={{ type: "spring", stiffness: 300 }}
-          >
+          <motion.div whileHover={{ scale: 1.1 }}>
             <Image
               width={100}
               height={100}

@@ -171,6 +171,8 @@ const MessageBubbleContent: React.FC<MessageBubbleContentProps> = ({
                   <Image
                     width={300}
                     height={300}
+                    unoptimized
+                    quality={40}
                     onClick={() => handlePreview(file, idx)}
                     src={file.url}
                     alt="Uploaded content"

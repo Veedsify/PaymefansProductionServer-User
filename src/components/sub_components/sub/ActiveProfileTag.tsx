@@ -11,12 +11,7 @@ const ActiveProfileTag = ({
   withText,
   scale,
 }: ActiveProfileTagProps) => {
-  // Handle undefined/null username - return early to prevent any processing
-  if (!username || username.trim() === "") {
-    return null; // Don't render anything if no valid username
-  }
-
-  const isActive = useActiveUsersManager((state) => state.isActive(username));
+  const isActive = useActiveUsersManager((state) => state.isActive(String(username)));
   const updateActiveUsers = useActiveUsersManager(
     (state) => state.updateActiveUsers
   );
@@ -41,6 +36,11 @@ const ActiveProfileTag = ({
       socket.off("active_users", handleActiveUsers);
     };
   }, [username, updateActiveUsers]);
+
+  // Handle undefined/null username - return early after hooks
+  if (!username || username.trim() === "") {
+    return null; // Don't render anything if no valid username
+  }
 
   return (
     <div className="flex items-center gap-2">

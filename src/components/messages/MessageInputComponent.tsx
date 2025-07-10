@@ -83,15 +83,10 @@ const MessageInputComponent = React.memo(
     // Debug monitoring for uploads
     useEffect(() => {
       if (mediaFiles.length > 0) {
-        console.log(
-          "🔍 Starting upload monitoring for",
-          mediaFiles.length,
-          "files",
-        );
         const cleanup = monitorUploadStatus(mediaFiles, 2000);
         return cleanup;
       }
-    }, [mediaFiles.length]);
+    }, [mediaFiles]);
 
     const resetMessageInput = useCallback(() => {
       setMessage("");

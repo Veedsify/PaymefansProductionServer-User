@@ -1,4 +1,3 @@
-import GroupConversations from "@/components/route_component/GroupConversations";
 import { LucideSearch } from "lucide-react";
 
 const Groups = () => {
@@ -23,7 +22,6 @@ const Groups = () => {
             <LucideSearch className="block text-center" />
           </div>
         </div>
-        <GroupConversations />
       </div>
     </>
   );

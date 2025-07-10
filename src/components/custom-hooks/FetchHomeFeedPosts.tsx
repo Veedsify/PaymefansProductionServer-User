@@ -36,7 +36,7 @@ const FetchHomeFeedPosts = () => {
       };
       getPosts();
     }
-  }, [page, hasMore, addToPosts]);
+  }, [page, hasMore, addToPosts, loading]);
 
   return {
     page,

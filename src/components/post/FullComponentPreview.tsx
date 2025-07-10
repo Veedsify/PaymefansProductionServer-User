@@ -144,7 +144,7 @@ const VideoPreview = memo(
   ({ url, isBlob, playAction, index }: VideoPreviewProps) => {
     const videoRef = useRef<HTMLVideoElement | null>(null);
     const [status, setStatus] = useState<"loading" | "ready" | "error">(
-      "loading"
+      "loading",
     );
 
     const handleVideoLoad = useCallback(() => {
@@ -163,7 +163,7 @@ const VideoPreview = memo(
         video
           .play()
           .catch((e) =>
-            console.warn(`Video ended but could not replay: ${e.message}`)
+            console.warn(`Video ended but could not replay: ${e.message}`),
           );
       }
     }, [status]);
@@ -266,7 +266,7 @@ const VideoPreview = memo(
         )}
       </motion.div>
     );
-  }
+  },
 );
 VideoPreview.displayName = "VideoPreview";
 
@@ -377,7 +377,7 @@ const NavigationButton = memo(
         <ChevronRight className="h-5 w-5 md:h-6 md:w-6" />
       )}
     </motion.button>
-  )
+  ),
 );
 NavigationButton.displayName = "NavigationButton";
 
@@ -416,7 +416,7 @@ const PostComponentPreview = memo(() => {
         alt: item.alt || `Media preview ${index + 1}`,
       };
     },
-    []
+    [],
   );
 
   const mediaItems = useMemo(() => {
@@ -430,13 +430,13 @@ const PostComponentPreview = memo(() => {
       isFirstSlide: currentSlide === 0,
       isLastSlide: currentSlide === mediaItems.length - 1,
     }),
-    [mediaItems.length, currentSlide]
+    [mediaItems.length, currentSlide],
   );
 
   const shouldLoadSlide = useCallback(
     (index: number) =>
       Math.abs(index - currentSlide) <= CONSTANTS.PRELOAD_RANGE,
-    [currentSlide]
+    [currentSlide],
   );
 
   // Preload media
@@ -586,8 +586,8 @@ const PostComponentPreview = memo(() => {
                   {shouldLoadSlide(index) &&
                     (item.type === "image" ? (
                       <ImagePreview
-                      url={item.url}
-                      username={username}
+                        url={item.url}
+                        username={username}
                         alt={item.alt || `Media preview ${index + 1}`}
                         index={index}
                         onLoad={() => handleImageLoad(index)}

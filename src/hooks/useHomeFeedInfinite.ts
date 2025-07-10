@@ -2,43 +2,42 @@
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { getToken } from "@/utils/Cookie";
 import ROUTE from "@/config/routes";
+import { PostData, UserMediaProps } from "@/types/Components";
 
-interface Post {
-  id: number;
-  content: string;
-  created_at: string;
-  user_id: number;
-  post_likes: number;
-  post_comments: number;
-  post_reposts: number;
-  post_audience: string;
-  post_is_visible: boolean;
-  post_status: string;
-  score: number;
-  likedByme: boolean;
-  wasReposted: boolean;
-  isSubscribed: boolean;
-  user: {
-    id: number;
-    user_id: string;
-    name: string;
-    username: string;
-    profile_image: string;
-    profile_banner: string;
-    bio: string;
-    is_model: boolean;
-    total_followers: number;
-  };
-  UserMedia: Array<{
-    id: number;
-    post_id: number;
-    media_url: string;
-    media_type: string;
-  }>;
-}
+// interface Post {
+//   id: number;
+//   content: string;
+//   created_at: string;
+//   user_id: number;
+//   post_likes: number;
+//   post_comments: number;
+//   post_reposts: number;
+//   post_audience: string;
+//   post_is_visible: boolean;
+//   post_status: string;
+//   score: number;
+//   likedByme: boolean;
+//   wasReposted: boolean;
+//   isSubscribed: boolean;
+//   hasPaid: boolean;
+//   post_price: number;
+//   post_id: string;
+//   user: {
+//     id: number;
+//     user_id: string;
+//     name: string;
+//     username: string;
+//     profile_image: string;
+//     profile_banner: string;
+//     bio: string;
+//     is_model: boolean;
+//     total_followers: number;
+//   };
+//   UserMedia: UserMediaProps[];
+// }
 
 interface HomeFeedResponse {
-  posts: Post[];
+  posts: PostData[];
   nextCursor?: string;
   hasMore: boolean;
 }
@@ -94,4 +93,4 @@ export const useHomeFeedInfinite = () => {
   });
 };
 
-export type { Post, HomeFeedResponse };
+export type { HomeFeedResponse };

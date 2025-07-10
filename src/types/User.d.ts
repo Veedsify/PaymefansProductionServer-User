@@ -63,6 +63,11 @@ export type AuthUserProps = {
     youtube_url: string | null;
     snapchat_url: string | null;
     telegram_url: string | null;
+    follower_message_enabled: boolean;
+    follower_message_text: string;
+    follower_message_images: string[];
+    subscriber_message_enabled: boolean;
+    subscriber_message_text: string;
   };
   following: number;
   Model?: {
@@ -124,6 +129,7 @@ export type UserUpdateProfileType = {
   location: string;
   bio: string | null;
   website: string | null;
+  state: string | null;
   instagram?: string;
   twitter?: string;
   facebook?: string;
@@ -183,6 +189,11 @@ export type ProfileUserProps = {
     youtube_url: string | null;
     snapchat_url: string | null;
     telegram_url: string | null;
+    follower_message_enabled: boolean;
+    follower_message_text: string;
+    follower_message_images: string[];
+    subscriber_message_enabled: boolean;
+    subscriber_message_text: string;
   };
   Subscribers: {
     subscriber_id: number;

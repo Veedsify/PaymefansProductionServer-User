@@ -115,7 +115,7 @@ const HomePostInfinite = () => {
         {!hasNextPage && allPosts.length > 0 && (
           <div className="text-center py-8">
             <p className="text-gray-500 text-sm">
-              🎉 You've reached the end! No more posts to load.
+              🎉 You&apos;ve reached the end! No more posts to load.
             </p>
           </div>
         )}

@@ -16,7 +16,7 @@ const SettingsSecurity = () => {
   const { user } = useUserAuthContext();
   return (
     <div className=" bg-white dark:bg-gray-950 rounded-xl transition-colors duration-300">
-      <h1 className="font-bold mb-6 text-xl text-gray-900 dark:text-gray-100">
+      <h1 className="font-bold mb-6 text-lg md:text-xl text-gray-900 dark:text-gray-100">
         Privacy
       </h1>
       <div className="space-y-3">
@@ -93,7 +93,7 @@ const SettingsSecurity = () => {
         </p>
       </div>
 
-     <DeleteAccount />
+      <DeleteAccount />
     </div>
   );
 };

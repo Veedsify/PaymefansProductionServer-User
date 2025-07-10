@@ -99,7 +99,7 @@ const ChatPage = ({ conversationId }: { conversationId: string }) => {
   }, [conversationId]);
 
   // Function to fetch the next page
-  const fetchNextPage = async () => {
+  const fetchNextPage = useCallback( async () => {
     if (!nextCursor || !hasMore) return;
 
     setLoading(true);
@@ -117,7 +117,7 @@ const ChatPage = ({ conversationId }: { conversationId: string }) => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [conversationId, nextCursor, hasMore]);
 
   useEffect(() => {
     return () => {
@@ -419,16 +419,21 @@ const ChatPage = ({ conversationId }: { conversationId: string }) => {
     searchForSpecificMessage,
   ]);
 
-  // Scroll to bottom on initial load
-  useEffect(() => {
+  const Scroll = useCallback(() => {
     if (messages.length > 0) {
-      // Check if there's a message_id in URL first
       const messageId = searchParams.get("message_id");
-      if (!messageId) {
-        setTimeout(() => scrollToBottom(), 100);
+      if (messageId) {
+        setTimeout(() => {
+          scrollToBottom();
+        }, 100);
       }
     }
-  }, [conversationId, searchParams]); // Only on conversation change
+  }, [messages.length, searchParams, scrollToBottom]);
+
+  // Scroll to bottom on initial load
+  useEffect(() => {
+   Scroll();
+  }, [Scroll]); // Only on conversation change
 
   if (error) {
     return (
