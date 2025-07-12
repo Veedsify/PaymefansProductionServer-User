@@ -11,9 +11,11 @@ const ActiveProfileTag = ({
   withText,
   scale,
 }: ActiveProfileTagProps) => {
-  const isActive = useActiveUsersManager((state) => state.isActive(String(username)));
+  const isActive = useActiveUsersManager((state) =>
+    state.isActive(String(username)),
+  );
   const updateActiveUsers = useActiveUsersManager(
-    (state) => state.updateActiveUsers
+    (state) => state.updateActiveUsers,
   );
 
   useEffect(() => {
@@ -26,7 +28,6 @@ const ActiveProfileTag = ({
       socket.emit("get-active-users");
     }
     const handleActiveUsers = (users: any) => {
-      console.log("🚀 Active users received:", users);
       updateActiveUsers(users);
     };
 

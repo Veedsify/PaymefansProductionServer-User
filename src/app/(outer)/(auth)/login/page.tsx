@@ -1,6 +1,5 @@
 "use client";
 import { getUser } from "@/lib/User";
-import axiosServer from "@/utils/Axios";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -53,18 +52,24 @@ const Login = () => {
         `${process.env.NEXT_PUBLIC_TS_EXPRESS_URL}/auth/login`,
         {
           ...loginCredentials,
-        }
+        },
+        {
+          withCredentials: true,
+        },
       );
 
-      if (!loginThisUser?.data?.error) {
-        if (loginThisUser?.data?.token && !loginThisUser?.data?.tfa) {
+      const loginError = loginThisUser?.data?.error;
+      const loginToken = loginThisUser?.data?.token;
+      const loginTfa = loginThisUser?.data?.tfa;
+      const loginUser = loginThisUser?.data?.user;
+
+      if (!loginError) {
+        if (loginToken && !loginTfa) {
           toast.success(LOGIN_CONFIG.LOGIN_SUCCESSFUL_MSG, {
             id: "login",
           });
-          document.cookie = `token=${loginThisUser.data.token}`;
-          setUser(loginThisUser.data.user);
           const redirect = new URLSearchParams(window.location.search).get(
-            "redirect"
+            "redirect",
           );
           if (redirect) {
             if (typeof window !== "undefined") {
@@ -73,6 +78,8 @@ const Login = () => {
             }
           } else {
             if (typeof window !== "undefined") {
+              document.cookie = `token=${loginToken}; path=/`;
+              setUser(loginUser);
               window.location.href = "/";
               return;
             }
@@ -96,7 +103,7 @@ const Login = () => {
         error.response?.data.message || "An error occurred while logging in",
         {
           id: "login",
-        }
+        },
       );
     }
   };

@@ -46,7 +46,9 @@ function AudienceIcon({ audience }: { audience: string }): JSX.Element | null {
     case "subscribers":
       return <LucideUsers size={15} />;
     case "price":
-      return <Image src="/site/coin.svg" alt="" width={15} height={15} />;
+      return (
+        <Image src="/site/coin.svg" priority alt="" width={15} height={15} />
+      );
     default:
       return null;
   }
@@ -72,7 +74,7 @@ const PostComponent: React.FC<PostComponentProps> = ({
   // --- Permission/role checks --- //
   const isSubscribed = data.isSubscribed;
   const isCreator = user?.id === authUser?.id;
-  const hasPaid = data.hasPaid
+  const hasPaid = data.hasPaid;
   // const isAdmin = user.role === "admin"; // Default commented
 
   const canView =
@@ -137,7 +139,7 @@ const PostComponent: React.FC<PostComponentProps> = ({
       isCreator,
       fullScreenPreview,
       data.watermark_enabled,
-      data?.user?.username
+      data?.user?.username,
     ],
   );
 
@@ -209,10 +211,7 @@ const PostComponent: React.FC<PostComponentProps> = ({
       return promptSubscription();
     }
 
-    if (
-      data.post_audience === "price" &&
-      !(isCreator || hasPaid)
-    ) {
+    if (data.post_audience === "price" && !(isCreator || hasPaid)) {
       return promptPayment();
     }
 
@@ -243,7 +242,7 @@ const PostComponent: React.FC<PostComponentProps> = ({
         icon: "warning",
       });
     }
-    if (data.post_audience === "price" && (!isCreator && !hasPaid)) {
+    if (data.post_audience === "price" && !isCreator && !hasPaid) {
       e.preventDefault();
       return promptPayment();
     }
@@ -310,12 +309,13 @@ const PostComponent: React.FC<PostComponentProps> = ({
         ></div>
         {/* Media Grid */}
         <div
-          className={`grid gap-3 ${data.media.length === 2
+          className={`grid gap-3 ${
+            data.media.length === 2
               ? "grid-cols-2"
               : data.media.length >= 3
                 ? "grid-cols-3"
                 : "grid-cols-1"
-            }`}
+          }`}
         >
           {data.media.slice(0, 3).map((media: UserMediaProps, i) => (
             <MediaGridItem
@@ -372,6 +372,7 @@ const MediaGridItem = ({
           <p className="flex items-center justify-center gap-2 text- lg:text-lg font-bold leading-4 text-center">
             <Image
               width={20}
+              priority
               height={20}
               src="/site/coin.svg"
               className="h-5 w-auto aspect-square"
@@ -390,8 +391,9 @@ const MediaGridItem = ({
 
   return (
     <div
-      className={`relative rounded-xl overflow-hidden ${data.post_status !== "approved" ? "border-fuchsia-500 border-2" : ""
-        }`}
+      className={`relative rounded-xl overflow-hidden ${
+        data.post_status !== "approved" ? "border-fuchsia-500 border-2" : ""
+      }`}
       onClick={handleNonSubscriberClick}
     >
       {media.media_type === "video" ? (
@@ -471,6 +473,7 @@ const ImageComponent: React.FC<ImageCompProps> = ({
     width={900}
     height={900}
     unselectable="on"
+    priority
     blurDataURL={media.poster ? media.poster : ""}
     onClick={() => clickImageEvent(media)}
     className="w-full h-full rounded-lg aspect-[3/4] md:aspect-square object-cover cursor-pointer"

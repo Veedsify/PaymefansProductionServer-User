@@ -3,38 +3,7 @@ import { useInfiniteQuery } from "@tanstack/react-query";
 import { getToken } from "@/utils/Cookie";
 import ROUTE from "@/config/routes";
 import { PostData, UserMediaProps } from "@/types/Components";
-
-// interface Post {
-//   id: number;
-//   content: string;
-//   created_at: string;
-//   user_id: number;
-//   post_likes: number;
-//   post_comments: number;
-//   post_reposts: number;
-//   post_audience: string;
-//   post_is_visible: boolean;
-//   post_status: string;
-//   score: number;
-//   likedByme: boolean;
-//   wasReposted: boolean;
-//   isSubscribed: boolean;
-//   hasPaid: boolean;
-//   post_price: number;
-//   post_id: string;
-//   user: {
-//     id: number;
-//     user_id: string;
-//     name: string;
-//     username: string;
-//     profile_image: string;
-//     profile_banner: string;
-//     bio: string;
-//     is_model: boolean;
-//     total_followers: number;
-//   };
-//   UserMedia: UserMediaProps[];
-// }
+import axios from "axios";
 
 interface HomeFeedResponse {
   posts: PostData[];
@@ -42,7 +11,11 @@ interface HomeFeedResponse {
   hasMore: boolean;
 }
 
-const fetchHomeFeed = async ({ pageParam }: { pageParam?: string }): Promise<HomeFeedResponse> => {
+const fetchHomeFeed = async ({
+  pageParam,
+}: {
+  pageParam?: string;
+}): Promise<HomeFeedResponse> => {
   const token = getToken();
 
   if (!token) {
@@ -54,19 +27,15 @@ const fetchHomeFeed = async ({ pageParam }: { pageParam?: string }): Promise<Hom
     url.searchParams.set("cursor", pageParam);
   }
 
-  const response = await fetch(url.toString(), {
+  const response = await axios.get(url.toString(), {
     headers: {
-      "Authorization": `Bearer ${token}`,
+      Authorization: `Bearer ${token}`,
       "Content-Type": "application/json",
     },
-    cache: "no-store", // Ensure fresh data for feeds
+    withCredentials: true,
   });
 
-  if (!response.ok) {
-    throw new Error(`Failed to fetch posts: ${response.status}`);
-  }
-
-  const data = await response.json();
+  const data = response.data;
   return data;
 };
 
@@ -84,7 +53,10 @@ export const useHomeFeedInfinite = () => {
     refetchOnReconnect: true, // Refetch when connection is restored
     retry: (failureCount, error) => {
       // Don't retry on 401/403 errors (auth issues)
-      if (error instanceof Error && error.message.includes("401") || error.message.includes("403")) {
+      if (
+        (error instanceof Error && error.message.includes("401")) ||
+        error.message.includes("403")
+      ) {
         return false;
       }
       return failureCount < 3;

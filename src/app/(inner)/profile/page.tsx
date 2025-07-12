@@ -41,6 +41,8 @@ const ProfilePage = async () => {
             src={user ? user.profile_image.trim() : "/site/avatar.png"}
             alt="proile image"
             height={100}
+            priority
+            unoptimized
             width={100}
             className="absolute object-cover md:w-24 md:h-24 w-20 h-20 sm:border-4 border-2 rounded-full md:-top-12  -top-6 border-primary-dark-pink "
           />

@@ -62,12 +62,6 @@ const MessageBubbleContent: React.FC<MessageBubbleContentProps> = ({
 
   return (
     <>
-      {/*
-        Rendering priority:
-        1. If sender and has rawFiles (uploading), show rawFiles with upload progress
-        2. Otherwise, show attachments (completed uploads)
-        3. Don't show rawFiles for receivers as they'll be undefined
-      */}
       {hasRawFiles &&
       isSender &&
       rawFiles.some((file) => file.uploadStatus !== "completed") ? (
@@ -172,6 +166,7 @@ const MessageBubbleContent: React.FC<MessageBubbleContentProps> = ({
                     width={300}
                     height={300}
                     unoptimized
+                    priority
                     quality={40}
                     onClick={() => handlePreview(file, idx)}
                     src={file.url}

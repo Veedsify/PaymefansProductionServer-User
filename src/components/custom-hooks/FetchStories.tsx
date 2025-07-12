@@ -1,6 +1,7 @@
 "use client";
 import { UserData } from "@/types/Story";
 import { getToken } from "@/utils/Cookie";
+import axios from "axios";
 import { useEffect, useState } from "react";
 
 const useFetchStories = () => {
@@ -9,17 +10,16 @@ const useFetchStories = () => {
   const token = getToken();
   useEffect(() => {
     const fetchStories = async () => {
-      const fetchStory = await fetch(
+      const fetchStory = await axios.get(
         `${process.env.NEXT_PUBLIC_TS_EXPRESS_URL}/story/all`,
         {
-          method: "GET",
+          withCredentials: true,
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
           },
-        }
+        },
       );
-      const response = await fetchStory.json();
+      const response = fetchStory.data;
       setStories(response.data);
       setLoading(false);
     };

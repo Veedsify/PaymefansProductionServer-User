@@ -15,7 +15,7 @@ const getUserData = async (): Promise<AuthUserProps | null> => {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token.value}`,
         },
-      }
+      },
     );
 
     if (res.status === 200 && res.data?.user) {
@@ -24,7 +24,7 @@ const getUserData = async (): Promise<AuthUserProps | null> => {
     if (res.status === 401) {
       redirect("/login");
     }
-    return null
+    return null;
   } catch (error) {
     if (axios.isAxiosError(error)) {
       // Log response if available

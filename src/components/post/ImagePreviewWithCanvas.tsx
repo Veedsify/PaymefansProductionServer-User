@@ -50,11 +50,13 @@ export const ImagePreview = memo(({ url, alt }: ImagePreviewProps) => {
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
           exit={{ opacity: 0, scale: 0.95 }}
-          className="w-full h-full flex items-center justify-center overflow-hidden">
+          className="w-full h-full flex items-center justify-center overflow-hidden"
+        >
           <Image
             src={url.trim()}
             alt={alt}
             fill
+            priority
             sizes="100vw"
             quality={100}
             className={`object-contain transition-opacity duration-200 ${
