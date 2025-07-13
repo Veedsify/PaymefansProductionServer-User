@@ -83,7 +83,7 @@ export default function GetLocationContext({
           enableHighAccuracy: true,
           timeout: 10000,
           maximumAge: 0, // 5 minutes
-        }
+        },
       );
     }
   };
@@ -129,7 +129,7 @@ export default function GetLocationContext({
               animate={{ scale: 1, opacity: 1, y: 0 }}
               exit={{ scale: 0.9, opacity: 0, y: 20 }}
               transition={{ type: "spring", duration: 0.5 }}
-              className="bg-white rounded-2xl shadow-2xl max-w-md w-full overflow-hidden"
+              className="bg-white dark:bg-gray-900 rounded-2xl shadow-2xl max-w-md w-full overflow-hidden"
             >
               {/* Header */}
               <div className="relative bg-gradient-to-br from-purple-500 to-purple-600 p-6 text-white">
@@ -190,10 +190,10 @@ export default function GetLocationContext({
                         {benefit.icon}
                       </div>
                       <div>
-                        <h3 className="font-semibold text-gray-900 mb-1">
+                        <h3 className="font-semibold dark:text-white text-gray-900 mb-1">
                           {benefit.title}
                         </h3>
-                        <p className="text-sm text-gray-600">
+                        <p className="text-sm text-gray-600 dark:text-white">
                           {benefit.description}
                         </p>
                       </div>
@@ -206,9 +206,9 @@ export default function GetLocationContext({
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ delay: 0.9 }}
-                  className="bg-gray-50 rounded-lg p-3 mb-6"
+                  className="bg-gray-50 dark:bg-gray-800 rounded-lg p-3 mb-6"
                 >
-                  <p className="text-xs text-gray-600 text-center">
+                  <p className="text-xs text-gray-600 text-center dark:text-white">
                     🔒 Your exact location is never shared. We only show your
                     general area to help with matching.
                   </p>
@@ -259,7 +259,7 @@ export default function GetLocationContext({
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
                       onClick={handleLocationDecline}
-                      className="w-full border border-gray-300 hover:border-gray-400 text-gray-700 font-semibold py-3 px-6 rounded-lg transition-all duration-200"
+                      className="w-full border border-gray-300 hover:border-gray-400 dark:text-white text-gray-700 font-semibold py-3 px-6 rounded-lg transition-all duration-200"
                     >
                       Maybe Later
                     </motion.button>

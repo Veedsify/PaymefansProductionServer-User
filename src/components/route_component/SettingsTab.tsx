@@ -13,7 +13,6 @@ import SettingsAutomatedMessage from "../sub_components/SettingsAutomatedMessage
 
 const SettingsTab = ({ user }: { user: AuthUserProps | null }) => {
   const searchParams = useSearchParams();
-  const { user: authuser } = useUserAuthContext();
   const handleClick = (e: MouseEvent<HTMLButtonElement>) => {
     const tab = e.currentTarget.getAttribute("data-tab");
     window.history.pushState({}, "", `?tab=${tab}`);
@@ -56,8 +55,8 @@ const SettingsTab = ({ user }: { user: AuthUserProps | null }) => {
               Security
             </button>
           </Tab>
-          {authuser?.is_model &&
-            authuser.Model?.verification_status === true && (
+          {user?.is_model &&
+            user.Model?.verification_status === true && (
               <>
                 <Tab>
                   <button
@@ -86,7 +85,7 @@ const SettingsTab = ({ user }: { user: AuthUserProps | null }) => {
         <TabPanel>
           <SettingsSecurity />
         </TabPanel>
-        {authuser?.is_model && authuser.Model?.verification_status === true && (
+        {user?.is_model && user.Model?.verification_status === true && (
           <>
             <TabPanel>
               <SettingsBillingProvider

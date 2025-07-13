@@ -441,7 +441,11 @@ const SearchPage = () => {
                                   {user.location && (
                                     <span className="flex items-center">
                                       <MapPin size={14} className="mr-1.5" />
-                                      {user.location} | {user.country}
+                                      {user.state && (
+                                        <span>{user.state + " |"}</span>
+                                      )}
+                                      &nbsp;
+                                      {user.location}
                                     </span>
                                   )}
                                   <span className="flex items-center">

@@ -16,13 +16,13 @@ import WishList from "@/components/sub_components/WishList";
 import { MessagesConversationProvider } from "@/contexts/MessageConversationContext";
 import UserAccountSupendedScreen from "@/components/sub_components/UserAccountSuspendedScreen";
 import ConfigProvider from "@/contexts/ConfigContext";
-import { Inter } from "next/font/google";
+import { Bricolage_Grotesque } from "next/font/google";
 import GetLocationContext from "@/contexts/GetLocationContext";
 
-const font = Inter({
-  weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
+const font = Bricolage_Grotesque({
+  weight: ["200", "300", "400", "500", "600", "700", "800"],
   subsets: ["latin"],
-  display: "block",
+  display: "swap",
 });
 
 export const metadata: Metadata = {

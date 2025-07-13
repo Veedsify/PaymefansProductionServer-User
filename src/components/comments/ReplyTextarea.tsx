@@ -67,7 +67,7 @@ const ReplyPostComponent = ({ options }: ReplyPostProps) => {
   const [showMentions, setShowMentions] = useState(false);
   const [mentionQuery, setMentionQuery] = useState("");
   const [mentionSuggestions, setMentionSuggestions] = useState<MentionUser[]>(
-    []
+    [],
   );
   const [selectedMentionIndex, setSelectedMentionIndex] = useState(0);
   const [mentions, setMentions] = useState<MentionUser[]>([]);
@@ -87,7 +87,7 @@ const ReplyPostComponent = ({ options }: ReplyPostProps) => {
         }, 300);
       });
     },
-    []
+    [],
   );
 
   // On mention query update
@@ -168,7 +168,7 @@ const ReplyPostComponent = ({ options }: ReplyPostProps) => {
         setCursorPosition(newCursorPos);
       }, 0);
     },
-    [mentionStartPos, cursorPosition, typedComment, mentions]
+    [mentionStartPos, cursorPosition, typedComment, mentions],
   );
   // Keydown for mention navigation
   const handleKeyDown = useCallback(
@@ -178,13 +178,13 @@ const ReplyPostComponent = ({ options }: ReplyPostProps) => {
           case "ArrowDown":
             e.preventDefault();
             setSelectedMentionIndex((prev) =>
-              prev < mentionSuggestions.length - 1 ? prev + 1 : 0
+              prev < mentionSuggestions.length - 1 ? prev + 1 : 0,
             );
             break;
           case "ArrowUp":
             e.preventDefault();
             setSelectedMentionIndex((prev) =>
-              prev > 0 ? prev - 1 : mentionSuggestions.length - 1
+              prev > 0 ? prev - 1 : mentionSuggestions.length - 1,
             );
             break;
           case "Enter":
@@ -199,7 +199,7 @@ const ReplyPostComponent = ({ options }: ReplyPostProps) => {
         }
       }
     },
-    [showMentions, mentionSuggestions, selectedMentionIndex, selectMention]
+    [showMentions, mentionSuggestions, selectedMentionIndex, selectMention],
   );
 
   // File handling
@@ -222,7 +222,7 @@ const ReplyPostComponent = ({ options }: ReplyPostProps) => {
         });
       }
     },
-    [files]
+    [files],
   );
 
   const removeFile = useCallback((file: File) => {
@@ -257,7 +257,7 @@ const ReplyPostComponent = ({ options }: ReplyPostProps) => {
         onUploadProgress: (progressEvent) => {
           if (progressEvent?.total) {
             setProgress(
-              Math.round((progressEvent.loaded / progressEvent.total) * 100)
+              Math.round((progressEvent.loaded / progressEvent.total) * 100),
             );
           }
         },
@@ -311,8 +311,8 @@ const ReplyPostComponent = ({ options }: ReplyPostProps) => {
         {/* Mention Suggestions Dropdown */}
         {showMentions && (
           <div
-            className="absolute z-50 bg-white dark:bg-gray-800 
-                       border border-gray-300 dark:border-gray-700 
+            className="absolute z-50 bg-white dark:bg-gray-800
+                       border border-gray-300 dark:border-gray-700
                        rounded-md shadow-lg max-h-60 overflow-y-auto p-1"
             style={{ top: "90px", left: "80px", width: "220px" }}
           >
@@ -324,7 +324,7 @@ const ReplyPostComponent = ({ options }: ReplyPostProps) => {
               mentionSuggestions.map((userItem, i) => (
                 <div
                   key={userItem.id}
-                  className={`flex items-center gap-2 p-2 cursor-pointer rounded-md transition-colors 
+                  className={`flex items-center gap-2 p-2 cursor-pointer rounded-md transition-colors
                     ${
                       i === selectedMentionIndex
                         ? "bg-gray-100 dark:bg-gray-700"
@@ -389,7 +389,7 @@ const ReplyPostComponent = ({ options }: ReplyPostProps) => {
               </span>
             </p>
             <div
-              className={`h-auto w-full flex items-center justify-center rounded-full border border-gray-200 mb-3`}
+              className={`h-auto w-full flex items-center justify-center rounded-full outline outline-gray-200 mb-3`}
             >
               <input
                 ref={inputRef}
@@ -400,7 +400,7 @@ const ReplyPostComponent = ({ options }: ReplyPostProps) => {
                 disabled={commentSending}
                 value={typedComment}
                 placeholder="Type a reply"
-                className={`block ml-3 leading-none py-2 w-full outline-none resize-none duration-300 transition-all bg-transparent dark:text-white dark:bg-slate-800`}
+                className={`block ml-3 leading-none py-2 w-full outline-none border-none resize-none duration-300 transition-all bg-transparent dark:text-white dark:bg-transparent`}
               />
               <div className="p-2 gap-4 mr-2">
                 <label htmlFor="file" className="cursor-pointer">

@@ -67,7 +67,7 @@ const Subscribe = () => {
               "Content-Type": "application/json",
               Authorization: `Bearer ${token}`,
             },
-          }
+          },
         );
         if (response.data.status === false) {
           router.push("/404");
@@ -104,7 +104,7 @@ const Subscribe = () => {
           swal(
             "Success",
             `You have successfully subscribed to ${profileUser.name}`,
-            "success"
+            "success",
           );
           socket.emit("subscription_added", { user_id: profileUser.user_id });
           router.push(`/${profileUser.username}`);
@@ -137,13 +137,13 @@ const Subscribe = () => {
             {profileUser?.name}
           </span>
         </h1>
-        <p className="text-gray-500 mb-8 leading-loose">
+        <p className="text-gray-500 dark:text-white mb-8 leading-loose">
           Subscribe to {profileUser?.name} to get access to{" "}
           {profileUser?.Model?.gender == "female" ? "her" : "his"} exclusive
           content and special updates.
         </p>
         {!profileUser?.ModelSubscriptionPack?.ModelSubscriptionTier?.length && (
-          <div className="max-w-md mx-auto border-2 border-dashed border-gray-300 p-10 rounded-2xl bg-gray-50/50 text-center select-none hover:border-gray-400 transition-colors duration-300">
+          <div className="max-w-md mx-auto border-2 border-dashed border-gray-300 p-10 rounded-2xl dark:bg-gray-900  bg-gray-50/50 text-center select-none hover:border-gray-400 transition-colors duration-300">
             <div className="bg-gray-100 rounded-full w-16 h-16 mx-auto mb-6 flex items-center justify-center">
               <svg
                 className="w-8 h-8 text-gray-500"
@@ -160,10 +160,10 @@ const Subscribe = () => {
                 />
               </svg>
             </div>
-            <h3 className="text-xl font-semibold text-gray-800 mb-2">
+            <h3 className="text-xl font-semibold text-gray-800 dark:text-white mb-2">
               No Subscription Plans
             </h3>
-            <p className="text-gray-600 leading-relaxed">
+            <p className="text-gray-600 dark:text-white leading-relaxed">
               This creator hasn&apos;t set up any subscription plans yet. Check
               back later for updates.
             </p>
@@ -172,7 +172,7 @@ const Subscribe = () => {
         {profileUser &&
           profileUser.ModelSubscriptionPack &&
           Array.isArray(
-            profileUser.ModelSubscriptionPack.ModelSubscriptionTier
+            profileUser.ModelSubscriptionPack.ModelSubscriptionTier,
           ) &&
           profileUser.ModelSubscriptionPack.ModelSubscriptionTier.length >
             0 && (
@@ -237,7 +237,7 @@ const Subscribe = () => {
                       Subscribe Now
                     </button>
                   </div>
-                )
+                ),
               )}
             </div>
           )}

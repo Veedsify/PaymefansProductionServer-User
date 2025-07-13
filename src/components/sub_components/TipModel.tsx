@@ -54,7 +54,7 @@ const TipModel = ({
           `You don't have enough points to tip ${selectedPoint.points} points`,
           {
             id: "buy-points",
-          }
+          },
         );
         return;
       }
@@ -71,7 +71,7 @@ const TipModel = ({
         text: `Are you sure you want to tip ${selectedPoint.points} points to ${
           userdata.name || userdata.username
         }? This will cost you ₦${Number(
-          selectedPoint.amount
+          selectedPoint.amount,
         ).toLocaleString()}.`,
         icon: "info",
         buttons: {
@@ -99,7 +99,7 @@ const TipModel = ({
                 points: points,
                 modelId: userdata.id,
               }),
-            }
+            },
           );
           if (!giftPointsToUser.ok) {
             toast.error("An error occurred while gifting points", {
@@ -114,7 +114,7 @@ const TipModel = ({
               }`,
               {
                 id: "buy-points",
-              }
+              },
             );
             close();
             router.refresh();
@@ -128,7 +128,7 @@ const TipModel = ({
         }
       });
     },
-    [points, pointBalance, user, userdata, router, close]
+    [points, pointBalance, user, userdata, router, close],
   );
 
   return (
@@ -154,7 +154,7 @@ const TipModel = ({
           opacity: 0.8,
         }}
         onClick={(e) => e.stopPropagation()}
-        className="bg-white lg:rounded-xl p-4 md:p-8 w-full md:max-w-2xl h-dvh lg:max-h-[90dvh] overflow-y-auto"
+        className="bg-white dark:bg-gray-900 lg:rounded-xl p-4 md:p-8 w-full md:max-w-2xl h-dvh lg:max-h-[90dvh] overflow-y-auto"
       >
         <div className="flex justify-between items-center mb-4">
           <h2 className="font-bold text-lg md:text-2xl">Send a Tip</h2>
