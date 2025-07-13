@@ -121,18 +121,22 @@ const ProfilePage = () => {
   }, [params.id]);
 
   useEffect(() => {
-    if (userdata && user?.id === userdata.id) {
+    if (userdata && userdata.id && user?.id === userdata.id) {
       router.push("/profile");
     }
-  }, [user, userdata, router]);
+  }, [userdata, user, router]);
 
-  if (loading) {
-    return (
-      <div className="text-center py-10 flex items-center flex-col justify-center">
-        <LucideLoader2 size={30} className="animate-spin" stroke="purple" />
-        <p className="mt-2">Loading profile...</p>
-      </div>
-    );
+  // if (loading && !userdata) {
+  //   return (
+  //     <div className="text-center py-10 flex items-center flex-col justify-center">
+  //       <LucideLoader2 size={30} className="animate-spin" stroke="purple" />
+  //       <p className="mt-2">Loading profile...</p>
+  //     </div>
+  //   );
+  // }
+
+  if (userdata && user?.id === userdata.id) {
+    return null;
   }
 
   if (error || !params.id || !userdata) {

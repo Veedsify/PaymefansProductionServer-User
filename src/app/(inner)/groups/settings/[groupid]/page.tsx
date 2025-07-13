@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import {
   LucideChevronLeft,
   LucideSettings,
@@ -93,7 +93,7 @@ const GroupSettingsPage = () => {
   ];
 
   // Fetch group data
-  const fetchGroup = async () => {
+  const fetchGroup = useCallback( async () => {
     try {
       setLoading(true);
       setError(null);
@@ -146,7 +146,7 @@ const GroupSettingsPage = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [groupId]);
 
   // Handle input changes
   const handleInputChange = (
@@ -322,7 +322,7 @@ const GroupSettingsPage = () => {
     if (groupId) {
       fetchGroup();
     }
-  }, [groupId]);
+  }, [groupId, fetchGroup]);
 
   if (loading) {
     return (
@@ -438,7 +438,9 @@ const GroupSettingsPage = () => {
                     <div className="relative">
                       <div className="w-20 h-20 rounded-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center overflow-hidden">
                         {iconPreview ? (
-                          <img
+                          <Image
+                            width={80}
+                            height={80}
                             src={iconPreview}
                             alt="Group icon"
                             className="w-full h-full object-cover"
@@ -459,7 +461,7 @@ const GroupSettingsPage = () => {
                         type="button"
                         className="flex items-center gap-2 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 px-3 py-2 rounded-md text-sm transition-colors"
                         onClick={() =>
-                          document.querySelector('input[type="file"]')?.click()
+                         handleIconChange
                         }
                       >
                         <LucideUpload className="h-4 w-4" />
@@ -786,9 +788,9 @@ const GroupSettingsPage = () => {
                 </h3>
               </div>
               <p className="text-gray-600 dark:text-gray-400 mb-6">
-                Are you sure you want to delete "{group?.name}"? This action
-                cannot be undone. All messages, files, and member data will be
-                permanently removed.
+                Are you sure you want to delete &apos;{group?.name}&apos;? This
+                action cannot be undone. All messages, files, and member data
+                will be permanently removed.
               </p>
               <div className="flex gap-3">
                 <button

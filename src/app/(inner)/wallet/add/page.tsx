@@ -256,7 +256,7 @@ const WalletAddBank = () => {
         <div className="mt-6">
           <button
             onClick={handleAddAccount}
-            disabled={loading || !name}
+            disabled={loading}
             className={
               "w-full bg-primary-dark-pink py-4 text-white font-bold rounded-lg disabled:opacity-70 disabled:bg-gray-300"
             }
