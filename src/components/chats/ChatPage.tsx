@@ -471,8 +471,8 @@ const ChatPage = ({ conversationId }: { conversationId: string }) => {
               className="flex items-center gap-1 text-sm font-semibold text-gray-900 dark:text-white"
             >
               {receiver?.name}
-              {receiver?.username === "@paymefans" && (
-                <LucideVerified className="ml-1 text-yellow-600" size={16} />
+              {receiver?.is_verified && (
+                <LucideVerified className="ml-1 text-emerald-600" size={16} />
               )}
             </Link>
             <div className="flex items-center gap-1 text-xs text-gray-500 dark:text-gray-400">

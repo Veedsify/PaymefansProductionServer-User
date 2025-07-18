@@ -32,6 +32,7 @@ import { MediaPanelMediaCard } from "@/components/media/MediaPanelImageCardOther
 import { MediaDataTypeOtherProps } from "@/types/Components";
 import usePostComponent from "@/contexts/PostComponentPreview";
 import Link from "next/link";
+import followUser from "@/utils/data/update/Follow";
 
 const searchFunction = async (query: string) => {
   try {
@@ -44,7 +45,7 @@ const searchFunction = async (query: string) => {
               "Content-Type": "application/json",
               Authorization: `Bearer ${token}`,
             },
-          }
+          },
         );
         return response.data.results;
       },
@@ -57,7 +58,7 @@ const searchFunction = async (query: string) => {
               "Content-Type": "application/json",
               Authorization: `Bearer ${token}`,
             },
-          }
+          },
         );
         return response.data.results;
       },
@@ -70,7 +71,7 @@ const searchFunction = async (query: string) => {
               "Content-Type": "application/json",
               Authorization: `Bearer ${token}`,
             },
-          }
+          },
         );
         return response.data.results;
       },
@@ -87,6 +88,38 @@ const searchFunction = async (query: string) => {
     console.error("Search error:", error);
     return { users: [], posts: [], media: [], error: true };
   }
+};
+
+const FollowButton = ({
+  user,
+}: {
+  user: { id: number; following: boolean };
+}) => {
+  const [isFollowing, setIsFollowing] = useState(user.following);
+
+  useEffect(() => {
+    setIsFollowing(user.following);
+  }, [user.following]);
+
+  const handleFollow = async () => {
+    setIsFollowing(!isFollowing);
+    try {
+      const action = isFollowing ? "unfollow" : "follow";
+      await followUser(user.id, action);
+    } catch (error: any) {
+      console.error("Error following/unfollowing user:", error);
+      setIsFollowing(!isFollowing);
+    }
+  };
+  return (
+    <motion.button
+      onClick={handleFollow}
+      whileHover={{ scale: 1.02 }}
+      className={`w-full py-3.5 ${isFollowing ? "bg-transparent hover:bg-black text-black dark:text-white border" : "bg-primary-dark-pink hover:bg-primary-text-dark-pink text-white"} rounded-xl text-sm font-semibold cursor-pointer`}
+    >
+      {isFollowing ? "Unfollow" : "Follow"}
+    </motion.button>
+  );
 };
 
 const SearchPage = () => {
@@ -132,14 +165,14 @@ const SearchPage = () => {
     m: MediaDataTypeOtherProps,
     type: string,
     isSubscriber: boolean,
-    indexId: number
+    indexId: number,
   ) => {
     if (m.accessible_to === "subscribers" && !isSubscriber) return;
     const filteredMedias = media
       .filter((item) => item.media_state !== "processing")
       .filter((media) => media.accessible_to !== "price")
       .filter(
-        (media) => !(media.accessible_to === "subscribers" && !isSubscriber)
+        (media) => !(media.accessible_to === "subscribers" && !isSubscriber),
       );
     // Get the new index after filtering
     const newIndexId = filteredMedias.findIndex((item) => item.id === m.id);
@@ -376,7 +409,7 @@ const SearchPage = () => {
                                 delay: index * 0.1,
                                 ease: "easeOut",
                               }}
-                              whileHover={{ y: -8, scale: 1.02 }}
+                              whileHover={{ y: -8, scale: 1.01 }}
                               className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden group border border-gray-100 dark:border-gray-700"
                             >
                               <div className="relative h-36">
@@ -420,7 +453,7 @@ const SearchPage = () => {
                                         {user.name}
                                       </Link>
                                     </h4>
-                                    <p className="text-gray-500 text-sm">
+                                    <p className="text-gray-500 dark:text-white text-sm">
                                       <Link href={`/${user.username}`}>
                                         {user.username}
                                       </Link>
@@ -437,7 +470,7 @@ const SearchPage = () => {
                                   </p>
                                 )}
 
-                                <div className="flex items-center text-gray-500 text-xs mb-6 space-x-6">
+                                <div className="flex items-center text-gray-500  dark:text-white text-xs mb-6 space-x-6">
                                   {user.location && (
                                     <span className="flex items-center">
                                       <MapPin size={14} className="mr-1.5" />
@@ -452,7 +485,7 @@ const SearchPage = () => {
                                     <Calendar size={14} className="mr-1.5" />
                                     Joined{" "}
                                     {new Date(
-                                      user.created_at
+                                      user.created_at,
                                     ).toLocaleDateString("en-US", {
                                       year: "numeric",
                                       month: "long",
@@ -492,13 +525,7 @@ const SearchPage = () => {
                                   </div>
                                 </div>
 
-                                <motion.button
-                                  whileHover={{ scale: 1.02 }}
-                                  whileTap={{ scale: 0.98 }}
-                                  className="w-full py-3.5 bg-primary-dark-pink hover:bg-primary-text-dark-pink text-white rounded-xl text-sm font-semibold transition-all duration-200 shadow-md hover:shadow-lg cursor-pointer"
-                                >
-                                  Follow
-                                </motion.button>
+                                <FollowButton user={user} />
                               </div>
                             </motion.div>
                           ))}

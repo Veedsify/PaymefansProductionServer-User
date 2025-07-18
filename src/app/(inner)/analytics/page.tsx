@@ -34,8 +34,15 @@ import {
 } from "lucide-react";
 import numeral from "numeral";
 import Image from "next/image";
+import { useQuery } from "@tanstack/react-query";
+import {
+  fetchAccountGrowthData,
+  fetchEngagementData,
+  fetchAudienceData,
+  fetchRecentPosts,
+  fetchMetrics,
+} from "@/utils/data/AnalyticsAPI";
 
-// Mock API functions - replace with actual API calls later
 type TimeRangeKey =
   | "24hrs"
   | "48hrs"
@@ -45,326 +52,6 @@ type TimeRangeKey =
   | "3months"
   | "6months"
   | "alltime";
-
-const fetchAccountGrowthData = async (timeRange: TimeRangeKey) => {
-  // Simulate API delay
-  await new Promise((resolve) => setTimeout(resolve, 500));
-
-  const data: Record<TimeRangeKey, { name: string; followers: number }[]> = {
-    "24hrs": [
-      { name: "00:00", followers: 11000 },
-      { name: "04:00", followers: 11050 },
-      { name: "08:00", followers: 11100 },
-      { name: "12:00", followers: 11180 },
-      { name: "16:00", followers: 11200 },
-      { name: "20:00", followers: 11220 },
-    ],
-    "48hrs": [
-      { name: "Day 1", followers: 10900 },
-      { name: "Day 2", followers: 11220 },
-    ],
-    "3days": [
-      { name: "Day 1", followers: 10700 },
-      { name: "Day 2", followers: 10950 },
-      { name: "Day 3", followers: 11220 },
-    ],
-    "7days": [
-      { name: "Mon", followers: 10500 },
-      { name: "Tue", followers: 10620 },
-      { name: "Wed", followers: 10780 },
-      { name: "Thu", followers: 10900 },
-      { name: "Fri", followers: 11050 },
-      { name: "Sat", followers: 11180 },
-      { name: "Sun", followers: 11220 },
-    ],
-    "1month": [
-      { name: "Week 1", followers: 9500 },
-      { name: "Week 2", followers: 10200 },
-      { name: "Week 3", followers: 10700 },
-      { name: "Week 4", followers: 11220 },
-    ],
-    "3months": [
-      { name: "Month 1", followers: 7800 },
-      { name: "Month 2", followers: 9500 },
-      { name: "Month 3", followers: 11220 },
-    ],
-    "6months": [
-      { name: "Month 1", followers: 4900 },
-      { name: "Month 2", followers: 5800 },
-      { name: "Month 3", followers: 6800 },
-      { name: "Month 4", followers: 8200 },
-      { name: "Month 5", followers: 9500 },
-      { name: "Month 6", followers: 11220 },
-    ],
-    alltime: [
-      { name: "Jan", followers: 2400 },
-      { name: "Feb", followers: 3600 },
-      { name: "Mar", followers: 4900 },
-      { name: "Apr", followers: 6800 },
-      { name: "May", followers: 8100 },
-      { name: "Jun", followers: 9400 },
-      { name: "Jul", followers: 4200 },
-      { name: "Aug", followers: 9400 },
-      { name: "Sep", followers: 9300 },
-      { name: "Oct", followers: 2233 },
-      { name: "Nov", followers: 3300 },
-      { name: "Dec", followers: 3004 },
-    ],
-  };
-  return data[timeRange as TimeRangeKey] || data["7days"];
-};
-
-const fetchEngagementData = async (timeRange: any) => {
-  await new Promise((resolve) => setTimeout(resolve, 500));
-
-  const data = {
-    "24hrs": [
-      { name: "00:00", likes: 20, comments: 5, views: 300 },
-      { name: "04:00", likes: 45, comments: 12, views: 650 },
-      { name: "08:00", likes: 80, comments: 25, views: 1200 },
-      { name: "12:00", likes: 120, comments: 40, views: 1800 },
-      { name: "16:00", likes: 180, comments: 55, views: 2500 },
-      { name: "20:00", likes: 240, comments: 70, views: 3200 },
-    ],
-    "48hrs": [
-      { name: "Day 1", likes: 720, comments: 190, views: 8900 },
-      { name: "Day 2", likes: 850, comments: 210, views: 10200 },
-    ],
-    "3days": [
-      { name: "Day 1", likes: 680, comments: 180, views: 8500 },
-      { name: "Day 2", likes: 720, comments: 190, views: 8900 },
-      { name: "Day 3", likes: 850, comments: 210, views: 10200 },
-    ],
-    "7days": [
-      { name: "Mon", likes: 240, comments: 140, views: 2400 },
-      { name: "Tue", likes: 300, comments: 180, views: 3800 },
-      { name: "Wed", likes: 450, comments: 210, views: 5200 },
-      { name: "Thu", likes: 280, comments: 120, views: 3100 },
-      { name: "Fri", likes: 590, comments: 240, views: 6700 },
-      { name: "Sat", likes: 720, comments: 320, views: 8900 },
-      { name: "Sun", likes: 450, comments: 190, views: 5600 },
-    ],
-    "1month": [
-      { name: "Week 1", likes: 1800, comments: 650, views: 22000 },
-      { name: "Week 2", likes: 2100, comments: 720, views: 25000 },
-      { name: "Week 3", likes: 2400, comments: 850, views: 29000 },
-      { name: "Week 4", likes: 2700, comments: 920, views: 32000 },
-    ],
-    "3months": [
-      { name: "Month 1", likes: 6500, comments: 2200, views: 78000 },
-      { name: "Month 2", likes: 7200, comments: 2500, views: 85000 },
-      { name: "Month 3", likes: 8500, comments: 2900, views: 102000 },
-    ],
-    "6months": [
-      { name: "Month 1", likes: 3200, comments: 1100, views: 38000 },
-      { name: "Month 2", likes: 4500, comments: 1500, views: 52000 },
-      { name: "Month 3", likes: 5200, comments: 1800, views: 62000 },
-      { name: "Month 4", likes: 6500, comments: 2200, views: 78000 },
-      { name: "Month 5", likes: 7200, comments: 2500, views: 85000 },
-      { name: "Month 6", likes: 8500, comments: 2900, views: 102000 },
-    ],
-    alltime: [
-      { name: "2022", likes: 25000, comments: 8500, views: 300000 },
-      { name: "2023", likes: 42000, comments: 15000, views: 500000 },
-      { name: "2024", likes: 38000, comments: 12000, views: 450000 },
-    ],
-  };
-
-  return data[timeRange as TimeRangeKey] || data["7days"];
-};
-
-const fetchAudienceData = async () => {
-  await new Promise((resolve) => setTimeout(resolve, 300));
-  // Remember To Fetch Based On Date
-  return [
-    { name: "18-24", value: 25 },
-    { name: "25-34", value: 40 },
-    { name: "35-44", value: 20 },
-    { name: "45-54", value: 10 },
-    { name: "55+", value: 5 },
-  ];
-};
-
-const fetchRecentPosts = async (timeRange: any) => {
-  await new Promise((resolve) => setTimeout(resolve, 700));
-
-  const basePosts = [
-    {
-      id: 1,
-      thumbnail: "/site/avatar.png",
-      likes: 1243,
-      comments: 89,
-      views: 15620,
-      shares: 45,
-      engagement: 8.2,
-      date: "2 days ago",
-      timestamp: Date.now() - 172800000,
-    },
-    {
-      id: 2,
-      thumbnail: "/site/avatar.png",
-      likes: 2431,
-      comments: 156,
-      views: 28430,
-      shares: 102,
-      engagement: 9.5,
-      date: "4 days ago",
-      timestamp: Date.now() - 345600000,
-    },
-    {
-      id: 3,
-      thumbnail: "/site/avatar.png",
-      likes: 984,
-      comments: 67,
-      views: 12540,
-      shares: 23,
-      engagement: 7.8,
-      date: "1 week ago",
-      timestamp: Date.now() - 604800000,
-    },
-    {
-      id: 4,
-      thumbnail: "/site/avatar.png",
-      likes: 1876,
-      comments: 124,
-      views: 19730,
-      shares: 67,
-      engagement: 8.9,
-      date: "2 weeks ago",
-      timestamp: Date.now() - 1209600000,
-    },
-    {
-      id: 5,
-      thumbnail: "/site/avatar.png",
-      likes: 3200,
-      comments: 210,
-      views: 35600,
-      shares: 145,
-      engagement: 9.8,
-      date: "3 weeks ago",
-      timestamp: Date.now() - 1814400000,
-    },
-    {
-      id: 6,
-      thumbnail: "/site/avatar.png",
-      likes: 4200,
-      comments: 280,
-      views: 45200,
-      shares: 180,
-      engagement: 10.2,
-      date: "1 month ago",
-      timestamp: Date.now() - 2592000000,
-    },
-  ];
-
-  const now = Date.now();
-  let filteredPosts = [];
-
-  switch (timeRange) {
-    case "24hrs":
-      filteredPosts = basePosts.filter(
-        (post) => now - post.timestamp <= 86400000
-      );
-      break;
-    case "48hrs":
-      filteredPosts = basePosts.filter(
-        (post) => now - post.timestamp <= 172800000
-      );
-      break;
-    case "3days":
-      filteredPosts = basePosts.filter(
-        (post) => now - post.timestamp <= 259200000
-      );
-      break;
-    case "7days":
-      filteredPosts = basePosts.filter(
-        (post) => now - post.timestamp <= 604800000
-      );
-      break;
-    case "1month":
-      filteredPosts = basePosts.filter(
-        (post) => now - post.timestamp <= 2592000000
-      );
-      break;
-    case "3months":
-      filteredPosts = basePosts.filter(
-        (post) => now - post.timestamp <= 7776000000
-      );
-      break;
-    case "6months":
-      filteredPosts = basePosts.filter(
-        (post) => now - post.timestamp <= 15552000000
-      );
-      break;
-    case "alltime":
-      filteredPosts = basePosts;
-      break;
-    default:
-      filteredPosts = basePosts.filter(
-        (post) => now - post.timestamp <= 604800000
-      );
-  }
-
-  return filteredPosts;
-};
-
-const fetchMetrics = async (timeRange: any) => {
-  await new Promise((resolve) => setTimeout(resolve, 400));
-
-  // These would normally be calculated from the actual data
-  const metrics = {
-    "24hrs": {
-      followers: { value: "11.22K", trend: 0.5 },
-      views: { value: "3.2K", trend: 12.3 },
-      engagement: { value: "8.9%", trend: 1.2 },
-      comments: { value: "78", trend: 8.5 },
-    },
-    "48hrs": {
-      followers: { value: "11.22K", trend: 1.2 },
-      views: { value: "6.5K", trend: 10.8 },
-      engagement: { value: "8.7%", trend: 0.8 },
-      comments: { value: "142", trend: 7.2 },
-    },
-    "3days": {
-      followers: { value: "11.22K", trend: 1.8 },
-      views: { value: "9.8K", trend: 9.5 },
-      engagement: { value: "8.5%", trend: 0.5 },
-      comments: { value: "210", trend: 6.8 },
-    },
-    "7days": {
-      followers: { value: "11.2K", trend: 5.7 },
-      views: { value: "32.4K", trend: 12.3 },
-      engagement: { value: "8.7%", trend: -2.1 },
-      comments: { value: "142", trend: 8.5 },
-    },
-    "1month": {
-      followers: { value: "11.5K", trend: 8.2 },
-      views: { value: "128K", trend: 15.4 },
-      engagement: { value: "9.1%", trend: 3.2 },
-      comments: { value: "580", trend: 12.7 },
-    },
-    "3months": {
-      followers: { value: "12.8K", trend: 18.5 },
-      views: { value: "420K", trend: 22.1 },
-      engagement: { value: "9.5%", trend: 5.4 },
-      comments: { value: "1850", trend: 18.3 },
-    },
-    "6months": {
-      followers: { value: "15.2K", trend: 32.7 },
-      views: { value: "950K", trend: 28.9 },
-      engagement: { value: "10.2%", trend: 8.7 },
-      comments: { value: "4200", trend: 25.4 },
-    },
-    alltime: {
-      followers: { value: "22.4K", trend: 45.2 },
-      views: { value: "2.4M", trend: 38.7 },
-      engagement: { value: "11.5%", trend: 12.3 },
-      comments: { value: "12500", trend: 32.8 },
-    },
-  };
-
-  return metrics[timeRange as TimeRangeKey] || metrics["7days"];
-};
 
 const COLORS = ["#78158E", "#CC0DF8", "#F4900C", "#04D900", "#e057ff"];
 const BAR_COLORS = ["#78158E", "#CC0DF8", "#F4900C"];
@@ -384,17 +71,6 @@ export default function Analytics() {
   const { user } = useUserAuthContext();
   const router = useRouter();
   const [timeRange, setTimeRange] = useState<TimeRangeKey>("7days");
-  const [loading, setLoading] = useState(false);
-  const [accountGrowthData, setAccountGrowthData] = useState<any>([]);
-  const [engagementData, setEngagementData] = useState<any>([]);
-  const [audienceData, setAudienceData] = useState<any>([]);
-  const [recentPostsData, setRecentPostsData] = useState<any>([]);
-  const [metrics, setMetrics] = useState({
-    followers: { value: "0", trend: 0 },
-    views: { value: "0", trend: 0 },
-    engagement: { value: "0%", trend: 0 },
-    comments: { value: "0", trend: 0 },
-  });
 
   // useEffect(() => {
   //     if (!user?.is_model && !user?.Model?.verification_status) {
@@ -402,33 +78,55 @@ export default function Analytics() {
   //     }
   // }, [user, router]);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      setLoading(true);
-      try {
-        const [growthData, engagement, audience, posts, metricsData] =
-          await Promise.all([
-            fetchAccountGrowthData(timeRange),
-            fetchEngagementData(timeRange),
-            fetchAudienceData(),
-            fetchRecentPosts(timeRange),
-            fetchMetrics(timeRange),
-          ]);
+  // TanStack Query hooks for fetching data
+  const { data: accountGrowthData = [], isLoading: isLoadingGrowth } = useQuery(
+    {
+      queryKey: ["analytics", "account-growth", timeRange],
+      queryFn: () => fetchAccountGrowthData(timeRange),
+      staleTime: 5 * 60 * 1000, // 5 minutes
+    }
+  );
 
-        setAccountGrowthData(growthData);
-        setEngagementData(engagement);
-        setAudienceData(audience);
-        setRecentPostsData(posts);
-        setMetrics(metricsData);
-      } catch (error) {
-        console.error("Error fetching analytics data:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
+  const { data: engagementData = [], isLoading: isLoadingEngagement } =
+    useQuery({
+      queryKey: ["analytics", "engagement", timeRange],
+      queryFn: () => fetchEngagementData(timeRange),
+      staleTime: 5 * 60 * 1000,
+    });
 
-    fetchData();
-  }, [timeRange]);
+  const { data: audienceData = [], isLoading: isLoadingAudience } = useQuery({
+    queryKey: ["analytics", "audience"],
+    queryFn: fetchAudienceData,
+    staleTime: 30 * 60 * 1000, // 30 minutes - audience data changes less frequently
+  });
+
+  const { data: recentPostsData = [], isLoading: isLoadingPosts } = useQuery({
+    queryKey: ["analytics", "recent-posts", timeRange],
+    queryFn: () => fetchRecentPosts(timeRange),
+    staleTime: 5 * 60 * 1000,
+  });
+
+  const {
+    data: metrics = {
+      followers: { value: "0", trend: 0 },
+      views: { value: "0", trend: 0 },
+      engagement: { value: "0%", trend: 0 },
+      comments: { value: "0", trend: 0 },
+    },
+    isLoading: isLoadingMetrics,
+  } = useQuery({
+    queryKey: ["analytics", "metrics", timeRange],
+    queryFn: () => fetchMetrics(timeRange),
+    staleTime: 5 * 60 * 1000,
+  });
+
+  // Combined loading state
+  const loading =
+    isLoadingGrowth ||
+    isLoadingEngagement ||
+    isLoadingAudience ||
+    isLoadingPosts ||
+    isLoadingMetrics;
 
   // Card component for metrics
   const MetricCard = ({

@@ -121,6 +121,16 @@ const ProfilePage = async () => {
             />
           )}
           <ProfileSocialLinks Settings={user?.Settings} />
+          {user?.is_model && (
+              <>
+                <div className="p-4 rounded-lg bg-gray-50 dark:bg-gray-800 text-gray-700 dark:text-gray-300 w-full border border-black/10">
+                    <h2 className="text-lg font-semibold mb-2">Account Stats</h2>
+                    <Link href={"/analytics"} className="text-primary-text-dark-pink dark:text-primary-dark-pink hover:underline text-sm">
+                        <p className="mb-2">View your account performance and engagement metrics</p>
+                    </Link>
+                </div>
+              </>
+          )}
         </div>
       </div>
       <ProfileTabs />

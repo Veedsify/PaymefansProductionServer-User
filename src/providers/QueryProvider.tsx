@@ -5,8 +5,8 @@ const QueryProvider = ({ children }: { children: React.ReactNode }) => {
     const queryClient = new QueryClient({
         defaultOptions: {
             queries: {
-                staleTime: 1000 * 10, // 10 seconds
-                refetchInterval: 1000 * 10, // 10 seconds
+                staleTime: 10 * 10 * 10 * 5, // 5 minutes
+                refetchInterval: 1000 * 10, //
             },
         },
     })

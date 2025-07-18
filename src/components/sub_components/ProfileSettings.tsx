@@ -34,7 +34,7 @@ const ProfileSettings = ({ user }: ProfileSettingsProps) => {
   const [usernameCheck, setUsernameCheck] = useState(user?.username || "");
   const { message, canSave, error, isLoading } = useCheckUsername(
     user!,
-    usernameCheck
+    usernameCheck,
   );
 
   const usernameTimeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -42,7 +42,7 @@ const ProfileSettings = ({ user }: ProfileSettingsProps) => {
   const handleInputChange = (
     e: React.ChangeEvent<
       HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
-    >
+    >,
   ) => {
     const { name, value } = e.target;
     setUserData((prev) => ({ ...prev, [name]: value }));
@@ -109,9 +109,26 @@ const ProfileSettings = ({ user }: ProfileSettingsProps) => {
         <div>
           <label
             className="block mb-1 font-semibold text-gray-700 dark:text-gray-200"
+            htmlFor="website"
+          >
+            State
+          </label>
+          <input
+            id="state"
+            type="text"
+            className="w-full border border-gray-300 dark:border-gray-700 p-3 outline-none text-black dark:text-white bg-white dark:bg-gray-800 rounded-lg focus:ring-2 focus:ring-primary-dark-pink transition"
+            placeholder="state"
+            name="state"
+            onChange={handleInputChange}
+            value={userData.state || ""}
+          />
+        </div>
+        <div>
+          <label
+            className="block mb-1 font-semibold text-gray-700 dark:text-gray-200"
             htmlFor="location"
           >
-            Location
+            Country
           </label>
           <select
             id="location"
@@ -210,23 +227,7 @@ const ProfileSettings = ({ user }: ProfileSettingsProps) => {
             value={userData.website || ""}
           />
         </div>
-        <div>
-          <label
-            className="block mb-1 font-semibold text-gray-700 dark:text-gray-200"
-            htmlFor="website"
-          >
-            State
-          </label>
-          <input
-            id="state"
-            type="text"
-            className="w-full border border-gray-300 dark:border-gray-700 p-3 outline-none text-black dark:text-white bg-white dark:bg-gray-800 rounded-lg focus:ring-2 focus:ring-primary-dark-pink transition"
-            placeholder="state"
-            name="state"
-            onChange={handleInputChange}
-            value={userData.state || ""}
-          />
-        </div>
+
         <div className="space-y-3">
           {/* Instagram */}
           <div className="grid grid-cols-12 items-center rounded-lg border border-black/10 dark:border-slate-700 bg-gray-50 dark:bg-slate-800 overflow-hidden transition-shadow focus-within:shadow-md group">

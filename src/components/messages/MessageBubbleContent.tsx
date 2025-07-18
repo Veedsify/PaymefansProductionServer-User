@@ -162,12 +162,10 @@ const MessageBubbleContent: React.FC<MessageBubbleContentProps> = ({
             >
               {file.type.includes("image") ? (
                 <div className="relative">
-                  <Image
+                  <img
                     width={300}
                     height={300}
-                    unoptimized
-                    priority
-                    quality={40}
+                    loading="eager"
                     onClick={() => handlePreview(file, idx)}
                     src={file.url}
                     alt="Uploaded content"

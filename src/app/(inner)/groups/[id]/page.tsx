@@ -1,11 +1,8 @@
 "use client";
 import GroupMessageBubbles from "@/components/group/GroupMessageBubbles";
 import {
-  LucideArrowLeft,
   LucideCamera,
   LucideChevronLeft,
-  LucideGrip,
-  LucideOption,
   LucidePlus,
   LucideSendHorizonal,
   OptionIcon,

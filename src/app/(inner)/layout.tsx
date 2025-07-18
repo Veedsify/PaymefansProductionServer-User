@@ -14,9 +14,9 @@ import Loader from "@/components/common/Loader";
 import ToggleWishListProvider from "@/contexts/ToggleWishlist";
 import WishList from "@/components/sub_components/WishList";
 import { MessagesConversationProvider } from "@/contexts/MessageConversationContext";
-import UserAccountSupendedScreen from "@/components/sub_components/UserAccountSuspendedScreen";
+import UserAccountSuspendedScreen from "@/components/sub_components/UserAccountSuspendedScreen";
 import ConfigProvider from "@/contexts/ConfigContext";
-import { Bricolage_Grotesque } from "next/font/google";
+import { Bricolage_Grotesque, Epilogue } from "next/font/google";
 import GetLocationContext from "@/contexts/GetLocationContext";
 
 const font = Bricolage_Grotesque({
@@ -53,7 +53,7 @@ export default async function RootLayout({
         <body
           className={`bg-white dark:bg-gray-950 min-h-dvh flex items-center justify-center ${font.className}`}
         >
-          <UserAccountSupendedScreen user={user} />
+          <UserAccountSuspendedScreen user={user} />
         </body>
       </html>
     );

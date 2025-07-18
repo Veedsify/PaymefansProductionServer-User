@@ -92,12 +92,8 @@ const ProfilePage = () => {
     setOpenTip(!openTip);
   };
 
-  const VERIFIED_USERS = ["@paymefans", "@paymefans1", "@paymefans2"];
-  const isVerified = userdata?.username
-    ? VERIFIED_USERS.includes(userdata.username)
-    : false;
+  const isVerified = userdata?.is_verified
   const canTip = user?.id !== userdata?.id && userdata?.is_model;
-
   useEffect(() => {
     const fetchData = async () => {
       if (!params.id) {
