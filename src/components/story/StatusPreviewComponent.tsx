@@ -7,65 +7,11 @@ import StoryPreviewControlls from "./StatusPreviewControls";
 import { useCallback, useEffect, useRef, useState } from "react";
 import StoriesHeader from "./StatusHeader";
 import VideoPlayer from "../sub_components/videoplayer";
+import { useUserAuthContext } from "@/lib/UserUseContext";
+import { Eye, LucideEye, X } from "lucide-react";
+import StatusPreviewSlide from "./StatusPreviewSlide";
 
 // Caption Element Component
-const CaptionElement = ({ element }: { element: any }) => {
-  const handleClick = () => {
-    if (element.type === "link" && element.url) {
-      window.open(element.url, "_blank");
-    }
-  };
-
-  const elementStyle = {
-    position: "absolute" as const,
-    left: `${element.position.x}%`,
-    top: `${element.position.y}%`,
-    transform: "translate(-50%, -50%)",
-    fontFamily: "Inter",
-    fontSize: element.style.fontSize,
-    fontWeight: element.style.fontWeight,
-    color: element.style.color,
-    textAlign: element.style.textAlign,
-    fontStyle: element.style.fontStyle || "normal",
-    textDecoration: element.style.textDecoration || "none",
-    cursor: element.type === "link" ? "pointer" : "default",
-    userSelect: "none" as any,
-    pointerEvents: (element.type === "link" ? "auto" : "none") as any,
-    textShadow: "1px 1px 2px rgba(0,0,0,0.8)", // Better readability on images/videos
-    zIndex: 100,
-    maxWidth: "80%",
-    wordWrap: "break-word" as any,
-  };
-
-  return (
-    <div
-      style={elementStyle}
-      onClick={handleClick}
-      className={`
-        ${element.type === "link" ? "hover:opacity-80 transition-opacity" : ""}
-        ${element.type === "link" ? "underline" : ""}
-      `}
-    >
-      {element.content}
-    </div>
-  );
-};
-
-// Caption Overlay Component
-const CaptionOverlay = ({ story }: { story: Story }) => {
-  const parsedCaptionElements = JSON.parse(story.captionElements);
-  if (!parsedCaptionElements || parsedCaptionElements.length === 0) {
-    return null;
-  }
-
-  return (
-    <div className="absolute inset-0 pointer-events-none z-50 w-full h-full">
-      {parsedCaptionElements.map((element: any) => (
-        <CaptionElement key={element.id} element={element} />
-      ))}
-    </div>
-  );
-};
 
 const StoryPreviewComponent = ({
   className,
@@ -76,6 +22,10 @@ const StoryPreviewComponent = ({
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const [activeIndex, setActiveIndex] = useState(0);
   const [swiperKey, setSwiperKey] = useState(0);
+  const [showViewsBottomSheet, setShowViewsBottomSheet] = useState(false);
+  const [viewCount, setViewCount] = useState(0);
+  const { user } = useUserAuthContext();
+  const viewedStories = useRef<Set<string>>(new Set());
 
   // Memoize the function to prevent unnecessary rerenders
   const moveToNextSlide = useCallback(() => {
@@ -130,7 +80,7 @@ const StoryPreviewComponent = ({
     (canPlay: boolean) => {
       if (canPlay) PlayVideo(true);
     },
-    [PlayVideo]
+    [PlayVideo],
   );
 
   // Handle slide change to update video references
@@ -157,8 +107,18 @@ const StoryPreviewComponent = ({
           videoRef.current = null;
         }
       }
+
+      // Record story view for individual media
+      const currentStory = stories[newIndex];
+      if (
+        currentStory &&
+        currentStory.media_id &&
+        !viewedStories.current.has(currentStory.media_id)
+      ) {
+        viewedStories.current.add(currentStory.media_id);
+      }
     },
-    [PlayVideo]
+    [PlayVideo, stories],
   );
 
   // Preload adjacent slides for smoother transitions
@@ -259,71 +219,35 @@ const StoryPreviewComponent = ({
           >
             {stories.map((story, index) => (
               <SwiperSlide
-                className="flex items-center justify-center w-full h-full bg-black"
+                className="flex items-center justify-center bg-black relative"
                 key={`${story.media_url}-${index}-${swiperKey}`}
               >
-                <div className="relative flex items-center justify-center w-full h-full max-w-full max-h-full">
-                  {story.media_type === "image" ? (
-                    <div className="relative w-full h-full flex items-center justify-center">
-                      <Image
-                        src={story.media_url}
-                        alt={story?.caption || "Story image"}
-                        fill
-                        style={{ objectFit: "contain" }}
-                        quality={100}
-                        priority={index === activeIndex}
-                        loading={index === activeIndex ? "eager" : "lazy"}
-                        className="rounded-lg shadow-lg bg-black z-30"
-                        onError={(e) => {
-                          console.error(
-                            "Image failed to load:",
-                            story.media_url
-                          );
-                        }}
-                      />
-                      {/* Caption Overlay for Images */}
-                      <CaptionOverlay story={story} />
-                    </div>
-                  ) : story.media_type === "video" ? (
-                    <div className="relative w-full h-full flex items-center justify-center">
-                      <VideoPlayer
-                        modalOpen={false}
-                        autoPlay={index === activeIndex}
-                        allOthers={{
-                          className: "z-30",
-                          playsInline: true,
-                          muted: false,
-                          controls: false,
-                          loop: false,
-                          preload: index === activeIndex ? "auto" : "metadata",
-                          onEnded: () => moveToNextSlide(),
-                          style: {
-                            width: "100%",
-                            height: "100%",
-                            maxHeight: "calc(100vh - 120px)",
-                            objectFit: "contain",
-                            background: "black",
-                            borderRadius: "0.75rem",
-                            boxShadow: "0 4px 24px rgba(0,0,0,0.7)",
-                          },
-                        }}
-                        className="w-full h-full rounded-lg shadow-lg bg-black"
-                        streamUrl={story.media_url}
-                      />
-                      {/* Caption Overlay for Videos */}
-                      <CaptionOverlay story={story} />
-                    </div>
-                  ) : (
-                    <div className="flex items-center justify-center w-full h-full text-white">
-                      <p>Unsupported media type</p>
-                    </div>
-                  )}
-                </div>
+                <StatusPreviewSlide
+                  index={index}
+                  activeIndex={activeIndex}
+                  moveToNextSlide={moveToNextSlide}
+                  story={story}
+                />
               </SwiperSlide>
             ))}
           </Swiper>
         </div>
       </div>
+
+      {/* Bottom View Count (for story owner) */}
+      {stories[activeIndex]?.user?.id === user?.id && viewCount > 0 && (
+        <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 z-20">
+          <button
+            onClick={() => setShowViewsBottomSheet(true)}
+            className="flex items-center gap-2 bg-black/60 backdrop-blur-sm text-white px-4 py-2 rounded-full hover:bg-black/80 transition-colors"
+          >
+            <Eye size={16} />
+            <span className="text-sm font-medium">
+              {viewCount} view{viewCount !== 1 ? "s" : ""}
+            </span>
+          </button>
+        </div>
+      )}
     </div>
   );
 };

@@ -337,11 +337,11 @@ export interface MessagesConversationContextValue {
 
 type OwnerOption =
   | {
-    name: string;
-    icon: React.ReactNode;
-    func?: (e: React.MouseEvent<HTMLButtonElement>) => void;
-    link?: undefined;
-  }
+      name: string;
+      icon: React.ReactNode;
+      func?: (e: React.MouseEvent<HTMLButtonElement>) => void;
+      link?: undefined;
+    }
   | { name: string; icon: React.ReactNode; func?: undefined; link?: URL };
 
 export interface PostAudienceDataProps {
@@ -477,6 +477,8 @@ interface StoryHeaderProps {
   profileImage: string;
   username: string;
   timestamp: string;
+  storyId?: string;
+  storyOwnerId?: number;
 }
 
 interface SelectMoreProps {
@@ -484,14 +486,17 @@ interface SelectMoreProps {
   handleOpenMore: () => void;
 }
 
-interface Story {
+export interface Story {
   created_at: string;
   media_url: string;
   media_type: string;
   captionElements: string;
   caption: string;
   duration: number;
+  story_id?: string;
+  media_id: string;
   user: {
+    id?: number;
     profile_image: string;
     username: string;
   };

@@ -18,6 +18,7 @@ const StatusModal = ({
     story.StoryMedia.map((media) => ({
       ...media,
       media_url: media.media_url,
+      story_id: story.story_id,
       user: story.user,
     }))
   );

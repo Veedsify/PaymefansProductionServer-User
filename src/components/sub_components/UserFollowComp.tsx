@@ -53,7 +53,7 @@ const UserFollowComp: React.FC<UserFollowCompProps> = ({ follower }) => {
       <div className="flex gap-1 md:gap-4 items-center ml-auto">
         <button
           onClick={handleFollow}
-          className={`px-5 py-1 rounded-full text-sm 
+          className={`px-5 py-1 rounded-full text-sm
                     ${
                       isFollowing
                         ? "bg-gray-100 outline-1 outline-black"

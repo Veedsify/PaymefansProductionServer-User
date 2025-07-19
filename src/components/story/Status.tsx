@@ -1,13 +1,13 @@
 "use client";
-import { Loader2, LucidePlus, X } from "lucide-react";
+import { Loader2, LucidePlus } from "lucide-react";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import swal from "sweetalert";
 import { useUserAuthContext } from "@/lib/UserUseContext";
-import Link from "next/link";
 import useFetchStories from "../custom-hooks/FetchStories";
 import { Story } from "@/types/Story";
 import StatusModal from "./StatusModal";
+import UserStatus from "@/components/story/UserStatus";
 
 const StatusComponent = () => {
   const { stories, loading } = useFetchStories();
@@ -40,7 +40,7 @@ const StatusComponent = () => {
 
   const prioritizedStories = stories
     ? [...stories].sort((a, b) =>
-        a.user.id === user?.id ? -1 : b.user.id === user?.id ? 1 : 0
+        a.user.id === user?.id ? -1 : b.user.id === user?.id ? 1 : 0,
       )
     : [];
   return (
@@ -95,7 +95,8 @@ const Status = ({
   };
 }) => {
   const [storiesOpen, setStoriesOpen] = useState(false);
-  const [username, setUsername] = useState<string>("");
+  const { user } = useUserAuthContext();
+
   const OpenThisStory = () => {
     if (islive) {
       return swal({
@@ -107,7 +108,6 @@ const Status = ({
         if (value) {
           window.location.href = `/redirect-to-live/${data.username}`;
         } else {
-          setUsername(data.username);
           setStoriesOpen(true);
         }
       });
@@ -154,33 +154,6 @@ const Status = ({
           setStoriesOpen={setStoriesOpen}
         />
       )}
-    </div>
-  );
-};
-const UserStatus = () => {
-  const { user } = useUserAuthContext();
-  return (
-    <div className="block relative">
-      <div className="flex items-center bg-gray-300 flex-shrink-0 justify-center cursor-pointer rounded-full aspect-square h-20 w-20 md:h-24 md:w-24 relative mb-2">
-        <div className="flex p-[5px] bg-white items-center justify-center rounded-full">
-          <Link href={"/story"}>
-            <Image
-              width={80}
-              height={80}
-              priority
-              src={user ? user.profile_image : "/site/avatar.png"}
-              className="rounded-full object-cover border-4 border-gray-300 w-auto h-16 md:h-20 aspect-square"
-              alt=""
-            />
-          </Link>
-        </div>
-        <div className="p-1 bg-primary-dark-pink text-white text-xs border-4 border-white absolute -bottom-0 right-0 scale-90 rounded-full">
-          <LucidePlus stroke="#fff" size={15} strokeWidth={3} />
-        </div>
-      </div>
-      <div className="text-xs md:text-sm left-1/2 -translate-x-1/2 font-medium absolute dark:text-gray-200 text-gray-600 text-center text-truncate whitespace-pre w-20 overflow-hidden">
-        Your status
-      </div>
     </div>
   );
 };

@@ -9,6 +9,7 @@ import { LucideLoader } from "lucide-react";
 import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
 import axios, { AxiosResponse } from "axios";
 import { getToken } from "@/utils/Cookie";
+
 async function fetchPost(pageNumber: number) {
   const token = getToken();
   const api = `${process.env.NEXT_PUBLIC_TS_EXPRESS_URL}/post/personal/posts`;

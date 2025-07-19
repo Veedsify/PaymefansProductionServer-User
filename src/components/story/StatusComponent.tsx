@@ -3,7 +3,6 @@ import React, { useCallback, useMemo, useState } from "react";
 import dynamic from "next/dynamic";
 import Image from "next/image";
 import { LucideArrowRight, LucidePlay, X } from "lucide-react";
-import { Tab, TabList, TabPanel, Tabs } from "react-tabs";
 import StoryUploadForm from "../sub_components/StoryUploadForm";
 import StoryCaptionComponent from "./StoryCaptionComponent";
 import StatusMediaPanel from "@/components/story/StatusMediaPanel";
@@ -39,7 +38,7 @@ function StatusComponent() {
   // Memoized removal handler creator to avoid inline functions in render
   const getRemoveHandler = useCallback(
     (id: number) => () => removeFromStory(id),
-    [removeFromStory]
+    [removeFromStory],
   );
 
   return (
@@ -147,7 +146,7 @@ const SelectMoreItems = React.memo(
         </div>
       </div>
     );
-  }
+  },
 );
 
 SelectMoreItems.displayName = "SelectMoreItems";
