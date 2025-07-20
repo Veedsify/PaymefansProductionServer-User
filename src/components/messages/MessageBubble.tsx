@@ -4,8 +4,10 @@ import { useUserAuthContext } from "@/lib/UserUseContext";
 import { Attachment, MessageBubbleProps } from "@/types/Components";
 import { getSocket } from "../sub_components/sub/Socket";
 import MessageBubbleContent from "./MessageBubbleContent";
+import StoryReplyPreview from "./StoryReplyPreview";
 import { motion } from "framer-motion";
 import { useInView } from "react-intersection-observer";
+// import { useStoryModal } from "@/contexts/StoryModalContext";
 
 const MessageBubble: React.FC<MessageBubbleProps> = ({
   receiver,
@@ -23,7 +25,19 @@ const MessageBubble: React.FC<MessageBubbleProps> = ({
   const hasAttachments = attachment && attachment.length > 0 ? true : false;
   const hasRawFiles = rawFiles.length > 0;
   const hasMessage = Boolean(message?.message?.trim());
+  const hasStoryReply = Boolean(message?.story_reply);
   const { ref, inView } = useInView({ threshold: 1, triggerOnce: true });
+
+  // Debug: Log message data to see if story_reply is present
+  useEffect(() => {
+    if (message?.story_reply) {
+      console.log("📨 Message with story reply received:", {
+        message_id: message.message_id,
+        story_reply: message.story_reply,
+        message: message.message,
+      });
+    }
+  }, [message]);
 
   // Format date string for chat bubble
   const dateString = useMemo(() => {
@@ -78,9 +92,75 @@ const MessageBubble: React.FC<MessageBubbleProps> = ({
     inView,
   ]);
 
+  // const { openStoryModal } = useStoryModal();
+
+  const handleStoryClick = useCallback(() => {
+    if (message?.story_reply) {
+      // Create story data structure that matches StatusModal expectations
+      const storyData = {
+        id: 1,
+        story_id: message.story_reply.story_media_id,
+        user_id: 1,
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+        user: {
+          id: 1,
+          username: message.story_reply.story_owner_username,
+          profile_image: message.story_reply.story_owner_profile_image,
+          bio: null,
+          fullname: message.story_reply.story_owner_username,
+          name: message.story_reply.story_owner_username,
+          LiveStream: [],
+          Follow: [],
+          Subscribers: [],
+          role: "fan",
+        },
+        StoryMedia: [
+          {
+            id: 1,
+            media_id: message.story_reply.story_media_id,
+            media_type: message.story_reply.story_type,
+            filename: "",
+            duration: 5000,
+            caption: "",
+            captionElements: "[]",
+            story_content: null,
+            media_url: message.story_reply.story_preview_url,
+            user_id: 1,
+            created_at: new Date().toISOString(),
+            updated_at: new Date().toISOString(),
+            user: {
+              id: 1,
+              username: message.story_reply.story_owner_username,
+              profile_image: message.story_reply.story_owner_profile_image,
+              bio: null,
+              fullname: message.story_reply.story_owner_username,
+              name: message.story_reply.story_owner_username,
+              LiveStream: [],
+              Follow: [],
+              Subscribers: [],
+              role: "fan",
+            },
+          },
+        ],
+      };
+
+      // openStoryModal([storyData]);
+      console.log("Story reply clicked:", message.story_reply);
+    }
+  }, [message?.story_reply]);
+
   // Bubble content with time & seen
   const Bubble = (
     <div className="max-w-[85%] md:max-w-[60%] " ref={ref}>
+      {/* Story Reply Preview */}
+      {message?.story_reply && (
+        <StoryReplyPreview
+          storyReply={message.story_reply}
+          onStoryClick={handleStoryClick}
+        />
+      )}
+
       <MessageBubbleContent
         isSender={isSender}
         hasAttachments={hasAttachments}

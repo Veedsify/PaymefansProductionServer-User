@@ -260,6 +260,13 @@ export interface Message {
   created_at: string;
   rawFiles?: MediaFile[] | [];
   triggerSend: boolean;
+  story_reply?: {
+    story_media_id: string;
+    story_preview_url: string;
+    story_type: string;
+    story_owner_username: string;
+    story_owner_profile_image: string;
+  };
 }
 
 export interface MessageInputProps {
@@ -337,11 +344,11 @@ export interface MessagesConversationContextValue {
 
 type OwnerOption =
   | {
-      name: string;
-      icon: React.ReactNode;
-      func?: (e: React.MouseEvent<HTMLButtonElement>) => void;
-      link?: undefined;
-    }
+    name: string;
+    icon: React.ReactNode;
+    func?: (e: React.MouseEvent<HTMLButtonElement>) => void;
+    link?: undefined;
+  }
   | { name: string; icon: React.ReactNode; func?: undefined; link?: URL };
 
 export interface PostAudienceDataProps {

@@ -18,6 +18,7 @@ import UserAccountSuspendedScreen from "@/components/sub_components/UserAccountS
 import ConfigProvider from "@/contexts/ConfigContext";
 import { Bricolage_Grotesque, Epilogue } from "next/font/google";
 import GetLocationContext from "@/contexts/GetLocationContext";
+import StoryModalWrapper from "@/components/providers/StoryModalWrapper";
 
 const font = Bricolage_Grotesque({
   weight: ["200", "300", "400", "500", "600", "700", "800"],
@@ -89,33 +90,33 @@ export default async function RootLayout({
           <UserContextProvider user={user}>
             <GetLocationContext user={user}>
               <QueryProvider>
-                <MessagesConversationProvider>
-                  <Loader />
-                  <Toaster
-                    toastOptions={{
-                      duration: 5000,
-                      style: {
-                        fontSize: "14px",
-                        fontWeight: "500",
-                        border: "1px solid #CC0DF8",
-                        borderRadius: "100vmax",
-                      },
-                    }}
-                  />
-                  <SonnerToast
-                    richColors
-                    position="top-center"
-                    toastOptions={{
-                      closeButton: true,
-                      duration: 10000,
-                      style: {
-                        fontSize: "16px",
-                        borderRadius: "100vmax",
-                      },
-                    }}
-                  />
-                  <div className="relative grid h-dvh lg:grid-cols-8">
-                    <MessagesConversationProvider>
+                <StoryModalWrapper>
+                  <MessagesConversationProvider>
+                    <Loader />
+                    <Toaster
+                      toastOptions={{
+                        duration: 5000,
+                        style: {
+                          fontSize: "14px",
+                          fontWeight: "500",
+                          border: "1px solid #CC0DF8",
+                          borderRadius: "100vmax",
+                        },
+                      }}
+                    />
+                    <SonnerToast
+                      richColors
+                      position="top-center"
+                      toastOptions={{
+                        closeButton: true,
+                        duration: 10000,
+                        style: {
+                          fontSize: "16px",
+                          borderRadius: "100vmax",
+                        },
+                      }}
+                    />
+                    <div className="relative grid h-dvh lg:grid-cols-8">
                       <ToggleWishListProvider>
                         <div className="col-span-2">
                           <SideBar />
@@ -133,12 +134,12 @@ export default async function RootLayout({
                         </div>
                         <WishList />
                       </ToggleWishListProvider>
-                    </MessagesConversationProvider>
-                    <MenuButtons />
-                    {/* <ModalComponent /> */}
-                  </div>
-                  <PostComponentPreview />
-                </MessagesConversationProvider>
+                      <MenuButtons />
+                      {/* <ModalComponent /> */}
+                    </div>
+                    <PostComponentPreview />
+                  </MessagesConversationProvider>
+                </StoryModalWrapper>
               </QueryProvider>
             </GetLocationContext>
           </UserContextProvider>

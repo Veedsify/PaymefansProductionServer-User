@@ -276,19 +276,35 @@ const StoryReplyInput = ({ story }: { story: Story }) => {
         throw new Error("Failed to create conversation");
       }
 
-      // Create message object for socket
+      // Create message object for socket with story reply data
+      const storyReplyData = {
+        story_media_id: story.media_id,
+        story_preview_url: story.media_url,
+        story_type: story.media_type,
+        story_owner_username: story.user.username,
+        story_owner_profile_image: story.user.profile_image,
+      };
+
       const newMessage = {
         message_id: uuid(),
         sender_id: user.user_id,
         receiver_id: receiverUserId,
         conversationId: conversationId,
-        message: `Reply to story: ${replyText}`,
+        message: replyText,
         attachment: [],
         rawFiles: [],
+        story_reply: storyReplyData,
         triggerSend: true,
         created_at: new Date().toISOString(),
         seen: false,
       };
+
+      // Debug: Log the message being sent
+      console.log("📤 Sending story reply message:", {
+        message_id: newMessage.message_id,
+        story_reply: newMessage.story_reply,
+        message: newMessage.message,
+      });
 
       // Get socket and emit message
       const socket = getSocket(user.user_id);
@@ -350,7 +366,7 @@ const StoryReplyInput = ({ story }: { story: Story }) => {
                 className="flex-1 bg-white/10 text-white placeholder-white/70 border border-white/20 rounded-xl px-3 py-3 focus:outline-none focus:border-white/40"
                 onKeyDown={(e) => {
                   if (e.key === "Enter" && !isReplying) {
-                    handleReplySubmit()
+                    handleReplySubmit();
                   }
                 }}
                 disabled={isReplying}
