@@ -5,18 +5,18 @@ import toast from "react-hot-toast";
 const CustomCartPageHooks = () => {
   const { addProduct, reduceProductPrice, removeProduct } = useCartStore();
   const [sizes, setSizes] = useState([
-    { name: "S" },
-    { name: "M" },
-    { name: "L" },
-    { name: "XL" },
+    { name: "S", id: 1 },
+    { name: "M", id: 2 },
+    { name: "L", id: 3 },
+    { name: "XL", id: 4 },
   ]);
 
   const addToCart = (item: any) => {
     addProduct(item);
   };
 
-  const removeFromCart = (id: any) => {
-    removeProduct(id);
+  const removeFromCart = (id: any, sizeName?: string) => {
+    removeProduct(id, sizeName);
     toast.error("Item removed from cart");
   };
 

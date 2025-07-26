@@ -18,8 +18,9 @@ type Product = {
   category: {
     name: string;
   };
-  size: {
+  size?: {
     name: string;
+    id?: number;
   };
 };
 
@@ -27,8 +28,8 @@ type CartContext = {
   cart: Product[];
   setcart: (cart: Product[]) => void;
   addProduct: (product: Product) => void;
-  removeProduct: (id: number) => void;
-  reduceProductPrice: (id: number) => void;
+  removeProduct: (id: number, sizeName?: string) => void;
+  reduceProductPrice: (id: number, sizeName?: string) => void;
   clearcart: () => void;
   calculateTotalPrice: () => number;
   total: () => number;
@@ -41,32 +42,50 @@ export const useCartStore = create<CartContext>()(
       setcart: (cart) => set({ cart }),
       addProduct: (product) =>
         set((state) => {
-          const existingProduct = state.cart.find((p) => p.id === product.id);
+          const existingProduct = state.cart.find(
+            (p) => p.id === product.id && p.size?.name === product.size?.name,
+          );
           if (existingProduct) {
             const updatedCart = state.cart.map((p) =>
-              p.id === product.id ? { ...product} : p
+              p.id === product.id && p.size?.name === product.size?.name
+                ? { ...p, quantity: p.quantity + product.quantity }
+                : p,
             );
             return { cart: updatedCart };
           }
-          return { cart: [...state.cart, { ...product, quantity: 1 }] };
+          return { cart: [...state.cart, product] };
         }),
-      removeProduct: (id) =>
-        set((state) => ({ cart: state.cart.filter((p) => p.id !== id) })),
-      reduceProductPrice: (id) =>
+      removeProduct: (id, sizeName?: string) =>
+        set((state) => ({
+          cart: state.cart.filter((p) =>
+            sizeName
+              ? !(p.id === id && p.size?.name === sizeName)
+              : p.id !== id,
+          ),
+        })),
+      reduceProductPrice: (id, sizeName?: string) =>
         set((state) => {
           const updatedCart = state.cart.map((product) => {
-            if (product.id === id && product.quantity > 1) {
-              return { ...product, quantity: product.quantity - 1 }; // Create a new object with updated quantity
+            if (
+              (sizeName
+                ? product.id === id && product.size?.name === sizeName
+                : product.id === id) &&
+              product.quantity > 1
+            ) {
+              return { ...product, quantity: product.quantity - 1 };
             }
-            return product; // Return the original product if not matched
+            return product;
           });
-          return { cart: updatedCart }; // Return the updated cart
+          return { cart: updatedCart };
         }),
       clearcart: () => set({ cart: [] }),
       calculateTotalPrice: (): number => {
         return useCartStore
           .getState()
-          .cart.reduce((acc, product) => acc + product.price, 0);
+          .cart.reduce(
+            (acc, product) => acc + product.price * product.quantity,
+            0,
+          );
       },
       total: (): number => {
         return useCartStore.getState().cart.length;
@@ -75,6 +94,6 @@ export const useCartStore = create<CartContext>()(
     {
       name: "cart-storage",
       storage: createJSONStorage(() => localStorage),
-    }
-  )
+    },
+  ),
 );

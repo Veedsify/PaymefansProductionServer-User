@@ -1,68 +1,29 @@
 "use client";
 import CartIcon from "@/components/sub_components/CartIcon";
-import { StoreProduct } from "@/types/Components";
-import fetchStoreProducts from "@/utils/data/FetchStoreProducts";
-import { ShoppingCart } from "lucide-react";
+import { StoreProduct } from "@/types/Components.d";
+import { ShoppingCart, Loader2, LucideArrowRight } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import numeral from "numeral";
-import { useCallback, useEffect, useRef, useState } from "react";
-import toast from "react-hot-toast";
-import _ from "lodash";
+import { useStoreProducts } from "@/hooks/useStoreProducts";
+import { useMemo } from "react";
 
 const Store = () => {
-  const [products, setProducts] = useState<StoreProduct[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [pageCount, setPageCount] = useState({
-    hasMore: false,
-    totalProducts: 0,
-    perPage: 0,
-  });
-  const [page, setPage] = useState(1);
-  const isFetching = useRef(false);
+  const {
+    data,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+    isLoading,
+    isError,
+    error,
+  } = useStoreProducts(12);
 
-  const getProducts = useCallback(async (pageNum = 1) => {
-    if (isFetching.current) return;
-    isFetching.current = true;
-    setLoading(true);
-    try {
-      const product = await fetchStoreProducts(pageNum);
+  const products = useMemo(() => {
+    return data?.pages.flatMap((page) => page.data) || [];
+  }, [data]);
 
-      setPageCount({
-        hasMore: product.hasMore,
-        totalProducts: product.totalProducts,
-        perPage: product.perPage,
-      });
-
-      setProducts((prev) =>
-        pageNum === 1
-          ? (product.data as StoreProduct[]) || []
-          : _.uniqBy(
-              [...prev, ...((product.data as StoreProduct[]) || [])],
-              "id"
-            )
-      );
-    } catch (error: any) {
-      toast.error(
-        error?.response?.data?.message ||
-          "An error occurred while fetching products"
-      );
-    } finally {
-      setLoading(false);
-      isFetching.current = false;
-    }
-  }, []);
-
-  useEffect(() => {
-    getProducts(page);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [page]);
-
-  const handleLoadMore = () => {
-    if (pageCount.hasMore && !loading) {
-      setPage((prev) => prev + 1);
-    }
-  };
+  const totalProducts = data?.pages[0]?.totalProducts || 0;
 
   return (
     <section>
@@ -82,18 +43,29 @@ const Store = () => {
             merchandise from your favorite models. We offer a wide range of
             products, including clothing, accessories, and more.
           </p>
+          <Link
+            href="/store/orders"
+            className="text-primary-dark-pink font-medium inline-flex"
+          >
+            View My Orders <LucideArrowRight size={20} />
+          </Link>
         </header>
 
         <div className="mt-8">
           <p className="text-sm text-gray-500 dark:text-white">
-            Showing <span>{products.length}</span> of {pageCount.totalProducts}{" "}
-            products
+            Showing <span>{products.length}</span> of {totalProducts} products
           </p>
         </div>
 
-        {loading && products.length === 0 ? (
+        {isLoading ? (
           <div className="flex items-center justify-center mt-4 min-h-96">
-            <ShoppingCart className="w-8 h-8 text-gray-500 animate-spin" />
+            <Loader2 className="w-8 h-8 text-gray-500 animate-spin" />
+          </div>
+        ) : isError ? (
+          <div className="flex items-center justify-center mt-4 min-h-96">
+            <p className="text-red-500 dark:text-red-400">
+              {error?.message || "Failed to load products"}
+            </p>
           </div>
         ) : products.length > 0 ? (
           <>
@@ -126,14 +98,21 @@ const Store = () => {
                 </li>
               ))}
             </ul>
-            {pageCount.hasMore && (
+            {hasNextPage && (
               <div className="flex justify-center mt-8">
                 <button
-                  onClick={handleLoadMore}
-                  disabled={loading}
-                  className="px-6 py-2 rounded bg-blue-600 text-white font-semibold hover:bg-blue-700 disabled:opacity-50"
+                  onClick={() => fetchNextPage()}
+                  disabled={isFetchingNextPage}
+                  className="px-6 py-2 rounded bg-blue-600 text-white font-semibold hover:bg-blue-700 disabled:opacity-50 flex items-center gap-2"
                 >
-                  {loading ? "Loading..." : "Load More"}
+                  {isFetchingNextPage ? (
+                    <>
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                      Loading...
+                    </>
+                  ) : (
+                    "Load More"
+                  )}
                 </button>
               </div>
             )}

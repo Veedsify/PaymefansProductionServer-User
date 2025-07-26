@@ -344,11 +344,11 @@ export interface MessagesConversationContextValue {
 
 type OwnerOption =
   | {
-    name: string;
-    icon: React.ReactNode;
-    func?: (e: React.MouseEvent<HTMLButtonElement>) => void;
-    link?: undefined;
-  }
+      name: string;
+      icon: React.ReactNode;
+      func?: (e: React.MouseEvent<HTMLButtonElement>) => void;
+      link?: undefined;
+    }
   | { name: string; icon: React.ReactNode; func?: undefined; link?: URL };
 
 export interface PostAudienceDataProps {
@@ -659,6 +659,7 @@ export type Product = {
   }[];
   sizes: {
     size: {
+      id: number;
       name: string;
     };
   }[];

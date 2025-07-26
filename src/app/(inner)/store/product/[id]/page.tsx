@@ -16,12 +16,16 @@ import numeral from "numeral";
 import Loader from "@/components/lib_components/LoadingAnimation";
 import Link from "next/link";
 import { useCartStore } from "@/contexts/StoreContext";
+import { useWishlistStore } from "@/contexts/WishlistContext";
+import { useToggleWishlist } from "@/hooks/useWishlist";
 import toast from "react-hot-toast";
 import Image from "next/image";
 
 const ProductPreview = () => {
   const params = useParams();
   const { addProduct, cart } = useCartStore();
+  const { isInWishlist } = useWishlistStore();
+  const { toggleWishlist, isLoading: wishlistLoading } = useToggleWishlist();
   const [selectedImage, setSelectedImage] = useState(0);
   // const [selectedSize, setSelectedSize] = useState<string | null>(null);
   // const [selectedColor, setSelectedColor] = useState(null);
@@ -58,9 +62,29 @@ const ProductPreview = () => {
   const AddItemToCart = () => {
     if (!product) return;
 
-    const findProductIncart = cart.find((p) => p.id === product.id);
+    // Validate size selection
+    if (!selectedSize) {
+      toast.error("Please select a size");
+      return;
+    }
+
+    // Find the complete size object from product.sizes
+    const selectedSizeObject = product.sizes.find(
+      (size) => size.size.name === selectedSize,
+    );
+
+    if (!selectedSizeObject) {
+      toast.error("Selected size not available");
+      return;
+    }
+
+    const findProductIncart = cart.find(
+      (p) =>
+        p.product_id === product.product_id && p.size?.name === selectedSize,
+    );
+
     if (findProductIncart) {
-      toast.error("Product already in cart");
+      toast.error("Product with this size already in cart");
       return;
     }
 
@@ -70,7 +94,8 @@ const ProductPreview = () => {
       price: product!.price,
       images: product!.images,
       size: {
-        name: selectedSize as string,
+        id: selectedSizeObject.size.id,
+        name: selectedSizeObject.size.name,
       },
       quantity: Number(selectedQuantity),
       description: product!.description,
@@ -79,6 +104,11 @@ const ProductPreview = () => {
       product_id: product!.product_id,
     });
     toast.success("Product added to cart");
+  };
+
+  const handleWishlistToggle = () => {
+    if (!product) return;
+    toggleWishlist(product.product_id, product);
   };
 
   if (loading)
@@ -96,7 +126,7 @@ const ProductPreview = () => {
 
   const previousImage = () => {
     setSelectedImage(
-      (prev) => (prev - 1 + product.images.length) % product.images.length
+      (prev) => (prev - 1 + product.images.length) % product.images.length,
     );
   };
 
@@ -124,7 +154,7 @@ const ProductPreview = () => {
             <div className="relative aspect-[3/4] bg-slate-100 dark:bg-slate-800 rounded-lg overflow-hidden">
               <Image
                 width={640}
-                unoptimized 
+                unoptimized
                 height={480}
                 src={product.images[selectedImage]?.image_url}
                 alt={`Product view ${selectedImage + 1}`}
@@ -200,7 +230,7 @@ const ProductPreview = () => {
                       new URLSearchParams({
                         ...Object.fromEntries(searchParams.entries()),
                         size: size.size.name,
-                      })
+                      }),
                     )}`}
                     className={`py-2 text-center block text-sm font-medium rounded-md ${
                       selectedSize === size.size.name
@@ -228,7 +258,7 @@ const ProductPreview = () => {
                         Number(selectedQuantity) > 1
                           ? String(Number(selectedQuantity) - 1)
                           : "1",
-                    })
+                    }),
                   )}`}
                   // onClick={() =>
                   //   setSelectedQuantity((prev) => Math.max(prev - 1, 1))
@@ -245,7 +275,7 @@ const ProductPreview = () => {
                     new URLSearchParams({
                       ...Object.fromEntries(searchParams.entries()),
                       quantity: String(Number(selectedQuantity) + 1),
-                    })
+                    }),
                   )}`}
                   // onClick={() => setSelectedQuantity((prev) => prev + 1)}
                   className="px-4 py-2 border border-slate-300 dark:border-slate-600 rounded-md dark:text-white"
@@ -265,9 +295,21 @@ const ProductPreview = () => {
                 Add to Cart
               </button>
               <div className="flex gap-4">
-                <button className="flex-1 flex items-center justify-center gap-2 border border-slate-300 dark:border-slate-600 px-6 py-3 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800 dark:text-white">
-                  <Heart className="w-5 h-5" />
-                  Save
+                <button
+                  onClick={handleWishlistToggle}
+                  disabled={wishlistLoading}
+                  className={`flex-1 flex items-center justify-center gap-2 border px-6 py-3 rounded-lg transition-colors dark:text-white ${
+                    isInWishlist(product.product_id)
+                      ? "border-red-500 bg-red-50 text-red-600 hover:bg-red-100 dark:bg-red-900/20 dark:text-red-400"
+                      : "border-slate-300 dark:border-slate-600 hover:bg-slate-50 dark:hover:bg-slate-800"
+                  } disabled:opacity-50`}
+                >
+                  <Heart
+                    className={`w-5 h-5 ${
+                      isInWishlist(product.product_id) ? "fill-current" : ""
+                    }`}
+                  />
+                  {isInWishlist(product.product_id) ? "Saved" : "Save"}
                 </button>
                 <button className="flex-1 flex items-center justify-center gap-2 border border-slate-300 dark:border-slate-600 px-6 py-3 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800 dark:text-white">
                   <Share2 className="w-5 h-5" />

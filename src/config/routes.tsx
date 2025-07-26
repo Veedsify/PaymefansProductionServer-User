@@ -63,10 +63,10 @@ const ROUTE = {
   GET_POINTS_CONVERSION_RATE: `${NEXT_PUBLIC_TS_EXPRESS_URL}/points/rate`,
 
   /**
-     * 
+     *
      * Endpoint for upload progress posts
      * @type {string}
-    
+
      */
   UPLOAD_POST_MEDIA_ENDPOINT: `${NEXT_PUBLIC_TS_EXPRESS_URL}/post/upload-post-media`,
   /**
@@ -86,6 +86,74 @@ const ROUTE = {
    * @type {string}
    */
   GET_SYSTEM_CONFIGS: `${NEXT_PUBLIC_TS_EXPRESS_URL}/configs`,
+
+  /**
+   * Endpoint for store checkout
+   * @type {string}
+   */
+  STORE_CHECKOUT: `${NEXT_PUBLIC_TS_EXPRESS_URL}/store/checkout`,
+
+  /**
+   * Endpoint for verifying payment
+   * @param {string} reference - The payment reference
+   * @returns {string} The URL to verify payment
+   */
+  VERIFY_PAYMENT: (reference: string) =>
+    `${NEXT_PUBLIC_TS_EXPRESS_URL}/store/verify-payment/${reference}`,
+
+  /**
+   * Endpoint for fetching user orders
+   * @type {string}
+   */
+  GET_USER_ORDERS: `${NEXT_PUBLIC_TS_EXPRESS_URL}/store/orders`,
+
+  /**
+   * Endpoint for updating order status
+   * @param {string} order_id - The order ID
+   * @returns {string} The URL to update order status
+   */
+  UPDATE_ORDER_STATUS: (order_id: string) =>
+    `${NEXT_PUBLIC_TS_EXPRESS_URL}/store/orders/${order_id}/status`,
+
+  /**
+   * Endpoint for adding product to wishlist
+   * @type {string}
+   */
+  WISHLIST_ADD: `${NEXT_PUBLIC_TS_EXPRESS_URL}/wishlist/add`,
+
+  /**
+   * Endpoint for removing product from wishlist
+   * @param {string} product_id - The product ID
+   * @returns {string} The URL to remove product from wishlist
+   */
+  WISHLIST_REMOVE: (product_id: string) =>
+    `${NEXT_PUBLIC_TS_EXPRESS_URL}/wishlist/remove/${product_id}`,
+
+  /**
+   * Endpoint for fetching user's wishlist
+   * @type {string}
+   */
+  WISHLIST_GET: `${NEXT_PUBLIC_TS_EXPRESS_URL}/wishlist`,
+
+  /**
+   * Endpoint for checking if product is in wishlist
+   * @param {string} product_id - The product ID
+   * @returns {string} The URL to check wishlist status
+   */
+  WISHLIST_CHECK: (product_id: string) =>
+    `${NEXT_PUBLIC_TS_EXPRESS_URL}/wishlist/check/${product_id}`,
+
+  /**
+   * Endpoint for getting wishlist count
+   * @type {string}
+   */
+  WISHLIST_COUNT: `${NEXT_PUBLIC_TS_EXPRESS_URL}/wishlist/count`,
+
+  /**
+   * Endpoint for clearing entire wishlist
+   * @type {string}
+   */
+  WISHLIST_CLEAR: `${NEXT_PUBLIC_TS_EXPRESS_URL}/wishlist/clear`,
 };
 
 export default ROUTE;
