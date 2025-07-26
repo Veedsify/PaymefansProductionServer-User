@@ -33,6 +33,7 @@ import { MediaDataTypeOtherProps } from "@/types/Components";
 import usePostComponent from "@/contexts/PostComponentPreview";
 import Link from "next/link";
 import followUser from "@/utils/data/update/Follow";
+import { useState as useReactState } from "react";
 
 const searchFunction = async (query: string) => {
   try {
@@ -45,7 +46,7 @@ const searchFunction = async (query: string) => {
               "Content-Type": "application/json",
               Authorization: `Bearer ${token}`,
             },
-          },
+          }
         );
         return response.data.results;
       },
@@ -58,7 +59,7 @@ const searchFunction = async (query: string) => {
               "Content-Type": "application/json",
               Authorization: `Bearer ${token}`,
             },
-          },
+          }
         );
         return response.data.results;
       },
@@ -71,7 +72,7 @@ const searchFunction = async (query: string) => {
               "Content-Type": "application/json",
               Authorization: `Bearer ${token}`,
             },
-          },
+          }
         );
         return response.data.results;
       },
@@ -88,6 +89,154 @@ const searchFunction = async (query: string) => {
     console.error("Search error:", error);
     return { users: [], posts: [], media: [], error: true };
   }
+};
+
+const ReportModal = ({
+  isOpen,
+  onClose,
+  userId,
+  username,
+}: {
+  isOpen: boolean;
+  onClose: () => void;
+  userId: number;
+  username: string;
+}) => {
+  const [reportType, setReportType] = useReactState("");
+  const [reportReason, setReportReason] = useReactState("");
+  const [isSubmitting, setIsSubmitting] = useReactState(false);
+
+  const reportTypes = [
+    "spam",
+    "harassment",
+    "inappropriate_content",
+    "fake_account",
+    "copyright_violation",
+    "other",
+  ];
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!reportType || !reportReason.trim()) {
+      toast.error("Please select a report type and provide a reason");
+      return;
+    }
+
+    setIsSubmitting(true);
+    try {
+      const response = await axios.post(
+        `${process.env.NEXT_PUBLIC_TS_EXPRESS_URL}/report/user`,
+        {
+          reported_id: userId,
+          report_type: reportType,
+          report: reportReason,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (response.data.success) {
+        toast.success("Report submitted successfully");
+        onClose();
+        setReportType("");
+        setReportReason("");
+      } else {
+        toast.error("Failed to submit report");
+      }
+    } catch (error) {
+      console.error("Error submitting report:", error);
+      toast.error("Failed to submit report");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  if (!isOpen) return null;
+
+  return (
+    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[200]">
+      <motion.div
+        initial={{ opacity: 0, scale: 0.9 }}
+        animate={{ opacity: 1, scale: 1 }}
+        exit={{ opacity: 0, scale: 0.9 }}
+        className="bg-white dark:bg-gray-800 rounded-2xl p-6 w-full max-w-md mx-4"
+      >
+        <div className="flex items-center justify-between mb-4">
+          <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+            Report {username}
+          </h3>
+          <button
+            onClick={onClose}
+            className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700"
+          >
+            <LucideSearch size={20} className="rotate-45" />
+          </button>
+        </div>
+
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              Report Type
+            </label>
+            <select
+              value={reportType}
+              onChange={(e) => setReportType(e.target.value)}
+              className="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+              required
+            >
+              <option value="">Select a reason</option>
+              {reportTypes.map((type) => (
+                <option key={type} value={type}>
+                  {type
+                    .replace(/_/g, " ")
+                    .replace(/\b\w/g, (l) => l.toUpperCase())}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              Additional Details
+            </label>
+            <textarea
+              value={reportReason}
+              onChange={(e) => setReportReason(e.target.value)}
+              placeholder="Please provide more details about this report..."
+              className="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 resize-none"
+              rows={4}
+              required
+            />
+          </div>
+
+          <div className="flex gap-3 pt-4">
+            <button
+              type="button"
+              onClick={onClose}
+              className="flex-1 py-3 px-4 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              disabled={isSubmitting}
+              className="flex-1 py-3 px-4 bg-red-600 hover:bg-red-700 text-white rounded-lg disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
+            >
+              {isSubmitting ? (
+                <LucideLoader2 className="animate-spin w-4 h-4" />
+              ) : (
+                "Submit Report"
+              )}
+            </button>
+          </div>
+        </form>
+      </motion.div>
+    </div>
+  );
 };
 
 const FollowButton = ({
@@ -115,7 +264,11 @@ const FollowButton = ({
     <motion.button
       onClick={handleFollow}
       whileHover={{ scale: 1.02 }}
-      className={`w-full py-3.5 ${isFollowing ? "bg-transparent hover:bg-black text-black dark:text-white border" : "bg-primary-dark-pink hover:bg-primary-text-dark-pink text-white"} rounded-xl text-sm font-semibold cursor-pointer`}
+      className={`w-full py-3.5 ${
+        isFollowing
+          ? "bg-transparent hover:bg-black text-black dark:text-white border"
+          : "bg-primary-dark-pink hover:bg-primary-text-dark-pink text-white"
+      } rounded-xl text-sm font-semibold cursor-pointer`}
     >
       {isFollowing ? "Unfollow" : "Follow"}
     </motion.button>
@@ -132,47 +285,28 @@ const SearchPage = () => {
   const [posts, setPosts] = useState<any[]>([]);
   const [users, setUsers] = useState<any[]>([]);
   const [media, setMedia] = useState<any[]>([]);
+  const [reportModal, setReportModal] = useState<{
+    isOpen: boolean;
+    userId: number;
+    username: string;
+  }>({
+    isOpen: false,
+    userId: 0,
+    username: "",
+  });
   const { fullScreenPreview } = usePostComponent();
-  // useEffect(() => {
-  //   if (ref.current) {
-  //     const query = search.get("q") || "";
-  //     ref.current.value = query;
-  //     ref.current.focus();
-  //     if (query.length > 0) {
-  //       searchFunction(query)
-  //         .then((results) => {
-  //           if (results.error) {
-  //             toast.error("Error fetching search results. Please try again.", {
-  //               id: "search",
-  //             });
-  //           } else {
-  //             setSearchQuery(query);
-  //             setLoading(false);
-  //           }
-  //         })
-  //         .catch((error) => {
-  //           console.error("Search error:", error);
-  //           toast.error("Error fetching search results. Please try again.", {
-  //             id: "search",
-  //           });
-  //           setLoading(false);
-  //         });
-  //     }
-  //   }
-  // }, [ref, search]);
-
   const previewImageHandler = (
     m: MediaDataTypeOtherProps,
     type: string,
     isSubscriber: boolean,
-    indexId: number,
+    indexId: number
   ) => {
     if (m.accessible_to === "subscribers" && !isSubscriber) return;
     const filteredMedias = media
       .filter((item) => item.media_state !== "processing")
       .filter((media) => media.accessible_to !== "price")
       .filter(
-        (media) => !(media.accessible_to === "subscribers" && !isSubscriber),
+        (media) => !(media.accessible_to === "subscribers" && !isSubscriber)
       );
     // Get the new index after filtering
     const newIndexId = filteredMedias.findIndex((item) => item.id === m.id);
@@ -263,17 +397,17 @@ const SearchPage = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-white dark:bg-gray-950 text-gray-900 dark:text-gray-100">
+    <div className="min-h-screen bg-white dark:bg-black text-gray-900 dark:text-gray-100">
       <div className="max-w-6xl mx-auto px-4 lg:px-6 py-6">
         {/* Search Bar */}
         <motion.div
           initial={{ y: -20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ duration: 0.5, ease: "easeOut" }}
-          className="sticky top-0 z-20 bg-white dark:bg-gray-950 py-6 -mx-2"
+          className="sticky top-0 z-20 bg-white dark:bg-black py-6 -mx-2"
         >
           <div className="relative mx-auto">
-            <div className="relative overflow-hidden rounded-lg bg-white dark:bg-gray-800 shadow hover:shadow-xl transition-shadow duration-300 border border-primary-dark-pink/15">
+            <div className="relative overflow-hidden rounded-lg bg-white dark:bg-black dark:border-gray-700 shadow hover:shadow-xl transition-shadow duration-300 border border-primary-dark-pink/15">
               <input
                 ref={ref}
                 type="text"
@@ -410,7 +544,7 @@ const SearchPage = () => {
                                 ease: "easeOut",
                               }}
                               whileHover={{ y: -8, scale: 1.01 }}
-                              className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden group border border-gray-100 dark:border-gray-700"
+                              className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden border border-gray-100 dark:border-gray-700"
                             >
                               <div className="relative h-36">
                                 <Image
@@ -459,9 +593,29 @@ const SearchPage = () => {
                                       </Link>
                                     </p>
                                   </div>
-                                  <button className="p-2 rounded-full text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
-                                    <MoreHorizontal size={20} />
-                                  </button>
+                                  <div className="relative group">
+                                    <button className="p-2 rounded-full text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+                                      <MoreHorizontal size={20} />
+                                    </button>
+                                    <div className="absolute right-0 top-full mt-1 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 py-2 min-w-[150px] opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-10">
+                                      <button
+                                        onClick={() =>
+                                          setReportModal({
+                                            isOpen: true,
+                                            userId: user.id,
+                                            username: user.username,
+                                          })
+                                        }
+                                        className="w-full px-4 py-2 text-left text-sm text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors flex items-center"
+                                      >
+                                        <ExternalLink
+                                          size={16}
+                                          className="mr-2"
+                                        />
+                                        Report Account
+                                      </button>
+                                    </div>
+                                  </div>
                                 </div>
 
                                 {user.bio && (
@@ -485,7 +639,7 @@ const SearchPage = () => {
                                     <Calendar size={14} className="mr-1.5" />
                                     Joined{" "}
                                     {new Date(
-                                      user.created_at,
+                                      user.created_at
                                     ).toLocaleDateString("en-US", {
                                       year: "numeric",
                                       month: "long",
@@ -745,6 +899,15 @@ const SearchPage = () => {
           </AnimatePresence>
         </div>
       </div>
+
+      <ReportModal
+        isOpen={reportModal.isOpen}
+        onClose={() =>
+          setReportModal({ isOpen: false, userId: 0, username: "" })
+        }
+        userId={reportModal.userId}
+        username={reportModal.username}
+      />
     </div>
   );
 };

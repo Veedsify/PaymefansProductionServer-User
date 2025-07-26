@@ -3,16 +3,13 @@ import {
   NotificationIcontypes,
   useNotificationStore,
 } from "@/contexts/NotificationContext";
-import { getToken } from "@/utils/Cookie";
-import axios from "axios";
+import {
+  useNotifications,
+  useNotificationCount,
+} from "@/hooks/useNotifications";
 import { LucideLoader } from "lucide-react";
-import { useRouter } from "next/navigation";
-import { useCallback, useEffect, useLayoutEffect, useState } from "react";
+import React, { useState } from "react";
 import { useInView } from "react-intersection-observer";
-
-function Notify() {
-  return <div>Enter</div>;
-}
 
 export function NotificationHeader({
   children,
@@ -21,7 +18,7 @@ export function NotificationHeader({
   children: string;
   className?: string;
 }) {
-  const { totalNotifications } = useNotificationStore();
+  const { unreadCount } = useNotificationCount();
 
   return (
     <>
@@ -31,7 +28,7 @@ export function NotificationHeader({
             {children}
           </span>
           <div className="flex items-center justify-center w-8 h-8 aspect-square flex-shrink-0 ml-auto text-white md:py-3 md:px-3 py-1 px-1  bg-primary-text-dark-pink rounded-full font-bold">
-            {totalNotifications > 100 ? "99+" : totalNotifications}
+            {unreadCount > 100 ? "99+" : unreadCount}
           </div>
         </div>
       </div>
@@ -41,53 +38,26 @@ export function NotificationHeader({
 }
 
 export function NotificationBody() {
-  const { notifications, updateNotification, addAllNotifications } =
-    useNotificationStore();
-  const [page, setPage] = useState<number>(1);
-  const [hasMore, setHasMore] = useState<boolean>(false);
-  const [loading, setLoading] = useState<boolean>(false);
-  const [error, setError] = useState<boolean>(false);
-  const types = NotificationIcontypes;
-  const token = getToken();
+  const [page, setPage] = useState<string>("1");
+  const {
+    notifications,
+    hasMore,
+    isLoading,
+    error,
+    markAsRead,
+    isMarkingAsRead,
+  } = useNotifications(page);
 
+  const { updateNotification } = useNotificationStore();
+  const types = NotificationIcontypes;
   const { ref, inView } = useInView();
 
-  useEffect(() => {
-    if (inView && hasMore && !loading) {
-      setLoading(true);
-      setPage((prev) => prev + 1);
+  // Load more notifications when scrolling to bottom
+  React.useEffect(() => {
+    if (inView && hasMore && !isLoading) {
+      setPage((prev) => (parseInt(prev) + 1).toString());
     }
-  }, [inView, hasMore, loading]);
-
-  const fetchNotifications = useCallback(async () => {
-    try {
-      setLoading(true);
-      const url = `${process.env.NEXT_PUBLIC_TS_EXPRESS_URL}/notifications/${page}`;
-      const response = await axios.post(
-        url,
-        {},
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
-      if (response.status === 200) {
-        const { data, hasMore: moreData } = response.data;
-        setLoading(false);
-        addAllNotifications(data);
-        setHasMore(moreData);
-      } else {
-        setLoading(false);
-        setError(true);
-      }
-    } catch (err) {
-      setLoading(false);
-      setError(true);
-    }
-  }, [page, token, addAllNotifications, setHasMore, setLoading, setError]);
-
-  useEffect(() => {
-    fetchNotifications();
-  }, [fetchNotifications]);
+  }, [inView, hasMore, isLoading]);
 
   const handleNotificationClick = async (
     url: string,
@@ -95,22 +65,27 @@ export function NotificationBody() {
     id: number,
     read: boolean
   ) => {
-    if (read) return;
-    if (url && url !== "") {
-      const readUrl = `${process.env.NEXT_PUBLIC_TS_EXPRESS_URL}/notifications/read/${id}`;
-      const readNotification = await axios.get(readUrl, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      if (readNotification.status === 200) {
-        updateNotification(notification_id);
+    if (read) {
+      // If already read, just navigate
+      if (url && url !== "") {
         window.location.href = url;
       }
-    } else {
       return;
+    }
+
+    // Update local store immediately for instant UI feedback
+    updateNotification(id.toString());
+
+    // Mark as read on server using the numeric id
+    markAsRead(id.toString());
+
+    // Then navigate if URL exists
+    if (url && url !== "") {
+      window.location.href = url;
     }
   };
 
-  if (!loading && error) {
+  if (error) {
     return (
       <div className="text-center py-2 text-sm text-red-500">
         An error occurred while fetching notifications.
@@ -120,14 +95,14 @@ export function NotificationBody() {
 
   return (
     <div className="space-y-3">
-      {(!notifications || notifications.length) === 0 && !loading ? (
+      {(!notifications || notifications.length === 0) && !isLoading ? (
         <div className="text-center py-4 text-gray-500 dark:text-gray-400">
           No Notifications yet
         </div>
       ) : (
         notifications.map((notification, index) => (
           <div
-            key={index}
+            key={`${notification.id}-${index}`}
             onClick={() =>
               handleNotificationClick(
                 notification.url,
@@ -175,11 +150,16 @@ export function NotificationBody() {
                   )}
                 </p>
               </div>
+              {isMarkingAsRead && (
+                <div className="flex-shrink-0">
+                  <LucideLoader className="animate-spin w-4 h-4 text-gray-400" />
+                </div>
+              )}
             </div>
           </div>
         ))
       )}
-      {loading && (
+      {isLoading && (
         <div className="flex justify-center items-center py-5">
           <LucideLoader className="animate-spin text-primary" />
         </div>
@@ -188,5 +168,3 @@ export function NotificationBody() {
     </div>
   );
 }
-
-

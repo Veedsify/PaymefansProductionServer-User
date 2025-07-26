@@ -18,7 +18,9 @@ const WithdrawConfigPage = () => {
   const [pinModal, setPinModal] = React.useState(false);
   const [error, setError] = React.useState<string>("");
   const [processing, setProcessing] = React.useState(false);
-  const [step, setStep] = React.useState<"create" | "verify">(user?.hasPin ? "verify" : "create");
+  const [step, setStep] = React.useState<"create" | "verify">(
+    user?.hasPin ? "verify" : "create",
+  );
   const { config } = useConfigContext();
   const router = useRouter();
 
@@ -43,7 +45,9 @@ const WithdrawConfigPage = () => {
   }, [user?.hasPin]);
 
   const amountInNgn = Number(withdrawValues?.amountInNgn).toLocaleString();
-  const amountToSettle = Number(withdrawValues?.amountToSettle).toLocaleString();
+  const amountToSettle = Number(
+    withdrawValues?.amountToSettle,
+  ).toLocaleString();
   // Fixed typo: platformFee instead of platfromFee
   const platformFee = Number(withdrawValues?.platformFee).toLocaleString();
   const userBank = withdrawValues?.userBank;
@@ -55,7 +59,13 @@ const WithdrawConfigPage = () => {
     setPinModal(!pinModal);
   };
 
-  const handleWithdraw = async ({ action, pin }: { action: "create" | "verify"; pin: string }) => {
+  const handleWithdraw = async ({
+    action,
+    pin,
+  }: {
+    action: "create" | "verify";
+    pin: string;
+  }) => {
     const token = getToken();
     clearError();
 
@@ -65,7 +75,10 @@ const WithdrawConfigPage = () => {
       return;
     }
 
-    if (isNaN(withdrawValues?.amountInNgn) || withdrawValues?.amountInNgn <= 0) {
+    if (
+      isNaN(withdrawValues?.amountInNgn) ||
+      withdrawValues?.amountInNgn <= 0
+    ) {
       setError("Invalid withdrawal amount");
       return;
     }
@@ -77,7 +90,7 @@ const WithdrawConfigPage = () => {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`,
+          Authorization: `Bearer ${token}`,
         },
         data: JSON.stringify({
           userId: user?.id,
@@ -98,22 +111,24 @@ const WithdrawConfigPage = () => {
         title: "Success",
         text: response.data.message,
         icon: "success",
-        buttons: ["Cancel", "Go to Wallet"],
+        buttons: ["Close", "Go to Wallet"],
         dangerMode: false,
         closeOnClickOutside: false,
       }).then((willConfirm) => {
         if (willConfirm) {
           // Use Next.js router instead of window.location for better SPA behavior
           clearWithdrawStore();
+          router.push("/wallet/withdraw/history");
           router.refresh();
-          router.push("/wallet/history");
         }
       });
-
     } catch (error: any) {
       console.error("Withdrawal error:", error);
       // Improved error handling with optional chaining
-      const errorMessage = error.response?.data?.message || error.message || "An error occurred, please try again";
+      const errorMessage =
+        error.response?.data?.message ||
+        error.message ||
+        "An error occurred, please try again";
       setError(errorMessage);
     } finally {
       setProcessing(false);
@@ -251,7 +266,9 @@ const WithdrawConfigPage = () => {
           onVerify={setPinValue}
           onClose={togglePinModal}
           onCreate={handleCreatePin}
-          onForgotPin={() => { /* forgot pin logic */ }}
+          onForgotPin={() => {
+            /* forgot pin logic */
+          }}
         />
       )}
     </>

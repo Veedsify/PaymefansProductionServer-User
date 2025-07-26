@@ -23,7 +23,7 @@ const StoryReplyPreview: React.FC<StoryReplyPreviewProps> = ({
   return (
     <div
       onClick={onStoryClick}
-      className="relative w-fit ml-auto mb-2 p-2 bg-gray-100 dark:bg-gray-800 rounded-lg   border-l-2 border-primary-dark-pink cursor-pointer transition-colors"
+      className="relative w-fit mb-2 p-2 bg-gray-100 dark:bg-gray-800 rounded-lg   border-l-2 border-primary-dark-pink cursor-pointer transition-colors"
     >
       <div className="flex items-center gap-2">
         {/* Story preview thumbnail */}

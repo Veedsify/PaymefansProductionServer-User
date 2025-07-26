@@ -71,7 +71,7 @@ const SupportChatPage = () => {
   // Memoize the socket connection to prevent re-renders
   const socket = useMemo(() => {
     if (!user) return null;
-    return getSocket(user.username);
+    return getSocket();
   }, [user]);
 
   // Reset all state on leave

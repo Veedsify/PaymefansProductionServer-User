@@ -33,6 +33,7 @@ import { PostCancel } from "@/components/sub_components/sub/PostCancel";
 import { usePostMediaUploadContext } from "@/contexts/PostMediaUploadContext";
 import FetchMentions from "@/utils/data/FetchMentions";
 import { usePostEditorContext } from "@/contexts/PostEditorContext";
+import { useConfigContext } from "@/contexts/ConfigContext";
 
 interface MentionSuggestion extends MentionUser {
   highlighted?: boolean;
@@ -56,6 +57,7 @@ const PostEditor = React.memo(({ posts }: PostEditorProps) => {
   const isWaterMarkEnabled = usePostEditorContext(
     (state) => state.isWaterMarkEnabled
   );
+  const { config } = useConfigContext();
 
   // Mentions state
   const [showMentions, setShowMentions] = useState(false);
@@ -406,6 +408,8 @@ const PostEditor = React.memo(({ posts }: PostEditorProps) => {
             dropdown={dropdown}
             setDropdown={setDropdown}
             updatePostAudience={updatePostAudience}
+            price={price}
+            config={config}
           />
         </div>
 
@@ -544,6 +548,8 @@ const AudienceDropdown = React.memo(
     setPrice,
     setDropdown,
     updatePostAudience,
+    price,
+    config,
   }: {
     postAudience: PostAudienceDataProps | null;
     postAudienceData: PostAudienceDataProps[];
@@ -551,6 +557,8 @@ const AudienceDropdown = React.memo(
     setPrice: (value: string) => void;
     setDropdown: (value: boolean) => void;
     updatePostAudience: (audience: PostAudienceDataProps) => void;
+    price: number;
+    config: any;
   }) => {
     return (
       <div className="flex items-center gap-4 w-full">
@@ -589,20 +597,37 @@ const AudienceDropdown = React.memo(
           </div>
         </button>
         {postAudience?.name === "Price" && (
-          <div className="flex items-center border border-gray-800 rounded-3xl px-3 text-gray-800 dark:text-gray-200 text-sm">
-            <Image
-              width={20}
-              height={20}
-              src="/site/coin.svg"
-              className="w-auto h-5 aspect-square"
-              alt=""
-            />
-            <input
-              type="text"
-              onChange={(e) => setPrice(e.target.value)}
-              placeholder="Price"
-              className="outline-0 border-0 rounded-3xl px-1 text-base py-[6px] text-gray-800 dark:text-gray-200"
-            />
+          <div className="flex items-center gap-1">
+            <div className="flex items-center border border-gray-800 rounded-3xl px-3 text-gray-800 dark:text-gray-200 text-sm">
+              <Image
+                width={20}
+                height={20}
+                src="/site/coin.svg"
+                className="w-5 h-5 aspect-square"
+                alt=""
+              />
+              <input
+                type="text"
+                onChange={(e) => {
+                  if (e.target.value === "" || !e.target.value) {
+                    setPrice("0")
+                    return
+                  }
+                  setPrice(e.target.value)
+                }}
+                placeholder="Price"
+                className="outline-0 border-0 rounded-3xl px-1 text-base py-[6px] text-gray-800 dark:text-gray-200"
+              />
+              {price > 0 && config?.point_conversion_rate_ngn && (
+                <p className="text-primary-dark-pink ml-auto">
+                  ≈{" "}
+                    ₦
+                    {(
+                      price * config.point_conversion_rate_ngn
+                    ).toLocaleString()}
+                </p>
+              )}
+            </div>
           </div>
         )}
       </div>

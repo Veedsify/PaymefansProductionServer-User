@@ -50,7 +50,7 @@ const SideBar = React.memo(() => {
   return (
     <>
       <div
-        className={`lg:ml-auto dark:bg-gray-950 bg-white h-dvh lg:h-dvh fixed lg:sticky top-0 z-[200] lg:z-[200] overflow-auto smart-width p-4 shadow-xl lg:shadow-none lg:border-r border-black/40 transition-transform duration-300 ease-in-out dark:text-white dark:border-slate-800/100 ${
+        className={`lg:ml-auto dark:bg-black bg-white h-dvh lg:h-dvh fixed lg:sticky top-0 z-[200] lg:z-[200] overflow-auto smart-width p-4 shadow-xl lg:shadow-none lg:border-r border-black/40 transition-transform duration-300 ease-in-out dark:text-white dark:border-slate-800/100 ${
           sideBarState ? "-translate-x-0" : "-translate-x-full lg:translate-x-0"
         }`}
       >

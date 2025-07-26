@@ -16,7 +16,6 @@ import {
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import MessageBubble from "../messages/MessageBubble";
-import { useInView } from "react-intersection-observer";
 import { Message } from "@/types/Components";
 import { useChatStore } from "@/contexts/ChatContext";
 import MessageInputComponent from "../messages/MessageInputComponent";
@@ -99,7 +98,7 @@ const ChatPage = ({ conversationId }: { conversationId: string }) => {
   }, [conversationId]);
 
   // Function to fetch the next page
-  const fetchNextPage = useCallback( async () => {
+  const fetchNextPage = useCallback(async () => {
     if (!nextCursor || !hasMore) return;
 
     setLoading(true);
@@ -168,7 +167,7 @@ const ChatPage = ({ conversationId }: { conversationId: string }) => {
       }
     };
     // Event: Error
-    const handleMessageError = (errorData: any) => {
+    const handleMessageError = async (errorData: any) => {
       let title = "Error";
       let text = "The last message didn't go through. Refresh and try again.";
       let showRefresh = true;
@@ -213,7 +212,7 @@ const ChatPage = ({ conversationId }: { conversationId: string }) => {
             },
           };
 
-      swal({
+      await swal({
         title,
         text,
         icon: "error",
@@ -432,7 +431,7 @@ const ChatPage = ({ conversationId }: { conversationId: string }) => {
 
   // Scroll to bottom on initial load
   useEffect(() => {
-   Scroll();
+    Scroll();
   }, [Scroll]); // Only on conversation change
 
   if (error) {
@@ -500,7 +499,7 @@ const ChatPage = ({ conversationId }: { conversationId: string }) => {
         </div>
       </div>
       <div
-        className="flex-1 max-h-[calc(100dvh-230px)] p-4 space-y-4 overflow-y-auto overflow-x-hidden bg-white dark:bg-gray-950"
+        className="flex-1 max-h-[calc(100dvh-230px)] p-4 space-y-4 overflow-y-auto overflow-x-hidden bg-white dark:bg-black"
         ref={messagesContainerRef}
         onScroll={handleScroll}
       >
@@ -555,7 +554,7 @@ const ChatPage = ({ conversationId }: { conversationId: string }) => {
           </div>
         ))}
       </div>
-      <div className="sticky bottom-0 z-50 p-4 bg-white border-t border-black/30 dark:bg-gray-800 dark:border-gray-950 shrink-0">
+      <div className="sticky bottom-0 z-50 p-4 bg-white border-t border-black/30 dark:bg-black dark:border-gray-950 shrink-0">
         <MessageInputComponent
           receiver={receiver}
           conversationId={conversationId}

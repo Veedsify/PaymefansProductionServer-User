@@ -7,9 +7,9 @@ import {
   Repeat2,
   Sparkle,
   UserPlus,
+  UserPlus2,
 } from "lucide-react";
 import { create } from "zustand";
-import { createJSONStorage, persist } from "zustand/middleware";
 
 type Notification = {
   id: number;
@@ -58,43 +58,43 @@ type NotificationType = {
 export const NotificationIcontypes: NotificationType[] = [
   {
     type: "like",
-    icon: <Heart size={37} strokeWidth={1} fill="indianred" />,
+    icon: <Heart size={30} strokeWidth={1} fill="indianred" />,
     color: "indianred",
   },
   {
     type: "follow",
-    icon: <UserPlus size={37} strokeWidth={1} fill="green" />,
+    icon: <UserPlus2 size={30} strokeWidth={1} fill="green" />,
     color: "green",
   },
   {
     type: "purchase",
-    icon: <DollarSign size={37} strokeWidth={1} />,
+    icon: <DollarSign size={30} strokeWidth={1} />,
     color: "gold",
   },
   {
     type: "comment",
-    icon: <MessageSquareText size={37} strokeWidth={1} fill="gray" />,
+    icon: <MessageSquareText size={30} strokeWidth={1} fill="gray" />,
     color: "gray",
   },
   {
     type: "repost",
-    icon: <Repeat2 size={37} strokeWidth={1} />,
+    icon: <Repeat2 size={30} strokeWidth={1} />,
     color: "cadetblue",
   },
   {
     type: "message",
-    icon: <MessageSquare size={37} strokeWidth={1} fill="skyblue" />,
+    icon: <MessageSquare size={30} strokeWidth={1} fill="skyblue" />,
     color: "skyblue",
   },
   {
     type: "live",
-    icon: <Radio size={37} strokeWidth={1} />,
+    icon: <Radio size={30} strokeWidth={1} />,
     color: "red",
   },
   {
     type: "sparkle",
-    icon: <Sparkle size={37} strokeWidth={1} fill="gold" />,
-    color: "gold",
+    icon: <Sparkle size={30} strokeWidth={1} fill="lime" />,
+    color: "lime",
   },
 ];
 
@@ -106,7 +106,7 @@ export const useNotificationStore = create<NotificationState>()((set) => ({
   updateNotification: (id: string) =>
     set((state) => {
       const notifications = state.notifications.map((note) =>
-        note.notification_id === id ? { ...note, read: true } : note
+        note.id.toString() === id ? { ...note, read: true } : note
       );
       return { ...state, notifications };
     }),

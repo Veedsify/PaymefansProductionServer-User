@@ -169,7 +169,7 @@ const CustomSwiper = ({
           ))}
         </div>
       )}
-      <div className="absolute top-6 right-6 z-50 px-3 py-1 rounded-full bg-black/30 backdrop-blur-sm text-white text-sm font-medium border border-white/10">
+      <div className="absolute bottom-6 right-6 z-50 px-3 py-1 rounded-full bg-black/30 backdrop-blur-sm text-white text-sm font-medium border border-white/10">
         {currentSlide + 1} / {totalSlides}
       </div>
     </div>
@@ -531,7 +531,7 @@ const EnhancedSlideComponent = ({
         <div className="flex items-center gap-2">
           <button
             onClick={changeFont}
-            className="p-2.5 rounded-xl bg-gradient-to-r from-purple-500 to-pink-500 cursor-pointer hover:from-purple-600 hover:to-pink-600 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-105"
+            className="p-2.5 rounded-xl bg-gradient-to-r from-purple-500 to-pink-500 cursor-pointer hover:from-purple-600 hover:to-pink-600 transition-all duration-200 transform hover:scale-105"
             title="Change Font"
           >
             <FileSignature stroke="#fff" size={18} />
@@ -545,7 +545,7 @@ const EnhancedSlideComponent = ({
           </button>
           <button
             onClick={addLinkElement}
-            className="p-2.5 rounded-xl bg-gradient-to-r from-green-500 to-emerald-500 cursor-pointer hover:from-green-600 hover:to-emerald-600 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-105"
+            className="p-2.5 rounded-xl bg-gradient-to-r from-green-500 to-emerald-500 cursor-pointer hover:from-green-600 hover:to-emerald-600 transition-all duration-200 transform hover:scale-105"
             title="Add Link"
           >
             <Link stroke="#fff" size={18} />
@@ -553,7 +553,7 @@ const EnhancedSlideComponent = ({
         </div>
         <button
           onClick={submitStory}
-          className="p-3 rounded-xl bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-105"
+          className="p-3 rounded-xl bg-primary-dark-pink cursor-pointer transition-all duration-200 transform hover:scale-105"
           title="Submit Story"
         >
           <LucideSend stroke="#fff" size={20} />

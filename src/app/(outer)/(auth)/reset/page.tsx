@@ -73,6 +73,7 @@ const Login = () => {
             method="post"
             className="flex-1 w-full mb-5"
             autoComplete="off"
+            onSubmit={(e) => e.stopPropagation()}
             autoFocus={false}
           >
             <div className="flex flex-col gap-3 mb-4">

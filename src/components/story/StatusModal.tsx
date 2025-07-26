@@ -13,7 +13,6 @@ const StatusModal = ({
   stories: Story[];
   setStoriesOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
-  console.log(userStories);
   const stories = userStories.flatMap((story) =>
     story.StoryMedia.map((media) => ({
       ...media,

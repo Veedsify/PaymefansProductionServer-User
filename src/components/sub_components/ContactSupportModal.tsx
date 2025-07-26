@@ -78,7 +78,7 @@ const ContactSupportModal = () => {
   // Socket connection only when modal is open and user exists
   useEffect(() => {
     if (!user || !show || activeTab !== "chat") return;
-    const socket = getSocket(user.username);
+    const socket = getSocket();
     socketRef.current = socket;
 
     // Start or restore session
@@ -387,7 +387,7 @@ const ContactSupportModal = () => {
                           />
                           <div
                             className={`absolute -bottom-1 -right-1 w-4 h-4 ${getStatusColor(
-                              agent?.status || "offline"
+                              agent?.status || "offline",
                             )} rounded-full border-2 border-white`}
                           ></div>
                         </div>
@@ -448,7 +448,7 @@ const ContactSupportModal = () => {
                               />
                               <div
                                 className={`absolute -bottom-1 -right-1 w-3 h-3 ${getStatusColor(
-                                  agent?.status || "offline"
+                                  agent?.status || "offline",
                                 )} rounded-full border border-white`}
                               ></div>
                             </div>
@@ -516,7 +516,7 @@ const ContactSupportModal = () => {
                           />
                           <div
                             className={`absolute -bottom-1 -right-1 w-3 h-3 ${getStatusColor(
-                              agent?.status || "offline"
+                              agent?.status || "offline",
                             )} rounded-full border border-white`}
                           ></div>
                         </div>

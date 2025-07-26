@@ -135,13 +135,13 @@ const SettingsAction: React.FC<SettingsActionProps> = ({
     whileHover={{ x: 4 }}
     onClick={onClick}
     className={`flex items-center w-full px-4 py-3 rounded-xl transition text-left
-                        ${
-                          danger
-                            ? "hover:bg-red-50 dark:hover:bg-red-900"
-                            : "hover:bg-gray-50 dark:hover:bg-gray-800"
-                        }
-                        group
-                `}
+          ${
+            danger
+              ? "hover:bg-red-50 dark:hover:bg-red-900"
+              : "hover:bg-gray-50 dark:hover:bg-gray-800"
+          }
+          group
+  `}
   >
     <div className="text-2xl mr-4 group-hover:scale-110 transition-transform">
       {icon}

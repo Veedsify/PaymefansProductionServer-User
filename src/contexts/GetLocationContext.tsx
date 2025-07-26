@@ -1,9 +1,11 @@
 "use client";
 
 import { AuthUserProps } from "@/types/User";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { MapPin, Users, Eye, X, Check } from "lucide-react";
+import { getSocket } from "@/components/sub_components/sub/Socket";
+import axiosInstance from "@/utils/Axios";
 
 export default function GetLocationContext({
   children,
@@ -17,6 +19,61 @@ export default function GetLocationContext({
   const [locationStatus, setLocationStatus] = useState<
     "pending" | "granted" | "denied" | null
   >(null);
+  const socket = getSocket();
+
+  // Function to send location data to the server
+  const sendLocationToServer = useCallback(
+    async (locationData: any) => {
+      try {
+        // Send via API
+        await axiosInstance.post("/hookup/location", {
+          latitude: locationData.latitude,
+          longitude: locationData.longitude,
+        });
+
+        // Also send via socket for real-time updates
+        socket.emit("user-location", {
+          latitude: locationData.latitude,
+          longitude: locationData.longitude,
+        });
+      } catch (error) {
+        console.error("Error sending location to server:", error);
+      }
+    },
+    [socket],
+  );
+
+  // Function to update location without showing the modal
+  const updateLocationInBackground = useCallback(() => {
+    if ("geolocation" in navigator) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const locationData = {
+            latitude: position.coords.latitude,
+            longitude: position.coords.longitude,
+            timestamp: Date.now(),
+            reliable: position.coords.accuracy <= 100,
+            consentGiven: true,
+            userId: user?.id,
+            username: user?.username,
+          };
+
+          localStorage.setItem("userLocation", JSON.stringify(locationData));
+
+          // Send location to server
+          sendLocationToServer(locationData);
+        },
+        (error) => {
+          console.error("Error updating background location:", error);
+        },
+        {
+          enableHighAccuracy: true,
+          timeout: 10000,
+          maximumAge: 0,
+        },
+      );
+    }
+  }, [user, sendLocationToServer]);
 
   useEffect(() => {
     if (!user) {
@@ -29,15 +86,29 @@ export default function GetLocationContext({
       const locationRequested = sessionStorage.getItem("locationRequested");
       const hasLocation = localStorage.getItem("userLocation");
 
-      //   if (!locationRequested && "geolocation" in navigator) {
       if (!locationRequested) {
         // Small delay to let the page load before showing modal
         setTimeout(() => {
           setShowLocationModal(true);
         }, 1000);
+      } else if (hasLocation) {
+        // If we already have location, check if it needs updating (older than 30 minutes)
+        try {
+          const locationData = JSON.parse(hasLocation);
+          const isStale = Date.now() - locationData.timestamp > 30 * 60 * 1000;
+
+          if (isStale && locationData.consentGiven) {
+            // Update location in background without showing modal
+            updateLocationInBackground();
+          }
+        } catch (error) {
+          console.error("Error parsing stored location:", error);
+        }
       }
+    } else {
+      updateLocationInBackground();
     }
-  }, [user]);
+  }, [user, updateLocationInBackground]);
 
   const handleLocationAccept = async () => {
     setIsLoading(true);
@@ -49,16 +120,17 @@ export default function GetLocationContext({
             latitude: position.coords.latitude,
             longitude: position.coords.longitude,
             timestamp: Date.now(),
-            reliable: position.coords.accuracy <= 100, // Consider it reliable if accuracy is within 100 meters
+            reliable: position.coords.accuracy <= 100,
             consentGiven: true,
-            userId: user?.id, // Include user ID for reference
-            username: user?.username, // Include username for reference
+            userId: user?.id,
+            username: user?.username,
           };
+
           localStorage.setItem("userLocation", JSON.stringify(locationData));
           sessionStorage.setItem("locationRequested", "true");
 
-          //   Update UserLocation On Server
-
+          // Send location to server
+          sendLocationToServer(locationData);
           setLocationStatus("granted");
           setIsLoading(false);
 
@@ -82,7 +154,7 @@ export default function GetLocationContext({
         {
           enableHighAccuracy: true,
           timeout: 10000,
-          maximumAge: 0, // 5 minutes
+          maximumAge: 0,
         },
       );
     }
@@ -122,7 +194,7 @@ export default function GetLocationContext({
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/80  z-[200] flex items-center justify-center p-4"
+            className="fixed inset-0 bg-black/80 z-[200] flex items-center justify-center p-4"
           >
             <motion.div
               initial={{ scale: 0.9, opacity: 0, y: 20 }}

@@ -375,7 +375,7 @@ const MediaGridItem = ({
               priority
               height={20}
               src="/site/coin.svg"
-              className="h-5 w-auto aspect-square"
+              className="h-5 w-5 aspect-square"
               alt=""
             />
             {data.post_price}

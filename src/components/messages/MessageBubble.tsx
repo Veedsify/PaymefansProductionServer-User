@@ -28,17 +28,6 @@ const MessageBubble: React.FC<MessageBubbleProps> = ({
   const hasStoryReply = Boolean(message?.story_reply);
   const { ref, inView } = useInView({ threshold: 1, triggerOnce: true });
 
-  // Debug: Log message data to see if story_reply is present
-  useEffect(() => {
-    if (message?.story_reply) {
-      console.log("📨 Message with story reply received:", {
-        message_id: message.message_id,
-        story_reply: message.story_reply,
-        message: message.message,
-      });
-    }
-  }, [message]);
-
   // Format date string for chat bubble
   const dateString = useMemo(() => {
     const now = new Date();

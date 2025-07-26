@@ -41,7 +41,7 @@ const PointsCount = ({ user }: PointsCountProps) => {
           width={20}
           height={20}
           src="/site/coin.svg"
-          className="w-auto h-5 aspect-square"
+          className="w-5 h-5 aspect-square"
           alt=""
         />
       </span>

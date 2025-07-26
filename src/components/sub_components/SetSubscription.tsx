@@ -3,21 +3,13 @@
 import { LucideAlertCircle } from "lucide-react";
 import Image from "next/image";
 import { useUserAuthContext } from "@/lib/UserUseContext";
-import React, {
-  ChangeEvent,
-  MouseEvent,
-  useCallback,
-  useEffect,
-  useState,
-} from "react";
-import { useSettingsBillingContext } from "@/contexts/SettingsBillingContext";
+import React, { MouseEvent, useCallback, useEffect, useState } from "react";
 import toast from "react-hot-toast";
-import Form from "next/form";
 import AddSubscriptionTiers from "@/actions/AddSubscriptionTiers";
 import { SubscriptionTiersProps } from "@/types/Components";
 import { getToken } from "@/utils/Cookie";
-import { useRouter } from "next/navigation";
 import FetchUserSubscriptions from "@/utils/data/FetchUserSubscriptions";
+import { useConfigContext } from "@/contexts/ConfigContext";
 
 const initialTier = {
   tier_name: "",
@@ -30,7 +22,7 @@ const SetSubscription = () => {
   const { user } = useUserAuthContext();
   const [tiers, setTiers] = useState<SubscriptionTiersProps[]>([initialTier]);
   const token = getToken();
-  const router = useRouter();
+  const { config } = useConfigContext();
 
   // Fetch Subscriptions
   const GetSubscriptions = useCallback(async () => {
@@ -122,7 +114,7 @@ const SetSubscription = () => {
       <div className="mt-8">
         <h2 className="font-bold text-xl mb-4">Subscription Tiers</h2>
         <div className="space-y-4">
-          <div className="border border-black/30 rounded-xl p-4 bg-white">
+          <div className="border border-black/30 rounded-xl p-4 bg-white dark:bg-gray-900">
             <form onSubmit={handleFormSubmit}>
               {tiers.map((tier, index) => (
                 <div className="tierNode" key={index}>
@@ -136,27 +128,39 @@ const SetSubscription = () => {
                         updateTierField(index, "tier_name", e.target.value)
                       }
                       placeholder="Tier Name (e.g. Basic)"
-                      className="flex-1 outline-none border-black/30 font-medium border p-2 bg-gray-50 rounded-lg"
+                      className="flex-1 outline-none border-black/30 font-medium border p-2 bg-gray-50 dark:bg-gray-800 rounded-lg"
                     />
-                    <div className="flex items-center gap-2">
-                      <Image
-                        width={20}
-                        height={20}
-                        priority
-                        src="/site/coin.svg"
-                        alt=""
-                      />
-                      <input
-                        type="text"
-                        placeholder="Price"
-                        required
-                        value={tier.tier_price}
-                        onChange={(e) =>
-                          updateTierField(index, "tier_price", e.target.value)
-                        }
-                        name={`price-${index}`}
-                        className="w-32 outline-none border-black/30 border p-2 rounded-lg bg-gray-50"
-                      />
+                    <div className="flex flex-col gap-1">
+                      <div className="flex items-center gap-2">
+                        <Image
+                          width={20}
+                          height={20}
+                          priority
+                          src="/site/coin.svg"
+                          alt=""
+                        />
+                        <input
+                          type="text"
+                          placeholder="Price"
+                          required
+                          value={tier.tier_price}
+                          onChange={(e) =>
+                            updateTierField(index, "tier_price", e.target.value)
+                          }
+                          name={`price-${index}`}
+                          className="w-32 outline-none border-black/30 border p-2 rounded-lg bg-gray-50 dark:bg-gray-800"
+                        />
+                      </div>
+                      {tier.tier_price > 0 &&
+                        config?.point_conversion_rate_ngn && (
+                          <p className="text-sm text-primary-dark-pink text-right">
+                            ≈ ₦
+                            {(
+                              Number(tier.tier_price) *
+                              config.point_conversion_rate_ngn
+                            ).toLocaleString()}
+                          </p>
+                        )}
                     </div>
                   </div>
                   <select
@@ -166,7 +170,7 @@ const SetSubscription = () => {
                     onChange={(e) =>
                       updateTierField(index, "tier_duration", e.target.value)
                     }
-                    className="w-full border border-black/30 p-2 rounded-lg mb-3 outline-none bg-gray-50"
+                    className="w-full border border-black/30 p-2 rounded-lg mb-3 outline-none bg-gray-50 dark:bg-gray-800"
                   >
                     <option disabled value="select">
                       Select duration
@@ -184,7 +188,7 @@ const SetSubscription = () => {
                       updateTierField(index, "tier_description", e.target.value)
                     }
                     placeholder="Add special perks for this tier..."
-                    className="w-full border  border-black/30 p-2 rounded-lg h-20 resize-none bg-gray-50"
+                    className="w-full border  border-black/30 p-2 rounded-lg h-20 resize-none bg-gray-50 dark:bg-gray-800"
                   />
                   <div className="pb-6">
                     <div className="text-right mb-4">

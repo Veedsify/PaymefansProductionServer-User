@@ -252,7 +252,7 @@ const PostPageImage: React.FC<PostPageImageProps> = ({
                     height={20}
                     priority
                     src="/site/coin.svg"
-                    className="w-auto h-5 aspect-square"
+                    className="w-5 h-5 aspect-square"
                     alt=""
                   />
                   {data.post_price}

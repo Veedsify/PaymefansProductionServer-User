@@ -188,7 +188,7 @@ const TipModel = ({
                   width={20}
                   height={20}
                   src="/site/coin.svg"
-                  className="h-auto"
+                  className="h-5"
                   alt=""
                 />
                 <h2 className="text-xl font-bold text-primary-dark-pink">

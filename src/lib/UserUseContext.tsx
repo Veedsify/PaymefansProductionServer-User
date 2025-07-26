@@ -1,6 +1,9 @@
 "use client";
 
-import { getSocket } from "@/components/sub_components/sub/Socket";
+import {
+  connectSocket,
+  getSocket,
+} from "@/components/sub_components/sub/Socket";
 import { AuthUserProps } from "@/types/User";
 import { usePathname } from "next/navigation";
 import { ReactNode, useEffect } from "react";
@@ -33,7 +36,7 @@ export const UserContextProvider = ({
 }: UserContextProviderProps) => {
   const location = usePathname();
   const setUser = useUserStore((state) => state.setUser);
-  const socket = getSocket(user?.username ?? null);
+  const socket = connectSocket(user?.username);
 
   useEffect(() => {
     if (!user) {
@@ -42,7 +45,7 @@ export const UserContextProvider = ({
     }
     setUser(user);
     const intervalId = setInterval(() => {
-      socket.emit("still-active", user?.username);
+      socket?.emit("still-active", user?.username);
     }, 10_000);
 
     return () => clearInterval(intervalId);

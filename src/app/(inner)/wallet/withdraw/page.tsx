@@ -75,7 +75,7 @@ const Page = async () => {
               <Image
                 width={20}
                 height={20}
-                className="w-auto h-5 aspect-square"
+                className="w-5 h-5 aspect-square"
                 src="/site/coin.svg"
                 alt=""
               />

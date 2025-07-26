@@ -23,7 +23,7 @@ const ActiveProfileTag = ({
       return;
     }
 
-    const socket = getSocket(username);
+    const socket = getSocket();
     if (socket.connected) {
       socket.emit("get-active-users");
     }
@@ -49,7 +49,7 @@ const ActiveProfileTag = ({
         <>
           <span
             style={{ scale: scale ? scale : 1 }}
-            className={`p-1 transition-colors duration-200 ${
+            className={`p-1 transition-colors duration-200 border-white shadow-sm border-2 ${
               isActive ? "bg-green-500" : "bg-gray-300"
             } inline-block w-1 h-1 rounded-full`}
           ></span>

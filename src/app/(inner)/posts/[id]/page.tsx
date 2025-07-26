@@ -25,6 +25,8 @@ const Post = React.memo(async ({ params }: PostPageProps) => {
     __html: `${post?.content.replace(/(?:\r\n|\r|\n)/g, "<br>")}`,
   };
 
+  console.log(post);
+
   const isCreator = post?.user.id === user?.id;
   // const isAdmin = user.role === "admin";
   const isSubscribed = post.isSubscribed;
