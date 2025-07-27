@@ -1,11 +1,9 @@
-import {Metadata} from "next";
+"use client";
 
-export const metadata: Metadata = {
-    title: "Groups",
-    description: "Meet and Join Group Within Your Area"
-}
-const GroupsLayout = ({children}: { children: React.ReactNode }) => {
-    return <>{children}</>
-}
+import { GroupChatProvider } from "@/contexts/GroupChatContext";
 
-export default GroupsLayout
+const GroupsLayout = ({ children }: { children: React.ReactNode }) => {
+  return <GroupChatProvider>{children}</GroupChatProvider>;
+};
+
+export default GroupsLayout;
