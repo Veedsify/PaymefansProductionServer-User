@@ -37,7 +37,7 @@ const StoryUploadForm = () => {
                 console.error("Error while uploading images", err);
                 return "Error while uploading images";
               },
-            }
+            },
           )
           .then(({ data }) => {
             data.data.map((item: any, index: number) => {
@@ -62,16 +62,35 @@ const StoryUploadForm = () => {
     <form className="flex-1 h-full">
       <label
         htmlFor="file"
-        className="text-sm font-semibold w-full h-full flex flex-1 gap-3 flex-col items-center justify-center dark:hover:bg-gray-800 dark:bg-gray-900 dark:text-white p-5 hover:bg-gray-100 duration-300 ease-in-out h-full"
+        className="group cursor-pointer w-full h-full flex flex-1 gap-6 sm:gap-4 flex-col items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-900 hover:from-primary-dark-pink/5 hover:to-purple-500/5 dark:hover:from-primary-dark-pink/10 dark:hover:to-purple-500/10 border-2 border-dashed border-gray-300 dark:border-gray-600 hover:border-primary-dark-pink/50 dark:hover:border-primary-dark-pink/50 rounded-lg sm:rounded-xl transition-all duration-300 ease-in-out transform hover:scale-[1.01] p-8 sm:p-8 py-12"
       >
-        <HiCamera size={40} />
-        <span>Select a photo or video</span>
+        <div className="w-20 h-20 sm:w-16 sm:h-16 bg-gradient-to-br from-primary-dark-pink/20 to-purple-500/20 rounded-full flex items-center justify-center group-hover:from-primary-dark-pink/30 group-hover:to-purple-500/30 transition-all duration-300 shadow-lg">
+          <HiCamera
+            size={40}
+            className="text-primary-dark-pink group-hover:scale-110 transition-transform duration-300 sm:w-8 sm:h-8"
+          />
+        </div>
+        <div className="text-center space-y-3 sm:space-y-2">
+          <span className="block text-xl sm:text-lg font-semibold text-gray-700 dark:text-gray-200 group-hover:text-primary-dark-pink dark:group-hover:text-primary-dark-pink transition-colors duration-300">
+            Select photos or videos
+          </span>
+          <span className="block text-base sm:text-sm text-gray-500 dark:text-gray-400">
+            Drag and drop or click to browse
+          </span>
+          <span className="block text-sm sm:text-xs text-gray-400 dark:text-gray-500 px-4">
+            Supports JPG, PNG, MP4, MOV
+          </span>
+        </div>
+        <div className="px-8 py-3 sm:px-6 sm:py-2 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 rounded-full text-base sm:text-sm font-medium text-gray-600 dark:text-gray-300 group-hover:bg-primary-dark-pink group-hover:text-white group-hover:border-primary-dark-pink transition-all duration-300 shadow-sm">
+          Choose Files
+        </div>
         <input
           type="file"
           multiple
           id="file"
+          accept="image/*,video/*"
           onChange={handleSelect}
-          className="p-2 border-2 rounded-lg hidden"
+          className="hidden"
         />
       </label>
     </form>

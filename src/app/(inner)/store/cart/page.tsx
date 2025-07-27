@@ -19,13 +19,13 @@ const page = () => {
         <div className="mx-auto max-w-screen-xl px-4 py-6 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
-              <Link
+              {/* <Link
                 href="/store"
                 className="flex items-center gap-2 text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white transition-colors"
               >
                 <ArrowLeft className="w-5 h-5" />
                 <span className="hidden sm:inline">Back to Store</span>
-              </Link>
+              </Link> */}
               <div className="flex items-center gap-3">
                 <div className="p-2 bg-primary-dark-pink/10 rounded-lg">
                   <ShoppingBag className="w-6 h-6 text-primary-dark-pink" />

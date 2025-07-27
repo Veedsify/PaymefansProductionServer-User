@@ -18,6 +18,7 @@ import {
 import { useUserAuthContext } from "@/lib/UserUseContext";
 import { ProfileUserProps } from "@/types/User";
 import getUserProfile from "@/utils/data/ProfileData";
+import { checkIfBlockedBy } from "@/utils/data/BlockUser";
 import UserNotFound from "@/components/common/UserNotFound";
 import SuspendedUserPage from "@/components/sub_components/Suspended";
 import FollowUserComponent from "@/components/sub_components/FollowUserComponent";
@@ -27,6 +28,7 @@ import ProfileTabsOther from "@/components/sub_components/ProfileTabsOther";
 import ActiveProfileTag from "@/components/sub_components/sub/ActiveProfileTag";
 import ProfileSocialLinks from "@/components/sub_components/ProfileSocialLinks";
 import TipModel from "@/components/sub_components/TipModel";
+import BlockUserButton from "@/components/sub_components/BlockUserButton";
 
 // Utility to format numbers
 const formatNumber = (num: number = 0): string => {
@@ -87,12 +89,13 @@ const ProfilePage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [openTip, setOpenTip] = useState(false);
+  const [isBlockedByUser, setIsBlockedByUser] = useState(false);
 
   const toggleTip = () => {
     setOpenTip(!openTip);
   };
 
-  const isVerified = userdata?.is_verified
+  const isVerified = userdata?.is_verified;
   const canTip = user?.id !== userdata?.id && userdata?.is_model;
   useEffect(() => {
     const fetchData = async () => {
@@ -106,6 +109,18 @@ const ProfilePage = () => {
           user_id: decodeURIComponent(params.id),
         });
         setUserdata(data);
+
+        // Check if current user is blocked by this profile user
+        if (data && user?.id && data.id !== user.id) {
+          try {
+            const blockResult = await checkIfBlockedBy(data.id);
+            if (blockResult.status && !blockResult.error) {
+              setIsBlockedByUser(blockResult.isBlocked);
+            }
+          } catch (blockError) {
+            console.error("Error checking block status:", blockError);
+          }
+        }
       } catch (err) {
         setError("Failed to fetch user profile");
       } finally {
@@ -114,7 +129,7 @@ const ProfilePage = () => {
     };
 
     fetchData();
-  }, [params.id]);
+  }, [params.id, user?.id]);
 
   useEffect(() => {
     if (userdata && userdata.id && user?.id === userdata.id) {
@@ -141,6 +156,11 @@ const ProfilePage = () => {
 
   if (!userdata.active_status) {
     return <SuspendedUserPage userdata={userdata} />;
+  }
+
+  // If current user is blocked by this profile user, show user not found
+  if (isBlockedByUser) {
+    return <UserNotFound userid={params.id || "unknown"} />;
   }
 
   return (
@@ -180,6 +200,12 @@ const ProfilePage = () => {
             <CreateSubscriptionButton userdata={userdata} />
           )}
           <CreateConversationButton profileId={userdata.user_id} />
+          {user?.id !== userdata.id && (
+            <BlockUserButton
+              userId={userdata.id}
+              userName={userdata.name || userdata.username}
+            />
+          )}
         </div>
       </div>
 

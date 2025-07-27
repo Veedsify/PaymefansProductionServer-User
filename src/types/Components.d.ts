@@ -273,6 +273,7 @@ export interface MessageInputProps {
   receiver: any;
   conversationId: string;
   isFirstMessage: boolean;
+  isBlockedByReceiver?: boolean;
 }
 
 // New types for the unified components

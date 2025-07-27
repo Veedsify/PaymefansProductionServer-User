@@ -43,22 +43,42 @@ function StatusComponent() {
 
   return (
     <>
-      <div className="max-w-[550px] mx-auto border border-black/30 dark:border-gray-600 overflow-hidden py-5 rounded-lg">
+      <div className="max-w-[550px] lg:mx-auto mx-2 sm:mx-4 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-lg shadow-gray-100 dark:shadow-gray-900/20 overflow-hidden py-6 rounded-2xl lg:rounded-2xl sm:rounded-xl rounded-lg backdrop-blur-sm min-h-[70vh] sm:min-h-0">
         {media.length === 0 ? (
-          <div className="flex items-center justify-center dark:text-white gap-3 pb-4">
-            No media selected
+          <div className="flex flex-col items-center justify-center dark:text-gray-300 gap-4 py-12">
+            <div className="w-16 h-16 bg-gradient-to-br from-primary-dark-pink/20 to-purple-500/20 rounded-full flex items-center justify-center">
+              <svg
+                className="w-8 h-8 text-primary-dark-pink"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={1.5}
+                  d="M12 4v16m8-8H4"
+                />
+              </svg>
+            </div>
+            <p className="text-gray-500 dark:text-gray-400 font-medium">
+              No media selected
+            </p>
+            <p className="text-sm text-gray-400 dark:text-gray-500">
+              Upload photos or videos to create your story
+            </p>
           </div>
         ) : (
-          <div className="p-3 md:p-5">
-            <div className="grid grid-cols-3 gap-3 mb-3 p-1 overflow-y-auto">
+          <div className="p-4 md:p-6">
+            <div className="grid grid-cols-3 gap-4 mb-6 overflow-y-auto max-h-[400px] scrollbar-thin scrollbar-thumb-gray-300 dark:scrollbar-thumb-gray-600 scrollbar-track-transparent">
               {media.map((data: any) => (
-                <div key={data.id}>
-                  <div className="bg-gray-200 w-full aspect-square rounded-lg flex items-center justify-center relative outline-2 duration-500 outline-primary-dark-pink">
+                <div key={data.id} className="group">
+                  <div className="bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-700 dark:to-gray-800 w-full aspect-square rounded-xl flex items-center justify-center relative ring-2 ring-transparent group-hover:ring-primary-dark-pink/30 transition-all duration-300 transform group-hover:scale-[1.02] shadow-md hover:shadow-lg">
                     <button
                       onClick={getRemoveHandler(data.id)}
-                      className="absolute cursor-pointer z-50 top-0 right-0 bg-red-500 p-1 rounded-full m-1 shadow-white"
+                      className="absolute cursor-pointer z-50 top-2 right-2 bg-red-500 hover:bg-red-600 p-1.5 rounded-full shadow-lg opacity-0 group-hover:opacity-100 transition-all duration-200 transform scale-90 hover:scale-100"
                     >
-                      <X strokeWidth={2} stroke="#fff" />
+                      <X strokeWidth={2.5} stroke="#fff" size={14} />
                     </button>
                     {data.media_type === "video" ? (
                       <>
@@ -68,8 +88,8 @@ function StatusComponent() {
                           allOthers={{ muted: true }}
                           className="object-cover rounded-xl cursor-pointer ease-in-out duration-300 inset-0 w-full h-full"
                         />
-                        <span className="absolute top-0 left-0 bg-primary-dark-pink p-1 rounded-full m-1 shadow-lg shadow-white">
-                          <LucidePlay fill="#fff" strokeWidth={0} size={15} />
+                        <span className="absolute top-2 left-2 bg-gradient-to-r from-primary-dark-pink to-purple-600 p-1.5 rounded-full shadow-lg backdrop-blur-sm">
+                          <LucidePlay fill="#fff" strokeWidth={0} size={12} />
                         </span>
                       </>
                     ) : (
@@ -78,19 +98,24 @@ function StatusComponent() {
                         alt="media"
                         fill
                         sizes="(max-width: 640px) 100vw, 640px"
-                        className="object-cover ease-in-out duration-300 cursor-pointer rounded-xl"
+                        className="object-cover ease-in-out duration-300 cursor-pointer rounded-xl group-hover:brightness-110"
                       />
                     )}
                   </div>
                 </div>
               ))}
             </div>
-            <div>
+            <div className="flex justify-end">
               <button
                 onClick={handleSubmitStory}
-                className="flex items-center justify-center gap-3 p-2 md:p-4 bg-primary-dark-pink text-white rounded-full ml-auto"
+                className="group flex items-center justify-center gap-3 px-6 py-3 bg-gradient-to-r from-primary-dark-pink to-purple-600 hover:from-primary-dark-pink/90 hover:to-purple-600/90 text-white rounded-full shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200 font-medium"
               >
-                <LucideArrowRight size={20} strokeWidth={4} />
+                <span className="text-sm hidden sm:block">Continue</span>
+                <LucideArrowRight
+                  size={18}
+                  strokeWidth={2.5}
+                  className="group-hover:translate-x-0.5 transition-transform duration-200"
+                />
               </button>
             </div>
           </div>
@@ -113,33 +138,35 @@ const SelectMoreItems = React.memo(
     }, []);
 
     return (
-      <div className="border-t border-black/30 dark:border-gray-700 max-w-[550px] relative mx-auto bottom-0 left-0 z-20 dark:bg-gray-900 bg-white w-full transition-all duration-300 ease-in-out">
-        <div className="flex flex-col h-[560px] relative dark:bg-gray-900 dark:text-white">
-          <div className="flex items-center text-center">
+      <div className="border-t border-gray-200 dark:border-gray-700 max-w-[550px] lg:mx-auto mx-2 sm:mx-4 relative bottom-0 left-0 z-20 bg-white dark:bg-gray-800 w-full transition-all duration-300 ease-in-out rounded-b-2xl lg:rounded-b-2xl sm:rounded-b-xl rounded-b-lg">
+        <div className="flex flex-col h-[70vh] sm:h-[560px] relative dark:text-white">
+          <div className="flex items-center text-center bg-gray-50 dark:bg-gray-900/50 rounded-t-lg m-2 p-1 sticky top-0 z-10">
             <button
               onClick={() => handleSetTab("new")}
-              className={`flex-1 cursor-pointer duration-300 transition-all ${
+              className={`flex-1 cursor-pointer duration-300 transition-all rounded-md ${
                 activeTab === "new"
-                  ? "bg-coins-card-bottom dark:text-black"
-                  : ""
+                  ? "bg-white dark:bg-gray-800 text-primary-dark-pink shadow-sm font-semibold"
+                  : "text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200"
               }`}
             >
-              <span className="block p-1 md:p-2 text-sm font-medium">New</span>
+              <span className="block py-3 px-4 text-base sm:text-sm font-medium">
+                New Upload
+              </span>
             </button>
             <button
               onClick={() => handleSetTab("media")}
-              className={`flex-1 cursor-pointer duration-300 transition-all ${
+              className={`flex-1 cursor-pointer duration-300 transition-all rounded-md ${
                 activeTab === "media"
-                  ? "bg-coins-card-bottom dark:text-black"
-                  : ""
+                  ? "bg-white dark:bg-gray-800 text-primary-dark-pink shadow-sm font-semibold"
+                  : "text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200"
               }`}
             >
-              <span className="block p-1 md:p-2 text-sm font-medium">
+              <span className="block py-3 px-4 text-base sm:text-sm font-medium">
                 My Media
               </span>
             </button>
           </div>
-          <div className="h-full">
+          <div className="h-full p-2 overflow-hidden">
             {activeTab === "new" && <StoryUploadForm />}
             {activeTab === "media" && <StatusMediaPanel />}
           </div>

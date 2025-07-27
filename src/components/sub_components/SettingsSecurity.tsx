@@ -51,7 +51,10 @@ const SettingsSecurity = () => {
           </Link>
         )}
 
-        <div className="flex gap-4 items-center border border-red-300 dark:border-red-700 rounded-lg py-4 px-6 hover:bg-red-50 dark:hover:bg-red-900 transition-all duration-200 cursor-pointer text-red-600 dark:text-red-400 group">
+        <Link
+          href="/settings/blocked"
+          className="flex gap-4 items-center border border-red-300 dark:border-red-700 rounded-lg py-4 px-6 hover:bg-red-50 dark:hover:bg-red-900 transition-all duration-200 cursor-pointer text-red-600 dark:text-red-400 group"
+        >
           <span>
             <LucideUserMinus2 className="group-hover:text-red-700" />
           </span>
@@ -59,7 +62,7 @@ const SettingsSecurity = () => {
           <span className="ml-auto">
             <LucideChevronRight className="text-red-400 dark:text-red-500" />
           </span>
-        </div>
+        </Link>
       </div>
 
       <div className="mt-10">

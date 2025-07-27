@@ -2,6 +2,7 @@ import Link from "next/link";
 import ActiveProfileTag from "../sub_components/sub/ActiveProfileTag";
 import {
   LucideArrowLeft,
+  LucideBan,
   LucideChevronUp,
   LucideGrip,
   LucideLoader2,
@@ -24,6 +25,7 @@ import { useUserStore } from "@/lib/UserUseContext";
 import { reverse } from "lodash";
 import { getToken } from "@/utils/Cookie";
 import toast from "react-hot-toast";
+import { checkIfBlockedBy } from "@/utils/data/BlockUser";
 
 const ChatPage = ({ conversationId }: { conversationId: string }) => {
   const router = useRouter();
@@ -72,6 +74,8 @@ const ChatPage = ({ conversationId }: { conversationId: string }) => {
   const [error, setError] = useState(null);
   const [nextCursor, setNextCursor] = useState<number | undefined>();
   const [hasMore, setHasMore] = useState(true);
+  const [isBlockedByReceiver, setIsBlockedByReceiver] = useState(false);
+  const [blockCheckLoading, setBlockCheckLoading] = useState(true);
 
   // Fetch first page on mount or conversationId change
   useEffect(() => {
@@ -96,6 +100,31 @@ const ChatPage = ({ conversationId }: { conversationId: string }) => {
 
     fetchMessages();
   }, [conversationId]);
+
+  // Check if current user is blocked by the receiver
+  useEffect(() => {
+    const checkBlockStatus = async () => {
+      if (!receiver?.id || !user?.id) return;
+
+      setBlockCheckLoading(true);
+      try {
+        const result = await checkIfBlockedBy(receiver.id);
+        if (result.status && !result.error) {
+          setIsBlockedByReceiver(result.isBlocked);
+        }
+      } catch (error) {
+        console.error("Error checking block status:", error);
+      } finally {
+        setBlockCheckLoading(false);
+      }
+    };
+
+    if (receiver?.id) {
+      checkBlockStatus();
+    } else {
+      setBlockCheckLoading(false);
+    }
+  }, [receiver?.id, user?.id]);
 
   // Function to fetch the next page
   const fetchNextPage = useCallback(async () => {
@@ -442,6 +471,64 @@ const ChatPage = ({ conversationId }: { conversationId: string }) => {
     );
   }
 
+  // Show loading state while checking block status
+  if (blockCheckLoading) {
+    return (
+      <div className="flex items-center justify-center h-full">
+        <div className="flex flex-col items-center gap-2">
+          <LucideLoader2 className="h-6 w-6 animate-spin text-blue-500" />
+          <p className="text-gray-600 dark:text-gray-400">Loading chat...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Show blocked message if user is blocked by receiver
+  if (isBlockedByReceiver) {
+    return (
+      <div className="flex flex-col h-full">
+        <div className="flex items-center px-5 py-4 border-b border-black/30 dark:border-gray-800 shrink-0">
+          <Link href="/messages" className="mr-6 sm:mr-10" aria-label="Back">
+            <LucideArrowLeft
+              size={24}
+              className="text-gray-900 dark:text-white"
+            />
+          </Link>
+          {receiver && (
+            <div className="flex items-center gap-3">
+              <Image
+                src={profilePicture}
+                alt={receiver.name}
+                width={40}
+                height={40}
+                className="rounded-full object-cover"
+              />
+              <div>
+                <h2 className="font-semibold text-gray-900 dark:text-white">
+                  {receiver.name}
+                </h2>
+              </div>
+            </div>
+          )}
+        </div>
+        <div className="flex-1 flex items-center justify-center p-8">
+          <div className="text-center max-w-md">
+            <div className="w-16 h-16 bg-gray-200 dark:bg-gray-700 rounded-full flex items-center justify-center mx-auto mb-4">
+              <LucideBan />
+            </div>
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
+              You can&apos;t message this user
+            </h3>
+            <p className="text-gray-600 dark:text-gray-400 text-sm">
+              This user has restricted who can message them. You&apos;re unable
+              to send messages to them at this time.
+            </p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="flex flex-col h-full ">
       <div className="flex items-center px-5 py-4 border-b border-black/30 dark:border-gray-800 shrink-0">
@@ -559,6 +646,7 @@ const ChatPage = ({ conversationId }: { conversationId: string }) => {
           receiver={receiver}
           conversationId={conversationId}
           isFirstMessage={messages.length === 0}
+          isBlockedByReceiver={isBlockedByReceiver}
         />
       </div>
     </div>

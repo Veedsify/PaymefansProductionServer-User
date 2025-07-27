@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import { motion } from "framer-motion";
 import {
@@ -11,12 +11,114 @@ import {
   Trash2,
   ChevronRight,
   AlertTriangle,
+  Loader2,
 } from "lucide-react";
+import { useParams } from "next/navigation";
+import { useUserAuthContext } from "@/lib/UserUseContext";
+import { blockUser, checkBlockStatus } from "@/utils/data/BlockUser";
+import axios from "axios";
+import { toast } from "react-hot-toast";
+import ActiveProfileTag from "@/components/sub_components/sub/ActiveProfileTag";
+
+interface ConversationReceiver {
+  id: number;
+  user_id: string;
+  name: string;
+  username: string;
+  profile_image: string | null;
+  active_status: boolean;
+  is_verified: boolean;
+  Settings: any;
+  flags: string;
+  isProfileHidden: boolean;
+}
 
 const ConversationSettingsPage = () => {
   const [isBlocking, setIsBlocking] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const [isSearching, setIsSearching] = useState(false);
+  const [isUserBlocked, setIsUserBlocked] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [conversationReceiver, setConversationReceiver] =
+    useState<ConversationReceiver | null>(null);
+  const [error, setError] = useState<string | null>(null);
+
+  const params = useParams();
+  const { user } = useUserAuthContext();
+  const conversationId = params.conversationId as string;
+
+  // Fetch conversation receiver data
+  const fetchConversationReceiver = async () => {
+    try {
+      const response = await axios.get(
+        `${process.env.NEXT_PUBLIC_TS_EXPRESS_URL}/conversations/receiver/${conversationId}`,
+        {
+          withCredentials: true,
+        },
+      );
+
+      const data = response.data;
+
+      if (!data.error && data.receiver) {
+        setConversationReceiver(data.receiver);
+
+        // Check if user is already blocked
+        if (data.receiver.id && user?.id !== data.receiver.id) {
+          try {
+            const blockResult = await checkBlockStatus(data.receiver.id);
+            if (blockResult.status && !blockResult.error) {
+              setIsUserBlocked(blockResult.isBlocked);
+            }
+          } catch (error) {
+            console.error("Error checking block status:", error);
+          }
+        }
+      } else {
+        setError(data.message || "Failed to fetch conversation data");
+      }
+    } catch (error) {
+      console.error("Error fetching conversation receiver:", error);
+      setError("Failed to load conversation data");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (conversationId) {
+      fetchConversationReceiver();
+    }
+  }, [conversationId, user?.id]);
+
+  if (loading) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-dvh">
+        <Loader2 className="h-8 w-8 animate-spin text-blue-500" />
+        <p className="mt-2 text-gray-600 dark:text-gray-400">
+          Loading conversation...
+        </p>
+      </div>
+    );
+  }
+
+  if (error || !conversationReceiver) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-dvh">
+        <p className="text-red-500 dark:text-red-400">
+          {error || "Conversation not found"}
+        </p>
+      </div>
+    );
+  }
+
+  const getInitials = (name: string) => {
+    return name
+      .split(" ")
+      .map((n) => n[0])
+      .join("")
+      .toUpperCase()
+      .slice(0, 2);
+  };
 
   return (
     <div className="flex flex-col items-center min-h-dvh">
@@ -29,21 +131,27 @@ const ConversationSettingsPage = () => {
         {/* Profile Section */}
         <div className="flex items-center gap-4 p-6 border-b border-gray-200 dark:border-gray-800">
           <div className="relative">
-            <div className="w-16 h-16 rounded-full bg-gradient-to-tr from-blue-400 to-indigo-500 flex items-center justify-center shadow-md text-xl font-bold text-white dark:from-blue-700 dark:to-indigo-900">
-              <span>JD</span>
-            </div>
-            <div className="absolute bottom-0 right-0 w-4 h-4 bg-green-500 rounded-full border-2 border-white dark:border-gray-950"></div>
+            {conversationReceiver.profile_image ? (
+              <Image
+                src={conversationReceiver.profile_image}
+                alt={conversationReceiver.name}
+                width={64}
+                height={64}
+                className="w-16 h-16 rounded-full object-cover shadow-md"
+              />
+            ) : (
+              <div className="w-16 h-16 rounded-full bg-gradient-to-tr from-blue-400 to-indigo-500 flex items-center justify-center shadow-md text-xl font-bold text-white dark:from-blue-700 dark:to-indigo-900">
+                <span>{getInitials(conversationReceiver.name)}</span>
+              </div>
+            )}
+            <ActiveProfileTag userid={conversationReceiver.username} />
           </div>
           <div>
             <h2 className="font-semibold text-lg text-gray-800 dark:text-gray-100">
-              John Doe
+              {conversationReceiver.name}
             </h2>
             <div className="text-sm text-gray-500 dark:text-gray-400">
-              Last seen today at 2:45 PM
-            </div>
-            <div className="mt-1 flex items-center text-xs text-green-600 font-medium dark:text-green-400">
-              <span className="w-2 h-2 rounded-full bg-green-500 mr-1"></span>
-              Online
+              {conversationReceiver.username}
             </div>
           </div>
         </div>
@@ -90,9 +198,13 @@ const ConversationSettingsPage = () => {
             </h3>
             <SettingsAction
               icon={<Ban className="text-red-500 dark:text-red-400" />}
-              label="Block user"
-              description="You won't receive messages from this user"
-              danger
+              label={isUserBlocked ? "Unblock user" : "Block user"}
+              description={
+                isUserBlocked
+                  ? "Allow messages from this user"
+                  : "You won't receive messages from this user"
+              }
+              danger={!isUserBlocked}
               onClick={() => setIsBlocking(true)}
             />
             <SettingsAction
@@ -107,7 +219,14 @@ const ConversationSettingsPage = () => {
       </motion.div>
 
       {/* Confirmation Modals */}
-      {isBlocking && <BlockUserModal onClose={() => setIsBlocking(false)} />}
+      {isBlocking && (
+        <BlockUserModal
+          onClose={() => setIsBlocking(false)}
+          isCurrentlyBlocked={isUserBlocked}
+          targetUserId={conversationReceiver.id}
+          onBlockSuccess={(blocked) => setIsUserBlocked(blocked)}
+        />
+      )}
       {isDeleting && <DeleteChatModal onClose={() => setIsDeleting(false)} />}
       {isSearching && <SearchModal onClose={() => setIsSearching(false)} />}
     </div>
@@ -171,38 +290,93 @@ const SettingsAction: React.FC<SettingsActionProps> = ({
   </motion.button>
 );
 
-const BlockUserModal: React.FC<{ onClose: () => void }> = ({ onClose }) => (
-  <div
-    className="fixed inset-0 bg-black/80 z-[200] flex items-center justify-center"
-    onClick={onClose}
-  >
-    <motion.div
-      initial={{ scale: 0.9, opacity: 0 }}
-      animate={{ scale: 1, opacity: 1 }}
-      onClick={(e) => e.stopPropagation()}
-      className="bg-white dark:bg-gray-900 rounded-xl p-6 max-w-sm w-full mx-4"
+const BlockUserModal: React.FC<{
+  onClose: () => void;
+  isCurrentlyBlocked: boolean;
+  targetUserId: number | null;
+  onBlockSuccess: (blocked: boolean) => void;
+}> = ({ onClose, isCurrentlyBlocked, targetUserId, onBlockSuccess }) => {
+  const [isProcessing, setIsProcessing] = useState(false);
+
+  const handleBlockAction = async () => {
+    if (!targetUserId) {
+      toast.error("Invalid user ID");
+      return;
+    }
+
+    setIsProcessing(true);
+    try {
+      let result;
+      if (isCurrentlyBlocked) {
+        // Unblock user
+        const { unblockUser } = await import("@/utils/data/BlockUser");
+        result = await unblockUser(targetUserId);
+      } else {
+        // Block user
+        result = await blockUser(targetUserId);
+      }
+
+      if (result.status && !result.error) {
+        toast.success(result.message);
+        onBlockSuccess(!isCurrentlyBlocked);
+        onClose();
+      } else {
+        toast.error(result.message || "Operation failed");
+      }
+    } catch (error) {
+      console.error("Error in block operation:", error);
+      toast.error("An error occurred");
+    } finally {
+      setIsProcessing(false);
+    }
+  };
+
+  return (
+    <div
+      className="fixed inset-0 bg-black/80 z-[200] flex items-center justify-center"
+      onClick={onClose}
     >
-      <h3 className="text-xl font-bold text-gray-800 dark:text-gray-100">
-        Block this user?
-      </h3>
-      <p className="text-gray-600 dark:text-gray-400 mt-2">
-        You won&apos;t receive messages or calls from this user anymore. They
-        won&apos;t be notified that you&apos;ve blocked them.
-      </p>
-      <div className="mt-6 flex gap-3 justify-end">
-        <button
-          onClick={onClose}
-          className="px-4 py-2 text-gray-700 dark:text-gray-300 font-medium rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800"
-        >
-          Cancel
-        </button>
-        <button className="px-4 py-2 bg-red-600 text-white font-medium rounded-lg hover:bg-red-700">
-          Block User
-        </button>
-      </div>
-    </motion.div>
-  </div>
-);
+      <motion.div
+        initial={{ scale: 0.9, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        onClick={(e) => e.stopPropagation()}
+        className="bg-white dark:bg-gray-900 rounded-xl p-6 max-w-sm w-full mx-4"
+      >
+        <h3 className="text-xl font-bold text-gray-800 dark:text-gray-100">
+          {isCurrentlyBlocked ? "Unblock this user?" : "Block this user?"}
+        </h3>
+        <p className="text-gray-600 dark:text-gray-400 mt-2">
+          {isCurrentlyBlocked
+            ? "You will start receiving messages from this user again."
+            : "You won't receive messages or calls from this user anymore. They won't be notified that you've blocked them."}
+        </p>
+        <div className="mt-6 flex gap-3 justify-end">
+          <button
+            onClick={onClose}
+            className="px-4 py-2 text-gray-700 dark:text-gray-300 font-medium rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800"
+          >
+            Cancel
+          </button>
+          <button
+            onClick={handleBlockAction}
+            disabled={isProcessing}
+            className={`px-4 py-2 text-white font-medium rounded-lg ${
+              isCurrentlyBlocked
+                ? "bg-green-600 hover:bg-green-700"
+                : "bg-red-600 hover:bg-red-700"
+            } disabled:opacity-50`}
+          >
+            {isProcessing
+              ? "Processing..."
+              : isCurrentlyBlocked
+                ? "Unblock User"
+                : "Block User"}
+          </button>
+        </div>
+      </motion.div>
+    </div>
+  );
+};
 
 const DeleteChatModal: React.FC<{ onClose: () => void }> = ({ onClose }) => (
   <div className="fixed inset-0 bg-black/80 z-[200] flex items-center justify-center">

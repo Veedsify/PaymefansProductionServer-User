@@ -34,6 +34,7 @@ import usePostComponent from "@/contexts/PostComponentPreview";
 import Link from "next/link";
 import followUser from "@/utils/data/update/Follow";
 import { useState as useReactState } from "react";
+import { useUserAuthContext } from "@/lib/UserUseContext";
 
 const searchFunction = async (query: string) => {
   try {
@@ -46,7 +47,7 @@ const searchFunction = async (query: string) => {
               "Content-Type": "application/json",
               Authorization: `Bearer ${token}`,
             },
-          }
+          },
         );
         return response.data.results;
       },
@@ -59,7 +60,7 @@ const searchFunction = async (query: string) => {
               "Content-Type": "application/json",
               Authorization: `Bearer ${token}`,
             },
-          }
+          },
         );
         return response.data.results;
       },
@@ -72,7 +73,7 @@ const searchFunction = async (query: string) => {
               "Content-Type": "application/json",
               Authorization: `Bearer ${token}`,
             },
-          }
+          },
         );
         return response.data.results;
       },
@@ -136,7 +137,7 @@ const ReportModal = ({
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
           },
-        }
+        },
       );
 
       if (response.data.success) {
@@ -260,6 +261,7 @@ const FollowButton = ({
       setIsFollowing(!isFollowing);
     }
   };
+
   return (
     <motion.button
       onClick={handleFollow}
@@ -285,6 +287,7 @@ const SearchPage = () => {
   const [posts, setPosts] = useState<any[]>([]);
   const [users, setUsers] = useState<any[]>([]);
   const [media, setMedia] = useState<any[]>([]);
+  const { user: authUser } = useUserAuthContext();
   const [reportModal, setReportModal] = useState<{
     isOpen: boolean;
     userId: number;
@@ -299,14 +302,14 @@ const SearchPage = () => {
     m: MediaDataTypeOtherProps,
     type: string,
     isSubscriber: boolean,
-    indexId: number
+    indexId: number,
   ) => {
     if (m.accessible_to === "subscribers" && !isSubscriber) return;
     const filteredMedias = media
       .filter((item) => item.media_state !== "processing")
       .filter((media) => media.accessible_to !== "price")
       .filter(
-        (media) => !(media.accessible_to === "subscribers" && !isSubscriber)
+        (media) => !(media.accessible_to === "subscribers" && !isSubscriber),
       );
     // Get the new index after filtering
     const newIndexId = filteredMedias.findIndex((item) => item.id === m.id);
@@ -593,29 +596,31 @@ const SearchPage = () => {
                                       </Link>
                                     </p>
                                   </div>
-                                  <div className="relative group">
-                                    <button className="p-2 rounded-full text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
-                                      <MoreHorizontal size={20} />
-                                    </button>
-                                    <div className="absolute right-0 top-full mt-1 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 py-2 min-w-[150px] opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-10">
-                                      <button
-                                        onClick={() =>
-                                          setReportModal({
-                                            isOpen: true,
-                                            userId: user.id,
-                                            username: user.username,
-                                          })
-                                        }
-                                        className="w-full px-4 py-2 text-left text-sm text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors flex items-center"
-                                      >
-                                        <ExternalLink
-                                          size={16}
-                                          className="mr-2"
-                                        />
-                                        Report Account
+                                  {user.id !== authUser?.id && (
+                                    <div className="relative group">
+                                      <button className="p-2 rounded-full text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+                                        <MoreHorizontal size={20} />
                                       </button>
+                                      <div className="absolute right-0 top-full mt-1 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 py-2 min-w-[150px] opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-10">
+                                        <button
+                                          onClick={() =>
+                                            setReportModal({
+                                              isOpen: true,
+                                              userId: user.id,
+                                              username: user.username,
+                                            })
+                                          }
+                                          className="w-full px-4 py-2 text-left text-sm text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors flex items-center"
+                                        >
+                                          <ExternalLink
+                                            size={16}
+                                            className="mr-2"
+                                          />
+                                          Report Account
+                                        </button>
+                                      </div>
                                     </div>
-                                  </div>
+                                  )}
                                 </div>
 
                                 {user.bio && (
@@ -639,7 +644,7 @@ const SearchPage = () => {
                                     <Calendar size={14} className="mr-1.5" />
                                     Joined{" "}
                                     {new Date(
-                                      user.created_at
+                                      user.created_at,
                                     ).toLocaleDateString("en-US", {
                                       year: "numeric",
                                       month: "long",
@@ -678,8 +683,9 @@ const SearchPage = () => {
                                     </div>
                                   </div>
                                 </div>
-
-                                <FollowButton user={user} />
+                                {user.id !== authUser?.id && (
+                                  <FollowButton user={user} />
+                                )}
                               </div>
                             </motion.div>
                           ))}

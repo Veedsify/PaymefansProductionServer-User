@@ -56,7 +56,12 @@ const linkify = (text: string) => {
 };
 
 const MessageInputComponent = React.memo(
-  ({ receiver, isFirstMessage, conversationId }: MessageInputProps) => {
+  ({
+    receiver,
+    isFirstMessage,
+    conversationId,
+    isBlockedByReceiver = false,
+  }: MessageInputProps) => {
     // Contexts and Hooks
     const { user } = useUserAuthContext();
     const points = usePointsStore((state) => state.points);
@@ -99,7 +104,7 @@ const MessageInputComponent = React.memo(
     // Debounce typing indicator
     const debounce = <T extends (...args: any[]) => void>(
       func: T,
-      wait: number
+      wait: number,
     ) => {
       let timeout: NodeJS.Timeout | null = null;
       return (...args: Parameters<T>) => {
@@ -123,7 +128,8 @@ const MessageInputComponent = React.memo(
         !user ||
         !receiver ||
         (message.trim().length === 0 && mediaFiles.length === 0) ||
-        isSending
+        isSending ||
+        isBlockedByReceiver
       ) {
         return;
       }
@@ -141,7 +147,7 @@ const MessageInputComponent = React.memo(
         const { data } = await axiosInstance.post(
           "/points/price-per-message",
           { user_id: receiver.user_id },
-          { headers: { Authorization: `Bearer ${token}` } }
+          { headers: { Authorization: `Bearer ${token}` } },
         );
         const pricePerMessage = data.price_per_message;
         const receiverName =
@@ -214,7 +220,7 @@ const MessageInputComponent = React.memo(
           // Final check - if still not complete after max wait time, show error
           if (!areAllUploadsComplete()) {
             console.error(
-              "❌ Upload timeout - not all files completed uploading"
+              "❌ Upload timeout - not all files completed uploading",
             );
             console.error("📊 Final status:", {
               fileStatuses: mediaFiles.map((f) => ({
@@ -238,7 +244,7 @@ const MessageInputComponent = React.memo(
         }
 
         console.log(
-          "✅ All upload checks passed, getting completed attachments"
+          "✅ All upload checks passed, getting completed attachments",
         );
         const attachments = getCompletedAttachments();
         console.log("📎 Completed attachments:", attachments);
@@ -316,7 +322,7 @@ const MessageInputComponent = React.memo(
           handleSendMessage();
         }
       },
-      [debouncedSendTyping, handleSendMessage, setIsTyping]
+      [debouncedSendTyping, handleSendMessage, setIsTyping],
     );
 
     useEffect(() => {
@@ -348,7 +354,7 @@ const MessageInputComponent = React.memo(
     // Media Handling
     const triggerFileSelect = useCallback(() => {
       const fileInput = document.getElementById(
-        "file-input"
+        "file-input",
       ) as HTMLInputElement;
       fileInput?.click();
 
@@ -362,12 +368,12 @@ const MessageInputComponent = React.memo(
         const selectedFiles = Array.from(files);
         const validFiles = selectedFiles.filter(
           (file) =>
-            imageTypes.includes(file.type) || file.type.startsWith("video/")
+            imageTypes.includes(file.type) || file.type.startsWith("video/"),
         );
 
         if (validFiles.length !== selectedFiles.length) {
           toast.error(
-            "Invalid file type, please select an image or video file"
+            "Invalid file type, please select an image or video file",
           );
           return;
         }
@@ -404,7 +410,7 @@ const MessageInputComponent = React.memo(
               setMediaFiles(mediafile);
             }
             return mediafile;
-          })
+          }),
         );
 
         // Clean up: reset the input value so the same file can be selected again
@@ -466,80 +472,103 @@ const MessageInputComponent = React.memo(
             </div>
           </div>
         )}
-        <div className="flex flex-col w-full gap-2 border border-black/20 rounded-2xl px-2 dark:bg-gray-900 py-2 lg:rounded-xl">
-          {mediaFiles.length > 0 && (
-            <div className="grid grid-cols-6 p-0 gap-2 text-white rounded-full">
-              {mediaFiles.map((file: MediaFile, index: number) => (
-                <MessageMediaPreview key={index} index={index} file={file} />
-              ))}
-            </div>
-          )}
-          <div className="flex items-center justify-between w-full gap-2">
-            <div
-              ref={ref as RefObject<HTMLDivElement>}
-              contentEditable
-              id="message-input"
-              data-placeholder="Type your message..."
-              onKeyDown={handleKeyDown}
-              className="bg-transparent outline-none w-full p-2 rounded-xl border-black/20 dark:border-gray-600 font-semibold resize-none dark:text-white overflow-auto max-h-24"
-            />
-            <input
-              type="file"
-              accept="image/*,video/*"
-              className="hidden"
-              id="file-input"
-              multiple
-            />
-            <div className="flex gap-2 rounded-xl p-1.5">
-              <span
-                className={`cursor-pointer ${
-                  isSending ? "opacity-50 cursor-not-allowed" : ""
-                }`}
-                onClick={isSending ? undefined : triggerFileSelect}
+        {isBlockedByReceiver ? (
+          <div className="bg-gray-100 dark:bg-gray-800 rounded-xl border border-gray-300 dark:border-gray-600 p-4">
+            <div className="flex items-center justify-center gap-2 text-gray-500 dark:text-gray-400">
+              <svg
+                className="w-5 h-5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
               >
-                <LucidePlus stroke="#CC0DF8" size={25} />
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728L5.636 5.636m12.728 12.728L5.636 5.636"
+                />
+              </svg>
+              <span className="text-sm font-medium">
+                You can't send messages to this user
               </span>
-              <span
-                className={`cursor-pointer ${
-                  isSending ? "opacity-50 cursor-not-allowed" : ""
-                }`}
-                onClick={isSending ? undefined : triggerFileSelect}
-              >
-                <LucideCamera stroke="#CC0DF8" size={25} />
-              </span>
-              <button
-                onClick={handleSendMessage}
-                className={`cursor-pointer ${
-                  (mediaFiles.length > 0 && !areAllUploadsComplete()) ||
-                  isSending
-                    ? "opacity-50 cursor-not-allowed"
-                    : ""
-                }`}
-                disabled={
-                  (mediaFiles.length > 0 && !areAllUploadsComplete()) ||
-                  isSending
-                }
-              >
-                {isSending ? (
-                  <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-pink-500"></div>
-                ) : (
-                  <LucideSendHorizonal
-                    stroke={
-                      (mediaFiles.length > 0 && !areAllUploadsComplete()) ||
-                      isSending
-                        ? "#9CA3AF"
-                        : "#CC0DF8"
-                    }
-                    size={24}
-                  />
-                )}
-              </button>
             </div>
           </div>
-        </div>
+        ) : (
+          <div className="flex flex-col w-full gap-2 border border-black/20 rounded-2xl px-2 dark:bg-gray-900 py-2 lg:rounded-xl">
+            {mediaFiles.length > 0 && (
+              <div className="grid grid-cols-6 p-0 gap-2 text-white rounded-full">
+                {mediaFiles.map((file: MediaFile, index: number) => (
+                  <MessageMediaPreview key={index} index={index} file={file} />
+                ))}
+              </div>
+            )}
+            <div className="flex items-center justify-between w-full gap-2">
+              <div
+                ref={ref as RefObject<HTMLDivElement>}
+                contentEditable
+                id="message-input"
+                data-placeholder="Type your message..."
+                onKeyDown={handleKeyDown}
+                className="bg-transparent outline-none w-full p-2 rounded-xl border-black/20 dark:border-gray-600 font-semibold resize-none dark:text-white overflow-auto max-h-24"
+              />
+              <input
+                type="file"
+                accept="image/*,video/*"
+                className="hidden"
+                id="file-input"
+                multiple
+              />
+              <div className="flex gap-2 rounded-xl p-1.5">
+                <span
+                  className={`cursor-pointer ${
+                    isSending ? "opacity-50 cursor-not-allowed" : ""
+                  }`}
+                  onClick={isSending ? undefined : triggerFileSelect}
+                >
+                  <LucidePlus stroke="#CC0DF8" size={25} />
+                </span>
+                <span
+                  className={`cursor-pointer ${
+                    isSending ? "opacity-50 cursor-not-allowed" : ""
+                  }`}
+                  onClick={isSending ? undefined : triggerFileSelect}
+                >
+                  <LucideCamera stroke="#CC0DF8" size={25} />
+                </span>
+                <button
+                  onClick={handleSendMessage}
+                  className={`cursor-pointer ${
+                    (mediaFiles.length > 0 && !areAllUploadsComplete()) ||
+                    isSending
+                      ? "opacity-50 cursor-not-allowed"
+                      : ""
+                  }`}
+                  disabled={
+                    (mediaFiles.length > 0 && !areAllUploadsComplete()) ||
+                    isSending
+                  }
+                >
+                  {isSending ? (
+                    <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-pink-500"></div>
+                  ) : (
+                    <LucideSendHorizonal
+                      stroke={
+                        (mediaFiles.length > 0 && !areAllUploadsComplete()) ||
+                        isSending
+                          ? "#9CA3AF"
+                          : "#CC0DF8"
+                      }
+                      size={24}
+                    />
+                  )}
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     );
-  }
+  },
 );
 
 MessageInputComponent.displayName = "MessageInputComponent";
