@@ -1,9 +1,9 @@
 import { ReactNode } from "react";
 import { GeistSans } from "geist/font/sans";
-import { Instrument_Sans } from "next/font/google";
+import { Bricolage_Grotesque } from "next/font/google";
 import "./style.css";
 
-const font = Instrument_Sans({
+const font = Bricolage_Grotesque({
   subsets: ["latin", "latin-ext"],
   display: "swap",
   adjustFontFallback: false,

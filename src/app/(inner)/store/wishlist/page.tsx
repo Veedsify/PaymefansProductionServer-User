@@ -19,6 +19,7 @@ import { useWishlistStore } from "@/contexts/WishlistContext";
 import { useCartStore } from "@/contexts/StoreContext";
 import numeral from "numeral";
 import toast from "react-hot-toast";
+import { useRouter } from "next/navigation";
 
 const WishlistPage = () => {
   const { data, isLoading, isError, error } = useWishlist();
@@ -26,6 +27,7 @@ const WishlistPage = () => {
   const { addProduct, cart } = useCartStore();
   const clearWishlistMutation = useClearWishlist();
   const { toggleWishlist } = useToggleWishlist();
+  const router = useRouter();
 
   const wishlistCount = getWishlistCount();
 
@@ -43,7 +45,7 @@ const WishlistPage = () => {
     // Check if product has sizes
     if (product.sizes && product.sizes.length > 0) {
       // Redirect to product page for size selection
-      window.location.href = `/store/product/${product.product_id}`;
+      router.push(`/store/product/${product.product_id}`);
       return;
     }
 

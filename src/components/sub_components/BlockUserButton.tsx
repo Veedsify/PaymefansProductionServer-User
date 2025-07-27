@@ -85,7 +85,7 @@ const BlockUserButton: React.FC<BlockUserButtonProps> = ({
     return (
       <button
         disabled
-        className={`flex items-center justify-center px-3 py-2 rounded-lg border text-sm font-medium opacity-50 cursor-not-allowed ${className}`}
+        className={`flex items-center justify-center px-3 py-2 rounded-lg border text-sm font-medium opacity-50 ${className}`}
       >
         <div className="w-4 h-4 border-2 border-gray-300 border-t-transparent rounded-full animate-spin mr-2" />
         ...
@@ -97,7 +97,7 @@ const BlockUserButton: React.FC<BlockUserButtonProps> = ({
     <button
       onClick={handleBlockToggle}
       disabled={isLoading}
-      className={`flex items-center justify-center px-3 py-1 rounded-md border text-sm font-medium transition-colors ${
+      className={`flex items-center justify-center cursor-pointer px-3 py-1 rounded-md border text-sm font-medium transition-colors w-full ${
         isBlocked
           ? "border-green-300 text-green-700 bg-green-50 hover:bg-green-100 dark:border-green-600 dark:text-green-400 dark:bg-green-900/20 dark:hover:bg-green-900/30"
           : "border-red-300 text-red-700 bg-red-50 hover:bg-red-100 dark:border-red-600 dark:text-red-400 dark:bg-red-900/20 dark:hover:bg-red-900/30"

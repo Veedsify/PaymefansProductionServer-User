@@ -181,9 +181,8 @@ const ContactSupportModal = () => {
     <>
       <button
         onClick={() => setShow(true)}
-        className="group relative px-4 py-4 text-sm text-nowrap bg-white text-primary-dark-pink hover:text-white rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 font-semibold focus:outline-none focus:ring-4 focus:ring-purple-300 overflow-hidden"
+        className="group relative px-4 py-2 text-sm text-nowrap bg-white text-primary-dark-pink hover:bg-primary-dark-pink hover:text-white rounded-md cursor-pointer transition-all duration-300 font-semibold focus:outline-none focus:ring-4 focus:ring-purple-300 overflow-hidden"
       >
-        <div className="absolute inset-0 bg-gradient-to-r from-purple-700 via-pink-700 to-blue-700 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
         <span className="relative flex items-center gap-3 z-10">
           <MessageCircle
             size={20}
@@ -191,7 +190,7 @@ const ContactSupportModal = () => {
           />
           Contact Support
         </span>
-        <div className="absolute inset-0 bg-white/20 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700 skew-x-12"></div>
+        <span className="absolute inset-0 bg-white/20 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700 skew-x-12"></span>
       </button>
       {show && (
         <div

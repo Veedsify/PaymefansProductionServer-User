@@ -12,6 +12,7 @@ import {
   LucideLoader2,
   LucideLock,
   LucideMapPin,
+  MoreHorizontal,
   Verified,
 } from "lucide-react";
 
@@ -29,6 +30,7 @@ import ActiveProfileTag from "@/components/sub_components/sub/ActiveProfileTag";
 import ProfileSocialLinks from "@/components/sub_components/ProfileSocialLinks";
 import TipModel from "@/components/sub_components/TipModel";
 import BlockUserButton from "@/components/sub_components/BlockUserButton";
+import MoreProfileOptions from "@/components/profile/MoreProfileOptions";
 
 // Utility to format numbers
 const formatNumber = (num: number = 0): string => {
@@ -200,12 +202,7 @@ const ProfilePage = () => {
             <CreateSubscriptionButton userdata={userdata} />
           )}
           <CreateConversationButton profileId={userdata.user_id} />
-          {user?.id !== userdata.id && (
-            <BlockUserButton
-              userId={userdata.id}
-              userName={userdata.name || userdata.username}
-            />
-          )}
+          <MoreProfileOptions user={userdata} authUserId={Number(user?.id)} />
         </div>
       </div>
 

@@ -1,5 +1,5 @@
 "use client";
-import { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import {
   Edit,
   Trash2,
@@ -19,6 +19,7 @@ import UploadImageToCloudflare from "@/utils/CloudflareImageUploader";
 import UploadWithTus from "@/utils/TusUploader";
 import { useUserAuthContext } from "@/lib/UserUseContext";
 import path from "path";
+import Image from "next/image";
 
 interface Attachment {
   type: "image" | "video";
@@ -82,7 +83,7 @@ const SettingsAutomatedMessage: React.FC = () => {
   const [showSuccess, setShowSuccess] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [uploadProgress, setUploadProgress] = useState<Record<string, number>>(
-    {}
+    {},
   );
   const [activeUploads, setActiveUploads] = useState<Set<string>>(new Set());
 
@@ -155,7 +156,7 @@ const SettingsAutomatedMessage: React.FC = () => {
   };
 
   const handleFileSelect = async (
-    event: React.ChangeEvent<HTMLInputElement>
+    event: React.ChangeEvent<HTMLInputElement>,
   ): Promise<void> => {
     const files = Array.from(event.target.files || []);
     if (files.length > 0 && currentUploadType && user) {
@@ -215,7 +216,7 @@ const SettingsAutomatedMessage: React.FC = () => {
               extension: path.extname(file.name),
               url:
                 imgRes.result?.variants.find((v: string) =>
-                  v.includes("/public")
+                  v.includes("/public"),
                 ) || "",
               poster: "",
             };
@@ -226,7 +227,7 @@ const SettingsAutomatedMessage: React.FC = () => {
               uploadResponse.uploadUrl,
               tempId,
               setUploadProgress,
-              () => {} // Error callback
+              () => {}, // Error callback
             );
 
             finalAttachment = {
@@ -246,7 +247,7 @@ const SettingsAutomatedMessage: React.FC = () => {
             [currentUploadType]: {
               ...prev[currentUploadType],
               attachments: prev[currentUploadType].attachments.map((att) =>
-                att.id === tempId ? finalAttachment : att
+                att.id === tempId ? finalAttachment : att,
               ),
             },
           }));
@@ -272,7 +273,7 @@ const SettingsAutomatedMessage: React.FC = () => {
             [currentUploadType]: {
               ...prev[currentUploadType],
               attachments: prev[currentUploadType].attachments.filter(
-                (att) => att.id !== tempId
+                (att) => att.id !== tempId,
               ),
             },
           }));
@@ -299,7 +300,7 @@ const SettingsAutomatedMessage: React.FC = () => {
   const removeAttachment = (type: MessageType, attachmentId: string): void => {
     setMessages((prev) => {
       const attachmentToRemove = prev[type].attachments.find(
-        (att) => att.id === attachmentId
+        (att) => att.id === attachmentId,
       );
 
       // Clean up preview URL if it exists
@@ -312,7 +313,7 @@ const SettingsAutomatedMessage: React.FC = () => {
         [type]: {
           ...prev[type],
           attachments: prev[type].attachments.filter(
-            (att) => att.id !== attachmentId
+            (att) => att.id !== attachmentId,
           ),
         },
       };
@@ -411,12 +412,12 @@ const SettingsAutomatedMessage: React.FC = () => {
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i];
   };
 
-  const MessageCard: React.FC<MessageCardProps> = ({
-    type,
-    title,
-    icon: Icon,
-    placeholder,
-  }) => {
+  const renderMessageCard = (
+    type: MessageType,
+    title: string,
+    icon: LucideIcon,
+    placeholder: string,
+  ) => {
     const message = messages[type];
     const isEditing = editingMode[type];
     const isEmpty = !message.text && message.attachments.length === 0;
@@ -438,7 +439,7 @@ const SettingsAutomatedMessage: React.FC = () => {
                   : "bg-gray-100 text-gray-600"
               }`}
             >
-              <Icon size={20} />
+              {React.createElement(icon, { size: 20 })}
             </div>
             <div>
               <h3 className="font-semibold text-gray-900">{title}</h3>
@@ -508,7 +509,10 @@ const SettingsAutomatedMessage: React.FC = () => {
                             style={{ width: "60px", height: "60px" }}
                           >
                             {attachment.type === "image" ? (
-                              <img
+                              <Image
+                                height={60}
+                                width={60}
+                                priority
                                 src={attachment.preview || attachment.url}
                                 alt={attachment.name}
                                 className={`object-cover rounded-md border border-gray-200 ${
@@ -524,7 +528,10 @@ const SettingsAutomatedMessage: React.FC = () => {
                                 style={{ width: "60px", height: "60px" }}
                               >
                                 {attachment.poster ? (
-                                  <img
+                                  <Image
+                                    width={60}
+                                    height={60}
+                                    priority
                                     src={attachment.poster}
                                     alt={attachment.name}
                                     className="object-cover rounded-md"
@@ -681,19 +688,19 @@ const SettingsAutomatedMessage: React.FC = () => {
       )}
 
       <div className="space-y-6">
-        <MessageCard
-          type="followers"
-          title="New Followers"
-          icon={Users}
-          placeholder="Welcome! Thank you for following. I'm excited to share my content with you..."
-        />
+        {renderMessageCard(
+          "followers",
+          "New Followers",
+          Users,
+          "Welcome! Thank you for following. I'm excited to share my content with you...",
+        )}
 
-        <MessageCard
-          type="subscribers"
-          title="New Subscribers"
-          icon={UserPlus}
-          placeholder="Welcome to my exclusive content! Thank you for subscribing..."
-        />
+        {renderMessageCard(
+          "subscribers",
+          "New Subscribers",
+          UserPlus,
+          "Welcome to my exclusive content! Thank you for subscribing...",
+        )}
 
         <div className="border-t pt-6">
           <div className="flex items-center justify-between">
@@ -705,8 +712,8 @@ const SettingsAutomatedMessage: React.FC = () => {
                       activeUploads.size > 1 ? "s" : ""
                     }...`
                   : hasChanges
-                  ? "You have unsaved changes"
-                  : "All changes saved"}
+                    ? "You have unsaved changes"
+                    : "All changes saved"}
               </p>
             </div>
             <button
@@ -714,7 +721,7 @@ const SettingsAutomatedMessage: React.FC = () => {
               disabled={!hasChanges || isSaving || activeUploads.size > 0}
               className={`flex items-center gap-2 px-6 py-3 rounded-lg font-medium transition-all duration-200 ${
                 hasChanges && !isSaving && activeUploads.size === 0
-                  ? "bg-primary-dark-pink text-white hover:bg-pritext-primary-text-dark-pink shadow-sm"
+                  ? "bg-primary-dark-pink text-white hover:bg-primary-text-dark-pink shadow-sm"
                   : "bg-gray-100 text-gray-400 cursor-not-allowed"
               }`}
             >
@@ -726,8 +733,8 @@ const SettingsAutomatedMessage: React.FC = () => {
               {isSaving
                 ? "Saving..."
                 : activeUploads.size > 0
-                ? "Uploading..."
-                : "Save Settings"}
+                  ? "Uploading..."
+                  : "Save Settings"}
             </button>
           </div>
         </div>

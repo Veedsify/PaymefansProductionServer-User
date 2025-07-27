@@ -21,11 +21,11 @@ export default function Page() {
   const [loading, setLoading] = useState(true);
 
   const fetchPage = async (
-    page: string
+    page: string,
   ): Promise<PageData | ErrorData | null> => {
     try {
       const res = await fetch(
-        `${process.env.NEXT_PUBLIC_TS_EXPRESS_URL}/pages/${page}`
+        `${process.env.NEXT_PUBLIC_TS_EXPRESS_URL}/pages/${page}`,
       );
       if (!res.ok) {
         throw new Error("Failed to fetch data");
@@ -96,7 +96,7 @@ export default function Page() {
             <div className="content-container">
               <h1 className="title">{pageData.title}</h1>
               <div
-                className="content"
+                className="content text-justify"
                 dangerouslySetInnerHTML={{
                   __html: pageData.content,
                 }}
