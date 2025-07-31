@@ -1,13 +1,6 @@
 "use client";
 import Image from "next/image";
-import {
-  LucideBarChart,
-  LucideChevronDown,
-  LucideHeart,
-  LucideLoader,
-  LucideLoader2,
-  LucideMessageSquare,
-} from "lucide-react";
+import { LucideLoader } from "lucide-react";
 import ReplyPostComponent from "./ReplyTextarea";
 import moment from "moment";
 import usePostComponent from "@/contexts/PostComponentPreview";
@@ -23,15 +16,30 @@ import _ from "lodash";
 import { getUserComments } from "@/utils/data/GetPostComments";
 import { useRouter } from "next/navigation";
 import { getToken } from "@/utils/Cookie";
+import { getCommentReplies } from "@/utils/data/GetCommentReplies";
+import CommentReplyChildren from "./CommentsReplyWithchildren";
+import ReplyInteractions from "./ReplyInteraction";
 
-interface Comment {
-  text: string;
-  files: File[];
-  author_username: string;
-  time: Date;
-  name: string;
-  profile_image: string;
+export interface Comment {
   comment_id: string;
+  name: string;
+  username: string;
+  userId: number;
+  postId: string;
+  parentId: string | null;
+  profile_image: string;
+  comment: string;
+  attachment?: any;
+  likes: number;
+  impressions: number;
+  replies: number;
+  date: Date;
+  likedByme: boolean;
+  children?: Comment[];
+  totalReplies?: number;
+  hasMoreReplies?: boolean;
+  showReplies?: boolean;
+  loadingReplies?: boolean;
 }
 
 interface CommentsHolderProps {
@@ -39,9 +47,9 @@ interface CommentsHolderProps {
   postComments: Comment[];
 }
 
-const CommentsHolder = ({ post }: CommentsHolderProps) => {
+const CommentsHolder = ({ post, postComments }: CommentsHolderProps) => {
   const [loading, setLoading] = useState(true);
-  const [postComment, setPostComments] = useState<PostCompomentProps[]>([]);
+  const [postComment, setPostComments] = useState<Comment[]>([]);
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(false);
   const { fullScreenPreview } = usePostComponent();
@@ -50,6 +58,7 @@ const CommentsHolder = ({ post }: CommentsHolderProps) => {
     commentId: string;
     open: boolean;
   } | null>(null);
+  const [viewedComments, setViewedComments] = useState<Set<string>>(new Set());
   const router = useRouter();
 
   const { ref, inView } = useInView({
@@ -63,7 +72,7 @@ const CommentsHolder = ({ post }: CommentsHolderProps) => {
     }
   }, [inView, hasMore, loading]);
 
-  // Fetch comments
+  // Fetch comments with enhanced backend data
   useEffect(() => {
     let cancelled = false;
     const fetchComments = async () => {
@@ -71,7 +80,9 @@ const CommentsHolder = ({ post }: CommentsHolderProps) => {
       const comments = await getUserComments(post, page);
       if (!cancelled && comments) {
         setHasMore(comments.hasMore);
-        setPostComments((prev) => _.uniqBy([...prev, ...comments.data], "_id"));
+        setPostComments((prev) =>
+          _.uniqBy([...prev, ...comments.data], "comment_id"),
+        );
       }
       setLoading(false);
     };
@@ -87,8 +98,39 @@ const CommentsHolder = ({ post }: CommentsHolderProps) => {
     router.refresh();
   }, [router]);
 
+  // Track comment view (optional - can be used for analytics if needed)
+  const trackCommentView = useCallback(
+    async (commentId: string) => {
+      if (viewedComments.has(commentId)) return;
+
+      try {
+        const token = getToken();
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_TS_EXPRESS_URL}/comments/view`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({ commentId }),
+          },
+        );
+
+        if (response.ok) {
+          setViewedComments((prev) => new Set(prev).add(commentId));
+          // Note: We don't update local impressions count here anymore
+          // since the actual count should come from the server
+        }
+      } catch (error) {
+        console.error("Failed to track comment view:", error);
+      }
+    },
+    [viewedComments],
+  );
+
   // Format date for comments
-  const formatDate = useCallback((dateString: string) => {
+  const formatDate = useCallback((dateString: string | Date) => {
     return moment(dateString).fromNow();
   }, []);
 
@@ -102,13 +144,13 @@ const CommentsHolder = ({ post }: CommentsHolderProps) => {
 
   // Preview image attachments
   const previewImage = useCallback(
-    (media: PostCommentAttachments, comment: PostCompomentProps) => {
-      const allMedia = comment?.attachment?.map((item) => ({
+    (media: PostCommentAttachments, comment: Comment) => {
+      const allMedia = comment?.attachment?.map((item: any) => ({
         url: item.path,
         type: "image",
       }));
       const currentIndex = comment?.attachment?.findIndex(
-        (item) => item.name === media.name
+        (item: any) => item.name === media.name,
       );
       fullScreenPreview({
         url: media.path,
@@ -118,7 +160,7 @@ const CommentsHolder = ({ post }: CommentsHolderProps) => {
         ref: currentIndex as number,
       });
     },
-    [fullScreenPreview]
+    [fullScreenPreview],
   );
 
   // Calculate height for vertical line (optional visual improvement)
@@ -134,7 +176,7 @@ const CommentsHolder = ({ post }: CommentsHolderProps) => {
     <>
       <div
         className={`${
-          postComment.length > 1 ? "border-black/30 dark:border-slate-700" : ""
+          postComments.length > 1 ? "border-black/30 dark:border-slate-700" : ""
         } dark:text-gray-100 dark:border-slate-800 p-0 md:px-3 relative overflow-hidden`}
         ref={commentsRef}
       >
@@ -145,7 +187,7 @@ const CommentsHolder = ({ post }: CommentsHolderProps) => {
             height: `${calculateHeight()}px`,
           }}
         ></div>
-        {postComment.map((comment) => (
+        {postComment.map((comment, index) => (
           <div
             className={`flex gap-1 md:gap-3 items-start relative w-full`}
             key={comment.comment_id}
@@ -188,10 +230,10 @@ const CommentsHolder = ({ post }: CommentsHolderProps) => {
                   dangerouslySetInnerHTML={{ __html: comment.comment }}
                 ></div>
                 <div className="flex items-baseline flex-wrap max-w-md gap-2">
-                  {comment.attachment?.map((media, idx) => (
+                  {comment.attachment?.map((media: any, idx: number) => (
                     <div
                       key={media.name || idx}
-                      onClick={() => previewImage(media, comment)}
+                      onClick={() => previewImage(media, comment as any)}
                     >
                       <Image
                         priority
@@ -206,16 +248,22 @@ const CommentsHolder = ({ post }: CommentsHolderProps) => {
                 </div>
               </div>
               <ReplyInteractions
-                replies={comment.replies}
-                        likes={comment.likes}
+                replies={comment.totalReplies || comment.replies || 0}
+                likes={comment.likes}
+                impressions={comment.impressions || 0}
                 parentId={comment.parentId || ""}
                 commentId={comment.comment_id}
-                likedByMe={comment.likedByme}
+                likedByMe={comment.likedByme || false}
               />
-              {comment && comment.replies > 0 && (
+              {(comment.totalReplies || comment.replies) > 0 && (
                 <CommentReplyChildren
-                  replies={comment.replies}
+                  replies={comment.totalReplies || comment.replies}
                   commentId={comment.comment_id}
+                  childComments={comment.children}
+                  hasMoreReplies={comment.hasMoreReplies}
+                  formatDate={formatDate}
+                  previewImage={previewImage}
+                  trackCommentView={trackCommentView}
                 />
               )}
               {openReply &&
@@ -260,125 +308,6 @@ const CommentsHolder = ({ post }: CommentsHolderProps) => {
         </div>
       )}
     </>
-  );
-};
-
-const CommentReplyChildren = ({
-  replies,
-  commentId,
-}: {
-  replies: number;
-  commentId: string;
-}) => {
-  const [loading, setLoading] = useState(false);
-  const [repliesData, setRepliesData] = useState<PostCompomentProps[]>([]);
-  const LoadReplies = () => {
-    setLoading(true);
-    setTimeout(() => setLoading(false), 2000);
-  };
-
-  return (
-    <>
-      <div className="mb-8">
-        <button
-          onClick={LoadReplies}
-          className="text-sm text-primary-dark-pink font-medium cursor-pointer flex gap-1 items-center"
-        >
-          {replies} replies {!loading && <LucideChevronDown />}{" "}
-          {loading && <LucideLoader2 size={16} className="animate-spin" />}
-        </button>
-      </div>
-    </>
-  );
-};
-
-const ReplyInteractions = ({
-  likedByMe,
-  commentId,
-  parentId,
-  replies,
-  likes,
-}: {
-  likedByMe: boolean;
-  commentId: string;
-  parentId: string;
-  replies: number;
-  likes: number;
-}) => {
-  const [isLiked, setIsLiked] = useState(likedByMe);
-  const [likesCount, setLikesCount] = useState(likes);
-  const [isLoading, setIsLoading] = useState(false);
-
-  const likeComment = useCallback(async () => {
-    if (isLoading) return;
-
-    setIsLoading(true);
-    const token = getToken();
-
-    try {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_TS_EXPRESS_URL}/comments/like`,
-        {
-          method: "POST",
-          body: JSON.stringify({ commentId }),
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-
-      if (!response.ok) {
-        throw new Error("Failed to like comment");
-      }
-
-      const data = await response.json();
-      if (!data.status) {
-        throw new Error(data.message || "Failed to like comment");
-      }
-    } catch (error) {
-      // Revert optimistic update on error
-      setIsLiked(likedByMe);
-      setLikesCount(likes);
-      console.error("Error liking comment:", error);
-    } finally {
-      setIsLoading(false);
-    }
-  }, [commentId, isLoading, likedByMe, likes]);
-
-  const handleLike = useCallback(() => {
-    if (isLoading) return;
-
-    // Optimistic update
-    setIsLiked((prev) => !prev);
-    setLikesCount((prev) => (isLiked ? prev - 1 : prev + 1));
-    likeComment();
-  }, [isLiked, isLoading, likeComment]);
-
-  return (
-    <div className="flex items-center justify-between p-2 md:p-6">
-      <button
-        className="flex items-center gap-1 text-xs font-medium transition-colors duration-200 disabled:opacity-50"
-        onClick={handleLike}
-        disabled={isLoading}
-        aria-label={isLiked ? "Unlike comment" : "Like comment"}
-      >
-        <LucideHeart
-          size={18}
-          className={`${
-            isLiked ? "fill-red-500 stroke-0" : "fill-white stroke-2"
-          } transition-colors duration-200`}
-        />
-        {likesCount}
-      </button>
-      <span className="flex items-center gap-1 text-xs font-medium">
-        <LucideMessageSquare size={18} />
-        {replies}
-      </span>
-      <span className="flex items-center gap-1 text-xs font-medium">
-        <LucideBarChart size={18} />0
-      </span>
-    </div>
   );
 };
 

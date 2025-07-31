@@ -32,7 +32,7 @@ export interface GroupData {
   };
 }
 
-export interface GroupMessage {
+interface GroupMessage {
   id: number;
   groupId: string;
   content: string;
@@ -56,7 +56,7 @@ export interface GroupMessage {
   timestamp: string;
 }
 
-export interface GroupMember {
+interface GroupMember {
   userId: string;
   username: string;
   profile_image: string;
@@ -76,7 +76,7 @@ export interface GroupsResponse {
   };
 }
 
-export interface GroupMessagesResponse {
+interface GroupMessagesResponse {
   success: boolean;
   data: {
     messages: GroupMessage[];
@@ -85,7 +85,7 @@ export interface GroupMessagesResponse {
   };
 }
 
-export interface GroupMembersResponse {
+interface GroupMembersResponse {
   success: boolean;
   data: {
     members: GroupMember[];
@@ -104,11 +104,59 @@ export const fetchGroupData = async (groupId: string): Promise<GroupData> => {
 
 // Fetch user's groups
 export const fetchUserGroups = async (): Promise<GroupsResponse> => {
-  const token = getToken();
-  const response = await axiosInstance.get("/groups/my-groups", {
-    headers: { Authorization: `Bearer ${token}` },
-  });
-  return response.data;
+  try {
+    const token = getToken();
+    console.log("fetchUserGroups - Token exists:", !!token);
+
+    if (!token) {
+      throw new Error("No authentication token found");
+    }
+
+    console.log("fetchUserGroups - Making request to /groups/my-groups");
+
+    const response = await axiosInstance.get("/groups/my-groups", {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+
+    console.log("fetchUserGroups - Response status:", response.status);
+    console.log("fetchUserGroups - Response data:", response.data);
+
+    if (!response.data) {
+      throw new Error("No data received from server");
+    }
+
+    if (!response.data.success) {
+      throw new Error(response.data.message || "API request failed");
+    }
+
+    return response.data;
+  } catch (error: any) {
+    console.error("fetchUserGroups - Error:", {
+      message: error.message,
+      status: error.response?.status,
+      statusText: error.response?.statusText,
+      data: error.response?.data,
+      url: error.config?.url,
+    });
+
+    // Re-throw the error with more context
+    if (error.response?.status === 401) {
+      throw new Error("Authentication failed. Please log in again.");
+    } else if (error.response?.status === 403) {
+      throw new Error(
+        "Access denied. You don't have permission to view groups.",
+      );
+    } else if (error.response?.status >= 500) {
+      throw new Error("Server error. Please try again later.");
+    } else if (
+      error.code === "NETWORK_ERROR" ||
+      error.message.includes("Network Error")
+    ) {
+      throw new Error("Network error. Please check your internet connection.");
+    }
+
+    throw error;
+  }
 };
 
 // Search available groups
@@ -139,7 +187,7 @@ export const fetchGroupMessages = async (
 };
 
 // Fetch group members
-export const fetchGroupMembers = async (
+const fetchGroupMembers = async (
   groupId: string,
   page: number = 1,
   limit: number = 20,
@@ -166,7 +214,7 @@ export const joinGroup = async (groupId: string): Promise<any> => {
 };
 
 // Leave a group
-export const leaveGroup = async (groupId: string): Promise<any> => {
+const leaveGroup = async (groupId: string): Promise<any> => {
   const token = getToken();
   const response = await axiosInstance.post(
     `/groups/${groupId}/leave`,
@@ -179,7 +227,7 @@ export const leaveGroup = async (groupId: string): Promise<any> => {
 };
 
 // Invite user to group
-export const inviteToGroup = async (
+const inviteToGroup = async (
   groupId: string,
   userId: string,
 ): Promise<any> => {
@@ -195,7 +243,7 @@ export const inviteToGroup = async (
 };
 
 // Update group settings
-export const updateGroupSettings = async (
+const updateGroupSettings = async (
   groupId: string,
   settings: Partial<GroupData["settings"]>,
 ): Promise<any> => {
@@ -211,7 +259,7 @@ export const updateGroupSettings = async (
 };
 
 // Update member role
-export const updateMemberRole = async (
+const updateMemberRole = async (
   groupId: string,
   memberId: string,
   role: "ADMIN" | "MODERATOR" | "MEMBER",
@@ -228,7 +276,7 @@ export const updateMemberRole = async (
 };
 
 // Remove member from group
-export const removeMember = async (
+const removeMember = async (
   groupId: string,
   memberId: string,
 ): Promise<any> => {
@@ -243,7 +291,7 @@ export const removeMember = async (
 };
 
 // Get join requests for a group
-export const getJoinRequests = async (groupId: string): Promise<any> => {
+const getJoinRequests = async (groupId: string): Promise<any> => {
   const token = getToken();
   const response = await axiosInstance.get(`/groups/${groupId}/join-requests`, {
     headers: { Authorization: `Bearer ${token}` },
@@ -252,7 +300,7 @@ export const getJoinRequests = async (groupId: string): Promise<any> => {
 };
 
 // Approve join request
-export const approveJoinRequest = async (requestId: string): Promise<any> => {
+const approveJoinRequest = async (requestId: string): Promise<any> => {
   const token = getToken();
   const response = await axiosInstance.post(
     `/groups/join-requests/${requestId}/approve`,
@@ -265,7 +313,7 @@ export const approveJoinRequest = async (requestId: string): Promise<any> => {
 };
 
 // Reject join request
-export const rejectJoinRequest = async (requestId: string): Promise<any> => {
+const rejectJoinRequest = async (requestId: string): Promise<any> => {
   const token = getToken();
   const response = await axiosInstance.post(
     `/groups/join-requests/${requestId}/reject`,
@@ -278,7 +326,7 @@ export const rejectJoinRequest = async (requestId: string): Promise<any> => {
 };
 
 // Get user invitations
-export const getUserInvitations = async (): Promise<any> => {
+const getUserInvitations = async (): Promise<any> => {
   const token = getToken();
   const response = await axiosInstance.get("/groups/invitations/received", {
     headers: { Authorization: `Bearer ${token}` },
@@ -287,7 +335,7 @@ export const getUserInvitations = async (): Promise<any> => {
 };
 
 // Accept invitation
-export const acceptInvitation = async (invitationId: string): Promise<any> => {
+const acceptInvitation = async (invitationId: string): Promise<any> => {
   const token = getToken();
   const response = await axiosInstance.post(
     `/groups/invitations/${invitationId}/accept`,
@@ -300,7 +348,7 @@ export const acceptInvitation = async (invitationId: string): Promise<any> => {
 };
 
 // Decline invitation
-export const declineInvitation = async (invitationId: string): Promise<any> => {
+const declineInvitation = async (invitationId: string): Promise<any> => {
   const token = getToken();
   const response = await axiosInstance.post(
     `/groups/invitations/${invitationId}/decline`,
@@ -313,7 +361,7 @@ export const declineInvitation = async (invitationId: string): Promise<any> => {
 };
 
 // Upload group attachment
-export const uploadGroupAttachment = async (files: File[]): Promise<any> => {
+const uploadGroupAttachment = async (files: File[]): Promise<any> => {
   const token = getToken();
   const formData = new FormData();
 

@@ -1,8 +1,10 @@
-import { MoreVertical } from "lucide-react";
+"use client";
+import { Ban, MoreVertical, Link as ProfileLink } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import BlockUserButton from "../sub_components/BlockUserButton";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
+import toast from "react-hot-toast";
 
 const MoreProfileOptions = ({
   user,
@@ -17,6 +19,13 @@ const MoreProfileOptions = ({
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
+
+  const copyProfileLink = () => {
+    const link = `${process.env.NEXT_PUBLIC_SERVER_URL}/${user.username.replace("@", "")}`;
+    navigator.clipboard.writeText(link);
+    toast.success("Link copied to clipboard");
+    setIsOpen(false);
+  };
 
   useEffect(() => {
     const closeOpen = (e: Event) => {
@@ -49,7 +58,7 @@ const MoreProfileOptions = ({
       {/* More options button */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className={`
+        className={` cursor-pointer
           flex items-center justify-center w-5 h-5 rounded-full
           transition-all duration-200 ease-in-out
           hover:bg-gray-100 dark:hover:bg-gray-800
@@ -74,7 +83,7 @@ const MoreProfileOptions = ({
           <motion.div
             className="
               absolute top-12 right-0 z-20
-              w-[200px] py-2
+              w-[150px] py-2
               bg-white dark:bg-gray-900
               border border-gray-200 dark:border-gray-700
               rounded-lg shadow-lg
@@ -110,20 +119,30 @@ const MoreProfileOptions = ({
                   />
                 </div>
               )}
-
+              <div className="w-full">
+                <button
+                  onClick={copyProfileLink}
+                  className=" px-3 py-1 text-sm dark:text-gray-300 dark:hover:bg-gray-800
+                    rounded-md transition-colors duration-150 text-white cursor-pointer
+                    flex items-center justify-center gap-3 bg-black text-center
+                  "
+                >
+                  <ProfileLink size={14} /> Copy Profile Link
+                </button>
+              </div>
               {/* Add more menu items here if needed */}
               {authUserId !== user.id && (
                 <>
-                  <div className="h-px bg-gray-200 dark:bg-gray-700 my-1 mx-3 w-full" />
+                  <div className=" bg-gray-200 dark:bg-gray-700 my-1 mx-3 w-full" />
                   <Link
                     href=""
                     className="
-                    w-full px-3 py-1 text-sm dark:text-gray-300
-                    hover:bg-gray-100 dark:hover:bg-gray-800
+                    w-full px-3 py-1 text-sm dark:text-gray-300 dark:hover:bg-red-500
                     rounded-md transition-colors duration-150 text-white
-                    flex items-center justify-center gap-3 bg-primary-dark-pink text-center
+                    flex items-center justify-center gap-3 bg-red-500 text-center
                   "
                   >
+                    <Ban size={14} />
                     Report User
                   </Link>
                 </>

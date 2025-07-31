@@ -2,20 +2,20 @@ import { getToken } from "../Cookie";
 
 const API_URL = process.env.NEXT_PUBLIC_TS_EXPRESS_URL;
 
-export interface BlockUserResponse {
+interface BlockUserResponse {
   status: boolean;
   message: string;
   error: boolean;
   blockId?: string;
 }
 
-export interface UnblockUserResponse {
+interface UnblockUserResponse {
   status: boolean;
   message: string;
   error: boolean;
 }
 
-export interface CheckBlockStatusResponse {
+interface CheckBlockStatusResponse {
   status: boolean;
   isBlocked: boolean;
   blockId?: string;
@@ -23,7 +23,7 @@ export interface CheckBlockStatusResponse {
   error?: boolean;
 }
 
-export interface GetBlockedUsersResponse {
+interface GetBlockedUsersResponse {
   status: boolean;
   message: string;
   error: boolean;

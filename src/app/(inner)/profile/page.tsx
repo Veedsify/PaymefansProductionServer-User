@@ -1,4 +1,5 @@
 import BannerComponent from "@/components/lib_components/BannerComponent";
+import MoreProfileOptions from "@/components/profile/MoreProfileOptions";
 import EditProfileButton from "@/components/sub_components/EditProfileButton";
 import { ProfileCounts } from "@/components/sub_components/ProfileCount";
 import ProfileSocialLinks from "@/components/sub_components/ProfileSocialLinks";
@@ -48,6 +49,10 @@ const ProfilePage = async () => {
           />
           <div className="flex items-center gap-3 sm:p-3 ml-auto p-3  ">
             <EditProfileButton user={user} />
+            <MoreProfileOptions
+              user={user as AuthUserProps}
+              authUserId={Number(user?.id)}
+            />
           </div>
         </div>
         <div className="flex flex-col gap-2 px-2 mt-2 mb-6 md:px-5 items-start">

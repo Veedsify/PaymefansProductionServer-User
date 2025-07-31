@@ -30,7 +30,6 @@ import { getSocket } from "../sub_components/sub/Socket";
 import GenerateVideoPoster from "@/utils/GenerateVideoPoster";
 import { imageTypes } from "@/lib/FileTypes";
 import { useMediaUpload } from "@/hooks/useMediaUpload";
-import { monitorUploadStatus } from "@/utils/DebugVideoUpload";
 
 // Utility Functions
 const escapeHtml = (str: string) => {
@@ -84,14 +83,6 @@ const MessageInputComponent = React.memo(
       getCompletedAttachments,
       getUploadProgress,
     } = useMediaUpload();
-
-    // Debug monitoring for uploads
-    useEffect(() => {
-      if (mediaFiles.length > 0) {
-        const cleanup = monitorUploadStatus(mediaFiles, 2000);
-        return cleanup;
-      }
-    }, [mediaFiles]);
 
     const resetMessageInput = useCallback(() => {
       setMessage("");
@@ -239,15 +230,18 @@ const MessageInputComponent = React.memo(
             toast.error("Some files failed to upload. Please try again.");
             return;
           }
-
-          console.log("✅ All uploads completed successfully!");
         }
 
-        console.log(
-          "✅ All upload checks passed, getting completed attachments",
-        );
         const attachments = getCompletedAttachments();
-        console.log("📎 Completed attachments:", attachments);
+        console.log("📎 Completed attachments:", {
+          count: attachments.length,
+          attachments: attachments.map((att) => ({
+            id: att.id,
+            type: att.type,
+            url: att.url,
+            size: att.size,
+          })),
+        });
 
         const newMessage: Message = {
           id: Math.random(),
@@ -270,11 +264,6 @@ const MessageInputComponent = React.memo(
         resetMessageInput();
         resetAllMedia();
 
-        // Emit to socket
-        console.log("🚀 Emitting message to socket:", {
-          message_id: newMessage.message_id,
-          hasAttachments: attachments.length > 0,
-        });
         socket.emit("new-message", newMessage);
       } catch (error: any) {
         console.error("Error sending message:", error);
@@ -293,6 +282,7 @@ const MessageInputComponent = React.memo(
         setIsSending(false);
       }
     }, [
+      isBlockedByReceiver,
       conversationId,
       socket,
       resetMessageInput,
@@ -489,7 +479,7 @@ const MessageInputComponent = React.memo(
                 />
               </svg>
               <span className="text-sm font-medium">
-                You can't send messages to this user
+                You can&apos;t send messages to this user
               </span>
             </div>
           </div>

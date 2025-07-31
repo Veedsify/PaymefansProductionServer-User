@@ -24,22 +24,24 @@ const BlockUserButton: React.FC<BlockUserButtonProps> = ({
   const [isChecking, setIsChecking] = useState(true);
 
   useEffect(() => {
-    checkUserBlockStatus();
-  }, [userId]);
-
-  const checkUserBlockStatus = async () => {
-    setIsChecking(true);
-    try {
-      const result = await checkBlockStatus(userId);
-      if (result.status && !result.error) {
-        setIsBlocked(result.isBlocked);
+    const checkUserBlockStatus = async () => {
+      setIsChecking(true);
+      try {
+        const result = await checkBlockStatus(userId);
+        if (result.status && !result.error) {
+          setIsBlocked(result.isBlocked);
+        }
+      } catch (error) {
+        console.error("Error checking block status:", error);
+      } finally {
+        setIsChecking(false);
       }
-    } catch (error) {
-      console.error("Error checking block status:", error);
-    } finally {
-      setIsChecking(false);
+    };
+
+    if (userId) {
+      checkUserBlockStatus();
     }
-  };
+  }, [userId]);
 
   const handleBlockToggle = async () => {
     if (isLoading) return;

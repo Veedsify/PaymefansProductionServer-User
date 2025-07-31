@@ -16,10 +16,6 @@ async function UploadWithTus(
     let lastProgress = 0;
     const startTime = Date.now();
 
-    console.log("🚀 Starting TUS upload for:", file.name, "ID:", id);
-    console.log("📁 File size:", file.size, "bytes");
-    console.log("🔗 Upload URL:", uploadUrl);
-
     // Timeout after 10 minutes for large files
     const timeout = setTimeout(() => {
       if (!resolved) {
@@ -221,10 +217,6 @@ async function UploadWithTus(
           tryResolve();
         } else {
           console.warn("⚠️ No Stream-Media-Id header found in response");
-          console.log(
-            "📋 All response headers:",
-            "Header inspection not available in TUS client",
-          );
         }
       },
     });

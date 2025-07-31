@@ -59,7 +59,7 @@ const HookupPage = () => {
     socket.emit("pool-models-and-hookup");
   }, [socket]);
 
-  const Hookups = (data: any) => {
+  const Hookups = (data: { hookups: any[] }) => {
     setLoading(false);
     if (data?.hookups) {
       const shuffledHookups = shuffle(uniqBy(data.hookups, "username"));
@@ -145,7 +145,8 @@ const HookupPage = () => {
       {searchQuery && (
         <div className="mb-4 text-sm text-gray-600">
           {filteredHookups.length} result
-          {filteredHookups.length !== 1 ? "s" : ""} found for "{searchQuery}"
+          {filteredHookups.length !== 1 ? "s" : ""} found for &apos;
+          {searchQuery}&apos;
         </div>
       )}
 

@@ -16,14 +16,8 @@ import WishList from "@/components/sub_components/WishList";
 import { MessagesConversationProvider } from "@/contexts/MessageConversationContext";
 import UserAccountSuspendedScreen from "@/components/sub_components/UserAccountSuspendedScreen";
 import ConfigProvider from "@/contexts/ConfigContext";
-import { Bricolage_Grotesque } from "next/font/google";
+import "@fontsource-variable/bricolage-grotesque";
 import GetLocationContext from "@/contexts/GetLocationContext";
-
-const font = Bricolage_Grotesque({
-  weight: ["200", "300", "400", "500", "600", "700", "800"],
-  subsets: ["latin"],
-  display: "swap",
-});
 
 export const metadata: Metadata = {
   title: "Paymefans",
@@ -52,7 +46,7 @@ export default async function RootLayout({
     return (
       <html>
         <body
-          className={`bg-white dark:bg-black min-h-dvh flex items-center justify-center ${font.className}`}
+          className={`bg-white dark:bg-black min-h-dvh flex items-center justify-center`}
         >
           <UserAccountSuspendedScreen user={user} />
         </body>
@@ -85,7 +79,7 @@ export default async function RootLayout({
         <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
         <meta property="og:image" content="/site/logo.svg" />
       </head>
-      <body className={`dark:bg-black min-h-dvh ${font.className}`}>
+      <body className={`dark:bg-black min-h-dvh`}>
         <ConfigProvider>
           <UserContextProvider user={user}>
             <GetLocationContext user={user}>
@@ -101,7 +95,8 @@ export default async function RootLayout({
                         border: "1px solid #CC0DF8",
                         borderRadius: "100vmax",
                       },
-                      className: "dark:bg-gray-900 dark:text-white dark:border-gray-600",
+                      className:
+                        "dark:bg-gray-900 dark:text-white dark:border-gray-600",
                     }}
                   />
                   <SonnerToast

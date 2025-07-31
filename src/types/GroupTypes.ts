@@ -19,7 +19,7 @@ export interface Group {
   };
 }
 
-export interface GroupMember {
+interface GroupMember {
   id: number;
   userId: number;
   groupId: number;
@@ -34,7 +34,7 @@ export interface GroupMember {
   user: User;
 }
 
-export interface GroupMessage {
+interface GroupMessage {
   id: number;
   content?: string;
   senderId: number;
@@ -51,7 +51,7 @@ export interface GroupMessage {
   tags: GroupTag[];
 }
 
-export interface GroupAttachment {
+interface GroupAttachment {
   id: number;
   url: string;
   type: string;
@@ -61,7 +61,7 @@ export interface GroupAttachment {
   createdAt: string;
 }
 
-export interface GroupTag {
+interface GroupTag {
   id: number;
   userId: number;
   messageId: number;
@@ -69,7 +69,7 @@ export interface GroupTag {
   user: User;
 }
 
-export interface GroupSettings {
+interface GroupSettings {
   id: number;
   groupId: number;
   allowMemberInvites: boolean;
@@ -82,7 +82,7 @@ export interface GroupSettings {
   updatedAt: string;
 }
 
-export interface GroupJoinRequest {
+interface GroupJoinRequest {
   id: number;
   userId: number;
   groupId: number;
@@ -94,7 +94,7 @@ export interface GroupJoinRequest {
   group: Group;
 }
 
-export interface GroupInvitation {
+interface GroupInvitation {
   id: number;
   inviterId: number;
   inviteeId: number;
@@ -108,7 +108,7 @@ export interface GroupInvitation {
   group: Group;
 }
 
-export interface BlockedGroupParticipant {
+interface BlockedGroupParticipant {
   id: number;
   userId: number;
   groupId: number;
@@ -121,7 +121,7 @@ export interface BlockedGroupParticipant {
   blocker: User;
 }
 
-export interface User {
+interface User {
   id: number;
   username: string;
   fullname: string;
@@ -139,19 +139,19 @@ export enum GroupType {
   SECRET = "SECRET",
 }
 
-export enum GroupMemberRole {
+enum GroupMemberRole {
   ADMIN = "ADMIN",
   MODERATOR = "MODERATOR",
   MEMBER = "MEMBER",
 }
 
-export enum JoinRequestStatus {
+enum JoinRequestStatus {
   PENDING = "PENDING",
   APPROVED = "APPROVED",
   REJECTED = "REJECTED",
 }
 
-export enum InvitationStatus {
+enum InvitationStatus {
   PENDING = "PENDING",
   ACCEPTED = "ACCEPTED",
   DECLINED = "DECLINED",
@@ -159,7 +159,7 @@ export enum InvitationStatus {
 }
 
 // Request/Response types
-export interface CreateGroupRequest {
+interface CreateGroupRequest {
   name: string;
   description?: string;
   groupType: GroupType;
@@ -190,23 +190,23 @@ export interface UpdateGroupSettingsRequest {
   autoApproveJoinReqs?: boolean;
 }
 
-export interface SendGroupMessageRequest {
+interface SendGroupMessageRequest {
   content?: string;
   messageType?: string;
   replyToId?: number;
   attachments?: File[];
 }
 
-export interface InviteToGroupRequest {
+interface InviteToGroupRequest {
   userIds: number[];
   message?: string;
 }
 
-export interface JoinGroupRequest {
+interface JoinGroupRequest {
   message?: string;
 }
 
-export interface UpdateMemberRoleRequest {
+interface UpdateMemberRoleRequest {
   role: GroupMemberRole;
 }
 
@@ -219,7 +219,7 @@ export interface ApiResponse<T = any> {
   errors?: string[];
 }
 
-export interface PaginationMeta {
+interface PaginationMeta {
   page: number;
   limit: number;
   total: number;
@@ -229,32 +229,32 @@ export interface PaginationMeta {
   cursor?: number;
 }
 
-export interface GroupListResponse {
+interface GroupListResponse {
   groups: Group[];
   pagination: PaginationMeta;
 }
 
-export interface GroupMembersResponse {
+interface GroupMembersResponse {
   members: GroupMember[];
   pagination: PaginationMeta;
 }
 
-export interface GroupMessagesResponse {
+interface GroupMessagesResponse {
   messages: GroupMessage[];
   pagination: PaginationMeta;
 }
 
-export interface GroupJoinRequestsResponse {
+interface GroupJoinRequestsResponse {
   requests: GroupJoinRequest[];
   pagination: PaginationMeta;
 }
 
-export interface GroupInvitationsResponse {
+interface GroupInvitationsResponse {
   invitations: GroupInvitation[];
   pagination: PaginationMeta;
 }
 
-export interface UserGroupStats {
+interface UserGroupStats {
   adminGroups: number;
   memberGroups: number;
   totalGroups: number;
@@ -263,27 +263,27 @@ export interface UserGroupStats {
 }
 
 // Search and Filter types
-export interface GroupSearchParams {
+interface GroupSearchParams {
   query?: string;
   groupType?: GroupType;
   page?: number;
   limit?: number;
 }
 
-export interface GroupMemberParams {
+interface GroupMemberParams {
   page?: number;
   limit?: number;
   role?: GroupMemberRole;
 }
 
-export interface GroupMessagesParams {
+interface GroupMessagesParams {
   page?: number;
   limit?: number;
   cursor?: number;
 }
 
 // Form types for components
-export interface GroupFormData {
+interface GroupFormData {
   name: string;
   description: string;
   groupType: GroupType;
@@ -296,14 +296,14 @@ export interface GroupFormData {
   autoApproveJoinReqs: boolean;
 }
 
-export interface MessageFormData {
+interface MessageFormData {
   content: string;
   attachments: File[];
   replyToId?: number;
 }
 
 // Component Props types
-export interface GroupCardProps {
+interface GroupCardProps {
   group: Group;
   onJoin?: (groupId: number) => void;
   onLeave?: (groupId: number) => void;
@@ -311,7 +311,7 @@ export interface GroupCardProps {
   showActions?: boolean;
 }
 
-export interface GroupMemberCardProps {
+interface GroupMemberCardProps {
   member: GroupMember;
   currentUserRole?: GroupMemberRole;
   onRoleChange?: (memberId: number, role: GroupMemberRole) => void;
@@ -320,7 +320,7 @@ export interface GroupMemberCardProps {
   onUnmute?: (memberId: number) => void;
 }
 
-export interface GroupMessageProps {
+interface GroupMessageProps {
   message: GroupMessage;
   currentUserId: number;
   onReply?: (messageId: number) => void;
@@ -328,7 +328,7 @@ export interface GroupMessageProps {
   onDelete?: (messageId: number) => void;
 }
 
-export interface GroupSettingsProps {
+interface GroupSettingsProps {
   group: Group;
   onUpdateSettings?: (settings: UpdateGroupSettingsRequest) => void;
   onUpdateGroup?: (data: UpdateGroupRequest) => void;
@@ -336,7 +336,7 @@ export interface GroupSettingsProps {
 }
 
 // Hook return types
-export interface UseGroupsReturn {
+interface UseGroupsReturn {
   groups: Group[];
   loading: boolean;
   error: string | null;
@@ -352,7 +352,7 @@ export interface UseGroupsReturn {
   leaveGroup: (groupId: number) => Promise<boolean>;
 }
 
-export interface UseGroupMessagesReturn {
+interface UseGroupMessagesReturn {
   messages: GroupMessage[];
   loading: boolean;
   error: string | null;
@@ -369,7 +369,7 @@ export interface UseGroupMessagesReturn {
   deleteMessage: (messageId: number) => Promise<boolean>;
 }
 
-export interface UseGroupMembersReturn {
+interface UseGroupMembersReturn {
   members: GroupMember[];
   loading: boolean;
   error: string | null;

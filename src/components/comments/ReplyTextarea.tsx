@@ -272,10 +272,17 @@ const ReplyPostComponent = ({ options }: ReplyPostProps) => {
         setCommentSending(false);
         toast.success(POST_CONFIG.COMMENT.COMMENT_CREATED_SUCCESS_MSG);
         options.setNewComment?.({
-          text: finalHtmlContent,
-          files,
-          author_username: user?.username || "",
-          time: new Date(),
+          userId: user?.id as number,
+          postId: options.post_id,
+          parentId: options.parentId as string,
+          comment: finalHtmlContent,
+          attachment: files,
+          likes: 0,
+          impressions: 0,
+          replies: 0,
+          likedByme: false,
+          date: new Date(),
+          username: user?.username || "",
           name: user?.name || "",
           profile_image: user?.profile_image || "",
           comment_id: data.comment_id,

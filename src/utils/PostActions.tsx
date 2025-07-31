@@ -41,7 +41,7 @@ const QuickPostActionHooks = ({ options }: QuickPostActionsProps) => {
               headers: {
                 Authorization: `Bearer ${token}`,
               },
-            }
+            },
           );
           if (deletePost.status === 200) {
             toast.dismiss();
@@ -106,7 +106,7 @@ const QuickPostActionHooks = ({ options }: QuickPostActionsProps) => {
     // Add dynamic show/hide for price input
     const visibility = modal.querySelector("#visibility") as HTMLSelectElement;
     const priceInputContainer = modal.querySelector(
-      "#price-input-container"
+      "#price-input-container",
     ) as HTMLDivElement;
 
     visibility.addEventListener("change", () => {
@@ -134,7 +134,7 @@ const QuickPostActionHooks = ({ options }: QuickPostActionsProps) => {
             headers: {
               Authorization: `Bearer ${token}`,
             },
-          }
+          },
         );
         if (setVisibility.status === 200) {
           toast.success(POST_CONFIG.QUICK_ACTION_CONFIG.VISIBILITY_SUCCESSFUL);
@@ -167,7 +167,7 @@ const QuickPostActionHooks = ({ options }: QuickPostActionsProps) => {
           className: "space-y-6",
           innerHTML: `
             <div class="flex flex-wrap gap-4">
-              <button onclick="window.open('https://twitter.com/intent/tweet?url=${process.env.NEXT_PUBLIC_SERVER_URL}/posts/${options.post_id}')" 
+              <button onclick="window.open('https://twitter.com/intent/tweet?url=${process.env.NEXT_PUBLIC_SERVER_URL}/posts/${options.post_id}')"
                 class="flex items-center space-x-2 px-4 py-2 rounded-lg text-white bg-[#1DA1F2] hover:bg-[#1a8cd8] transition-colors">
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                   <path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z"></path>
@@ -226,7 +226,7 @@ const QuickPostActionHooks = ({ options }: QuickPostActionsProps) => {
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
           },
-        }
+        },
       );
       if (repost.status === 200 && repost.data.error === false) {
         toast.success(repost.data.message, {

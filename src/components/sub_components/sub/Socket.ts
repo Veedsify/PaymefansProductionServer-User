@@ -70,7 +70,7 @@ export const getSocket = (): Socket => {
   });
 };
 
-export const disconnectSocket = () => {
+const disconnectSocket = () => {
   if (heartbeatInterval) {
     clearInterval(heartbeatInterval);
     heartbeatInterval = null;
@@ -87,11 +87,11 @@ export const disconnectSocket = () => {
 };
 
 // Helper function to check if socket is connected
-export const isSocketConnected = (): boolean => {
+const isSocketConnected = (): boolean => {
   return socket?.connected || false;
 };
 
 // Helper function to get current username
-export const getCurrentUsername = (): string | null => {
+const getCurrentUsername = (): string | null => {
   return currentUsername;
 };

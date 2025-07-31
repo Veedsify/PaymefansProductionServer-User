@@ -33,22 +33,36 @@ const Groups = () => {
     data: groupsData,
     isLoading,
     isError,
+    error,
     refetch,
   } = useQuery<GroupsResponse>({
-    queryKey: ["groups", user?.user_id],
+    queryKey: ["groups", user?.id],
     queryFn: fetchUserGroups,
     enabled: !!user,
     refetchInterval: 30000, // Refetch every 30 seconds
   });
 
   // Fetch available groups for search
-  const { data: availableGroupsData, isLoading: isSearchLoading } =
-    useQuery<GroupsResponse>({
-      queryKey: ["available-groups", searchQuery],
-      queryFn: () => searchGroups(searchQuery, 20),
-      enabled: !!user && activeTab === "available",
-      staleTime: 1000 * 60 * 5, // 5 minutes
-    });
+  const { data: availableGroupsData, isLoading: isSearchLoading } = useQuery({
+    queryKey: ["available-groups", searchQuery],
+    queryFn: () => searchGroups(searchQuery, 20),
+    enabled: !!user && activeTab === "available",
+    staleTime: 1000 * 60 * 5, // 5 minutes
+  });
+
+  // Check if user is properly authenticated
+  if (!user && !isLoading) {
+    return (
+      <div className="flex flex-col items-center justify-center h-full text-center py-12">
+        <h3 className="text-lg font-semibold text-gray-600 dark:text-gray-400 mb-2">
+          Authentication Required
+        </h3>
+        <p className="text-gray-500 dark:text-gray-500 mb-4">
+          Please log in to view your groups.
+        </p>
+      </div>
+    );
+  }
 
   const handleJoinGroup = async (groupId: string) => {
     try {
@@ -148,9 +162,14 @@ const Groups = () => {
       {/* Error State */}
       {isError && (
         <div className="text-center py-8">
-          <p className="text-red-500 dark:text-red-400">
+          <p className="text-red-500 dark:text-red-400 mb-2">
             Failed to load groups. Please try again.
           </p>
+          {error && (
+            <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
+              Error: {error.message || "Unknown error occurred"}
+            </p>
+          )}
           <button
             onClick={() => refetch()}
             className="mt-2 px-4 py-2 bg-primary-dark-pink text-white rounded-lg hover:bg-opacity-90 transition-colors"
@@ -175,8 +194,8 @@ const Groups = () => {
                     No Groups Yet
                   </h3>
                   <p className="text-gray-500 dark:text-gray-500 mb-4">
-                    You haven't joined any groups yet. Find and join groups to
-                    start chatting!
+                    You haven&apos;t joined any groups yet. Find and join groups
+                    to start chatting!
                   </p>
                   <button
                     onClick={() => setActiveTab("available")}
@@ -292,7 +311,7 @@ const Groups = () => {
               {availableGroups.length === 0 && searchQuery ? (
                 <div className="text-center py-8">
                   <p className="text-gray-500 dark:text-gray-400">
-                    No groups found matching "{searchQuery}"
+                    No groups found matching &apos;{searchQuery}&apos;
                   </p>
                 </div>
               ) : availableGroups.length === 0 ? (

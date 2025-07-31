@@ -5,7 +5,7 @@ import toast from "react-hot-toast";
 import ROUTE from "@/config/routes";
 
 // Add to wishlist
-export const useAddToWishlist = () => {
+const useAddToWishlist = () => {
   const queryClient = useQueryClient();
   const { addToWishlist } = useWishlistStore();
 
@@ -39,7 +39,7 @@ export const useAddToWishlist = () => {
 };
 
 // Remove from wishlist
-export const useRemoveFromWishlist = () => {
+const useRemoveFromWishlist = () => {
   const queryClient = useQueryClient();
   const { removeFromWishlist } = useWishlistStore();
 
@@ -84,7 +84,7 @@ export const useWishlist = () => {
 };
 
 // Check if product is in wishlist
-export const useCheckWishlist = (productId: string) => {
+const useCheckWishlist = (productId: string) => {
   return useQuery({
     queryKey: ["wishlist-check", productId],
     queryFn: async () => {
@@ -99,7 +99,7 @@ export const useCheckWishlist = (productId: string) => {
 };
 
 // Get wishlist count
-export const useWishlistCount = () => {
+const useWishlistCount = () => {
   return useQuery({
     queryKey: ["wishlist-count"],
     queryFn: async () => {

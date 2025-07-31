@@ -21,6 +21,7 @@ export type PostEditorProps = {
     post_likes: number;
     post_comments: number;
     post_reposts: number;
+    post_price?: number;
     PostLike: any[];
     UserMedia: UserMediaProps[];
   };
@@ -142,12 +143,24 @@ interface FileHolderProps {
 }
 
 interface Comment {
-  text: string;
-  files: File[];
-  author_username: string;
-  time: Date;
+  comment_id: string;
   name: string;
+  username: string;
+  userId: number;
+  postId: string;
+  parentId: string | null;
   profile_image: string;
+  comment: string;
+  attachment?: any;
+  likes: number;
+  impressions: number;
+  replies: number;
+  date: Date;
+  likedByme: boolean;
+  children?: Comment[];
+  totalReplies?: number;
+  hasMoreReplies?: boolean;
+  relevanceScore?: number;
 }
 
 export interface ReplyPostProps {
@@ -377,14 +390,25 @@ type postAudienceDataProps = {
 };
 
 // COMMENT AND REPLY PROPS
-interface Comment {
-  text: string;
-  files: File[];
-  author_username: string;
-  time: Date;
-  name: string;
+interface EnhancedComment {
   comment_id: string;
+  name: string;
+  username: string;
+  userId: number;
+  postId: string;
+  parentId: string | null;
   profile_image: string;
+  comment: string;
+  attachment?: any;
+  likes: number;
+  impressions: number;
+  replies: number;
+  date: Date;
+  likedByme: boolean;
+  children?: EnhancedComment[];
+  totalReplies?: number;
+  hasMoreReplies?: boolean;
+  relevanceScore?: number;
 }
 
 // FOLLOWERS DISPLAY PROPS

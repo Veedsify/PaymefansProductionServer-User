@@ -5,6 +5,8 @@ import {
   getSocket,
 } from "@/components/sub_components/sub/Socket";
 import { AuthUserProps } from "@/types/User";
+import axiosInstance from "@/utils/Axios";
+import { AxiosResponse } from "axios";
 import { usePathname } from "next/navigation";
 import { ReactNode, useEffect } from "react";
 import { create } from "zustand";
@@ -30,26 +32,41 @@ interface UserContextProviderProps {
   children: ReactNode;
 }
 
-export const UserContextProvider = ({
-  user,
-  children,
-}: UserContextProviderProps) => {
+export const UserContextProvider = ({ children }: UserContextProviderProps) => {
   const location = usePathname();
   const setUser = useUserStore((state) => state.setUser);
-  const socket = connectSocket(user?.username);
 
   useEffect(() => {
-    if (!user) {
-      window.location.href = `/login?redirect=${location}`;
-      return;
-    }
-    setUser(user);
-    const intervalId = setInterval(() => {
-      socket?.emit("still-active", user?.username);
-    }, 10_000);
+    let intervalId: NodeJS.Timeout | undefined;
+    async function fetchUser() {
+      const res: AxiosResponse<{ user: AuthUserProps }> =
+        await axiosInstance.get(
+          `${process.env.NEXT_PUBLIC_TS_EXPRESS_URL}/auth/retrieve`,
+          {
+            withCredentials: true,
+          },
+        );
 
+      if (res.status === 401) {
+        window.location.href = `/login?redirect=${location}`;
+      }
+
+      if (res.status === 200 && res.data?.user) {
+        const user = res.data.user as AuthUserProps;
+        setUser(user);
+        intervalId = setInterval(() => {
+          socket?.emit("still-active", user?.username);
+        }, 10_000);
+        const socket = connectSocket(user?.username);
+      } else {
+        window.location.href = `/login?redirect=${location}`;
+        setUser(null);
+      }
+    }
+
+    fetchUser();
     return () => clearInterval(intervalId);
-  }, [user, location, socket, setUser]);
+  }, [location, setUser]);
 
   return <>{children}</>;
 };

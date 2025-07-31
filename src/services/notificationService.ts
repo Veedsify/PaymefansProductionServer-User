@@ -1,6 +1,6 @@
 import axiosInstance from "@/utils/Axios";
 
-export interface NotificationResponse {
+interface NotificationResponse {
     error: boolean;
     message?: string;
     data?: {

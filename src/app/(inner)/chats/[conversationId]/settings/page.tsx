@@ -47,44 +47,43 @@ const ConversationSettingsPage = () => {
   const { user } = useUserAuthContext();
   const conversationId = params.conversationId as string;
 
-  // Fetch conversation receiver data
-  const fetchConversationReceiver = async () => {
-    try {
-      const response = await axios.get(
-        `${process.env.NEXT_PUBLIC_TS_EXPRESS_URL}/conversations/receiver/${conversationId}`,
-        {
-          withCredentials: true,
-        },
-      );
-
-      const data = response.data;
-
-      if (!data.error && data.receiver) {
-        setConversationReceiver(data.receiver);
-
-        // Check if user is already blocked
-        if (data.receiver.id && user?.id !== data.receiver.id) {
-          try {
-            const blockResult = await checkBlockStatus(data.receiver.id);
-            if (blockResult.status && !blockResult.error) {
-              setIsUserBlocked(blockResult.isBlocked);
-            }
-          } catch (error) {
-            console.error("Error checking block status:", error);
-          }
-        }
-      } else {
-        setError(data.message || "Failed to fetch conversation data");
-      }
-    } catch (error) {
-      console.error("Error fetching conversation receiver:", error);
-      setError("Failed to load conversation data");
-    } finally {
-      setLoading(false);
-    }
-  };
-
   useEffect(() => {
+    // Fetch conversation receiver data
+    const fetchConversationReceiver = async () => {
+      try {
+        const response = await axios.get(
+          `${process.env.NEXT_PUBLIC_TS_EXPRESS_URL}/conversations/receiver/${conversationId}`,
+          {
+            withCredentials: true,
+          },
+        );
+
+        const data = response.data;
+
+        if (!data.error && data.receiver) {
+          setConversationReceiver(data.receiver);
+
+          // Check if user is already blocked
+          if (data.receiver.id && user?.id !== data.receiver.id) {
+            try {
+              const blockResult = await checkBlockStatus(data.receiver.id);
+              if (blockResult.status && !blockResult.error) {
+                setIsUserBlocked(blockResult.isBlocked);
+              }
+            } catch (error) {
+              console.error("Error checking block status:", error);
+            }
+          }
+        } else {
+          setError(data.message || "Failed to fetch conversation data");
+        }
+      } catch (error) {
+        console.error("Error fetching conversation receiver:", error);
+        setError("Failed to load conversation data");
+      } finally {
+        setLoading(false);
+      }
+    };
     if (conversationId) {
       fetchConversationReceiver();
     }

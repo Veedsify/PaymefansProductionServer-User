@@ -34,6 +34,8 @@ import { usePostMediaUploadContext } from "@/contexts/PostMediaUploadContext";
 import FetchMentions from "@/utils/data/FetchMentions";
 import { usePostEditorContext } from "@/contexts/PostEditorContext";
 import { useConfigContext } from "@/contexts/ConfigContext";
+import ExistingMediaPreview from "./ExistingMediaPreview";
+import Loader from "@/components/lib_components/LoadingAnimation";
 
 interface MentionSuggestion extends MentionUser {
   highlighted?: boolean;
@@ -47,6 +49,7 @@ const PostEditor = React.memo(({ posts }: PostEditorProps) => {
   const [content, setContent] = useState<string>("");
   const { user } = useUserAuthContext();
   const [price, setPrice] = useState<number>(0);
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const { setVisibility, visibility, setPostText, postText } =
     useNewPostStore();
   const [editedMedia, setEditedMedia] = useState<UserMediaProps[]>([]);
@@ -55,7 +58,7 @@ const PostEditor = React.memo(({ posts }: PostEditorProps) => {
   const { mediaUploadComplete, setMediaUploadComplete } =
     usePostMediaUploadContext();
   const isWaterMarkEnabled = usePostEditorContext(
-    (state) => state.isWaterMarkEnabled
+    (state) => state.isWaterMarkEnabled,
   );
   const { config } = useConfigContext();
 
@@ -102,7 +105,7 @@ const PostEditor = React.memo(({ posts }: PostEditorProps) => {
             ]
           : []),
       ] as PostAudienceDataProps[],
-    [user]
+    [user],
   );
 
   // User search simulation
@@ -117,7 +120,7 @@ const PostEditor = React.memo(({ posts }: PostEditorProps) => {
         }, 300);
       });
     },
-    []
+    [],
   );
 
   // Mention search
@@ -125,7 +128,7 @@ const PostEditor = React.memo(({ posts }: PostEditorProps) => {
     if (mentionQuery.length > 0) {
       searchUsers(mentionQuery).then((users) => {
         setMentionSuggestions(
-          users.map((user, index) => ({ ...user, highlighted: index === 0 }))
+          users.map((user, index) => ({ ...user, highlighted: index === 0 })),
         );
         setSelectedMentionIndex(0);
       });
@@ -172,7 +175,7 @@ const PostEditor = React.memo(({ posts }: PostEditorProps) => {
         setMentionQuery("");
       }
     },
-    [setPostText]
+    [setPostText],
   );
 
   // Mention selection
@@ -208,7 +211,7 @@ const PostEditor = React.memo(({ posts }: PostEditorProps) => {
         setCursorPosition(newCursorPos);
       }, 0);
     },
-    [mentionStartPos, cursorPosition, mentions, setPostText]
+    [mentionStartPos, cursorPosition, mentions, setPostText],
   );
   // Keydown navigation
   const handleKeyDown = useCallback(
@@ -218,13 +221,13 @@ const PostEditor = React.memo(({ posts }: PostEditorProps) => {
           case "ArrowDown":
             e.preventDefault();
             setSelectedMentionIndex((prev) =>
-              prev < mentionSuggestions.length - 1 ? prev + 1 : 0
+              prev < mentionSuggestions.length - 1 ? prev + 1 : 0,
             );
             break;
           case "ArrowUp":
             e.preventDefault();
             setSelectedMentionIndex((prev) =>
-              prev > 0 ? prev - 1 : mentionSuggestions.length - 1
+              prev > 0 ? prev - 1 : mentionSuggestions.length - 1,
             );
             break;
           case "Enter":
@@ -239,16 +242,26 @@ const PostEditor = React.memo(({ posts }: PostEditorProps) => {
         }
       }
     },
-    [showMentions, mentionSuggestions, selectedMentionIndex, selectMention]
+    [showMentions, mentionSuggestions, selectedMentionIndex, selectMention],
   );
 
   // Preload existing post data
   useEffect(() => {
     if (posts) {
-      setPostText(posts.content);
+      const existingContent = posts.content || "";
+      setContent(existingContent);
+      setPostText(existingContent);
+      // Update word limit based on existing content
+      setWordLimit(1000 - existingContent.length);
+
       if (posts.post_audience) {
+        let audienceName = posts.post_audience.toLowerCase();
+        // Map "price" audience to "Price" for the dropdown
+        if (audienceName === "price") {
+          audienceName = "price";
+        }
         const audience = postAudienceData.find(
-          (aud) => aud.name.toLowerCase() === posts.post_audience.toLowerCase()
+          (aud) => aud.name.toLowerCase() === audienceName,
         );
         if (audience) {
           setVisibility(audience.name);
@@ -257,6 +270,9 @@ const PostEditor = React.memo(({ posts }: PostEditorProps) => {
       }
       if (posts.UserMedia) {
         setEditedMedia(posts.UserMedia);
+      }
+      if (posts.post_price) {
+        setPrice(posts.post_price);
       }
     }
   }, [posts, setPostText, setVisibility, postAudienceData]);
@@ -268,12 +284,20 @@ const PostEditor = React.memo(({ posts }: PostEditorProps) => {
 
   const removeThisMedia = (id: string, type: string) => {
     setMedia((prevMedia) =>
-      prevMedia ? prevMedia.filter((file) => file.fileId !== id) : null
+      prevMedia ? prevMedia.filter((file) => file.fileId !== id) : null,
     );
     const removeId = media?.find((med) => med.fileId === id);
     if (removeId) {
       setRemovedIds((prevIds) => [...prevIds, { id: removeId.id, type }]);
     }
+  };
+
+  // Remove existing media
+  const removeExistingMedia = (mediaId: string, mediaType: string) => {
+    setEditedMedia((prevMedia) =>
+      prevMedia.filter((item) => item.media_id !== mediaId),
+    );
+    setRemovedIds((prevIds) => [...prevIds, { id: mediaId, type: mediaType }]);
   };
 
   // Update audience
@@ -283,7 +307,7 @@ const PostEditor = React.memo(({ posts }: PostEditorProps) => {
       setVisibility(audience.name);
       setDropdown(false);
     },
-    [setVisibility]
+    [setVisibility],
   );
 
   const setPriceHandler = (value: string) => {
@@ -311,6 +335,10 @@ const PostEditor = React.memo(({ posts }: PostEditorProps) => {
 
   // Submit post
   const handlePostSubmit = async () => {
+    if (isSubmitting) {
+      return; // Prevent double submission
+    }
+
     if ((!content || content.trim() === "") && !media) {
       toast.error("Post is empty, please write something.", {
         id: "post-upload",
@@ -336,9 +364,15 @@ const PostEditor = React.memo(({ posts }: PostEditorProps) => {
       return;
     }
 
-    toast.loading("Creating your post...", {
-      id: "post-upload",
-    });
+    setIsSubmitting(true);
+    const isEditing = posts?.post_id;
+
+    toast.loading(
+      isEditing ? "Saving your changes..." : "Creating your post...",
+      {
+        id: "post-upload",
+      },
+    );
 
     // Convert to HTML
     const savePostOptions = {
@@ -356,28 +390,37 @@ const PostEditor = React.memo(({ posts }: PostEditorProps) => {
     };
 
     const res = await SavePost(savePostOptions);
+    setIsSubmitting(false);
+
     if (res.error) {
-      swal({
-        title: "Error",
-        text: res.message,
-        icon: "error",
-        buttons: ["Cancel", "Retry"],
-        dangerMode: true,
-      });
-    } else {
-      toast.success(POST_CONFIG.POST_CREATED_SUCCESS_MSG, {
+      toast.error(res.message, {
         id: "post-upload",
       });
-      setPostText("");
-      setVisibility("Public");
-      router.prefetch("/profile");
-      router.push("/profile");
-      setMedia(null);
-      setEditedMedia([]);
-      setRemovedIds([]);
-      setMediaUploadComplete(false);
-      setPrice(0);
-      setMentions([]);
+    } else {
+      const successMessage = isEditing
+        ? "Post updated successfully!"
+        : POST_CONFIG.POST_CREATED_SUCCESS_MSG;
+      toast.success(successMessage, {
+        id: "post-upload",
+      });
+
+      if (isEditing) {
+        // For editing, just redirect without clearing form
+        router.prefetch("/profile");
+        router.push("/profile");
+      } else {
+        // For creating, clear the form
+        setPostText("");
+        setVisibility("Public");
+        setMedia(null);
+        setEditedMedia([]);
+        setRemovedIds([]);
+        setMediaUploadComplete(false);
+        setPrice(0);
+        setMentions([]);
+        router.prefetch("/profile");
+        router.push("/profile");
+      }
     }
   };
 
@@ -388,9 +431,20 @@ const PostEditor = React.memo(({ posts }: PostEditorProps) => {
           <PostCancel />
           <button
             onClick={handlePostSubmit}
-            className="bg-primary-dark-pink text-white p-2 px-8 rounded ml-auto text-sm font-semibold cursor-pointer"
+            disabled={isSubmitting}
+            className={`text-white p-2 px-8 rounded ml-auto text-sm font-semibold transition-all duration-200 transform ${
+              isSubmitting
+                ? "bg-gray-400 cursor-not-allowed opacity-50 scale-95"
+                : "bg-primary-dark-pink hover:bg-primary-dark-pink/90 cursor-pointer shadow-lg hover:shadow-xl hover:scale-105 active:scale-95"
+            }`}
           >
-            Post
+            {isSubmitting
+              ? posts?.post_id
+                ? "Saving..."
+                : "Creating..."
+              : posts?.post_id
+                ? "Save"
+                : "Post"}
           </button>
         </div>
         <div className="flex items-center gap-2">
@@ -416,17 +470,18 @@ const PostEditor = React.memo(({ posts }: PostEditorProps) => {
         <div className="relative mt-3">
           <textarea
             ref={textareaRef}
-            className="block dark:bg-gray-950 dark:text-white rounded-md mb-3 leading-relaxed text-gray-700 font-medium w-full resize-none outline-none overflow-auto"
+            className="block dark:bg-gray-950 dark:text-white rounded-md mb-3 leading-relaxed text-gray-700 font-medium w-full resize-none outline-none overflow-auto min-h-[120px] p-3 border border-gray-300 dark:border-gray-700"
             placeholder="What's on your mind? Use @ to mention someone..."
-            defaultValue={postText}
+            value={content}
             onChange={handleTextareaChange}
             onKeyDown={handleKeyDown}
+            rows={6}
           />
 
           {showMentions && (
             <div
-              className="absolute z-50 w-full bg-white dark:bg-gray-800 
-                          border border-gray-300 dark:border-gray-700 
+              className="absolute z-50 w-full bg-white dark:bg-gray-800
+                          border border-gray-300 dark:border-gray-700
                           rounded-md shadow-lg max-h-60 overflow-y-auto p-1"
               style={{ top: "100%", left: 0 }}
             >
@@ -510,7 +565,7 @@ const PostEditor = React.memo(({ posts }: PostEditorProps) => {
                   <button
                     onClick={() =>
                       setMentions((prev) =>
-                        prev.filter((m) => m.id !== mention.id)
+                        prev.filter((m) => m.id !== mention.id),
                       )
                     }
                     className="text-gray-500 hover:text-red-500 ml-1"
@@ -529,6 +584,17 @@ const PostEditor = React.memo(({ posts }: PostEditorProps) => {
           </p>
         </div>
       </div>
+
+      {/* Existing Media Preview */}
+      {editedMedia.length > 0 && (
+        <div className="md:px-8 px-4">
+          <ExistingMediaPreview
+            media={editedMedia}
+            onRemove={removeExistingMedia}
+          />
+        </div>
+      )}
+
       <PostMediaPreview
         submitPost={handleMediaAttachment}
         removeThisMedia={removeThisMedia}
@@ -610,21 +676,18 @@ const AudienceDropdown = React.memo(
                 type="text"
                 onChange={(e) => {
                   if (e.target.value === "" || !e.target.value) {
-                    setPrice("0")
-                    return
+                    setPrice("0");
+                    return;
                   }
-                  setPrice(e.target.value)
+                  setPrice(e.target.value);
                 }}
                 placeholder="Price"
                 className="outline-0 border-0 rounded-3xl px-1 text-base py-[6px] text-gray-800 dark:text-gray-200"
               />
               {price > 0 && config?.point_conversion_rate_ngn && (
                 <p className="text-primary-dark-pink ml-auto">
-                  ≈{" "}
-                    ₦
-                    {(
-                      price * config.point_conversion_rate_ngn
-                    ).toLocaleString()}
+                  ≈ ₦
+                  {(price * config.point_conversion_rate_ngn).toLocaleString()}
                 </p>
               )}
             </div>
@@ -632,7 +695,7 @@ const AudienceDropdown = React.memo(
         )}
       </div>
     );
-  }
+  },
 );
 
 AudienceDropdown.displayName = "AudienceDropdown";

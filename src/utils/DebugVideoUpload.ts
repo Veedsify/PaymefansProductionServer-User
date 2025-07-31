@@ -11,7 +11,7 @@ interface DebugUploadResult {
 /**
  * Debug helper to test video upload completion issues
  */
-export const debugVideoUpload = async (
+const debugVideoUpload = async (
   file: File,
   uploadUrl: string,
 ): Promise<DebugUploadResult> => {
@@ -148,7 +148,7 @@ export const debugVideoUpload = async (
 /**
  * Test video upload with detailed logging
  */
-export const testVideoUploadCompletion = async (
+const testVideoUploadCompletion = async (
   file: File,
   uploadUrl: string,
 ): Promise<void> => {

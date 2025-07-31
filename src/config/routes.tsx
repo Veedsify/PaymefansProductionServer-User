@@ -44,6 +44,14 @@ const ROUTE = {
     `${NEXT_PUBLIC_TS_EXPRESS_URL}/post/${post_id}/comments`,
 
   /**
+   * Endpoint for fetching replies for a specific comment.
+   * @param {string} comment_id - The ID of the comment.
+   * @returns {string} The URL to fetch replies for the specified comment.
+   */
+  GET_COMMENT_REPLIES: (comment_id: string) =>
+    `${NEXT_PUBLIC_TS_EXPRESS_URL}/post/comments/${comment_id}/replies`,
+
+  /**
    * Endpoint for fetching posts for the home page.
    * @type {string}
    */

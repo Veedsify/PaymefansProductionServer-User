@@ -1,9 +1,9 @@
-"use client";
-
-import React, { createContext, useContext, useReducer, useEffect } from "react";
+// groupChatStore.ts
+import { create } from "zustand";
 import { getSocket } from "@/components/sub_components/sub/Socket";
 import { useUserStore } from "@/lib/UserUseContext";
 import toast from "react-hot-toast";
+import React from "react";
 
 export interface GroupMessage {
   id: number;
@@ -29,7 +29,7 @@ export interface GroupMessage {
   timestamp: string;
 }
 
-export interface GroupMember {
+interface GroupMember {
   userId: string;
   username: string;
   profile_image: string;
@@ -46,7 +46,8 @@ export interface TypingUser {
   timestamp: string;
 }
 
-export interface GroupChatState {
+// Define the Zustand store state type
+interface GroupChatState {
   messages: Record<string, GroupMessage[]>;
   activeMembers: Record<string, GroupMember[]>;
   typingUsers: Record<string, TypingUser[]>;
@@ -55,231 +56,262 @@ export interface GroupChatState {
   currentGroupId: string | null;
 }
 
-type GroupChatAction =
-  | { type: "SET_CONNECTED"; payload: boolean }
-  | { type: "JOIN_GROUP_ROOM"; payload: string }
-  | { type: "LEAVE_GROUP_ROOM"; payload: string }
-  | { type: "SET_CURRENT_GROUP"; payload: string | null }
-  | { type: "ADD_MESSAGE"; payload: { groupId: string; message: GroupMessage } }
-  | {
-      type: "SET_MESSAGES";
-      payload: { groupId: string; messages: GroupMessage[] };
-    }
-  | {
-      type: "PAGINATE_MESSAGES";
-      payload: { groupId: string; messages: GroupMessage[] };
-    }
-  | { type: "RESET_MESSAGES"; payload: string }
-  | {
-      type: "SET_ACTIVE_MEMBERS";
-      payload: { groupId: string; members: GroupMember[] };
-    }
-  | { type: "MEMBER_JOINED"; payload: { groupId: string; member: GroupMember } }
-  | { type: "MEMBER_LEFT"; payload: { groupId: string; userId: string } }
-  | { type: "SET_TYPING"; payload: { groupId: string; user: TypingUser } }
-  | { type: "REMOVE_TYPING"; payload: { groupId: string; userId: string } }
-  | {
-      type: "MESSAGE_SEEN";
-      payload: { groupId: string; messageId: number; userId: string };
-    };
-
-const initialState: GroupChatState = {
-  messages: {},
-  activeMembers: {},
-  typingUsers: {},
-  joinedRooms: [],
-  isConnected: false,
-  currentGroupId: null,
-};
-
-function groupChatReducer(
-  state: GroupChatState,
-  action: GroupChatAction,
-): GroupChatState {
-  switch (action.type) {
-    case "SET_CONNECTED":
-      return { ...state, isConnected: action.payload };
-
-    case "JOIN_GROUP_ROOM":
-      return {
-        ...state,
-        joinedRooms: [...new Set([...state.joinedRooms, action.payload])],
-      };
-
-    case "LEAVE_GROUP_ROOM":
-      return {
-        ...state,
-        joinedRooms: state.joinedRooms.filter(
-          (room) => room !== action.payload,
-        ),
-        messages: { ...state.messages, [action.payload]: [] },
-        activeMembers: { ...state.activeMembers, [action.payload]: [] },
-        typingUsers: { ...state.typingUsers, [action.payload]: [] },
-      };
-
-    case "SET_CURRENT_GROUP":
-      return { ...state, currentGroupId: action.payload };
-
-    case "ADD_MESSAGE":
-      const { groupId, message } = action.payload;
-      const existingMessages = state.messages[groupId] || [];
-      return {
-        ...state,
-        messages: {
-          ...state.messages,
-          [groupId]: [...existingMessages, message],
-        },
-      };
-
-    case "SET_MESSAGES":
-      return {
-        ...state,
-        messages: {
-          ...state.messages,
-          [action.payload.groupId]: action.payload.messages,
-        },
-      };
-
-    case "PAGINATE_MESSAGES":
-      const currentMessages = state.messages[action.payload.groupId] || [];
-      return {
-        ...state,
-        messages: {
-          ...state.messages,
-          [action.payload.groupId]: [
-            ...action.payload.messages,
-            ...currentMessages,
-          ],
-        },
-      };
-
-    case "RESET_MESSAGES":
-      return {
-        ...state,
-        messages: { ...state.messages, [action.payload]: [] },
-      };
-
-    case "SET_ACTIVE_MEMBERS":
-      return {
-        ...state,
-        activeMembers: {
-          ...state.activeMembers,
-          [action.payload.groupId]: action.payload.members,
-        },
-      };
-
-    case "MEMBER_JOINED":
-      const currentMembers = state.activeMembers[action.payload.groupId] || [];
-      const memberExists = currentMembers.some(
-        (m) => m.userId === action.payload.member.userId,
-      );
-      if (memberExists) return state;
-
-      return {
-        ...state,
-        activeMembers: {
-          ...state.activeMembers,
-          [action.payload.groupId]: [...currentMembers, action.payload.member],
-        },
-      };
-
-    case "MEMBER_LEFT":
-      const membersAfterLeave =
-        state.activeMembers[action.payload.groupId] || [];
-      return {
-        ...state,
-        activeMembers: {
-          ...state.activeMembers,
-          [action.payload.groupId]: membersAfterLeave.filter(
-            (m) => m.userId !== action.payload.userId,
-          ),
-        },
-      };
-
-    case "SET_TYPING":
-      const currentTyping = state.typingUsers[action.payload.groupId] || [];
-      const updatedTyping = currentTyping.filter(
-        (t) => t.userId !== action.payload.user.userId,
-      );
-
-      return {
-        ...state,
-        typingUsers: {
-          ...state.typingUsers,
-          [action.payload.groupId]: action.payload.user.isTyping
-            ? [...updatedTyping, action.payload.user]
-            : updatedTyping,
-        },
-      };
-
-    case "REMOVE_TYPING":
-      const typingAfterRemove = state.typingUsers[action.payload.groupId] || [];
-      return {
-        ...state,
-        typingUsers: {
-          ...state.typingUsers,
-          [action.payload.groupId]: typingAfterRemove.filter(
-            (t) => t.userId !== action.payload.userId,
-          ),
-        },
-      };
-
-    case "MESSAGE_SEEN":
-      // Handle message seen status if needed
-      return state;
-
-    default:
-      return state;
-  }
-}
-
-interface GroupChatContextType {
-  state: GroupChatState;
+// Define the Zustand store actions type
+interface GroupChatActions {
+  setConnected: (connected: boolean) => void;
   joinGroupRoom: (groupId: string) => void;
   leaveGroupRoom: (groupId: string) => void;
+  setCurrentGroup: (groupId: string | null) => void;
+  addMessage: (groupId: string, message: GroupMessage) => void;
+  setMessages: (groupId: string, messages: GroupMessage[]) => void;
+  paginateMessages: (groupId: string, messages: GroupMessage[]) => void;
+  resetMessages: (groupId: string) => void;
+  setActiveMembers: (groupId: string, members: GroupMember[]) => void;
+  memberJoined: (groupId: string, member: GroupMember) => void;
+  memberLeft: (groupId: string, userId: string) => void;
+  setTyping: (groupId: string, user: TypingUser) => void;
+  removeTyping: (groupId: string, userId: string) => void;
+  messageSeen: (groupId: string, messageId: number, userId: string) => void;
+
+  // Socket action helpers (will be called by the hook)
   sendMessage: (
     groupId: string,
     content: string,
     attachments?: any[],
     replyToId?: number,
   ) => void;
-  setTyping: (groupId: string, isTyping: boolean) => void;
+  setTypingStatus: (groupId: string, isTyping: boolean) => void;
   markMessageAsSeen: (groupId: string, messageId: number) => void;
-  setCurrentGroup: (groupId: string | null) => void;
+  restoreGroupRooms: () => void;
+
+  // Selector helpers (optional, but convenient)
   getGroupMessages: (groupId: string) => GroupMessage[];
   getActiveMembers: (groupId: string) => GroupMember[];
   getTypingUsers: (groupId: string) => TypingUser[];
-  restoreGroupRooms: () => void;
 }
 
-const GroupChatContext = createContext<GroupChatContextType | undefined>(
-  undefined,
-);
+// Combine state and actions for the store
+type GroupChatStore = GroupChatState & GroupChatActions;
 
-export function GroupChatProvider({ children }: { children: React.ReactNode }) {
-  const [state, dispatch] = useReducer(groupChatReducer, initialState);
+// Create the Zustand store
+export const useGroupChatStore = create<GroupChatStore>()((set, get) => ({
+  // Initial State
+  messages: {},
+  activeMembers: {},
+  typingUsers: {},
+  joinedRooms: [],
+  isConnected: false,
+  currentGroupId: null,
+
+  // Actions
+  setConnected: (payload) => set({ isConnected: payload }),
+  joinGroupRoom: (groupId) =>
+    set((state) => ({
+      joinedRooms: [...new Set([...state.joinedRooms, groupId])],
+    })),
+  leaveGroupRoom: (groupId) =>
+    set((state) => ({
+      joinedRooms: state.joinedRooms.filter((room) => room !== groupId),
+      messages: { ...state.messages, [groupId]: [] },
+      activeMembers: { ...state.activeMembers, [groupId]: [] },
+      typingUsers: { ...state.typingUsers, [groupId]: [] },
+    })),
+  setCurrentGroup: (groupId) => set({ currentGroupId: groupId }),
+  addMessage: (groupId, message) =>
+    set((state) => ({
+      messages: {
+        ...state.messages,
+        [groupId]: [...(state.messages[groupId] || []), message],
+      },
+    })),
+  setMessages: (groupId, messages) =>
+    set((state) => ({
+      messages: {
+        ...state.messages,
+        [groupId]: messages,
+      },
+    })),
+  paginateMessages: (groupId, messages) =>
+    set((state) => ({
+      messages: {
+        ...state.messages,
+        [groupId]: [...messages, ...(state.messages[groupId] || [])],
+      },
+    })),
+  resetMessages: (groupId) =>
+    set((state) => ({
+      messages: { ...state.messages, [groupId]: [] },
+    })),
+  setActiveMembers: (groupId, members) =>
+    set((state) => ({
+      activeMembers: {
+        ...state.activeMembers,
+        [groupId]: members,
+      },
+    })),
+  memberJoined: (groupId, member) =>
+    set((state) => {
+      const currentMembers = state.activeMembers[groupId] || [];
+      const memberExists = currentMembers.some(
+        (m) => m.userId === member.userId,
+      );
+      if (memberExists) return state; // No change if member already exists
+      return {
+        activeMembers: {
+          ...state.activeMembers,
+          [groupId]: [...currentMembers, member],
+        },
+      };
+    }),
+  memberLeft: (groupId, userId) =>
+    set((state) => ({
+      activeMembers: {
+        ...state.activeMembers,
+        [groupId]: (state.activeMembers[groupId] || []).filter(
+          (m) => m.userId !== userId,
+        ),
+      },
+    })),
+  setTyping: (groupId, user) =>
+    set((state) => {
+      const currentTyping = state.typingUsers[groupId] || [];
+      const updatedTyping = currentTyping.filter(
+        (t) => t.userId !== user.userId,
+      );
+      return {
+        typingUsers: {
+          ...state.typingUsers,
+          [groupId]: user.isTyping ? [...updatedTyping, user] : updatedTyping,
+        },
+      };
+    }),
+  removeTyping: (groupId, userId) =>
+    set((state) => ({
+      typingUsers: {
+        ...state.typingUsers,
+        [groupId]: (state.typingUsers[groupId] || []).filter(
+          (t) => t.userId !== userId,
+        ),
+      },
+    })),
+  messageSeen: (groupId, messageId, userId) =>
+    set((state) => {
+      // Handle message seen status if needed
+      // Example: Update message state to mark as seen by userId
+      // This is a placeholder as the original reducer did nothing
+      return state;
+    }),
+
+  // Socket action helpers (call socket.emit)
+  sendMessage: (groupId, content, attachments = [], replyToId) => {
+    const socket = getSocket();
+    const user = useUserStore.getState().user;
+    const { isConnected } = get();
+
+    if (socket && user && isConnected) {
+      socket.emit("send-group-message", {
+        groupId,
+        content,
+        messageType: "text",
+        attachments,
+        replyToId,
+      });
+
+      // Optimistically add the message to the UI
+      const optimisticMessage: GroupMessage = {
+        id: Date.now(), // Temporary ID, will be replaced by server response
+        groupId,
+        content,
+        messageType: "text",
+        senderId: user.id.toString(),
+        sender: {
+          user_id: user.id.toString(),
+          username: user.username || user.name,
+          profile_image: user.profile_image || "/site/avatar.png",
+          is_verified: user.is_verified || false,
+        },
+        replyTo: replyToId
+          ? get().messages[groupId]?.find((m) => m.id === replyToId) || null
+          : null,
+        attachments: attachments || [],
+        createdAt: new Date().toISOString(),
+        timestamp: new Date().toISOString(),
+      };
+
+      // Add the message to the specific group's messages
+      set((state) => ({
+        messages: {
+          ...state.messages,
+          [groupId]: [...(state.messages[groupId] || []), optimisticMessage],
+        },
+      }));
+    }
+  },
+  setTypingStatus: (groupId, isTyping) => {
+    const socket = getSocket();
+    const user = useUserStore.getState().user;
+    const { isConnected } = get();
+
+    if (socket && user && isConnected) {
+      socket.emit("group-typing", { groupId, isTyping });
+    }
+  },
+  markMessageAsSeen: (groupId, messageId) => {
+    const socket = getSocket();
+    const user = useUserStore.getState().user;
+    const { isConnected } = get();
+
+    if (socket && user && isConnected) {
+      socket.emit("group-message-seen", { groupId, messageId });
+    }
+  },
+  restoreGroupRooms: () => {
+    const socket = getSocket();
+    const user = useUserStore.getState().user;
+    const { isConnected } = get();
+
+    if (socket && user && isConnected) {
+      socket.emit("restore-group-rooms", { userId: user.id.toString() });
+    }
+  },
+
+  // Selector helpers (optional, but convenient)
+  getGroupMessages: (groupId) => get().messages[groupId] || [],
+  getActiveMembers: (groupId) => get().activeMembers[groupId] || [],
+  getTypingUsers: (groupId) => get().typingUsers[groupId] || [],
+}));
+
+// Hook to manage socket listeners (replaces useEffect in context provider)
+export const useGroupChatSocketListeners = () => {
+  const {
+    setConnected,
+    addMessage,
+    memberJoined,
+    memberLeft,
+    setTyping,
+    messageSeen,
+    setActiveMembers,
+    joinGroupRoom, // Needed for the group-room-joined handler
+  } = useGroupChatStore();
+
+  // We need to get the latest user state inside the listeners
   const user = useUserStore((state) => state.user);
-  const socket = getSocket();
 
-  // Socket event listeners
-  useEffect(() => {
+  React.useEffect(() => {
+    const socket = getSocket();
     if (!socket || !user) return;
 
-    // Connect to group socket namespace
     const handleConnect = () => {
-      dispatch({ type: "SET_CONNECTED", payload: true });
-      socket.emit("group-user-connected", { userId: user.user_id });
+      setConnected(true);
+      socket.emit("group-user-connected", { userId: user.id.toString() });
     };
 
     const handleDisconnect = () => {
-      dispatch({ type: "SET_CONNECTED", payload: false });
+      setConnected(false);
     };
 
     const handleNewGroupMessage = (message: GroupMessage) => {
-      dispatch({
-        type: "ADD_MESSAGE",
-        payload: { groupId: message.groupId, message },
-      });
+      addMessage(message.groupId, message);
     };
 
     const handleMemberJoined = (data: {
@@ -296,17 +328,11 @@ export function GroupChatProvider({ children }: { children: React.ReactNode }) {
         joinedAt: data.timestamp || new Date().toISOString(),
         isActive: true,
       };
-      dispatch({
-        type: "MEMBER_JOINED",
-        payload: { groupId: data.groupId, member },
-      });
+      memberJoined(data.groupId, member);
     };
 
     const handleMemberLeft = (data: { groupId: string; user: any }) => {
-      dispatch({
-        type: "MEMBER_LEFT",
-        payload: { groupId: data.groupId, userId: data.user.id },
-      });
+      memberLeft(data.groupId, data.user.id);
     };
 
     const handleGroupTyping = (data: {
@@ -322,10 +348,7 @@ export function GroupChatProvider({ children }: { children: React.ReactNode }) {
         isTyping: data.isTyping,
         timestamp: data.timestamp,
       };
-      dispatch({
-        type: "SET_TYPING",
-        payload: { groupId: data.groupId, user: typingUser },
-      });
+      setTyping(data.groupId, typingUser);
     };
 
     const handleGroupMessageSeen = (data: {
@@ -333,11 +356,25 @@ export function GroupChatProvider({ children }: { children: React.ReactNode }) {
       messageId: number;
       userId: string;
     }) => {
-      dispatch({ type: "MESSAGE_SEEN", payload: data });
+      messageSeen(data.groupId, data.messageId, data.userId);
     };
 
     const handleGroupError = (error: { message: string }) => {
+      console.error("Group chat error:", error);
       toast.error(error.message);
+    };
+
+    const handleGroupRoomJoined = (data: {
+      groupId: string;
+      roomName: string;
+      message: string;
+    }) => {
+      console.log("Successfully joined group room:", data);
+      // Zustand doesn't have a direct toast like the context did,
+      // but you can call toast here or handle it in the component calling joinGroupRoom
+      toast.success(`Joined group chat successfully`);
+      // Ensure the room is in the joinedRooms list
+      joinGroupRoom(data.groupId);
     };
 
     const handleGroupActiveMembers = (data: {
@@ -353,10 +390,7 @@ export function GroupChatProvider({ children }: { children: React.ReactNode }) {
         joinedAt: member.joinedAt,
         isActive: true,
       }));
-      dispatch({
-        type: "SET_ACTIVE_MEMBERS",
-        payload: { groupId: data.groupId, members },
-      });
+      setActiveMembers(data.groupId, members);
     };
 
     // Register event listeners
@@ -368,6 +402,7 @@ export function GroupChatProvider({ children }: { children: React.ReactNode }) {
     socket.on("group-typing", handleGroupTyping);
     socket.on("group-message-seen", handleGroupMessageSeen);
     socket.on("group-error", handleGroupError);
+    socket.on("group-room-joined", handleGroupRoomJoined);
     socket.on("group-active-members", handleGroupActiveMembers);
 
     // If socket is already connected, emit user connected
@@ -384,100 +419,27 @@ export function GroupChatProvider({ children }: { children: React.ReactNode }) {
       socket.off("group-typing", handleGroupTyping);
       socket.off("group-message-seen", handleGroupMessageSeen);
       socket.off("group-error", handleGroupError);
+      socket.off("group-room-joined", handleGroupRoomJoined);
       socket.off("group-active-members", handleGroupActiveMembers);
     };
-  }, [socket, user]);
-
-  const joinGroupRoom = (groupId: string) => {
-    if (socket && user && state.isConnected) {
-      socket.emit("join-group-room", { groupId, userId: user.user_id });
-      dispatch({ type: "JOIN_GROUP_ROOM", payload: groupId });
-    }
-  };
-
-  const leaveGroupRoom = (groupId: string) => {
-    if (socket && user && state.isConnected) {
-      socket.emit("leave-group-room", { groupId, userId: user.user_id });
-      dispatch({ type: "LEAVE_GROUP_ROOM", payload: groupId });
-    }
-  };
-
-  const sendMessage = (
-    groupId: string,
-    content: string,
-    attachments?: any[],
-    replyToId?: number,
-  ) => {
-    if (socket && user && state.isConnected) {
-      socket.emit("send-group-message", {
-        groupId,
-        content,
-        messageType: "text",
-        attachments: attachments || [],
-        replyToId,
-      });
-    }
-  };
-
-  const setTyping = (groupId: string, isTyping: boolean) => {
-    if (socket && user && state.isConnected) {
-      socket.emit("group-typing", { groupId, isTyping });
-    }
-  };
-
-  const markMessageAsSeen = (groupId: string, messageId: number) => {
-    if (socket && user && state.isConnected) {
-      socket.emit("group-message-seen", { groupId, messageId });
-    }
-  };
-
-  const setCurrentGroup = (groupId: string | null) => {
-    dispatch({ type: "SET_CURRENT_GROUP", payload: groupId });
-  };
-
-  const restoreGroupRooms = () => {
-    if (socket && user && state.isConnected) {
-      socket.emit("restore-group-rooms", { userId: user.user_id });
-    }
-  };
-
-  const getGroupMessages = (groupId: string): GroupMessage[] => {
-    return state.messages[groupId] || [];
-  };
-
-  const getActiveMembers = (groupId: string): GroupMember[] => {
-    return state.activeMembers[groupId] || [];
-  };
-
-  const getTypingUsers = (groupId: string): TypingUser[] => {
-    return state.typingUsers[groupId] || [];
-  };
-
-  const contextValue: GroupChatContextType = {
-    state,
-    joinGroupRoom,
-    leaveGroupRoom,
-    sendMessage,
+  }, [
+    user,
+    setConnected,
+    addMessage,
+    memberJoined,
+    memberLeft,
     setTyping,
-    markMessageAsSeen,
-    setCurrentGroup,
-    getGroupMessages,
-    getActiveMembers,
-    getTypingUsers,
-    restoreGroupRooms,
-  };
+    messageSeen,
+    setActiveMembers,
+    joinGroupRoom,
+  ]); // Dependencies
+};
 
-  return (
-    <GroupChatContext.Provider value={contextValue}>
-      {children}
-    </GroupChatContext.Provider>
-  );
-}
+// Optional: Create a hook that combines the store and socket setup for convenience
+export const useGroupChat = () => {
+  // This hook ensures socket listeners are set up when the hook is used
+  useGroupChatSocketListeners();
 
-export function useGroupChat(): GroupChatContextType {
-  const context = useContext(GroupChatContext);
-  if (context === undefined) {
-    throw new Error("useGroupChat must be used within a GroupChatProvider");
-  }
-  return context;
-}
+  // Return the entire store state and actions
+  return useGroupChatStore();
+};

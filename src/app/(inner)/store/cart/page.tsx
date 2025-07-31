@@ -1,12 +1,12 @@
 "use client";
 import CartComponent from "@/components/modals/CartComponent";
 import Link from "next/link";
-import { ArrowLeft, ShoppingBag, Heart } from "lucide-react";
+import { ShoppingBag, Heart } from "lucide-react";
 import { useCartStore } from "@/contexts/StoreContext";
 import CheckoutModal from "@/components/store/CheckoutModal";
 import { useState } from "react";
 
-const page = () => {
+const CartPage = () => {
   const { cart, calculateTotalPrice } = useCartStore();
   const [showCheckout, setShowCheckout] = useState(false);
   const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
@@ -71,8 +71,8 @@ const page = () => {
               Your cart is empty
             </h2>
             <p className="text-gray-500 dark:text-gray-400 mb-8 max-w-md mx-auto">
-              Looks like you haven't added any items to your cart yet. Start
-              browsing our products to find something you love!
+              Looks like you haven&apos;t added any items to your cart yet.
+              Start browsing our products to find something you love!
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link
@@ -187,4 +187,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default CartPage;

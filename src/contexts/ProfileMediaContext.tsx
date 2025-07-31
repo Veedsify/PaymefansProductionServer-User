@@ -19,7 +19,7 @@ type OtherMediaContext = {
     setData: (media: MediaDataTypeOtherProps[]) => void;
 }
 
-export const useOtherMediaContext = create<OtherMediaContext>((set) => ({
+const useOtherMediaContext = create<OtherMediaContext>((set) => ({
     data: [],
     setData: (media: MediaDataTypeOtherProps[]) => set(state => ({
         data: _.uniqBy([...state.data, ...media], "id"),
