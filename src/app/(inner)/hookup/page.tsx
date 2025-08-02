@@ -1,6 +1,6 @@
 "use client";
 import HookupSubscription from "@/components/sub_components/HookupSubscription";
-import { LucideArrowDown, LucideSearch } from "lucide-react";
+import { LucideArrowDown, LucideLoader, LucideSearch } from "lucide-react";
 import { Metadata } from "next";
 import { useCallback, useEffect, useState } from "react";
 import { getSocket } from "@/components/sub_components/sub/Socket";
@@ -44,7 +44,7 @@ const HookupPage = () => {
 
         if (isRecent && locationData.consentGiven) {
           // Emit location to server for better hookup matching
-          socket.emit("user-location", {
+          socket?.emit("user-location", {
             latitude: locationData.latitude,
             longitude: locationData.longitude,
           });
@@ -56,7 +56,7 @@ const HookupPage = () => {
   }, [socket]);
 
   const update = useCallback(() => {
-    socket.emit("pool-models-and-hookup");
+    socket?.emit("pool-models-and-hookup");
   }, [socket]);
 
   const Hookups = (data: { hookups: any[] }) => {
@@ -99,10 +99,10 @@ const HookupPage = () => {
     const updateInterval = setInterval(update, 1 * 60 * 1000); // Every minute
 
     // Listen for socket events
-    socket.on("hookup-update", Hookups);
+    socket?.on("hookup-update", Hookups);
 
     return () => {
-      socket.off("hookup-update", Hookups);
+      socket?.off("hookup-update", Hookups);
       clearInterval(updateInterval);
       clearInterval(locationInterval);
     };
@@ -160,7 +160,9 @@ const HookupPage = () => {
         )}
 
         {isLoading ? (
-          <HookUpLoader />
+          <div className="flex justify-center">
+            <LucideLoader className="self-center animate-spin" size={18} />
+          </div>
         ) : (
           <div className="grid md:grid-cols-4 grid-cols-3 gap-4 lg:gap-6 justify-between">
             {filteredHookups.map((hookup: HookupProps, index: number) => (

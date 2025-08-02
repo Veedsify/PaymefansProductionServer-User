@@ -98,9 +98,9 @@ const SupportChatPage = () => {
     socketRef.current = socket;
 
     // Start or restore session
-    socket.emit("support:start", { userId: user.user_id });
+    socket?.emit("support:start", { userId: user.user_id });
 
-    socket.on("support:session-started", (sess: any) => {
+    socket?.on("support:session-started", (sess: any) => {
       setSession(sess);
       setMessages([]); // Reset messages on new session
       setEnded(false);
@@ -110,16 +110,16 @@ const SupportChatPage = () => {
       // Session room joining is handled server-side automatically
     });
 
-    socket.on("support:message", (msg: any) => {
+    socket?.on("support:message", (msg: any) => {
       setMessages((prev) => [...prev, msg]);
       setIsAgentTyping(false); // Stop typing indicator on message receive
     });
 
-    socket.on("support:message-history", (msgs: any[]) => {
+    socket?.on("support:message-history", (msgs: any[]) => {
       setMessages(msgs || []);
     });
 
-    socket.on("support:agent-joined", (data: any) => {
+    socket?.on("support:agent-joined", (data: any) => {
       console.log("Agent joined:", data);
       setAgent({
         id: data.id || data.agentId,
@@ -131,24 +131,24 @@ const SupportChatPage = () => {
       });
     });
 
-    socket.on("support:agent-left", () => {
+    socket?.on("support:agent-left", () => {
       setAgent(null);
       console.log("Agent left");
     });
 
-    socket.on("support:agent-typing", (data: any) => {
+    socket?.on("support:agent-typing", (data: any) => {
       setIsAgentTyping(data.isTyping);
       if (data.isTyping) {
         setTimeout(() => setIsAgentTyping(false), 3000); // Hide after 3s
       }
     });
 
-    socket.on("support:session-ended", () => {
+    socket?.on("support:session-ended", () => {
       setEnded(true);
       console.log("Session ended");
     });
 
-    socket.on("support:review-submitted", () => {
+    socket?.on("support:review-submitted", () => {
       console.log("Review submitted, redirecting...");
       if (user?.username) {
         router.push(`/${user.username}`);
@@ -157,7 +157,7 @@ const SupportChatPage = () => {
       }
     });
 
-    socket.on("support:error", (error: any) => {
+    socket?.on("support:error", (error: any) => {
       console.error("Support error:", error);
     });
 

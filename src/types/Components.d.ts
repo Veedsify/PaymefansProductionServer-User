@@ -173,6 +173,7 @@ export interface ReplyPostProps {
     reply_to?: string;
     setNewComment?: (comment: Comment) => void;
   };
+  isReply: boolean;
 }
 
 export type UserPostProps = {

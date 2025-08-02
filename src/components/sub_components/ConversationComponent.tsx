@@ -22,9 +22,9 @@ const ConversationComponent = () => {
     const handlePrefetch = () => {
       queryClient.invalidateQueries({ queryKey: ["conversations"] });
     };
-    socket.on("prefetch-conversations", handlePrefetch);
+    socket?.on("prefetch-conversations", handlePrefetch);
     return () => {
-      socket.off("prefetch-conversations", handlePrefetch);
+      socket?.off("prefetch-conversations", handlePrefetch);
     };
   }, [socket, queryClient]);
 
@@ -95,7 +95,7 @@ const ConversationCard = React.memo(
       }
     };
     useEffect(() => {
-      socket.emit("join", conversation.conversation_id);
+      socket?.emit("join", conversation.conversation_id);
     }, [conversation.conversation_id, socket]);
 
     const isUnread =
@@ -115,7 +115,7 @@ const ConversationCard = React.memo(
       ? (() => {
           const cleanMessage = String(conversation.lastMessage.message).replace(
             /<br\s*\/?>/gi,
-            ""
+            "",
           );
           return (
             cleanMessage.substring(0, 100) +
@@ -126,7 +126,7 @@ const ConversationCard = React.memo(
 
     const verifiedUsernames = ["@paymefans", "@paymefans1", "@paymefans2"];
     const isVerified = verifiedUsernames.includes(
-      conversation.receiver.username
+      conversation.receiver.username,
     );
     const isPayMeFans = conversation.receiver.username === "@paymefans";
 
@@ -135,7 +135,7 @@ const ConversationCard = React.memo(
       <div
         onClick={handleClick}
         className={`
-        group flex items-center p-4 
+        group flex items-center p-4
         border-b border-gray-200 dark:border-gray-800
         transition-all duration-200 ease-in-out
         ${
@@ -160,7 +160,7 @@ const ConversationCard = React.memo(
               height={56}
               src={conversation.receiver.profile_image}
               alt={`${conversation.receiver.name} profile`}
-              className="object-cover rounded-full w-14 aspect-square 
+              className="object-cover rounded-full w-14 aspect-square
                   border-2 transition-colors duration-200
                   group-hover:border-primary-dark-pink
                   border-primary-light-pink/70 dark:border-primary-light-pink/50"
@@ -258,7 +258,7 @@ const ConversationCard = React.memo(
         </div>
       </div>
     );
-  }
+  },
 );
 
 ConversationCard.displayName = "ConversationCard";

@@ -19,11 +19,16 @@ type PostMediaPreviewProps = {
   removeThisMedia: (id: string, type: string) => void;
 };
 
-function PostMediaPreview({ submitPost, removeThisMedia }: PostMediaPreviewProps) {
+function PostMediaPreview({
+  submitPost,
+  removeThisMedia,
+}: PostMediaPreviewProps) {
   const [media, setMedia] = useState<Array<{ file: File; id: string }>>([]);
   const [progress, setProgress] = useState<{ [key: string]: number }>({});
-  const [uploadError, setUploadError] = useState<{ [key: string]: boolean }>({});
-  const { setMediaUploadComplete } = usePostMediaUploadContext()
+  const [uploadError, setUploadError] = useState<{ [key: string]: boolean }>(
+    {},
+  );
+  const { setMediaUploadComplete } = usePostMediaUploadContext();
   const { user } = useUserAuthContext();
   const token = getToken();
 
@@ -32,41 +37,50 @@ function PostMediaPreview({ submitPost, removeThisMedia }: PostMediaPreviewProps
       setMedia((prev) => prev.filter((file) => file.id !== id));
       removeThisMedia(id, type);
     },
-    [removeThisMedia]
+    [removeThisMedia],
   );
 
   const tusUploader = useCallback(
     (file: File, uploadUrl: string, id: string) =>
       UploadWithTus(file, uploadUrl, id, setProgress, setUploadError),
-    []
+    [],
   );
 
   const imageUploader = useCallback(
     (file: File, uploadUrl: string, id: string) =>
-      UploadImageToCloudflare({ file, setProgress, setUploadError, id, uploadUrl }),
-    []
+      UploadImageToCloudflare({
+        file,
+        setProgress,
+        setUploadError,
+        id,
+        uploadUrl,
+      }),
+    [],
   );
 
   const handleFileSelect = useCallback(
     async (files: File[]) => {
       if (!files?.length) return;
-      const fileLimit = user?.is_model ? POST_CONFIG.MODEL_POST_LIMIT : POST_CONFIG.USER_POST_LIMIT;
+      const fileLimit = user?.is_model
+        ? POST_CONFIG.MODEL_POST_LIMIT
+        : POST_CONFIG.USER_POST_LIMIT;
       if (media.length + files.length > fileLimit) {
         toast.error(
           user?.is_model
             ? POST_CONFIG.MODEL_POST_LIMIT_ERROR_MSG
-            : POST_CONFIG.USER_POST_LIMIT_ERROR_MSG
+            : POST_CONFIG.USER_POST_LIMIT_ERROR_MSG,
         );
         return;
       }
       const newMediaItems = files.map((file) => ({ file, id: uuid() }));
       setMedia((prev) => [...prev, ...newMediaItems]);
       try {
-
         try {
           for (const [index, mediaItem] of newMediaItems.entries()) {
             const isVideo = mediaItem.file.type.startsWith("video/");
-            const maxVideoDuration = isVideo ? getMaxDurationBase64(mediaItem.file) : null;
+            const maxVideoDuration = isVideo
+              ? getMaxDurationBase64(mediaItem.file)
+              : null;
             const payload: any = {
               type: isVideo ? "video" : "image",
               fileName: btoa(`paymefans-${user?.username}-${Date.now()}`),
@@ -84,13 +98,17 @@ function PostMediaPreview({ submitPost, removeThisMedia }: PostMediaPreviewProps
                   Authorization: `Bearer ${token}`,
                   "Content-Type": "application/json",
                 },
-              }
+              },
             );
             const { uploadUrl, type, id } = data;
             if (!id || !uploadUrl) throw new Error("Failed to get upload URL");
 
             if (type === "video") {
-              const uploadVideo = await tusUploader(mediaItem.file, uploadUrl, mediaItem.id);
+              const uploadVideo = await tusUploader(
+                mediaItem.file,
+                uploadUrl,
+                mediaItem.id,
+              );
               submitPost({
                 blur: ``,
                 public: `${process.env.NEXT_PUBLIC_CLOUDFLARE_CUSTOMER_SUBDOMAIN}${uploadVideo}/manifest/video.m3u8`,
@@ -102,10 +120,20 @@ function PostMediaPreview({ submitPost, removeThisMedia }: PostMediaPreviewProps
                 setMediaUploadComplete(true); // Set upload complete after last item
               }
             } else if (type === "image") {
-              const uploadImage = await imageUploader(mediaItem.file, uploadUrl, mediaItem.id);
+              const uploadImage = await imageUploader(
+                mediaItem.file,
+                uploadUrl,
+                mediaItem.id,
+              );
               const variants = uploadImage.result.variants ?? [];
-              const publicVariant = variants.find((v: string) => v?.includes("/public")) ?? variants[0] ?? "";
-              const blurVariant = variants.find((v: string) => v?.includes("/blur")) ?? variants[0] ?? "";
+              const publicVariant =
+                variants.find((v: string) => v?.includes("/public")) ??
+                variants[0] ??
+                "";
+              const blurVariant =
+                variants.find((v: string) => v?.includes("/blur")) ??
+                variants[0] ??
+                "";
               submitPost({
                 blur: blurVariant,
                 public: publicVariant,
@@ -121,17 +149,24 @@ function PostMediaPreview({ submitPost, removeThisMedia }: PostMediaPreviewProps
         } catch (error: any) {
           throw new Error(error.message);
         }
-
       } catch {
         toast.error("Some uploads failed.");
       }
     },
-    [user, token, media.length, submitPost, tusUploader, imageUploader, setMediaUploadComplete]
+    [
+      user,
+      token,
+      media.length,
+      submitPost,
+      tusUploader,
+      imageUploader,
+      setMediaUploadComplete,
+    ],
   );
 
   return (
     <div className="mb-5">
-      <div className="grid grid-cols-4 gap-3 p-4 overflow-x-auto select-none md:grid-cols-4 lg:grid-cols-6 md:p-8">
+      <div className="grid grid-cols-4 gap-3 p-4 overflow-x-auto select-none md:grid-cols-4 lg:grid-cols-6">
         {media.map((file) => (
           <div className="relative" key={file.id}>
             <Media

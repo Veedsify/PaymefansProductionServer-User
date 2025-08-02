@@ -7,6 +7,7 @@ import MessageBubbleContent from "./MessageBubbleContent";
 import StoryReplyPreview from "./StoryReplyPreview";
 import { motion } from "framer-motion";
 import { useInView } from "react-intersection-observer";
+import { formatDate } from "@/lib/formatDate";
 // import { useStoryModal } from "@/contexts/StoryModalContext";
 
 const MessageBubble: React.FC<MessageBubbleProps> = ({
@@ -28,32 +29,6 @@ const MessageBubble: React.FC<MessageBubbleProps> = ({
   const hasStoryReply = Boolean(message?.story_reply);
   const { ref, inView } = useInView({ threshold: 1, triggerOnce: true });
 
-  // Format date string for chat bubble
-  const dateString = useMemo(() => {
-    const now = new Date();
-    const inputDate = new Date(date);
-    const yesterday = new Date(now);
-    yesterday.setDate(now.getDate() - 1);
-
-    if (inputDate < yesterday) {
-      // Older than 1 day: full date + time
-      return inputDate.toLocaleString("en-US", {
-        month: "short",
-        day: "numeric",
-        year: "numeric",
-        hour: "numeric",
-        minute: "numeric",
-        hour12: true,
-      });
-    }
-    // Within the last 1 day: only time
-    return inputDate.toLocaleTimeString("en-US", {
-      hour: "numeric",
-      minute: "numeric",
-      hour12: true,
-    });
-  }, [date]);
-
   // Prevent duplicate socket sends for the same message
   const socket = getSocket();
 
@@ -63,7 +38,7 @@ const MessageBubble: React.FC<MessageBubbleProps> = ({
       if (!message) return;
       if (seen && !inView) return;
       if (message.sender_id === user?.user_id) return;
-      socket.emit("message-seen", {
+      socket?.emit("message-seen", {
         conversationId,
         lastMessageId: message?.message_id,
         userId: user?.user_id,
@@ -164,7 +139,7 @@ const MessageBubble: React.FC<MessageBubbleProps> = ({
           isSender ? "pt-1 float-right" : ""
         }`}
       >
-        {dateString}
+        {formatDate(date)}
         {isSender && (
           <span
             className={`ml-2 h-3 w-3 rounded-3xl ${

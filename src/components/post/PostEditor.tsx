@@ -339,7 +339,7 @@ const PostEditor = React.memo(({ posts }: PostEditorProps) => {
       return; // Prevent double submission
     }
 
-    if ((!content || content.trim() === "") && !media) {
+    if ((!content || content.trim() === "") && (!media || !editedMedia)) {
       toast.error("Post is empty, please write something.", {
         id: "post-upload",
       });
@@ -423,6 +423,16 @@ const PostEditor = React.memo(({ posts }: PostEditorProps) => {
       }
     }
   };
+
+  const checkDateDiff = () => {
+    if (!posts?.created_at) return false;
+    const postDate = new Date(posts.created_at);
+    const currentDate = new Date();
+    const timeDiff = currentDate.getTime() - postDate.getTime();
+    return timeDiff > 86400000;
+  };
+
+  const date = checkDateDiff();
 
   return (
     <>
@@ -586,7 +596,7 @@ const PostEditor = React.memo(({ posts }: PostEditorProps) => {
       </div>
 
       {/* Existing Media Preview */}
-      {editedMedia.length > 0 && (
+      {editedMedia.length > 0 && !date && (
         <div className="md:px-8 px-4">
           <ExistingMediaPreview
             media={editedMedia}

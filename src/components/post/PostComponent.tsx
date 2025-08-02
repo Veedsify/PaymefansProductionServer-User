@@ -86,7 +86,7 @@ const PostComponent: React.FC<PostComponentProps> = ({
   // --- Side effect: mark as viewed --- //
   useEffect(() => {
     if (data.post_status === "approved" && inView && authUser?.id) {
-      socket.emit("post-viewed", {
+      socket?.emit("post-viewed", {
         userId: authUser.id,
         postId: data.id,
       });

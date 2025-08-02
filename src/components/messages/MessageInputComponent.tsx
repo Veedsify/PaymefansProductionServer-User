@@ -264,7 +264,7 @@ const MessageInputComponent = React.memo(
         resetMessageInput();
         resetAllMedia();
 
-        socket.emit("new-message", newMessage);
+        socket?.emit("new-message", newMessage);
       } catch (error: any) {
         console.error("Error sending message:", error);
         if (error?.response?.data?.error === "INSUFFICIENT_POINTS") {

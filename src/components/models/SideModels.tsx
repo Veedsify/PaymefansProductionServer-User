@@ -8,9 +8,7 @@ import {
   HookUpLoader,
 } from "@/components/loaders.tsx/ModelLoader";
 import { useRouter } from "next/navigation";
-import { useCallback, useEffect, useState } from "react";
-import { getSocket } from "../sub_components/sub/Socket";
-import { shuffle, uniqBy } from "lodash";
+import { useModelsAndHookups } from "@/hooks/queries/useModelsAndHookups";
 
 export interface HookupProps {
   distance?: number; // Distance in km (optional)
@@ -31,76 +29,14 @@ export interface HookupProps {
 }
 
 const SideModels = () => {
-  const [models, setModels] = useState<any[]>([]);
-  const [hookups, setHookups] = useState<any[]>([]);
-  const [isHookupLoading, setHookupLoading] = useState(true);
-  const [isLoading, setLoading] = useState(true);
   const router = useRouter();
-  const socket = getSocket();
 
-  // Send user location if available
-  const sendUserLocation = useCallback(() => {
-    try {
-      const storedLocation = localStorage.getItem("userLocation");
-      if (storedLocation) {
-        const locationData = JSON.parse(storedLocation);
-
-        // Only use location data if it's recent (less than 30 minutes old)
-        const isRecent = Date.now() - locationData.timestamp < 30 * 60 * 1000;
-
-        if (isRecent && locationData.consentGiven) {
-          // Emit location to server for better hookup matching
-          socket.emit("user-location", {
-            latitude: locationData.latitude,
-            longitude: locationData.longitude,
-          });
-        }
-      }
-    } catch (error) {
-      console.error("Error sending location data:", error);
-    }
-  }, [socket]);
-
-  const update = useCallback(() => {
-    socket.emit("pool-models-and-hookup");
-  }, [socket]);
-
-  const Models = (data: any) => {
-    setLoading(false);
-    if (data?.models) {
-      // Using lodash to shuffle the models array
-      setModels(shuffle(data.models));
-    }
-  };
-
-  const Hookups = (data: any) => {
-    setHookupLoading(false);
-    if (data?.hookups) {
-      setHookups(shuffle(uniqBy(data.hookups, "username")));
-    }
-  };
-
-  useEffect(() => {
-    // Send location when component mounts
-    sendUserLocation();
-    update();
-
-    // Set up interval to periodically update location-based hookups
-    const locationInterval = setInterval(sendUserLocation, 5 * 60 * 1000); // Every 5 minutes
-    // Set up interval to periodically update location-based hookups and models
-    const updateIntervals = setInterval(update, 1 * 60 * 1000);
-
-    // Listen for socket events
-    socket.on("models-update", Models);
-    socket.on("hookup-update", Hookups);
-
-    return () => {
-      socket.off("models-update", Models);
-      socket.off("hookup-update", Hookups);
-      clearInterval(updateIntervals);
-      clearInterval(locationInterval);
-    };
-  }, [socket, sendUserLocation, update]);
+  // Use the custom hook for models and hookups
+  const { data, isLoading, error, isEmpty, hasLoadedData, refetch } =
+    useModelsAndHookups({
+      staleTime: 2 * 60 * 1000, // 2 minutes
+      refetchInterval: 5 * 60 * 1000, // 5 minutes
+    });
 
   const handleSearchKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter" && e.currentTarget.value) {
@@ -108,6 +44,12 @@ const SideModels = () => {
       e.currentTarget.value = "";
     }
   };
+
+  const { models, hookups } = data;
+
+  if (error) {
+    console.error("Error fetching models and hookups:", error);
+  }
 
   return (
     <div className="p-4 lg:block hidden lg:col-span-3 dark:text-white">
@@ -144,17 +86,30 @@ const SideModels = () => {
             </span>
           </div>
           <div className="py-6 mb-6">
-            {models.length === 0 && !isLoading && (
-              <div className="text-center text-gray-700">No Models Found</div>
-            )}
             {isLoading ? (
               <ModelLoader />
+            ) : models.length === 0 ? (
+              <div className="text-center text-gray-700">
+                <div className="mb-3">
+                  {error ? "Failed to load models" : "No Models Found"}
+                </div>
+                {error && (
+                  <button
+                    onClick={() => refetch()}
+                    className="bg-primary-dark-pink text-white px-3 py-1 text-sm rounded-md hover:opacity-80"
+                  >
+                    Retry
+                  </button>
+                )}
+              </div>
             ) : (
               <div className="grid grid-cols-3 gap-3">
-                {models.map(
-                  (model: any, index: number) =>
-                    models && <ModelsSubscription model={model} key={index} />,
-                )}
+                {models.map((model: any, index: number) => (
+                  <ModelsSubscription
+                    model={model}
+                    key={`model-${model.id || index}`}
+                  />
+                ))}
               </div>
             )}
           </div>
@@ -174,15 +129,29 @@ const SideModels = () => {
           </span>
         </div>
 
-        {hookups.length === 0 && !isHookupLoading && (
-          <div className="text-center text-gray-700">No Hookup Available</div>
-        )}
-        {isHookupLoading ? (
+        {isLoading ? (
           <HookUpLoader />
+        ) : hookups.length === 0 ? (
+          <div className="text-center text-gray-700">
+            <div className="mb-3">
+              {error ? "Failed to load hookups" : "No Hookup Available"}
+            </div>
+            {error && (
+              <button
+                onClick={() => refetch()}
+                className="bg-primary-dark-pink text-white px-3 py-1 text-sm rounded-md hover:opacity-80"
+              >
+                Retry
+              </button>
+            )}
+          </div>
         ) : (
           <div className="grid gap-4 lg:gap-6 grid-cols-3">
             {hookups.map((hookup: HookupProps, index: number) => (
-              <HookupSubscription hookup={hookup} key={index} />
+              <HookupSubscription
+                hookup={hookup}
+                key={`hookup-${hookup.id || index}`}
+              />
             ))}
           </div>
         )}

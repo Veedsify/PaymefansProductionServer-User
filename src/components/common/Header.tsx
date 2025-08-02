@@ -44,7 +44,7 @@ const Header = () => {
       } absolute z-50 w-full bg-primary-dark-pink lg:bg-white dark:bg-black dark:text-white border-b border-black/40 dark:border-slate-800/100`}
     >
       <div className="flex items-center">
-        {hideOn(["/live"], pathname) && <HeaderTitle />}
+        <HeaderTitle />
         <button onClick={handleHomeClick} className="cursor-pointer">
           <Image
             width={120}

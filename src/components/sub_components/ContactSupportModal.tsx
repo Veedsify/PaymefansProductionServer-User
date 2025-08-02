@@ -82,32 +82,32 @@ const ContactSupportModal = () => {
     socketRef.current = socket;
 
     // Start or restore session
-    socket.emit("support:start", { userId: user.user_id });
+    socket?.emit("support:start", { userId: user.user_id });
 
-    socket.on("support:session-started", (sess: any) => {
+    socket?.on("support:session-started", (sess: any) => {
       setSession(sess);
       setMessages([]); // Reset messages on new session
       setEnded(false);
       setAgent(null);
-      socket.emit("support:waiting-list");
-      socket.emit("support:message-history", { sessionId: sess._id });
+      socket?.emit("support:waiting-list");
+      socket?.emit("support:message-history", { sessionId: sess._id });
     });
-    socket.on("support:message", (msg: any) => {
+    socket?.on("support:message", (msg: any) => {
       setMessages((prev) => [...prev, msg]);
     });
-    socket.on("support:agent-joined", (agentInfo: any) => {
+    socket?.on("support:agent-joined", (agentInfo: any) => {
       setAgent(agentInfo);
     });
-    socket.on("support:agent-left", () => {
+    socket?.on("support:agent-left", () => {
       setAgent(null);
     });
-    socket.on("support:session-ended", () => {
+    socket?.on("support:session-ended", () => {
       setEnded(true);
     });
-    socket.on("support:review-submitted", () => {
+    socket?.on("support:review-submitted", () => {
       setEnded(true);
     });
-    socket.on("support:message-history", (msgs: any[]) => {
+    socket?.on("support:message-history", (msgs: any[]) => {
       setMessages(msgs || []);
     });
 

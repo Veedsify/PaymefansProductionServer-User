@@ -74,12 +74,12 @@ const useProvideConversations = () => {
       });
     };
 
-    socket.on("prefetch-conversations", handlePrefetchConversations);
-    socket.on("unread-count-updated", handleUnreadCountUpdate);
+    socket?.on("prefetch-conversations", handlePrefetchConversations);
+    socket?.on("unread-count-updated", handleUnreadCountUpdate);
 
     return () => {
-      socket.off("prefetch-conversations", handlePrefetchConversations);
-      socket.off("unread-count-updated", handleUnreadCountUpdate);
+      socket?.off("prefetch-conversations", handlePrefetchConversations);
+      socket?.off("unread-count-updated", handleUnreadCountUpdate);
     };
   }, [queryClient]);
 
@@ -106,7 +106,7 @@ export const MessagesConversationProvider = ({
 
   useEffect(() => {
     if (userid && username) {
-      socket.emit("user-connected", {
+      socket?.emit("user-connected", {
         userId: userid,
         username,
       });
@@ -124,7 +124,7 @@ export const useMessagesConversation = () => {
   const context = useContext(MessageConversationContext);
   if (!context) {
     throw new Error(
-      "useMessagesConversation must be used within a MessagesConversationProvider"
+      "useMessagesConversation must be used within a MessagesConversationProvider",
     );
   }
   return context;

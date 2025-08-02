@@ -4,6 +4,7 @@ import React from "react";
 
 const PATHNAME_TITLES: { [key: string]: string } = {
   benefits: "Model Benefits",
+  "posts/edit": "Edit Post",
   "become-a-model": "Become a Model",
   "posts/points": "Points",
   profile: "Profile",
@@ -33,7 +34,7 @@ const HeaderTitle = React.memo(() => {
   if (pathname.startsWith("/live")) return null;
   const title =
     Object.entries(PATHNAME_TITLES).find(([key]) =>
-      pathname.includes(key)
+      pathname.includes(key),
     )?.[1] || "Home";
   return <h1 className="hidden text-lg font-bold lg:block">{title}</h1>;
 });

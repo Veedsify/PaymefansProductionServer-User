@@ -2,7 +2,7 @@
 
 import { ActiveProfileTagProps } from "@/types/Components";
 import { useEffect } from "react";
-import { getSocket } from "./Socket";
+import { getSocket, isSocketConnected } from "./Socket";
 import { useActiveUsersManager } from "@/context/ActiveUsersManagerContext";
 
 // ActiveProfileTag component
@@ -24,17 +24,17 @@ const ActiveProfileTag = ({
     }
 
     const socket = getSocket();
-    if (socket.connected) {
-      socket.emit("get-active-users");
+    if (isSocketConnected()) {
+      socket?.emit("get-active-users");
     }
     const handleActiveUsers = (users: any) => {
       updateActiveUsers(users);
     };
 
-    socket.on("active_users", handleActiveUsers);
+    socket?.on("active_users", handleActiveUsers);
 
     return () => {
-      socket.off("active_users", handleActiveUsers);
+      socket?.off("active_users", handleActiveUsers);
     };
   }, [username, updateActiveUsers]);
 

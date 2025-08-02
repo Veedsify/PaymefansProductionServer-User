@@ -83,7 +83,7 @@ const SettingsAutomatedMessage: React.FC = () => {
   const [showSuccess, setShowSuccess] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [uploadProgress, setUploadProgress] = useState<Record<string, number>>(
-    {},
+    {}
   );
   const [activeUploads, setActiveUploads] = useState<Set<string>>(new Set());
 
@@ -156,7 +156,7 @@ const SettingsAutomatedMessage: React.FC = () => {
   };
 
   const handleFileSelect = async (
-    event: React.ChangeEvent<HTMLInputElement>,
+    event: React.ChangeEvent<HTMLInputElement>
   ): Promise<void> => {
     const files = Array.from(event.target.files || []);
     if (files.length > 0 && currentUploadType && user) {
@@ -216,7 +216,7 @@ const SettingsAutomatedMessage: React.FC = () => {
               extension: path.extname(file.name),
               url:
                 imgRes.result?.variants.find((v: string) =>
-                  v.includes("/public"),
+                  v.includes("/public")
                 ) || "",
               poster: "",
             };
@@ -227,7 +227,7 @@ const SettingsAutomatedMessage: React.FC = () => {
               uploadResponse.uploadUrl,
               tempId,
               setUploadProgress,
-              () => {}, // Error callback
+              () => {} // Error callback
             );
 
             finalAttachment = {
@@ -247,7 +247,7 @@ const SettingsAutomatedMessage: React.FC = () => {
             [currentUploadType]: {
               ...prev[currentUploadType],
               attachments: prev[currentUploadType].attachments.map((att) =>
-                att.id === tempId ? finalAttachment : att,
+                att.id === tempId ? finalAttachment : att
               ),
             },
           }));
@@ -273,7 +273,7 @@ const SettingsAutomatedMessage: React.FC = () => {
             [currentUploadType]: {
               ...prev[currentUploadType],
               attachments: prev[currentUploadType].attachments.filter(
-                (att) => att.id !== tempId,
+                (att) => att.id !== tempId
               ),
             },
           }));
@@ -300,7 +300,7 @@ const SettingsAutomatedMessage: React.FC = () => {
   const removeAttachment = (type: MessageType, attachmentId: string): void => {
     setMessages((prev) => {
       const attachmentToRemove = prev[type].attachments.find(
-        (att) => att.id === attachmentId,
+        (att) => att.id === attachmentId
       );
 
       // Clean up preview URL if it exists
@@ -313,7 +313,7 @@ const SettingsAutomatedMessage: React.FC = () => {
         [type]: {
           ...prev[type],
           attachments: prev[type].attachments.filter(
-            (att) => att.id !== attachmentId,
+            (att) => att.id !== attachmentId
           ),
         },
       };
@@ -416,7 +416,7 @@ const SettingsAutomatedMessage: React.FC = () => {
     type: MessageType,
     title: string,
     icon: LucideIcon,
-    placeholder: string,
+    placeholder: string
   ) => {
     const message = messages[type];
     const isEditing = editingMode[type];
@@ -426,7 +426,7 @@ const SettingsAutomatedMessage: React.FC = () => {
       <div
         className={`border rounded-xl p-6 transition-all duration-200 ${
           message.isActive
-            ? "border-blue-200 bg-blue-50/50"
+            ? "border-blue-200 bg-gray-800"
             : "border-gray-200 hover:border-gray-300"
         }`}
       >
@@ -442,8 +442,10 @@ const SettingsAutomatedMessage: React.FC = () => {
               {React.createElement(icon, { size: 20 })}
             </div>
             <div>
-              <h3 className="font-semibold text-gray-900">{title}</h3>
-              <p className="text-sm text-gray-500">
+              <h3 className="font-semibold text-gray-900 dark:text-white">
+                {title}
+              </h3>
+              <p className="text-sm text-gray-500 dark:text-white">
                 {message.isActive ? "Active" : "Inactive"}
               </p>
             </div>
@@ -461,8 +463,11 @@ const SettingsAutomatedMessage: React.FC = () => {
 
         {isEmpty && !isEditing ? (
           <div className="text-center py-8 text-gray-500">
-            <AlertCircle size={48} className="mx-auto mb-3 text-gray-300" />
-            <p className="text-sm">No message configured</p>
+            <AlertCircle
+              size={48}
+              className="mx-auto mb-3 text-gray-300 dark:text-white"
+            />
+            <p className="text-sm dark:text-white">No message configured</p>
             <button
               onClick={() => handleEdit(type)}
               className="mt-3 text-primary-dark-pink hover:text-primary-text-dark-pink text-sm font-medium"
@@ -663,10 +668,10 @@ const SettingsAutomatedMessage: React.FC = () => {
   return (
     <div className="">
       <div className="mb-8">
-        <h1 className="text-lg md:text-xl font-bold text-gray-900 mb-4">
+        <h1 className="text-lg md:text-xl font-bold text-gray-900 dark:text-white mb-4">
           Automated Messages
         </h1>
-        <p className="text-gray-600 leading-relaxed">
+        <p className="text-gray-600 leading-relaxed dark:text-white">
           Boost engagement with automated messages! Set up triggers to send
           personalized messages to your fans when they subscribe or follow you.
           Share exclusive content, or simply say thank you to build a loyal
@@ -692,28 +697,30 @@ const SettingsAutomatedMessage: React.FC = () => {
           "followers",
           "New Followers",
           Users,
-          "Welcome! Thank you for following. I'm excited to share my content with you...",
+          "Welcome! Thank you for following. I'm excited to share my content with you..."
         )}
 
         {renderMessageCard(
           "subscribers",
           "New Subscribers",
           UserPlus,
-          "Welcome to my exclusive content! Thank you for subscribing...",
+          "Welcome to my exclusive content! Thank you for subscribing..."
         )}
 
         <div className="border-t pt-6">
           <div className="flex items-center justify-between">
             <div>
-              <h3 className="font-semibold text-gray-900">Save Changes</h3>
-              <p className="text-sm text-gray-500">
+              <h3 className="font-semibold text-gray-900 dark:text-white">
+                Save Changes
+              </h3>
+              <p className="text-sm text-gray-500 dark:text-white">
                 {activeUploads.size > 0
                   ? `Uploading ${activeUploads.size} file${
                       activeUploads.size > 1 ? "s" : ""
                     }...`
                   : hasChanges
-                    ? "You have unsaved changes"
-                    : "All changes saved"}
+                  ? "You have unsaved changes"
+                  : "All changes saved"}
               </p>
             </div>
             <button
@@ -733,8 +740,8 @@ const SettingsAutomatedMessage: React.FC = () => {
               {isSaving
                 ? "Saving..."
                 : activeUploads.size > 0
-                  ? "Uploading..."
-                  : "Save Settings"}
+                ? "Uploading..."
+                : "Save Settings"}
             </button>
           </div>
         </div>

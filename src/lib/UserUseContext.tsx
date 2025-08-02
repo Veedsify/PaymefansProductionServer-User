@@ -8,7 +8,7 @@ import { AuthUserProps } from "@/types/User";
 import axiosInstance from "@/utils/Axios";
 import { AxiosResponse } from "axios";
 import { usePathname } from "next/navigation";
-import { ReactNode, useEffect } from "react";
+import { ReactNode, useEffect, useRef } from "react";
 import { create } from "zustand";
 
 interface UserState {
@@ -35,8 +35,12 @@ interface UserContextProviderProps {
 export const UserContextProvider = ({ children }: UserContextProviderProps) => {
   const location = usePathname();
   const setUser = useUserStore((state) => state.setUser);
+  const ref = useRef<number>(0);
 
   useEffect(() => {
+    if (ref.current != 0) {
+      return;
+    }
     let intervalId: NodeJS.Timeout | undefined;
     async function fetchUser() {
       const res: AxiosResponse<{ user: AuthUserProps }> =
@@ -53,11 +57,12 @@ export const UserContextProvider = ({ children }: UserContextProviderProps) => {
 
       if (res.status === 200 && res.data?.user) {
         const user = res.data.user as AuthUserProps;
+        const socket = connectSocket(user?.username);
         setUser(user);
         intervalId = setInterval(() => {
           socket?.emit("still-active", user?.username);
         }, 10_000);
-        const socket = connectSocket(user?.username);
+        ref.current = 1;
       } else {
         window.location.href = `/login?redirect=${location}`;
         setUser(null);

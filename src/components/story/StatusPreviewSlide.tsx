@@ -308,7 +308,7 @@ const StoryReplyInput = ({ story }: { story: Story }) => {
 
       // Get socket and emit message
       const socket = getSocket();
-      socket.emit("new-message", newMessage);
+      socket?.emit("new-message", newMessage);
 
       // Show success message
       swal({

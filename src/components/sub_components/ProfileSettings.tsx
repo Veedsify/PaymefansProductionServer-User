@@ -80,7 +80,7 @@ const ProfileSettings = ({ user }: ProfileSettingsProps) => {
   };
 
   return (
-    <div className="py-8 mx-auto bg-white dark:bg-gray-900 rounded-2xl">
+    <div className="py-8 mx-auto bg-white dark:bg-black rounded-2xl">
       <form
         className="space-y-5"
         onSubmit={(e) => {

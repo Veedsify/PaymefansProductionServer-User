@@ -99,7 +99,7 @@ const CommentReplyChildren = ({
 
         {/* Render child comments */}
         {showReplies && loadedChildren && loadedChildren.length > 0 && (
-          <div className="mt-4 ml-4 border-l-2 border-gray-200 dark:border-gray-700 pl-4 space-y-4">
+          <div className="mt-4 ml-4 border-gray-200 dark:border-gray-700 pl-4 space-y-4">
             {loadedChildren.map((reply) => (
               <div key={reply.comment_id} className="flex gap-3">
                 <Link href={`/${reply.username}`}>
@@ -149,14 +149,14 @@ const CommentReplyChildren = ({
                       ))}
                     </div>
                   </div>
-                  <ReplyInteractions
+                  {/*<ReplyInteractions
                     replies={0}
                     likes={reply.likes}
                     impressions={reply.impressions || 0}
                     parentId={reply.parentId || ""}
                     commentId={reply.comment_id}
                     likedByMe={reply.likedByme || false}
-                  />
+                  />*/}
                 </div>
               </div>
             ))}

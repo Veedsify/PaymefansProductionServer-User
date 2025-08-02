@@ -85,10 +85,10 @@ const Subscribe = () => {
   }, [params.user_id, router, token]);
 
   useEffect(() => {
-    socket.on("subscription_added", () => {});
+    socket?.on("subscription_added", () => {});
 
     return () => {
-      socket.off("subscription_added");
+      socket?.off("subscription_added");
     };
   }, [socket]);
 
@@ -106,7 +106,7 @@ const Subscribe = () => {
             `You have successfully subscribed to ${profileUser.name}`,
             "success",
           );
-          socket.emit("subscription_added", { user_id: profileUser.user_id });
+          socket?.emit("subscription_added", { user_id: profileUser.user_id });
           router.push(`/${profileUser.username}`);
         } else {
           toast.dismiss();

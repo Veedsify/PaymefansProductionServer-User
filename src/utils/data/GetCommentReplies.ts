@@ -5,7 +5,7 @@ import { getToken } from "../Cookie";
 export const getCommentReplies = async (
   commentId: string,
   page: number = 1,
-  limit: number = 10,
+  limit: number = 15,
 ) => {
   try {
     const token = getToken();

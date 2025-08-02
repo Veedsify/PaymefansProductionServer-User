@@ -111,7 +111,7 @@ export default async function RootLayout({
                       },
                     }}
                   />
-                  <div className="relative grid h-dvh lg:grid-cols-8">
+                  <div className="relative grid h-dvh lg:grid-cols-8 select-none">
                     <ToggleWishListProvider>
                       <div className="col-span-2">
                         <SideBar />

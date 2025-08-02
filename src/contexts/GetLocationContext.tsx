@@ -32,7 +32,7 @@ export default function GetLocationContext({
         });
 
         // Also send via socket for real-time updates
-        socket.emit("user-location", {
+        socket?.emit("user-location", {
           latitude: locationData.latitude,
           longitude: locationData.longitude,
         });

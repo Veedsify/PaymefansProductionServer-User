@@ -1,49 +1,30 @@
 "use client";
 
 import {
+  ChangeEvent,
+  KeyboardEvent,
+  MouseEvent,
+  useState,
   useCallback,
   useEffect,
   useRef,
-  useState,
-  KeyboardEvent,
-  RefObject,
 } from "react";
-import { v4 as uuid } from "uuid";
-import { LucidePlus, LucideCamera, LucideSendHorizonal } from "lucide-react";
-import toast from "react-hot-toast";
-import swal from "sweetalert";
-import axiosInstance from "@/utils/Axios";
-import { getToken } from "@/utils/Cookie";
-import { useUserAuthContext } from "@/lib/UserUseContext";
-import { useMessagesConversation } from "@/contexts/MessageConversationContext";
-import {
-  MessageInputProps,
-  Attachment,
-  MediaFile,
-  Message,
-} from "@/types/Components";
-import React from "react";
-import { useChatStore } from "@/contexts/ChatContext";
-import { usePointsStore } from "@/contexts/PointsContext";
-import { getSocket } from "../sub_components/sub/Socket";
-import GenerateVideoPoster from "@/utils/GenerateVideoPoster";
-import { imageTypes } from "@/lib/FileTypes";
-import { useMediaUpload } from "@/hooks/useMediaUpload";
-import MessageMediaPreview from "../messages/MessageMediaPreview";
+import { SendHorizonal as LucideSendHorizonal } from "lucide-react";
+import { useGroupChatStore } from "@/contexts/GroupChatContext";
 
 // Utility Functions
-const escapeHtml = (str: string) => {
+const escapeHtml = (str: string): string => {
   const escapeMap: Record<string, string> = {
     "&": "&amp;",
-    "<": "&lt;",
-    ">": "&gt;",
+    "<": "<",
+    ">": ">",
     '"': "&quot;",
     "'": "&#39;",
   };
   return str.replace(/[&<>"']/g, (match) => escapeMap[match]);
 };
 
-const linkify = (text: string) => {
+const linkify = (text: string): string => {
   if (!text) return "";
   const urlRegex = /(https?:\/\/[^\s]+)/g;
   return text.replace(urlRegex, (url) => {
@@ -54,21 +35,104 @@ const linkify = (text: string) => {
   });
 };
 
-const GroupChatInput = React.memo(() => {
+const GroupChatInput = () => {
+  const [messageContent, setMessageContent] = useState("");
+  const [sendingMessage, setSendingMessage] = useState(false);
+  const { sendMessage, setTypingStatus } = useGroupChatStore();
+  const typingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  const handleTyping = (e: ChangeEvent<HTMLInputElement>) => {
+    setMessageContent(e.target.value);
+
+    // Handle typing indicator
+    const value = e.target.value;
+
+    // Clear existing timeout
+    if (typingTimeoutRef.current) {
+      clearTimeout(typingTimeoutRef.current);
+      typingTimeoutRef.current = null;
+    }
+
+    // Send typing status
+    if (value.length > 0) {
+      setTypingStatus(true);
+
+      // Set timeout to stop typing indicator after 2 seconds of inactivity
+      typingTimeoutRef.current = setTimeout(() => {
+        setTypingStatus(false);
+        typingTimeoutRef.current = null;
+      }, 2000);
+    } else {
+      setTypingStatus(false);
+    }
+  };
+
+  const sendIfValid = () => {
+    const trimmedMessage = messageContent.trim();
+    if (!trimmedMessage || sendingMessage) return;
+
+    setSendingMessage(true);
+
+    // Clear typing timeout and status when sending
+    if (typingTimeoutRef.current) {
+      clearTimeout(typingTimeoutRef.current);
+      typingTimeoutRef.current = null;
+    }
+    setTypingStatus(false);
+
+    const processedMessage = linkify(escapeHtml(trimmedMessage));
+    sendMessage(processedMessage, []);
+    setMessageContent("");
+    setSendingMessage(false);
+  };
+
+  const handleSendClick = (
+    e: KeyboardEvent<HTMLInputElement> | MouseEvent<HTMLButtonElement>,
+  ) => {
+    if ("key" in e && e.key === "Enter" && e.shiftKey) {
+      e.preventDefault();
+      sendIfValid();
+    } else if (!("key" in e)) {
+      sendIfValid();
+    }
+  };
+
+  const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter" && e.shiftKey) {
+      e.preventDefault();
+      sendIfValid();
+    }
+  };
+
+  // Cleanup timeout on unmount
+  useEffect(() => {
+    return () => {
+      if (typingTimeoutRef.current) {
+        clearTimeout(typingTimeoutRef.current);
+      }
+    };
+  }, []);
+
   return (
     <div className="flex items-center space-x-2 p-6 dark:bg-gray-800">
-      <textarea
-        rows={1}
+      <input
+        onChange={handleTyping}
+        onKeyDown={handleKeyDown}
+        value={messageContent}
         className="flex-grow px-4 py-4 resize-none border border-gray-300 rounded-md focus:outline-none focus:border-blue-500"
         placeholder="Type a message..."
       />
-      <button className="cursor-pointer px-4 py-4 bg-primary-dark-pink text-white rounded-md hover:bg-primary-text-dark-pink">
+      <button
+        disabled={sendingMessage}
+        onClick={handleSendClick}
+        className="cursor-pointer px-4 py-4 bg-primary-dark-pink text-white rounded-md hover:bg-primary-text-dark-pink disabled:bg-gray-500"
+        aria-label="Send message"
+        type="button"
+      >
         <LucideSendHorizonal className="w-5 h-5" />
       </button>
     </div>
   );
-});
-
-GroupChatInput.displayName = "GroupChatInput";
+};
 
 export default GroupChatInput;

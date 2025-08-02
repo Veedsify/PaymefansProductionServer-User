@@ -182,7 +182,7 @@ const ChatPage = ({ conversationId }: { conversationId: string }) => {
 
       // Mark message as seen if user is viewing this conversation
       if (!msg.seen && msg.conversationId === conversationId) {
-        socket.emit("message-seen", {
+        socket?.emit("message-seen", {
           conversationId,
           lastMessageId: msg.message_id,
           userId: user?.user_id,
@@ -257,10 +257,10 @@ const ChatPage = ({ conversationId }: { conversationId: string }) => {
     };
 
     // Join conversation and set up listeners
-    socket.emit("join", conversationId);
-    socket.on("message", handleMessageReceived);
-    socket.on("message-error", handleMessageError);
-    socket.on("message-seen-updated", handleMessageSeenUpdated);
+    socket?.emit("join", conversationId);
+    socket?.on("message", handleMessageReceived);
+    socket?.on("message-error", handleMessageError);
+    socket?.on("message-seen-updated", handleMessageSeenUpdated);
 
     // Handle typing indicators (optional enhancement)
     const handleTyping = (data: { sender_id: string; value: boolean }) => {
@@ -268,14 +268,14 @@ const ChatPage = ({ conversationId }: { conversationId: string }) => {
       console.log("👤 Typing indicator:", data);
     };
 
-    socket.on("sender-typing", handleTyping);
+    socket?.on("sender-typing", handleTyping);
 
     // Clean up
     return () => {
-      socket.off("message", handleMessageReceived);
-      socket.off("message-error", handleMessageError);
-      socket.off("message-seen-updated", handleMessageSeenUpdated);
-      socket.off("sender-typing", handleTyping);
+      socket?.off("message", handleMessageReceived);
+      socket?.off("message-error", handleMessageError);
+      socket?.off("message-seen-updated", handleMessageSeenUpdated);
+      socket?.off("sender-typing", handleTyping);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [

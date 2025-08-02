@@ -51,7 +51,7 @@ const FilesHolder = React.memo(({ file, remove }: FileHolderProps) => {
 });
 FilesHolder.displayName = "FilesHolder";
 
-const ReplyPostComponent = ({ options }: ReplyPostProps) => {
+const ReplyPostComponent = ({ options, isReply }: ReplyPostProps) => {
   const { user } = useUserAuthContext();
   const router = useRouter();
 
@@ -409,19 +409,21 @@ const ReplyPostComponent = ({ options }: ReplyPostProps) => {
                 placeholder="Type a reply"
                 className={`block ml-3 leading-none py-2 w-full outline-none border-none resize-none duration-300 transition-all bg-transparent dark:text-white dark:bg-transparent`}
               />
-              <div className="p-2 gap-4 mr-2">
-                <label htmlFor="file" className="cursor-pointer">
-                  <LucideCamera size={28} />
-                  <input
-                    type="file"
-                    id="file"
-                    className="hidden"
-                    multiple
-                    onChange={handleFiles}
-                    accept="image/*"
-                  />
-                </label>
-              </div>
+              {!isReply && (
+                <div className="p-2 gap-4 mr-2">
+                  <label htmlFor="file" className="cursor-pointer">
+                    <LucideCamera size={28} />
+                    <input
+                      type="file"
+                      id="file"
+                      className="hidden"
+                      multiple
+                      onChange={handleFiles}
+                      accept="image/*"
+                    />
+                  </label>
+                </div>
+              )}
               <button
                 onClick={handleReplyClicked}
                 className="bg-primary-dark-pink hidden mr-1 md:block text-white px-6 py-2 rounded-full"

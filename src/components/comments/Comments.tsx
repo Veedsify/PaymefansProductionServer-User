@@ -270,6 +270,7 @@ const CommentsHolder = ({ post, postComments }: CommentsHolderProps) => {
                 openReply.open &&
                 openReply.commentId === comment.comment_id && (
                   <ReplyPostComponent
+                    isReply={true}
                     options={{
                       id: post?.id,
                       parentId: comment?.comment_id,
