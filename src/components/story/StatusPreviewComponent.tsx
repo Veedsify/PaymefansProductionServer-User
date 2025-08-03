@@ -1,4 +1,4 @@
-"use client";;
+"use client";
 import { StoryPreviewProps } from "@/types/Components";
 import { Swiper, SwiperClass, SwiperSlide } from "swiper/react";
 import "swiper/css/bundle";
@@ -78,7 +78,7 @@ const StoryPreviewComponent = ({
     (canPlay: boolean) => {
       if (canPlay) PlayVideo(true);
     },
-    [PlayVideo],
+    [PlayVideo]
   );
 
   // Handle slide change to update video references
@@ -116,7 +116,7 @@ const StoryPreviewComponent = ({
         viewedStories.current.add(currentStory.media_id);
       }
     },
-    [PlayVideo, stories],
+    [PlayVideo, stories]
   );
 
   // Preload adjacent slides for smoother transitions
@@ -185,7 +185,7 @@ const StoryPreviewComponent = ({
       {/* Main Content Area */}
       <div className="relative flex items-center justify-center w-full lg:max-w-3xl h-dvh">
         {/* Controls */}
-        <div className="absolute w-full mx-auto left-1/2 -translate-x-1/2 top-2 pointer-events-none z-[550]">
+        <div className="absolute w-full z-2 mx-auto left-1/2 -translate-x-1/2 top-2 h-full pointer-events-none">
           <StoryPreviewControlls
             type={stories[activeIndex]?.media_type || "image"}
             moveToNextSlide={moveToNextSlide}

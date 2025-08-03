@@ -10,7 +10,7 @@ const CaptionElement = ({ element }: { element: any }) => {
     left: `${element.position.x}%`,
     top: `${element.position.y}%`,
     transform: "translate(-50%, -50%)",
-    fontFamily: "Inter",
+    fontFamily: "Bricolage Grotesque Variable",
     fontSize: element.style.fontSize,
     fontWeight: element.style.fontWeight,
     color: element.style.color,
@@ -21,7 +21,7 @@ const CaptionElement = ({ element }: { element: any }) => {
     userSelect: "none" as any,
     pointerEvents: (element.type === "link" ? "auto" : "none") as any,
     textShadow: "1px 1px 2px rgba(0,0,0,0.8)", // Better readability on images/videos
-    zIndex: 100,
+    zIndex: 200,
     maxWidth: "80%",
     wordWrap: "break-word" as any,
   };

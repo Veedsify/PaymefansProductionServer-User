@@ -17,20 +17,17 @@ import { getToken } from "@/utils/Cookie";
 import { usePointsStore } from "@/contexts/PointsContext";
 import { getSocket } from "../sub_components/sub/Socket";
 import { v4 as uuid } from "uuid";
-
 type StatusPreviewSlideProps = {
   story: Story;
   index: number;
   activeIndex: number;
   moveToNextSlide: () => void;
 };
-
 type Viewer = {
   storyMediaId: string;
   viewCount: number;
   views: any[];
 };
-
 const fetchStatusViews = async ({
   pageParam,
   media_id,
@@ -42,37 +39,33 @@ const fetchStatusViews = async ({
     `/story/views/${media_id}${pageParam === 0 ? "" : `?cursor=${pageParam}`}`,
     {
       withCredentials: true,
-    },
+    }
   );
   if (response.status === 200) {
     const data = response.data;
     return data;
   }
 };
-
 // Caption Overlay Component
 const CaptionOverlay = ({ story }: { story: Story }) => {
   const parsedCaptionElements = JSON.parse(story.captionElements);
   if (!parsedCaptionElements || parsedCaptionElements.length === 0) {
     return null;
   }
-
   return (
-    <div className="absolute inset-0 z-50 w-full h-full pointer-events-none">
+    <div className="absolute inset-0 w-full z-[100] h-full">
       {parsedCaptionElements.map((element: any) => (
         <CaptionElement key={element.id} element={element} />
       ))}
     </div>
   );
 };
-
 const StatusViewBlock = ({ story }: { story: Story }) => {
   // Status View Starts
   const [statusViewOpen, setStatusViewOpen] = useState(false);
   const { ref: loadMoreRef, inView } = useInView({
     threshold: 1,
   });
-
   const { data, isLoading, isError, hasNextPage, fetchNextPage, isFetching } =
     useInfiniteQuery({
       queryKey: ["statusViews", story.media_id],
@@ -87,112 +80,113 @@ const StatusViewBlock = ({ story }: { story: Story }) => {
       },
       enabled: !!story.media_id,
     });
-
   const viewers = data?.pages.flatMap((page) => page.data) as Viewer[];
   const viewsCount = viewers?.[0]?.viewCount || 0;
-
   const handleViewSection = () => {
     setStatusViewOpen(!statusViewOpen);
   };
-
   useEffect(() => {
     if (inView && hasNextPage) {
       fetchNextPage();
     }
   }, [inView, fetchNextPage, hasNextPage]);
-
   return (
-    <div className="absolute z-50 w-full h-full">
-      <AnimatePresence>
-        {statusViewOpen && (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 20 }}
-            className={`absolute bottom-0 bg-white ${
-              viewsCount > 0 ? "h-96" : "h-auto"
-            } w-full z-10`}
-          >
-            <div className="p-2 md:p-6">
-              <div className="flex items-center justify-between p-2 mb-4">
-                <h2 className="text-lg font-bold">Views {viewsCount}</h2>
-                <button
-                  onClick={handleViewSection}
-                  className="text-gray-500 cursor-pointer hover:text-gray-700c"
-                >
-                  <X />
-                </button>
-              </div>
-              {isError && (
-                <div className="text-center text-red-500">
-                  Error fetching status views
+    <>
+      <div
+        className={`absolute w-full z-[200] h-full ${
+          statusViewOpen ? "pointer-events-all" : "pointer-events-none"
+        } `}
+      >
+        <AnimatePresence>
+          {statusViewOpen && (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 20 }}
+              className={`absolute bottom-0 pointer-events-auto bg-white ${
+                viewsCount > 0 ? "h-96" : "h-auto"
+              } w-full z-10`}
+            >
+              <div className="p-2 md:p-6">
+                <div className="flex items-center justify-between p-2 mb-4">
+                  <h2 className="text-lg font-bold">Views {viewsCount}</h2>
+                  <button
+                    onClick={handleViewSection}
+                    className="text-gray-500 cursor-pointer hover:text-gray-700c"
+                  >
+                    <X />
+                  </button>
                 </div>
-              )}
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: 20 }}
-                className="overflow-y-auto space-y-2 h-72"
-              >
-                {!isFetching &&
-                  viewers[0]?.views?.map((view) => (
-                    <div
-                      key={view.viewer_id}
-                      className="flex items-center p-2 rounded-lg gap-3 hover:bg-gray-100"
-                    >
-                      <div className="w-12 h-12 overflow-hidden bg-gray-200 rounded-full">
-                        <Link href={`/${view.viewer.username}`}>
-                          <Image
-                            src={view.viewer.profile_image}
-                            alt="Profile"
-                            width={48}
-                            height={48}
-                            className="object-cover"
-                          />
-                        </Link>
-                      </div>
-                      <div className="font-medium">
-                        <h3>
+                {isError && (
+                  <div className="text-center text-red-500">
+                    Error fetching status views
+                  </div>
+                )}
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: 20 }}
+                  className="overflow-y-auto space-y-2 h-72"
+                >
+                  {!isFetching &&
+                    viewers[0]?.views?.map((view) => (
+                      <div
+                        key={view.viewer_id}
+                        className="flex items-center p-2 rounded-lg gap-3 hover:bg-gray-100"
+                      >
+                        <div className="w-12 h-12 overflow-hidden bg-gray-200 rounded-full">
                           <Link href={`/${view.viewer.username}`}>
-                            {view.viewer.name}
+                            <Image
+                              src={view.viewer.profile_image}
+                              alt="Profile"
+                              width={48}
+                              height={48}
+                              className="object-cover"
+                            />
                           </Link>
-                        </h3>
-                        <span>
-                          <Link href={`/${view.viewer.username}`}>
-                            {view.viewer.username}
-                          </Link>
+                        </div>
+                        <div className="font-medium">
+                          <h3>
+                            <Link href={`/${view.viewer.username}`}>
+                              {view.viewer.name}
+                            </Link>
+                          </h3>
+                          <span>
+                            <Link href={`/${view.viewer.username}`}>
+                              {view.viewer.username}
+                            </Link>
+                          </span>
+                        </div>
+                        <span className="ml-auto text-gray-500">
+                          {formatDate(view.viewed_at)}
                         </span>
                       </div>
-                      <span className="ml-auto text-gray-500">
-                        {formatDate(view.viewed_at)}
-                      </span>
+                    ))}
+                  {isLoading && (
+                    <div className="flex justify-center">
+                      <LucideLoader className="h-8 animate-spin text-primary-dark-pink" />
                     </div>
-                  ))}
-                {isLoading && (
-                  <div className="flex justify-center">
-                    <LucideLoader className="h-8 animate-spin text-primary-dark-pink" />
-                  </div>
-                )}
-                {viewsCount === 0 && (
-                  <div className="flex justify-center">
-                    <p>No Views Yet</p>
-                  </div>
-                )}
-                <div ref={loadMoreRef}></div>
-              </motion.div>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-      <div className="absolute bottom-0 flex items-center justify-center w-full h-24 bg-gradient-to-t from-black to-transparent">
+                  )}
+                  {viewsCount === 0 && (
+                    <div className="flex justify-center">
+                      <p>No Views Yet</p>
+                    </div>
+                  )}
+                  <div ref={loadMoreRef}></div>
+                </motion.div>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
+      <div className="absolute bottom-0 flex items-center justify-center w-full h-24 bg-gradient-to-t from-black to-transparent z-[150]">
         <button className="cursor-pointer" onClick={handleViewSection}>
           <LucideEye stroke="white" size={24} />
         </button>
       </div>
-    </div>
+    </>
   );
 };
-
 // Reply Input Component
 const StoryReplyInput = ({ story }: { story: Story }) => {
   const [replyText, setReplyText] = useState("");
@@ -200,13 +194,10 @@ const StoryReplyInput = ({ story }: { story: Story }) => {
   const [showReplyInput, setShowReplyInput] = useState(false);
   const { user } = useUserAuthContext();
   const points = usePointsStore((state) => state.points);
-
   const handleReplySubmit = async () => {
     if (!replyText.trim() || !user) return;
-
     try {
       setIsReplying(true);
-
       // Get receiver's user_id and price per message
       const profileResponse = await axiosInstance.post(
         "/profile/user",
@@ -214,27 +205,22 @@ const StoryReplyInput = ({ story }: { story: Story }) => {
         {
           headers: { Authorization: `Bearer ${getToken()}` },
           withCredentials: true,
-        },
+        }
       );
-
       const receiverUserId = profileResponse.data.user?.user_id;
       if (!receiverUserId) {
         throw new Error("Could not find receiver user ID");
       }
-
       const { data } = await axiosInstance.post(
         "/points/price-per-message",
         { user_id: receiverUserId },
         {
           headers: { Authorization: `Bearer ${getToken()}` },
           withCredentials: true,
-        },
+        }
       );
-
       const pricePerMessage = data.price_per_message || 0;
-
       const currentPoints = points || 0;
-
       // Check if user has enough points and show confirmation
       if (pricePerMessage > 0) {
         if (currentPoints < pricePerMessage && !user.admin) {
@@ -246,7 +232,6 @@ const StoryReplyInput = ({ story }: { story: Story }) => {
             }`,
           });
         }
-
         const isToSend = await swal({
           icon: "info",
           title: "Notice from PayMeFans",
@@ -256,26 +241,21 @@ const StoryReplyInput = ({ story }: { story: Story }) => {
           dangerMode: true,
           buttons: ["Cancel", "Continue"],
         });
-
         if (!isToSend) {
           setIsReplying(false);
           return;
         }
       }
-
       // Create or find conversation
       const conversationResponse = await createNewConversation({
         userId: user.user_id,
         profileId: receiverUserId,
       });
-
       const conversation = await conversationResponse;
       const conversationId = conversation?.data?.conversation_id;
-
       if (!conversationId) {
         throw new Error("Failed to create conversation");
       }
-
       // Create message object for socket with story reply data
       const storyReplyData = {
         story_media_id: story.media_id,
@@ -284,7 +264,6 @@ const StoryReplyInput = ({ story }: { story: Story }) => {
         story_owner_username: story.user.username,
         story_owner_profile_image: story.user.profile_image,
       };
-
       const newMessage = {
         message_id: uuid(),
         sender_id: user.user_id,
@@ -298,18 +277,10 @@ const StoryReplyInput = ({ story }: { story: Story }) => {
         created_at: new Date().toISOString(),
         seen: false,
       };
-
       // Debug: Log the message being sent
-      console.log("📤 Sending story reply message:", {
-        message_id: newMessage.message_id,
-        story_reply: newMessage.story_reply,
-        message: newMessage.message,
-      });
-
       // Get socket and emit message
       const socket = getSocket();
       socket?.emit("new-message", newMessage);
-
       // Show success message
       swal({
         icon: "success",
@@ -321,7 +292,6 @@ const StoryReplyInput = ({ story }: { story: Story }) => {
       setShowReplyInput(false);
     } catch (error: any) {
       console.error("Error sending reply:", error);
-
       if (error?.response?.data?.error === "INSUFFICIENT_POINTS") {
         swal({
           icon: "info",
@@ -341,21 +311,19 @@ const StoryReplyInput = ({ story }: { story: Story }) => {
       setIsReplying(false);
     }
   };
-
   // Don't show reply input for own stories
   if (story.user.id === user?.id) {
     return null;
   }
-
   return (
-    <div className="absolute z-50 bottom-4 left-4 right-4">
+    <div className="absolute z-100 bottom-4 left-4 right-4 w-full">
       <AnimatePresence>
         {showReplyInput ? (
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 20 }}
-            className="p-3 rounded-lg bg-black/80 backdrop-blur-sm"
+            className="p-3 rounded-lg bg-black/80 backdrop-blur-sm w-full"
           >
             <div className="flex items-center gap-2">
               <input
@@ -405,7 +373,6 @@ const StoryReplyInput = ({ story }: { story: Story }) => {
     </div>
   );
 };
-
 const StatusPreviewSlide = ({
   story,
   index,
@@ -425,17 +392,15 @@ const StatusPreviewSlide = ({
         { storyMediaId: story.media_id },
         {
           withCredentials: true,
-        },
+        }
       );
       refCounter.current++;
     }
     storyViewed();
-
     return () => {
       refCounter.current = 0;
     };
   }, [story.media_id]);
-
   return (
     <div className="relative flex items-center justify-center w-full h-full max-w-full max-h-full">
       {story.media_type === "image" ? (
@@ -454,8 +419,8 @@ const StatusPreviewSlide = ({
             }}
           />
           {/* Caption Overlay for Images */}
-          <CaptionOverlay story={story} />
           {canShowViewBlock && <StatusViewBlock story={story} />}
+          <CaptionOverlay story={story} />
           <StoryReplyInput story={story} />
         </div>
       ) : story.media_type === "video" ? (
@@ -485,8 +450,8 @@ const StatusPreviewSlide = ({
             streamUrl={story.media_url}
           />
           {/* Caption Overlay for Videos */}
-          <CaptionOverlay story={story} />
           {canShowViewBlock && <StatusViewBlock story={story} />}
+          <CaptionOverlay story={story} />
           <StoryReplyInput story={story} />
         </div>
       ) : (

@@ -1,6 +1,7 @@
 import { StoryPreviewControlProps } from "@/types/Components";
 import { useEffect, useRef, useState } from "react";
 import { useInView } from "react-intersection-observer";
+import { motion } from "framer-motion";
 
 const StoryPreviewControlls = ({
   moveToNextSlide,
@@ -29,13 +30,13 @@ const StoryPreviewControlls = ({
   }, [inView, type, playVideoOnLoad]);
 
   return (
-    <div className="flex absolute min-h-dvh w-full z-[600] inset-0">
+    <>
       <div
         style={{
           display: "grid",
           gridTemplateColumns: `repeat(${stories.length}, 1fr)`,
         }}
-        className="absolute top-0 left-0 z-10 items-center w-full justify-evenly gap-1"
+        className="absolute top-0 left-0 items-center w-full justify-evenly gap-1"
       >
         {stories.map((story, i) => (
           <ProgressBar
@@ -47,26 +48,37 @@ const StoryPreviewControlls = ({
           />
         ))}
       </div>
-      <div
-        onClick={moveToPrevSlide}
-        className="h-full w-full flex-[2] cursor-pointer text-transparent"
-      >
-        L
+      <div className="absolute top-1/2 w-full flex gap-2 items-center justify-between pointer-events-auto ">
+        <motion.div
+          onClick={moveToPrevSlide}
+          className="h-[80px] w-full flex-[2] cursor-pointer text-transparent bg-white/30"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: [0, 1, 0] }}
+          transition={{ duration: 1, times: [0, 0.7, 1], delay: 0 }}
+        >
+          L
+        </motion.div>
+        <motion.div
+          onClick={clickToPlay}
+          ref={ref}
+          className="h-[80px] w-full flex-[3] cursor-pointer text-transparent bg-white/30"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: [0, 1, 0] }}
+          transition={{ duration: 1, times: [0, 0.7, 1], delay: 0.2 }}
+        >
+          C
+        </motion.div>
+        <motion.div
+          onClick={moveToNextSlide}
+          className="h-[80px] w-full flex-[2] cursor-pointer text-transparent bg-white/30"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: [0, 1, 0] }}
+          transition={{ duration: 1, times: [0, 0.5, 1], delay: 0.4 }}
+        >
+          R
+        </motion.div>
       </div>
-      <div
-        onClick={clickToPlay}
-        ref={ref}
-        className="h-full w-full flex-[3] cursor-pointer text-transparent"
-      >
-        C
-      </div>
-      <div
-        onClick={moveToNextSlide}
-        className="h-full w-full flex-[2] cursor-pointer text-transparent"
-      >
-        R
-      </div>
-    </div>
+    </>
   );
 };
 
