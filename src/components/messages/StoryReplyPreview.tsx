@@ -23,13 +23,13 @@ const StoryReplyPreview: React.FC<StoryReplyPreviewProps> = ({
   return (
     <div
       onClick={onStoryClick}
-      className="relative w-fit mb-2 p-2 bg-gray-100 dark:bg-gray-800 rounded-lg   border-l-2 border-primary-dark-pink cursor-pointer transition-colors"
+      className="relative p-2 mb-2 bg-gray-100 border-l-2 rounded-lg cursor-pointer w-fit dark:bg-gray-800  border-primary-dark-pink transition-colors"
     >
       <div className="flex items-center gap-2">
         {/* Story preview thumbnail */}
-        <div className="rounded-lg overflow-hidden flex-shrink-0">
-          <div className="flex items-center gap-2 mb-1">
-            <div className="w-6 h-6 rounded-full overflow-hidden bg-gray-300 dark:bg-gray-600 flex-shrink-0">
+        <div className="flex-shrink-0 overflow-hidden rounded-lg">
+          <div className="flex items-center mb-1 gap-2">
+            <div className="flex-shrink-0 w-6 h-6 overflow-hidden bg-gray-300 rounded-full dark:bg-gray-600">
               <Image
                 src={storyReply.story_owner_profile_image}
                 alt={storyReply.story_owner_username}
@@ -38,7 +38,7 @@ const StoryReplyPreview: React.FC<StoryReplyPreviewProps> = ({
                 className="object-cover"
               />
             </div>
-            <span className="text-xs font-medium text-gray-600 dark:text-gray-300 truncate">
+            <span className="text-xs font-medium text-gray-600 truncate dark:text-gray-300">
               {storyReply.story_owner_username === user?.username
                 ? "My"
                 : storyReply.story_owner_username}{" "}

@@ -121,7 +121,7 @@ async function Page({ params }: { params: params }) {
         </p>
       </div>
       <div className="p-4 md:p-8 dark:text-white">
-        <div className="grid grid-cols-3 gap-3 mb-20 md:gap-6 md:mb-0">
+        <div className="mb-20 grid grid-cols-3 gap-3 md:gap-6 md:mb-0">
           {points.map((point, index) => (
             <PointsBuy
               key={index}

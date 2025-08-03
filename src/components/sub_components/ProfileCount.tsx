@@ -44,28 +44,28 @@ export function ProfileCounts({
 
   return (
     <>
-      <div className="flex gap-2 mb-3 flex-wrap sm:text-base text-sm select-none dark:text-white">
+      <div className="flex flex-wrap mb-3 text-sm select-none gap-2 sm:text-base dark:text-white">
         <span
-          className="flex gap-2 items-center cursor-pointer"
+          className="flex items-center cursor-pointer gap-2"
           onClick={() => toggleOpen("followers")}
         >
-          <h1 className="font-bold text-sm">{formatNumber(followers)}</h1>
-          <p className="font-medium text-gray-500 text-sm">Followers</p>
+          <h1 className="text-sm font-bold">{formatNumber(followers)}</h1>
+          <p className="text-sm font-medium text-gray-500">Followers</p>
         </span>
         <span
-          className="flex gap-2 items-center cursor-pointer"
+          className="flex items-center cursor-pointer gap-2"
           onClick={() => toggleOpen("following")}
         >
-          <h1 className="font-bold text-sm">{formatNumber(following)}</h1>
-          <p className="font-medium text-gray-500 text-sm">Following</p>
+          <h1 className="text-sm font-bold">{formatNumber(following)}</h1>
+          <p className="text-sm font-medium text-gray-500">Following</p>
         </span>
         {isModel && subscribers != null && (
           <span
-            className="flex gap-2 items-center cursor-pointer"
+            className="flex items-center cursor-pointer gap-2"
             onClick={() => toggleOpen("subscribers")}
           >
-            <h1 className="font-bold text-sm">{formatNumber(subscribers)}</h1>
-            <p className="font-medium text-gray-500 text-sm">Subscribers</p>
+            <h1 className="text-sm font-bold">{formatNumber(subscribers)}</h1>
+            <p className="text-sm font-medium text-gray-500">Subscribers</p>
           </span>
         )}
       </div>

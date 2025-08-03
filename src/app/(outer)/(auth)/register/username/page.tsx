@@ -159,20 +159,20 @@ const ChooseUserName = () => {
   );
 
   return (
-    <div className="min-h-dvh lg:p-0 bg-black p-5">
-      <div className="lg:grid grid-cols-2 items-start justify-center mx-auto">
-        <div className="min-h-dvh hidden lg:block relative">
+    <div className="p-5 bg-black min-h-dvh lg:p-0">
+      <div className="items-start justify-center mx-auto lg:grid grid-cols-2">
+        <div className="relative hidden min-h-dvh lg:block">
           <Image
             width={1200}
             height={1200}
             priority
             src="/images/auth_image.jpeg"
             alt="Login Image"
-            className="h-full absolute object-cover inset-0 w-full "
+            className="absolute inset-0 object-cover w-full h-full "
           />
         </div>
         <div className="h-full lg:p-14 2xl:p-28">
-          <div className="max-w-screen-xl pt-12 mx-auto mb-24 md:mt-16">
+          <div className="pt-12 mx-auto mb-24 max-w-screen-xl md:mt-16">
             <Link href="/">
               <Image
                 width={150}
@@ -187,13 +187,13 @@ const ChooseUserName = () => {
           <div className="mb-3">
             <Link
               href="/register"
-              className="text-white flex items-center gap-2 font-bold"
+              className="flex items-center font-bold text-white gap-2"
             >
               <LucideArrowLeft size={20} stroke="#CC0DF8" />
               Back
             </Link>
           </div>
-          <div className="flex flex-col items-start justify-center max-w-screen-xl mx-auto">
+          <div className="flex flex-col items-start justify-center mx-auto max-w-screen-xl">
             <h1 className="mt-auto mb-5 text-2xl font-bold text-white">
               Choose your Username
             </h1>
@@ -203,8 +203,8 @@ const ChooseUserName = () => {
               className="flex-1 w-full mb-5"
               autoComplete="false"
             >
-              <div className="flex flex-col gap-3 mb-4 md:max-w-96">
-                <div className="flex items-center gap-1 outline-white outline-1 rounded-lg px-3">
+              <div className="flex flex-col mb-4 gap-3 md:max-w-96">
+                <div className="flex items-center px-3 rounded-lg gap-1 outline-white outline-1">
                   <input
                     onChange={checkForUsername}
                     ref={ref}
@@ -212,7 +212,7 @@ const ChooseUserName = () => {
                     pattern="\S*"
                     type="text"
                     id="name"
-                    className="block w-full py-3 font-bold text-white bg-transparent text-sm outline-none accent-primary-dark-pink"
+                    className="block w-full py-3 text-sm font-bold text-white bg-transparent outline-none accent-primary-dark-pink"
                     placeholder="Username"
                   />
                   <div onClick={clearInput}>
@@ -240,7 +240,7 @@ const ChooseUserName = () => {
                 ) : (
                   <button
                     disabled={true}
-                    className="block w-full px-3 py-3 text-sm font-bold text-white rounded-lg md:max-w-96 bg-gray-600"
+                    className="block w-full px-3 py-3 text-sm font-bold text-white bg-gray-600 rounded-lg md:max-w-96"
                   >
                     Next
                   </button>

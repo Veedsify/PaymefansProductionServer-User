@@ -146,8 +146,8 @@ const StreamDeckCamera = ({
   };
 
   return (
-    <div className="fixed bg-white dark:bg-gray-950 flex flex-col left-0 top-0 w-full min-h-dvh items-center z-50">
-      <div className="flex-1 w-full h-full border dark:border-slate-800 grid lg:grid-cols-3  dark:text-white relative">
+    <div className="fixed top-0 left-0 z-50 flex flex-col items-center w-full bg-white dark:bg-gray-950 min-h-dvh">
+      <div className="relative flex-1 w-full h-full border dark:border-slate-800 grid lg:grid-cols-3  dark:text-white">
         <StreamStats
           handleCreateStream={handleCreateStream}
           devices={devices}
@@ -161,7 +161,7 @@ const StreamDeckCamera = ({
           participantCount={participantCount}
           handleLiveStreamEnd={handleLiveStreamEnd}
         />
-        <div className="border h-full w-full dark:border-slate-800 relative flex flex-col">
+        <div className="relative flex flex-col w-full h-full border dark:border-slate-800">
           <div
             className={`h-full gap-2 w-full`}
             style={{
@@ -173,13 +173,13 @@ const StreamDeckCamera = ({
           >
             {true && <></>}
             {/* {participants.map((participant) => (
-                                   <div className="h-full row-span-1 w-full object-cover" key={participant.userId}>
+                                   <div className="object-cover w-full h-full row-span-1" key={participant.userId}>
                                         <ParticipantView participant={participant} />
                                    </div>
                               ))} */}
           </div>
         </div>
-        <div className="border h-full dark:border-slate-800 lg:relative lg:block absolute top-0 left-0 w-full">
+        <div className="absolute top-0 left-0 w-full h-full border dark:border-slate-800 lg:relative lg:block">
           <div className="absolute bottom-0 left-0 w-full bg-video-stream-gradient-white">
             {[
               {
@@ -195,16 +195,16 @@ const StreamDeckCamera = ({
                   "Lorem ipsum dolor, sit amet consectetur adipisicing elit.",
               },
             ].map(({ imgSrc, userName, userComment }, index) => (
-              <div key={index} className="p-2 md:p-3 flex items-center gap-4">
+              <div key={index} className="flex items-center p-2 md:p-3 gap-4">
                 <Image
                   src={imgSrc}
                   alt="User"
                   width={60}
                   height={60}
-                  className="h-12 w-12 rounded-full object-cover border-primary-dark-pink border"
+                  className="object-cover w-12 h-12 border rounded-full border-primary-dark-pink"
                 />
                 <div>
-                  <span className="text-xs font-bold block dark:text-white">
+                  <span className="block text-xs font-bold dark:text-white">
                     <Link href="/user/username">{userName}</Link>
                   </span>
                   <span className="text-xs font-medium dark:text-white">
@@ -217,7 +217,7 @@ const StreamDeckCamera = ({
               <form className="flex items-center gap-2">
                 <input
                   type="text"
-                  className="p-3 text-xs border dark:border-white w-full lg:border-gray-600 border-white rounded-md font-medium flex-1 bg-transparent text-white lg:text-black outline-none"
+                  className="flex-1 w-full p-3 text-xs font-medium text-white bg-transparent border border-white outline-none dark:border-white lg:border-gray-600 rounded-md lg:text-black"
                   placeholder="Type your comment..."
                 />
                 <button

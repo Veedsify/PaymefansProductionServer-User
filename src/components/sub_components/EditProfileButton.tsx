@@ -30,7 +30,7 @@ const EditProfileButton = ({ user }: { user: any }) => {
     <div>
       <button
         onClick={() => setOpen(!open)}
-        className="px-2 py-1 text-sm font-semibold text-white bg-black border border-black rounded sm:px-4 dark:bg-primary-dark-pink text-color cursor-pointer"
+        className="px-2 py-1 text-sm font-semibold text-white bg-black border border-black rounded cursor-pointer sm:px-4 dark:bg-primary-dark-pink text-color"
       >
         Edit Profile
       </button>
@@ -163,11 +163,11 @@ function BannerModal({ user, open = false, setOpen }: BannerModalProps) {
       }`}
     >
       <div
-        className="relative bg-white dark:bg-slate-950 lg:max-w-6xl w-full rounded-none md:rounded p-6 md:p-8 h-dvh lg:h-screen overflow-y-auto"
+        className="relative w-full p-6 overflow-y-auto bg-white rounded-none dark:bg-slate-950 lg:max-w-6xl md:rounded md:p-8 h-dvh lg:h-screen"
         onClick={(e) => e.stopPropagation()}
       >
         <button
-          className="absolute text-gray-500 transition-colors top-4 right-4 hover:text-primary-dark-pink cursor-pointer"
+          className="absolute text-gray-500 cursor-pointer transition-colors top-4 right-4 hover:text-primary-dark-pink"
           onClick={() => setOpen(false)}
           aria-label="Close"
           type="button"
@@ -177,17 +177,17 @@ function BannerModal({ user, open = false, setOpen }: BannerModalProps) {
         <h1 className="mb-6 text-2xl font-bold text-center dark:text-white">
           Edit Profile
         </h1>
-        <div className="flex justify-center lg:justify-start mb-5 rounded-xl">
+        <div className="flex justify-center mb-5 lg:justify-start rounded-xl">
           <BannerComponent
             profile_banner={user ? user.profile_banner : "/site/banner.png"}
           />
         </div>
-        <div className="flex flex-col items-center lg:items-start mb-6">
+        <div className="flex flex-col items-center mb-6 lg:items-start">
           <label
             htmlFor="imageUpload"
             className="relative cursor-pointer group"
           >
-            <div className="relative inline-block p-1 mb-2 overflow-hidden transition-all border-4 border-dotted rounded-full border-black/40 dark:border-slate-700 group-hover:border-primary-dark-pink">
+            <div className="relative inline-block p-1 mb-2 overflow-hidden border-4 border-dotted rounded-full transition-all border-black/40 dark:border-slate-700 group-hover:border-primary-dark-pink">
               <Image
                 src={
                   file
@@ -200,7 +200,7 @@ function BannerModal({ user, open = false, setOpen }: BannerModalProps) {
                 className="object-cover w-24 h-24 rounded-full aspect-square"
                 priority
               />
-              <div className="absolute inset-0 flex items-center justify-center transition-opacity rounded-full opacity-70 bg-black/30 group-hover:opacity-100">
+              <div className="absolute inset-0 flex items-center justify-center rounded-full transition-opacity opacity-70 bg-black/30 group-hover:opacity-100">
                 <LucideCamera size={22} className="text-white" />
               </div>
             </div>
@@ -258,7 +258,7 @@ function BannerModal({ user, open = false, setOpen }: BannerModalProps) {
                 </div>
               )}
               {error && (
-                <p className="text-red-500 dark:text-red-400 text-sm mt-1 font-medium">
+                <p className="mt-1 text-sm font-medium text-red-500 dark:text-red-400">
                   {message}
                 </p>
               )}
@@ -308,55 +308,55 @@ function BannerModal({ user, open = false, setOpen }: BannerModalProps) {
                 Social Links
               </h2>
               {/* Instagram */}
-              <div className="grid grid-cols-12 items-center rounded-lg border border-black/10 dark:border-slate-700 bg-gray-50 dark:bg-slate-800 overflow-hidden transition-shadow focus-within:shadow-md group">
-                <div className="flex items-center justify-center h-full col-span-2 bg-primary-dark-pink/10 dark:bg-primary-dark-pink/20 py-3 transition group-focus-within:bg-primary-dark-pink/20">
-                  <Instagram className="text-primary-dark-pink dark:text-white w-6 h-6" />
+              <div className="items-center overflow-hidden border rounded-lg grid grid-cols-12 border-black/10 dark:border-slate-700 bg-gray-50 dark:bg-slate-800 transition-shadow focus-within:shadow-md group">
+                <div className="flex items-center justify-center h-full py-3 col-span-2 bg-primary-dark-pink/10 dark:bg-primary-dark-pink/20 transition group-focus-within:bg-primary-dark-pink/20">
+                  <Instagram className="w-6 h-6 text-primary-dark-pink dark:text-white" />
                 </div>
                 <input
                   type="text"
                   onChange={handleInputChange}
                   name="instagram"
                   defaultValue={String(user?.Settings?.instagram_url || "")}
-                  className="col-span-10 p-3 text-black dark:text-white bg-transparent border-none outline-none placeholder:text-gray-400 dark:placeholder:text-gray-500 text-sm transition"
+                  className="p-3 text-sm text-black bg-transparent border-none outline-none col-span-10 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 transition"
                   placeholder="https://instagram.com/@paymefans"
                 />
               </div>
 
               {/* Twitter */}
-              <div className="grid grid-cols-12 items-center rounded-lg border border-black/10 dark:border-slate-700 bg-gray-50 dark:bg-slate-800 overflow-hidden transition-shadow focus-within:shadow-md group">
-                <div className="flex items-center justify-center h-full col-span-2 bg-primary-dark-pink/10 dark:bg-primary-dark-pink/20 py-3 transition group-focus-within:bg-primary-dark-pink/20">
-                  <Twitter className="text-primary-dark-pink dark:text-white w-6 h-6" />
+              <div className="items-center overflow-hidden border rounded-lg grid grid-cols-12 border-black/10 dark:border-slate-700 bg-gray-50 dark:bg-slate-800 transition-shadow focus-within:shadow-md group">
+                <div className="flex items-center justify-center h-full py-3 col-span-2 bg-primary-dark-pink/10 dark:bg-primary-dark-pink/20 transition group-focus-within:bg-primary-dark-pink/20">
+                  <Twitter className="w-6 h-6 text-primary-dark-pink dark:text-white" />
                 </div>
                 <input
                   type="text"
                   onChange={handleInputChange}
                   name="twitter"
                   defaultValue={String(user?.Settings?.twitter_url || "")}
-                  className="col-span-10 p-3 text-black dark:text-white bg-transparent border-none outline-none placeholder:text-gray-400 dark:placeholder:text-gray-500 text-sm transition"
+                  className="p-3 text-sm text-black bg-transparent border-none outline-none col-span-10 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 transition"
                   placeholder="https://twitter.com/@paymefans"
                 />
               </div>
 
               {/* Facebook */}
-              <div className="grid grid-cols-12 items-center rounded-lg border border-black/10 dark:border-slate-700 bg-gray-50 dark:bg-slate-800 overflow-hidden transition-shadow focus-within:shadow-md group">
-                <div className="flex items-center justify-center h-full col-span-2 bg-primary-dark-pink/10 dark:bg-primary-dark-pink/20 py-3 transition group-focus-within:bg-primary-dark-pink/20">
-                  <Facebook className="text-primary-dark-pink dark:text-white w-6 h-6" />
+              <div className="items-center overflow-hidden border rounded-lg grid grid-cols-12 border-black/10 dark:border-slate-700 bg-gray-50 dark:bg-slate-800 transition-shadow focus-within:shadow-md group">
+                <div className="flex items-center justify-center h-full py-3 col-span-2 bg-primary-dark-pink/10 dark:bg-primary-dark-pink/20 transition group-focus-within:bg-primary-dark-pink/20">
+                  <Facebook className="w-6 h-6 text-primary-dark-pink dark:text-white" />
                 </div>
                 <input
                   type="text"
                   onChange={handleInputChange}
                   name="facebook"
                   defaultValue={String(user?.Settings?.facebook_url || "")}
-                  className="col-span-10 p-3 text-black dark:text-white bg-transparent border-none outline-none placeholder:text-gray-400 dark:placeholder:text-gray-500 text-sm transition"
+                  className="p-3 text-sm text-black bg-transparent border-none outline-none col-span-10 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 transition"
                   placeholder="https://facebook.com/@paymefans"
                 />
               </div>
 
               {/* Snapchat */}
-              <div className="grid grid-cols-12 items-center rounded-lg border border-black/10 dark:border-slate-700 bg-gray-50 dark:bg-slate-800 overflow-hidden transition-shadow focus-within:shadow-md group">
-                <div className="flex items-center justify-center h-full col-span-2 bg-primary-dark-pink/10 dark:bg-primary-dark-pink/20 py-3 transition group-focus-within:bg-primary-dark-pink/20">
+              <div className="items-center overflow-hidden border rounded-lg grid grid-cols-12 border-black/10 dark:border-slate-700 bg-gray-50 dark:bg-slate-800 transition-shadow focus-within:shadow-md group">
+                <div className="flex items-center justify-center h-full py-3 col-span-2 bg-primary-dark-pink/10 dark:bg-primary-dark-pink/20 transition group-focus-within:bg-primary-dark-pink/20">
                   <PiSnapchatLogoDuotone
-                    className="text-primary-dark-pink dark:text-white w-6 h-6"
+                    className="w-6 h-6 text-primary-dark-pink dark:text-white"
                     size={20}
                   />
                 </div>
@@ -365,19 +365,19 @@ function BannerModal({ user, open = false, setOpen }: BannerModalProps) {
                   onChange={handleInputChange}
                   name="snapchat"
                   defaultValue={String(user?.Settings?.snapchat_url || "")}
-                  className="col-span-10 p-3 text-black dark:text-white bg-transparent border-none outline-none placeholder:text-gray-400 dark:placeholder:text-gray-500 text-sm transition"
+                  className="p-3 text-sm text-black bg-transparent border-none outline-none col-span-10 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 transition"
                   placeholder="https://snapchat.com/@paymefans"
                 />
               </div>
 
               {/* TikTok */}
-              <div className="grid grid-cols-12 items-center rounded-lg border border-black/10 dark:border-slate-700 bg-gray-50 dark:bg-slate-800 overflow-hidden transition-shadow focus-within:shadow-md group">
-                <div className="flex items-center justify-center h-full col-span-2 bg-primary-dark-pink/10 dark:bg-primary-dark-pink/20 py-3 transition group-focus-within:bg-primary-dark-pink/20">
+              <div className="items-center overflow-hidden border rounded-lg grid grid-cols-12 border-black/10 dark:border-slate-700 bg-gray-50 dark:bg-slate-800 transition-shadow focus-within:shadow-md group">
+                <div className="flex items-center justify-center h-full py-3 col-span-2 bg-primary-dark-pink/10 dark:bg-primary-dark-pink/20 transition group-focus-within:bg-primary-dark-pink/20">
                   <svg
                     width="24"
                     height="24"
                     fill="currentColor"
-                    className="text-primary-dark-pink dark:text-white w-6 h-6"
+                    className="w-6 h-6 text-primary-dark-pink dark:text-white"
                     viewBox="0 0 24 24"
                   >
                     <path d="M12.75 2h2.25a.75.75 0 0 1 .75.75v1.5a3.75 3.75 0 0 0 3.75 3.75h1.5a.75.75 0 0 1 .75.75v2.25a.75.75 0 0 1-.75.75h-1.5A6.75 6.75 0 0 1 13.5 5.25V2.75A.75.75 0 0 1 12.75 2zm-2.25 5.25A6.75 6.75 0 1 0 17.25 14v-2.25a.75.75 0 0 0-.75-.75h-2.25a.75.75 0 0 0-.75.75v2.25a3.75 3.75 0 1 1-3.75-3.75h.75a.75.75 0 0 0 .75-.75V7.25a.75.75 0 0 0-.75-.75h-.75z" />
@@ -388,19 +388,19 @@ function BannerModal({ user, open = false, setOpen }: BannerModalProps) {
                   onChange={handleInputChange}
                   name="tiktok"
                   defaultValue={String(user?.Settings?.tiktok_url || "")}
-                  className="col-span-10 p-3 text-black dark:text-white bg-transparent border-none outline-none placeholder:text-gray-400 dark:placeholder:text-gray-500 text-sm transition"
+                  className="p-3 text-sm text-black bg-transparent border-none outline-none col-span-10 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 transition"
                   placeholder="https://tiktok.com/@paymefans"
                 />
               </div>
 
               {/* Telegram */}
-              <div className="grid grid-cols-12 items-center rounded-lg border border-black/10 dark:border-slate-700 bg-gray-50 dark:bg-slate-800 overflow-hidden transition-shadow focus-within:shadow-md group">
-                <div className="flex items-center justify-center h-full col-span-2 bg-primary-dark-pink/10 dark:bg-primary-dark-pink/20 py-3 transition group-focus-within:bg-primary-dark-pink/20">
+              <div className="items-center overflow-hidden border rounded-lg grid grid-cols-12 border-black/10 dark:border-slate-700 bg-gray-50 dark:bg-slate-800 transition-shadow focus-within:shadow-md group">
+                <div className="flex items-center justify-center h-full py-3 col-span-2 bg-primary-dark-pink/10 dark:bg-primary-dark-pink/20 transition group-focus-within:bg-primary-dark-pink/20">
                   <svg
                     width="24"
                     height="24"
                     fill="currentColor"
-                    className="text-primary-dark-pink dark:text-white w-6 h-6"
+                    className="w-6 h-6 text-primary-dark-pink dark:text-white"
                     viewBox="0 0 24 24"
                   >
                     <path d="M21.944 4.667a1.5 1.5 0 0 0-1.6-.217L3.6 11.25a1.5 1.5 0 0 0 .1 2.8l3.7 1.3 1.4 4.2a1.5 1.5 0 0 0 2.7.2l2-3.3 3.8 2.8a1.5 1.5 0 0 0 2.4-1l2-12a1.5 1.5 0 0 0-.756-1.583zM9.8 17.1l-1.1-3.3 7.2-6.5-6.1 7.7zm2.7 1.2l-1.1-3.3 2.7 2zm6.2-1.2-3.8-2.8 4.6-7.2z" />
@@ -411,19 +411,19 @@ function BannerModal({ user, open = false, setOpen }: BannerModalProps) {
                   onChange={handleInputChange}
                   name="telegram"
                   defaultValue={String(user?.Settings?.telegram_url || "")}
-                  className="col-span-10 p-3 text-black dark:text-white bg-transparent border-none outline-none placeholder:text-gray-400 dark:placeholder:text-gray-500 text-sm transition"
+                  className="p-3 text-sm text-black bg-transparent border-none outline-none col-span-10 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 transition"
                   placeholder="https://t.me/paymefans"
                 />
               </div>
 
               {/* YouTube */}
-              <div className="grid grid-cols-12 items-center rounded-lg border border-black/10 dark:border-slate-700 bg-gray-50 dark:bg-slate-800 overflow-hidden transition-shadow focus-within:shadow-md group">
-                <div className="flex items-center justify-center h-full col-span-2 bg-primary-dark-pink/10 dark:bg-primary-dark-pink/20 py-3 transition group-focus-within:bg-primary-dark-pink/20">
+              <div className="items-center overflow-hidden border rounded-lg grid grid-cols-12 border-black/10 dark:border-slate-700 bg-gray-50 dark:bg-slate-800 transition-shadow focus-within:shadow-md group">
+                <div className="flex items-center justify-center h-full py-3 col-span-2 bg-primary-dark-pink/10 dark:bg-primary-dark-pink/20 transition group-focus-within:bg-primary-dark-pink/20">
                   <svg
                     width="24"
                     height="24"
                     fill="currentColor"
-                    className="text-primary-dark-pink dark:text-white w-6 h-6"
+                    className="w-6 h-6 text-primary-dark-pink dark:text-white"
                     viewBox="0 0 24 24"
                   >
                     <path d="M21.8 8.001a2.75 2.75 0 0 0-1.94-1.94C18.1 6 12 6 12 6s-6.1 0-7.86.06a2.75 2.75 0 0 0-1.94 1.94A28.2 28.2 0 0 0 2 12a28.2 28.2 0 0 0 .2 3.999 2.75 2.75 0 0 0 1.94 1.94C5.9 18 12 18 12 18s6.1 0 7.86-.06a2.75 2.75 0 0 0 1.94-1.94A28.2 28.2 0 0 0 22 12a28.2 28.2 0 0 0-.2-3.999zM10 15.5v-7l6 3.5-6 3.5z" />
@@ -434,7 +434,7 @@ function BannerModal({ user, open = false, setOpen }: BannerModalProps) {
                   onChange={handleInputChange}
                   name="youtube"
                   defaultValue={String(user?.Settings?.youtube_url || "")}
-                  className="col-span-10 p-3 text-black dark:text-white bg-transparent border-none outline-none placeholder:text-gray-400 dark:placeholder:text-gray-500 text-sm transition"
+                  className="p-3 text-sm text-black bg-transparent border-none outline-none col-span-10 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 transition"
                   placeholder="https://youtube.com/@paymefans"
                 />
               </div>
@@ -442,7 +442,7 @@ function BannerModal({ user, open = false, setOpen }: BannerModalProps) {
           )}
           <button
             type="submit"
-            className="w-full py-3 font-semibold text-white transition-colors rounded-lg shadow bg-primary-dark-pink hover:bg-pink-700 focus:outline-none focus:ring-2 focus:ring-primary-dark-pink col-span-2 cursor-pointer"
+            className="w-full py-3 font-semibold text-white rounded-lg shadow cursor-pointer transition-colors bg-primary-dark-pink hover:bg-pink-700 focus:outline-none focus:ring-2 focus:ring-primary-dark-pink col-span-2"
           >
             Save
           </button>

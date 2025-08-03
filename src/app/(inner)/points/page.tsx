@@ -13,10 +13,10 @@ type Points = {
 //     return (
 //         <div>
 //             <div className="p-4 dark:text-white">
-//                 <h1 className="font-bold text-2xl mb-10 pt-4">
+//                 <h1 className="pt-4 mb-10 text-2xl font-bold">
 //                     Points
 //                 </h1>
-//                 <div className="grid grid-cols-3 gap-3 md:gap-6 mb-20 md:mb-0">
+//                 <div className="mb-20 grid grid-cols-3 gap-3 md:gap-6 md:mb-0">
 //                     {points.map((point, index) => (
 //                         <PointsBuy key={index} point={point}/>
 //                     ))}
@@ -31,7 +31,7 @@ const Points = () => {
         <>
             <div>
                 <div className="p-4 md:p-8 dark:text-white">
-                    <h1 className="font-bold text-2xl mb-10 pt-4">
+                    <h1 className="pt-4 mb-10 text-2xl font-bold">
                         Add Points
                     </h1>
                     <AddPoints/>

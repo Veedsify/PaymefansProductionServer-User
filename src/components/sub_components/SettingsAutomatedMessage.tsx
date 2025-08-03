@@ -462,7 +462,7 @@ const SettingsAutomatedMessage: React.FC = () => {
         </div>
 
         {isEmpty && !isEditing ? (
-          <div className="text-center py-8 text-gray-500">
+          <div className="py-8 text-center text-gray-500">
             <AlertCircle
               size={48}
               className="mx-auto mb-3 text-gray-300 dark:text-white"
@@ -470,7 +470,7 @@ const SettingsAutomatedMessage: React.FC = () => {
             <p className="text-sm dark:text-white">No message configured</p>
             <button
               onClick={() => handleEdit(type)}
-              className="mt-3 text-primary-dark-pink hover:text-primary-text-dark-pink text-sm font-medium"
+              className="mt-3 text-sm font-medium text-primary-dark-pink hover:text-primary-text-dark-pink"
             >
               Set up message
             </button>
@@ -494,7 +494,7 @@ const SettingsAutomatedMessage: React.FC = () => {
 
             {message.attachments.length > 0 && (
               <div className="mb-4">
-                <h4 className="text-sm font-medium text-gray-700 mb-2">
+                <h4 className="mb-2 text-sm font-medium text-gray-700">
                   Attachments ({message.attachments.length})
                 </h4>
                 <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
@@ -505,12 +505,12 @@ const SettingsAutomatedMessage: React.FC = () => {
                     return (
                       <div
                         key={attachment.id}
-                        className="relative group bg-gray-50 rounded-lg p-2 border border-gray-200 hover:border-gray-300 transition-colors"
+                        className="relative p-2 border border-gray-200 rounded-lg group bg-gray-50 hover:border-gray-300 transition-colors"
                       >
                         <div className="flex flex-col items-center">
                           {/* Image preview or file icon */}
                           <div
-                            className="mb-2 flex items-center justify-center relative"
+                            className="relative flex items-center justify-center mb-2"
                             style={{ width: "60px", height: "60px" }}
                           >
                             {attachment.type === "image" ? (
@@ -543,12 +543,12 @@ const SettingsAutomatedMessage: React.FC = () => {
                                     style={{ width: "60px", height: "60px" }}
                                   />
                                 ) : (
-                                  <div className="text-white text-xs">
+                                  <div className="text-xs text-white">
                                     VIDEO
                                   </div>
                                 )}
                                 <div className="absolute inset-0 flex items-center justify-center">
-                                  <div className="w-4 h-4 bg-white bg-opacity-80 rounded-full flex items-center justify-center">
+                                  <div className="flex items-center justify-center w-4 h-4 bg-white rounded-full bg-opacity-80">
                                     <div className="w-0 h-0 border-l-2 border-l-gray-800 border-y-1 border-y-transparent ml-0.5"></div>
                                   </div>
                                 </div>
@@ -567,7 +567,7 @@ const SettingsAutomatedMessage: React.FC = () => {
                             {/* Upload progress overlay */}
                             {isUploading && (
                               <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 rounded-md">
-                                <div className="text-white text-xs font-medium">
+                                <div className="text-xs font-medium text-white">
                                   {Math.round(progress)}%
                                 </div>
                               </div>
@@ -575,7 +575,7 @@ const SettingsAutomatedMessage: React.FC = () => {
                           </div>
 
                           {/* File info */}
-                          <div className="text-center w-full">
+                          <div className="w-full text-center">
                             <p
                               className="text-xs font-medium text-gray-900 truncate"
                               title={attachment.name}
@@ -598,7 +598,7 @@ const SettingsAutomatedMessage: React.FC = () => {
                             onClick={() =>
                               removeAttachment(type, attachment.id)
                             }
-                            className="absolute -top-2 -right-2 w-6 h-6 bg-red-500 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-600"
+                            className="absolute flex items-center justify-center w-6 h-6 text-white bg-red-500 rounded-full opacity-0 -top-2 -right-2 group-hover:opacity-100 transition-opacity hover:bg-red-600"
                           >
                             <X size={12} />
                           </button>
@@ -615,14 +615,14 @@ const SettingsAutomatedMessage: React.FC = () => {
                 <>
                   <button
                     onClick={() => handleFileUpload(type)}
-                    className="flex items-center gap-2 px-4 py-2 text-sm border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+                    className="flex items-center px-4 py-2 text-sm border border-gray-300 rounded-lg gap-2 hover:bg-gray-50 transition-colors"
                   >
                     <Upload size={16} />
                     Attach File
                   </button>
                   <button
                     onClick={() => handleCancelEdit(type)}
-                    className="flex items-center gap-2 px-4 py-2 text-sm border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+                    className="flex items-center px-4 py-2 text-sm border border-gray-300 rounded-lg gap-2 hover:bg-gray-50 transition-colors"
                   >
                     <X size={16} />
                     Cancel
@@ -632,14 +632,14 @@ const SettingsAutomatedMessage: React.FC = () => {
                 <>
                   <button
                     onClick={() => handleEdit(type)}
-                    className="flex items-center gap-2 px-4 py-2 text-sm border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+                    className="flex items-center px-4 py-2 text-sm border border-gray-300 rounded-lg gap-2 hover:bg-gray-50 transition-colors"
                   >
                     <Edit size={16} />
                     Edit
                   </button>
                   <button
                     onClick={() => handleDelete(type)}
-                    className="flex items-center gap-2 px-4 py-2 text-sm bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors"
+                    className="flex items-center px-4 py-2 text-sm text-white bg-red-500 rounded-lg gap-2 hover:bg-red-600 transition-colors"
                   >
                     <Trash2 size={16} />
                     Delete
@@ -657,7 +657,7 @@ const SettingsAutomatedMessage: React.FC = () => {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center py-12">
-        <div className="w-8 h-8 border-2 border-primary-dark-pink border-t-transparent rounded-full animate-spin"></div>
+        <div className="w-8 h-8 border-2 rounded-full border-primary-dark-pink border-t-transparent animate-spin"></div>
         <span className="ml-3 text-gray-600">
           Loading automated messages...
         </span>
@@ -668,10 +668,10 @@ const SettingsAutomatedMessage: React.FC = () => {
   return (
     <div className="">
       <div className="mb-8">
-        <h1 className="text-lg md:text-xl font-bold text-gray-900 dark:text-white mb-4">
+        <h1 className="mb-4 text-lg font-bold text-gray-900 md:text-xl dark:text-white">
           Automated Messages
         </h1>
-        <p className="text-gray-600 leading-relaxed dark:text-white">
+        <p className="leading-relaxed text-gray-600 dark:text-white">
           Boost engagement with automated messages! Set up triggers to send
           personalized messages to your fans when they subscribe or follow you.
           Share exclusive content, or simply say thank you to build a loyal
@@ -680,7 +680,7 @@ const SettingsAutomatedMessage: React.FC = () => {
       </div>
 
       {error && (
-        <div className="mb-6 flex items-center gap-3 p-4 bg-red-50 border border-red-200 rounded-lg">
+        <div className="flex items-center p-4 mb-6 border border-red-200 rounded-lg gap-3 bg-red-50">
           <AlertCircle size={20} className="text-red-600" />
           <p className="text-red-800">{error}</p>
           <button
@@ -707,7 +707,7 @@ const SettingsAutomatedMessage: React.FC = () => {
           "Welcome to my exclusive content! Thank you for subscribing..."
         )}
 
-        <div className="border-t pt-6">
+        <div className="pt-6 border-t">
           <div className="flex items-center justify-between">
             <div>
               <h3 className="font-semibold text-gray-900 dark:text-white">
@@ -733,7 +733,7 @@ const SettingsAutomatedMessage: React.FC = () => {
               }`}
             >
               {isSaving ? (
-                <div className="w-4 h-4 border-2 border-gray-400 border-t-transparent rounded-full animate-spin" />
+                <div className="w-4 h-4 border-2 border-gray-400 rounded-full border-t-transparent animate-spin" />
               ) : (
                 <Save size={16} />
               )}
@@ -747,9 +747,9 @@ const SettingsAutomatedMessage: React.FC = () => {
         </div>
 
         {showSuccess && (
-          <div className="flex items-center gap-3 p-4 bg-green-50 border border-green-200 rounded-lg">
+          <div className="flex items-center p-4 border border-green-200 rounded-lg gap-3 bg-green-50">
             <Check size={20} className="text-green-600" />
-            <p className="text-green-800 font-medium">
+            <p className="font-medium text-green-800">
               Settings saved successfully!
             </p>
           </div>

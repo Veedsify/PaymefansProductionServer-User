@@ -105,16 +105,16 @@ const SetSubscription = () => {
 
   return (
     <div className={`mt-10`}>
-      <h1 className="font-bold text-2xl mb-3">Subscription</h1>
+      <h1 className="mb-3 text-2xl font-bold">Subscription</h1>
       <p>Setup a subscription price for your fans</p>
       <div className="text-center bg-[#FAE2FF] my-4 flex justify-center items-center text-primary-dark-pink w-full gap-2 p-8 rounded-xl cursor-pointer">
         <LucideAlertCircle />
         <p>You will receive 100% for each transaction</p>
       </div>
       <div className="mt-8">
-        <h2 className="font-bold text-xl mb-4">Subscription Tiers</h2>
+        <h2 className="mb-4 text-xl font-bold">Subscription Tiers</h2>
         <div className="space-y-4">
-          <div className="border border-black/30 rounded-xl p-4 bg-white dark:bg-gray-900">
+          <div className="p-4 bg-white border border-black/30 rounded-xl dark:bg-gray-900">
             <form onSubmit={handleFormSubmit}>
               {tiers.map((tier, index) => (
                 <div className="tierNode" key={index}>
@@ -128,7 +128,7 @@ const SetSubscription = () => {
                         updateTierField(index, "tier_name", e.target.value)
                       }
                       placeholder="Tier Name (e.g. Basic)"
-                      className="flex-1 outline-none border-black/30 font-medium border p-2 bg-gray-50 dark:bg-gray-800 rounded-lg"
+                      className="flex-1 p-2 font-medium border rounded-lg outline-none border-black/30 bg-gray-50 dark:bg-gray-800"
                     />
                     <div className="flex flex-col gap-1">
                       <div className="flex items-center gap-2">
@@ -148,12 +148,12 @@ const SetSubscription = () => {
                             updateTierField(index, "tier_price", e.target.value)
                           }
                           name={`price-${index}`}
-                          className="w-32 outline-none border-black/30 border p-2 rounded-lg bg-gray-50 dark:bg-gray-800"
+                          className="w-32 p-2 border rounded-lg outline-none border-black/30 bg-gray-50 dark:bg-gray-800"
                         />
                       </div>
                       {tier.tier_price > 0 &&
                         config?.point_conversion_rate_ngn && (
-                          <p className="text-sm text-primary-dark-pink text-right">
+                          <p className="text-sm text-right text-primary-dark-pink">
                             ≈ ₦
                             {(
                               Number(tier.tier_price) *
@@ -170,7 +170,7 @@ const SetSubscription = () => {
                     onChange={(e) =>
                       updateTierField(index, "tier_duration", e.target.value)
                     }
-                    className="w-full border border-black/30 p-2 rounded-lg mb-3 outline-none bg-gray-50 dark:bg-gray-800"
+                    className="w-full p-2 mb-3 border rounded-lg outline-none border-black/30 bg-gray-50 dark:bg-gray-800"
                   >
                     <option disabled value="select">
                       Select duration
@@ -188,13 +188,13 @@ const SetSubscription = () => {
                       updateTierField(index, "tier_description", e.target.value)
                     }
                     placeholder="Add special perks for this tier..."
-                    className="w-full border  border-black/30 p-2 rounded-lg h-20 resize-none bg-gray-50 dark:bg-gray-800"
+                    className="w-full h-20 p-2 border rounded-lg resize-none  border-black/30 bg-gray-50 dark:bg-gray-800"
                   />
                   <div className="pb-6">
-                    <div className="text-right mb-4">
+                    <div className="mb-4 text-right">
                       <button
                         onClick={handleRemoveTier(index)}
-                        className="text-primary-dark-pink text-sm cursor-pointer"
+                        className="text-sm cursor-pointer text-primary-dark-pink"
                       >
                         Remove
                       </button>
@@ -207,13 +207,13 @@ const SetSubscription = () => {
           </div>
           <button
             onClick={handleFormSubmit}
-            className="w-full border-2 rounded-xl p-4 text-sm font-medium hover:bg-primary-text-dark-pink bg-primary-dark-pink text-white duration-300"
+            className="w-full p-4 text-sm font-medium text-white border-2 rounded-xl hover:bg-primary-text-dark-pink bg-primary-dark-pink duration-300"
           >
             Save
           </button>
           <button
             onClick={handleAddTier}
-            className="w-full border-dashed border-2 rounded-xl p-4 text-gray-700 text-sm font-medium hover:bg-gray-50"
+            className="w-full p-4 text-sm font-medium text-gray-700 border-2 border-dashed rounded-xl hover:bg-gray-50"
           >
             + Add New Tier
           </button>

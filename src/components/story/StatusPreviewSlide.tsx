@@ -58,7 +58,7 @@ const CaptionOverlay = ({ story }: { story: Story }) => {
   }
 
   return (
-    <div className="absolute inset-0 pointer-events-none z-50 w-full h-full">
+    <div className="absolute inset-0 z-50 w-full h-full pointer-events-none">
       {parsedCaptionElements.map((element: any) => (
         <CaptionElement key={element.id} element={element} />
       ))}
@@ -102,7 +102,7 @@ const StatusViewBlock = ({ story }: { story: Story }) => {
   }, [inView, fetchNextPage, hasNextPage]);
 
   return (
-    <div className="absolute h-full z-50 w-full">
+    <div className="absolute z-50 w-full h-full">
       <AnimatePresence>
         {statusViewOpen && (
           <motion.div
@@ -114,17 +114,17 @@ const StatusViewBlock = ({ story }: { story: Story }) => {
             } w-full z-10`}
           >
             <div className="p-2 md:p-6">
-              <div className="flex justify-between items-center mb-4 p-2">
-                <h2 className="font-bold text-lg">Views {viewsCount}</h2>
+              <div className="flex items-center justify-between p-2 mb-4">
+                <h2 className="text-lg font-bold">Views {viewsCount}</h2>
                 <button
                   onClick={handleViewSection}
-                  className="text-gray-500 hover:text-gray-700c cursor-pointer"
+                  className="text-gray-500 cursor-pointer hover:text-gray-700c"
                 >
                   <X />
                 </button>
               </div>
               {isError && (
-                <div className="text-red-500 text-center">
+                <div className="text-center text-red-500">
                   Error fetching status views
                 </div>
               )}
@@ -138,9 +138,9 @@ const StatusViewBlock = ({ story }: { story: Story }) => {
                   viewers[0]?.views?.map((view) => (
                     <div
                       key={view.viewer_id}
-                      className="flex items-center gap-3 p-2 hover:bg-gray-100 rounded-lg"
+                      className="flex items-center p-2 rounded-lg gap-3 hover:bg-gray-100"
                     >
-                      <div className="w-12 h-12 bg-gray-200 rounded-full overflow-hidden">
+                      <div className="w-12 h-12 overflow-hidden bg-gray-200 rounded-full">
                         <Link href={`/${view.viewer.username}`}>
                           <Image
                             src={view.viewer.profile_image}
@@ -163,14 +163,14 @@ const StatusViewBlock = ({ story }: { story: Story }) => {
                           </Link>
                         </span>
                       </div>
-                      <span className="text-gray-500 ml-auto">
+                      <span className="ml-auto text-gray-500">
                         {formatDate(view.viewed_at)}
                       </span>
                     </div>
                   ))}
                 {isLoading && (
                   <div className="flex justify-center">
-                    <LucideLoader className="animate-spin text-primary-dark-pink h-8" />
+                    <LucideLoader className="h-8 animate-spin text-primary-dark-pink" />
                   </div>
                 )}
                 {viewsCount === 0 && (
@@ -184,7 +184,7 @@ const StatusViewBlock = ({ story }: { story: Story }) => {
           </motion.div>
         )}
       </AnimatePresence>
-      <div className="absolute bottom-0 h-24 w-full bg-gradient-to-t from-black to-transparent flex items-center justify-center">
+      <div className="absolute bottom-0 flex items-center justify-center w-full h-24 bg-gradient-to-t from-black to-transparent">
         <button className="cursor-pointer" onClick={handleViewSection}>
           <LucideEye stroke="white" size={24} />
         </button>
@@ -348,14 +348,14 @@ const StoryReplyInput = ({ story }: { story: Story }) => {
   }
 
   return (
-    <div className="absolute bottom-4 left-4 right-4 z-50">
+    <div className="absolute z-50 bottom-4 left-4 right-4">
       <AnimatePresence>
         {showReplyInput ? (
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 20 }}
-            className="bg-black/80 backdrop-blur-sm rounded-lg p-3"
+            className="p-3 rounded-lg bg-black/80 backdrop-blur-sm"
           >
             <div className="flex items-center gap-2">
               <input
@@ -363,7 +363,7 @@ const StoryReplyInput = ({ story }: { story: Story }) => {
                 value={replyText}
                 onChange={(e) => setReplyText(e.target.value)}
                 placeholder={`Send Message`}
-                className="flex-1 bg-white/10 text-white placeholder-white/70 border border-white/20 rounded-xl px-3 py-3 focus:outline-none focus:border-white/40"
+                className="flex-1 px-3 py-3 text-white border bg-white/10 placeholder-white/70 border-white/20 rounded-xl focus:outline-none focus:border-white/40"
                 onKeyDown={(e) => {
                   if (e.key === "Enter" && !isReplying) {
                     handleReplySubmit();
@@ -374,7 +374,7 @@ const StoryReplyInput = ({ story }: { story: Story }) => {
               <button
                 onClick={handleReplySubmit}
                 disabled={!replyText.trim() || isReplying}
-                className="bg-primary-dark-pink text-white p-2 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-primary-text-dark-pink transition-colors"
+                className="p-2 text-white rounded-lg bg-primary-dark-pink disabled:opacity-50 disabled:cursor-not-allowed hover:bg-primary-text-dark-pink transition-colors"
               >
                 {isReplying ? (
                   <LucideLoader className="w-5 h-5 animate-spin" />
@@ -384,7 +384,7 @@ const StoryReplyInput = ({ story }: { story: Story }) => {
               </button>
               <button
                 onClick={() => setShowReplyInput(false)}
-                className="text-white/70 hover:text-white p-1"
+                className="p-1 text-white/70 hover:text-white"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -395,7 +395,7 @@ const StoryReplyInput = ({ story }: { story: Story }) => {
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
             onClick={() => setShowReplyInput(true)}
-            className="bg-black/50 backdrop-blur-sm text-white px-4 py-2 rounded-full flex items-center gap-2 hover:bg-black/70 transition-colors"
+            className="flex items-center px-4 py-2 text-white rounded-full bg-black/50 backdrop-blur-sm gap-2 hover:bg-black/70 transition-colors"
           >
             <LucideSend className="w-4 h-4" />
             <span>Reply</span>
@@ -439,7 +439,7 @@ const StatusPreviewSlide = ({
   return (
     <div className="relative flex items-center justify-center w-full h-full max-w-full max-h-full">
       {story.media_type === "image" ? (
-        <div className="relative w-full h-full flex items-center justify-center">
+        <div className="relative flex items-center justify-center w-full h-full">
           <Image
             src={story.media_url}
             alt={story?.caption || "Story image"}
@@ -448,7 +448,7 @@ const StatusPreviewSlide = ({
             quality={100}
             priority={index === activeIndex}
             loading={index === activeIndex ? "eager" : "lazy"}
-            className="rounded-lg shadow-lg bg-black z-30"
+            className="z-30 bg-black rounded-lg shadow-lg"
             onError={() => {
               console.error("Image failed to load:", story.media_url);
             }}
@@ -459,7 +459,7 @@ const StatusPreviewSlide = ({
           <StoryReplyInput story={story} />
         </div>
       ) : story.media_type === "video" ? (
-        <div className="relative w-full h-full flex items-center justify-center">
+        <div className="relative flex items-center justify-center w-full h-full">
           <VideoPlayer
             modalOpen={false}
             autoPlay={index === activeIndex}
@@ -481,7 +481,7 @@ const StatusPreviewSlide = ({
                 boxShadow: "0 4px 24px rgba(0,0,0,0.7)",
               },
             }}
-            className="w-full h-full rounded-lg shadow-lg bg-black"
+            className="w-full h-full bg-black rounded-lg shadow-lg"
             streamUrl={story.media_url}
           />
           {/* Caption Overlay for Videos */}

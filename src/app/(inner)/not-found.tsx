@@ -1,6 +1,6 @@
 import { Bricolage_Grotesque } from "next/font/google";
 import Image from "next/image";
-import "./globals.css";
+import "../globals.css";
 import Link from "next/link";
 import { LucideArrowLeft } from "lucide-react";
 
@@ -15,8 +15,8 @@ const NotFound = () => {
     <div
       className={`flex ${font.className} items-center justify-center flex-col h-dvh w-full`}
     >
-      <div className="flex flex-col gap-1 text-center">
-        <div className="mt-8 mb-16 mx-auto">
+      <div className="flex flex-col text-center gap-1">
+        <div className="mx-auto mt-8 mb-16">
           <Image
             className="block h-8 w-36"
             width={150}
@@ -34,16 +34,16 @@ const NotFound = () => {
           height={300}
           className="block mb-5 h-auto w-[300px] md:mx-auto md:w-96"
         />
-        <h1 className="text-3xl font-bold mb-5 dark:text-white">
+        <h1 className="mb-5 text-3xl font-bold dark:text-white">
           <span className="text-9xl text-primary-dark-pink">404</span>
           <br />
           Sorry This Page Doesn&apos;t Exist
         </h1>
 
-        <p className="dark:text-white mb-4">Page was not found</p>
+        <p className="mb-4 dark:text-white">Page was not found</p>
         <div>
           <Link
-            className="px-6 py-2 text-white inline-flex gap-4 font-medium hover:bg-primary-text-dark-pink duration-300 rounded-lg bg-primary-dark-pink"
+            className="inline-flex px-6 py-2 font-medium text-white rounded-lg gap-4 hover:bg-primary-text-dark-pink duration-300 bg-primary-dark-pink"
             href={"/"}
           >
             <LucideArrowLeft />

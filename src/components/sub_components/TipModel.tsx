@@ -156,8 +156,8 @@ const TipModel = ({
         onClick={(e) => e.stopPropagation()}
         className="bg-white dark:bg-gray-900 lg:rounded-xl p-4 md:p-8 w-full md:max-w-2xl h-dvh lg:max-h-[90dvh] overflow-y-auto"
       >
-        <div className="flex justify-between items-center mb-4">
-          <h2 className="font-bold text-lg md:text-2xl">Send a Tip</h2>
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-lg font-bold md:text-2xl">Send a Tip</h2>
           <span className="cursor-pointer" onClick={close}>
             <X />
           </span>
@@ -180,7 +180,7 @@ const TipModel = ({
           {points.map((point) => (
             <div
               key={point.id}
-              className="cursor-pointer rounded-2xl bg-coins-card-bottom dark:bg-slate-800 dark:border-slate-800 dark:border select-none"
+              className="cursor-pointer select-none rounded-2xl bg-coins-card-bottom dark:bg-slate-800 dark:border-slate-800 dark:border"
               onClick={() => handlePointsClick(point.points_buy_id)}
             >
               <div className="flex py-5 rounded-tr-2xl rounded-tl-2xl items-center gap-2 justify-center dark:bg-gray-950 bg-white m-[2px]">

@@ -1,18 +1,14 @@
 "use client";
-
-import { useEffect, useState, Suspense } from "react";
+import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
-import { motion } from "framer-motion";
 import { PiCurrencyDollarSimple } from "react-icons/pi";
 import {
   LucideCalendar,
   LucideLink,
-  LucideLoader2,
   LucideLock,
   LucideMapPin,
-  MoreHorizontal,
   Verified,
 } from "lucide-react";
 
@@ -29,7 +25,6 @@ import ProfileTabsOther from "@/components/sub_components/ProfileTabsOther";
 import ActiveProfileTag from "@/components/sub_components/sub/ActiveProfileTag";
 import ProfileSocialLinks from "@/components/sub_components/ProfileSocialLinks";
 import TipModel from "@/components/sub_components/TipModel";
-import BlockUserButton from "@/components/sub_components/BlockUserButton";
 import MoreProfileOptions from "@/components/profile/MoreProfileOptions";
 
 // Utility to format numbers
@@ -43,11 +38,11 @@ const formatNumber = (num: number = 0): string => {
 // Verified Badge Component
 const VerifiedBadge = ({ type = "user" }: { type?: "user" | "model" }) => (
   <span
-    className="relative group cursor-pointer"
+    className="relative cursor-pointer group"
     aria-label={`${type} verified badge`}
   >
     <Verified stroke={type === "model" ? "purple" : "limegreen"} size={20} />
-    <span className="absolute left-1/2 -translate-x-1/2 mt-2 px-2 py-1 rounded bg-black text-white text-xs opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-10">
+    <span className="absolute z-10 px-2 py-1 mt-2 text-xs text-white bg-black rounded opacity-0 left-1/2 -translate-x-1/2 group-hover:opacity-100 transition-opacity whitespace-nowrap">
       {type === "model" ? "Model Verified" : "Verified"}
     </span>
   </span>
@@ -65,19 +60,19 @@ const ProfileCounts = ({
   subscribers?: number;
   isModel: boolean;
 }) => (
-  <div className="flex gap-2 mb-3 flex-wrap sm:text-base text-sm">
-    <span className="flex gap-2 items-center">
-      <h1 className="font-bold text-sm">{formatNumber(followers)}</h1>
-      <p className="font-medium text-gray-500 text-sm">Followers</p>
+  <div className="flex flex-wrap mb-3 text-sm gap-2 sm:text-base">
+    <span className="flex items-center gap-2">
+      <h1 className="text-sm font-bold">{formatNumber(followers)}</h1>
+      <p className="text-sm font-medium text-gray-500">Followers</p>
     </span>
-    <span className="flex gap-2 items-center">
-      <h1 className="font-bold text-sm">{formatNumber(following)}</h1>
-      <p className="font-medium text-gray-500 text-sm">Following</p>
+    <span className="flex items-center gap-2">
+      <h1 className="text-sm font-bold">{formatNumber(following)}</h1>
+      <p className="text-sm font-medium text-gray-500">Following</p>
     </span>
     {isModel && subscribers && (
-      <span className="flex gap-2 items-center">
-        <h1 className="font-bold text-sm">{formatNumber(subscribers)}</h1>
-        <p className="font-medium text-gray-500 text-sm">Subscribers</p>
+      <span className="flex items-center gap-2">
+        <h1 className="text-sm font-bold">{formatNumber(subscribers)}</h1>
+        <p className="text-sm font-medium text-gray-500">Subscribers</p>
       </span>
     )}
   </div>
@@ -139,15 +134,6 @@ const ProfilePage = () => {
     }
   }, [userdata, user, router]);
 
-  // if (loading && !userdata) {
-  //   return (
-  //     <div className="text-center py-10 flex items-center flex-col justify-center">
-  //       <LucideLoader2 size={30} className="animate-spin" stroke="purple" />
-  //       <p className="mt-2">Loading profile...</p>
-  //     </div>
-  //   );
-  // }
-
   if (userdata && user?.id === userdata.id) {
     return null;
   }
@@ -174,7 +160,7 @@ const ProfilePage = () => {
         width={700}
         height={400}
         priority
-        className="inset-0 aspect-21-9 object-cover w-full h-full"
+        className="inset-0 object-cover w-full h-full aspect-21-9"
       />
 
       {/* Avatar and Actions */}
@@ -185,16 +171,16 @@ const ProfilePage = () => {
           priority
           height={100}
           width={100}
-          className="absolute object-cover md:w-24 md:h-24 w-20 h-20 sm:border-4 border-2 rounded-full md:-top-12 -top-6 border-primary-dark-pink"
+          className="absolute object-cover w-20 h-20 border-2 rounded-full md:w-24 md:h-24 sm:border-4 md:-top-12 -top-6 border-primary-dark-pink"
         />
-        <div className="flex items-center gap-3 sm:p-3 ml-auto p-3">
+        <div className="flex items-center p-3 ml-auto gap-3 sm:p-3">
           {canTip && (
             <button
               onClick={toggleTip}
               aria-label="Tip user"
               className="cursor-pointer"
             >
-              <PiCurrencyDollarSimple className="w-5 h-5 lg:w-6 lg:h-6 font-bold" />
+              <PiCurrencyDollarSimple className="w-5 h-5 font-bold lg:w-6 lg:h-6" />
             </button>
           )}
           <FollowUserComponent profileuser={userdata} />
@@ -207,10 +193,10 @@ const ProfilePage = () => {
       </div>
 
       {/* Info & Bio */}
-      <div className="flex flex-col gap-2 px-2 mt-2 mb-6 md:px-5 dark:text-white">
+      <div className="flex flex-col px-2 mt-2 mb-6 gap-2 md:px-5 dark:text-white">
         {/* Name, Badges, and Tag */}
         <div className="flex flex-col">
-          <h1 className="font-bold flex items-center gap-2 text-lg">
+          <h1 className="flex items-center text-lg font-bold gap-2">
             {userdata.name}
             {isVerified && <VerifiedBadge />}
             {userdata.is_model && <VerifiedBadge type="model" />}
@@ -224,7 +210,7 @@ const ProfilePage = () => {
         {/* Bio */}
         {userdata.bio && (
           <div
-            className="font-medium mb-2 text-sm leading-loose dark:text-gray-300 text-gray-700"
+            className="mb-2 text-sm font-medium leading-loose text-gray-700 dark:text-gray-300"
             dangerouslySetInnerHTML={{
               __html: userdata.bio.replace(/(?:\r\n|\r|\n)/g, "<br>"),
             }}
@@ -237,10 +223,10 @@ const ProfilePage = () => {
             href={userdata.website}
             target="_blank"
             rel="noopener noreferrer"
-            className="font-medium text-primary-text-dark-pink text-sm mb-2 inline-flex items-center"
+            className="inline-flex items-center mb-2 text-sm font-medium text-primary-text-dark-pink"
           >
             <LucideLink
-              className="text-primary-text-dark-pink mr-2"
+              className="mr-2 text-primary-text-dark-pink"
               size={18}
               aria-hidden="true"
             />
@@ -248,8 +234,8 @@ const ProfilePage = () => {
           </Link>
         )}
         {/* Details */}
-        <div className="flex gap-3 flex-wrap text-sm items-center font-semibold text-gray-700 mb-2 dark:text-white">
-          <span className="flex gap-2 items-center">
+        <div className="flex flex-wrap items-center mb-2 text-sm font-semibold text-gray-700 gap-3 dark:text-white">
+          <span className="flex items-center gap-2">
             <LucideMapPin
               className="text-primary-text-dark-pink"
               size={18}

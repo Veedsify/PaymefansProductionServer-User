@@ -34,7 +34,7 @@ export default function CreateConversationButton({
   return (
     <button
       onClick={createConversation}
-      className="p-1 text-white cursor-pointer rounded bg-primary-dark-pink flex items-center"
+      className="flex items-center p-1 text-white rounded cursor-pointer bg-primary-dark-pink"
     >
       <LucideMail className="w-5 h-5" />
       {loading && <LucideLoader2 className="animate-spin" />}

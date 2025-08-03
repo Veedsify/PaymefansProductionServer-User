@@ -257,7 +257,7 @@ const VideoPlayer = ({
         {/* Buffering Indicator - shown during playback buffering */}
         {!isLoading && isBuffering && (
           <div className="absolute inset-0 flex items-center justify-center bg-black/30">
-            <div className="p-3 bg-black/50 rounded-full">
+            <div className="p-3 rounded-full bg-black/50">
               <LucideLoaderCircle className="w-8 h-8 text-gray-200 animate-spin" />
             </div>
           </div>
@@ -266,17 +266,17 @@ const VideoPlayer = ({
         {modalOpen && (
           <>
             {/* Overlay gradient for better control visibility */}
-            <div className="absolute inset-0 transition-opacity duration-300 opacity-100 lg:opacity-0 pointer-events-none lg:bg-gradient-to-t lg:from-black/80 lg:via-black/30 lg:to-transparent lg:group-hover:opacity-100"></div>
+            <div className="absolute inset-0 opacity-100 pointer-events-none transition-opacity duration-300 lg:opacity-0 lg:bg-gradient-to-t lg:from-black/80 lg:via-black/30 lg:to-transparent lg:group-hover:opacity-100"></div>
 
             {/* Controls overlay at the bottom */}
-            <div className="absolute left-0 right-0 z-20 flex items-center justify-between px-6 py-4 transition-opacity duration-300 opacity-100 lg:opacity-0  bottom-20 lg:group-hover:opacity-100">
+            <div className="absolute left-0 right-0 z-20 flex items-center justify-between px-6 py-4 opacity-100 transition-opacity duration-300 lg:opacity-0  bottom-20 lg:group-hover:opacity-100">
               {/* Play/Pause button */}
               <button
                 onClick={(e) => {
                   e.stopPropagation();
                   togglePlay();
                 }}
-                className="flex items-center justify-center p-3 transition-all duration-200 transform outline outline-gray-700 rounded-full shadow-lg bg-black/70 hover:bg-black/90 hover:scale-110 aspect-square"
+                className="flex items-center justify-center p-3 rounded-full shadow-lg transition-all duration-200 transform outline outline-gray-700 bg-black/70 hover:bg-black/90 hover:scale-110 aspect-square"
                 aria-label={isPlaying ? "Pause" : "Play"}
                 disabled={isLoading}
               >
@@ -341,7 +341,7 @@ const VideoPlayer = ({
         )}
         {/* Controls Panel - Time and seek bar */}
         {modalOpen && !isLoading && (
-          <div className="absolute bottom-0 z-10 flex flex-col w-full left-0 gap-2 px-6 py-3 text-white bg-gradient-to-t from-black/80 via-black/40 to-transparent">
+          <div className="absolute bottom-0 left-0 z-10 flex flex-col w-full px-6 py-3 text-white gap-2 bg-gradient-to-t from-black/80 via-black/40 to-transparent">
             {/* Seek Bar with custom styling */}
             <CustomSeekBar
               currentTime={currentTime}

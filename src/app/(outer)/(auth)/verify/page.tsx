@@ -86,20 +86,20 @@ const Login = () => {
   const debounceSubmitLoginForm = _.debounce(submitLoginForm, 300);
 
   return (
-    <div className="min-h-dvh lg:p-0 bg-black p-5">
-      <div className="lg:grid grid-cols-2 items-start justify-center mx-auto">
-        <div className="min-h-dvh hidden lg:block relative">
+    <div className="p-5 bg-black min-h-dvh lg:p-0">
+      <div className="items-start justify-center mx-auto lg:grid grid-cols-2">
+        <div className="relative hidden min-h-dvh lg:block">
           <Image
             width={1200}
             height={1200}
             priority
             src="/images/auth_image.jpeg"
             alt="Login Image"
-            className="h-full absolute object-cover inset-0 w-full "
+            className="absolute inset-0 object-cover w-full h-full "
           />
         </div>
         <div className="h-full lg:p-14 2xl:p-28">
-          <div className="max-w-screen-xl pt-12 mx-auto mb-24 md:mt-16">
+          <div className="pt-12 mx-auto mb-24 max-w-screen-xl md:mt-16">
             <Link href="/client/public">
               <Image
                 width={150}
@@ -114,7 +114,7 @@ const Login = () => {
           <h1 className="mt-auto mb-5 text-2xl font-bold text-white ">
             Verify Your Account
           </h1>
-          <p className="text-sm text-white mb-5 md:max-w-lg">
+          <p className="mb-5 text-sm text-white md:max-w-lg">
             We sent a verification code to your email. Enter the code below to
             verify your account. Check spam folder if not received or request a
             new code.
@@ -130,7 +130,7 @@ const Login = () => {
               debounceSubmitLoginForm(e);
             }}
           >
-            <div className="flex flex-col gap-3 mb-4">
+            <div className="flex flex-col mb-4 gap-3">
               <input
                 type="text"
                 name="verificationCode"
@@ -153,10 +153,10 @@ const Login = () => {
               Verify Account
             </button>
           </form>
-          <div className="flex items-center md:max-w-lg w-full mt-5">
+          <div className="flex items-center w-full mt-5 md:max-w-lg">
             <Link
               href="/client/public"
-              className="text-sm font-bold text-primary-dark-pink  ml-auto"
+              className="ml-auto text-sm font-bold text-primary-dark-pink "
             >
               Resend Code
             </Link>

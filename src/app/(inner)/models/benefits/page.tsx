@@ -15,16 +15,16 @@ async function Models() {
     return (
       <>
         <div>
-          <div className="m-3 p-8 px-12 rounded-2xl">
+          <div className="p-8 px-12 m-3 rounded-2xl">
             <Image
               src="/icons/feeling_sorry.svg"
               width={300}
               height={300}
               alt="Sorry you are already a model"
-              className="w-full block"
+              className="block w-full"
             />
             <div>
-              <h1 className="text-center mt-6 mb-8 font-bold md:text-3xl text-2xl ">
+              <h1 className="mt-6 mb-8 text-2xl font-bold text-center md:text-3xl ">
                 Sorry you are already a model
               </h1>
               <div className="text-center">
@@ -34,7 +34,7 @@ async function Models() {
                       ? `/profile`
                       : "/verification"
                   }
-                  className="bg-primary-dark-pink text-white text-sm py-3 px-4 font-bold m-3 rounded-md w-full text-center"
+                  className="w-full px-4 py-3 m-3 text-sm font-bold text-center text-white bg-primary-dark-pink rounded-md"
                 >
                   {user?.is_model && user.Model?.verification_status
                     ? "Go to your profile"
@@ -50,12 +50,12 @@ async function Models() {
 
   return (
     <div>
-      <div className="border-black/10 dark:border-white/10 border m-3 p-8 px-12 rounded-2xl relative dark:bg-gray-800">
-        <h2 className="text-center text-3xl font-bold mb-8 relative z-10 dark:text-white">
+      <div className="relative p-8 px-12 m-3 border border-black/10 dark:border-white/10 rounded-2xl dark:bg-gray-800">
+        <h2 className="relative z-10 mb-8 text-3xl font-bold text-center dark:text-white">
           Exclusive Benefits of Becoming a Model
         </h2>
 
-        <div className="grid md:grid-cols-2 gap-6 relative z-10">
+        <div className="relative z-10 grid md:grid-cols-2 gap-6">
           {[
             {
               icon: "💬",
@@ -100,20 +100,20 @@ async function Models() {
           ].map((item, index) => (
             <div
               key={index}
-              className="flex items-center bg-black/10 dark:bg-white/10 p-4 rounded-xl"
+              className="flex items-center p-4 bg-black/10 dark:bg-white/10 rounded-xl"
             >
-              <span className="text-2xl mr-3">{item.icon}</span>
-              <p className="text-black dark:text-white font-medium">
+              <span className="mr-3 text-2xl">{item.icon}</span>
+              <p className="font-medium text-black dark:text-white">
                 {item.benefit}
               </p>
             </div>
           ))}
         </div>
       </div>
-      <div className="flex align-middle justify-center">
+      <div className="flex justify-center align-middle">
         <Link
           href="/models/payment"
-          className="bg-primary-dark-pink text-white text-sm p-4 font-bold m-3 rounded-xl w-full text-center"
+          className="w-full p-4 m-3 text-sm font-bold text-center text-white bg-primary-dark-pink rounded-xl"
         >
           Sign Up
         </Link>

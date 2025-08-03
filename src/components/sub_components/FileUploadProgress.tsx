@@ -55,7 +55,7 @@ const ProgressCircle = ({
           textAnchor="middle"
           dominantBaseline="central"
           fontSize={radius * 0.8}
-          className="fill-current text-gray-400"
+          className="text-gray-400 fill-current"
         >
           {/* You can use a unicode icon, or just "0%" */}
           0%

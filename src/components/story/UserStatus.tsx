@@ -6,8 +6,8 @@ import Link from "next/link";
 const UserStatus = () => {
     const { user } = useUserAuthContext();
     return (
-        <div className="block relative">
-            <div className="flex items-center bg-gray-300 flex-shrink-0 justify-center cursor-pointer rounded-full aspect-square h-20 w-20 md:h-24 md:w-24 relative mb-2">
+        <div className="relative block">
+            <div className="relative flex items-center justify-center flex-shrink-0 w-20 h-20 mb-2 bg-gray-300 rounded-full cursor-pointer aspect-square md:h-24 md:w-24">
                 <div className="flex p-[5px] bg-white items-center justify-center rounded-full">
                     <Link href={"/story"}>
                         <Image
@@ -15,16 +15,16 @@ const UserStatus = () => {
                             height={80}
                             priority
                             src={user ? user.profile_image : "/site/avatar.png"}
-                            className="rounded-full object-cover border-4 border-gray-300 w-auto h-16 md:h-20 aspect-square"
+                            className="object-cover w-auto h-16 border-4 border-gray-300 rounded-full md:h-20 aspect-square"
                             alt=""
                         />
                     </Link>
                 </div>
-                <div className="p-1 bg-primary-dark-pink text-white text-xs border-4 border-white absolute -bottom-0 right-0 scale-90 rounded-full">
+                <div className="absolute right-0 p-1 text-xs text-white border-4 border-white rounded-full bg-primary-dark-pink -bottom-0 scale-90">
                     <LucidePlus stroke="#fff" size={15} strokeWidth={3} />
                 </div>
             </div>
-            <div className="text-xs md:text-sm left-1/2 -translate-x-1/2 font-medium absolute dark:text-gray-200 text-gray-600 text-center text-truncate whitespace-pre w-20 overflow-hidden">
+            <div className="absolute w-20 overflow-hidden text-xs font-medium text-center text-gray-600 whitespace-pre md:text-sm left-1/2 -translate-x-1/2 dark:text-gray-200 text-truncate">
                 Your status
             </div>
         </div>

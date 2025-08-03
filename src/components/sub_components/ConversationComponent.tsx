@@ -65,8 +65,8 @@ const ConversationComponent = () => {
 };
 
 const ConversationCardLoader = () => (
-  <div className="flex items-center gap-2 md:gap-5 p-3 dark:text-white justify-center">
-    <LucideLoader className="animate-spin text-gray-700" size={25} />
+  <div className="flex items-center justify-center p-3 gap-2 md:gap-5 dark:text-white">
+    <LucideLoader className="text-gray-700 animate-spin" size={25} />
   </div>
 );
 
@@ -160,10 +160,10 @@ const ConversationCard = React.memo(
               height={56}
               src={conversation.receiver.profile_image}
               alt={`${conversation.receiver.name} profile`}
-              className="object-cover rounded-full w-14 aspect-square
-                  border-2 transition-colors duration-200
-                  group-hover:border-primary-dark-pink
-                  border-primary-light-pink/70 dark:border-primary-light-pink/50"
+              className="object-cover border-2 rounded-full w-14 aspect-square
+  transition-colors duration-200
+ group-hover:border-primary-dark-pink
+ border-primary-light-pink/70 dark:border-primary-light-pink/50"
             />
             <div className="absolute -right-1 -bottom-1 bg-white dark:bg-gray-900 p-0.5 rounded-full shadow-md">
               <ActiveProfileTag
@@ -182,9 +182,9 @@ const ConversationCard = React.memo(
             <Link
               onClick={(e) => e.stopPropagation()}
               href={`/${conversation.receiver.username}`}
-              className="truncate font-semibold text-gray-900 dark:text-gray-100"
+              className="font-semibold text-gray-900 truncate dark:text-gray-100"
             >
-              <span className="flex items-center gap-1 truncate">
+              <span className="flex items-center truncate gap-1">
                 {conversation.receiver.name}
                 {isVerified && (
                   <LucideVerified size={16} className="text-yellow-500" />
@@ -197,14 +197,14 @@ const ConversationCard = React.memo(
               <Link
                 onClick={(e) => e.stopPropagation()}
                 href={`/${conversation.receiver.username}`}
-                className="hidden xl:inline-block text-gray-500 dark:text-gray-400 text-sm truncate"
+                className="hidden text-sm text-gray-500 truncate xl:inline-block dark:text-gray-400"
               >
                 {conversation.receiver.username}
               </Link>
             )}
 
             {/* Time and Unread Indicator */}
-            <div className="flex items-center gap-2 ml-auto">
+            <div className="flex items-center ml-auto gap-2">
               {lastMessageTime && (
                 <span className="text-xs text-gray-500 dark:text-gray-400 whitespace-nowrap">
                   {lastMessageTime}
@@ -217,7 +217,7 @@ const ConversationCard = React.memo(
           </div>
 
           {/* Message Preview */}
-          <div className="text-sm text-gray-600 dark:text-gray-300 truncate">
+          <div className="text-sm text-gray-600 truncate dark:text-gray-300">
             <Link
               href={`/chats/${conversation.conversation_id}`}
               onClick={(e) => e.stopPropagation()}
@@ -232,7 +232,7 @@ const ConversationCard = React.memo(
                     }}
                   />
                   {conversation.lastMessage.attachment?.length > 0 && (
-                    <span className="flex gap-1 items-center text-gray-400">
+                    <span className="flex items-center text-gray-400 gap-1">
                       {conversation.lastMessage.attachment
                         .slice(0, 3)
                         .map((_, idx) => (

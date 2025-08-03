@@ -24,12 +24,12 @@ const UserFollowComp: React.FC<UserFollowCompProps> = ({ follower }) => {
   };
 
   return (
-    <div className="flex flex-wrap gap-2 items-center p-1 md:px-3 py-3 hover:bg-gray-50 duration-300 ease-in-out rounded-md">
+    <div className="flex flex-wrap items-center p-1 py-3 gap-2 md:px-3 hover:bg-gray-50 duration-300 ease-in-out rounded-md">
       <Link href={`/${follower.user.username}`}>
         <Image
           src={follower.user.profile_image}
           alt=""
-          className="object-cover w-12 h-12 rounded-full border border-gray-500"
+          className="object-cover w-12 h-12 border border-gray-500 rounded-full"
           width={50}
           height={50}
           priority
@@ -37,11 +37,11 @@ const UserFollowComp: React.FC<UserFollowCompProps> = ({ follower }) => {
       </Link>
       <div>
         <h2 className="mb-0 font-bold leading-none">
-          <Link href={`/${follower.user.username}`} className="truncate w-full">
+          <Link href={`/${follower.user.username}`} className="w-full truncate">
             {follower.user.fullname}
           </Link>
         </h2>
-        <span className="text-sm text-gray-600 flex gap-3 items-center">
+        <span className="flex items-center text-sm text-gray-600 gap-3">
           <Link href={`/${follower.user.username}`} className="text-sm">
             {follower.user.username}
           </Link>
@@ -50,7 +50,7 @@ const UserFollowComp: React.FC<UserFollowCompProps> = ({ follower }) => {
                     </span> */}
         </span>
       </div>
-      <div className="flex gap-1 md:gap-4 items-center ml-auto">
+      <div className="flex items-center ml-auto gap-1 md:gap-4">
         <button
           onClick={handleFollow}
           className={`px-5 py-1 rounded-full text-sm

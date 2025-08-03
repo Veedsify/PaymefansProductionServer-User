@@ -56,20 +56,20 @@ const Post = React.memo(async ({ params }: PostPageProps) => {
   return (
     <div className="p-4 mt-8">
       <div className="mb-10">
-        <div className="flex items-center justify-between dark:text-white text-gray-500 text-sm mb-2">
+        <div className="flex items-center justify-between mb-2 text-sm text-gray-500 dark:text-white">
           <div className="flex items-center gap-3">
             <Image
               width={40}
               height={40}
               src={post.user.profile_image}
               alt=""
-              className="w-8 md:w-10 rounded-full aspect-square object-cover"
+              className="object-cover w-8 rounded-full md:w-10 aspect-square"
             />
             <Link
               href={`/${[post?.user.username]}`}
               className="flex items-center gap-1"
             >
-              <p className="dark:text-white text-black font-bold">
+              <p className="font-bold text-black dark:text-white">
                 {post?.user.name}
               </p>
               {post?.user.username}
@@ -93,7 +93,7 @@ const Post = React.memo(async ({ params }: PostPageProps) => {
         </div>
 
         <div
-          className="text-sm font-medium py-2 leading-loose dark:text-white text-gray-700"
+          className="py-2 text-sm font-medium leading-loose text-gray-700 dark:text-white"
           dangerouslySetInnerHTML={content}
         ></div>
         <div

@@ -38,10 +38,10 @@ const ProfileTabs = () => {
   ];
 
   return (
-    <div className="px-3 md:px-5 relative">
+    <div className="relative px-3 md:px-5">
       {/* Tab List */}
       <div className={"relative"}>
-        <div className="flex items-center text-center border-b border-black/30 dark:border-slate-600 dark:text-white relative">
+        <div className="relative flex items-center text-center border-b border-black/30 dark:border-slate-600 dark:text-white">
           {tabs.map((tab, index) => (
             <button
               key={index}
@@ -55,7 +55,7 @@ const ProfileTabs = () => {
               <span className="inline-flex flex-col items-center justify-center gap-1">
                 <span className="flex items-center gap-2">
                   {tab.icon}
-                  <span className="text-sm font-medium hidden sm:inline-block">
+                  <span className="hidden text-sm font-medium sm:inline-block">
                     {tab.label}
                   </span>
                 </span>

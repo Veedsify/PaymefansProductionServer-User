@@ -19,7 +19,7 @@ export interface Group {
   };
 }
 
-interface GroupMember {
+export interface GroupMember {
   id: number;
   userId: number;
   groupId: number;
@@ -234,9 +234,15 @@ interface GroupListResponse {
   pagination: PaginationMeta;
 }
 
-interface GroupMembersResponse {
+export interface GroupMembersResponse {
   members: GroupMember[];
-  pagination: PaginationMeta;
+  pagination: {
+    cursor?: number;
+    nextCursor?: number;
+    hasNextPage: boolean;
+    limit: number;
+    total: number;
+  };
 }
 
 interface GroupMessagesResponse {
@@ -270,8 +276,8 @@ interface GroupSearchParams {
   limit?: number;
 }
 
-interface GroupMemberParams {
-  page?: number;
+export interface GroupMemberParams {
+  cursor?: number;
   limit?: number;
   role?: GroupMemberRole;
 }

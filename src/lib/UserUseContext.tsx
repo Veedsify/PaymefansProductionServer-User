@@ -28,7 +28,6 @@ export const useUserAuthContext = () => {
 };
 
 interface UserContextProviderProps {
-  user: AuthUserProps | null;
   children: ReactNode;
 }
 

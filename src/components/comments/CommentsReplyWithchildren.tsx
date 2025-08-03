@@ -88,7 +88,7 @@ const CommentReplyChildren = ({
       <div className="mb-8">
         <button
           onClick={LoadReplies}
-          className="text-sm text-primary-dark-pink font-medium cursor-pointer flex gap-1 items-center"
+          className="flex items-center text-sm font-medium cursor-pointer text-primary-dark-pink gap-1"
         >
           {showReplies ? `Hide ${replies} replies` : `View ${replies} replies`}
           {!loading && (
@@ -99,7 +99,7 @@ const CommentReplyChildren = ({
 
         {/* Render child comments */}
         {showReplies && loadedChildren && loadedChildren.length > 0 && (
-          <div className="mt-4 ml-4 border-gray-200 dark:border-gray-700 pl-4 space-y-4">
+          <div className="pl-4 mt-4 ml-4 border-gray-200 dark:border-gray-700 space-y-4">
             {loadedChildren.map((reply) => (
               <div key={reply.comment_id} className="flex gap-3">
                 <Link href={`/${reply.username}`}>
@@ -107,7 +107,7 @@ const CommentReplyChildren = ({
                     src={reply.profile_image}
                     width={32}
                     height={32}
-                    className="h-8 w-8 rounded-full object-cover"
+                    className="object-cover w-8 h-8 rounded-full"
                     alt={`${reply.name}'s profile image`}
                   />
                 </Link>
@@ -126,12 +126,12 @@ const CommentReplyChildren = ({
                     &nbsp;·&nbsp;
                     <span className="text-xs">{formatDate(reply.date)}</span>
                   </h3>
-                  <div className="text-sm mb-2">
+                  <div className="mb-2 text-sm">
                     <div
                       className="mb-3"
                       dangerouslySetInnerHTML={{ __html: reply.comment }}
                     ></div>
-                    <div className="flex items-baseline flex-wrap max-w-md gap-2">
+                    <div className="flex flex-wrap items-baseline max-w-md gap-2">
                       {reply.attachment?.map((media: any, idx: number) => (
                         <div
                           key={media.name || idx}
@@ -142,7 +142,7 @@ const CommentReplyChildren = ({
                             src={media.path}
                             width={120}
                             height={120}
-                            className="h-auto max-w-32 aspect-square rounded-lg object-cover cursor-pointer"
+                            className="object-cover h-auto rounded-lg cursor-pointer max-w-32 aspect-square"
                             alt={media.name || "Reply attachment"}
                           />
                         </div>
@@ -193,7 +193,7 @@ const CommentReplyChildren = ({
                     setLoading(false);
                   }
                 }}
-                className="text-sm text-primary-dark-pink font-medium cursor-pointer flex gap-1 items-center"
+                className="flex items-center text-sm font-medium cursor-pointer text-primary-dark-pink gap-1"
                 disabled={loading}
               >
                 {loading ? "Loading..." : "Load more replies"}

@@ -65,7 +65,7 @@ const SideBar = React.memo(() => {
           />
         </div>
         <div>
-          <div className="flex items-center gap-4 mb-4">
+          <div className="flex items-center mb-4 gap-4">
             <Image
               width={50}
               height={50}
@@ -75,7 +75,7 @@ const SideBar = React.memo(() => {
                   ? user?.profile_image
                   : "/site/avatar.png"
               }
-              className="object-cover w-12 h-12 rounded-full border-2 border-primary-dark-pink"
+              className="object-cover w-12 h-12 border-2 rounded-full border-primary-dark-pink"
               alt=""
             />
             <div className="overflow-hidden">
@@ -83,14 +83,14 @@ const SideBar = React.memo(() => {
                 {user?.name ? (
                   user.name
                 ) : (
-                  <p className="w-32 rounded-sm mb-1 h-5 bg-gray-300 animate-pulse"></p>
+                  <p className="w-32 h-5 mb-1 bg-gray-300 rounded-sm animate-pulse"></p>
                 )}
               </h2>
-              <span className="text-sm dark:text-white text-gray-600 text-wrap max-w-8">
+              <span className="text-sm text-gray-600 dark:text-white text-wrap max-w-8">
                 {user ? (
                   user.username
                 ) : (
-                  <p className="w-32 rounded-sm h-3 bg-gray-300 animate-pulse"></p>
+                  <p className="w-32 h-3 bg-gray-300 rounded-sm animate-pulse"></p>
                 )}
               </span>
             </div>
@@ -99,22 +99,22 @@ const SideBar = React.memo(() => {
             {user ? (
               <PointsCount user={user} />
             ) : (
-              <div className="w-1/2 p-2 py-3 animate-pulse bg-gray-300 rounded-md"></div>
+              <div className="w-1/2 p-2 py-3 bg-gray-300 animate-pulse rounded-md"></div>
             )}
-            <span className="text-sm font-medium dark:text-white text-gray-600">
+            <span className="text-sm font-medium text-gray-600 dark:text-white">
               Your Balance
             </span>
           </div>
-          <div className="flex gap-3 pt-4 mb-5 ">
+          <div className="flex pt-4 mb-5 gap-3 ">
             <Link
               href="/points"
-              className="p-2 px-8 text-xs font-semibold text-white bg-black dark:bg-primary-dark-pink rounded"
+              className="p-2 px-8 text-xs font-semibold text-white bg-black rounded dark:bg-primary-dark-pink"
             >
               Add Funds
             </Link>
             <Link
               href="/wallet"
-              className="p-2 px-8 text-xs font-semibold text-black dark:text-white bg-white dark:bg-gray-800 border border-gray-600 dark:border-gray-500 rounded"
+              className="p-2 px-8 text-xs font-semibold text-black bg-white border border-gray-600 rounded dark:text-white dark:bg-gray-800 dark:border-gray-500"
             >
               Wallet
             </Link>
@@ -122,59 +122,49 @@ const SideBar = React.memo(() => {
           <div className="pt-6">
             <Link
               href="/profile"
-              className="flex items-center gap-5 p-2 mb-2 transition-all duration-200 hover:bg-gray-200 dark:hover:bg-gray-900 rounded-xl"
+              className="flex items-center p-2 mb-2 gap-5 transition-all duration-200 hover:bg-gray-200 dark:hover:bg-gray-900 rounded-xl"
             >
               <User size={25} />
               <p>Profile</p>
             </Link>
             <Link
               href="/messages"
-              className="flex items-center gap-5 p-2 mb-2 transition-all duration-200 hover:bg-gray-200 dark:hover:bg-gray-900 rounded-xl"
+              className="flex items-center p-2 mb-2 gap-5 transition-all duration-200 hover:bg-gray-200 dark:hover:bg-gray-900 rounded-xl"
             >
               <MessageCircle size={25} />
               <p>Messages</p>
-              <span className="ml-auto h-8 w-8 p-0 font-bold items-center justify-center flex rounded-full bg-primary-dark-pink text-white">
+              <span className="flex items-center justify-center w-8 h-8 p-0 ml-auto font-bold text-white rounded-full bg-primary-dark-pink">
                 {unreadCount > 99 ? "99+" : unreadCount}
               </span>
             </Link>
             <Link
               href="/hookup"
-              className="flex items-center gap-5 p-2 mb-2 transition-all duration-200 hover:bg-gray-200 dark:hover:bg-gray-900 rounded-xl"
+              className="flex items-center p-2 mb-2 gap-5 transition-all duration-200 hover:bg-gray-200 dark:hover:bg-gray-900 rounded-xl"
             >
               <LucideHeart />
               <p>Hook Up</p>
             </Link>
             <Link
               href="/store"
-              className="flex items-center gap-5 p-2 mb-2 transition-all duration-200 hover:bg-gray-200 dark:hover:bg-gray-900 rounded-xl"
+              className="flex items-center p-2 mb-2 gap-5 transition-all duration-200 hover:bg-gray-200 dark:hover:bg-gray-900 rounded-xl"
             >
               <LucideStore />
               <p>Store</p>
             </Link>
-
             {(user?.is_model || user?.admin) && (
-              <>
-                {/*<Link*/}
-                {/*  href="/live"*/}
-                {/*  className="flex items-center gap-5 p-2 mb-2 transition-all duration-200 hover:bg-gray-200 dark:hover:bg-gray-900 rounded-xl"*/}
-                {/*>*/}
-                {/*  <LucideAirplay />*/}
-                {/*  <p>Go Live</p>*/}
-                {/*</Link>*/}
-                <Link
-                  href="/groups"
-                  className="flex items-center gap-5 p-2 mb-2 transition-all duration-200 hover:bg-gray-200 dark:hover:bg-gray-900 rounded-xl"
-                >
-                  <LucideGroup />
-                  <p>Creator&apos;s Group</p>
-                </Link>
-              </>
+              <Link
+                href="/groups"
+                className="flex items-center p-2 mb-2 gap-5 transition-all duration-200 hover:bg-gray-200 dark:hover:bg-gray-900 rounded-xl"
+              >
+                <LucideGroup />
+                <p>Creator&apos;s Group</p>
+              </Link>
             )}
             <NotificationSideBarLink />
             {user?.is_model && user.Model?.verification_status == false && (
               <Link
                 href="/verification"
-                className="flex items-center gap-5 p-2 mb-2 transition-all duration-200 hover:bg-gray-200 dark:hover:bg-gray-900 rounded-xl"
+                className="flex items-center p-2 mb-2 gap-5 transition-all duration-200 hover:bg-gray-200 dark:hover:bg-gray-900 rounded-xl"
               >
                 <LucideShieldCheck />
                 <p>Verification</p>
@@ -183,7 +173,7 @@ const SideBar = React.memo(() => {
             {!user?.is_model && (
               <Link
                 href="/models/benefits"
-                className="flex items-center gap-5 p-2 mb-2 transition-all duration-200 hover:bg-gray-200 dark:hover:bg-gray-900 rounded-xl"
+                className="flex items-center p-2 mb-2 gap-5 transition-all duration-200 hover:bg-gray-200 dark:hover:bg-gray-900 rounded-xl"
               >
                 <LucideUserPlus />
                 <p>Become A Model</p>
@@ -192,35 +182,35 @@ const SideBar = React.memo(() => {
             <hr className="mt-8 mb-8 dark:border-slate-800 border-black/40" />
             <Link
               href="/help"
-              className="flex items-center gap-5 p-2 mb-2 transition-all duration-200 hover:bg-gray-200 dark:hover:bg-gray-900 rounded-xl"
+              className="flex items-center p-2 mb-2 gap-5 transition-all duration-200 hover:bg-gray-200 dark:hover:bg-gray-900 rounded-xl"
             >
               <LucideHelpCircle />
               <p>Help</p>
             </Link>
             <Link
               href="/settings"
-              className="flex items-center gap-5 p-2 mb-2 transition-all duration-200 hover:bg-gray-200 dark:hover:bg-gray-900 rounded-xl"
+              className="flex items-center p-2 mb-2 gap-5 transition-all duration-200 hover:bg-gray-200 dark:hover:bg-gray-900 rounded-xl"
             >
               <LucideSettings />
               <p>Settings & Privacy</p>
             </Link>
             <span
-              className="flex items-center gap-5 p-2 mb-2 transition-all duration-200 hover:bg-gray-200 dark:hover:bg-gray-900 rounded-xl cursor-pointer select-none"
+              className="flex items-center p-2 mb-2 cursor-pointer select-none gap-5 transition-all duration-200 hover:bg-gray-200 dark:hover:bg-gray-900 rounded-xl"
               onClick={() => setWillLogout(true)}
             >
               <LucideLogOut />
               <p>Logout</p>
             </span>
-            <div className="flex justify-center mt-14 mb-4">
+            <div className="flex justify-center mb-4 mt-14">
               <div className="w-1/2">
                 <div className="flex items-center justify-center mb-2">
-                  <span className="text-xs font-medium dark:text-white text-gray-600">
+                  <span className="text-xs font-medium text-gray-600 dark:text-white">
                     Theme
                   </span>
                 </div>
                 <button
                   onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-                  className="relative w-full h-6 bg-gray-200 dark:bg-gray-800 rounded-full transition-colors duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-primary-dark-pink focus:ring-opacity-50"
+                  className="relative w-full h-6 bg-gray-200 rounded-full dark:bg-gray-800 transition-colors duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-primary-dark-pink focus:ring-opacity-50"
                 >
                   <div
                     className={`absolute top-0.5 left-0.5 h-5 w-1/2 bg-white dark:bg-gray-700 rounded-full shadow-md transform transition-transform duration-300 ease-in-out flex items-center justify-center ${
@@ -233,7 +223,7 @@ const SideBar = React.memo(() => {
                       <LucideLightbulb stroke="gold" size={12} />
                     )}
                   </div>
-                  <div className="flex items-center justify-between px-2 h-full">
+                  <div className="flex items-center justify-between h-full px-2">
                     <span
                       className={`text-xs font-medium transition-colors ${
                         theme === "light" ? "text-gray-900" : "text-gray-400"
@@ -299,31 +289,31 @@ const LogOutModal: React.FC<{ onClose: () => void }> = ({ onClose }) => {
           transformOrigin: "center",
         }}
         onClick={(e) => e.stopPropagation()}
-        className="bg-white dark:bg-gray-900 rounded-xl p-6 max-w-sm w-full mx-4"
+        className="w-full max-w-sm p-6 mx-4 bg-white dark:bg-gray-900 rounded-xl"
       >
-        <div className="flex items-center justify-center w-12 h-12 rounded-full bg-red-100 dark:bg-red-900/30 mx-auto mb-4">
+        <div className="flex items-center justify-center w-12 h-12 mx-auto mb-4 bg-red-100 rounded-full dark:bg-red-900/30">
           <LogOutIcon className="text-red-600 dark:text-red-400" />
         </div>
-        <h3 className="text-xl font-bold text-gray-800 dark:text-white text-center">
+        <h3 className="text-xl font-bold text-center text-gray-800 dark:text-white">
           Logout
         </h3>
-        <p className="text-gray-600 dark:text-gray-300 mt-3 text-center">
+        <p className="mt-3 text-center text-gray-600 dark:text-gray-300">
           Are you sure you want to log out? This will end your current session.
         </p>
-        <div className="mt-6 flex gap-6 justify-end">
+        <div className="flex justify-end mt-6 gap-6">
           <button
             onClick={onClose}
-            className="px-4 py-2 text-gray-700 dark:text-gray-300 font-medium rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 cursor-pointer"
+            className="px-4 py-2 font-medium text-gray-700 rounded-lg cursor-pointer dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800"
           >
             Cancel
           </button>
           <button
             onClick={handleLogout}
-            className="px-4 py-2 bg-red-600 text-white font-medium rounded-lg hover:bg-red-700 cursor-pointer inline-flex items-center gap-2"
+            className="inline-flex items-center px-4 py-2 font-medium text-white bg-red-600 rounded-lg cursor-pointer hover:bg-red-700 gap-2"
           >
             Yes Logout
             {loggingOut && (
-              <LucideLoader2 className="animate-spin text-white" />
+              <LucideLoader2 className="text-white animate-spin" />
             )}
           </button>
         </div>

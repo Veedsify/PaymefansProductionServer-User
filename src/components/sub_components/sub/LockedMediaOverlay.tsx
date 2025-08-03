@@ -12,7 +12,7 @@ export const LockedMediaOverlay = ({
 }) => {
   return (
     <div className="lock-icon absolute inset-0 w-[85%] h-[65%] -translate-x-1/2 -translate-y-1/2 left-1/2 top-1/2 rounded-lg flex items-center justify-center dark:bg-black/70  bg-black/40 cursor-not-allowed">
-      <span className="flex items-center justify-center flex-col gap-2 text-white">
+      <span className="flex flex-col items-center justify-center text-white gap-2">
         {type === "price" ? (
           <Image
             width={25}

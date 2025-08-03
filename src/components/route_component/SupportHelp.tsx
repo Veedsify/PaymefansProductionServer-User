@@ -72,11 +72,11 @@ const SupportHelp = () => {
       >
         <div className="flex flex-col space-y-1.5 pb-6">
           <div className="flex items-center gap-3">
-            <div className="p-2 bg-primary-dark-pink/10 rounded-full">
+            <div className="p-2 rounded-full bg-primary-dark-pink/10">
               <LucideHeadphones size={20} className="text-primary-dark-pink" />
             </div>
             <div>
-              <h2 className="font-semibold text-lg tracking-tight text-gray-900 dark:text-white">
+              <h2 className="text-lg font-semibold tracking-tight text-gray-900 dark:text-white">
                 Support Chat
               </h2>
               <p className="text-sm text-gray-600 dark:text-gray-400 leading-3">
@@ -90,7 +90,7 @@ const SupportHelp = () => {
           className="pr-4 h-[474px] flex flex-col justify-center items-center text-center space-y-4"
           style={{ minWidth: "100%", display: "flex" }}
         >
-          <div className="p-4 bg-gray-50 dark:bg-gray-700 rounded-full">
+          <div className="p-4 rounded-full bg-gray-50 dark:bg-gray-700">
             <LucideHeadphones size={48} className="text-primary-dark-pink" />
           </div>
 
@@ -98,16 +98,16 @@ const SupportHelp = () => {
             <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
               Need Help?
             </h3>
-            <p className="text-gray-600 dark:text-gray-400 text-sm max-w-xs">
+            <p className="max-w-xs text-sm text-gray-600 dark:text-gray-400">
               Connect with our support team for real-time assistance with your
               questions and issues.
             </p>
           </div>
 
-          <div className="flex flex-col gap-2 w-full">
+          <div className="flex flex-col w-full gap-2">
             <button
               onClick={handleStartSupport}
-              className="w-full bg-primary-dark-pink hover:bg-primary-dark-pink/90 text-white py-3 px-4 rounded-lg font-medium transition-colors duration-200 flex items-center justify-center gap-2"
+              className="flex items-center justify-center w-full px-4 py-3 font-medium text-white rounded-lg bg-primary-dark-pink hover:bg-primary-dark-pink/90 transition-colors duration-200 gap-2"
             >
               <LucideMessageCircle size={18} />
               Start Support Chat
@@ -115,13 +115,13 @@ const SupportHelp = () => {
 
             <button
               onClick={() => router.push("/help")}
-              className="w-full bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-900 dark:text-white py-3 px-4 rounded-lg font-medium transition-colors duration-200"
+              className="w-full px-4 py-3 font-medium text-gray-900 bg-gray-100 rounded-lg hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-white transition-colors duration-200"
             >
               Browse Help Articles
             </button>
           </div>
 
-          <div className="text-xs text-gray-500 dark:text-gray-400 mt-4">
+          <div className="mt-4 text-xs text-gray-500 dark:text-gray-400">
             <p>Average response time: 2-5 minutes</p>
             <p>Available 24/7</p>
           </div>

@@ -12,7 +12,7 @@ const MediaPanelOther = ({ userdata }: { userdata: ProfileUserProps }) => {
 
     return (
         <div className="">
-            {/* <div className="py-3 mb-2 flex items-center gap-4">
+            {/* <div className="flex items-center py-3 mb-2 gap-4">
                 <button
                     onClick={() => toggleThisSort("all")}
                     className={`${arraySort === "all" ? "bg-messages-unread text-primary-dark-pink" : "bg-gray-200"}

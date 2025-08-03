@@ -122,10 +122,10 @@ const MoreProfileOptions = ({
               <div className="w-full">
                 <button
                   onClick={copyProfileLink}
-                  className=" px-3 py-1 text-sm dark:text-gray-300 dark:hover:bg-gray-800
-                    rounded-md transition-colors duration-150 text-white cursor-pointer
-                    flex items-center justify-center gap-3 bg-black text-center
-                  "
+                  className="flex items-center justify-center px-3 py-1 text-sm text-white bg-black  dark:text-gray-300 dark:hover:bg-gray-800
+ rounded-md transition-colors duration-150 cursor-pointer
+ gap-3 text-center
+"
                 >
                   <ProfileLink size={14} /> Copy Profile Link
                 </button>
@@ -133,14 +133,14 @@ const MoreProfileOptions = ({
               {/* Add more menu items here if needed */}
               {authUserId !== user.id && (
                 <>
-                  <div className=" bg-gray-200 dark:bg-gray-700 my-1 mx-3 w-full" />
+                  <div className="w-full mx-3 my-1 bg-gray-200  dark:bg-gray-700" />
                   <Link
                     href=""
-                    className="
-                    w-full px-3 py-1 text-sm dark:text-gray-300 dark:hover:bg-red-500
-                    rounded-md transition-colors duration-150 text-white
-                    flex items-center justify-center gap-3 bg-red-500 text-center
-                  "
+                    className="flex items-center justify-center w-full px-3 py-1 text-sm bg-red-500 
+  dark:text-gray-300 dark:hover:bg-red-500
+ rounded-md transition-colors duration-150 text-white
+ gap-3 text-center
+"
                   >
                     <Ban size={14} />
                     Report User

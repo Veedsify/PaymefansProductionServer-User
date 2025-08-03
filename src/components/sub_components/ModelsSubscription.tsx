@@ -8,7 +8,7 @@ const ModelsSubscription = ({ model }: { model: any }) => {
   const memoizedModelSubscription = useMemo(() => {
     return (
       <motion.div
-        className="flex flex-col items-center gap-2 select-none"
+        className="flex flex-col items-center select-none gap-2"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.3 }}
@@ -26,7 +26,7 @@ const ModelsSubscription = ({ model }: { model: any }) => {
           </motion.div>
         </Link>
         <motion.p
-          className="text-sm font-bold dark:text-white text-center"
+          className="text-sm font-bold text-center dark:text-white"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.1 }}
@@ -44,7 +44,7 @@ const ModelsSubscription = ({ model }: { model: any }) => {
           </span>
         </motion.div>
         <motion.button
-          className="block w-full px-3 py-1 text-xs font-semibold text-white rounded-md bg-primary-dark-pink cursor-pointer"
+          className="block w-full px-3 py-1 text-xs font-semibold text-white cursor-pointer rounded-md bg-primary-dark-pink"
           whileHover={{ scale: 1.05, backgroundColor: "#e91e63" }}
           whileTap={{ scale: 0.95 }}
           initial={{ opacity: 0 }}

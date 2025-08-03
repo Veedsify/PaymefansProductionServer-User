@@ -44,9 +44,9 @@ const StatusComponent = () => {
       )
     : [];
   return (
-    <div ref={storyContainer} className="select-none border-b border-black/30">
+    <div ref={storyContainer} className="border-b select-none border-black/30">
       <div
-        className="flex items-center gap-4 p-4 py-6 pb-9 clean-sidebar whitespace-nowrap"
+        className="flex items-center p-4 py-6 gap-4 pb-9 clean-sidebar whitespace-nowrap"
         style={{
           maxWidth: maxWidth,
           overflowX: "auto",
@@ -58,7 +58,7 @@ const StatusComponent = () => {
           <>
             {Array.from({ length: 5 }).map((_, index) => (
               <div key={index} className="mr-5">
-                <Loader2 size={30} className="animate-spin text-gray-200" />
+                <Loader2 size={30} className="text-gray-200 animate-spin" />
               </div>
             ))}
           </>
@@ -116,14 +116,14 @@ const Status = ({
   };
   return (
     <div>
-      <div className="block relative" onClick={OpenThisStory}>
+      <div className="relative block" onClick={OpenThisStory}>
         <div
           className={`flex items-center ${
             islive ? "bg-red-300" : "bg-gray-300"
           } flex-shrink-0 justify-center cursor-pointer rounded-full aspect-square h-20 w-20 md:h-[94px] md:w-[94px] relative mb-2`}
         >
           {islive && (
-            <div className="absolute rounded-full w-2/3 h-2/3 border border-red-600 animate-ping"></div>
+            <div className="absolute w-2/3 border border-red-600 rounded-full h-2/3 animate-ping"></div>
           )}
           <div className="flex p-[5px] bg-white items-center justify-center rounded-full">
             <Image
@@ -143,7 +143,7 @@ const Status = ({
             </div>
           )}
         </div>
-        <div className="text-xs md:text-sm left-1/2 -translate-x-1/2 whitespace-pre absolute font-medium dark:text-gray-200 text-gray-600 text-center text-truncate max-w-20 overflow-hidden">
+        <div className="absolute overflow-hidden text-xs font-medium text-center text-gray-600 whitespace-pre md:text-sm left-1/2 -translate-x-1/2 dark:text-gray-200 text-truncate max-w-20">
           {data.name}
         </div>
       </div>

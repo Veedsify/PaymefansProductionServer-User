@@ -39,11 +39,11 @@ const StatusModal = ({
         onClick={(e) => e.stopPropagation()}
       >
         <button
-          className="absolute top-4 right-4 z-20 rounded-full bg-black/60 p-2 text-white hover:bg-black/80 focus:outline-none focus:ring-2 focus:ring-white/50 transition-colors cursor-pointer"
+          className="absolute z-20 p-2 text-white rounded-full cursor-pointer top-4 right-4 bg-black/60 hover:bg-black/80 focus:outline-none focus:ring-2 focus:ring-white/50 transition-colors"
           onClick={closeStoryModal}
           aria-label="Close preview"
         >
-          <X className="h-5 w-5" />
+          <X className="w-5 h-5" />
         </button>
         <StoryPreviewComponent
           className={"object-contain w-full h-full relative"}

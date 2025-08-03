@@ -9,7 +9,7 @@ interface VideoStreamerProps {
 const VideoStreamer: React.FC<VideoStreamerProps> = ({ streamId }) => {
   return (
     <div className="relative h-dvh">
-      <div className="absolute inset-0 h-full w-full livestream-view"></div>
+      <div className="absolute inset-0 w-full h-full livestream-view"></div>
       {/* <VideoStreamStats streamId={streamId} /> */}
     </div>
   );

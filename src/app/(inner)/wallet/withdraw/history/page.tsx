@@ -65,12 +65,12 @@ const WithdrawalHistory = () => {
   if (isError) {
     return (
       <div className="flex items-center justify-center min-h-64">
-        <div className="bg-white rounded-2xl shadow-sm border border-red-100 p-8 max-w-md mx-4">
-          <div className="flex items-center gap-3 text-red-600 mb-2">
+        <div className="max-w-md p-8 mx-4 bg-white border border-red-100 rounded-2xl shadow-sm">
+          <div className="flex items-center mb-2 text-red-600 gap-3">
             <AlertCircle size={20} />
             <h3 className="font-medium">Something went wrong</h3>
           </div>
-          <p className="text-gray-600 text-sm leading-relaxed">
+          <p className="text-sm leading-relaxed text-gray-600">
             We couldn&apos;t fetch your withdrawal history. Please try again later.
           </p>
         </div>
@@ -81,7 +81,7 @@ const WithdrawalHistory = () => {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center min-h-64">
-        <div className="flex items-center gap-3 text-gray-500">
+        <div className="flex items-center text-gray-500 gap-3">
           <LucideLoader2 className="animate-spin" size={20} />
           <span className="text-sm font-medium">Loading your history...</span>
         </div>
@@ -155,17 +155,17 @@ const WithdrawalHistory = () => {
     <div className="px-4 py-8">
       {/* Header */}
       <div className="mb-8 lg:hidden">
-        <h1 className="text-2xl font-bold text-gray-900 mb-1">
+        <h1 className="mb-1 text-2xl font-bold text-gray-900">
           Withdrawal History
         </h1>
-        <p className="text-gray-500 mb-6 text-sm">
+        <p className="mb-6 text-sm text-gray-500">
           Track your withdrawal requests and their status.
         </p>
         {/* Summary Stats */}
         {withdrawalHistory.length > 0 && (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-            <div className="bg-white rounded-xl border border-gray-100 p-5 flex items-center gap-4">
-              <div className="p-2 bg-emerald-100 rounded-lg">
+          <div className="mb-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="flex items-center p-5 bg-white border border-gray-100 rounded-xl gap-4">
+              <div className="p-2 rounded-lg bg-emerald-100">
                 <CheckCircle size={20} className="text-emerald-600" />
               </div>
               <div>
@@ -179,8 +179,8 @@ const WithdrawalHistory = () => {
                 </p>
               </div>
             </div>
-            <div className="bg-white rounded-xl border border-gray-100 p-5 flex items-center gap-4">
-              <div className="p-2 bg-amber-100 rounded-lg">
+            <div className="flex items-center p-5 bg-white border border-gray-100 rounded-xl gap-4">
+              <div className="p-2 rounded-lg bg-amber-100">
                 <Clock size={20} className="text-amber-600" />
               </div>
               <div>
@@ -208,11 +208,11 @@ const WithdrawalHistory = () => {
           return (
             <div
               key={withdrawal.id}
-              className="bg-white rounded-xl border border-gray-300 hover:shadow transition-all"
+              className="bg-white border border-gray-300 rounded-xl hover:shadow transition-all"
             >
               <div className="flex items-center justify-between px-5 py-4">
                 <div className="flex items-center gap-4">
-                  <div className="p-2 bg-gray-50 rounded-lg">
+                  <div className="p-2 rounded-lg bg-gray-50">
                     <Building size={20} className="text-gray-600" />
                   </div>
                   <div>
@@ -248,7 +248,7 @@ const WithdrawalHistory = () => {
               </div>
               {expanded && (
                 <div className="px-5 pb-4">
-                  <div className="bg-gray-50 rounded-lg p-4 space-y-2">
+                  <div className="p-4 rounded-lg bg-gray-50 space-y-2">
                     <div className="flex items-center gap-3">
                       <Building size={16} className="text-gray-400" />
                       <span className="text-xs text-gray-500">Bank:</span>
@@ -259,26 +259,26 @@ const WithdrawalHistory = () => {
                     <div className="flex items-center gap-3">
                       <CreditCard size={16} className="text-gray-400" />
                       <span className="text-xs text-gray-500">Account:</span>
-                      <span className="font-mono text-xs text-gray-900 px-2 py-1">
+                      <span className="px-2 py-1 font-mono text-xs text-gray-900">
                         {withdrawal.bank.account_number || "N/A"}
                       </span>
                     </div>
                     <div className="flex items-center gap-3">
                       <Hash size={16} className="text-gray-400" />
                       <span className="text-xs text-gray-500">Reference:</span>
-                      <span className="font-mono text-xs text-gray-900 px-2 py-1">
+                      <span className="px-2 py-1 font-mono text-xs text-gray-900">
                         {withdrawal.reference}
                       </span>
                     </div>
                     {withdrawal.status === "pending" && (
-                      <div className="flex items-center gap-2 text-xs text-amber-600 bg-amber-50 px-2 py-1 rounded">
+                      <div className="flex items-center px-2 py-1 text-xs rounded gap-2 text-amber-600 bg-amber-50">
                         <Clock size={14} />
                         Estimated processing time:{" "}
                         <span className="font-medium">24-48 hours</span>
                       </div>
                     )}
                     {withdrawal.status === "processing" && (
-                      <div className="flex items-center gap-2 text-xs text-blue-600 bg-blue-50 px-2 py-1 rounded">
+                      <div className="flex items-center px-2 py-1 text-xs text-blue-600 rounded gap-2 bg-blue-50">
                         <RefreshCw size={14} className="animate-spin" />
                         Processing
                       </div>
@@ -286,12 +286,12 @@ const WithdrawalHistory = () => {
                   </div>
                   <div className="flex items-center justify-end pt-3 gap-2">
                     {withdrawal.status !== "completed" && (
-                      <button className="text-xs text-red-600 hover:text-red-700 font-medium transition-colors">
+                      <button className="text-xs font-medium text-red-600 hover:text-red-700 transition-colors">
                         Report Issue
                       </button>
                     )}
                     {withdrawal.status === "completed" && (
-                      <button className="text-xs text-blue-600 hover:text-blue-700 font-medium transition-colors">
+                      <button className="text-xs font-medium text-blue-600 hover:text-blue-700 transition-colors">
                         Download Receipt
                       </button>
                     )}
@@ -309,7 +309,7 @@ const WithdrawalHistory = () => {
           <button
             onClick={handleFetchNextPage}
             disabled={isFetchingNextPage}
-            className="bg-gray-900 hover:bg-gray-800 disabled:bg-gray-400 text-white px-8 py-3 rounded-xl font-medium transition-colors duration-200 flex items-center gap-2"
+            className="flex items-center px-8 py-3 font-medium text-white bg-gray-900 hover:bg-gray-800 disabled:bg-gray-400 rounded-xl transition-colors duration-200 gap-2"
           >
             {isFetchingNextPage ? (
               <>
@@ -325,17 +325,17 @@ const WithdrawalHistory = () => {
 
       {/* Empty state */}
       {data && data.pages.length > 0 && data?.pages[0].data?.length === 0 && (
-        <div className="text-center py-16">
-          <div className="bg-gray-50 rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-6">
+        <div className="py-16 text-center">
+          <div className="flex items-center justify-center w-20 h-20 mx-auto mb-6 rounded-full bg-gray-50">
             <CreditCard size={32} className="text-gray-400" />
           </div>
-          <h3 className="text-xl font-semibold text-gray-900 mb-3">
+          <h3 className="mb-3 text-xl font-semibold text-gray-900">
             No withdrawal history yet
           </h3>
-          <p className="text-gray-600 text-base max-w-md mx-auto mb-6">
+          <p className="max-w-md mx-auto mb-6 text-base text-gray-600">
             Your withdrawal requests will appear here.
           </p>
-          <button className="bg-gray-900 hover:bg-gray-800 text-white px-6 py-3 rounded-xl font-medium transition-colors">
+          <button className="px-6 py-3 font-medium text-white bg-gray-900 hover:bg-gray-800 rounded-xl transition-colors">
             Make Your First Withdrawal
           </button>
         </div>

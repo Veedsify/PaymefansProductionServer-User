@@ -123,7 +123,7 @@ const ReplyInteractions = ({
   return (
     <div className="flex items-center justify-between p-2 md:p-6">
       <button
-        className="flex items-center gap-1 text-xs font-medium transition-colors duration-200 disabled:opacity-50 hover:text-red-500"
+        className="flex items-center text-xs font-medium gap-1 transition-colors duration-200 disabled:opacity-50 hover:text-red-500"
         onClick={handleLike}
         disabled={isLoading}
         aria-label={isLiked ? "Unlike comment" : "Like comment"}
@@ -138,14 +138,14 @@ const ReplyInteractions = ({
         {likesCount > 0 ? likesCount : ""}
       </button>
       <span
-        className="flex items-center gap-1 text-xs font-medium text-gray-600 dark:text-gray-400"
+        className="flex items-center text-xs font-medium text-gray-600 gap-1 dark:text-gray-400"
         title={`${replies} ${replies === 1 ? "reply" : "replies"}`}
       >
         <LucideMessageSquare size={18} />
         {replies > 0 ? replies : ""}
       </span>
       <span
-        className="flex items-center gap-1 text-xs font-medium text-gray-600 dark:text-gray-400"
+        className="flex items-center text-xs font-medium text-gray-600 gap-1 dark:text-gray-400"
         title={`${impressions} ${impressions === 1 ? "view" : "views"}`}
       >
         <LucideBarChart size={18} />

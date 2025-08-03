@@ -36,12 +36,12 @@ const SettingsTab = ({ user }: { user: AuthUserProps | null }) => {
   return (
     <div>
       <Tabs selectedTabClassName="border-b-4 border-primary-dark-pink">
-        <TabList className="flex gap-9 mb-4 border-b border-black/30 dark:border-white/30">
+        <TabList className="flex mb-4 border-b gap-9 border-black/30 dark:border-white/30">
           <Tab>
             <button
               onClick={handleClick}
               data-tab="profile"
-              className="text-black dark:text-white font-bold py-2 cursor-pointer"
+              className="py-2 font-bold text-black cursor-pointer dark:text-white"
             >
               Profile
             </button>
@@ -50,7 +50,7 @@ const SettingsTab = ({ user }: { user: AuthUserProps | null }) => {
             <button
               onClick={handleClick}
               data-tab="security"
-              className="text-black dark:text-white font-bold py-2 cursor-pointer"
+              className="py-2 font-bold text-black cursor-pointer dark:text-white"
             >
               Security
             </button>
@@ -62,7 +62,7 @@ const SettingsTab = ({ user }: { user: AuthUserProps | null }) => {
                   <button
                     onClick={handleClick}
                     data-tab="billing"
-                    className="text-black dark:text-white font-bold py-2 cursor-pointer"
+                    className="py-2 font-bold text-black cursor-pointer dark:text-white"
                   >
                     Billing
                   </button>
@@ -71,7 +71,7 @@ const SettingsTab = ({ user }: { user: AuthUserProps | null }) => {
                   <button
                     onClick={handleClick}
                     data-tab="automated_messages"
-                    className="text-black dark:text-white font-bold py-2 cursor-pointer"
+                    className="py-2 font-bold text-black cursor-pointer dark:text-white"
                   >
                     Automated Messages
                   </button>

@@ -33,22 +33,22 @@ const Settingsbilling = () => {
 
     return (
         <div className="py-5">
-            <h1 className="font-bold mb-5">Set your message amount</h1>
-            <div className="w-full border mb-3 border-gray-300 p-4 outline-none text-black rounded-xl flex gap-2 ">
-                <div className="flex gap-2 w-full">
+            <h1 className="mb-5 font-bold">Set your message amount</h1>
+            <div className="flex w-full p-4 mb-3 text-black border border-gray-300 outline-none rounded-xl gap-2 ">
+                <div className="flex w-full gap-2">
                     <Image width={30} height={30} src="/site/coin.svg" alt="" />
                     <input
                         type="number"
                         onChange={handlePriceSet}
                         defaultValue={settings?.price_per_message}
                         placeholder="Price"
-                        className="w-full outline-none font-bold text-gray-700"
+                        className="w-full font-bold text-gray-700 outline-none"
                     />
                 </div>
-                <h2 className="text-primary-dark-pink font-bold">₦{Number(settings?.price_per_message).toLocaleString()}</h2>
+                <h2 className="font-bold text-primary-dark-pink">₦{Number(settings?.price_per_message).toLocaleString()}</h2>
             </div>
 
-            <span className="inline-flex gap-2 my-4">
+            <span className="inline-flex my-4 gap-2">
                 <Toggle
                     set={handleToggle}
                     state={settings.price_per_message == 0} />
@@ -57,7 +57,7 @@ const Settingsbilling = () => {
 
             <button
                 onClick={handleSave}
-                className="text-center text-white bg-primary-dark-pink w-full p-4 rounded-xl">
+                className="w-full p-4 text-center text-white bg-primary-dark-pink rounded-xl">
                 SAVE
             </button>
             {user?.is_model && <SubscriptionState />}

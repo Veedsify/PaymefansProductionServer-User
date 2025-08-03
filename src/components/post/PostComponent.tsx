@@ -263,13 +263,13 @@ const PostComponent: React.FC<PostComponentProps> = ({
           <div className="mb-3">
             <Link
               href={`/posts/${repost_id}`}
-              className="text-purple-700 bg-purple-200 inline-block text-xs rounded-md px-2 font-bold py-1"
+              className="inline-block px-2 py-1 text-xs font-bold text-purple-700 bg-purple-200 rounded-md"
             >
               Reposted from {repost_username}
             </Link>
           </div>
         )}
-        <div className="flex items-center mb-2 text-sm text-gray-500 justify-between">
+        <div className="flex items-center justify-between mb-2 text-sm text-gray-500">
           <div className="flex items-center gap-1 md:gap-3 dark:text-white">
             <Image
               width={50}
@@ -281,7 +281,7 @@ const PostComponent: React.FC<PostComponentProps> = ({
             />
             <Link
               href={user?.link}
-              className="flex items-center gap-1 text-xs md:text-sm"
+              className="flex items-center text-xs gap-1 md:text-sm"
             >
               <p className="font-bold text-black dark:text-white">
                 {user.name}
@@ -367,15 +367,15 @@ const MediaGridItem = ({
   // Locked overlays for paid/subscriber content
   const lockedOverlay = (type: "price" | "subscribers") => (
     <div className="absolute inset-0 z-10 flex items-center justify-center overflow-hidden rounded-lg bg-black/20">
-      <span className="flex flex-col items-center justify-center gap-2 text-white w-full h-full">
+      <span className="flex flex-col items-center justify-center w-full h-full text-white gap-2">
         {type === "price" && i === 0 ? (
-          <p className="flex items-center justify-center gap-2 text- lg:text-lg font-bold leading-4 text-center">
+          <p className="flex items-center justify-center font-bold text-center gap-2 text- lg:text-lg leading-4">
             <Image
               width={20}
               priority
               height={20}
               src="/site/coin.svg"
-              className="h-5 w-5 aspect-square"
+              className="w-5 h-5 aspect-square"
               alt=""
             />
             {data.post_price}

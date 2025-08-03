@@ -21,7 +21,7 @@ const StatusMediaPanel = () => {
   if (error) {
     return (
       <div className="flex flex-col items-center justify-center p-8 space-y-3">
-        <div className="w-12 h-12 bg-red-100 dark:bg-red-900/20 rounded-full flex items-center justify-center">
+        <div className="flex items-center justify-center w-12 h-12 bg-red-100 rounded-full dark:bg-red-900/20">
           <svg
             className="w-6 h-6 text-red-500"
             fill="none"
@@ -36,7 +36,7 @@ const StatusMediaPanel = () => {
             />
           </svg>
         </div>
-        <p className="text-red-500 font-medium text-center">
+        <p className="font-medium text-center text-red-500">
           Sorry, an error occurred while fetching your media
         </p>
       </div>
@@ -44,7 +44,7 @@ const StatusMediaPanel = () => {
   }
 
   return (
-    <div className="h-full flex flex-col">
+    <div className="flex flex-col h-full">
       <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4 p-3 sm:p-4 flex-1 max-h-[calc(70vh-120px)] sm:max-h-[500px] overflow-auto scrollbar-thin scrollbar-thumb-gray-300 dark:scrollbar-thumb-gray-600 scrollbar-track-transparent">
         {media.map((data: any, index: number) => (
           <div key={data.id} className="group">
@@ -54,7 +54,7 @@ const StatusMediaPanel = () => {
         <div ref={ref}></div>
       </div>
       {loading && (
-        <div className="flex justify-center items-center py-4">
+        <div className="flex items-center justify-center py-4">
           <div className="flex items-center gap-2 text-primary-dark-pink">
             <LucideLoader size={20} className="animate-spin" />
             <span className="text-sm font-medium">Loading media...</span>
@@ -63,7 +63,7 @@ const StatusMediaPanel = () => {
       )}
       {media.length === 0 && !loading && (
         <div className="flex flex-col items-center justify-center py-12 space-y-3">
-          <div className="w-12 h-12 bg-gray-100 dark:bg-gray-800 rounded-full flex items-center justify-center">
+          <div className="flex items-center justify-center w-12 h-12 bg-gray-100 rounded-full dark:bg-gray-800">
             <svg
               className="w-6 h-6 text-gray-400"
               fill="none"
@@ -78,10 +78,10 @@ const StatusMediaPanel = () => {
               />
             </svg>
           </div>
-          <p className="text-gray-500 dark:text-gray-400 font-medium text-center">
+          <p className="font-medium text-center text-gray-500 dark:text-gray-400">
             No media found
           </p>
-          <p className="text-sm text-gray-400 dark:text-gray-500 text-center px-4">
+          <p className="px-4 text-sm text-center text-gray-400 dark:text-gray-500">
             Upload some photos or videos to get started
           </p>
         </div>
@@ -130,7 +130,7 @@ const StoryMediaItem = React.memo(({ data }: { data: any }) => {
       {data.media_type === "video" ? (
         <>
           {selected && (
-            <div className="absolute inset-0 bg-primary-dark-pink/20 rounded-lg sm:rounded-xl flex items-center justify-center z-10">
+            <div className="absolute inset-0 z-10 flex items-center justify-center rounded-lg bg-primary-dark-pink/20 sm:rounded-xl">
               <div className="bg-primary-dark-pink rounded-full p-2 sm:p-2.5 shadow-lg">
                 <LucideCheck
                   stroke="#fff"
@@ -161,7 +161,7 @@ const StoryMediaItem = React.memo(({ data }: { data: any }) => {
       ) : (
         <>
           {selected && (
-            <div className="absolute inset-0 bg-primary-dark-pink/20 rounded-lg sm:rounded-xl flex items-center justify-center z-10">
+            <div className="absolute inset-0 z-10 flex items-center justify-center rounded-lg bg-primary-dark-pink/20 sm:rounded-xl">
               <div className="bg-primary-dark-pink rounded-full p-2 sm:p-2.5 shadow-lg">
                 <LucideCheck
                   stroke="#fff"

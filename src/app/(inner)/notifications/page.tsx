@@ -9,7 +9,7 @@ export const metadata: Metadata = {
 const Notifications = () => {
     return (
         <div>
-            <div className="md:py-5 md:px-8 p-3">
+            <div className="p-3 md:py-5 md:px-8">
                 <NotificationHeader>
                     Notifications
                 </NotificationHeader>

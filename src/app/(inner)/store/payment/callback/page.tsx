@@ -94,15 +94,15 @@ const PaymentCallback = () => {
   }, [status]);
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-white dark:bg-black px-4">
-      <div className="max-w-md w-full bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-8 text-center">
+    <div className="flex items-center justify-center min-h-screen px-4 bg-white dark:bg-black">
+      <div className="w-full max-w-md p-8 text-center bg-white shadow-lg dark:bg-gray-800 rounded-2xl">
         {status === "loading" && (
           <>
-            <Loader2 className="w-16 h-16 text-blue-600 animate-spin mx-auto mb-4" />
-            <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
+            <Loader2 className="w-16 h-16 mx-auto mb-4 text-blue-600 animate-spin" />
+            <h2 className="mb-2 text-2xl font-bold text-gray-900 dark:text-white">
               Verifying Payment
             </h2>
-            <p className="text-gray-600 dark:text-gray-400 mb-2">
+            <p className="mb-2 text-gray-600 dark:text-gray-400">
               Please wait while we confirm your payment...
             </p>
             {orderId && (
@@ -115,15 +115,15 @@ const PaymentCallback = () => {
 
         {status === "success" && (
           <>
-            <CheckCircle className="w-16 h-16 text-green-600 mx-auto mb-4" />
-            <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
+            <CheckCircle className="w-16 h-16 mx-auto mb-4 text-green-600" />
+            <h2 className="mb-2 text-2xl font-bold text-gray-900 dark:text-white">
               Payment Successful!
             </h2>
-            <p className="text-gray-600 dark:text-gray-400 mb-4">{message}</p>
+            <p className="mb-4 text-gray-600 dark:text-gray-400">{message}</p>
 
-            <div className="bg-green-50 dark:bg-green-900/20 rounded-lg p-4 mb-6">
+            <div className="p-4 mb-6 rounded-lg bg-green-50 dark:bg-green-900/20">
               {orderId && (
-                <p className="text-sm text-gray-700 dark:text-gray-300 mb-2">
+                <p className="mb-2 text-sm text-gray-700 dark:text-gray-300">
                   Order ID:{" "}
                   <span className="font-mono font-semibold">{orderId}</span>
                 </p>
@@ -136,7 +136,7 @@ const PaymentCallback = () => {
                   </span>
                 </p>
               )}
-              <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">
+              <p className="mt-2 text-xs text-gray-500 dark:text-gray-400">
                 You will receive an email confirmation shortly.
               </p>
             </div>
@@ -144,13 +144,13 @@ const PaymentCallback = () => {
             <div className="space-y-3">
               <Link
                 href="/store/orders"
-                className="block w-full bg-green-600 text-white py-3 px-4 rounded-lg hover:bg-green-700 transition-colors font-medium"
+                className="block w-full px-4 py-3 font-medium text-white bg-green-600 rounded-lg hover:bg-green-700 transition-colors"
               >
                 View My Orders
               </Link>
               <Link
                 href="/store"
-                className="block w-full border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 py-3 px-4 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors font-medium"
+                className="block w-full px-4 py-3 font-medium text-gray-700 border border-gray-300 rounded-lg dark:border-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
               >
                 Continue Shopping
               </Link>
@@ -160,12 +160,12 @@ const PaymentCallback = () => {
 
         {status === "error" && (
           <>
-            <XCircle className="w-16 h-16 text-red-600 mx-auto mb-4" />
-            <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
+            <XCircle className="w-16 h-16 mx-auto mb-4 text-red-600" />
+            <h2 className="mb-2 text-2xl font-bold text-gray-900 dark:text-white">
               Payment Failed
             </h2>
-            <div className="bg-red-50 dark:bg-red-900/20 rounded-lg p-4 mb-6">
-              <p className="text-gray-600 dark:text-gray-400 text-sm mb-2">
+            <div className="p-4 mb-6 rounded-lg bg-red-50 dark:bg-red-900/20">
+              <p className="mb-2 text-sm text-gray-600 dark:text-gray-400">
                 {message}
               </p>
               {orderId && (
@@ -173,7 +173,7 @@ const PaymentCallback = () => {
                   Reference: <span className="font-mono">{orderId}</span>
                 </p>
               )}
-              <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">
+              <p className="mt-2 text-xs text-gray-500 dark:text-gray-400">
                 If you were charged, the amount will be refunded within 3-5
                 business days.
               </p>
@@ -181,13 +181,13 @@ const PaymentCallback = () => {
             <div className="space-y-3">
               <Link
                 href="/store"
-                className="block w-full bg-primary-dark-pink text-white py-3 px-4 rounded-lg hover:bg-primary-text-dark-pink transition-colors font-medium"
+                className="block w-full px-4 py-3 font-medium text-white rounded-lg bg-primary-dark-pink hover:bg-primary-text-dark-pink transition-colors"
               >
                 Try Again
               </Link>
               <Link
                 href="/support"
-                className="block w-full border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 py-3 px-4 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors font-medium"
+                className="block w-full px-4 py-3 font-medium text-gray-700 border border-gray-300 rounded-lg dark:border-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
               >
                 Contact Support
               </Link>

@@ -42,10 +42,10 @@ const VerificationPageButton = () => {
       });
   };
   return (
-    <div className="mt-12 flex flex-col justify-center items-center">
+    <div className="flex flex-col items-center justify-center mt-12">
       <button
         onClick={handleButtonClick}
-        className="block w-96 text-center px-3 py-3 text-sm font-bold text-white rounded-lg bg-primary-dark-pink cursor-pointer"
+        className="block px-3 py-3 text-sm font-bold text-center text-white rounded-lg cursor-pointer w-96 bg-primary-dark-pink"
       >
         VERIFY
       </button>

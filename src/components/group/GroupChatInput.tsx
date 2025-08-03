@@ -114,18 +114,18 @@ const GroupChatInput = () => {
   }, []);
 
   return (
-    <div className="flex items-center space-x-2 p-6 dark:bg-gray-800">
+    <div className="flex items-center p-6 space-x-2 dark:bg-gray-800">
       <input
         onChange={handleTyping}
         onKeyDown={handleKeyDown}
         value={messageContent}
-        className="flex-grow px-4 py-4 resize-none border border-gray-300 rounded-md focus:outline-none focus:border-blue-500"
+        className="flex-grow px-4 py-4 border border-gray-300 resize-none rounded-md focus:outline-none focus:border-blue-500"
         placeholder="Type a message..."
       />
       <button
         disabled={sendingMessage}
         onClick={handleSendClick}
-        className="cursor-pointer px-4 py-4 bg-primary-dark-pink text-white rounded-md hover:bg-primary-text-dark-pink disabled:bg-gray-500"
+        className="px-4 py-4 text-white cursor-pointer bg-primary-dark-pink rounded-md hover:bg-primary-text-dark-pink disabled:bg-gray-500"
         aria-label="Send message"
         type="button"
       >

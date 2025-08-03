@@ -22,7 +22,7 @@ const CartIcon = () => {
     <div className="flex items-center gap-4">
       <Link href="/store/wishlist" className="relative">
         <Heart
-          className="w-7 h-7 ml-auto text-gray-900 dark:text-white hover:text-red-500 transition-colors"
+          className="ml-auto text-gray-900 w-7 h-7 dark:text-white hover:text-red-500 transition-colors"
           strokeWidth={2}
         />
         {wishlistTotal > 0 && (
@@ -33,7 +33,7 @@ const CartIcon = () => {
       </Link>
       <Link href="/store/cart" className="relative">
         <ShoppingCart
-          className="w-7 h-7 ml-auto text-gray-900 dark:text-white hover:text-primary-dark-pink transition-colors"
+          className="ml-auto text-gray-900 w-7 h-7 dark:text-white hover:text-primary-dark-pink transition-colors"
           strokeWidth={2}
         />
         {cartTotal > 0 && (

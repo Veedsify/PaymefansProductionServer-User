@@ -110,20 +110,20 @@ const Register = () => {
     }
 
     return (
-        <div className="min-h-dvh lg:p-0 bg-black p-5">
-            <div className="lg:grid grid-cols-2 items-start justify-center mx-auto">
-                <div className="min-h-dvh hidden lg:block relative">
+        <div className="p-5 bg-black min-h-dvh lg:p-0">
+            <div className="items-start justify-center mx-auto lg:grid grid-cols-2">
+                <div className="relative hidden min-h-dvh lg:block">
                     <Image
                         width={1200}
                         height={1200}
                         priority
                         src="/images/auth_image.jpeg"
                         alt="Login Image"
-                        className="h-full absolute object-cover inset-0 w-full "
+                        className="absolute inset-0 object-cover w-full h-full "
                     />
                 </div>
                 <div className="h-full lg:p-14 2xl:p-28">
-                    <div className="max-w-screen-xl pt-12 mx-auto mb-24 md:mt-16">
+                    <div className="pt-12 mx-auto mb-24 max-w-screen-xl md:mt-16">
                         <Link href="/">
                             <Image
                                 width={150}
@@ -135,7 +135,7 @@ const Register = () => {
                             />
                         </Link>
                     </div>
-                    <h1 className="mt-auto mb-5 text-2xl font-bold  text-white">
+                    <h1 className="mt-auto mb-5 text-2xl font-bold text-white ">
                         Sign up
                     </h1>
                     <form
@@ -144,28 +144,28 @@ const Register = () => {
                         autoComplete="false"
                         onSubmit={CreateNewUserFunction}
                     >
-                        <div className="flex flex-col gap-3 max-w-lg mb-4">
+                        <div className="flex flex-col max-w-lg mb-4 gap-3">
                             <input
                                 type="text"
                                 onChange={UserInputCaptured}
                                 name="name"
-                                className="block w-full px-3 py-3 text-sm font-bold text-white  bg-transparent rounded-lg outline-white outline-1  "
+                                className="block w-full px-3 py-3 text-sm font-bold text-white bg-transparent rounded-lg  outline-white outline-1"
                                 placeholder="Full Name"
                             />
                         </div>
-                        <div className="flex flex-col gap-3 max-w-lg mb-4">
+                        <div className="flex flex-col max-w-lg mb-4 gap-3">
                             <input
                                 type="email"
                                 onChange={UserInputCaptured}
                                 name="email"
-                                className="block w-full px-3 py-3 text-sm font-bold text-white  bg-transparent rounded-lg outline-white outline-1  "
+                                className="block w-full px-3 py-3 text-sm font-bold text-white bg-transparent rounded-lg  outline-white outline-1"
                                 placeholder="Email"
                             />
                         </div>
-                        <div className="flex flex-col gap-3 max-w-lg mb-4">
+                        <div className="flex flex-col max-w-lg mb-4 gap-3">
                             <div className="flex">
                                 <select
-                                    className="px-2 py-3 text-sm font-bold rounded-l-lg outline-white outline-1 border-r border-white text-white bg-black"
+                                    className="px-2 py-3 text-sm font-bold text-white bg-black border-r border-white rounded-l-lg outline-white outline-1"
                                     style={{maxWidth: 100}}
                                     onChange={(e) => {
                                         const selected = countries.find(
@@ -198,21 +198,21 @@ const Register = () => {
                                 />
                             </div>
                         </div>
-                        <div className="flex flex-col gap-3 max-w-lg mb-4">
+                        <div className="flex flex-col max-w-lg mb-4 gap-3">
                             <input
                                 onFocus={() => setCountryList(true)}
                                 onChange={UserInputCaptured}
                                 name="location"
-                                className="block w-full px-3 py-3 text-sm font-medium bg-transparent text-white  rounded-lg outline-white outline-1 "
+                                className="block w-full px-3 py-3 text-sm font-medium text-white bg-transparent rounded-lg  outline-white outline-1"
                                 value={country}
                             />
                             {countryList && (
-                                <div className="overflow-y-auto rounded-lg max-h-80 p-3  bg-white ">
+                                <div className="p-3 overflow-y-auto bg-white rounded-lg max-h-80 ">
                                     {countries.map((country, index) => (
                                         <button
                                             onClick={selectCountry}
                                             data-code={country.code}
-                                            className="block w-full py-2 text-left text-sm font-bold border-b cursor-pointer text-black hover:bg-messages-unread"
+                                            className="block w-full py-2 text-sm font-bold text-left text-black border-b cursor-pointer hover:bg-messages-unread"
                                             key={index}
                                         >
                                             {country.name}
@@ -221,12 +221,12 @@ const Register = () => {
                                 </div>
                             )}
                         </div>
-                        <div className="flex flex-col gap-3 max-w-lg mb-5">
+                        <div className="flex flex-col max-w-lg mb-5 gap-3">
                             <input
                                 type="password"
                                 onChange={UserInputCaptured}
                                 name="password"
-                                className="block w-full px-3 py-3 text-sm font-bold text-white  bg-transparent rounded-lg outline-white outline-1  "
+                                className="block w-full px-3 py-3 text-sm font-bold text-white bg-transparent rounded-lg  outline-white outline-1"
                                 placeholder="Password"
                             />
                         </div>
@@ -240,7 +240,7 @@ const Register = () => {
                             />
                             <label
                                 htmlFor="terms"
-                                className="text-sm font-bold  text-white cursor-pointer"
+                                className="text-sm font-bold text-white cursor-pointer "
                             >
                                 I am 18+ and it is legal to access this site in my country.
                             </label>

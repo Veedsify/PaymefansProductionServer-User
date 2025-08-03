@@ -113,7 +113,7 @@ const ProductPreview = () => {
 
   if (loading)
     return (
-      <div className="flex justify-center items-center h-dvh">
+      <div className="flex items-center justify-center h-dvh">
         <Loader2 className="w-10 h-10 animate-spin" />;
       </div>
     );
@@ -131,9 +131,9 @@ const ProductPreview = () => {
   };
 
   return (
-    <div className="min-h-dvh bg-white dark:bg-black">
+    <div className="bg-white min-h-dvh dark:bg-black">
       {/* Main Container */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="px-4 py-8 mx-auto max-w-7xl sm:px-6 lg:px-8">
         <header className="mb-6">
           <div className="flex items-center justify-between">
             <h2 className="text-xl font-bold text-slate-900 dark:text-white sm:text-3xl">
@@ -142,12 +142,12 @@ const ProductPreview = () => {
             <CartIcon />
           </div>
 
-          <p className="mt-4 max-w-md text-slate-500 dark:text-slate-300">
+          <p className="max-w-md mt-4 text-slate-500 dark:text-slate-300">
             Get the best of products from your favorite creators
           </p>
         </header>
         {/* Product Grid */}
-        <div className="grid grid-cols-1 xl:grid-cols-2 gap-8 h-full pb-20 md:pb-0">
+        <div className="h-full pb-20 grid grid-cols-1 xl:grid-cols-2 gap-8 md:pb-0">
           {/* Image Gallery Section */}
           <div className="space-y-4">
             {/* Main Image */}
@@ -158,19 +158,19 @@ const ProductPreview = () => {
                 height={480}
                 src={product.images[selectedImage]?.image_url}
                 alt={`Product view ${selectedImage + 1}`}
-                className="w-full h-full object-cover"
+                className="object-cover w-full h-full"
               />
 
               {/* Navigation Arrows */}
               <button
                 onClick={previousImage}
-                className="absolute left-4 top-1/2 -translate-y-1/2 bg-white/80 dark:bg-slate-800/80 p-2 rounded-full hover:bg-white dark:hover:bg-slate-700"
+                className="absolute p-2 rounded-full left-4 top-1/2 -translate-y-1/2 bg-white/80 dark:bg-slate-800/80 hover:bg-white dark:hover:bg-slate-700"
               >
                 <ChevronLeft className="w-6 h-6 dark:text-white" />
               </button>
               <button
                 onClick={nextImage}
-                className="absolute right-4 top-1/2 -translate-y-1/2 bg-white/80 dark:bg-slate-800/80 p-2 rounded-full hover:bg-white dark:hover:bg-slate-700"
+                className="absolute p-2 rounded-full right-4 top-1/2 -translate-y-1/2 bg-white/80 dark:bg-slate-800/80 hover:bg-white dark:hover:bg-slate-700"
               >
                 <ChevronRight className="w-6 h-6 dark:text-white" />
               </button>
@@ -193,7 +193,7 @@ const ProductPreview = () => {
                     height={200}
                     src={image.image_url}
                     alt={`Thumbnail ${index + 1}`}
-                    className="w-full h-full object-cover"
+                    className="object-cover w-full h-full"
                   />
                 </button>
               ))}
@@ -286,10 +286,10 @@ const ProductPreview = () => {
             </div>
 
             {/* Action Buttons */}
-            <div className="flex items-center gap-4 flex-wrap pt-6">
+            <div className="flex flex-wrap items-center pt-6 gap-4">
               <button
                 onClick={AddItemToCart}
-                className="flex items-center text-nowrap justify-center gap-2 bg-primary-dark-pink text-white px-6 py-3 rounded-lg hover:bg-slate-800 dark:hover:bg-slate-700"
+                className="flex items-center justify-center px-6 py-3 text-white rounded-lg text-nowrap gap-2 bg-primary-dark-pink hover:bg-slate-800 dark:hover:bg-slate-700"
               >
                 <ShoppingCart className="w-5 h-5" />
                 Add to Cart
@@ -311,7 +311,7 @@ const ProductPreview = () => {
                   />
                   {isInWishlist(product.product_id) ? "Saved" : "Save"}
                 </button>
-                <button className="flex-1 flex items-center justify-center gap-2 border border-slate-300 dark:border-slate-600 px-6 py-3 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800 dark:text-white">
+                <button className="flex items-center justify-center flex-1 px-6 py-3 border rounded-lg gap-2 border-slate-300 dark:border-slate-600 hover:bg-slate-50 dark:hover:bg-slate-800 dark:text-white">
                   <Share2 className="w-5 h-5" />
                   Share
                 </button>

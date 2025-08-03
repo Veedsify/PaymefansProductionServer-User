@@ -65,7 +65,7 @@ const OtherTransactions = React.memo(() => {
 
   return (
     <section aria-labelledby="other-transactions">
-      <h2 className="text-xl font-semibold mt-10 mb-10 dark:text-white">
+      <h2 className="mt-10 mb-10 text-xl font-semibold dark:text-white">
         Transactions
       </h2>
 
@@ -73,9 +73,9 @@ const OtherTransactions = React.memo(() => {
         {transactions.map((transaction) => (
           <div
             key={transaction.id}
-            className="bg-white dark:bg-slate-800 rounded-xl p-2"
+            className="p-2 bg-white dark:bg-slate-800 rounded-xl"
           >
-            <div className="flex justify-between items-center">
+            <div className="flex items-center justify-between">
               <div>
                 <p
                   className={`text-sm font-semibold ${
@@ -118,7 +118,7 @@ const OtherTransactions = React.memo(() => {
 
       <Link
         href="/transactions/others"
-        className="text-blue-500 font-medium capitalize inline-block py-4 hover:text-blue-600 transition-colors"
+        className="inline-block py-4 font-medium text-blue-500 capitalize hover:text-blue-600 transition-colors"
       >
         VIEW ALL
       </Link>

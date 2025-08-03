@@ -75,11 +75,11 @@ const AddNewPostMedia = ({
   };
   return (
     <>
-      <div className="md:px-8 border-y border-black/30 py-3 px-4 w-full dark:text-white flex md:justify-start gap-3 items-center">
+      <div className="flex items-center w-full px-4 py-3 md:px-8 border-y border-black/30 dark:text-white md:justify-start gap-3">
         <label htmlFor="attachments" className="cursor-pointer">
           <MdOutlinePermMedia
             size={40}
-            className="border border-gray-400 dark:border-slate-800 p-2 rounded-lg"
+            className="p-2 border border-gray-400 rounded-lg dark:border-slate-800"
           />
         </label>
         <input

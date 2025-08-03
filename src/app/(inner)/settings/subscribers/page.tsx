@@ -38,7 +38,7 @@ function Page() {
   return (
     <>
       <div className={"p-4 md:p-8"}>
-        <h1 className="text-xl font-bold mb-4 block lg:hidden">
+        <h1 className="block mb-4 text-xl font-bold lg:hidden">
           Active Subscribers
         </h1>
         {isLoading && <p>Loading...</p>}
@@ -47,7 +47,7 @@ function Page() {
           {subscribers?.map((subscriber) => (
             <li
               key={subscriber.id}
-              className="p-4 bg-gray-50 dakr:bg-gray-900 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors cursor-pointer"
+              className="p-4 cursor-pointer bg-gray-50 dakr:bg-gray-900 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
             >
               <div className="flex items-center space-x-4">
                 <Link href={`/${subscriber.username}`}>
@@ -72,11 +72,11 @@ function Page() {
           ))}
           <div className="flex items-center justify-center mt-4">
             {isFetchingNextPage && (
-              <LucideLoader2 className="animate-spin h-5 w-5 text-gray-500" />
+              <LucideLoader2 className="w-5 h-5 text-gray-500 animate-spin" />
             )}
           </div>
           {!hasNextPage && (
-            <p className="text-gray-500 text-center mt-4">
+            <p className="mt-4 text-center text-gray-500">
               No more subscribers to load.
             </p>
           )}

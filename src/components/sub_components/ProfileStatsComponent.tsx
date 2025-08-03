@@ -110,7 +110,7 @@ const Profile = ({
   return (
     <div
       key={user.id}
-      className="flex items-center gap-4 p-3 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800 transition"
+      className="flex items-center p-3 gap-4 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800 transition"
     >
       <Link href={`/${user.username}`}>
         <Image
@@ -119,7 +119,7 @@ const Profile = ({
           priority
           src={user.profile_image}
           alt="Follower Avatar"
-          className="w-12 h-12 rounded-full border border-gray-200 dark:border-gray-700 object-cover"
+          className="object-cover w-12 h-12 border border-gray-200 rounded-full dark:border-gray-700"
         />
       </Link>
       <div className="flex-1">
@@ -238,8 +238,8 @@ export const ProfileStatsComponent = ({
         className="bg-white dark:bg-gray-900 w-full max-w-xl lg:rounded-lg shadow-lg p-4 h-dvh lg:max-h-[80vh] overflow-y-auto"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="flex justify-between items-center border-b border-black/20 dark:border-white/20 pb-2">
-          <h1 className="font-bold text-lg dark:text-white">
+        <div className="flex items-center justify-between pb-2 border-b border-black/20 dark:border-white/20">
+          <h1 className="text-lg font-bold dark:text-white">
             {title} {total}
           </h1>
           <button
@@ -249,7 +249,7 @@ export const ProfileStatsComponent = ({
             <XIcon size={24} />
           </button>
         </div>
-        <div className="flex items-center gap-2 mt-4 px-1">
+        <div className="flex items-center px-1 mt-4 gap-2">
           <input
             type="text"
             onChange={handleInputChange}
@@ -258,11 +258,11 @@ export const ProfileStatsComponent = ({
           />
         </div>
         {stats.length === 0 && !isLoading && (
-          <div className="text-center text-gray-500 dark:text-gray-400 py-10">
+          <div className="py-10 text-center text-gray-500 dark:text-gray-400">
             No {title.toLowerCase()} found.
           </div>
         )}
-        <div className="flex flex-col gap-2 mt-4">
+        <div className="flex flex-col mt-4 gap-2">
           {stats.map((user) => (
             <Profile
               key={user.id}
@@ -273,7 +273,7 @@ export const ProfileStatsComponent = ({
             />
           ))}
           {isLoading && (
-            <div className="py-6 text-center flex justify-center">
+            <div className="flex justify-center py-6 text-center">
               <LucideLoader2
                 className="animate-spin text-primary-dark-pink"
                 size={24}
@@ -283,7 +283,7 @@ export const ProfileStatsComponent = ({
           {hasNextPage && (
             <div
               ref={observerRef}
-              className="py-6 text-center flex justify-center"
+              className="flex justify-center py-6 text-center"
             >
               <LucideLoader2
                 className="animate-spin text-primary-dark-pink"

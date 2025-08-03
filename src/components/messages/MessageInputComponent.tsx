@@ -414,7 +414,7 @@ const MessageInputComponent = React.memo(
 
     if (receiver && receiver.isProfileHidden) {
       return (
-        <div className="flex items-center justify-center h-full py-3 space-y-2 text-center">
+        <div className="flex items-center justify-center h-full py-3 text-center space-y-2">
           <p className="text-gray-500 dark:text-white">
             You cannot send messages to this account.
           </p>
@@ -424,7 +424,7 @@ const MessageInputComponent = React.memo(
 
     if (receiver && !receiver.active_status) {
       return (
-        <div className="flex items-center justify-center h-full py-4 space-y-2 text-center">
+        <div className="flex items-center justify-center h-full py-4 text-center space-y-2">
           <p className="text-gray-500 dark:text-white">
             {receiver.name} is currently suspended.
           </p>
@@ -435,16 +435,16 @@ const MessageInputComponent = React.memo(
     const uploadProgress = getUploadProgress();
 
     return (
-      <div className="bottom-0 lg:ml-4 lg:mr-2 relative max-h-max">
+      <div className="relative bottom-0 lg:ml-4 lg:mr-2 max-h-max">
         {mediaFiles.length > 0 && !areAllUploadsComplete() && (
-          <div className="mb-2 p-2 bg-blue-50 dark:bg-blue-900/30 rounded-lg border border-blue-200 dark:border-blue-700">
+          <div className="p-2 mb-2 border border-blue-200 rounded-lg bg-blue-50 dark:bg-blue-900/30 dark:border-blue-700">
             <div className="flex items-center justify-between text-sm">
               <span className="text-blue-700 dark:text-blue-300">
                 {mediaFiles.some((f) => f.uploadProgress === 99)
                   ? `Processing files... ${uploadProgress.completed}/${uploadProgress.total}`
                   : `Uploading files... ${uploadProgress.completed}/${uploadProgress.total}`}
               </span>
-              <span className="text-blue-600 dark:text-blue-400 font-medium">
+              <span className="font-medium text-blue-600 dark:text-blue-400">
                 {mediaFiles.some((f) => f.uploadProgress === 99)
                   ? "Processing..."
                   : `${uploadProgress.percentage}%`}
@@ -463,8 +463,8 @@ const MessageInputComponent = React.memo(
           </div>
         )}
         {isBlockedByReceiver ? (
-          <div className="bg-gray-100 dark:bg-gray-800 rounded-xl border border-gray-300 dark:border-gray-600 p-4">
-            <div className="flex items-center justify-center gap-2 text-gray-500 dark:text-gray-400">
+          <div className="p-4 bg-gray-100 border border-gray-300 dark:bg-gray-800 rounded-xl dark:border-gray-600">
+            <div className="flex items-center justify-center text-gray-500 gap-2 dark:text-gray-400">
               <svg
                 className="w-5 h-5"
                 fill="none"
@@ -484,9 +484,9 @@ const MessageInputComponent = React.memo(
             </div>
           </div>
         ) : (
-          <div className="flex flex-col w-full gap-2 border border-black/20 rounded-2xl px-2 dark:bg-gray-900 py-2 lg:rounded-xl">
+          <div className="flex flex-col w-full px-2 py-2 border gap-2 border-black/20 rounded-2xl dark:bg-gray-900 lg:rounded-xl">
             {mediaFiles.length > 0 && (
-              <div className="grid grid-cols-6 p-0 gap-2 text-white rounded-full">
+              <div className="p-0 text-white rounded-full grid grid-cols-6 gap-2">
                 {mediaFiles.map((file: MediaFile, index: number) => (
                   <MessageMediaPreview key={index} index={index} file={file} />
                 ))}
@@ -499,7 +499,7 @@ const MessageInputComponent = React.memo(
                 id="message-input"
                 data-placeholder="Type your message..."
                 onKeyDown={handleKeyDown}
-                className="bg-transparent outline-none w-full p-2 rounded-xl border-black/20 dark:border-gray-600 font-semibold resize-none dark:text-white overflow-auto max-h-24"
+                className="w-full p-2 overflow-auto font-semibold bg-transparent outline-none resize-none rounded-xl border-black/20 dark:border-gray-600 dark:text-white max-h-24"
               />
               <input
                 type="file"
@@ -539,7 +539,7 @@ const MessageInputComponent = React.memo(
                   }
                 >
                   {isSending ? (
-                    <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-pink-500"></div>
+                    <div className="w-6 h-6 border-b-2 border-pink-500 rounded-full animate-spin"></div>
                   ) : (
                     <LucideSendHorizonal
                       stroke={

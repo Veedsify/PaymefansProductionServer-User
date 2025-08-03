@@ -29,7 +29,7 @@ const PointsCount = ({ user }: PointsCountProps) => {
   if (isLoading)
     return (
       <h2 className="flex items-center mb-1 text-xl font-bold leading-none">
-        <span className="animate-pulse w-16 h-6 bg-gray-200 rounded-md"></span>
+        <span className="w-16 h-6 bg-gray-200 animate-pulse rounded-md"></span>
       </h2>
     );
 

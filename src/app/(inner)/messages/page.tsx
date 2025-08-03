@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 
 const Messages = async () => {
   return (
-    <div className="md:py-5 md:px-8 p-3">
+    <div className="p-3 md:py-5 md:px-8">
       <MessageCounter />
       <MessageSearch />
       <ConversationComponent />

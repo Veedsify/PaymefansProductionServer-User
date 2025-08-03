@@ -167,7 +167,7 @@ const CountrySelector = ({
               width={24}
               height={16}
               aria-hidden="true"
-              className="w-6 h-4 object-cover rounded-sm shadow-sm"
+              className="object-cover w-6 h-4 rounded-sm shadow-sm"
               onError={(e: any) => {
                 e.target.onerror = null;
                 e.target.src =
@@ -188,7 +188,7 @@ const CountrySelector = ({
 
       {/* Dropdown */}
       {isOpen && (
-        <div className="absolute z-10 w-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg overflow-hidden transform origin-top transition-all duration-200 ease-in-out animate-fadeIn">
+        <div className="absolute z-10 w-full mt-1 overflow-hidden bg-white border border-gray-200 rounded-lg shadow-lg transform origin-top transition-all duration-200 ease-in-out animate-fadeIn">
           {/* Search input */}
           <div className="p-2 border-b border-gray-200">
             <input
@@ -210,7 +210,7 @@ const CountrySelector = ({
             role="listbox"
             aria-label="Countries"
             tabIndex={-1}
-            className="max-h-60 overflow-y-auto py-1 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent"
+            className="py-1 overflow-y-auto max-h-60 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent"
           >
             {filteredCountries.length > 0 ? (
               filteredCountries.map((country: any) => (
@@ -242,7 +242,7 @@ const CountrySelector = ({
                       src={`https://flagcdn.com/w40/${country.countryIso.toLowerCase()}.png`}
                       alt=""
                       aria-hidden="true"
-                      className="w-6 h-4 object-cover rounded-sm shadow-sm"
+                      className="object-cover w-6 h-4 rounded-sm shadow-sm"
                       onError={(e: any) => {
                         e.target.onerror = null;
                         e.target.src =
@@ -277,7 +277,7 @@ const CountrySelector = ({
                 </div>
               ))
             ) : (
-              <div className="px-4 py-3 text-gray-500 text-center">
+              <div className="px-4 py-3 text-center text-gray-500">
                 No countries found
               </div>
             )}

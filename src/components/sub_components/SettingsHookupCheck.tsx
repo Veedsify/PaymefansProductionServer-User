@@ -30,7 +30,7 @@ const SettingsHookupCheck = () => {
         return (
             <>
                 <div>
-                    <h2 className="mb-4 font-bold mt-10">
+                    <h2 className="mt-10 mb-4 font-bold">
                         Are you available for hookup?
                     </h2>
                 </div>

@@ -27,7 +27,7 @@ const MenuButtons = () => {
 
 const NavigationBar = () => {
   return (
-    <div className="fixed bottom-0 right-0 flex pointer-events-none w-full lg:justify-end">
+    <div className="fixed bottom-0 right-0 flex w-full pointer-events-none lg:justify-end">
       <div className="flex py-8 border-t lg:border-none border-black/40 dark:border-slate-800 items-center justify-between px-8 md:px-16 dark:bg-black dark:text-white bg-white w-full lg:w-[37.5%] pointer-events-auto">
         <Link href="/" className="cursor-pointer">
           <LucideHome />
@@ -77,7 +77,7 @@ const NavigationBarSlide = () => {
           </Link>
         </div>
         <div
-          className="absolute h-8 w-16 -top-8 bg-white left-1/2 -translate-x-1/2 flex items-center justify-center rounded-tl-lg rounded-tr-lg cursor-pointer border border-b-0 border-gray-300 md:hidden"
+          className="absolute flex items-center justify-center w-16 h-8 bg-white border border-b-0 border-gray-300 rounded-tl-lg rounded-tr-lg cursor-pointer -top-8 left-1/2 -translate-x-1/2 md:hidden"
           onClick={() => setOpenMenu(!openMenu)}
         >
           {openMenu ? (

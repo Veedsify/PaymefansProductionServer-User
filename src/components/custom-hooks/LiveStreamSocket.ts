@@ -49,7 +49,7 @@ const LiveStreamSocket = ({ streamId }: LiveStreamSocketProps) => {
     socket?.emit("disconnect-stream", { streamId, userId: user?.user_id });
 
     return () => {
-      socket.disconnect();
+      socket?.disconnect();
     };
   }, [pathname, searchParams, streamId, user?.user_id, socket]);
 

@@ -6,60 +6,32 @@ import {
   LucideSettings,
   LucideUsers,
   LucideShield,
-  LucideTrash2,
-  LucideUpload,
   LucideImage,
-  LucideSave,
-  LucideUserPlus,
   LucideGlobe,
   LucideLock,
   LucideEyeOff,
-  LucideAlertTriangle,
+  LucideChevronRight,
+  LucideLoader2,
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { useParams, useRouter } from "next/navigation";
-import {
-  Group,
-  GroupType,
-  UpdateGroupRequest,
-  UpdateGroupSettingsRequest,
-  ApiResponse,
-} from "@/types/GroupTypes";
+import { useParams } from "next/navigation";
+import { Group, GroupType, ApiResponse, GroupMember } from "@/types/GroupTypes";
 import axios from "axios";
 import { getToken } from "@/utils/Cookie";
+import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
+import { fetchGroupMembers } from "@/utils/data/GroupAPI";
 
 const token = getToken();
 
 const GroupSettingsPage = () => {
   const params = useParams();
-  const router = useRouter();
   const groupId = params.groupid as string;
 
   const [group, setGroup] = useState<Group | null>(null);
   const [loading, setLoading] = useState(true);
-  const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState("general");
-  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
-
-  const [formData, setFormData] = useState({
-    name: "",
-    description: "",
-    groupType: GroupType.PUBLIC,
-    maxMembers: 100,
-    groupIcon: null as File | null,
-  });
-
-  const [settingsData, setSettingsData] = useState({
-    allowMemberInvites: true,
-    allowMediaSharing: true,
-    allowFileSharing: true,
-    moderateMessages: false,
-    autoApproveJoinReqs: true,
-  });
-
-  const [iconPreview, setIconPreview] = useState<string | null>(null);
 
   const groupTypes = [
     {
@@ -89,11 +61,10 @@ const GroupSettingsPage = () => {
     { id: "general", label: "General", icon: LucideSettings },
     { id: "privacy", label: "Privacy", icon: LucideShield },
     { id: "members", label: "Members", icon: LucideUsers },
-    { id: "danger", label: "Danger Zone", icon: LucideAlertTriangle },
   ];
 
   // Fetch group data
-  const fetchGroup = useCallback( async () => {
+  const fetchGroup = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
@@ -113,30 +84,6 @@ const GroupSettingsPage = () => {
       if (result.success && result.data) {
         const groupData = result.data;
         setGroup(groupData);
-
-        // Update form data
-        setFormData({
-          name: groupData.name,
-          description: groupData.description || "",
-          groupType: groupData.groupType,
-          maxMembers: groupData.maxMembers,
-          groupIcon: null,
-        });
-
-        // Update settings data
-        if (groupData.settings) {
-          setSettingsData({
-            allowMemberInvites: groupData.settings.allowMemberInvites,
-            allowMediaSharing: groupData.settings.allowMediaSharing,
-            allowFileSharing: groupData.settings.allowFileSharing,
-            moderateMessages: groupData.settings.moderateMessages,
-            autoApproveJoinReqs: groupData.settings.autoApproveJoinReqs,
-          });
-        }
-
-        if (groupData.groupIcon) {
-          setIconPreview(groupData.groupIcon);
-        }
       } else {
         throw new Error(result.message || "Failed to fetch group");
       }
@@ -148,176 +95,6 @@ const GroupSettingsPage = () => {
     }
   }, [groupId]);
 
-  // Handle input changes
-  const handleInputChange = (
-    e: React.ChangeEvent<
-      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
-    >,
-  ) => {
-    const { name, value, type } = e.target;
-
-    if (type === "checkbox") {
-      const checked = (e.target as HTMLInputElement).checked;
-      setSettingsData((prev) => ({
-        ...prev,
-        [name]: checked,
-      }));
-    } else if (type === "number") {
-      setFormData((prev) => ({
-        ...prev,
-        [name]: parseInt(value) || 0,
-      }));
-    } else {
-      setFormData((prev) => ({
-        ...prev,
-        [name]: value,
-      }));
-    }
-  };
-
-  const handleGroupTypeChange = (groupType: GroupType) => {
-    setFormData((prev) => ({
-      ...prev,
-      groupType,
-    }));
-
-    // Auto-adjust settings based on group type
-    if (groupType === GroupType.PUBLIC) {
-      setSettingsData((prev) => ({
-        ...prev,
-        autoApproveJoinReqs: true,
-      }));
-    }
-  };
-
-  const handleIconChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      if (file.size > 5 * 1024 * 1024) {
-        setError("File size must be less than 5MB");
-        return;
-      }
-
-      if (!file.type.startsWith("image/")) {
-        setError("Please select a valid image file");
-        return;
-      }
-
-      setFormData((prev) => ({
-        ...prev,
-        groupIcon: file,
-      }));
-
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        setIconPreview(e.target?.result as string);
-      };
-      reader.readAsDataURL(file);
-    }
-  };
-
-  // Save general settings
-  const saveGeneralSettings = async () => {
-    try {
-      setSaving(true);
-      setError(null);
-
-      const updateData: UpdateGroupRequest = {
-        name: formData.name.trim(),
-        description: formData.description.trim() || undefined,
-        groupType: formData.groupType,
-        maxMembers: formData.maxMembers,
-      };
-
-      const response = await axios.put(
-        `${process.env.NEXT_PUBLIC_TS_EXPRESS_URL}/groups/${groupId}`,
-        updateData,
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        },
-      );
-
-      const result: ApiResponse<Group> = response.data;
-
-      if (result.success && result.data) {
-        setGroup(result.data);
-        // Show success message (you can implement a toast notification)
-        console.log("Group updated successfully");
-      } else {
-        throw new Error(result.message || "Failed to update group");
-      }
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to save changes");
-    } finally {
-      setSaving(false);
-    }
-  };
-
-  // Save privacy settings
-  const savePrivacySettings = async () => {
-    try {
-      setSaving(true);
-      setError(null);
-
-      const response = await axios.put(
-        `${process.env.NEXT_PUBLIC_TS_EXPRESS_URL}/groups/${groupId}/settings`,
-        settingsData,
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        },
-      );
-
-      const result: ApiResponse = response.data;
-
-      if (result.success) {
-        // Show success message
-        console.log("Settings updated successfully");
-      } else {
-        throw new Error(result.message || "Failed to update settings");
-      }
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to save settings");
-    } finally {
-      setSaving(false);
-    }
-  };
-
-  // Delete group
-  const deleteGroup = async () => {
-    try {
-      setSaving(true);
-      setError(null);
-
-      const response = await axios.delete(
-        `${process.env.NEXT_PUBLIC_TS_EXPRESS_URL}/groups/${groupId}`,
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        },
-      );
-
-      const result: ApiResponse = response.data;
-
-      if (result.success) {
-        router.push("/groups");
-      } else {
-        throw new Error(result.message || "Failed to delete group");
-      }
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to delete group");
-    } finally {
-      setSaving(false);
-    }
-  };
-
   useEffect(() => {
     if (groupId) {
       fetchGroup();
@@ -326,23 +103,23 @@ const GroupSettingsPage = () => {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-dark-pink"></div>
+      <div className="flex items-center justify-center min-h-screen bg-gray-50 dark:bg-gray-900">
+        <div className="w-8 h-8 border-b-2 rounded-full animate-spin border-primary-dark-pink"></div>
       </div>
     );
   }
 
   if (error && !group) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-screen">
+      <div className="flex flex-col items-center justify-center min-h-screen bg-gray-50 dark:bg-gray-900">
         <div className="text-center">
-          <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
+          <h2 className="mb-2 text-xl font-semibold text-gray-900 dark:text-white">
             Error Loading Group
           </h2>
-          <p className="text-gray-600 dark:text-gray-400 mb-4">{error}</p>
+          <p className="mb-4 text-gray-600 dark:text-gray-400">{error}</p>
           <button
             onClick={fetchGroup}
-            className="bg-primary-dark-pink text-white px-4 py-2 rounded-md hover:bg-primary-text-dark-pink transition-colors"
+            className="px-4 py-2 text-white bg-primary-dark-pink rounded-md hover:bg-primary-text-dark-pink transition-colors"
           >
             Try Again
           </button>
@@ -352,38 +129,38 @@ const GroupSettingsPage = () => {
   }
 
   return (
-    <div className="max-w-4xl mx-auto">
+    <div className="min-h-screen bg-white dark:bg-black">
       {/* Header */}
-      <div className="flex items-center border-b dark:border-gray-800 py-3 px-5 mb-6">
-        <div className="mr-4 sm:mr-6 dark:text-white">
-          <Link href={`/groups/${groupId}`}>
+      <div className="px-4 py-4 bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+        <div className="flex items-center max-w-4xl mx-auto">
+          <Link href={`/groups/${groupId}`} className="mr-4">
             <LucideChevronLeft
-              size={30}
-              className="cursor-pointer hover:text-primary-dark-pink transition-colors"
+              size={24}
+              className="text-gray-600 cursor-pointer dark:text-gray-400 hover:text-primary-dark-pink transition-colors"
             />
           </Link>
-        </div>
-        <div className="flex items-center gap-3">
-          <div>
-            <Image
-              className="rounded-full aspect-square object-cover"
-              width={50}
-              height={50}
-              priority
-              src={
-                group?.groupIcon ||
-                "https://images.pexels.com/photos/30612850/pexels-photo-30612850/free-photo-of-outdoor-portrait-of-a-man-relaxing-on-swing-in-abuja.jpeg?auto=compress&cs=tinysrgb&w=600"
-              }
-              alt={group?.name || "Group"}
-            />
-          </div>
-          <div className="dark:text-white">
-            <div className="font-bold text-sm md:text-base">
-              <span>{group?.name} Settings</span>
+          <div className="flex items-center gap-3">
+            <div className="relative">
+              <Image
+                className="object-cover rounded-full aspect-square"
+                width={40}
+                height={40}
+                priority
+                src={
+                  group?.groupIcon ||
+                  "https://images.pexels.com/photos/30612850/pexels-photo-30612850/free-photo-of-outdoor-portrait-of-a-man-relaxing-on-swing-in-abuja.jpeg?auto=compress&cs=tinysrgb&w=600"
+                }
+                alt={group?.name || "Group"}
+              />
             </div>
-            <div className="flex gap-1 items-center text-xs md:text-xs text-gray-500">
-              <LucideUsers className="h-3 w-3" />
-              <span>{group?._count.members} members</span>
+            <div>
+              <h1 className="text-lg font-semibold text-gray-900 dark:text-white">
+                {group?.name}
+              </h1>
+              <div className="flex items-center text-sm text-gray-500 gap-1 dark:text-gray-400">
+                <LucideUsers className="w-3 h-3" />
+                <span>{group?._count.members} members</span>
+              </div>
             </div>
           </div>
         </div>
@@ -391,425 +168,462 @@ const GroupSettingsPage = () => {
 
       {/* Error Message */}
       {error && (
-        <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-md p-4 mb-6">
-          <p className="text-red-600 dark:text-red-400">{error}</p>
+        <div className="max-w-4xl px-4 py-4 mx-auto">
+          <div className="p-4 border border-red-200 rounded-lg bg-red-50 dark:bg-red-900/20 dark:border-red-800">
+            <p className="text-sm text-red-600 dark:text-red-400">{error}</p>
+          </div>
         </div>
       )}
 
-      <div className="flex flex-col lg:flex-row gap-6">
-        {/* Sidebar Navigation */}
-        <div className="lg:w-64">
-          <nav className="space-y-1">
+      <div className="max-w-4xl px-4 py-6 mx-auto">
+        {/* Mobile Tab Navigation */}
+        <div className="mb-6 lg:hidden">
+          <div className="overflow-hidden bg-white border rounded-lg dark:bg-gray-800 dark:border-gray-700">
             {tabs.map((tab) => {
               const IconComponent = tab.icon;
               return (
                 <button
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id)}
-                  className={`w-full flex items-center gap-3 px-3 py-2 text-sm rounded-md transition-colors ${
+                  className={`w-full flex items-center justify-between px-4 py-3 text-left border-b dark:border-gray-700 last:border-b-0 transition-colors ${
                     activeTab === tab.id
-                      ? "bg-primary-dark-pink text-white"
-                      : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800"
+                      ? "bg-primary-dark-pink/5 text-primary-dark-pink"
+                      : "text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700"
                   }`}
                 >
-                  <IconComponent className="h-4 w-4" />
-                  {tab.label}
+                  <div className="flex items-center gap-3">
+                    <IconComponent className="w-5 h-5" />
+                    <span className="font-medium">{tab.label}</span>
+                  </div>
+                  <LucideChevronRight className="w-4 h-4" />
                 </button>
               );
             })}
-          </nav>
+          </div>
         </div>
 
-        {/* Main Content */}
-        <div className="flex-1">
-          {activeTab === "general" && (
-            <div className="bg-white dark:bg-gray-800 rounded-lg border dark:border-gray-700 p-6">
-              <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-6">
-                General Settings
-              </h2>
+        <div className="flex flex-col lg:flex-row gap-6">
+          {/* Desktop Sidebar Navigation */}
+          <div className="hidden lg:block lg:w-64">
+            <div className="overflow-hidden bg-white border rounded-lg dark:bg-gray-800 dark:border-gray-700">
+              {tabs.map((tab) => {
+                const IconComponent = tab.icon;
+                return (
+                  <button
+                    key={tab.id}
+                    onClick={() => setActiveTab(tab.id)}
+                    className={`w-full flex items-center gap-3 px-4 py-3 text-left border-b dark:border-gray-700 last:border-b-0 transition-colors ${
+                      activeTab === tab.id
+                        ? "bg-primary-dark-pink/5 text-primary-dark-pink border-r-2 border-r-primary-dark-pink"
+                        : "text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700"
+                    }`}
+                  >
+                    <IconComponent className="w-5 h-5" />
+                    <span className="font-medium">{tab.label}</span>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
 
-              <div className="space-y-6">
-                {/* Group Icon */}
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                    Group Icon
-                  </label>
-                  <div className="flex items-center gap-4">
-                    <div className="relative">
-                      <div className="w-20 h-20 rounded-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center overflow-hidden">
-                        {iconPreview ? (
-                          <Image
-                            width={80}
-                            height={80}
-                            src={iconPreview}
-                            alt="Group icon"
-                            className="w-full h-full object-cover"
-                          />
-                        ) : (
-                          <LucideImage className="h-8 w-8 text-gray-400" />
-                        )}
+          {/* Main Content */}
+          <div className="flex-1">
+            {activeTab === "general" && (
+              <div className="space-y-4">
+                {/* Group Icon Section */}
+                <div className="bg-white border rounded-lg dark:bg-gray-800 dark:border-gray-700">
+                  <div className="px-6 py-4 border-b dark:border-gray-700">
+                    <h3 className="font-semibold text-gray-900 dark:text-white">
+                      Group Photo
+                    </h3>
+                  </div>
+                  <div className="px-6 py-6">
+                    <div className="flex items-center gap-6">
+                      <div className="relative">
+                        <div className="flex items-center justify-center w-24 h-24 overflow-hidden bg-gray-200 rounded-full dark:bg-gray-700">
+                          {group?.groupIcon ? (
+                            <Image
+                              width={96}
+                              height={96}
+                              src={group.groupIcon}
+                              alt="Group icon"
+                              className="object-cover w-full h-full"
+                            />
+                          ) : (
+                            <LucideImage className="w-10 h-10 text-gray-400" />
+                          )}
+                        </div>
                       </div>
-                      <input
-                        type="file"
-                        accept="image/*"
-                        onChange={handleIconChange}
-                        className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-                      />
-                    </div>
-                    <div>
-                      <button
-                        type="button"
-                        className="flex items-center gap-2 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 px-3 py-2 rounded-md text-sm transition-colors"
-                        onClick={() =>
-                         handleIconChange
-                        }
-                      >
-                        <LucideUpload className="h-4 w-4" />
-                        Change Icon
-                      </button>
-                      <p className="text-xs text-gray-500 mt-1">
-                        Max 5MB, PNG/JPG
-                      </p>
                     </div>
                   </div>
                 </div>
 
                 {/* Group Name */}
-                <div>
-                  <label
-                    htmlFor="name"
-                    className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
-                  >
-                    Group Name
-                  </label>
-                  <input
-                    type="text"
-                    id="name"
-                    name="name"
-                    value={formData.name}
-                    onChange={handleInputChange}
-                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-primary-dark-pink focus:border-primary-dark-pink dark:bg-gray-700 dark:text-white"
-                  />
+                <div className="bg-white border rounded-lg dark:bg-gray-800 dark:border-gray-700">
+                  <div className="px-6 py-4 border-b dark:border-gray-700">
+                    <h3 className="font-semibold text-gray-900 dark:text-white">
+                      Group Name
+                    </h3>
+                  </div>
+                  <div className="px-6 py-4">
+                    <p className="text-lg text-gray-900 dark:text-white">
+                      {group?.name}
+                    </p>
+                  </div>
                 </div>
 
                 {/* Description */}
-                <div>
-                  <label
-                    htmlFor="description"
-                    className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
-                  >
-                    Description
-                  </label>
-                  <textarea
-                    id="description"
-                    name="description"
-                    value={formData.description}
-                    onChange={handleInputChange}
-                    rows={3}
-                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-primary-dark-pink focus:border-primary-dark-pink dark:bg-gray-700 dark:text-white"
-                  />
+                <div className="bg-white border rounded-lg dark:bg-gray-800 dark:border-gray-700">
+                  <div className="px-6 py-4 border-b dark:border-gray-700">
+                    <h3 className="font-semibold text-gray-900 dark:text-white">
+                      Description
+                    </h3>
+                  </div>
+                  <div className="px-6 py-4">
+                    <p className="text-gray-900 dark:text-white">
+                      {group?.description || "No description provided"}
+                    </p>
+                  </div>
                 </div>
 
                 {/* Max Members */}
-                <div>
-                  <label
-                    htmlFor="maxMembers"
-                    className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
-                  >
-                    Maximum Members
-                  </label>
-                  <input
-                    type="number"
-                    id="maxMembers"
-                    name="maxMembers"
-                    value={formData.maxMembers}
-                    onChange={handleInputChange}
-                    min="5"
-                    max="1000"
-                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-primary-dark-pink focus:border-primary-dark-pink dark:bg-gray-700 dark:text-white"
-                  />
+                <div className="bg-white border rounded-lg dark:bg-gray-800 dark:border-gray-700">
+                  <div className="px-6 py-4 border-b dark:border-gray-700">
+                    <h3 className="font-semibold text-gray-900 dark:text-white">
+                      Maximum Members
+                    </h3>
+                  </div>
+                  <div className="px-6 py-4">
+                    <p className="text-gray-900 dark:text-white">
+                      {group?.maxMembers}
+                    </p>
+                  </div>
                 </div>
-
-                {/* Save Button */}
-                <button
-                  onClick={saveGeneralSettings}
-                  disabled={saving}
-                  className="flex items-center gap-2 bg-primary-dark-pink hover:bg-primary-text-dark-pink text-white px-4 py-2 rounded-md transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  <LucideSave className="h-4 w-4" />
-                  {saving ? "Saving..." : "Save Changes"}
-                </button>
               </div>
-            </div>
-          )}
+            )}
 
-          {activeTab === "privacy" && (
-            <div className="bg-white dark:bg-gray-800 rounded-lg border dark:border-gray-700 p-6">
-              <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-6">
-                Privacy & Permissions
-              </h2>
-
-              <div className="space-y-6">
+            {activeTab === "privacy" && (
+              <div className="space-y-4">
                 {/* Group Type */}
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
-                    Group Type
-                  </label>
-                  <div className="space-y-3">
+                <div className="bg-white border rounded-lg dark:bg-gray-800 dark:border-gray-700">
+                  <div className="px-6 py-4 border-b dark:border-gray-700">
+                    <h3 className="font-semibold text-gray-900 dark:text-white">
+                      Group Type
+                    </h3>
+                  </div>
+                  <div className="px-6 py-4">
                     {groupTypes.map((type) => {
-                      const IconComponent = type.icon;
-                      return (
-                        <div
-                          key={type.value}
-                          className={`relative rounded-lg border-2 p-4 cursor-pointer transition-colors ${
-                            formData.groupType === type.value
-                              ? "border-primary-dark-pink bg-primary-dark-pink/5"
-                              : "border-gray-200 dark:border-gray-600 hover:border-gray-300 dark:hover:border-gray-500"
-                          }`}
-                          onClick={() => handleGroupTypeChange(type.value)}
-                        >
-                          <div className="flex items-start gap-3">
+                      if (group?.groupType === type.value) {
+                        const IconComponent = type.icon;
+                        return (
+                          <div
+                            key={type.value}
+                            className="flex items-start p-4 border rounded-lg gap-4 border-primary-dark-pink bg-primary-dark-pink/5"
+                          >
                             <IconComponent
                               className={`h-5 w-5 mt-0.5 ${type.color}`}
                             />
                             <div className="flex-1">
-                              <div className="flex items-center gap-2">
-                                <h4 className="font-medium text-gray-900 dark:text-white">
-                                  {type.label}
-                                </h4>
-                                <input
-                                  type="radio"
-                                  name="groupType"
-                                  value={type.value}
-                                  checked={formData.groupType === type.value}
-                                  onChange={() =>
-                                    handleGroupTypeChange(type.value)
-                                  }
-                                  className="text-primary-dark-pink focus:ring-primary-dark-pink"
-                                />
-                              </div>
-                              <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
+                              <h4 className="font-medium text-gray-900 dark:text-white">
+                                {type.label}
+                              </h4>
+                              <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
                                 {type.description}
                               </p>
                             </div>
                           </div>
-                        </div>
-                      );
+                        );
+                      }
+                      return null;
                     })}
                   </div>
                 </div>
 
                 {/* Permission Settings */}
-                <div>
-                  <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
-                    Member Permissions
-                  </h4>
-                  <div className="space-y-4">
-                    <label className="flex items-start gap-3">
-                      <input
-                        type="checkbox"
-                        name="allowMemberInvites"
-                        checked={settingsData.allowMemberInvites}
-                        onChange={handleInputChange}
-                        className="mt-1 rounded border-gray-300 text-primary-dark-pink focus:ring-primary-dark-pink"
-                      />
+                <div className="bg-white border rounded-lg dark:bg-gray-800 dark:border-gray-700">
+                  <div className="px-6 py-4 border-b dark:border-gray-700">
+                    <h3 className="font-semibold text-gray-900 dark:text-white">
+                      Member Permissions
+                    </h3>
+                  </div>
+                  <div className="divide-y dark:divide-gray-700">
+                    <div className="flex items-center justify-between px-6 py-4">
                       <div>
-                        <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                        <span className="font-medium text-gray-900 dark:text-white">
                           Allow member invites
                         </span>
-                        <p className="text-xs text-gray-500 mt-1">
+                        <p className="mt-1 text-sm text-gray-500">
                           Members can invite others to join the group
                         </p>
                       </div>
-                    </label>
+                      <div
+                        className={`w-5 h-5 rounded border-2 flex items-center justify-center ${
+                          group?.settings?.allowMemberInvites
+                            ? "bg-primary-dark-pink border-primary-dark-pink text-white"
+                            : "border-gray-300 dark:border-gray-600"
+                        }`}
+                      >
+                        {group?.settings?.allowMemberInvites && "✓"}
+                      </div>
+                    </div>
 
-                    <label className="flex items-start gap-3">
-                      <input
-                        type="checkbox"
-                        name="allowMediaSharing"
-                        checked={settingsData.allowMediaSharing}
-                        onChange={handleInputChange}
-                        className="mt-1 rounded border-gray-300 text-primary-dark-pink focus:ring-primary-dark-pink"
-                      />
+                    <div className="flex items-center justify-between px-6 py-4">
                       <div>
-                        <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                        <span className="font-medium text-gray-900 dark:text-white">
                           Allow media sharing
                         </span>
-                        <p className="text-xs text-gray-500 mt-1">
+                        <p className="mt-1 text-sm text-gray-500">
                           Members can share images and videos in messages
                         </p>
                       </div>
-                    </label>
+                      <div
+                        className={`w-5 h-5 rounded border-2 flex items-center justify-center ${
+                          group?.settings?.allowMediaSharing
+                            ? "bg-primary-dark-pink border-primary-dark-pink text-white"
+                            : "border-gray-300 dark:border-gray-600"
+                        }`}
+                      >
+                        {group?.settings?.allowMediaSharing && "✓"}
+                      </div>
+                    </div>
 
-                    <label className="flex items-start gap-3">
-                      <input
-                        type="checkbox"
-                        name="allowFileSharing"
-                        checked={settingsData.allowFileSharing}
-                        onChange={handleInputChange}
-                        className="mt-1 rounded border-gray-300 text-primary-dark-pink focus:ring-primary-dark-pink"
-                      />
+                    <div className="flex items-center justify-between px-6 py-4">
                       <div>
-                        <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                        <span className="font-medium text-gray-900 dark:text-white">
                           Allow file sharing
                         </span>
-                        <p className="text-xs text-gray-500 mt-1">
+                        <p className="mt-1 text-sm text-gray-500">
                           Members can share documents and other files
                         </p>
                       </div>
-                    </label>
+                      <div
+                        className={`w-5 h-5 rounded border-2 flex items-center justify-center ${
+                          group?.settings?.allowFileSharing
+                            ? "bg-primary-dark-pink border-primary-dark-pink text-white"
+                            : "border-gray-300 dark:border-gray-600"
+                        }`}
+                      >
+                        {group?.settings?.allowFileSharing && "✓"}
+                      </div>
+                    </div>
 
-                    <label className="flex items-start gap-3">
-                      <input
-                        type="checkbox"
-                        name="moderateMessages"
-                        checked={settingsData.moderateMessages}
-                        onChange={handleInputChange}
-                        className="mt-1 rounded border-gray-300 text-primary-dark-pink focus:ring-primary-dark-pink"
-                      />
+                    <div className="flex items-center justify-between px-6 py-4">
                       <div>
-                        <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                        <span className="font-medium text-gray-900 dark:text-white">
                           Moderate messages
                         </span>
-                        <p className="text-xs text-gray-500 mt-1">
+                        <p className="mt-1 text-sm text-gray-500">
                           All messages require approval before being posted
                         </p>
                       </div>
-                    </label>
+                      <div
+                        className={`w-5 h-5 rounded border-2 flex items-center justify-center ${
+                          group?.settings?.moderateMessages
+                            ? "bg-primary-dark-pink border-primary-dark-pink text-white"
+                            : "border-gray-300 dark:border-gray-600"
+                        }`}
+                      >
+                        {group?.settings?.moderateMessages && "✓"}
+                      </div>
+                    </div>
 
-                    {formData.groupType !== GroupType.PUBLIC && (
-                      <label className="flex items-start gap-3">
-                        <input
-                          type="checkbox"
-                          name="autoApproveJoinReqs"
-                          checked={settingsData.autoApproveJoinReqs}
-                          onChange={handleInputChange}
-                          className="mt-1 rounded border-gray-300 text-primary-dark-pink focus:ring-primary-dark-pink"
-                        />
+                    {group?.groupType !== GroupType.PUBLIC && (
+                      <div className="flex items-center justify-between px-6 py-4">
                         <div>
-                          <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                          <span className="font-medium text-gray-900 dark:text-white">
                             Auto-approve join requests
                           </span>
-                          <p className="text-xs text-gray-500 mt-1">
+                          <p className="mt-1 text-sm text-gray-500">
                             Automatically approve requests to join the group
                           </p>
                         </div>
-                      </label>
+                        <div
+                          className={`w-5 h-5 rounded border-2 flex items-center justify-center ${
+                            group?.settings?.autoApproveJoinReqs
+                              ? "bg-primary-dark-pink border-primary-dark-pink text-white"
+                              : "border-gray-300 dark:border-gray-600"
+                          }`}
+                        >
+                          {group?.settings?.autoApproveJoinReqs && "✓"}
+                        </div>
+                      </div>
                     )}
                   </div>
                 </div>
-
-                {/* Save Button */}
-                <button
-                  onClick={savePrivacySettings}
-                  disabled={saving}
-                  className="flex items-center gap-2 bg-primary-dark-pink hover:bg-primary-text-dark-pink text-white px-4 py-2 rounded-md transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  <LucideSave className="h-4 w-4" />
-                  {saving ? "Saving..." : "Save Settings"}
-                </button>
               </div>
-            </div>
-          )}
+            )}
 
-          {activeTab === "members" && (
-            <div className="bg-white dark:bg-gray-800 rounded-lg border dark:border-gray-700 p-6">
-              <div className="flex items-center justify-between mb-6">
-                <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
-                  Member Management
-                </h2>
-                <Link
-                  href={`/groups/${groupId}/invite`}
-                  className="flex items-center gap-2 bg-primary-dark-pink hover:bg-primary-text-dark-pink text-white px-4 py-2 rounded-md text-sm transition-colors"
-                >
-                  <LucideUserPlus className="h-4 w-4" />
-                  Invite Members
-                </Link>
-              </div>
+            {activeTab === "members" && (
+              <MembersTab groupId={groupId} adminId={group?.adminId!} />
+            )}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
 
-              <div className="text-center py-8">
-                <LucideUsers className="h-16 w-16 text-gray-400 mx-auto mb-4" />
-                <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">
-                  Member Management
-                </h3>
-                <p className="text-gray-600 dark:text-gray-400 mb-4">
-                  View and manage group members, roles, and permissions.
-                </p>
-                <Link
-                  href={`/groups/${groupId}/members`}
-                  className="inline-flex items-center gap-2 bg-primary-dark-pink hover:bg-primary-text-dark-pink text-white px-4 py-2 rounded-md transition-colors"
-                >
-                  <LucideUsers className="h-4 w-4" />
-                  Manage Members
-                </Link>
-              </div>
-            </div>
-          )}
+// Members Tab Component with TanStack Query
+const MembersTab: React.FC<{ groupId: string; adminId: number }> = ({
+  groupId,
+  adminId,
+}) => {
+  const {
+    data,
+    error,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+    isLoading,
+    isError,
+  } = useInfiniteQuery({
+    queryKey: ["groupMembers", groupId],
+    queryFn: ({ pageParam }) => fetchGroupMembers(groupId, pageParam, 20),
+    getNextPageParam: (lastPage) => {
+      return lastPage.data?.pagination?.hasNextPage
+        ? lastPage.data.pagination.nextCursor
+        : undefined;
+    },
+    initialPageParam: undefined as number | undefined,
+  });
 
-          {activeTab === "danger" && (
-            <div className="bg-white dark:bg-gray-800 rounded-lg border border-red-200 dark:border-red-800 p-6">
-              <h2 className="text-lg font-semibold text-red-600 dark:text-red-400 mb-6">
-                Danger Zone
-              </h2>
+  const allMembers =
+    data?.pages.flatMap((page) => page.data?.members || []) || [];
 
-              <div className="space-y-6">
-                <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-md p-4">
-                  <h3 className="text-sm font-medium text-red-800 dark:text-red-400 mb-2">
-                    Delete Group
-                  </h3>
-                  <p className="text-sm text-red-700 dark:text-red-300 mb-4">
-                    Once you delete this group, there is no going back. Please
-                    be certain. All messages, files, and member data will be
-                    permanently removed.
-                  </p>
-                  <button
-                    onClick={() => setShowDeleteConfirm(true)}
-                    className="flex items-center gap-2 bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-md text-sm transition-colors"
-                  >
-                    <LucideTrash2 className="h-4 w-4" />
-                    Delete Group
-                  </button>
-                </div>
-              </div>
-            </div>
-          )}
+  if (isLoading) {
+    return (
+      <div className="bg-white border rounded-lg dark:bg-gray-800 dark:border-gray-700">
+        <div className="px-6 py-4 border-b dark:border-gray-700">
+          <h3 className="font-semibold text-gray-900 dark:text-white">
+            Members
+          </h3>
+        </div>
+        <div className="px-6 py-12 text-center">
+          <LucideLoader2 className="w-8 h-8 mx-auto mb-4 animate-spin text-primary-dark-pink" />
+          <p className="text-gray-500 dark:text-gray-400">Loading members...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (isError) {
+    return (
+      <div className="bg-white border rounded-lg dark:bg-gray-800 dark:border-gray-700">
+        <div className="px-6 py-4 border-b dark:border-gray-700">
+          <h3 className="font-semibold text-gray-900 dark:text-white">
+            Members
+          </h3>
+        </div>
+        <div className="px-6 py-12 text-center">
+          <div className="mb-4 text-red-500">⚠️</div>
+          <p className="text-red-600 dark:text-red-400">
+            {error?.message || "Failed to load members"}
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  const totalMembers = data?.pages[0]?.data?.pagination?.total || 0;
+
+  return (
+    <div className="bg-white border rounded-lg dark:bg-gray-800 dark:border-gray-700">
+      <div className="px-6 py-4 border-b dark:border-gray-700">
+        <div className="flex items-center justify-between">
+          <h3 className="font-semibold text-gray-900 dark:text-white">
+            Members
+          </h3>
+          <span className="text-sm text-gray-500 dark:text-gray-400">
+            {totalMembers} total
+          </span>
         </div>
       </div>
 
-      {/* Delete Confirmation Modal */}
-      {showDeleteConfirm && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white dark:bg-gray-800 rounded-lg w-full max-w-md">
-            <div className="p-6">
-              <div className="flex items-center gap-3 mb-4">
-                <LucideAlertTriangle className="h-6 w-6 text-red-500" />
-                <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-                  Delete Group
-                </h3>
+      <div className="divide-y dark:divide-gray-700">
+        {allMembers.map((member) => (
+          <div key={member.id} className="px-6 py-4">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="relative">
+                  <Image
+                    className="object-cover rounded-full aspect-square"
+                    width={40}
+                    height={40}
+                    src={
+                      member.user?.profile_image ||
+                      "https://images.pexels.com/photos/30612850/pexels-photo-30612850/free-photo-of-outdoor-portrait-of-a-man-relaxing-on-swing-in-abuja.jpeg?auto=compress&cs=tinysrgb&w=600"
+                    }
+                    alt={member.user?.username || "User"}
+                  />
+                  {member.role === "ADMIN" && (
+                    <div className="absolute flex items-center justify-center w-4 h-4 bg-yellow-500 rounded-full -top-1 -right-1">
+                      <span className="text-xs text-white">👑</span>
+                    </div>
+                  )}
+                  {member.role === "MODERATOR" && (
+                    <div className="absolute flex items-center justify-center w-4 h-4 bg-blue-500 rounded-full -top-1 -right-1">
+                      <span className="text-xs text-white">🛡️</span>
+                    </div>
+                  )}
+                </div>
+                <div>
+                  <h4 className="font-medium text-gray-900 dark:text-white">
+                    {member.user?.fullname || member.user?.username}
+                  </h4>
+                  <p className="text-sm text-gray-500 dark:text-gray-400">
+                    {member.user?.username}
+                  </p>
+                </div>
               </div>
-              <p className="text-gray-600 dark:text-gray-400 mb-6">
-                Are you sure you want to delete &apos;{group?.name}&apos;? This
-                action cannot be undone. All messages, files, and member data
-                will be permanently removed.
-              </p>
-              <div className="flex gap-3">
-                <button
-                  onClick={() => setShowDeleteConfirm(false)}
-                  disabled={saving}
-                  className="flex-1 px-4 py-2 text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-md transition-colors disabled:opacity-50"
+              <div className="flex items-center gap-2">
+                <span
+                  className={`px-2 py-1 text-xs rounded-full font-medium uppercase ${
+                    member.userId === adminId
+                      ? "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200"
+                      : member.role === "MODERATOR"
+                        ? "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200"
+                        : "bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200"
+                  }`}
                 >
-                  Cancel
-                </button>
-                <button
-                  onClick={deleteGroup}
-                  disabled={saving}
-                  className="flex-1 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-md transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  {saving ? "Deleting..." : "Delete Group"}
-                </button>
+                  {member.userId === adminId ? "Admin" : member.role}
+                </span>
               </div>
             </div>
           </div>
+        ))}
+      </div>
+
+      {hasNextPage && (
+        <div className="px-6 py-4 border-t dark:border-gray-700">
+          <button
+            onClick={() => fetchNextPage()}
+            disabled={isFetchingNextPage}
+            className="flex items-center justify-center w-full px-4 py-2 text-sm font-medium rounded-lg gap-2 text-primary-dark-pink hover:bg-primary-dark-pink/5 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {isFetchingNextPage ? (
+              <>
+                <LucideLoader2 className="w-4 h-4 animate-spin" />
+                Loading more...
+              </>
+            ) : (
+              <>
+                <LucideUsers className="w-4 h-4" />
+                Load more members
+              </>
+            )}
+          </button>
+        </div>
+      )}
+
+      {allMembers.length === 0 && (
+        <div className="px-6 py-12 text-center">
+          <LucideUsers className="w-16 h-16 mx-auto mb-4 text-gray-300 dark:text-gray-600" />
+          <h4 className="mb-2 text-lg font-medium text-gray-900 dark:text-white">
+            No Members Found
+          </h4>
+          <p className="text-gray-500 dark:text-gray-400">
+            This group doesn&apos;t have any members yet.
+          </p>
         </div>
       )}
     </div>

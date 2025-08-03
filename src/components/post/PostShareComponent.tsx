@@ -62,10 +62,10 @@ const PostShareModal = ({
   return (
     <div
       onClick={onClose}
-      className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50 loaderFade"
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 loaderFade"
     >
       <div
-        className="bg-white rounded-xl max-w-lg w-full shadow-xl"
+        className="w-full max-w-lg bg-white shadow-xl rounded-xl"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
@@ -73,7 +73,7 @@ const PostShareModal = ({
           <h2 className="text-xl font-semibold text-gray-900">Share</h2>
           <button
             onClick={onClose}
-            className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+            className="p-2 rounded-full hover:bg-gray-100 transition-colors"
           >
             <X className="w-5 h-5 text-gray-500" />
           </button>
@@ -97,9 +97,9 @@ const PostShareModal = ({
 
           {/* Copy link section */}
           <div className="space-y-3">
-            <p className="text-sm text-gray-600 font-medium">Copy link</p>
+            <p className="text-sm font-medium text-gray-600">Copy link</p>
             <div className="flex items-center space-x-2">
-              <div className="flex-1 p-3 bg-gray-100 rounded-lg truncate">
+              <div className="flex-1 p-3 truncate bg-gray-100 rounded-lg">
                 <p className="text-sm text-gray-600">{url}</p>
               </div>
               <button

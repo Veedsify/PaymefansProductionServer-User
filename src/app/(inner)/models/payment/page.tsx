@@ -13,22 +13,22 @@ const PaymentPage = () => {
     return (
       <>
         <div>
-          <div className="m-3 p-8 px-12 rounded-2xl dark:text-white">
+          <div className="p-8 px-12 m-3 rounded-2xl dark:text-white">
             <Image
               src="/icons/feeling_sorry.svg"
               width={300}
               height={300}
               alt="Sorry you are already a model"
-              className="w-3/5 mx-auto block"
+              className="block w-3/5 mx-auto"
             />
             <div>
-              <h1 className="text-center mt-6 mb-8 font-bold md:text-3xl text-2xl ">
+              <h1 className="mt-6 mb-8 text-2xl font-bold text-center md:text-3xl ">
                 Sorry you are already a verified model <br /> on Paymefans
               </h1>
               <div className="text-center">
                 <Link
                   href="/profile"
-                  className="bg-primary-dark-pink text-white text-sm py-3 px-4 font-bold m-3 rounded-md w-full text-center"
+                  className="w-full px-4 py-3 m-3 text-sm font-bold text-center text-white bg-primary-dark-pink rounded-md"
                 >
                   Go to Profile
                 </Link>
@@ -42,16 +42,16 @@ const PaymentPage = () => {
     return (
       <>
         <div>
-          <div className="m-3 p-8 px-12 rounded-2xl dark:text-white">
+          <div className="p-8 px-12 m-3 rounded-2xl dark:text-white">
             <Image
               src="/icons/feeling_sorry.svg"
               width={300}
               height={300}
               alt="Sorry you are already a model"
-              className="w-1/5 mx-auto block"
+              className="block w-1/5 mx-auto"
             />
             <div className="flex flex-col justify-center align-center">
-              <h1 className="text-center mt-6 mb-8 font-bold md:text-3xl text-2xl ">
+              <h1 className="mt-6 mb-8 text-2xl font-bold text-center md:text-3xl ">
                 You are not verified.
               </h1>
               <p className="text-center">
@@ -62,7 +62,7 @@ const PaymentPage = () => {
               <div className="text-center">
                 <Link
                   href="/verification"
-                  className="bg-primary-dark-pink inline-block text-white text-sm py-3 px-4 font-bold m-3 rounded-md text-center"
+                  className="inline-block px-4 py-3 m-3 text-sm font-bold text-center text-white bg-primary-dark-pink rounded-md"
                 >
                   Go to Verification
                 </Link>
@@ -74,12 +74,12 @@ const PaymentPage = () => {
     );
   } else {
     return (
-      <div className="py-8 bg-white dark:bg-gray-900 rounded-2xl p-6">
-        <h1 className="text-2xl font-bold mb-6 text-center text-primary-dark-pink md:hidden block">
+      <div className="p-6 py-8 bg-white dark:bg-gray-900 rounded-2xl">
+        <h1 className="block mb-6 text-2xl font-bold text-center text-primary-dark-pink md:hidden">
           Activate Creator Dashboard
         </h1>
 
-        <div className="bg-coins-card-bottom max-w-md mx-auto p-4 py-4 md:max-w-2xl mb-4 rounded-xl flex items-center gap-4">
+        <div className="flex items-center max-w-md p-4 py-4 mx-auto mb-4 bg-coins-card-bottom md:max-w-2xl rounded-xl gap-4">
           <span>
             <LucideInfo className="text-primary-text-dark-pink" size={30} />
           </span>
@@ -88,16 +88,16 @@ const PaymentPage = () => {
             world and start monetizing your content
           </p>
         </div>
-        <div className="max-w-md mx-auto bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden md:max-w-2xl mb-4">
+        <div className="max-w-md mx-auto mb-4 overflow-hidden bg-white shadow-lg dark:bg-gray-800 rounded-xl md:max-w-2xl">
           <div className="md:flex">
-            <div className="p-8 w-full">
-              <div className="uppercase tracking-wide text-sm text-primary-dark-pink font-semibold">
+            <div className="w-full p-8">
+              <div className="text-sm font-semibold tracking-wide uppercase text-primary-dark-pink">
                 One-time payment
               </div>
               <h2 className="mt-1 text-3xl font-bold dark:text-white">
                 Activate Creator Dashboard
               </h2>
-              <div className="mt-4 flex items-baseline gap-1">
+              <div className="flex items-baseline mt-4 gap-1">
                 <Image
                   width={80}
                   height={80}
@@ -116,7 +116,7 @@ const PaymentPage = () => {
                 <ul className="space-y-3">
                   <li className="flex items-start">
                     <svg
-                      className="h-5 w-5 text-green-500 mr-2"
+                      className="w-5 h-5 mr-2 text-green-500"
                       fill="none"
                       viewBox="0 0 24 24"
                       stroke="currentColor"
@@ -134,7 +134,7 @@ const PaymentPage = () => {
                   </li>
                   <li className="flex items-start">
                     <svg
-                      className="h-5 w-5 text-green-500 mr-2"
+                      className="w-5 h-5 mr-2 text-green-500"
                       fill="none"
                       viewBox="0 0 24 24"
                       stroke="currentColor"
@@ -152,7 +152,7 @@ const PaymentPage = () => {
                   </li>
                   <li className="flex items-start">
                     <svg
-                      className="h-5 w-5 text-green-500 mr-2"
+                      className="w-5 h-5 mr-2 text-green-500"
                       fill="none"
                       viewBox="0 0 24 24"
                       stroke="currentColor"
@@ -170,7 +170,7 @@ const PaymentPage = () => {
                   </li>
                   <li className="flex items-start">
                     <svg
-                      className="h-5 w-5 text-green-500 mr-2"
+                      className="w-5 h-5 mr-2 text-green-500"
                       fill="none"
                       viewBox="0 0 24 24"
                       stroke="currentColor"
@@ -194,7 +194,7 @@ const PaymentPage = () => {
 
         <Link
           href="/models/become-a-model"
-          className="bg-primary-dark-pink w-full block text-center p-3 mx-auto rounded-xl mt-8 text-white font-semibold shadow-md hover:bg-primary-dark-pink/90 transition cursor-pointer md:max-w-2xl max-w-md"
+          className="block w-full max-w-md p-3 mx-auto mt-8 font-semibold text-center text-white shadow-md cursor-pointer bg-primary-dark-pink rounded-xl hover:bg-primary-dark-pink/90 transition md:max-w-2xl"
         >
           Continue
         </Link>

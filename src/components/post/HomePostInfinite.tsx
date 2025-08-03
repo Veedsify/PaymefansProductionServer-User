@@ -49,15 +49,15 @@ const HomePostInfinite = () => {
     return (
       <div className="relative p-2 md:p-5">
         <div className="flex flex-col items-center justify-center min-h-[200px] space-y-4">
-          <p className="text-red-500 text-lg font-semibold">
+          <p className="text-lg font-semibold text-red-500">
             Failed to fetch home feed posts
           </p>
-          <p className="text-gray-600 text-sm">
+          <p className="text-sm text-gray-600">
             {error instanceof Error ? error.message : "Please try again later"}
           </p>
           <button
             onClick={() => refetch()}
-            className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
+            className="px-4 py-2 text-white bg-blue-500 rounded-lg hover:bg-blue-600 transition-colors"
           >
             Try Again
           </button>
@@ -71,7 +71,7 @@ const HomePostInfinite = () => {
     return (
       <div className="relative p-2 md:p-5">
         <div className="flex items-center justify-center min-h-[200px]">
-          <p className="text-gray-500 text-lg">
+          <p className="text-lg text-gray-500">
             No posts found. Follow some users to see their content!
           </p>
         </div>
@@ -104,7 +104,7 @@ const HomePostInfinite = () => {
       {/* Infinite scroll trigger and loading states */}
       <div
         ref={loadMoreRef}
-        className="w-full h-10 flex items-center justify-center mt-4"
+        className="flex items-center justify-center w-full h-10 mt-4"
       >
         {isFetchingNextPage && (
           <div className="space-y-4">
@@ -113,21 +113,21 @@ const HomePostInfinite = () => {
         )}
 
         {!hasNextPage && allPosts.length > 0 && (
-          <div className="text-center py-8">
-            <p className="text-gray-500 text-sm">
+          <div className="py-8 text-center">
+            <p className="text-sm text-gray-500">
               🎉 You&apos;ve reached the end! No more posts to load.
             </p>
           </div>
         )}
 
         {isError && allPosts.length > 0 && (
-          <div className="text-center py-4">
-            <p className="text-red-500 text-sm mb-2">
+          <div className="py-4 text-center">
+            <p className="mb-2 text-sm text-red-500">
               Failed to load more posts
             </p>
             <button
               onClick={() => fetchNextPage()}
-              className="px-3 py-1 text-xs bg-red-500 text-white rounded hover:bg-red-600 transition-colors"
+              className="px-3 py-1 text-xs text-white bg-red-500 rounded hover:bg-red-600 transition-colors"
             >
               Retry
             </button>
@@ -137,7 +137,7 @@ const HomePostInfinite = () => {
 
       {/* Background refresh indicator */}
       {data?.pages.some((page, index) => index === 0) && (
-        <div className="fixed top-4 right-4 z-50">
+        <div className="fixed z-50 top-4 right-4">
           {/* You can add a subtle indicator here when background refresh happens */}
         </div>
       )}

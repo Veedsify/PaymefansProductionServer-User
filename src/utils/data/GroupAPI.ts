@@ -1,5 +1,6 @@
 import axiosInstance from "@/utils/Axios";
 import { getToken } from "@/utils/Cookie";
+import { GroupMember } from "@/types/GroupTypes";
 
 type Group = {
   id: number;
@@ -97,16 +98,6 @@ interface GroupMessage {
   timestamp: string;
 }
 
-interface GroupMember {
-  userId: string;
-  username: string;
-  profile_image: string;
-  is_verified: boolean;
-  role: "ADMIN" | "MODERATOR" | "MEMBER";
-  joinedAt: string;
-  isActive: boolean;
-}
-
 export interface GroupsResponse {
   success: boolean;
   data: {
@@ -139,7 +130,13 @@ interface GroupMembersResponse {
   success: boolean;
   data: {
     members: GroupMember[];
-    totalMembers: number;
+    pagination: {
+      cursor?: number;
+      nextCursor?: number;
+      hasNextPage: boolean;
+      limit: number;
+      total: number;
+    };
   };
 }
 
@@ -218,11 +215,16 @@ export const fetchGroupMessages = async (
 // Fetch group members
 export const fetchGroupMembers = async (
   groupId: string,
-  page: number = 1,
+  cursor?: number,
   limit: number = 20,
 ): Promise<GroupMembersResponse> => {
+  const params: any = { limit };
+  if (cursor) {
+    params.cursor = cursor;
+  }
+
   const response = await axiosInstance.get(`/groups/${groupId}/members`, {
-    params: { page, limit },
+    params,
     withCredentials: true,
   });
   return response.data;

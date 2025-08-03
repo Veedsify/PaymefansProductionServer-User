@@ -37,7 +37,7 @@ const Page = async () => {
 
   return (
     <div className="p-4 py-8">
-      <div className="flex flex-wrap gap-5 items-center justify-between pb-6">
+      <div className="flex flex-wrap items-center justify-between pb-6 gap-5">
         <div className="flex align-middle gap-5">
           <Image
             src={user?.profile_image!}
@@ -54,23 +54,23 @@ const Page = async () => {
         </div>
         <div>
           <Link href="/wallet/withdraw/history">
-            <button className="bg-primary-dark-pink text-white px-4 text-sm py-2 rounded-lg cursor-pointer hover:bg-primary-dark-pink/80 transition-all duration-200 ease-in-out font-semibold flex items-center gap-2">
+            <button className="flex items-center px-4 py-2 text-sm font-semibold text-white rounded-lg cursor-pointer bg-primary-dark-pink hover:bg-primary-dark-pink/80 transition-all duration-200 ease-in-out gap-2">
               Withdraw History
               <LucideArrowRight />
             </button>
           </Link>
         </div>
       </div>
-      <div className="mb-10 flex align-middle justify-between bg-primary-dark-pink text-white p-5 rounded-xl">
+      <div className="flex justify-between p-5 mb-10 text-white align-middle bg-primary-dark-pink rounded-xl">
         <div className="grid gap-3">
           <small className="text-md">Your Balance</small>
-          <h1 className="text-xl md:text-3xl font-bold">
+          <h1 className="text-xl font-bold md:text-3xl">
             ₦ {(points * 100).toLocaleString()}
           </h1>
         </div>
         <div className="flex self-center">
-          <div className="bg-coins-card-top md:px-5 md:py-3 p-2 px-4 rounded-md">
-            <div className="opacity-100 flex gap-1">
+          <div className="p-2 px-4 bg-coins-card-top md:px-5 md:py-3 rounded-md">
+            <div className="flex opacity-100 gap-1">
               <span>{points ? points.toLocaleString() : 0}</span>
               <Image
                 width={20}

@@ -1,8 +1,6 @@
 import type { Metadata } from "next";
-import { Epilogue, Inter, Bricolage_Grotesque } from "next/font/google";
-import { GeistSans } from "geist/font/sans";
+import { Bricolage_Grotesque } from "next/font/google";
 import "../../globals.css";
-import { Toaster as SonnerToast } from "sonner";
 import { Toaster } from "react-hot-toast";
 
 export const metadata: Metadata = {
@@ -15,7 +13,6 @@ const font = Bricolage_Grotesque({
   subsets: ["latin"],
   display: "swap",
 });
-
 
 export default function RootLayout({
   children,

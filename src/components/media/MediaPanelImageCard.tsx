@@ -100,7 +100,7 @@ const MediaPanelImageCard = React.memo(({ sort }: { sort: string }) => {
 
   return (
     <>
-      <div className="grid lg:grid-cols-3 grid-cols-2 overflow-hidden rounded-xl gap-1  select-none">
+      <div className="overflow-hidden select-none grid lg:grid-cols-3 grid-cols-2 rounded-xl gap-1 ">
         {sorted.map((media, index) => (
           <div
             key={index}
@@ -115,7 +115,7 @@ const MediaPanelImageCard = React.memo(({ sort }: { sort: string }) => {
           </div>
         ))}
       </div>
-      <div className="flex flex-col items-center justify-center mb-20 col-span-3 py-2">
+      <div className="flex flex-col items-center justify-center py-2 mb-20 col-span-3">
         {loading && (
           <div className="flex justify-center col-span-3">
             <LucideLoader size={30} className="animate-spin" stroke="purple" />
@@ -123,14 +123,14 @@ const MediaPanelImageCard = React.memo(({ sort }: { sort: string }) => {
         )}
         {hasMore && !loading && (
           <button
-            className="col-span-3 px-6 py-2 rounded-lg text-sm font-semibold bg-purple-600 text-white hover:bg-purple-700 transition-colors shadow-md focus:outline-none focus:ring-2 focus:ring-purple-400"
+            className="px-6 py-2 text-sm font-semibold text-white bg-purple-600 rounded-lg shadow-md col-span-3 hover:bg-purple-700 transition-colors focus:outline-none focus:ring-2 focus:ring-purple-400"
             onClick={fetchAdditionalData}
           >
             Load More
           </button>
         )}
         {!hasMore && !loading && (
-          <p className="col-span-3 text-gray-500 italic text-center font-medium">
+          <p className="italic font-medium text-center text-gray-500 col-span-3">
             No more media
           </p>
         )}
@@ -163,7 +163,7 @@ const MediaPanelMediaCard = ({
     media.media_type.startsWith("video")
   ) {
     return (
-      <div className="h-full select-none shadow-md aspect-square w-full object-cover bg-black flex flex-col gap-2 items-center justify-center text-center text-sm text-white">
+      <div className="flex flex-col items-center justify-center object-cover w-full h-full text-sm text-center text-white bg-black shadow-md select-none aspect-square gap-2">
         <h1>Your Media is still processing</h1>
         <small>Please wait for a few minutes</small>
       </div>
@@ -201,7 +201,7 @@ const MediaPanelMediaCard = ({
                   media.post.watermark_enabled,
               )
             }
-            className="absolute bg-black/20 w-full h-full inset-0 cursor-pointer flex items-center justify-center"
+            className="absolute inset-0 flex items-center justify-center w-full h-full cursor-pointer bg-black/20"
           >
             <LucidePlay stroke="white" size={30} strokeWidth={2} />
           </div>
@@ -222,7 +222,7 @@ const MediaPanelMediaCard = ({
           }
           src={isSubscriber ? media.url : media.blur}
           alt=""
-          className="w-full h-full cursor-pointer object-cover transition-all duration-300 ease-in-out hover:scale-105"
+          className="object-cover w-full h-full cursor-pointer transition-all duration-300 ease-in-out hover:scale-105"
         />
       )}
       {!isSubscriber && (

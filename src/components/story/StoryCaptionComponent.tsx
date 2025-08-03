@@ -120,7 +120,7 @@ const CustomSwiper = ({
   }, [currentSlide, nextSlide, prevSlide]);
 
   return (
-    <div className="relative w-full h-full overflow-hidden rounded-xl bg-black shadow-2xl">
+    <div className="relative w-full h-full overflow-hidden bg-black shadow-2xl rounded-xl">
       {/* Slides Container */}
       <div
         ref={swiperRef}
@@ -131,7 +131,7 @@ const CustomSwiper = ({
         onTouchEnd={onTouchEnd}
       >
         {children.map((child, index) => (
-          <div key={index} className="min-w-full h-full">
+          <div key={index} className="h-full min-w-full">
             {child}
           </div>
         ))}
@@ -141,21 +141,21 @@ const CustomSwiper = ({
           <button
             onClick={prevSlide}
             disabled={currentSlide === 0}
-            className="absolute left-4 top-1/2 -translate-y-1/2 z-50 p-3 rounded-full bg-black/30 backdrop-blur-sm text-white disabled:opacity-30 disabled:cursor-not-allowed hover:bg-black/50 transition-all duration-200 border border-white/10"
+            className="absolute z-50 p-3 text-white border rounded-full left-4 top-1/2 -translate-y-1/2 bg-black/30 backdrop-blur-sm disabled:opacity-30 disabled:cursor-not-allowed hover:bg-black/50 transition-all duration-200 border-white/10"
           >
             <ChevronLeft size={24} />
           </button>
           <button
             onClick={nextSlide}
             disabled={currentSlide === totalSlides - 1}
-            className="absolute right-4 top-1/2 -translate-y-1/2 z-50 p-3 rounded-full bg-black/30 backdrop-blur-sm text-white disabled:opacity-30 disabled:cursor-not-allowed hover:bg-black/50 transition-all duration-200 border border-white/10"
+            className="absolute z-50 p-3 text-white border rounded-full right-4 top-1/2 -translate-y-1/2 bg-black/30 backdrop-blur-sm disabled:opacity-30 disabled:cursor-not-allowed hover:bg-black/50 transition-all duration-200 border-white/10"
           >
             <ChevronRight size={24} />
           </button>
         </>
       )}
       {totalSlides > 1 && (
-        <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-50 flex gap-2">
+        <div className="absolute z-50 flex bottom-6 left-1/2 -translate-x-1/2 gap-2">
           {Array.from({ length: totalSlides }, (_, index) => (
             <button
               key={index}
@@ -169,7 +169,7 @@ const CustomSwiper = ({
           ))}
         </div>
       )}
-      <div className="absolute bottom-6 right-6 z-50 px-3 py-1 rounded-full bg-black/30 backdrop-blur-sm text-white text-sm font-medium border border-white/10">
+      <div className="absolute z-50 px-3 py-1 text-sm font-medium text-white border rounded-full bottom-6 right-6 bg-black/30 backdrop-blur-sm border-white/10">
         {currentSlide + 1} / {totalSlides}
       </div>
     </div>
@@ -319,7 +319,7 @@ const DraggableElement = ({
       // No onClick here; tap/click-to-edit handled in drag end logic
     >
       {isSelected && (
-        <div className="absolute -top-10 left-1/2 transform -translate-x-1/2 flex items-center gap-1">
+        <div className="absolute flex items-center -top-10 left-1/2 transform -translate-x-1/2 gap-1">
           <div className="bg-blue-500/80 rounded-full p-1.5 backdrop-blur-sm border border-white/20">
             <Move stroke="#fff" size={14} />
           </div>
@@ -526,8 +526,8 @@ const EnhancedSlideComponent = ({
     : null;
 
   return (
-    <div className="flex relative flex-col items-center justify-center h-full w-full">
-      <div className="absolute flex items-center justify-between top-0 left-0 w-full z-50 px-4 py-3 backdrop-blur-md bg-white/10 border-b border-white/20">
+    <div className="relative flex flex-col items-center justify-center w-full h-full">
+      <div className="absolute top-0 left-0 z-50 flex items-center justify-between w-full px-4 py-3 border-b backdrop-blur-md bg-white/10 border-white/20">
         <div className="flex items-center gap-2">
           <button
             onClick={changeFont}
@@ -553,17 +553,17 @@ const EnhancedSlideComponent = ({
         </div>
         <button
           onClick={submitStory}
-          className="p-3 rounded-xl bg-primary-dark-pink cursor-pointer transition-all duration-200 transform hover:scale-105"
+          className="p-3 cursor-pointer rounded-xl bg-primary-dark-pink transition-all duration-200 transform hover:scale-105"
           title="Submit Story"
         >
           <LucideSend stroke="#fff" size={20} />
         </button>
       </div>
       {selectedElement && selectedElementData && (
-        <div className="absolute top-20 left-4 right-4 z-40 backdrop-blur-md bg-white/10 rounded-2xl p-4 border border-white/20 shadow-2xl">
+        <div className="absolute z-40 p-4 border shadow-2xl top-20 left-4 right-4 backdrop-blur-md bg-white/10 rounded-2xl border-white/20">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div className="flex items-center gap-2">
-              <div className="flex items-center gap-1 bg-white/10 rounded-lg p-1">
+              <div className="flex items-center p-1 rounded-lg gap-1 bg-white/10">
                 <button
                   onClick={() =>
                     updateElementStyle(selectedElement, { textAlign: "left" })
@@ -604,7 +604,7 @@ const EnhancedSlideComponent = ({
                   <AlignRight size={16} />
                 </button>
               </div>
-              <div className="flex items-center gap-1 bg-white/10 rounded-lg p-1">
+              <div className="flex items-center p-1 rounded-lg gap-1 bg-white/10">
                 <button
                   onClick={() =>
                     updateElementStyle(selectedElement, {
@@ -644,18 +644,18 @@ const EnhancedSlideComponent = ({
               </div>
               <button
                 onClick={() => setShowColorPicker(!showColorPicker)}
-                className="p-2 rounded-lg bg-white/10 hover:bg-white/20 transition-all duration-200 text-white"
+                className="p-2 text-white rounded-lg bg-white/10 hover:bg-white/20 transition-all duration-200"
                 title="Change Color"
               >
                 <Palette size={16} />
               </button>
             </div>
-            <div className="text-white/80 text-sm font-medium">
+            <div className="text-sm font-medium text-white/80">
               Tap to edit • Drag to move
             </div>
           </div>
           {showColorPicker && (
-            <div className="mt-4 grid grid-cols-5 gap-2 p-3 bg-white/10 rounded-lg">
+            <div className="p-3 mt-4 rounded-lg grid grid-cols-5 gap-2 bg-white/10">
               {colorPalette.map((color, index) => (
                 <button
                   key={index}
@@ -663,7 +663,7 @@ const EnhancedSlideComponent = ({
                     updateElementStyle(selectedElement, { color });
                     setShowColorPicker(false);
                   }}
-                  className="w-8 h-8 rounded-full border-2 border-white/30 hover:border-white/60 transition-all duration-200 hover:scale-110"
+                  className="w-8 h-8 border-2 rounded-full border-white/30 hover:border-white/60 transition-all duration-200 hover:scale-110"
                   style={{ backgroundColor: color }}
                   title={color}
                 />
@@ -674,7 +674,7 @@ const EnhancedSlideComponent = ({
       )}
       <div
         ref={containerRef}
-        className="relative h-full w-full"
+        className="relative w-full h-full"
         onClick={handleContainerClick}
       >
         {story?.media_type === "video" && (
@@ -685,7 +685,7 @@ const EnhancedSlideComponent = ({
             muted
             src={story?.media_url}
             controls
-            className="h-full w-full object-contain rounded-xl brightness-90 bg-black"
+            className="object-contain w-full h-full bg-black rounded-xl brightness-90"
           />
         )}
         {story?.media_type === "image" && (
@@ -694,7 +694,7 @@ const EnhancedSlideComponent = ({
             alt={story?.caption ? story.caption : "status"}
             width={800}
             height={800}
-            className="h-full w-full object-contain rounded-xl brightness-90 bg-black"
+            className="object-contain w-full h-full bg-black rounded-xl brightness-90"
           />
         )}
         {containerRef.current &&
@@ -713,21 +713,21 @@ const EnhancedSlideComponent = ({
           ))}
       </div>
       {showLinkDialog && (
-        <div className="absolute inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-60">
-          <div className="bg-white/95 backdrop-blur-md rounded-2xl p-8 max-w-sm w-full mx-4 shadow-2xl border border-white/20">
-            <h3 className="text-xl font-bold mb-6 text-gray-800">Add Link</h3>
+        <div className="absolute inset-0 flex items-center justify-center bg-black/60 backdrop-blur-sm z-60">
+          <div className="w-full max-w-sm p-8 mx-4 border shadow-2xl bg-white/95 backdrop-blur-md rounded-2xl border-white/20">
+            <h3 className="mb-6 text-xl font-bold text-gray-800">Add Link</h3>
             <input
               type="url"
               placeholder="Enter URL (e.g., https://example.com)"
               value={tempLinkUrl}
               onChange={(e) => setTempLinkUrl(e.target.value)}
-              className="w-full p-4 border-2 border-gray-200 rounded-xl mb-6 outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 text-gray-800"
+              className="w-full p-4 mb-6 text-gray-800 border-2 border-gray-200 outline-none rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
             />
             <div className="flex gap-3">
               <button
                 onClick={createLink}
                 disabled={!tempLinkUrl}
-                className="flex-1 bg-gradient-to-r from-blue-500 to-purple-500 disabled:from-gray-300 disabled:to-gray-400 text-white py-3 rounded-xl hover:from-blue-600 hover:to-purple-600 transition-all duration-200 font-medium shadow-lg disabled:shadow-none transform hover:scale-105 disabled:transform-none"
+                className="flex-1 py-3 font-medium text-white shadow-lg bg-gradient-to-r from-blue-500 to-purple-500 disabled:from-gray-300 disabled:to-gray-400 rounded-xl hover:from-blue-600 hover:to-purple-600 transition-all duration-200 disabled:shadow-none transform hover:scale-105 disabled:transform-none"
               >
                 Add Link
               </button>
@@ -736,7 +736,7 @@ const EnhancedSlideComponent = ({
                   setShowLinkDialog(false);
                   setTempLinkUrl("");
                 }}
-                className="flex-1 bg-gradient-to-r from-gray-400 to-gray-500 text-white py-3 rounded-xl hover:from-gray-500 hover:to-gray-600 transition-all duration-200 font-medium shadow-lg transform hover:scale-105"
+                className="flex-1 py-3 font-medium text-white shadow-lg bg-gradient-to-r from-gray-400 to-gray-500 rounded-xl hover:from-gray-500 hover:to-gray-600 transition-all duration-200 transform hover:scale-105"
               >
                 Cancel
               </button>
@@ -754,7 +754,7 @@ const StoryCaptionComponent = ({ close }: StoryCaptionComponentProps) => {
   return (
     <div className="flex flex-col items-center fixed justify-center inset-0 w-full min-h-dvh bg-black/70 z-[200] select-none">
       <div
-        className="p-4 flex justify-center items-center w-full flex-1"
+        className="flex items-center justify-center flex-1 w-full p-4"
         onClick={(e) => {
           if (e.target === e.currentTarget) {
             close();

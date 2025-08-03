@@ -15,8 +15,8 @@ const ParentalGuide = ({ setAcceptedTerms }: ParentalGuideProps) => {
 
   return (
     <div className="fixed inset-0 z-[200] flex items-center justify-center bg-black/80 backdrop-blur-sm">
-      <div className="bg-white dark:bg-gray-800 p-10 rounded-2xl shadow-2xl max-w-lg w-full mx-4 border border-gray-300 dark:border-gray-700">
-        <div className="text-center mb-8">
+      <div className="w-full max-w-lg p-10 mx-4 bg-white border border-gray-300 shadow-2xl dark:bg-gray-800 rounded-2xl dark:border-gray-700">
+        <div className="mb-8 text-center">
           <Image
             src="/site/logo.svg"
             alt="PayMeFans Logo"
@@ -24,10 +24,10 @@ const ParentalGuide = ({ setAcceptedTerms }: ParentalGuideProps) => {
             height={25}
             className="mx-auto mb-4"
           />
-          <div className="w-12 h-1 bg-red-500 mx-auto mb-4"></div>
+          <div className="w-12 h-1 mx-auto mb-4 bg-red-500"></div>
         </div>
 
-        <h2 className="text-2xl font-bold text-center mb-4 text-gray-800 dark:text-white">
+        <h2 className="mb-4 text-2xl font-bold text-center text-gray-800 dark:text-white">
           Age Restricted Sensitive Content
         </h2>
 
@@ -39,7 +39,7 @@ const ParentalGuide = ({ setAcceptedTerms }: ParentalGuideProps) => {
           </p>
 
           <div>
-            <h3 className="font-semibold text-gray-800 dark:text-white mb-2">
+            <h3 className="mb-2 font-semibold text-gray-800 dark:text-white">
               Age Restriction:
             </h3>
             <p>
@@ -51,33 +51,33 @@ const ParentalGuide = ({ setAcceptedTerms }: ParentalGuideProps) => {
           </div>
         </div>
 
-        <div className="mt-6 text-sm text-gray-600 dark:text-gray-400 text-center">
+        <div className="mt-6 text-sm text-center text-gray-600 dark:text-gray-400">
           By continuing, you agree to our{" "}
           <Link
             href="/terms"
-            className="text-red-500 hover:text-red-600 underline"
+            className="text-red-500 underline hover:text-red-600"
           >
             Terms of Service
           </Link>{" "}
           and{" "}
           <Link
             href="/privacy"
-            className="text-red-500 hover:text-red-600 underline"
+            className="text-red-500 underline hover:text-red-600"
           >
             Privacy Policy
           </Link>
         </div>
 
-        <div className="mt-8 flex justify-center gap-4">
+        <div className="flex justify-center mt-8 gap-4">
           <button
             onClick={handleCancelClick}
-            className="px-8 py-2 bg-gray-500 hover:bg-gray-600 text-white font-semibold rounded-lg transition transform hover:scale-105 duration-200 shadow-md cursor-pointer"
+            className="px-8 py-2 font-semibold text-white bg-gray-500 rounded-lg shadow-md cursor-pointer hover:bg-gray-600 transition transform hover:scale-105 duration-200"
           >
             Cancel
           </button>
           <button
             onClick={() => setAcceptedTerms(true)}
-            className="px-8 py-2 bg-primary-dark-pink text-white font-semibold rounded-lg transition transform hover:scale-105 duration-200 shadow-md cursor-pointer"
+            className="px-8 py-2 font-semibold text-white rounded-lg shadow-md cursor-pointer bg-primary-dark-pink transition transform hover:scale-105 duration-200"
           >
             Enter
           </button>

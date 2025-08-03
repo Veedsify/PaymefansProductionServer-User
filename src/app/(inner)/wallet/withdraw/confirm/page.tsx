@@ -180,21 +180,21 @@ const WithdrawConfigPage = () => {
 
   return (
     <>
-      <div className="flex flex-col items-center justify-center min-h-dvh bg-primary-50 px-8">
-        <div className="mb-6 flex justify-center">
+      <div className="flex flex-col items-center justify-center px-8 min-h-dvh bg-primary-50">
+        <div className="flex justify-center mb-6">
           <LucideDollarSign className="w-16 h-16 text-primary-dark-pink" />
         </div>
-        <h2 className="text-3xl font-bold mb-6 text-primary-900 text-center">
+        <h2 className="mb-6 text-3xl font-bold text-center text-primary-900">
           Confirm Withdrawal
         </h2>
-        <p className="mb-8 text-center dark:text-white max-w-lg">
+        <p className="max-w-lg mb-8 text-center dark:text-white">
           Your withdrawal request is pending confirmation. Please review the
           details below before proceeding.
         </p>
         <div className="w-full max-w-lg mb-8">
           <div className="flex justify-between py-4 border-b border-black/30">
             <span className="font-medium text-primary-dark-pink">Amount:</span>
-            <span className="text-primary-900 font-semibold text-lg">
+            <span className="text-lg font-semibold text-primary-900">
               {config?.default_symbol}
               {amountInNgn}
             </span>
@@ -203,13 +203,13 @@ const WithdrawConfigPage = () => {
             <span className="font-medium text-primary-dark-pink">
               To Account:
             </span>
-            <span className="text-primary-900 font-semibold">
+            <span className="font-semibold text-primary-900">
               {userBankName} ({userAccountNumber})
             </span>
           </div>
           <div className="flex justify-between py-4 border-b border-black/30">
             <span className="font-medium text-primary-dark-pink">Fee:</span>
-            <span className="text-primary-900 font-semibold">
+            <span className="font-semibold text-primary-900">
               {config?.default_symbol}
               {platformFee}
             </span>
@@ -218,23 +218,23 @@ const WithdrawConfigPage = () => {
             <span className="font-medium text-primary-dark-pink">
               Amount to Receive:
             </span>
-            <span className="text-primary-900 font-semibold text-lg">
+            <span className="text-lg font-semibold text-primary-900">
               {config?.default_symbol}
               {amountToSettle}
             </span>
           </div>
         </div>
-        <div className="flex flex-col gap-3 w-full max-w-lg">
+        <div className="flex flex-col w-full max-w-lg gap-3">
           <div>
             {error && (
-              <p className="text-red-500 text-center mt-2 h-5 text-sm">
+              <p className="h-5 mt-2 text-sm text-center text-red-500">
                 {error}
               </p>
             )}
           </div>
           <button
             onClick={togglePinModal}
-            className="w-full bg-primary-dark-pink hover:bg-primary-text-dark-pink text-white font-bold py-3 rounded-lg transition cursor-pointer flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-gray-400"
+            className="flex items-center justify-center w-full py-3 font-bold text-white rounded-lg cursor-pointer bg-primary-dark-pink hover:bg-primary-text-dark-pink transition gap-2 disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-gray-400"
             type="button"
             disabled={processing}
           >
@@ -253,7 +253,7 @@ const WithdrawConfigPage = () => {
           </button>
           <button
             onClick={cancelWithdraw}
-            className="w-full bg-primary-100 hover:bg-primary-200 text-primary-800 font-bold py-3 rounded-lg transition"
+            className="w-full py-3 font-bold rounded-lg bg-primary-100 hover:bg-primary-200 text-primary-800 transition"
             type="button"
           >
             Cancel

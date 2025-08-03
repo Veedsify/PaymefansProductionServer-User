@@ -1,14 +1,12 @@
-"use client";
-import { Story, StoryPreviewProps } from "@/types/Components";
+"use client";;
+import { StoryPreviewProps } from "@/types/Components";
 import { Swiper, SwiperClass, SwiperSlide } from "swiper/react";
 import "swiper/css/bundle";
-import Image from "next/image";
 import StoryPreviewControlls from "./StatusPreviewControls";
 import { useCallback, useEffect, useRef, useState } from "react";
 import StoriesHeader from "./StatusHeader";
-import VideoPlayer from "../sub_components/videoplayer";
 import { useUserAuthContext } from "@/lib/UserUseContext";
-import { Eye, LucideEye, X } from "lucide-react";
+import { Eye } from "lucide-react";
 import StatusPreviewSlide from "./StatusPreviewSlide";
 
 // Caption Element Component
@@ -174,7 +172,7 @@ const StoryPreviewComponent = ({
       className={`relative flex flex-col items-center justify-center min-h-dvh bg-black ${className}`}
     >
       {/* Header */}
-      <div className="lg:max-w-3xl w-full mx-auto z-20 absolute top-0 left-1/2 -translate-x-1/2">
+      <div className="absolute top-0 z-20 w-full mx-auto -translate-x-1/2 lg:max-w-3xl left-1/2">
         <StoriesHeader
           username={stories[activeIndex]?.user?.username || ""}
           timestamp={stories[activeIndex]?.created_at || ""}
@@ -185,7 +183,7 @@ const StoryPreviewComponent = ({
       </div>
 
       {/* Main Content Area */}
-      <div className="relative lg:max-w-3xl w-full h-dvh flex items-center justify-center">
+      <div className="relative flex items-center justify-center w-full lg:max-w-3xl h-dvh">
         {/* Controls */}
         <div className="absolute w-full mx-auto left-1/2 -translate-x-1/2 top-2 pointer-events-none z-[550]">
           <StoryPreviewControlls
@@ -219,7 +217,7 @@ const StoryPreviewComponent = ({
           >
             {stories.map((story, index) => (
               <SwiperSlide
-                className="flex items-center justify-center bg-black relative"
+                className="relative flex items-center justify-center bg-black"
                 key={`${story.media_url}-${index}-${swiperKey}`}
               >
                 <StatusPreviewSlide
@@ -236,10 +234,10 @@ const StoryPreviewComponent = ({
 
       {/* Bottom View Count (for story owner) */}
       {stories[activeIndex]?.user?.id === user?.id && viewCount > 0 && (
-        <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 z-20">
+        <div className="absolute z-20 transform -translate-x-1/2 bottom-4 left-1/2">
           <button
             onClick={() => setShowViewsBottomSheet(true)}
-            className="flex items-center gap-2 bg-black/60 backdrop-blur-sm text-white px-4 py-2 rounded-full hover:bg-black/80 transition-colors"
+            className="flex items-center gap-2 px-4 py-2 text-white transition-colors rounded-full bg-black/60 backdrop-blur-sm hover:bg-black/80"
           >
             <Eye size={16} />
             <span className="text-sm font-medium">

@@ -35,7 +35,7 @@ const StoryPreviewControlls = ({
           display: "grid",
           gridTemplateColumns: `repeat(${stories.length}, 1fr)`,
         }}
-        className="z-10 absolute top-0 left-0 w-full items-center justify-evenly gap-1"
+        className="absolute top-0 left-0 z-10 items-center w-full justify-evenly gap-1"
       >
         {stories.map((story, i) => (
           <ProgressBar
@@ -170,11 +170,11 @@ const ProgressBar = ({
     <div
       ref={progressBarRef}
       style={{ gridColumn: `${slideIndex + 1} / ${slideIndex + 2}` }}
-      className="h-1 rounded-lg bg-gray-400 relative"
+      className="relative h-1 bg-gray-400 rounded-lg"
     >
       <div
         style={{ width: `${percent}%` }}
-        className="absolute transition-all top-0 left-0 h-full bg-white"
+        className="absolute top-0 left-0 h-full bg-white transition-all"
       ></div>
     </div>
   );

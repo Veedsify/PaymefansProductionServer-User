@@ -16,7 +16,7 @@ const MessageInputAttachmentPreview = ({
         <video
           src={previewUrl}
           muted
-          className="w-full aspect-square rounded-xl cursor-pointer object-cover"
+          className="object-cover w-full cursor-pointer aspect-square rounded-xl"
           poster={posterUrl}
         />
       ) : (
@@ -26,7 +26,7 @@ const MessageInputAttachmentPreview = ({
           priority
           src={previewUrl}
           alt=""
-          className="w-full aspect-square rounded-xl object-cover"
+          className="object-cover w-full aspect-square rounded-xl"
         />
       )}
     </>

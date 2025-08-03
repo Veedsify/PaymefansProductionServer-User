@@ -53,7 +53,7 @@ const GroupMessageBubble = ({ isSender, message }: GroupMessageBubbleProps) => {
         <Image
           width={32}
           height={32}
-          className="w-8 h-8 rounded-full object-cover"
+          className="object-cover w-8 h-8 rounded-full"
           src={message.sender.profile_image}
           alt={`${message.sender.username}'s profile`}
         />
@@ -86,7 +86,9 @@ const GroupMessageBubble = ({ isSender, message }: GroupMessageBubbleProps) => {
               <MoreHorizontal size={16} />
             </button>
           </div>
-          <p>{message.content}</p>
+          <div
+            dangerouslySetInnerHTML={{ __html: message.content as TrustedHTML }}
+          ></div>
         </div>
 
         <AnimatePresence>
@@ -98,16 +100,16 @@ const GroupMessageBubble = ({ isSender, message }: GroupMessageBubbleProps) => {
               className={dropdownClasses}
             >
               <ul className="py-1 text-sm text-gray-700 dark:text-gray-200">
-                {["Reply", "Forward", "Copy"].map((action) => (
+                {["Copy"].map((action) => (
                   <li key={action}>
-                    <button className="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white transition-colors">
+                    <button className="w-full px-4 py-2 text-left hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white transition-colors">
                       {action}
                     </button>
                   </li>
                 ))}
                 {!isSender && (
                   <li>
-                    <button className="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white transition-colors">
+                    <button className="w-full px-4 py-2 text-left hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white transition-colors">
                       Report
                     </button>
                   </li>

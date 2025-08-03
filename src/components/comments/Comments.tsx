@@ -197,7 +197,7 @@ const CommentsHolder = ({ post, postComments }: CommentsHolderProps) => {
                 src={comment.profile_image}
                 width={50}
                 height={50}
-                className="h-auto aspect-square rounded-full w-8 md:w-14"
+                className="w-8 h-auto rounded-full aspect-square md:w-14"
                 alt={`${comment.name}'s profile image`}
               />
             </Link>
@@ -205,31 +205,31 @@ const CommentsHolder = ({ post, postComments }: CommentsHolderProps) => {
               <h3 className="mb-2">
                 <Link
                   href={`/${comment.username}`}
-                  className="md:text-base text-sm font-bold"
+                  className="text-sm font-bold md:text-base"
                 >
                   {comment.name}
                 </Link>
                 &nbsp;
                 <Link
                   href={`/${comment.username}`}
-                  className="md:text-base text-sm"
+                  className="text-sm md:text-base"
                 >
                   {comment.username}
                 </Link>
                 &nbsp;·&nbsp;
-                <span className="md:text-base text-xs">
+                <span className="text-xs md:text-base">
                   {formatDate(comment.date)}
                 </span>
               </h3>
               <div
-                className="md:text-base text-sm mb-2 cursor-pointer"
+                className="mb-2 text-sm cursor-pointer md:text-base"
                 onClick={() => handleOpenReply(comment.comment_id)}
               >
                 <div
                   className="mb-3"
                   dangerouslySetInnerHTML={{ __html: comment.comment }}
                 ></div>
-                <div className="flex items-baseline flex-wrap max-w-md gap-2">
+                <div className="flex flex-wrap items-baseline max-w-md gap-2">
                   {comment.attachment?.map((media: any, idx: number) => (
                     <div
                       key={media.name || idx}
@@ -240,7 +240,7 @@ const CommentsHolder = ({ post, postComments }: CommentsHolderProps) => {
                         src={media.path}
                         width={500}
                         height={500}
-                        className="h-auto max-w-40 aspect-square rounded-lg object-cover cursor-pointer"
+                        className="object-cover h-auto rounded-lg cursor-pointer max-w-40 aspect-square"
                         alt={media.name || "Attachment image"}
                       />
                     </div>
@@ -285,7 +285,7 @@ const CommentsHolder = ({ post, postComments }: CommentsHolderProps) => {
           </div>
         ))}
         {loading && (
-          <div className="flex justify-center items-center h-36">
+          <div className="flex items-center justify-center h-36">
             <LucideLoader
               size={20}
               className="animate-spin text-primary-dark-pink"
@@ -298,11 +298,11 @@ const CommentsHolder = ({ post, postComments }: CommentsHolderProps) => {
       {!hasMore && !loading && (
         <div className="text-center">
           {postComment.length > 0 ? (
-            <p className="text-sm text-gray-400 font-semibold">
+            <p className="text-sm font-semibold text-gray-400">
               No more comments
             </p>
           ) : (
-            <p className="text-sm text-gray-400 font-semibold">
+            <p className="text-sm font-semibold text-gray-400">
               No comments yet
             </p>
           )}

@@ -1,10 +1,8 @@
 "use client";
 import HookupSubscription from "@/components/sub_components/HookupSubscription";
 import { LucideArrowDown, LucideLoader, LucideSearch } from "lucide-react";
-import { Metadata } from "next";
-import { useCallback, useEffect, useState } from "react";
-import { getSocket } from "@/components/sub_components/sub/Socket";
-import { shuffle, uniqBy } from "lodash";
+import { useEffect, useState } from "react";
+import { useHookups } from "@/hooks/queries/useHookups";
 import { HookUpLoader } from "@/components/loaders.tsx/ModelLoader";
 
 export interface HookupProps {
@@ -26,47 +24,14 @@ export interface HookupProps {
 }
 
 const HookupPage = () => {
-  const [hookups, setHookups] = useState<HookupProps[]>([]);
   const [filteredHookups, setFilteredHookups] = useState<HookupProps[]>([]);
-  const [isLoading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
-  const socket = getSocket();
 
-  // Send user location if available
-  const sendUserLocation = useCallback(() => {
-    try {
-      const storedLocation = localStorage.getItem("userLocation");
-      if (storedLocation) {
-        const locationData = JSON.parse(storedLocation);
-
-        // Only use location data if it's recent (less than 30 minutes old)
-        const isRecent = Date.now() - locationData.timestamp < 30 * 60 * 1000;
-
-        if (isRecent && locationData.consentGiven) {
-          // Emit location to server for better hookup matching
-          socket?.emit("user-location", {
-            latitude: locationData.latitude,
-            longitude: locationData.longitude,
-          });
-        }
-      }
-    } catch (error) {
-      console.error("Error sending location data:", error);
-    }
-  }, [socket]);
-
-  const update = useCallback(() => {
-    socket?.emit("pool-models-and-hookup");
-  }, [socket]);
-
-  const Hookups = (data: { hookups: any[] }) => {
-    setLoading(false);
-    if (data?.hookups) {
-      const shuffledHookups = shuffle(uniqBy(data.hookups, "username"));
-      setHookups(shuffledHookups);
-      setFilteredHookups(shuffledHookups);
-    }
-  };
+  // Fetch hookups using dedicated hook
+  const { hookups, isLoading, error, refetch } = useHookups({
+    staleTime: 2 * 60 * 1000, // 2 minutes
+    refetchInterval: 5 * 60 * 1000, // 5 minutes
+  });
 
   // Filter hookups based on search query
   useEffect(() => {
@@ -88,43 +53,26 @@ const HookupPage = () => {
     }
   }, [searchQuery, hookups]);
 
-  useEffect(() => {
-    // Send location when component mounts
-    sendUserLocation();
-    update();
-
-    // Set up interval to periodically update location-based hookups
-    const locationInterval = setInterval(sendUserLocation, 5 * 60 * 1000); // Every 5 minutes
-    // Set up interval to periodically update hookups
-    const updateInterval = setInterval(update, 1 * 60 * 1000); // Every minute
-
-    // Listen for socket events
-    socket?.on("hookup-update", Hookups);
-
-    return () => {
-      socket?.off("hookup-update", Hookups);
-      clearInterval(updateInterval);
-      clearInterval(locationInterval);
-    };
-  }, [socket, sendUserLocation, update]);
-
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(e.target.value);
   };
 
   const handleSearchKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    // Optional: You can add additional search functionality here
     if (e.key === "Enter") {
-      // Search is already handled by the useEffect above
       e.preventDefault();
     }
   };
 
+  if (error) {
+    console.error("Error fetching hookups:", error);
+  }
+
   return (
     <div className="block p-4 md:p-8">
       <div className="flex items-center mb-7 lg:hidden">
-        <span className="font-bold text-xl flex-shrink-0">Hookup</span>
+        <span className="flex-shrink-0 text-xl font-bold">Hookup</span>
       </div>
+
       <div className="relative overflow-auto pb-7">
         <label className="flex justify-between pr-5 overflow-hidden border border-gray-400 rounded-md">
           <input
@@ -151,20 +99,28 @@ const HookupPage = () => {
       )}
 
       <div className="py-6">
-        {filteredHookups.length === 0 && !isLoading && (
-          <div className="text-center text-gray-700 py-12">
-            {searchQuery
-              ? `No hookups found matching "${searchQuery}"`
-              : "No hookups available"}
-          </div>
-        )}
-
         {isLoading ? (
-          <div className="flex justify-center">
-            <LucideLoader className="self-center animate-spin" size={18} />
+          <HookUpLoader />
+        ) : filteredHookups.length === 0 ? (
+          <div className="py-12 text-center text-gray-700">
+            <div className="mb-4">
+              {error
+                ? "Failed to load hookups"
+                : searchQuery
+                  ? `No hookups found matching "${searchQuery}"`
+                  : "No hookups available"}
+            </div>
+            {error && (
+              <button
+                onClick={() => refetch()}
+                className="px-4 py-2 text-sm text-white bg-primary-dark-pink rounded-md hover:opacity-80"
+              >
+                Retry
+              </button>
+            )}
           </div>
         ) : (
-          <div className="grid md:grid-cols-4 grid-cols-3 gap-4 lg:gap-6 justify-between">
+          <div className="justify-between grid md:grid-cols-4 grid-cols-3 gap-4 lg:gap-6">
             {filteredHookups.map((hookup: HookupProps, index: number) => (
               <HookupSubscription
                 hookup={hookup}

@@ -476,7 +476,7 @@ const ChatPage = ({ conversationId }: { conversationId: string }) => {
     return (
       <div className="flex items-center justify-center h-full">
         <div className="flex flex-col items-center gap-2">
-          <LucideLoader2 className="h-6 w-6 animate-spin text-blue-500" />
+          <LucideLoader2 className="w-6 h-6 text-blue-500 animate-spin" />
           <p className="text-gray-600 dark:text-gray-400">Loading chat...</p>
         </div>
       </div>
@@ -501,7 +501,7 @@ const ChatPage = ({ conversationId }: { conversationId: string }) => {
                 alt={receiver.name}
                 width={40}
                 height={40}
-                className="rounded-full object-cover"
+                className="object-cover rounded-full"
               />
               <div>
                 <h2 className="font-semibold text-gray-900 dark:text-white">
@@ -511,15 +511,15 @@ const ChatPage = ({ conversationId }: { conversationId: string }) => {
             </div>
           )}
         </div>
-        <div className="flex-1 flex items-center justify-center p-8">
-          <div className="text-center max-w-md">
-            <div className="w-16 h-16 bg-gray-200 dark:bg-gray-700 rounded-full flex items-center justify-center mx-auto mb-4">
+        <div className="flex items-center justify-center flex-1 p-8">
+          <div className="max-w-md text-center">
+            <div className="flex items-center justify-center w-16 h-16 mx-auto mb-4 bg-gray-200 rounded-full dark:bg-gray-700">
               <LucideBan />
             </div>
-            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
+            <h3 className="mb-2 text-lg font-semibold text-gray-900 dark:text-white">
               You can&apos;t message this user
             </h3>
-            <p className="text-gray-600 dark:text-gray-400 text-sm">
+            <p className="text-sm text-gray-600 dark:text-gray-400">
               This user has restricted who can message them. You&apos;re unable
               to send messages to them at this time.
             </p>
@@ -554,14 +554,14 @@ const ChatPage = ({ conversationId }: { conversationId: string }) => {
           <div>
             <Link
               href={`/${receiver?.username}`}
-              className="flex items-center gap-1 text-sm font-semibold text-gray-900 dark:text-white"
+              className="flex items-center text-sm font-semibold text-gray-900 gap-1 dark:text-white"
             >
               {receiver?.name}
               {receiver?.is_verified && (
                 <LucideVerified className="ml-1 text-emerald-600" size={16} />
               )}
             </Link>
-            <div className="flex items-center gap-1 text-xs text-gray-500 dark:text-gray-400">
+            <div className="flex items-center text-xs text-gray-500 gap-1 dark:text-gray-400">
               {receiver?.username && (
                 <ActiveProfileTag userid={receiver.username} withText />
               )}
@@ -592,7 +592,7 @@ const ChatPage = ({ conversationId }: { conversationId: string }) => {
       >
         {isSearchingMessage && (
           <div className="flex items-center justify-center py-4">
-            <div className="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
+            <div className="flex items-center text-sm text-gray-500 gap-2 dark:text-gray-400">
               <LucideLoader2 className="animate-spin" size={16} />
               <span>Searching for message...</span>
             </div>
@@ -603,11 +603,11 @@ const ChatPage = ({ conversationId }: { conversationId: string }) => {
             <button
               disabled={loading}
               onClick={() => fetchNextPage()}
-              className="flex items-center justify-center h-7 w-7 aspect-square rounded-full cursor-pointer bg-primary-dark-pink"
+              className="flex items-center justify-center rounded-full cursor-pointer h-7 w-7 aspect-square bg-primary-dark-pink"
             >
               {loading ? (
                 <LucideLoader2
-                  className="text-white h-4 w-4 animate-spin"
+                  className="w-4 h-4 text-white animate-spin"
                   size={20}
                 />
               ) : (

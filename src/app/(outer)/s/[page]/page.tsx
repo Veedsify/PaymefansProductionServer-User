@@ -96,7 +96,7 @@ export default function Page() {
             <div className="content-container">
               <h1 className="title">{pageData.title}</h1>
               <div
-                className="content text-justify"
+                className="text-justify content"
                 dangerouslySetInnerHTML={{
                   __html: pageData.content,
                 }}

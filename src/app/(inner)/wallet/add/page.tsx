@@ -147,8 +147,8 @@ const WalletAddBank = () => {
   //           acceptedBankCountries={acceptedBankCountries}
   //           onCountryChange={SelectCountry}
   //         />
-  //         <div className="text-sm text-gray-500 mt-2">
-  //           <h2 className="font-bold text-lg mb-3 mt-6">Other Countries</h2>
+  //         <div className="mt-2 text-sm text-gray-500">
+  //           <h2 className="mt-6 mb-3 text-lg font-bold">Other Countries</h2>
   //         </div>
   //       </div>
   //       <div className="p-4 md:p-8">
@@ -185,18 +185,18 @@ const WalletAddBank = () => {
                     onClick={() => setBankType(bank.type)}
                     className="flex flex-col items-center justify-center"
                   >
-                    <span className="flex flex-col items-center justify-center p-3 rounded-full border-2 border-gray-200 hover:border-primary-dark-pink transition-colors mb-4 w-24 h-24 cursor-pointer">
+                    <span className="flex flex-col items-center justify-center w-24 h-24 p-3 mb-4 border-2 border-gray-200 rounded-full cursor-pointer hover:border-primary-dark-pink transition-colors">
                       <div className="rounded-full bg-gray-50">
                         <Image
                           width={64}
                           height={64}
                           src={bank.image}
                           alt={bank.name}
-                          className="w-16 h-16 rounded-full aspect-square object-cover"
+                          className="object-cover w-16 h-16 rounded-full aspect-square"
                         />
                       </div>
                     </span>
-                    <span className="text-gray-600 text-center font-bold dark:text-white">
+                    <span className="font-bold text-center text-gray-600 dark:text-white">
                       {bank.name}
                     </span>
                   </button>
@@ -214,8 +214,8 @@ const WalletAddBank = () => {
 
   return (
     <div className="p-4 py-8">
-      <div className="flex items-center gap-2 mb-4">
-        <span className="font-bold text-xl flex-shrink-0 ">
+      <div className="flex items-center mb-4 gap-2">
+        <span className="flex-shrink-0 text-xl font-bold ">
           Add Withdrawal Bank
         </span>
         <span className="text-sm text-gray-500">
@@ -231,13 +231,13 @@ const WalletAddBank = () => {
           type="text"
           placeholder="Account Number"
           onChange={(e) => setAccountNumber(e.target.value)}
-          className="border p-4 mt-4 w-full rounded-lg pl-5 outline-none"
+          className="w-full p-4 pl-5 mt-4 border rounded-lg outline-none"
           maxLength={16}
         />
         <select
           onChange={(e) => setSelectedBank(e.target.value)}
           defaultValue="1"
-          className="border p-4 mt-4 w-full rounded-lg pl-5 outline-none text-black cursor-pointer"
+          className="w-full p-4 pl-5 mt-4 text-black border rounded-lg outline-none cursor-pointer"
         >
           <option label="Select Bank" value={1} disabled></option>
           {banks.map((bank, index) => {
@@ -248,9 +248,9 @@ const WalletAddBank = () => {
             );
           })}
         </select>
-        <div className="flex items-center gap-2 mt-3">
+        <div className="flex items-center mt-3 gap-2">
           {loading && <LucideLoader className="animate-spin" />}
-          {name && !loading && <span className="font-bold pl-3">{name}</span>}
+          {name && !loading && <span className="pl-3 font-bold">{name}</span>}
         </div>
 
         <div className="mt-6">
@@ -264,8 +264,8 @@ const WalletAddBank = () => {
             Set Bank Account
           </button>
         </div>
-        <div className="flex items-center gap-2 mt-3 mb-8">
-          <small className="text-red-500 font-semibold">
+        <div className="flex items-center mt-3 mb-8 gap-2">
+          <small className="font-semibold text-red-500">
             {BANK_CONFIG.PLATFORM_FEE_MESSAGE}
           </small>
         </div>
@@ -345,10 +345,10 @@ const SavedBanks = () => {
 
   return banks && banks.length > 0 ? (
     <div className="mt-3">
-      <h2 className="font-bold text-xl mb-6 dark:text-white">
+      <h2 className="mb-6 text-xl font-bold dark:text-white">
         Saved Bank Accounts
       </h2>
-      <div className="overflow-x-auto rounded-lg border border-gray-200 shadow-sm dark:border-gray-700">
+      <div className="overflow-x-auto border border-gray-200 rounded-lg shadow-sm dark:border-gray-700">
         <div className="relative h-[30vh] overflow-x-auto">
           <table className="absolute divide-gray-200 dark:divide-gray-700">
             <thead className="bg-gray-50 dark:bg-gray-800 whitespace-nowrap">
@@ -376,34 +376,34 @@ const SavedBanks = () => {
                 </th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-200 bg-white dark:divide-gray-700 dark:bg-gray-900 whitespace-nowrap">
+            <tbody className="bg-white divide-y divide-gray-200 dark:divide-gray-700 dark:bg-gray-900 whitespace-nowrap">
               {banks.map((bank, index) => (
                 <tr
                   key={index}
                   className="hover:bg-gray-50 dark:hover:bg-gray-800"
                 >
-                  <td className=" px-4 py-3 text-sm text-gray-700 dark:text-gray-200">
+                  <td className="px-4 py-3 text-sm text-gray-700  dark:text-gray-200">
                     {index + 1}
                   </td>
-                  <td className=" px-4 py-3 text-sm text-gray-700 dark:text-gray-200">
+                  <td className="px-4 py-3 text-sm text-gray-700  dark:text-gray-200">
                     {bank.bank_name}
                   </td>
-                  <td className=" px-4 py-3 text-sm text-gray-700 dark:text-gray-200">
+                  <td className="px-4 py-3 text-sm text-gray-700  dark:text-gray-200">
                     {bank.account_number}
                   </td>
-                  <td className=" px-4 py-3 text-sm text-gray-700 dark:text-gray-200">
+                  <td className="px-4 py-3 text-sm text-gray-700  dark:text-gray-200">
                     {bank.account_name}
                   </td>
-                  <td className=" px-4 py-3 text-sm text-gray-700 dark:text-gray-200">
+                  <td className="px-4 py-3 text-sm text-gray-700  dark:text-gray-200">
                     {bank.bank_type}
                   </td>
-                  <td className=" px-4 py-3 text-sm text-gray-700 dark:text-gray-200">
+                  <td className="px-4 py-3 text-sm text-gray-700  dark:text-gray-200">
                     {bank.bank_country}
                   </td>
-                  <td className=" px-4 py-3 text-sm">
+                  <td className="px-4 py-3 text-sm ">
                     <button
                       onClick={deleteAccount(bank.id)}
-                      className="inline-flex items-center rounded-md bg-red-50 px-2 py-1 text-red-700 hover:bg-red-100 transition-colors dark:bg-red-900 dark:text-red-200 dark:hover:bg-red-800"
+                      className="inline-flex items-center px-2 py-1 text-red-700 rounded-md bg-red-50 hover:bg-red-100 transition-colors dark:bg-red-900 dark:text-red-200 dark:hover:bg-red-800"
                     >
                       <LucideTrash2 size={18} className="mr-1" />
                       <span className="hidden lg:inline">Delete</span>

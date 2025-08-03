@@ -197,11 +197,11 @@ const GroupCover = ({ handleJoinGroup }: GroupCoverProps) => {
 
   return (
     <div className="min-h-screen">
-      <div className="bg-white w-full flex items-center justify-center h-dvh overflow-hidden">
+      <div className="flex items-center justify-center w-full overflow-hidden bg-white h-dvh">
         {/* Main content */}
         <div className="px-8 py-8 text-center">
           {/* Title */}
-          <h1 className="md:text-4xl text-2xl font-black text-black text-center mb-8 tracking-tight">
+          <h1 className="mb-8 text-2xl font-black tracking-tight text-center text-black md:text-4xl">
             CREATORS GROUP
           </h1>
 
@@ -246,7 +246,7 @@ const GroupCover = ({ handleJoinGroup }: GroupCoverProps) => {
 
           {/* Description */}
           <div className="mt-8 mb-8">
-            <p className="text-gray-800 text-center leading-relaxed font-medium max-w-xl">
+            <p className="max-w-xl font-medium leading-relaxed text-center text-gray-800">
               Join the Paymefans Creator Group to connect with fellow creators
               and models worldwide, explore collaboration opportunities, and
               build business relationships.
@@ -256,7 +256,7 @@ const GroupCover = ({ handleJoinGroup }: GroupCoverProps) => {
           {/* Join button */}
           <button
             onClick={handleJoinGroup}
-            className="w-96  bg-primary-dark-pink text-white font-semibold py-4 px-8 rounded-full text-lg hover:bg-gray-800 transition-colors duration-200 active:scale-95 transform cursor-pointer"
+            className="px-8 py-4 text-lg font-semibold text-white rounded-full cursor-pointer w-96  bg-primary-dark-pink hover:bg-gray-800 transition-colors duration-200 active:scale-95 transform"
           >
             Join Group
           </button>

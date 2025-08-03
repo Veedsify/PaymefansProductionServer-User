@@ -31,7 +31,7 @@ const Media = ({ id, file, removeThisMedia, progress }: MediaProps) => {
   if (!url) {
     return (
       <div className="relative">
-        <div className="bg-gray-200 animate-pulse h-32 w-32 rounded-xl"></div>
+        <div className="w-32 h-32 bg-gray-200 animate-pulse rounded-xl"></div>
       </div>
     );
   }
@@ -44,7 +44,7 @@ const Media = ({ id, file, removeThisMedia, progress }: MediaProps) => {
         <video
           src={url}
           playsInline
-          className="relative object-cover h-auto aspect-square shadow-lg border block rounded-xl z-10"
+          className="relative z-10 block object-cover h-auto border shadow-lg aspect-square rounded-xl"
         />
       ) : (
         <Image
@@ -53,10 +53,10 @@ const Media = ({ id, file, removeThisMedia, progress }: MediaProps) => {
           alt={file.name || "Media preview"}
           width={200}
           height={200}
-          className="relative object-cover h-auto aspect-square shadow-lg border block rounded-xl z-10"
+          className="relative z-10 block object-cover h-auto border shadow-lg aspect-square rounded-xl"
         />
       )}
-      <div className="absolute top-0 right-0 bg-black/50 text-white p-1 w-full h-full rounded-xl flex items-center justify-center z-20">
+      <div className="absolute top-0 right-0 z-20 flex items-center justify-center w-full h-full p-1 text-white bg-black/50 rounded-xl">
         <button
           onClick={() => removeThisMedia(id, file.type)}
           className="cursor-pointer"
@@ -67,7 +67,7 @@ const Media = ({ id, file, removeThisMedia, progress }: MediaProps) => {
         </button>
       </div>
       {progress >= 0 && (
-        <div className="absolute bottom-2 left-0 right-0 text-white z-20 text-center">
+        <div className="absolute left-0 right-0 z-20 text-center text-white bottom-2">
           <span>{progress}%</span>
         </div>
       )}

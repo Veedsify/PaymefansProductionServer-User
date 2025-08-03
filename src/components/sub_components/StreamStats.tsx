@@ -64,20 +64,20 @@ const StreamStats = ({
         />
       </div>
       <div className="mb-20">
-        <span className="font-semibold mb-2 text-sm text-gray-700 inline-block dark:text-gray-300">
+        <span className="inline-block mb-2 text-sm font-semibold text-gray-700 dark:text-gray-300">
           Stream Title
         </span>
         <input
           type="text"
           readOnly
-          className="text-2xl font-bold border-none w-full p-1"
+          className="w-full p-1 text-2xl font-bold border-none"
           value={streamData?.title}
         />
       </div>
       {user?.user_id === streamData?.user_id && (
         <>
           <div className="mb-3">
-            <span className="font-bold mb-2 text-sm inline-block text-gray-700 dark:text-gray-300">
+            <span className="inline-block mb-2 text-sm font-bold text-gray-700 dark:text-gray-300">
               Stream Analytics
             </span>
             <div className="flex mb-2">
@@ -107,16 +107,16 @@ const StreamStats = ({
                 >
                   {icon}
                   <h2 className="text-sm">{label}</h2>
-                  <h1 className="text-lg sm:text-3xl font-semibold">{count}</h1>
+                  <h1 className="text-lg font-semibold sm:text-3xl">{count}</h1>
                 </div>
               ))}
             </div>
           </div>
           <div className="mb-3">
-            <span className="font-bold text-sm mb-2 inline-block text-gray-700 dark:text-gray-300">
+            <span className="inline-block mb-2 text-sm font-bold text-gray-700 dark:text-gray-300">
               User Analytics
             </span>
-            <div className="flex mb-2 flex-wrap">
+            <div className="flex flex-wrap mb-2">
               {[
                 {
                   icon: (
@@ -143,7 +143,7 @@ const StreamStats = ({
                 >
                   {icon}
                   <h2 className="text-sm">{label}</h2>
-                  <h1 className="text-lg sm:text-2xl font-semibold">{count}</h1>
+                  <h1 className="text-lg font-semibold sm:text-2xl">{count}</h1>
                 </div>
               ))}
             </div>
@@ -151,14 +151,14 @@ const StreamStats = ({
         </>
       )}
 
-      <div className="border flex flex-col gap-2 border-gray-300 dark:border-slate-400 p-3 flex-1 rounded-lg">
+      <div className="flex flex-col flex-1 p-3 border border-gray-300 rounded-lg gap-2 dark:border-slate-400">
         <div className="flex flex-wrap gap-2">
-          <div className="border w-full p-3 rounded">
+          <div className="w-full p-3 border rounded">
             <h2 className="mb-3 text-sm font-medium">Select Camera</h2>
             <select
               name=""
               onChange={handleCameraChange}
-              className="p-3 text-sm w-full truncate overflow-ellipsis border rounded bg-gray-100"
+              className="w-full p-3 text-sm truncate bg-gray-100 border rounded overflow-ellipsis"
             >
               {devices &&
                 devices.length > 0 &&
@@ -169,30 +169,30 @@ const StreamStats = ({
                 ))}
             </select>
           </div>
-          <div className="border flex w-full rounded">
-            <div className="p-3 flex-1 border-r">
+          <div className="flex w-full border rounded">
+            <div className="flex-1 p-3 border-r">
               <h2 className="mb-3 text-sm font-medium">Mute Microphone</h2>
               <button onClick={handleMuteMic}>
                 {!isMicEnabled ? (
-                  <span className="border inline-block p-3 rounded-full">
+                  <span className="inline-block p-3 border rounded-full">
                     <LucideMicOff stroke="#f00" size={30} />
                   </span>
                 ) : (
-                  <span className="border inline-block p-3 rounded-full">
+                  <span className="inline-block p-3 border rounded-full">
                     <LucideMic stroke="green" size={30} />
                   </span>
                 )}
               </button>
             </div>
-            <div className="p-3 flex-1">
+            <div className="flex-1 p-3">
               <h2 className="mb-3 text-sm font-medium">Disable Video</h2>
               <button onClick={handleCamDisable}>
                 {!isCamEnabled ? (
-                  <span className="border inline-block p-3 rounded-full">
+                  <span className="inline-block p-3 border rounded-full">
                     <LucideVideoOff stroke="#f00" size={30} />
                   </span>
                 ) : (
-                  <span className="border inline-block p-3 rounded-full">
+                  <span className="inline-block p-3 border rounded-full">
                     <LucideVideo stroke="green" size={30} />
                   </span>
                 )}
@@ -204,7 +204,7 @@ const StreamStats = ({
       <div>
         <button
           onClick={handleLiveStreamEnd}
-          className="bg-red-500 text-white p-3 rounded-lg w-full mt-5 font-semibold text-lg"
+          className="w-full p-3 mt-5 text-lg font-semibold text-white bg-red-500 rounded-lg"
         >
           {user?.user_id === streamData?.user_id
             ? "End Stream"
@@ -212,7 +212,7 @@ const StreamStats = ({
         </button>
         <button
           onClick={handleCreateStream}
-          className="bg-emerald-600 text-white p-3 rounded-lg w-full mt-5 font-semibold"
+          className="w-full p-3 mt-5 font-semibold text-white rounded-lg bg-emerald-600"
         >
           {user?.user_id === streamData?.user_id ? "Go Live" : "Join Stream"}
         </button>

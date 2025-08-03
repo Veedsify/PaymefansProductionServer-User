@@ -122,7 +122,7 @@ const BlockedUsersPage = () => {
           animate={{ opacity: 1, y: 0 }}
           className="mb-8"
         >
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
+          <h1 className="mb-2 text-3xl font-bold text-gray-900 dark:text-white">
             Blocked Users
           </h1>
           <p className="text-gray-600 dark:text-gray-400">
@@ -139,20 +139,20 @@ const BlockedUsersPage = () => {
           className="mb-6"
         >
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
+            <Search className="absolute w-5 h-5 text-gray-400 left-3 top-1/2 transform -translate-y-1/2" />
             <input
               type="text"
               placeholder="Search blocked users..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-10 pr-4 py-4 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full py-4 pl-10 pr-4 text-gray-900 placeholder-gray-500 bg-white border border-gray-300 rounded-lg dark:border-gray-600 dark:bg-gray-800 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             />
             {searchTerm && (
               <button
                 onClick={() => setSearchTerm("")}
-                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                className="absolute text-gray-400 right-3 top-1/2 transform -translate-y-1/2 hover:text-gray-600"
               >
-                <X className="h-5 w-5" />
+                <X className="w-5 h-5" />
               </button>
             )}
           </div>
@@ -165,7 +165,7 @@ const BlockedUsersPage = () => {
             animate={{ opacity: 1 }}
             className="flex items-center justify-center py-12"
           >
-            <Loader2 className="h-8 w-8 animate-spin text-blue-500" />
+            <Loader2 className="w-8 h-8 text-blue-500 animate-spin" />
             <span className="ml-2 text-gray-600 dark:text-gray-400">
               Loading blocked users...
             </span>
@@ -177,10 +177,10 @@ const BlockedUsersPage = () => {
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="text-center py-12"
+            className="py-12 text-center"
           >
-            <Ban className="h-16 w-16 text-gray-400 mx-auto mb-4" />
-            <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
+            <Ban className="w-16 h-16 mx-auto mb-4 text-gray-400" />
+            <h3 className="mb-2 text-xl font-semibold text-gray-900 dark:text-white">
               {searchTerm ? "No matching users found" : "No blocked users"}
             </h3>
             <p className="text-gray-600 dark:text-gray-400">
@@ -209,7 +209,7 @@ const BlockedUsersPage = () => {
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: index * 0.05 }}
-                  className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6 hover:shadow-md transition-shadow"
+                  className="p-6 bg-white border border-gray-200 rounded-lg dark:bg-gray-800 shadow-sm dark:border-gray-700 hover:shadow-md transition-shadow"
                 >
                   <div className="flex items-center justify-between">
                     <div className="flex items-center space-x-4">
@@ -221,11 +221,11 @@ const BlockedUsersPage = () => {
                             alt={user.name}
                             width={48}
                             height={48}
-                            className="rounded-full object-cover"
+                            className="object-cover rounded-full"
                           />
                         ) : (
-                          <div className="w-12 h-12 bg-gradient-to-tr from-blue-400 to-indigo-500 rounded-full flex items-center justify-center">
-                            <User className="h-6 w-6 text-white" />
+                          <div className="flex items-center justify-center w-12 h-12 rounded-full bg-gradient-to-tr from-blue-400 to-indigo-500">
+                            <User className="w-6 h-6 text-white" />
                           </div>
                         )}
                       </div>
@@ -244,7 +244,7 @@ const BlockedUsersPage = () => {
                           {user.username}
                         </p>
                         <div className="flex items-center mt-1 text-xs text-gray-500 dark:text-gray-400">
-                          <Calendar className="h-3 w-3 mr-1" />
+                          <Calendar className="w-3 h-3 mr-1" />
                           Blocked on {formatDate(item.created_at)}
                         </div>
                       </div>
@@ -264,7 +264,7 @@ const BlockedUsersPage = () => {
                     >
                       {unblockingUser === item.blockId ? (
                         <div className="flex items-center">
-                          <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                          <Loader2 className="w-4 h-4 mr-2 animate-spin" />
                           Unblocking...
                         </div>
                       ) : (
@@ -287,7 +287,7 @@ const BlockedUsersPage = () => {
           >
             <button
               onClick={loadMore}
-              className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium"
+              className="px-6 py-3 font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors"
             >
               Load More
             </button>
@@ -299,7 +299,7 @@ const BlockedUsersPage = () => {
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            className="mt-8 text-center text-sm text-gray-600 dark:text-gray-400"
+            className="mt-8 text-sm text-center text-gray-600 dark:text-gray-400"
           >
             Showing {filteredUsers.length} blocked user
             {filteredUsers.length !== 1 ? "s" : ""}

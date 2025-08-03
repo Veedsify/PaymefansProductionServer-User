@@ -51,10 +51,10 @@ const Header = () => {
             height={40}
             src="/site/logo3.png"
             alt=""
-            className="block lg:hidden h-auto"
+            className="block h-auto lg:hidden"
           />
         </button>
-        <ul className="flex items-center gap-6 ml-auto lg:hidden">
+        <ul className="flex items-center ml-auto gap-6 lg:hidden">
           <Link href="/notifications">
             <LucideBellRing stroke="#fff" />
           </Link>

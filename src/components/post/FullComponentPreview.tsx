@@ -113,7 +113,7 @@ class MediaErrorBoundary extends React.Component<{
     if (this.state.hasError) {
       return (
         this.props.fallback || (
-          <div className="flex h-full items-center justify-center text-white">
+          <div className="flex items-center justify-center h-full text-white">
             <div className="text-center space-y-4">
               <div className="text-6xl">⚠️</div>
               <p className="text-lg">Media unavailable</p>
@@ -214,7 +214,7 @@ const VideoPreview = memo(
     if (status === "error") {
       return (
         <motion.div
-          className="flex h-full items-center justify-center text-white"
+          className="flex items-center justify-center h-full text-white"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.3 }}
@@ -232,7 +232,7 @@ const VideoPreview = memo(
 
     return (
       <motion.div
-        className="relative flex h-full items-center justify-center"
+        className="relative flex items-center justify-center h-full"
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
         exit={{ opacity: 0, scale: 0.95 }}
@@ -244,7 +244,7 @@ const VideoPreview = memo(
         {isBlob ? (
           <video
             ref={videoRef}
-            className="h-dvh w-auto object-contain"
+            className="object-contain w-auto h-dvh"
             controls
             loop
             muted
@@ -261,7 +261,7 @@ const VideoPreview = memo(
             autoPlay={playAction}
             modalOpen={true}
             allOthers={{ id: `video_player_full_${index}`, muted: false }}
-            className="h-dvh w-auto max-w-3xl object-contain transition-all duration-200"
+            className="object-contain w-auto max-w-3xl h-dvh transition-all duration-200"
           />
         )}
       </motion.div>
@@ -307,7 +307,7 @@ VideoPreview.displayName = "VideoPreview";
 
 //     return (
 //       <motion.div
-//         className="relative flex h-full items-center justify-center"
+//         className="relative flex items-center justify-center h-full"
 //         initial={{ opacity: 0, scale: 0.95 }}
 //         animate={{ opacity: 1, scale: 1 }}
 //         exit={{ opacity: 0, scale: 0.95 }}
@@ -319,7 +319,7 @@ VideoPreview.displayName = "VideoPreview";
 //         <AnimatePresence>
 //           {status === "loading" && (
 //             <motion.div
-//               className="absolute inset-0 flex items-center justify-center bg-black/20 z-10"
+//               className="absolute inset-0 z-10 flex items-center justify-center bg-black/20"
 //               initial={{ opacity: 0 }}
 //               animate={{ opacity: 1 }}
 //               exit={{ opacity: 0, transition: { duration: 0.2 } }}
@@ -372,9 +372,9 @@ const NavigationButton = memo(
       whileTap={{ scale: 0.95 }}
     >
       {direction === "prev" ? (
-        <ChevronLeft className="h-5 w-5 md:h-6 md:w-6" />
+        <ChevronLeft className="w-5 h-5 md:h-6 md:w-6" />
       ) : (
-        <ChevronRight className="h-5 w-5 md:h-6 md:w-6" />
+        <ChevronRight className="w-5 h-5 md:h-6 md:w-6" />
       )}
     </motion.button>
   ),
@@ -551,16 +551,16 @@ const PostComponentPreview = memo(() => {
             Media Preview Modal
           </div>
           <button
-            className="absolute top-4 right-4 z-20 rounded-full bg-black p-2 text-white hover:bg-black/80 focus:outline-none focus:ring-2 focus:ring-white/50 transition-colors"
+            className="absolute z-20 p-2 text-white bg-black rounded-full top-4 right-4 hover:bg-black/80 focus:outline-none focus:ring-2 focus:ring-white/50 transition-colors"
             onClick={handleClose}
             aria-label="Close preview"
           >
-            <X className="h-5 w-5" />
+            <X className="w-5 h-5" />
           </button>
           {totalSlides > 1 && (
             <div
               aria-live="polite"
-              className="absolute top-4 left-1/2 -translate-x-1/2 z-20 rounded-full bg-black/60 px-3 py-1 text-white text-sm"
+              className="absolute z-20 px-3 py-1 text-sm text-white rounded-full top-4 left-1/2 -translate-x-1/2 bg-black/60"
             >
               {currentSlide + 1} / {totalSlides}
             </div>
@@ -570,7 +570,7 @@ const PostComponentPreview = memo(() => {
             modules={[Navigation, Pagination, Keyboard, A11y]}
             onSwiper={(swiper) => (swiperRef.current = swiper)}
             onSlideChange={handleSlideChange}
-            className="relative h-full w-full"
+            className="relative w-full h-full"
             keyboard={{ enabled: true }}
             a11y={{
               prevSlideMessage: "Previous slide",

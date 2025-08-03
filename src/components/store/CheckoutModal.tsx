@@ -107,7 +107,7 @@ const CheckoutModal = ({ isOpen, onClose }: CheckoutModalProps) => {
             </h2>
             <button
               onClick={onClose}
-              className="p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-full transition-colors"
+              className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
             >
               <X className="w-5 h-5" />
             </button>
@@ -115,8 +115,8 @@ const CheckoutModal = ({ isOpen, onClose }: CheckoutModalProps) => {
 
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* Order Summary */}
-            <div className="bg-gray-50 dark:bg-gray-800 rounded-lg p-4">
-              <h3 className="font-semibold text-gray-900 dark:text-white mb-3">
+            <div className="p-4 rounded-lg bg-gray-50 dark:bg-gray-800">
+              <h3 className="mb-3 font-semibold text-gray-900 dark:text-white">
                 Order Summary
               </h3>
               <div className="space-y-2">
@@ -134,7 +134,7 @@ const CheckoutModal = ({ isOpen, onClose }: CheckoutModalProps) => {
                     </span>
                   </div>
                 ))}
-                <div className="border-t pt-2 mt-2">
+                <div className="pt-2 mt-2 border-t">
                   <div className="flex justify-between font-bold">
                     <span>Total</span>
                     <span>₦{totalAmount.toLocaleString()}</span>
@@ -151,7 +151,7 @@ const CheckoutModal = ({ isOpen, onClose }: CheckoutModalProps) => {
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                  <label className="block mb-1 text-sm font-medium text-gray-700 dark:text-gray-300">
                     Full Name *
                   </label>
                   <input
@@ -160,12 +160,12 @@ const CheckoutModal = ({ isOpen, onClose }: CheckoutModalProps) => {
                     value={shippingAddress.name}
                     onChange={handleInputChange}
                     required
-                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:text-white"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:text-white"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                  <label className="block mb-1 text-sm font-medium text-gray-700 dark:text-gray-300">
                     Phone Number *
                   </label>
                   <input
@@ -174,13 +174,13 @@ const CheckoutModal = ({ isOpen, onClose }: CheckoutModalProps) => {
                     value={shippingAddress.phone}
                     onChange={handleInputChange}
                     required
-                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:text-white"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:text-white"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                <label className="block mb-1 text-sm font-medium text-gray-700 dark:text-gray-300">
                   Address *
                 </label>
                 <input
@@ -189,13 +189,13 @@ const CheckoutModal = ({ isOpen, onClose }: CheckoutModalProps) => {
                   value={shippingAddress.address}
                   onChange={handleInputChange}
                   required
-                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:text-white"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:text-white"
                 />
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                  <label className="block mb-1 text-sm font-medium text-gray-700 dark:text-gray-300">
                     City *
                   </label>
                   <input
@@ -204,12 +204,12 @@ const CheckoutModal = ({ isOpen, onClose }: CheckoutModalProps) => {
                     value={shippingAddress.city}
                     onChange={handleInputChange}
                     required
-                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:text-white"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:text-white"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                  <label className="block mb-1 text-sm font-medium text-gray-700 dark:text-gray-300">
                     State *
                   </label>
                   <input
@@ -218,12 +218,12 @@ const CheckoutModal = ({ isOpen, onClose }: CheckoutModalProps) => {
                     value={shippingAddress.state}
                     onChange={handleInputChange}
                     required
-                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:text-white"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:text-white"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                  <label className="block mb-1 text-sm font-medium text-gray-700 dark:text-gray-300">
                     Country *
                   </label>
                   <select
@@ -231,7 +231,7 @@ const CheckoutModal = ({ isOpen, onClose }: CheckoutModalProps) => {
                     value={shippingAddress.country}
                     onChange={handleInputChange}
                     required
-                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:text-white"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:text-white"
                   >
                     <option value="Nigeria">Nigeria</option>
                   </select>
@@ -268,14 +268,14 @@ const CheckoutModal = ({ isOpen, onClose }: CheckoutModalProps) => {
               <button
                 type="button"
                 onClick={onClose}
-                className="flex-1 px-6 py-3 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+                className="flex-1 px-6 py-3 text-gray-700 border border-gray-300 rounded-lg dark:border-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
               >
                 Cancel
               </button>
               <button
                 type="submit"
                 disabled={checkoutMutation.isPending}
-                className="flex-1 px-6 py-3 bg-primary-dark-pink text-white rounded-lg hover:bg-primary-text-dark-pink cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 transition-colors"
+                className="flex items-center justify-center flex-1 px-6 py-3 text-white rounded-lg cursor-pointer bg-primary-dark-pink hover:bg-primary-text-dark-pink disabled:opacity-50 disabled:cursor-not-allowed gap-2 transition-colors"
               >
                 {checkoutMutation.isPending ? (
                   <>

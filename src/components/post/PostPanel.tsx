@@ -67,7 +67,7 @@ const PostPanel = () => {
 
   const EndMessage = () => (
     <div className="px-3 py-2">
-      <p className="text-gray-500 text-sm text-center font-medium">
+      <p className="text-sm font-medium text-center text-gray-500">
         No Post Found
       </p>
     </div>

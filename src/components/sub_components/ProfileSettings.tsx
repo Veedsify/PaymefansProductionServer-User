@@ -100,7 +100,7 @@ const ProfileSettings = ({ user }: ProfileSettingsProps) => {
             id="name"
             type="text"
             name="name"
-            className="w-full border border-gray-300 dark:border-gray-700 p-3 outline-none text-black dark:text-white bg-white dark:bg-gray-800 rounded-lg focus:ring-2 focus:ring-primary-dark-pink transition"
+            className="w-full p-3 text-black bg-white border border-gray-300 rounded-lg outline-none dark:border-gray-700 dark:text-white dark:bg-gray-800 focus:ring-2 focus:ring-primary-dark-pink transition"
             value={userData.name}
             onChange={handleInputChange}
             placeholder="Name"
@@ -116,7 +116,7 @@ const ProfileSettings = ({ user }: ProfileSettingsProps) => {
           <input
             id="state"
             type="text"
-            className="w-full border border-gray-300 dark:border-gray-700 p-3 outline-none text-black dark:text-white bg-white dark:bg-gray-800 rounded-lg focus:ring-2 focus:ring-primary-dark-pink transition"
+            className="w-full p-3 text-black bg-white border border-gray-300 rounded-lg outline-none dark:border-gray-700 dark:text-white dark:bg-gray-800 focus:ring-2 focus:ring-primary-dark-pink transition"
             placeholder="state"
             name="state"
             onChange={handleInputChange}
@@ -133,7 +133,7 @@ const ProfileSettings = ({ user }: ProfileSettingsProps) => {
           <select
             id="location"
             name="location"
-            className="w-full border border-gray-300 dark:border-gray-700 p-3 outline-none text-black dark:text-white bg-white dark:bg-gray-800 rounded-lg focus:ring-2 focus:ring-primary-dark-pink transition"
+            className="w-full p-3 text-black bg-white border border-gray-300 rounded-lg outline-none dark:border-gray-700 dark:text-white dark:bg-gray-800 focus:ring-2 focus:ring-primary-dark-pink transition"
             value={userData.location}
             onChange={handleInputChange}
           >
@@ -170,7 +170,7 @@ const ProfileSettings = ({ user }: ProfileSettingsProps) => {
             </div>
           )}
           {error && (
-            <p className="text-red-500 dark:text-red-400 text-sm mt-1 font-medium">
+            <p className="mt-1 text-sm font-medium text-red-500 dark:text-red-400">
               {message}
             </p>
           )}
@@ -189,7 +189,7 @@ const ProfileSettings = ({ user }: ProfileSettingsProps) => {
             disabled
             readOnly
             value={userData.email}
-            className="w-full select-none border border-gray-300 dark:border-gray-700 p-3 outline-none text-black dark:text-white rounded-lg bg-gray-100 dark:bg-gray-800"
+            className="w-full p-3 text-black bg-gray-100 border border-gray-300 rounded-lg outline-none select-none dark:border-gray-700 dark:text-white dark:bg-gray-800"
             placeholder="Email"
           />
         </div>
@@ -204,7 +204,7 @@ const ProfileSettings = ({ user }: ProfileSettingsProps) => {
             id="bio"
             name="bio"
             rows={5}
-            className="resize-none w-full outline-none border border-gray-300 dark:border-gray-700 p-3 text-black dark:text-white bg-white dark:bg-gray-800 rounded-lg focus:ring-2 focus:ring-primary-dark-pink transition"
+            className="w-full p-3 text-black bg-white border border-gray-300 rounded-lg outline-none resize-none dark:border-gray-700 dark:text-white dark:bg-gray-800 focus:ring-2 focus:ring-primary-dark-pink transition"
             placeholder="Tell us about yourself"
             onChange={handleInputChange}
             value={userData.bio || ""}
@@ -220,7 +220,7 @@ const ProfileSettings = ({ user }: ProfileSettingsProps) => {
           <input
             id="website"
             type="text"
-            className="w-full border border-gray-300 dark:border-gray-700 p-3 outline-none text-black dark:text-white bg-white dark:bg-gray-800 rounded-lg focus:ring-2 focus:ring-primary-dark-pink transition"
+            className="w-full p-3 text-black bg-white border border-gray-300 rounded-lg outline-none dark:border-gray-700 dark:text-white dark:bg-gray-800 focus:ring-2 focus:ring-primary-dark-pink transition"
             placeholder="Website"
             name="website"
             onChange={handleInputChange}
@@ -230,55 +230,55 @@ const ProfileSettings = ({ user }: ProfileSettingsProps) => {
 
         <div className="space-y-3">
           {/* Instagram */}
-          <div className="grid grid-cols-12 items-center rounded-lg border border-black/10 dark:border-slate-700 bg-gray-50 dark:bg-slate-800 overflow-hidden transition-shadow focus-within:shadow-md group">
-            <div className="flex items-center justify-center h-full col-span-2 bg-primary-dark-pink/10 dark:bg-primary-dark-pink/20 py-3 transition group-focus-within:bg-primary-dark-pink/20">
-              <Instagram className="text-primary-dark-pink dark:text-white w-6 h-6" />
+          <div className="items-center overflow-hidden border rounded-lg grid grid-cols-12 border-black/10 dark:border-slate-700 bg-gray-50 dark:bg-slate-800 transition-shadow focus-within:shadow-md group">
+            <div className="flex items-center justify-center h-full py-3 col-span-2 bg-primary-dark-pink/10 dark:bg-primary-dark-pink/20 transition group-focus-within:bg-primary-dark-pink/20">
+              <Instagram className="w-6 h-6 text-primary-dark-pink dark:text-white" />
             </div>
             <input
               type="text"
               onChange={handleInputChange}
               name="instagram"
               value={userData.instagram}
-              className="col-span-10 p-3 text-black dark:text-white bg-transparent border-none outline-none placeholder:text-gray-400 dark:placeholder:text-gray-500 text-sm transition"
+              className="p-3 text-sm text-black bg-transparent border-none outline-none col-span-10 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 transition"
               placeholder="https://instagram.com/@paymefans"
             />
           </div>
 
           {/* Twitter */}
-          <div className="grid grid-cols-12 items-center rounded-lg border border-black/10 dark:border-slate-700 bg-gray-50 dark:bg-slate-800 overflow-hidden transition-shadow focus-within:shadow-md group">
-            <div className="flex items-center justify-center h-full col-span-2 bg-primary-dark-pink/10 dark:bg-primary-dark-pink/20 py-3 transition group-focus-within:bg-primary-dark-pink/20">
-              <Twitter className="text-primary-dark-pink dark:text-white w-6 h-6" />
+          <div className="items-center overflow-hidden border rounded-lg grid grid-cols-12 border-black/10 dark:border-slate-700 bg-gray-50 dark:bg-slate-800 transition-shadow focus-within:shadow-md group">
+            <div className="flex items-center justify-center h-full py-3 col-span-2 bg-primary-dark-pink/10 dark:bg-primary-dark-pink/20 transition group-focus-within:bg-primary-dark-pink/20">
+              <Twitter className="w-6 h-6 text-primary-dark-pink dark:text-white" />
             </div>
             <input
               type="text"
               onChange={handleInputChange}
               name="twitter"
               value={userData.twitter}
-              className="col-span-10 p-3 text-black dark:text-white bg-transparent border-none outline-none placeholder:text-gray-400 dark:placeholder:text-gray-500 text-sm transition"
+              className="p-3 text-sm text-black bg-transparent border-none outline-none col-span-10 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 transition"
               placeholder="https://twitter.com/@paymefans"
             />
           </div>
 
           {/* Facebook */}
-          <div className="grid grid-cols-12 items-center rounded-lg border border-black/10 dark:border-slate-700 bg-gray-50 dark:bg-slate-800 overflow-hidden transition-shadow focus-within:shadow-md group">
-            <div className="flex items-center justify-center h-full col-span-2 bg-primary-dark-pink/10 dark:bg-primary-dark-pink/20 py-3 transition group-focus-within:bg-primary-dark-pink/20">
-              <Facebook className="text-primary-dark-pink dark:text-white w-6 h-6" />
+          <div className="items-center overflow-hidden border rounded-lg grid grid-cols-12 border-black/10 dark:border-slate-700 bg-gray-50 dark:bg-slate-800 transition-shadow focus-within:shadow-md group">
+            <div className="flex items-center justify-center h-full py-3 col-span-2 bg-primary-dark-pink/10 dark:bg-primary-dark-pink/20 transition group-focus-within:bg-primary-dark-pink/20">
+              <Facebook className="w-6 h-6 text-primary-dark-pink dark:text-white" />
             </div>
             <input
               type="text"
               onChange={handleInputChange}
               name="facebook"
               value={userData.facebook}
-              className="col-span-10 p-3 text-black dark:text-white bg-transparent border-none outline-none placeholder:text-gray-400 dark:placeholder:text-gray-500 text-sm transition"
+              className="p-3 text-sm text-black bg-transparent border-none outline-none col-span-10 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 transition"
               placeholder="https://facebook.com/@paymefans"
             />
           </div>
 
           {/* Snapchat */}
-          <div className="grid grid-cols-12 items-center rounded-lg border border-black/10 dark:border-slate-700 bg-gray-50 dark:bg-slate-800 overflow-hidden transition-shadow focus-within:shadow-md group">
-            <div className="flex items-center justify-center h-full col-span-2 bg-primary-dark-pink/10 dark:bg-primary-dark-pink/20 py-3 transition group-focus-within:bg-primary-dark-pink/20">
+          <div className="items-center overflow-hidden border rounded-lg grid grid-cols-12 border-black/10 dark:border-slate-700 bg-gray-50 dark:bg-slate-800 transition-shadow focus-within:shadow-md group">
+            <div className="flex items-center justify-center h-full py-3 col-span-2 bg-primary-dark-pink/10 dark:bg-primary-dark-pink/20 transition group-focus-within:bg-primary-dark-pink/20">
               <PiSnapchatLogoDuotone
-                className="text-primary-dark-pink dark:text-white w-6 h-6"
+                className="w-6 h-6 text-primary-dark-pink dark:text-white"
                 size={20}
               />
             </div>
@@ -287,19 +287,19 @@ const ProfileSettings = ({ user }: ProfileSettingsProps) => {
               onChange={handleInputChange}
               name="snapchat"
               value={userData.snapchat}
-              className="col-span-10 p-3 text-black dark:text-white bg-transparent border-none outline-none placeholder:text-gray-400 dark:placeholder:text-gray-500 text-sm transition"
+              className="p-3 text-sm text-black bg-transparent border-none outline-none col-span-10 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 transition"
               placeholder="https://snapchat.com/@paymefans"
             />
           </div>
 
           {/* TikTok */}
-          <div className="grid grid-cols-12 items-center rounded-lg border border-black/10 dark:border-slate-700 bg-gray-50 dark:bg-slate-800 overflow-hidden transition-shadow focus-within:shadow-md group">
-            <div className="flex items-center justify-center h-full col-span-2 bg-primary-dark-pink/10 dark:bg-primary-dark-pink/20 py-3 transition group-focus-within:bg-primary-dark-pink/20">
+          <div className="items-center overflow-hidden border rounded-lg grid grid-cols-12 border-black/10 dark:border-slate-700 bg-gray-50 dark:bg-slate-800 transition-shadow focus-within:shadow-md group">
+            <div className="flex items-center justify-center h-full py-3 col-span-2 bg-primary-dark-pink/10 dark:bg-primary-dark-pink/20 transition group-focus-within:bg-primary-dark-pink/20">
               <svg
                 width="24"
                 height="24"
                 fill="currentColor"
-                className="text-primary-dark-pink dark:text-white w-6 h-6"
+                className="w-6 h-6 text-primary-dark-pink dark:text-white"
                 viewBox="0 0 24 24"
               >
                 <path d="M12.75 2h2.25a.75.75 0 0 1 .75.75v1.5a3.75 3.75 0 0 0 3.75 3.75h1.5a.75.75 0 0 1 .75.75v2.25a.75.75 0 0 1-.75.75h-1.5A6.75 6.75 0 0 1 13.5 5.25V2.75A.75.75 0 0 1 12.75 2zm-2.25 5.25A6.75 6.75 0 1 0 17.25 14v-2.25a.75.75 0 0 0-.75-.75h-2.25a.75.75 0 0 0-.75.75v2.25a3.75 3.75 0 1 1-3.75-3.75h.75a.75.75 0 0 0 .75-.75V7.25a.75.75 0 0 0-.75-.75h-.75z" />
@@ -310,19 +310,19 @@ const ProfileSettings = ({ user }: ProfileSettingsProps) => {
               onChange={handleInputChange}
               name="tiktok"
               value={userData.tiktok}
-              className="col-span-10 p-3 text-black dark:text-white bg-transparent border-none outline-none placeholder:text-gray-400 dark:placeholder:text-gray-500 text-sm transition"
+              className="p-3 text-sm text-black bg-transparent border-none outline-none col-span-10 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 transition"
               placeholder="https://tiktok.com/@paymefans"
             />
           </div>
 
           {/* Telegram */}
-          <div className="grid grid-cols-12 items-center rounded-lg border border-black/10 dark:border-slate-700 bg-gray-50 dark:bg-slate-800 overflow-hidden transition-shadow focus-within:shadow-md group">
-            <div className="flex items-center justify-center h-full col-span-2 bg-primary-dark-pink/10 dark:bg-primary-dark-pink/20 py-3 transition group-focus-within:bg-primary-dark-pink/20">
+          <div className="items-center overflow-hidden border rounded-lg grid grid-cols-12 border-black/10 dark:border-slate-700 bg-gray-50 dark:bg-slate-800 transition-shadow focus-within:shadow-md group">
+            <div className="flex items-center justify-center h-full py-3 col-span-2 bg-primary-dark-pink/10 dark:bg-primary-dark-pink/20 transition group-focus-within:bg-primary-dark-pink/20">
               <svg
                 width="24"
                 height="24"
                 fill="currentColor"
-                className="text-primary-dark-pink dark:text-white w-6 h-6"
+                className="w-6 h-6 text-primary-dark-pink dark:text-white"
                 viewBox="0 0 24 24"
               >
                 <path d="M21.944 4.667a1.5 1.5 0 0 0-1.6-.217L3.6 11.25a1.5 1.5 0 0 0 .1 2.8l3.7 1.3 1.4 4.2a1.5 1.5 0 0 0 2.7.2l2-3.3 3.8 2.8a1.5 1.5 0 0 0 2.4-1l2-12a1.5 1.5 0 0 0-.756-1.583zM9.8 17.1l-1.1-3.3 7.2-6.5-6.1 7.7zm2.7 1.2l-1.1-3.3 2.7 2zm6.2-1.2-3.8-2.8 4.6-7.2z" />
@@ -333,19 +333,19 @@ const ProfileSettings = ({ user }: ProfileSettingsProps) => {
               onChange={handleInputChange}
               name="telegram"
               value={userData.telegram}
-              className="col-span-10 p-3 text-black dark:text-white bg-transparent border-none outline-none placeholder:text-gray-400 dark:placeholder:text-gray-500 text-sm transition"
+              className="p-3 text-sm text-black bg-transparent border-none outline-none col-span-10 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 transition"
               placeholder="https://t.me/paymefans"
             />
           </div>
 
           {/* YouTube */}
-          <div className="grid grid-cols-12 items-center rounded-lg border border-black/10 dark:border-slate-700 bg-gray-50 dark:bg-slate-800 overflow-hidden transition-shadow focus-within:shadow-md group">
-            <div className="flex items-center justify-center h-full col-span-2 bg-primary-dark-pink/10 dark:bg-primary-dark-pink/20 py-3 transition group-focus-within:bg-primary-dark-pink/20">
+          <div className="items-center overflow-hidden border rounded-lg grid grid-cols-12 border-black/10 dark:border-slate-700 bg-gray-50 dark:bg-slate-800 transition-shadow focus-within:shadow-md group">
+            <div className="flex items-center justify-center h-full py-3 col-span-2 bg-primary-dark-pink/10 dark:bg-primary-dark-pink/20 transition group-focus-within:bg-primary-dark-pink/20">
               <svg
                 width="24"
                 height="24"
                 fill="currentColor"
-                className="text-primary-dark-pink dark:text-white w-6 h-6"
+                className="w-6 h-6 text-primary-dark-pink dark:text-white"
                 viewBox="0 0 24 24"
               >
                 <path d="M21.8 8.001a2.75 2.75 0 0 0-1.94-1.94C18.1 6 12 6 12 6s-6.1 0-7.86.06a2.75 2.75 0 0 0-1.94 1.94A28.2 28.2 0 0 0 2 12a28.2 28.2 0 0 0 .2 3.999 2.75 2.75 0 0 0 1.94 1.94C5.9 18 12 18 12 18s6.1 0 7.86-.06a2.75 2.75 0 0 0 1.94-1.94A28.2 28.2 0 0 0 22 12a28.2 28.2 0 0 0-.2-3.999zM10 15.5v-7l6 3.5-6 3.5z" />
@@ -356,7 +356,7 @@ const ProfileSettings = ({ user }: ProfileSettingsProps) => {
               onChange={handleInputChange}
               name="youtube"
               value={userData.youtube}
-              className="col-span-10 p-3 text-black dark:text-white bg-transparent border-none outline-none placeholder:text-gray-400 dark:placeholder:text-gray-500 text-sm transition"
+              className="p-3 text-sm text-black bg-transparent border-none outline-none col-span-10 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 transition"
               placeholder="https://youtube.com/@paymefans"
             />
           </div>
@@ -365,7 +365,7 @@ const ProfileSettings = ({ user }: ProfileSettingsProps) => {
           <button
             type="submit"
             disabled={!canSave}
-            className="w-full bg-primary-dark-pink hover:bg-pink-700 transition text-white font-bold py-3 rounded-lg cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-gray-400"
+            className="w-full py-3 font-bold text-white rounded-lg cursor-pointer bg-primary-dark-pink hover:bg-pink-700 transition disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-gray-400"
           >
             Save
           </button>

@@ -15,13 +15,13 @@ import DeleteAccount from "../settings/DeleteAccount";
 const SettingsSecurity = () => {
   const { user } = useUserAuthContext();
   return (
-    <div className=" bg-white dark:bg-gray-950 rounded-xl transition-colors duration-300">
-      <h1 className="font-bold mb-6 text-lg md:text-xl text-gray-900 dark:text-gray-100">
+    <div className="bg-white  dark:bg-gray-950 rounded-xl transition-colors duration-300">
+      <h1 className="mb-6 text-lg font-bold text-gray-900 md:text-xl dark:text-gray-100">
         Privacy
       </h1>
       <div className="space-y-3">
         <Link
-          className="flex gap-4 items-center border border-gray-200 dark:border-gray-700 rounded-lg py-4 px-6 hover:bg-gray-100 dark:hover:bg-gray-800 transition-all duration-200 cursor-pointer group"
+          className="flex items-center px-6 py-4 border border-gray-200 rounded-lg cursor-pointer gap-4 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800 transition-all duration-200 group"
           href="/settings/followers"
         >
           <span>
@@ -36,7 +36,7 @@ const SettingsSecurity = () => {
         </Link>
         {user && user.is_model && (
           <Link
-            className="flex gap-4 items-center border border-green-500 dark:border-green-600 rounded-lg py-4 px-6 hover:bg-green-50 dark:hover:bg-green-900 transition-all duration-200 cursor-pointer group"
+            className="flex items-center px-6 py-4 border border-green-500 rounded-lg cursor-pointer gap-4 dark:border-green-600 hover:bg-green-50 dark:hover:bg-green-900 transition-all duration-200 group"
             href="/settings/subscribers"
           >
             <span>
@@ -53,7 +53,7 @@ const SettingsSecurity = () => {
 
         <Link
           href="/settings/blocked"
-          className="flex gap-4 items-center border border-red-300 dark:border-red-700 rounded-lg py-4 px-6 hover:bg-red-50 dark:hover:bg-red-900 transition-all duration-200 cursor-pointer text-red-600 dark:text-red-400 group"
+          className="flex items-center px-6 py-4 text-red-600 border border-red-300 rounded-lg cursor-pointer gap-4 dark:border-red-700 hover:bg-red-50 dark:hover:bg-red-900 transition-all duration-200 dark:text-red-400 group"
         >
           <span>
             <LucideUserMinus2 className="group-hover:text-red-700" />
@@ -66,7 +66,7 @@ const SettingsSecurity = () => {
       </div>
 
       <div className="mt-10">
-        <h2 className="mb-4 font-bold text-lg text-gray-900 dark:text-gray-100">
+        <h2 className="mb-4 text-lg font-bold text-gray-900 dark:text-gray-100">
           Change Password
         </h2>
         <UpdatePasswords />
@@ -81,14 +81,14 @@ const SettingsSecurity = () => {
       </div>
 
       <div className="mt-10">
-        <h2 className="mb-4 font-bold text-lg text-gray-900 dark:text-gray-100">
+        <h2 className="mb-4 text-lg font-bold text-gray-900 dark:text-gray-100">
           Change Email / Phone
         </h2>
         <p className="text-gray-700 dark:text-gray-300">
           To change your account email, please visit the help section or contact
           support:&nbsp;
           <a
-            className="text-primary-dark-pink underline hover:text-primary-pink dark:text-primary-dark-pink"
+            className="underline text-primary-dark-pink hover:text-primary-pink dark:text-primary-dark-pink"
             href="mailto:support@paymefans.com"
           >
             support@paymefans.com

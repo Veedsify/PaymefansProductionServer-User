@@ -185,7 +185,7 @@ const WithdrawalInput = ({ points }: { points: number }) => {
 
   return (
     <div>
-      <div className="flex gap-2 items-start mb-3">
+      <div className="flex items-start mb-3 gap-2">
         <div className="text-4xl">{currencySymbol}</div>
         <div className="flex-1">
           <input
@@ -194,13 +194,13 @@ const WithdrawalInput = ({ points }: { points: number }) => {
             onChange={handleChange}
             pattern="[0-9]*"
             placeholder="0"
-            className="w-full text-6xl md:text-9xl p-0 font-bold border-none outline-none"
+            className="w-full p-0 text-6xl font-bold border-none outline-none md:text-9xl"
           />
         </div>
       </div>
       {value && (
         <div className="mb-6">
-          <div className="flex justify-between border-b py-4 mb-3">
+          <div className="flex justify-between py-4 mb-3 border-b">
             <p className="text-xl font-semibold">Amount requested</p>
             <p className="text-xl font-medium">
               {currencySymbol} {value}
@@ -239,7 +239,7 @@ const WithdrawalInput = ({ points }: { points: number }) => {
         <div className="mt-5">
           <button
             onClick={handleWithdrawClick}
-            className="bg-black font-bold uppercase text-white w-full py-4 rounded-md cursor-pointer disabled:cursor-not-allowed disabled:opacity-50"
+            className="w-full py-4 font-bold text-white uppercase bg-black cursor-pointer rounded-md disabled:cursor-not-allowed disabled:opacity-50"
           >
             Withdraw
           </button>

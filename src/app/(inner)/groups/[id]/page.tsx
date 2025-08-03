@@ -21,11 +21,12 @@ import { useUserAuthContext, useUserStore } from "@/lib/UserUseContext";
 import toast from "react-hot-toast";
 import { getSocket } from "@/components/sub_components/sub/Socket";
 import LoadingSpinner from "@/components/ui/LoadingSpinner";
-
+import { useRouter } from "next/navigation";
 const GroupChatPage = () => {
   const params = useParams();
   const groupId = Number(params.id) as number;
   const { user } = useUserAuthContext();
+  const router = useRouter();
 
   const {
     setCurrentGroup,
@@ -265,6 +266,8 @@ const GroupChatPage = () => {
     messageSeen,
     setActiveMembers,
     joinGroupRoom,
+    checkIfNearBottom,
+    scrollToBottom,
   ]);
 
   useEffect(() => {
@@ -291,7 +294,7 @@ const GroupChatPage = () => {
         const messagesResponse = await fetchGroupMessages(
           groupId,
           undefined,
-          100,
+          100
         );
         if (messagesResponse.success && messagesResponse.data.messages) {
           setMessages(messagesResponse.data.messages);
@@ -311,7 +314,9 @@ const GroupChatPage = () => {
         // Room will be joined when socket connects (handled in separate useEffect)
       } catch (err: any) {
         setError(err.message || "Failed to load group chat");
-        toast.error("Failed to load group chat");
+        toast.error("Failed to load group chat", {
+          id: "group-chat-error",
+        });
       } finally {
         setLoading(false);
       }
@@ -325,6 +330,8 @@ const GroupChatPage = () => {
     joinGroupRoom,
     setCurrentGroup,
     setMessages,
+    scrollToBottom,
+    setPaginationData,
     currentGroupId,
     leaveGroupRoom,
   ]);
@@ -388,20 +395,20 @@ const GroupChatPage = () => {
       <LoadingSpinner
         size="lg"
         text="Loading group chat..."
-        className="flex-col h-full items-center justify-center"
+        className="flex-col items-center justify-center h-full"
       />
     );
   }
 
   if (error) {
     return (
-      <div className="flex flex-col h-full items-center justify-center">
-        <p className="text-red-500 mb-4">{error}</p>
+      <div className="flex flex-col items-center justify-center h-full">
+        <p className="mb-4 text-red-500">{error}</p>
         <button
-          onClick={() => window.location.reload()}
-          className="px-4 py-2 bg-primary-dark-pink text-white rounded-md hover:bg-primary-text-dark-pink"
+          onClick={() => router.push("/groups")}
+          className="px-4 py-2 text-white bg-primary-dark-pink rounded-md hover:bg-primary-text-dark-pink cursor-pointer"
         >
-          Retry
+          Back to Groups
         </button>
       </div>
     );
@@ -431,7 +438,7 @@ const GroupChatPage = () => {
                 ) : (
                   <button
                     onClick={handleLoadMore}
-                    className="text-sm text-primary-dark-pink hover:text-primary-text-dark-pink transition-colors px-4 py-2 rounded-full hover:bg-gray-50 border border-primary-dark-pink/20"
+                    className="px-4 py-2 text-sm border rounded-full text-primary-dark-pink hover:text-primary-text-dark-pink transition-colors hover:bg-gray-50 border-primary-dark-pink/20"
                   >
                     Load more messages
                   </button>
@@ -450,7 +457,7 @@ const GroupChatPage = () => {
 
             {/* Typing indicator */}
             {typingUsers.length > 0 && (
-              <div className="flex items-center space-x-2 px-4 py-2">
+              <div className="flex items-center px-4 py-2 space-x-2">
                 <div className="flex space-x-1">
                   {/* Framer Motion animated typing dots */}
                   {["0", "0.1", "0.2"].map((delay, idx) => (
@@ -488,7 +495,7 @@ const GroupChatPage = () => {
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.8 }}
             onClick={() => scrollToBottom()}
-            className="fixed bottom-24 right-6 bg-primary-dark-pink text-white p-3 rounded-full shadow-lg hover:bg-primary-text-dark-pink transition-colors z-10"
+            className="fixed z-10 p-3 text-white rounded-full shadow-lg bottom-24 right-6 bg-primary-dark-pink hover:bg-primary-text-dark-pink transition-colors"
             aria-label="Scroll to bottom"
           >
             <svg

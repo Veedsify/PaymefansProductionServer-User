@@ -18,6 +18,7 @@ const CommentsAndReply = ({ post }: { post: PostData }) => {
   return (
     <>
       <ReplyPostComponent
+        isReply={false}
         options={{
           id: post?.id,
           post_id: post?.post_id,

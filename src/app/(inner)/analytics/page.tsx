@@ -140,9 +140,9 @@ export default function Analytics() {
     trend: number;
     icon: any;
   }) => (
-    <div className="bg-white rounded-lg border border-black/10 p-4">
-      <div className="flex justify-between items-center mb-2">
-        <span className="text-gray-500 text-sm">{title}</span>
+    <div className="p-4 bg-white border rounded-lg border-black/10">
+      <div className="flex items-center justify-between mb-2">
+        <span className="text-sm text-gray-500">{title}</span>
         <Icon size={16} className="text-gray-400" />
       </div>
       <div className="flex items-baseline">
@@ -170,22 +170,22 @@ export default function Analytics() {
 
   const renderChartSkeleton = (height = 300) => (
     <div className="flex items-center justify-center" style={{ height }}>
-      <Loader2 className="animate-spin text-purple-500" size={24} />
+      <Loader2 className="text-purple-500 animate-spin" size={24} />
     </div>
   );
 
   return (
-    <div className="min-h-dvh p-6">
+    <div className="p-6 min-h-dvh">
       {/* Header */}
-      <div className="flex justify-between items-center mb-6">
+      <div className="flex items-center justify-between mb-6">
         <h1 className="text-2xl font-bold text-gray-800">
           Analytics Dashboard
         </h1>
         <div className="flex items-center">
-          <div className="bg-white rounded-lg border border-black/10 flex items-center p-2 mr-4">
-            <Calendar size={16} className="text-gray-400 mr-2" />
+          <div className="flex items-center p-2 mr-4 bg-white border rounded-lg border-black/10">
+            <Calendar size={16} className="mr-2 text-gray-400" />
             <select
-              className="bg-transparent border-none focus:outline-none focus:ring-0 px-2 py-1"
+              className="px-2 py-1 bg-transparent border-none focus:outline-none focus:ring-0"
               value={timeRange}
               onChange={(e: ChangeEvent<HTMLSelectElement>) =>
                 setTimeRange(e.currentTarget.value as TimeRangeKey)
@@ -198,14 +198,14 @@ export default function Analytics() {
                 </option>
               ))}
             </select>
-            <ChevronDown size={16} className="text-gray-400 ml-1" />
+            <ChevronDown size={16} className="ml-1 text-gray-400" />
           </div>
           <button
-            className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg flex items-center"
+            className="flex items-center px-4 py-2 text-white bg-purple-600 rounded-lg hover:bg-purple-700"
             disabled={loading}
           >
             {loading ? (
-              <Loader2 className="animate-spin mr-2" size={16} />
+              <Loader2 className="mr-2 animate-spin" size={16} />
             ) : (
               <Download size={16} className="mr-2" />
             )}
@@ -215,7 +215,7 @@ export default function Analytics() {
       </div>
 
       {/* Overview metrics */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+      <div className="mb-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         <MetricCard
           title="Total Followers"
           value={metrics.followers.value}
@@ -245,8 +245,8 @@ export default function Analytics() {
       {/* Main content area */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Account growth chart */}
-        <div className="bg-white rounded-lg border border-black/10 p-4 lg:col-span-2">
-          <div className="flex justify-between items-center mb-4">
+        <div className="p-4 bg-white border rounded-lg border-black/10 lg:col-span-2">
+          <div className="flex items-center justify-between mb-4">
             <h2 className="font-bold text-gray-800">
               Account Growth &nbsp;
               {timeRange === "alltime" && (
@@ -292,8 +292,8 @@ export default function Analytics() {
         </div>
 
         {/* Audience demographics */}
-        <div className="bg-white rounded-lg border border-black/10 p-4">
-          <h2 className="font-bold text-gray-800 mb-4">
+        <div className="p-4 bg-white border rounded-lg border-black/10">
+          <h2 className="mb-4 font-bold text-gray-800">
             Audience Demographics
           </h2>
           <ResponsiveContainer width="100%" height={300}>
@@ -334,8 +334,8 @@ export default function Analytics() {
         </div>
 
         {/* Engagement metrics chart */}
-        <div className="bg-white rounded-lg border border-black/10 p-4 lg:col-span-3">
-          <div className="flex justify-between items-center mb-4">
+        <div className="p-4 bg-white border rounded-lg border-black/10 lg:col-span-3">
+          <div className="flex items-center justify-between mb-4">
             <h2 className="font-bold text-gray-800">Engagement Metrics</h2>
             <div className="flex items-center text-sm text-gray-500">
               <span>
@@ -384,8 +384,8 @@ export default function Analytics() {
         </div>
 
         {/* Recent posts */}
-        <div className="bg-white rounded-lg border border-black/10 p-4 lg:col-span-3">
-          <div className="flex justify-between items-center mb-4">
+        <div className="p-4 bg-white border rounded-lg border-black/10 lg:col-span-3">
+          <div className="flex items-center justify-between mb-4">
             <h2 className="font-bold text-gray-800">
               Recent Posts Performance
             </h2>
@@ -396,43 +396,43 @@ export default function Analytics() {
           <div className="overflow-x-auto">
             {loading ? (
               <div className="flex items-center justify-center h-40">
-                <Loader2 className="animate-spin text-purple-500" size={24} />
+                <Loader2 className="text-purple-500 animate-spin" size={24} />
               </div>
             ) : recentPostsData.length > 0 ? (
               <table className="min-w-full">
                 <thead>
                   <tr className="border-b border-gray-200">
-                    <th className="py-3 px-4 text-left text-sm font-medium text-gray-500">
+                    <th className="px-4 py-3 text-sm font-medium text-left text-gray-500">
                       Post
                     </th>
-                    <th className="py-3 px-4 text-left text-sm font-medium text-gray-500">
+                    <th className="px-4 py-3 text-sm font-medium text-left text-gray-500">
                       Date
                     </th>
-                    <th className="py-3 px-4 text-left text-sm font-medium text-gray-500">
+                    <th className="px-4 py-3 text-sm font-medium text-left text-gray-500">
                       <div className="flex items-center">
                         <Eye size={14} className="mr-1" />
                         <span>Views</span>
                       </div>
                     </th>
-                    <th className="py-3 px-4 text-left text-sm font-medium text-gray-500">
+                    <th className="px-4 py-3 text-sm font-medium text-left text-gray-500">
                       <div className="flex items-center">
                         <Heart size={14} className="mr-1" />
                         <span>Likes</span>
                       </div>
                     </th>
-                    <th className="py-3 px-4 text-left text-sm font-medium text-gray-500">
+                    <th className="px-4 py-3 text-sm font-medium text-left text-gray-500">
                       <div className="flex items-center">
                         <MessageSquare size={14} className="mr-1" />
                         <span>Comments</span>
                       </div>
                     </th>
-                    <th className="py-3 px-4 text-left text-sm font-medium text-gray-500">
+                    <th className="px-4 py-3 text-sm font-medium text-left text-gray-500">
                       <div className="flex items-center">
                         <Share2 size={14} className="mr-1" />
                         <span>Shares</span>
                       </div>
                     </th>
-                    <th className="py-3 px-4 text-left text-sm font-medium text-gray-500">
+                    <th className="px-4 py-3 text-sm font-medium text-left text-gray-500">
                       Engagement Rate
                     </th>
                   </tr>
@@ -443,15 +443,15 @@ export default function Analytics() {
                       key={post.id}
                       className="border-b border-gray-200 hover:bg-gray-50"
                     >
-                      <td className="py-4 px-4">
+                      <td className="px-4 py-4">
                         <div className="flex items-center">
-                          <div className="w-12 h-12 rounded bg-gray-200 flex items-center justify-center">
+                          <div className="flex items-center justify-center w-12 h-12 bg-gray-200 rounded">
                             <Image
                               src={post.thumbnail}
                               alt="Post thumbnail"
                               width={48}
                               height={48}
-                              className="w-full h-full rounded object-cover"
+                              className="object-cover w-full h-full rounded"
                               onError={(e: any) => {
                                 e.target.onerror = null;
                                 e.target.src =
@@ -461,18 +461,18 @@ export default function Analytics() {
                           </div>
                         </div>
                       </td>
-                      <td className="py-4 px-4 text-sm text-gray-500">
+                      <td className="px-4 py-4 text-sm text-gray-500">
                         {post.date}
                       </td>
-                      <td className="py-4 px-4 text-sm">
+                      <td className="px-4 py-4 text-sm">
                         {post.views.toLocaleString()}
                       </td>
-                      <td className="py-4 px-4 text-sm">
+                      <td className="px-4 py-4 text-sm">
                         {post.likes.toLocaleString()}
                       </td>
-                      <td className="py-4 px-4 text-sm">{post.comments}</td>
-                      <td className="py-4 px-4 text-sm">{post.shares}</td>
-                      <td className="py-4 px-4">
+                      <td className="px-4 py-4 text-sm">{post.comments}</td>
+                      <td className="px-4 py-4 text-sm">{post.shares}</td>
+                      <td className="px-4 py-4">
                         <span className="bg-purple-100 text-purple-800 text-xs font-medium px-2.5 py-0.5 rounded">
                           {post.engagement}%
                         </span>
@@ -482,7 +482,7 @@ export default function Analytics() {
                 </tbody>
               </table>
             ) : (
-              <div className="text-center py-8 text-gray-500">
+              <div className="py-8 text-center text-gray-500">
                 No posts found for the selected time range
               </div>
             )}

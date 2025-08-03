@@ -79,7 +79,7 @@ const FollowersDisplay = () => {
     <div className="p-2 md:p-4 overflow-y-auto max-h-[92vh]" ref={ref}>
       {followers.length === 0 && (
         <div>
-          <p className="text-center font-medium text-xl">No followers</p>
+          <p className="text-xl font-medium text-center">No followers</p>
         </div>
       )}
       {followers.map((follower, index) => (

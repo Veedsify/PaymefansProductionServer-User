@@ -23,7 +23,7 @@ const WishList = () => {
           } 
           `}
       >
-        <div className="flex justify-between items-center">
+        <div className="flex items-center justify-between">
           <h2 className="text-xl font-bold">Wish List</h2>
           <button className="text-xl" onClick={toggleWishList}>
             <X />
@@ -35,14 +35,14 @@ const WishList = () => {
             <p className="text-sm text-gray-600">No items in your wish list</p>
           </div>
 
-          <div className="flex justify-between items-center">
+          <div className="flex items-center justify-between">
             <button
               onClick={toggleWishList}
-              className="bg-black text-white px-3 py-1 rounded-md"
+              className="px-3 py-1 text-white bg-black rounded-md"
             >
               Close
             </button>
-            <button className="bg-black text-white px-3 py-1 rounded-md">
+            <button className="px-3 py-1 text-white bg-black rounded-md">
               Checkout
             </button>
           </div>

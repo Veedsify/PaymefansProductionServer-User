@@ -13,9 +13,9 @@ const HookupSubscription = ({ hookup }: { hookup: HookupProps }) => {
   return (
     <Link
       href={`/${hookup?.username}`}
-      className="flex flex-col items-center gap-2 my-5 select-none"
+      className="flex flex-col items-center my-5 select-none gap-2"
     >
-      <div className="relative bg-white p-1 shadow-sm dark:bg-gray-800 dark:shadow-gray-300 rounded-full">
+      <div className="relative p-1 bg-white rounded-full shadow-sm dark:bg-gray-800 dark:shadow-gray-300">
         <Image
           width={100}
           height={100}
@@ -69,7 +69,7 @@ const HookupSubscription = ({ hookup }: { hookup: HookupProps }) => {
       )}
 
       {/* Price per message */}
-      <div className="flex flex-wrap justify-center items-center gap-1 text-sm text-center">
+      <div className="flex flex-wrap items-center justify-center text-sm text-center gap-1">
         <span className="flex items-center">
           <Image
             width={20}

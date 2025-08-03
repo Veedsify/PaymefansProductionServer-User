@@ -139,14 +139,14 @@ const WalletPage = () => {
   // ...existing code...
 
   if (loading) {
-    <div className="w-full h-1 bg-gray-200 rounded overflow-hidden my-8">
-      <div className="loader-bar h-full bg-primary-dark-pink animate-loader-bar"></div>
+    <div className="w-full h-1 my-8 overflow-hidden bg-gray-200 rounded">
+      <div className="h-full loader-bar bg-primary-dark-pink animate-loader-bar"></div>
     </div>;
   }
 
   return (
     <div className="p-4 py-8">
-      <div className="flex flex-wrap gap-6 items-center justify-between pb-8 border-b border-gray-200 dark:border-gray-700 mb-6">
+      <div className="flex flex-wrap items-center justify-between pb-8 mb-6 border-b border-gray-200 gap-6 dark:border-gray-700">
         <div className="flex items-center gap-4">
           {user && (
             <>
@@ -156,10 +156,10 @@ const WalletPage = () => {
                 height={56}
                 alt="Profile"
                 priority
-                className="object-cover w-14 h-14 border-2 border-primary-dark-pink rounded-full shadow"
+                className="object-cover border-2 rounded-full shadow w-14 h-14 border-primary-dark-pink"
               />
               <div className="self-center dark:text-gray-200">
-                <h2 className="font-bold text-lg">{user.name}</h2>
+                <h2 className="text-lg font-bold">{user.name}</h2>
                 <p className="text-sm text-gray-500 dark:text-gray-400">
                   {user.username}
                 </p>
@@ -169,23 +169,23 @@ const WalletPage = () => {
         </div>
         <Link
           href="/points"
-          className="p-3 px-8 text-xs font-semibold text-white bg-primary-dark-pink hover:bg-pink-700 transition rounded shadow"
+          className="p-3 px-8 text-xs font-semibold text-white rounded shadow bg-primary-dark-pink hover:bg-pink-700 transition"
         >
           Add Funds
         </Link>
       </div>
-      <div className="mb-6 flex items-center justify-between bg-gradient-to-r from-primary-dark-pink to-pink-400 text-white p-6 rounded-2xl shadow-lg">
+      <div className="flex items-center justify-between p-6 mb-6 text-white shadow-lg bg-gradient-to-r from-primary-dark-pink to-pink-400 rounded-2xl">
         <div className="grid gap-2">
           <small className="text-base font-medium opacity-90">
             Your Balance
           </small>
-          <h1 className="text-2xl md:text-4xl font-extrabold tracking-tight">
+          <h1 className="text-2xl font-extrabold tracking-tight md:text-4xl">
             {calculateAmount}
           </h1>
         </div>
         <div className="flex self-center mt-4 md:mt-0">
-          <div className="bg-white/10 md:px-6 md:py-4 p-3 px-5 rounded-lg flex items-center gap-2 shadow-inner">
-            <span className="font-semibold text-lg">
+          <div className="flex items-center p-3 px-5 rounded-lg shadow-inner bg-white/10 md:px-6 md:py-4 gap-2">
+            <span className="text-lg font-semibold">
               {points ? points.toLocaleString() : 0}
             </span>
             <Image
@@ -198,18 +198,18 @@ const WalletPage = () => {
           </div>
         </div>
       </div>
-      <div className="mb-6 flex items-center justify-between bg-gradient-to-r from-primary-dark-pink to-pink-400 text-white p-6 rounded-2xl shadow-lg">
+      <div className="flex items-center justify-between p-6 mb-6 text-white shadow-lg bg-gradient-to-r from-primary-dark-pink to-pink-400 rounded-2xl">
         <div className="grid gap-2">
           <small className="text-base font-medium opacity-90">
             Your Balance
           </small>
-          <h1 className="text-2xl md:text-4xl font-extrabold tracking-tight">
+          <h1 className="text-2xl font-extrabold tracking-tight md:text-4xl">
             {calculateAmountInDollars}
           </h1>
         </div>
         <div className="flex self-center mt-4 md:mt-0">
-          <div className="bg-white/10 md:px-6 md:py-4 p-3 px-5 rounded-lg flex items-center gap-2 shadow-inner">
-            <span className="font-semibold text-lg">
+          <div className="flex items-center p-3 px-5 rounded-lg shadow-inner bg-white/10 md:px-6 md:py-4 gap-2">
+            <span className="text-lg font-semibold">
               {points ? points.toLocaleString() : 0}
             </span>
             <Image
@@ -224,14 +224,14 @@ const WalletPage = () => {
       </div>
       {user?.is_model && user?.Model?.verification_status && (
         <>
-          <div className="bg-black dark:bg-gray-700 text-white p-6 rounded-2xl shadow mb-4">
+          <div className="p-6 mb-4 text-white bg-black shadow dark:bg-gray-700 rounded-2xl">
             <small className="text-base font-medium">Your Balance</small>
-            <h1 className="text-2xl md:text-4xl font-bold mb-4">
+            <h1 className="mb-4 text-2xl font-bold md:text-4xl">
               {calculateAmount}
             </h1>
             <Link
               href="/wallet/withdraw"
-              className="block text-sm text-center bg-coins-card-bottom px-8 py-3 rounded-lg w-full text-primary-dark-pink dark:text-white dark:bg-primary-dark-pink font-semibold hover:bg-pink-100 transition dark:hover:bg-pink-700"
+              className="block w-full px-8 py-3 text-sm font-semibold text-center rounded-lg bg-coins-card-bottom text-primary-dark-pink dark:text-white dark:bg-primary-dark-pink hover:bg-pink-100 transition dark:hover:bg-pink-700"
             >
               WITHDRAW
             </Link>
@@ -239,7 +239,7 @@ const WalletPage = () => {
           <div>
             <Link
               href="/wallet/add"
-              className="block text-center bg-coins-card-bottom px-8 py-3 rounded-lg w-full text-primary-dark-pink font-semibold my-5 text-sm md:text-base hover:bg-pink-100 transition dark:text-white dark:bg-primary-dark-pink dark:hover:bg-pink-700"
+              className="block w-full px-8 py-3 my-5 text-sm font-semibold text-center rounded-lg bg-coins-card-bottom text-primary-dark-pink md:text-base hover:bg-pink-100 transition dark:text-white dark:bg-primary-dark-pink dark:hover:bg-pink-700"
             >
               SET WITHDRAWAL BANK ACCOUNT
             </Link>
@@ -248,13 +248,13 @@ const WalletPage = () => {
       )}
       {transactions && transactions.length > 0 && (
         <div>
-          <h2 className="text-xl font-semibold mt-10 mb-10 dark:text-white">
+          <h2 className="mt-10 mb-10 text-xl font-semibold dark:text-white">
             Purchase History
           </h2>
           <div className="grid gap-4">
             {transactions.map((transaction: any, i: number) => (
               <div key={i} className="bg-white dark:bg-slate-800 rounded-xl">
-                <div className="flex justify-between items-center p-2 ">
+                <div className="flex items-center justify-between p-2 ">
                   <div>
                     <p
                       className={`text-sm font-semibold ${transaction.success ? "text-green-600" : "text-red-500"
@@ -298,7 +298,7 @@ const WalletPage = () => {
           </div>
           <Link
             href="/transactions/topup"
-            className="text-blue-500 font-medium capitalize inline-block py-4"
+            className="inline-block py-4 font-medium text-blue-500 capitalize"
           >
             VIEW ALL
           </Link>

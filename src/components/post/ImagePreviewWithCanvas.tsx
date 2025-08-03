@@ -17,7 +17,7 @@ type ImagePreviewProps = {
 export const ImagePreview = memo(({ url, alt }: ImagePreviewProps) => {
   return (
     <motion.div
-      className="relative flex h-full w-full items-center justify-center overflow-hidden"
+      className="relative flex items-center justify-center w-full h-full overflow-hidden"
       initial={{ opacity: 0, scale: 0.95 }}
       animate={{ opacity: 1, scale: 1 }}
       exit={{ opacity: 0, scale: 0.95 }}
@@ -36,7 +36,7 @@ export const ImagePreview = memo(({ url, alt }: ImagePreviewProps) => {
         fallback={
           <AnimatePresence>
             <motion.div
-              className="absolute inset-0 flex items-center justify-center bg-black/20 z-10"
+              className="absolute inset-0 z-10 flex items-center justify-center bg-black/20"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0, transition: { duration: 0.2 } }}
@@ -50,7 +50,7 @@ export const ImagePreview = memo(({ url, alt }: ImagePreviewProps) => {
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
           exit={{ opacity: 0, scale: 0.95 }}
-          className="w-full h-full flex items-center justify-center overflow-hidden"
+          className="flex items-center justify-center w-full h-full overflow-hidden"
         >
           <Image
             src={url.trim()}

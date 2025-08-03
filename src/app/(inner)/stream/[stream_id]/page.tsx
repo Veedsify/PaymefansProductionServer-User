@@ -42,7 +42,7 @@ const Stream = async ({
       {streamData ? (
         <StreamDeck streamData={streamData} />
       ) : (
-        <div className="flex justify-center items-center h-dvh">
+        <div className="flex items-center justify-center h-dvh">
           <p className="text-2xl">No stream data available.</p>
         </div>
       )}

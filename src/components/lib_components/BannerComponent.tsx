@@ -167,12 +167,12 @@ const BannerComponent = ({ profile_banner }: BannerComponentProps) => {
   };
 
   return (
-    <div className="relative rounded-lg shadow-lg border border-gray-200">
+    <div className="relative border border-gray-200 rounded-lg shadow-lg">
       {imageUrl ? (
-        <div className="relative w-full flex justify-center overflow-hidden bg-gray-50">
+        <div className="relative flex justify-center w-full overflow-hidden bg-gray-50">
           <ReactCrop
             crop={crop}
-            className="mx-auto w-auto"
+            className="w-auto mx-auto"
             onChange={(_, percentCrop) => setCrop(percentCrop)}
             onComplete={(c) => setCompletedCrop(c)}
           >
@@ -189,10 +189,10 @@ const BannerComponent = ({ profile_banner }: BannerComponentProps) => {
                 borderRadius: "0.5rem",
               }}
               onLoad={(e) => onImageLoaded(e.currentTarget)}
-              className="rounded-lg border border-gray-300"
+              className="border border-gray-300 rounded-lg"
             />
           </ReactCrop>
-          <div className="absolute flex gap-2 bottom-4 right-4 z-10">
+          <div className="absolute z-10 flex gap-2 bottom-4 right-4">
             <input
               type="file"
               id="banner_image_upload"
@@ -237,10 +237,10 @@ const BannerComponent = ({ profile_banner }: BannerComponentProps) => {
             accept=".jpg,.jpeg,.png"
             className="hidden"
           />
-          <div className="absolute inset-0 flex items-center justify-center bg-black/40 hover:bg-black/60 transition cursor-pointer">
+          <div className="absolute inset-0 flex items-center justify-center cursor-pointer bg-black/40 hover:bg-black/60 transition">
             <button
               onClick={selectImage}
-              className="flex items-center px-5 py-2 bg-white/90 text-gray-800 font-semibold rounded-lg shadow hover:bg-white cursor-pointer"
+              className="flex items-center px-5 py-2 font-semibold text-gray-800 rounded-lg shadow cursor-pointer bg-white/90 hover:bg-white"
             >
               <LucideUpload size={20} className="mr-2" /> Upload Banner
             </button>

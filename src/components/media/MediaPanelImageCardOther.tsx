@@ -102,7 +102,7 @@ const MediaPanelImageCardOther = React.memo(
     const hasMore = !!hasNextPage;
     return (
       <>
-        <div className="grid grid-cols-2 overflow-hidden rounded-xl lg:grid-cols-3 gap-1 select-none">
+        <div className="overflow-hidden select-none grid grid-cols-2 rounded-xl lg:grid-cols-3 gap-1">
           {sorted.map((media, index) => (
             <div
               key={index}
@@ -116,7 +116,7 @@ const MediaPanelImageCardOther = React.memo(
             </div>
           ))}
         </div>
-        <div className="flex flex-col items-center justify-center col-span-3 py-2 mb-20">
+        <div className="flex flex-col items-center justify-center py-2 mb-20 col-span-3">
           {loading && (
             <div className="flex justify-center col-span-3">
               <LucideLoader
@@ -128,14 +128,14 @@ const MediaPanelImageCardOther = React.memo(
           )}
           {hasMore && !loading && (
             <button
-              className="col-span-3 px-4 py-2 rounded-lg text-sm font-bold bg-gray-200"
+              className="px-4 py-2 text-sm font-bold bg-gray-200 rounded-lg col-span-3"
               onClick={fetchAdditionalData}
             >
               Load More
             </button>
           )}
           {!hasMore && !loading && (
-            <p className="text-gray-500 text-sm text-center font-medium">
+            <p className="text-sm font-medium text-center text-gray-500">
               No Media Found
             </p>
           )}
@@ -193,7 +193,7 @@ export const MediaPanelMediaCard = ({
                     indexId,
                   )
                 }
-                className="absolute bg-black/20 w-full h-full inset-0 cursor-pointer flex items-center justify-center"
+                className="absolute inset-0 flex items-center justify-center w-full h-full cursor-pointer bg-black/20"
               >
                 <LucidePlay stroke="white" size={30} strokeWidth={2} />
               </div>
@@ -205,7 +205,7 @@ export const MediaPanelMediaCard = ({
               priority
               src={media?.blur}
               alt="Blured Video Image"
-              className="w-full h-full cursor-pointer object-cover transition-all duration-300 ease-in-out hover:scale-105"
+              className="object-cover w-full h-full cursor-pointer transition-all duration-300 ease-in-out hover:scale-105"
             />
           )}
         </>
@@ -218,7 +218,7 @@ export const MediaPanelMediaCard = ({
               priority
               src={media.blur}
               alt="Blured Image"
-              className="w-full h-full cursor-pointer object-cover transition-all duration-300 ease-in-out hover:scale-105"
+              className="object-cover w-full h-full cursor-pointer transition-all duration-300 ease-in-out hover:scale-105"
             />
           ) : (
             <Image
@@ -235,7 +235,7 @@ export const MediaPanelMediaCard = ({
               }
               src={media.url}
               alt=""
-              className="w-full h-full cursor-pointer object-cover transition-all duration-300 ease-in-out hover:scale-105"
+              className="object-cover w-full h-full cursor-pointer transition-all duration-300 ease-in-out hover:scale-105"
             />
           )}
         </>

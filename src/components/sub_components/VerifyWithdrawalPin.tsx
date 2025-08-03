@@ -155,25 +155,25 @@ const VerifyWithdrawalPin: React.FC<VerifyWithdrawalPinProps> = ({
             onClick={closeModal}
         >
             <motion.div
-                className="bg-white w-full h-dvh lg:h-auto lg:max-w-md lg:rounded-2xl flex items-center justify-center relative"
+                className="relative flex items-center justify-center w-full bg-white h-dvh lg:h-auto lg:max-w-md lg:rounded-2xl"
                 onClick={e => e.stopPropagation()}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.3 }}
             >
-                <span className='absolute top-4 right-4 cursor-pointer'>
+                <span className='absolute cursor-pointer top-4 right-4'>
                     <X className=" text-primary-dark-pink"
                         onClick={closeModal}
                     />
                 </span>
                 <div className="w-full max-w-xs p-6 py-10">
-                    <h3 className="text-xl font-semibold mb-4 text-center text-primary-900">
+                    <h3 className="mb-4 text-xl font-semibold text-center text-primary-900">
                         {mode === "verify" ? titles.verify : titles.create}
                     </h3>
                     <p className="mb-6 text-center text-gray-500">{mode === "verify" ? subtitles.verify : subtitles.create}</p>
 
                     <div className="mb-6">
-                        <div className="flex justify-center gap-2 mb-3">
+                        <div className="flex justify-center mb-3 gap-2">
                             {[0, 1, 2, 3].map((i) => (
                                 <input
                                     key={i}
@@ -183,7 +183,7 @@ const VerifyWithdrawalPin: React.FC<VerifyWithdrawalPinProps> = ({
                                     value={currPin[i]}
                                     onChange={e => handlePinChange(i, e.target.value)}
                                     onKeyDown={e => handleKeyDown(i, e)}
-                                    className="w-12 h-12 text-center text-2xl font-bold border-2 border-primary-300 rounded-lg focus:border-primary-dark-pink focus:ring-1 focus:ring-primary-dark-pink outline-none"
+                                    className="w-12 h-12 text-2xl font-bold text-center border-2 rounded-lg outline-none border-primary-300 focus:border-primary-dark-pink focus:ring-1 focus:ring-primary-dark-pink"
                                     inputMode="numeric"
                                     autoComplete="off"
                                 />
@@ -196,7 +196,7 @@ const VerifyWithdrawalPin: React.FC<VerifyWithdrawalPinProps> = ({
                                 <button
                                     type="button"
                                     onClick={clearCurrentPin}
-                                    className="flex items-center gap-1 text-gray-500 hover:text-primary-dark-pink text-sm font-medium transition-colors"
+                                    className="flex items-center text-sm font-medium text-gray-500 gap-1 hover:text-primary-dark-pink transition-colors"
                                 >
                                     <RotateCcw size={14} />
                                     Clear PIN
@@ -210,18 +210,18 @@ const VerifyWithdrawalPin: React.FC<VerifyWithdrawalPinProps> = ({
                                 <button
                                     type="button"
                                     onClick={goBackToCreate}
-                                    className="text-gray-500 hover:text-primary-dark-pink text-sm font-medium transition-colors"
+                                    className="text-sm font-medium text-gray-500 hover:text-primary-dark-pink transition-colors"
                                 >
                                     ← Back to create PIN
                                 </button>
                             </div>
                         )}
 
-                        <p className="text-red-500 text-center mt-2 h-5 text-sm">{error}</p>
+                        <p className="h-5 mt-2 text-sm text-center text-red-500">{error}</p>
                     </div>
 
                     <button
-                        className="w-full bg-primary-dark-pink hover:bg-primary-text-dark-pink text-white font-bold py-3 rounded-lg transition mb-2"
+                        className="w-full py-3 mb-2 font-bold text-white rounded-lg bg-primary-dark-pink hover:bg-primary-text-dark-pink transition"
                         type="button"
                         onClick={handleAction}
                     >
@@ -233,7 +233,7 @@ const VerifyWithdrawalPin: React.FC<VerifyWithdrawalPinProps> = ({
                     {/* Only show forgot pin on verify mode */}
                     {mode === "verify" && (
                         <button
-                            className="w-full text-primary-dark-pink font-medium py-2"
+                            className="w-full py-2 font-medium text-primary-dark-pink"
                             type="button"
                             onClick={() => onForgotPin?.()}
                         >

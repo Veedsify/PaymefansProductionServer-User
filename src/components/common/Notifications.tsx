@@ -24,10 +24,10 @@ export function NotificationHeader({
     <>
       <div className={className}>
         <div className="flex items-center mb-7">
-          <span className="font-bold text-xl flex-shrink-0 dark:text-white">
+          <span className="flex-shrink-0 text-xl font-bold dark:text-white">
             {children}
           </span>
-          <div className="flex items-center justify-center w-8 h-8 aspect-square flex-shrink-0 ml-auto text-white md:py-3 md:px-3 py-1 px-1  bg-primary-text-dark-pink rounded-full font-bold">
+          <div className="flex items-center justify-center flex-shrink-0 w-8 h-8 px-1 py-1 ml-auto font-bold text-white rounded-full aspect-square md:py-3 md:px-3  bg-primary-text-dark-pink">
             {unreadCount > 100 ? "99+" : unreadCount}
           </div>
         </div>
@@ -87,7 +87,7 @@ export function NotificationBody() {
 
   if (error) {
     return (
-      <div className="text-center py-2 text-sm text-red-500">
+      <div className="py-2 text-sm text-center text-red-500">
         An error occurred while fetching notifications.
       </div>
     );
@@ -96,7 +96,7 @@ export function NotificationBody() {
   return (
     <div className="space-y-3">
       {(!notifications || notifications.length === 0) && !isLoading ? (
-        <div className="text-center py-4 text-gray-500 dark:text-gray-400">
+        <div className="py-4 text-center text-gray-500 dark:text-gray-400">
           No Notifications yet
         </div>
       ) : (
@@ -126,18 +126,18 @@ export function NotificationBody() {
                   color: types.find((type) => type.type === notification.action)
                     ?.color,
                 }}
-                className="flex items-center justify-center w-12 h-12 rounded-full dark:border-gray-700 bg-white dark:bg-gray-900"
+                className="flex items-center justify-center w-12 h-12 bg-white rounded-full dark:border-gray-700 dark:bg-gray-900"
               >
                 {notification.action &&
                   types.find((type) => type.type === notification.action)?.icon}
               </div>
               <div className="flex-1 min-w-0">
-                <p className="text-base font-medium text-gray-900 dark:text-white notification_message_container leading-snug break-words">
+                <p className="text-base font-medium leading-snug text-gray-900 break-words dark:text-white notification_message_container">
                   <span
                     dangerouslySetInnerHTML={{ __html: notification.message }}
                   ></span>
                 </p>
-                <p className="text-xs text-gray-500 dark:text-gray-400 pt-2">
+                <p className="pt-2 text-xs text-gray-500 dark:text-gray-400">
                   {new Date(notification.created_at).toLocaleDateString(
                     "en-US",
                     {
@@ -152,7 +152,7 @@ export function NotificationBody() {
               </div>
               {isMarkingAsRead && (
                 <div className="flex-shrink-0">
-                  <LucideLoader className="animate-spin w-4 h-4 text-gray-400" />
+                  <LucideLoader className="w-4 h-4 text-gray-400 animate-spin" />
                 </div>
               )}
             </div>
@@ -160,11 +160,11 @@ export function NotificationBody() {
         ))
       )}
       {isLoading && (
-        <div className="flex justify-center items-center py-5">
+        <div className="flex items-center justify-center py-5">
           <LucideLoader className="animate-spin text-primary" />
         </div>
       )}
-      <div ref={ref} className="h-1 w-full"></div>
+      <div ref={ref} className="w-full h-1"></div>
     </div>
   );
 }

@@ -35,16 +35,16 @@ export const ImageVerification = () => {
     return (
         <div>
             <label htmlFor="images">
-                <div className="flex relative bg-gray-200 items-center justify-center aspect-square rounded-xl mb-3 cursor-pointer overflow-hidden " ref={ref} style={{
+                <div className="relative flex items-center justify-center mb-3 overflow-hidden bg-gray-200 cursor-pointer aspect-square rounded-xl " ref={ref} style={{
                     backgroundSize: "cover",
                 }}>
                     <Image
                         width={40}
                         height={40}
                         priority
-                        src="/site/verification_images.png" alt="" className="block text-center mx-auto mb-4" />
+                        src="/site/verification_images.png" alt="" className="block mx-auto mb-4 text-center" />
                 </div>
-                <p className="text-center text-sm font-medium">Upload 3 different photos of you</p>
+                <p className="text-sm font-medium text-center">Upload 3 different photos of you</p>
             </label>
             <input onChange={imageUploaded} type="file" multiple={true} accept="image/*" className="hidden" name="images" id="images" />
         </div>

@@ -63,7 +63,7 @@ const RepostPanel = ({ userdata }: RespostPanelProps) => {
   }, [inView, hasNextPage, isLoading, fetchNextPage]);
   const EndMessage = () => (
     <div className="px-3 py-2">
-      <p className="text-gray-500 text-sm text-center font-medium">
+      <p className="text-sm font-medium text-center text-gray-500">
         No Post Found
       </p>
     </div>
@@ -71,7 +71,7 @@ const RepostPanel = ({ userdata }: RespostPanelProps) => {
   return (
     <div className="mt-2 mb-12 select-none">
       {error && (
-        <div className="px-3 py-2 text-red-500 italic text-center font-medium">
+        <div className="px-3 py-2 italic font-medium text-center text-red-500">
           An error occurred while fetching posts.
         </div>
       )}

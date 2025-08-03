@@ -122,7 +122,7 @@ export const PostCompInteractions = ({ data }: PostCompInteractionsProps) => {
     <>
       <div className="flex justify-around w-full py-6 mt-6 text-sm border-b dark:text-gray-300 dark:border-slate-700 border-black/20">
         <span
-          className="flex items-center gap-1 text-sm font-medium cursor-pointer"
+          className="flex items-center text-sm font-medium cursor-pointer gap-1"
           onClick={handleLikePost}
         >
           <LucideHeart
@@ -132,7 +132,7 @@ export const PostCompInteractions = ({ data }: PostCompInteractionsProps) => {
           />
           {formattedNumber(likesCount)}
         </span>
-        <span className="flex items-center gap-1 text-sm font-medium cursor-pointer">
+        <span className="flex items-center text-sm font-medium cursor-pointer gap-1">
           <LucideMessageSquare className="w-5 h-5 lg:w-6 lg:h-6" />
           {data?.post_comments}
         </span>
@@ -144,14 +144,14 @@ export const PostCompInteractions = ({ data }: PostCompInteractionsProps) => {
         {data && data.post_audience !== "private" && data.user?.is_model && (
           <Link
             href={`/posts/points/${data.post_id}/`}
-            className="flex items-center gap-1 text-sm font-medium cursor-pointer"
+            className="flex items-center text-sm font-medium cursor-pointer gap-1"
           >
             <PiCurrencyDollarSimple className="w-5 h-5 lg:w-6 lg:h-6" />
           </Link>
         )}
         <span
           onClick={() => setIsShareModalOpen(true)}
-          className="flex items-center gap-1 text-sm font-medium cursor-pointer"
+          className="flex items-center text-sm font-medium cursor-pointer gap-1"
         >
           <BarChart className="w-5 h-5 lg:w-6 lg:h-6" />
           {formatNumber(data?.post_impressions as number)}

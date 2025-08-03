@@ -15,7 +15,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 
-const AVATAR_USER = "https://randomuser.me/api/portraits/men/75.jpg";
+const AVATAR_USER =
+  "https://images.unsplash.com/photo-1748306124059-0126087eaed3?w=700&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxmZWF0dXJlZC1waG90b3MtZmVlZHwxNHx8fGVufDB8fHx8fA%3D%3D";
 
 const StarRating = ({
   rating,
@@ -88,7 +89,7 @@ const SupportChatPage = () => {
       socketRef.current = null;
     }
     if (socket) {
-      socket.disconnect();
+      socket?.disconnect();
     }
   };
 
@@ -162,7 +163,7 @@ const SupportChatPage = () => {
     });
 
     return () => {
-      socket.disconnect();
+      socket?.disconnect();
       socketRef.current = null;
     };
   }, [user, router, socket]);
@@ -268,9 +269,9 @@ const SupportChatPage = () => {
   };
 
   return (
-    <div className="w-full bg-white dark:bg-gray-900 dark:border-gray-700 flex flex-col overflow-hidden">
+    <div className="flex flex-col w-full overflow-hidden bg-white dark:bg-gray-900 dark:border-gray-700">
       {/* Header */}
-      <div className="relative bg-primary-dark-pink p-6">
+      <div className="relative p-6 bg-primary-dark-pink">
         <div className="absolute inset-0 bg-black/10"></div>
         <div className="relative z-10 flex items-center justify-between text-white">
           <div className="flex items-center gap-4">
@@ -303,7 +304,7 @@ const SupportChatPage = () => {
                 height={48}
                 src={agent?.avatar || AVATAR_USER}
                 alt={agent?.name || "Support"}
-                className="w-12 h-12 rounded-full border-2 border-white shadow-md"
+                className="w-12 h-12 border-2 border-white rounded-full shadow-md"
               />
               <div
                 className={`absolute -bottom-1 -right-1 w-4 h-4 ${getStatusColor(
@@ -322,12 +323,12 @@ const SupportChatPage = () => {
                   agent?.role || "Available"
                 )}
               </p>
-              <div className="flex items-center gap-1 mt-1">
-                <Star size={12} className="fill-yellow-400 text-yellow-400" />
+              <div className="flex items-center mt-1 gap-1">
+                <Star size={12} className="text-yellow-400 fill-yellow-400" />
                 <span className="text-xs text-gray-500">
                   {agent?.rating || 0}
                 </span>
-                <span className="text-xs text-green-500 ml-2 flex items-center gap-1">
+                <span className="flex items-center ml-2 text-xs text-green-500 gap-1">
                   <div className="w-2 h-2 bg-green-400 rounded-full"></div>
                   Online
                 </span>
@@ -335,7 +336,7 @@ const SupportChatPage = () => {
             </div>
           </div>
           <div className="text-right">
-            <p className="text-sm text-gray-500 dark:text-gray-400 flex items-center gap-1">
+            <p className="flex items-center text-sm text-gray-500 dark:text-gray-400 gap-1">
               <Clock size={14} />
               Avg. response: 2 min
             </p>
@@ -343,7 +344,7 @@ const SupportChatPage = () => {
         </div>
       </div>
       {/* Chat Messages */}
-      <div className="flex-1 overflow-y-auto px-6 py-6 space-y-6 bg-gradient-to-b from-gray-50/50 to-white dark:from-gray-900/50 dark:to-gray-800">
+      <div className="flex-1 px-6 py-6 overflow-y-auto space-y-6 bg-gradient-to-b from-gray-50/50 to-white dark:from-gray-900/50 dark:to-gray-800">
         {messages.map((msg, idx) => (
           <motion.div
             key={msg._id || msg.id || idx}
@@ -362,7 +363,7 @@ const SupportChatPage = () => {
                     height={40}
                     src={agent?.avatar || AVATAR_USER}
                     alt="Support"
-                    className="w-10 h-10 rounded-full border-2 border-gray-200 dark:border-gray-600 shadow-sm"
+                    className="w-10 h-10 border-2 border-gray-200 rounded-full dark:border-gray-600 shadow-sm"
                   />
                   <div
                     className={`absolute -bottom-1 -right-1 w-3 h-3 ${getStatusColor(
@@ -374,11 +375,11 @@ const SupportChatPage = () => {
             )}
             <div className="flex flex-col max-w-md">
               {(msg.sender === "agent" || msg.sender === "support") && (
-                <div className="mb-1 px-1">
+                <div className="px-1 mb-1">
                   <span className="text-xs font-semibold text-gray-700 dark:text-gray-300">
                     {agent?.name || "Support Agent"}
                   </span>
-                  <span className="text-xs text-gray-500 dark:text-gray-400 ml-2">
+                  <span className="ml-2 text-xs text-gray-500 dark:text-gray-400">
                     {agent?.role || "Support Specialist"}
                   </span>
                 </div>
@@ -412,7 +413,7 @@ const SupportChatPage = () => {
                 height={40}
                 src={user?.profile_image || AVATAR_USER}
                 alt="You"
-                className="w-10 h-10 rounded-full border-2 border-gray-200 dark:border-gray-600 shadow-sm"
+                className="w-10 h-10 border-2 border-gray-200 rounded-full dark:border-gray-600 shadow-sm"
               />
             )}
           </motion.div>
@@ -424,7 +425,7 @@ const SupportChatPage = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
-            className="flex items-end gap-4 justify-start"
+            className="flex items-end justify-start gap-4"
           >
             <div className="flex flex-col items-center">
               <div className="relative">
@@ -433,7 +434,7 @@ const SupportChatPage = () => {
                   height={40}
                   src={agent?.avatar || AVATAR_USER}
                   alt="Support"
-                  className="w-10 h-10 rounded-full border-2 border-gray-200 dark:border-gray-600 shadow-sm"
+                  className="w-10 h-10 border-2 border-gray-200 rounded-full dark:border-gray-600 shadow-sm"
                 />
                 <div
                   className={`absolute -bottom-1 -right-1 w-3 h-3 ${getStatusColor(
@@ -443,15 +444,15 @@ const SupportChatPage = () => {
               </div>
             </div>
             <div className="flex flex-col max-w-md">
-              <div className="mb-1 px-1">
+              <div className="px-1 mb-1">
                 <span className="text-xs font-semibold text-gray-700 dark:text-gray-300">
                   {agent?.name || "Support Agent"}
                 </span>
-                <span className="text-xs text-gray-500 dark:text-gray-400 ml-2">
+                <span className="ml-2 text-xs text-gray-500 dark:text-gray-400">
                   {agent?.role || "Support Specialist"}
                 </span>
               </div>
-              <div className="px-6 py-3 rounded-2xl bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 border border-gray-200 dark:border-gray-600 rounded-bl-md">
+              <div className="px-6 py-3 text-gray-900 bg-white border border-gray-200 rounded-2xl dark:bg-gray-700 dark:text-gray-100 dark:border-gray-600 rounded-bl-md">
                 <div className="flex items-center gap-1">
                   <div className="flex gap-1">
                     <div
@@ -467,7 +468,7 @@ const SupportChatPage = () => {
                       style={{ animationDelay: "300ms" }}
                     ></div>
                   </div>
-                  <span className="text-sm text-gray-500 ml-2">typing...</span>
+                  <span className="ml-2 text-sm text-gray-500">typing...</span>
                 </div>
               </div>
             </div>
@@ -477,9 +478,9 @@ const SupportChatPage = () => {
         <div ref={chatEndRef} />
       </div>
       {/* Chat Input */}
-      <div className="px-6 py-4 border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900">
+      <div className="px-6 py-4 bg-white border-t border-gray-200 dark:border-gray-700 dark:bg-gray-900">
         {ended ? (
-          <div className="text-center p-6 bg-gray-50 dark:bg-gray-800 rounded-lg">
+          <div className="p-6 text-center rounded-lg bg-gray-50 dark:bg-gray-800">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -498,14 +499,14 @@ const SupportChatPage = () => {
                   onChange={(e) =>
                     setReview((r) => ({ ...r, comment: e.target.value }))
                   }
-                  className="w-full max-w-md px-4 py-3 border-2 border-gray-200 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-700 text-gray-900 dark:text-white shadow-sm focus:border-purple-500 focus:ring-4 focus:ring-purple-200 outline-none transition-all duration-300 resize-none"
+                  className="w-full max-w-md px-4 py-3 text-gray-900 bg-white border-2 border-gray-200 outline-none resize-none dark:border-gray-600 rounded-xl dark:bg-gray-700 dark:text-white shadow-sm focus:border-purple-500 focus:ring-4 focus:ring-purple-200 transition-all duration-300"
                   placeholder="Leave a comment (optional)..."
                   rows={3}
                 />
                 <button
                   onClick={handleSubmitReview}
                   disabled={review.rating < 1 || review.rating > 5}
-                  className="mt-2 w-full max-w-md px-6 py-3 border border-transparent text-base font-medium rounded-xl text-white bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 disabled:from-gray-300 disabled:to-gray-400 disabled:cursor-not-allowed shadow-lg hover:shadow-xl transition-all duration-300"
+                  className="w-full max-w-md px-6 py-3 mt-2 text-base font-medium text-white border border-transparent shadow-lg rounded-xl bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 disabled:from-gray-300 disabled:to-gray-400 disabled:cursor-not-allowed hover:shadow-xl transition-all duration-300"
                 >
                   Submit Review
                 </button>
@@ -530,14 +531,14 @@ const SupportChatPage = () => {
                 className="text-gray-500 group-hover:text-purple-500 transition-colors"
               />
             </button>
-            <div className="flex-1 relative">
+            <div className="relative flex-1">
               <textarea
                 value={newMessage}
                 onChange={(e) => handleInputChange(e.target.value)}
                 disabled={isSending}
                 placeholder="Type your message here..."
                 rows={1}
-                className="w-full px-4 py-3 border-2 border-gray-200 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-800 text-gray-900 dark:text-white shadow-sm focus:border-purple-500 focus:ring-4 focus:ring-purple-200 outline-none transition-all duration-300 resize-none"
+                className="w-full px-4 py-3 text-gray-900 bg-white border-2 border-gray-200 outline-none resize-none dark:border-gray-600 rounded-xl dark:bg-gray-800 dark:text-white shadow-sm focus:border-purple-500 focus:ring-4 focus:ring-purple-200 transition-all duration-300"
                 onKeyDown={(e) => {
                   if (e.key === "Enter" && !e.shiftKey) {
                     e.preventDefault();
@@ -549,7 +550,7 @@ const SupportChatPage = () => {
             <button
               type="submit"
               disabled={isSending || !newMessage.trim()}
-              className="p-3 rounded-xl bg-gradient-to-r from-purple-500 to-pink-500 text-white font-semibold hover:from-purple-600 hover:to-pink-600 transition-all duration-300 disabled:from-gray-300 disabled:to-gray-400 disabled:cursor-not-allowed shadow-lg hover:shadow-xl"
+              className="p-3 font-semibold text-white shadow-lg rounded-xl bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 transition-all duration-300 disabled:from-gray-300 disabled:to-gray-400 disabled:cursor-not-allowed hover:shadow-xl"
             >
               {isSending ? (
                 <Loader2 size={20} className="animate-spin" />
@@ -560,7 +561,7 @@ const SupportChatPage = () => {
             <button
               type="button"
               onClick={handleEndSession}
-              className="ml-2 px-3 py-2 rounded bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-200 hover:bg-gray-300 dark:hover:bg-gray-600"
+              className="px-3 py-2 ml-2 text-gray-700 bg-gray-200 rounded dark:bg-gray-700 dark:text-gray-200 hover:bg-gray-300 dark:hover:bg-gray-600"
             >
               End Chat
             </button>

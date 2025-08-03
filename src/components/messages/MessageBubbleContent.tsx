@@ -73,7 +73,7 @@ const MessageBubbleContent: React.FC<MessageBubbleContentProps> = ({
           {rawFiles.map((file: MediaFile, idx: number) => (
             <div
               key={file.previewUrl || idx}
-              className="p-2 cursor-pointer relative group transition-transform duration-200 hover:scale-105"
+              className="relative p-2 cursor-pointer group transition-transform duration-200 hover:scale-105"
               onClick={() => handleRawPreview(file, idx)}
               tabIndex={0}
               aria-label={
@@ -92,22 +92,22 @@ const MessageBubbleContent: React.FC<MessageBubbleContentProps> = ({
                     quality={80}
                     src={file.previewUrl}
                     alt="Uploading image"
-                    className="w-full object-cover rounded-lg aspect-square shadow-md group-hover:brightness-90 transition"
+                    className="object-cover w-full rounded-lg shadow-md aspect-square group-hover:brightness-90 transition"
                   />
-                  <span className="absolute bottom-2 right-2 bg-white/30 text-xs text-gray-700 px-2 py-1 rounded shadow group-hover:bg-primary-dark-pink group-hover:text-white transition">
+                  <span className="absolute px-2 py-1 text-xs text-gray-700 rounded shadow bottom-2 right-2 bg-white/30 group-hover:bg-primary-dark-pink group-hover:text-white transition">
                     <LucideImage className="text-white" size={16} />
                   </span>
                   {/* Upload progress indicator */}
                   {file.uploadStatus === "uploading" && (
-                    <div className="absolute inset-0 bg-black/50 flex items-center justify-center rounded-lg">
-                      <div className="text-white text-sm font-medium flex flex-col items-center">
+                    <div className="absolute inset-0 flex items-center justify-center rounded-lg bg-black/50">
+                      <div className="flex flex-col items-center text-sm font-medium text-white">
                         <div className="mb-1">
                           {file.uploadProgress === 99
                             ? "Processing..."
                             : `${file.uploadProgress || 0}%`}
                         </div>
                         {file.uploadProgress === 99 && (
-                          <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                          <div className="w-4 h-4 border-b-2 border-white rounded-full animate-spin"></div>
                         )}
                       </div>
                     </div>
@@ -115,26 +115,26 @@ const MessageBubbleContent: React.FC<MessageBubbleContentProps> = ({
                 </div>
               ) : (
                 <div className="relative">
-                  <span className="absolute bottom-2 right-2 bg-white/30 text-xs text-gray-700 px-2 py-1 rounded shadow group-hover:bg-primary-dark-pink group-hover:text-white transition">
+                  <span className="absolute px-2 py-1 text-xs text-gray-700 rounded shadow bottom-2 right-2 bg-white/30 group-hover:bg-primary-dark-pink group-hover:text-white transition">
                     <LucideVideo className="text-white" size={16} />
                   </span>
                   <video
                     src={file.previewUrl}
                     muted
                     aria-label="Video uploading"
-                    className="w-full object-cover rounded-lg shadow-md group-hover:brightness-75 transition aspect-square"
+                    className="object-cover w-full rounded-lg shadow-md group-hover:brightness-75 transition aspect-square"
                   />
                   {/* Upload progress indicator */}
                   {file.uploadStatus === "uploading" && (
-                    <div className="absolute inset-0 bg-black/50 flex items-center justify-center rounded-lg">
-                      <div className="text-white text-sm font-medium flex flex-col items-center">
+                    <div className="absolute inset-0 flex items-center justify-center rounded-lg bg-black/50">
+                      <div className="flex flex-col items-center text-sm font-medium text-white">
                         <div className="mb-1">
                           {file.uploadProgress === 99
                             ? "Processing..."
                             : `${file.uploadProgress || 0}%`}
                         </div>
                         {file.uploadProgress === 99 && (
-                          <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                          <div className="w-4 h-4 border-b-2 border-white rounded-full animate-spin"></div>
                         )}
                       </div>
                     </div>
@@ -153,7 +153,7 @@ const MessageBubbleContent: React.FC<MessageBubbleContentProps> = ({
           {attachment.map((file: Attachment, idx: number) => (
             <div
               key={file.url || idx}
-              className="p-2 cursor-pointer relative group transition-transform duration-200 hover:scale-105"
+              className="relative p-2 cursor-pointer group transition-transform duration-200 hover:scale-105"
               tabIndex={0}
               aria-label={
                 file.type.includes("image") ? "Image preview" : "Video preview"
@@ -169,9 +169,9 @@ const MessageBubbleContent: React.FC<MessageBubbleContentProps> = ({
                     onClick={() => handlePreview(file, idx)}
                     src={file.url}
                     alt="Uploaded content"
-                    className="w-full object-cover rounded-lg aspect-square group-hover:brightness-90 transition"
+                    className="object-cover w-full rounded-lg aspect-square group-hover:brightness-90 transition"
                   />
-                  <span className="absolute bottom-2 right-2 bg-white/30 text-xs text-gray-700 px-2 py-1 rounded shadow group-hover:bg-primary-dark-pink group-hover:text-white transition">
+                  <span className="absolute px-2 py-1 text-xs text-gray-700 rounded shadow bottom-2 right-2 bg-white/30 group-hover:bg-primary-dark-pink group-hover:text-white transition">
                     <LucideImage className="text-white" size={16} />
                   </span>
                 </div>
@@ -193,16 +193,16 @@ const MessageBubbleContent: React.FC<MessageBubbleContentProps> = ({
                     }}
                     className="object-cover w-full aspect-square"
                   />
-                  <div className="bg-black/40 absolute inset-0 w-full h-full flex items-center justify-center group-hover:bg-black/60 transition">
+                  <div className="absolute inset-0 flex items-center justify-center w-full h-full bg-black/40 group-hover:bg-black/60 transition">
                     <button
-                      className="h-12 w-12 p-1 rounded-full flex items-center justify-center bg-primary-dark-pink/90 aspect-square shadow-lg hover:bg-primary-dark-pink transition"
+                      className="flex items-center justify-center w-12 h-12 p-1 rounded-full shadow-lg bg-primary-dark-pink/90 aspect-square hover:bg-primary-dark-pink transition"
                       tabIndex={-1}
                       aria-label="Play video"
                     >
                       <HiPlay className="text-white" size={40} />
                     </button>
                   </div>
-                  <span className="absolute bottom-2 right-2 bg-white/30 text-xs text-gray-700 px-2 py-1 rounded shadow group-hover:bg-primary-dark-pink group-hover:text-white transition">
+                  <span className="absolute px-2 py-1 text-xs text-gray-700 rounded shadow bottom-2 right-2 bg-white/30 group-hover:bg-primary-dark-pink group-hover:text-white transition">
                     <LucideVideo className="text-white" size={16} />
                   </span>
                 </div>

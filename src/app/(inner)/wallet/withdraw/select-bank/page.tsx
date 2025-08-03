@@ -28,7 +28,7 @@ const BankCard = ({
     <li>
       <button
         onClick={() => onSelect(bank.id)}
-        className="w-full flex flex-col items-start p-4 border border-gray-200 rounded-lg hover:border-primary-dark-pink transition-colors focus:outline-none focus:ring-2 focus:ring-primary-dark-pink cursor-pointer"
+        className="flex flex-col items-start w-full p-4 border border-gray-200 rounded-lg cursor-pointer hover:border-primary-dark-pink transition-colors focus:outline-none focus:ring-2 focus:ring-primary-dark-pink"
       >
         <span className="font-medium text-primary-dark-pink">
           {bank.bank_name}
@@ -130,14 +130,14 @@ export default function ConfirmWithdrawPage() {
           <p className="text-lg font-medium text-red-500">{error}</p>
           <button
             onClick={getBanks}
-            className="mt-4 px-4 py-2 bg-primary-dark-pink text-white rounded-lg hover:bg-primary-dark-pink/80 transition-colors"
+            className="px-4 py-2 mt-4 text-white rounded-lg bg-primary-dark-pink hover:bg-primary-dark-pink/80 transition-colors"
           >
             Retry
           </button>
         </div>
       ) : banks.length > 0 ? (
-        <div className="w-full max-w-md bg-white rounded-lg shadow p-6">
-          <h2 className="text-lg font-semibold mb-4 text-center">
+        <div className="w-full max-w-md p-6 bg-white rounded-lg shadow">
+          <h2 className="mb-4 text-lg font-semibold text-center">
             Select a bank to withdraw to
           </h2>
           <ul className="space-y-3">
@@ -151,13 +151,13 @@ export default function ConfirmWithdrawPage() {
           </ul>
         </div>
       ) : (
-        <div className="flex items-center flex-col justify-center py-8">
+        <div className="flex flex-col items-center justify-center py-8">
           <p className="text-lg font-medium text-gray-500">
             No banks available.
           </p>
           <Link
             href="/wallet/add"
-            className="mt-4 px-4 py-2 bg-primary-dark-pink text-white rounded-lg hover:bg-primary-dark-pink/80 transition-colors cursor-pointer flex items-center"
+            className="flex items-center px-4 py-2 mt-4 text-white rounded-lg cursor-pointer bg-primary-dark-pink hover:bg-primary-dark-pink/80 transition-colors"
           >
             <LucideBuilding2 className="w-4 h-4 mr-2" />
             Add a bank

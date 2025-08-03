@@ -68,9 +68,9 @@ const QuickPostActionHooks = ({ options }: QuickPostActionsProps) => {
       <div class="fixed z-[200] inset-0 bg-black/50 flex items-center justify-center"
           id="modal-bg"
       >
-          <div class="bg-white dark:bg-slate-800 p-5 aspect-video rounded-md">
-              <h1 class="text-lg font-semibold mb-5 dark:text-white">Set visibility</h1>
-              <select class="w-72 mt-2 p-3 rounded-md border-collapse bg-transparent border dark:border-slate-700 dark:bg-slate-900 text-black dark:text-white" name="visibility" id="visibility">
+          <div class="p-5 bg-white dark:bg-slate-800 aspect-video rounded-md">
+              <h1 class="mb-5 text-lg font-semibold dark:text-white">Set visibility</h1>
+              <select class="p-3 mt-2 text-black bg-transparent border border-collapse w-72 rounded-md dark:border-slate-700 dark:bg-slate-900 dark:text-white" name="visibility" id="visibility">
                   ${
                     user && user.is_model && user.Model?.verification_status
                       ? `
@@ -95,7 +95,7 @@ const QuickPostActionHooks = ({ options }: QuickPostActionsProps) => {
                 options.post_audience === "price" ? "block" : "none"
               };">
                 <label for="price-input" class="block mt-4 mb-2 text-sm font-medium text-gray-700 dark:text-gray-200">Set Price</label>
-                <input type="number" min="1" step="any" id="price-input" class="w-72 p-3 rounded-md border border-gray-300 dark:border-slate-700 bg-transparent dark:bg-slate-900 text-black dark:text-white" placeholder="Enter price" value="${
+                <input type="number" min="1" step="any" id="price-input" class="p-3 text-black bg-transparent border border-gray-300 w-72 rounded-md dark:border-slate-700 dark:bg-slate-900 dark:text-white" placeholder="Enter price" value="${
                   options.price ?? ""
                 }" />
               </div>
@@ -194,13 +194,13 @@ const QuickPostActionHooks = ({ options }: QuickPostActionsProps) => {
             </div>
 
             <div class="space-y-3">
-              <p class="text-sm text-gray-600 font-medium">Copy link</p>
+              <p class="text-sm font-medium text-gray-600">Copy link</p>
               <div class="flex items-center space-x-2">
-                <div class="flex-1 p-3 bg-gray-100 rounded-lg truncate">
+                <div class="flex-1 p-3 truncate bg-gray-100 rounded-lg">
                   <p class="text-sm text-gray-600">${process.env.NEXT_PUBLIC_SERVER_URL}/posts/${options.post_id}</p>
                 </div>
                 <button onclick="navigator.clipboard.writeText('${process.env.NEXT_PUBLIC_SERVER_URL}/posts/${options.post_id}').then(() => swal('Link copied!', '', 'success'))"
-                  class="p-3 rounded-lg transition-colors bg-primary-dark-pink text-white hover:bg-primary-text-dark-pink">
+                  class="p-3 text-white rounded-lg transition-colors bg-primary-dark-pink hover:bg-primary-text-dark-pink">
                   <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path>
                     <rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect>

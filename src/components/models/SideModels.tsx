@@ -32,11 +32,10 @@ const SideModels = () => {
   const router = useRouter();
 
   // Use the custom hook for models and hookups
-  const { data, isLoading, error, isEmpty, hasLoadedData, refetch } =
-    useModelsAndHookups({
-      staleTime: 2 * 60 * 1000, // 2 minutes
-      refetchInterval: 5 * 60 * 1000, // 5 minutes
-    });
+  const { data, isLoading, error, refetch } = useModelsAndHookups({
+    staleTime: 2 * 60 * 1000, // 2 minutes
+    refetchInterval: 5 * 60 * 1000, // 5 minutes
+  });
 
   const handleSearchKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter" && e.currentTarget.value) {
@@ -52,16 +51,16 @@ const SideModels = () => {
   }
 
   return (
-    <div className="p-4 lg:block hidden lg:col-span-3 dark:text-white">
+    <div className="hidden p-4 lg:block lg:col-span-3 dark:text-white">
       <div className="max-w-[450px]">
-        <div className="relative overflow-auto mb-8">
-          <label className="flex justify-between border dark:border-slate-700 dark:text-white border-black/40 rounded-md pr-5 overflow-hidden">
+        <div className="relative mb-8 overflow-auto">
+          <label className="flex justify-between pr-5 overflow-hidden border dark:border-slate-700 dark:text-white border-black/40 rounded-md">
             <input
               onKeyDown={handleSearchKeyDown}
               type="search"
               name="q"
               id="search"
-              className="p-4 dark:bg-black w-full border-black/40 outline-none"
+              className="w-full p-4 outline-none dark:bg-black border-black/40"
               placeholder="Search Paymefans"
             />
             <button>
@@ -74,12 +73,12 @@ const SideModels = () => {
         </div>
 
         <div>
-          <div className="flex align-middle justify-between pb-6 dark:text-white">
+          <div className="flex justify-between pb-6 align-middle dark:text-white">
             <span className="font-bold">Models/Creators</span>
             <span>
               <Link
                 href="/models"
-                className="bg-primary-dark-pink text-white px-3 text-sm py-1 font-semibold rounded-md"
+                className="px-3 py-1 text-sm font-semibold text-white bg-primary-dark-pink rounded-md"
               >
                 View All
               </Link>
@@ -96,7 +95,7 @@ const SideModels = () => {
                 {error && (
                   <button
                     onClick={() => refetch()}
-                    className="bg-primary-dark-pink text-white px-3 py-1 text-sm rounded-md hover:opacity-80"
+                    className="px-3 py-1 text-sm text-white bg-primary-dark-pink rounded-md hover:opacity-80"
                   >
                     Retry
                   </button>
@@ -117,12 +116,12 @@ const SideModels = () => {
 
         <hr className="dark:border-slate-800 border-black/40" />
 
-        <div className="flex align-middle justify-between my-8">
+        <div className="flex justify-between my-8 align-middle">
           <span className="font-bold">Hookup</span>
           <span>
             <Link
               href="/hookup"
-              className="bg-primary-dark-pink text-white px-3 text-sm py-1 font-semibold rounded-md"
+              className="px-3 py-1 text-sm font-semibold text-white bg-primary-dark-pink rounded-md"
             >
               View All
             </Link>
@@ -139,7 +138,7 @@ const SideModels = () => {
             {error && (
               <button
                 onClick={() => refetch()}
-                className="bg-primary-dark-pink text-white px-3 py-1 text-sm rounded-md hover:opacity-80"
+                className="px-3 py-1 text-sm text-white bg-primary-dark-pink rounded-md hover:opacity-80"
               >
                 Retry
               </button>

@@ -34,7 +34,7 @@ const ProfilePage = async () => {
             width={1950}
             height={650}
             priority
-            className="inset-0 aspect-21-9 object-cover w-full h-full"
+            className="inset-0 object-cover w-full h-full aspect-21-9"
           />
         </div>
         <div className="relative flex w-full px-2 md:px-5">
@@ -45,9 +45,9 @@ const ProfilePage = async () => {
             priority
             unoptimized
             width={100}
-            className="absolute object-cover md:w-24 md:h-24 w-20 h-20 sm:border-4 border-2 rounded-full md:-top-12  -top-6 border-primary-dark-pink "
+            className="absolute object-cover w-20 h-20 border-2 rounded-full md:w-24 md:h-24 sm:border-4 md:-top-12  -top-6 border-primary-dark-pink"
           />
-          <div className="flex items-center gap-3 sm:p-3 ml-auto p-3  ">
+          <div className="flex items-center p-3 ml-auto gap-3 sm:p-3 ">
             <EditProfileButton user={user} />
             <MoreProfileOptions
               user={user as AuthUserProps}
@@ -55,7 +55,7 @@ const ProfilePage = async () => {
             />
           </div>
         </div>
-        <div className="flex flex-col gap-2 px-2 mt-2 mb-6 md:px-5 items-start">
+        <div className="flex flex-col items-start px-2 mt-2 mb-6 gap-2 md:px-5">
           <div className="flex flex-col">
             <h1 className="font-bold text-gray-900 dark:text-gray-100">
               {user?.name ? user.name : ""}
@@ -65,7 +65,7 @@ const ProfilePage = async () => {
             </small>
           </div>
           <div
-            className="font-medium mb-2 leading-loose text-gray-700 dark:text-gray-300"
+            className="mb-2 font-medium leading-loose text-gray-700 dark:text-gray-300"
             dangerouslySetInnerHTML={{
               __html: user?.bio
                 ? user?.bio?.replace(/(?:\r\n|\r|\n)/g, "<br>")
@@ -77,10 +77,10 @@ const ProfilePage = async () => {
               <Link
                 href={user.website ? user.website : ""}
                 target="_blank"
-                className="font-medium text-primary-text-dark-pink dark:text-primary-dark-pink text-sm mb-2 inline-block"
+                className="inline-block mb-2 text-sm font-medium text-primary-text-dark-pink dark:text-primary-dark-pink"
               >
                 <LucideLink
-                  className="text-primary-dark-pink inline-block mr-2"
+                  className="inline-block mr-2 text-primary-dark-pink"
                   size={18}
                 />
                 {user.website ? user.website : ""}
@@ -88,8 +88,8 @@ const ProfilePage = async () => {
             </>
           )}
 
-          <div className="flex gap-3 flex-wrap text-sm items-center font-semibold text-gray-700 dark:text-gray-300 mb-2">
-            <span className="flex gap-2 items-center">
+          <div className="flex flex-wrap items-center mb-2 text-sm font-semibold text-gray-700 gap-3 dark:text-gray-300">
+            <span className="flex items-center gap-2">
               <LucideMapPin className="text-primary-dark-pink" size={18} />
               <span>
                 {user && user.state ? user.state + "," : ""} {user?.location}
@@ -128,13 +128,13 @@ const ProfilePage = async () => {
           <ProfileSocialLinks Settings={user?.Settings} />
           {user?.is_model && (
             <>
-              <div className="p-4 rounded-lg bg-gray-50 dark:bg-gray-800 text-gray-700 dark:text-gray-300 w-full border border-black/10">
-                <h2 className="text-lg font-semibold mb-2">
+              <div className="w-full p-4 text-gray-700 border rounded-lg bg-gray-50 dark:bg-gray-800 dark:text-gray-300 border-black/10">
+                <h2 className="mb-2 text-lg font-semibold">
                   Creator Dashboard
                 </h2>
                 <Link
                   href={"/analytics"}
-                  className="text-primary-text-dark-pink dark:text-primary-dark-pink hover:underline text-sm"
+                  className="text-sm text-primary-text-dark-pink dark:text-primary-dark-pink hover:underline"
                 >
                   <p className="mb-2">
                     View your account performance and engagement metrics

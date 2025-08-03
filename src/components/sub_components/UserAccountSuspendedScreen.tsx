@@ -39,21 +39,21 @@ const UserAccountSupendedScreen = ({ user }: { user: any }) => {
 
   return (
     <>
-      <div className="bg-white dark:bg-gray-950 min-h-dvh flex items-center justify-center">
-        <div className="lg:max-w-md w-full h-dvh lg:h-auto bg-white dark:bg-gray-800 lg:rounded-xl lg:shadow-lg overflow-hidden">
+      <div className="flex items-center justify-center bg-white dark:bg-gray-950 min-h-dvh">
+        <div className="w-full overflow-hidden bg-white lg:max-w-md h-dvh lg:h-auto dark:bg-gray-800 lg:rounded-xl lg:shadow-lg">
           {/* Status Bar */}
-          <div className="bg-red-500 px-6 py-3 flex items-center">
-            <AlertCircle className="text-white mr-2" size={20} />
-            <p className="text-white font-medium">Account Status: Suspended</p>
+          <div className="flex items-center px-6 py-3 bg-red-500">
+            <AlertCircle className="mr-2 text-white" size={20} />
+            <p className="font-medium text-white">Account Status: Suspended</p>
           </div>
 
           {/* Main Content */}
           <div className="p-6">
-            <div className="flex flex-col items-center text-center mb-8">
-              <div className="w-20 h-20 bg-red-100 dark:bg-red-900/30 rounded-full flex items-center justify-center mb-4">
+            <div className="flex flex-col items-center mb-8 text-center">
+              <div className="flex items-center justify-center w-20 h-20 mb-4 bg-red-100 rounded-full dark:bg-red-900/30">
                 <AlertCircle size={40} className="text-red-500" />
               </div>
-              <h1 className="text-2xl font-bold text-gray-800 dark:text-white mb-2">
+              <h1 className="mb-2 text-2xl font-bold text-gray-800 dark:text-white">
                 Your Account Has Been Suspended
               </h1>
               <p className="text-gray-600 dark:text-gray-300">
@@ -63,8 +63,8 @@ const UserAccountSupendedScreen = ({ user }: { user: any }) => {
             </div>
 
             {/* Information Box */}
-            <div className="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-4 mb-6">
-              <h2 className="font-semibold text-gray-800 dark:text-white mb-2">
+            <div className="p-4 mb-6 rounded-lg bg-gray-50 dark:bg-gray-700/50">
+              <h2 className="mb-2 font-semibold text-gray-800 dark:text-white">
                 What does this mean?
               </h2>
               <ul className="text-sm text-gray-600 dark:text-gray-300 space-y-1">
@@ -75,15 +75,15 @@ const UserAccountSupendedScreen = ({ user }: { user: any }) => {
             </div>
 
             {/* Support Options */}
-            <h2 className="font-semibold text-gray-800 dark:text-white mb-3">
+            <h2 className="mb-3 font-semibold text-gray-800 dark:text-white">
               Contact Support
             </h2>
-            <div className="space-y-3 mb-6">
+            <div className="mb-6 space-y-3">
               <Link
                 href="mailto:support@example.com"
-                className="flex items-center p-3 bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-600 transition"
+                className="flex items-center p-3 bg-white border border-gray-200 rounded-lg dark:bg-gray-700 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-600 transition"
               >
-                <div className="w-10 h-10 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center mr-3">
+                <div className="flex items-center justify-center w-10 h-10 mr-3 bg-blue-100 rounded-full dark:bg-blue-900/30">
                   <Mail size={18} className="text-blue-500" />
                 </div>
                 <div className="flex-1">
@@ -101,7 +101,7 @@ const UserAccountSupendedScreen = ({ user }: { user: any }) => {
             <div className="flex flex-col gap-3">
               <button
                 onClick={handleOpen}
-                className="w-full py-3 bg-primary-dark-pink hover:bg-primary-text-dark-pink text-white font-medium rounded-lg transition flex cursor-pointer items-center justify-center"
+                className="flex items-center justify-center w-full py-3 font-medium text-white rounded-lg cursor-pointer bg-primary-dark-pink hover:bg-primary-text-dark-pink transition"
               >
                 <HelpCircle size={18} className="mr-2" />
                 Request Reactivation
@@ -110,7 +110,7 @@ const UserAccountSupendedScreen = ({ user }: { user: any }) => {
               <LogoutButton
                 user={user}
                 buttonNode={
-                  <span className="w-full py-3 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 font-medium rounded-lg transition flex items-center justify-center hover:bg-gray-50 dark:hover:bg-gray-700">
+                  <span className="flex items-center justify-center w-full py-3 font-medium text-gray-700 border border-gray-300 rounded-lg dark:border-gray-600 dark:text-gray-300 transition hover:bg-gray-50 dark:hover:bg-gray-700">
                     <ArrowLeft size={18} className="mr-2" />
                     Logout
                   </span>

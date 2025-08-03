@@ -10,7 +10,7 @@ const ModelsPage = async () => {
         <>
             <div className="block p-4 md:p-8" >
                 <div className="flex items-center mb-7  lg:hidden">
-                    <span className="font-bold text-xl flex-shrink-0">Models/Creators</span>
+                    <span className="flex-shrink-0 text-xl font-bold">Models/Creators</span>
                 </div>
                 <ModelsPageSearch />
             </div>

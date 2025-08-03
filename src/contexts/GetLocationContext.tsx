@@ -4,7 +4,6 @@ import { AuthUserProps } from "@/types/User";
 import { useCallback, useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { MapPin, Users, Eye, X, Check } from "lucide-react";
-import { getSocket } from "@/components/sub_components/sub/Socket";
 import axiosInstance from "@/utils/Axios";
 
 export default function GetLocationContext({
@@ -19,29 +18,19 @@ export default function GetLocationContext({
   const [locationStatus, setLocationStatus] = useState<
     "pending" | "granted" | "denied" | null
   >(null);
-  const socket = getSocket();
 
-  // Function to send location data to the server
-  const sendLocationToServer = useCallback(
-    async (locationData: any) => {
-      try {
-        // Send via API
-        await axiosInstance.post("/hookup/location", {
-          latitude: locationData.latitude,
-          longitude: locationData.longitude,
-        });
-
-        // Also send via socket for real-time updates
-        socket?.emit("user-location", {
-          latitude: locationData.latitude,
-          longitude: locationData.longitude,
-        });
-      } catch (error) {
-        console.error("Error sending location to server:", error);
-      }
-    },
-    [socket],
-  );
+  // Function to send location data to the server via HTTP
+  const sendLocationToServer = useCallback(async (locationData: any) => {
+    try {
+      await axiosInstance.post("/hookup/location", {
+        latitude: locationData.latitude,
+        longitude: locationData.longitude,
+      });
+      console.log("Location sent successfully via HTTP");
+    } catch (error) {
+      console.error("Error sending location to server:", error);
+    }
+  }, []);
 
   // Function to update location without showing the modal
   const updateLocationInBackground = useCallback(() => {
@@ -201,15 +190,15 @@ export default function GetLocationContext({
               animate={{ scale: 1, opacity: 1, y: 0 }}
               exit={{ scale: 0.9, opacity: 0, y: 20 }}
               transition={{ type: "spring", duration: 0.5 }}
-              className="bg-white dark:bg-gray-900 rounded-2xl shadow-2xl max-w-md w-full overflow-hidden"
+              className="w-full max-w-md overflow-hidden bg-white shadow-2xl dark:bg-gray-900 rounded-2xl"
             >
               {/* Header */}
-              <div className="relative bg-gradient-to-br from-purple-500 to-purple-600 p-6 text-white">
+              <div className="relative p-6 text-white bg-gradient-to-br from-purple-500 to-purple-600">
                 <motion.button
                   whileHover={{ scale: 1.1 }}
                   whileTap={{ scale: 0.9 }}
                   onClick={handleLocationDecline}
-                  className="absolute top-4 right-4 p-1 rounded-full hover:bg-white/20 transition-colors"
+                  className="absolute p-1 rounded-full top-4 right-4 hover:bg-white/20 transition-colors"
                 >
                   <X className="w-5 h-5" />
                 </motion.button>
@@ -218,7 +207,7 @@ export default function GetLocationContext({
                   initial={{ scale: 0 }}
                   animate={{ scale: 1 }}
                   transition={{ delay: 0.2, type: "spring" }}
-                  className="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-4"
+                  className="flex items-center justify-center w-16 h-16 mx-auto mb-4 rounded-full bg-white/20"
                 >
                   <MapPin className="w-8 h-8" />
                 </motion.div>
@@ -227,7 +216,7 @@ export default function GetLocationContext({
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.3 }}
-                  className="text-2xl font-bold text-center mb-2"
+                  className="mb-2 text-2xl font-bold text-center"
                 >
                   Share Your Location
                 </motion.h2>
@@ -248,7 +237,7 @@ export default function GetLocationContext({
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.5 }}
-                  className="space-y-4 mb-6"
+                  className="mb-6 space-y-4"
                 >
                   {benefits.map((benefit, index) => (
                     <motion.div
@@ -258,11 +247,11 @@ export default function GetLocationContext({
                       transition={{ delay: 0.6 + index * 0.1 }}
                       className="flex items-start space-x-3"
                     >
-                      <div className="flex-shrink-0 w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center text-blue-600">
+                      <div className="flex items-center justify-center flex-shrink-0 w-10 h-10 text-blue-600 bg-blue-100 rounded-full">
                         {benefit.icon}
                       </div>
                       <div>
-                        <h3 className="font-semibold dark:text-white text-gray-900 mb-1">
+                        <h3 className="mb-1 font-semibold text-gray-900 dark:text-white">
                           {benefit.title}
                         </h3>
                         <p className="text-sm text-gray-600 dark:text-white">
@@ -278,9 +267,9 @@ export default function GetLocationContext({
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ delay: 0.9 }}
-                  className="bg-gray-50 dark:bg-gray-800 rounded-lg p-3 mb-6"
+                  className="p-3 mb-6 rounded-lg bg-gray-50 dark:bg-gray-800"
                 >
-                  <p className="text-xs text-gray-600 text-center dark:text-white">
+                  <p className="text-xs text-center text-gray-600 dark:text-white">
                     🔒 Your exact location is never shared. We only show your
                     general area to help with matching.
                   </p>
@@ -298,7 +287,7 @@ export default function GetLocationContext({
                     whileTap={{ scale: 0.98 }}
                     onClick={handleLocationAccept}
                     disabled={isLoading || locationStatus === "granted"}
-                    className="w-full bg-primary-dark-pink hover:from-blue-600 hover:to-purple-700 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2"
+                    className="flex items-center justify-center w-full px-6 py-3 font-semibold text-white rounded-lg bg-primary-dark-pink hover:from-blue-600 hover:to-purple-700 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed space-x-2"
                   >
                     {isLoading ? (
                       <>
@@ -309,7 +298,7 @@ export default function GetLocationContext({
                             repeat: Infinity,
                             ease: "linear",
                           }}
-                          className="w-5 h-5 border-2 border-white border-t-transparent rounded-full"
+                          className="w-5 h-5 border-2 border-white rounded-full border-t-transparent"
                         />
                         <span>Getting Location...</span>
                       </>
@@ -331,7 +320,7 @@ export default function GetLocationContext({
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
                       onClick={handleLocationDecline}
-                      className="w-full border border-gray-300 hover:border-gray-400 dark:text-white text-gray-700 font-semibold py-3 px-6 rounded-lg transition-all duration-200"
+                      className="w-full px-6 py-3 font-semibold text-gray-700 border border-gray-300 rounded-lg hover:border-gray-400 dark:text-white transition-all duration-200"
                     >
                       Maybe Later
                     </motion.button>
@@ -342,9 +331,9 @@ export default function GetLocationContext({
                   <motion.div
                     initial={{ opacity: 0, scale: 0.9 }}
                     animate={{ opacity: 1, scale: 1 }}
-                    className="mt-4 p-3 bg-red-50 border border-red-200 rounded-lg"
+                    className="p-3 mt-4 border border-red-200 rounded-lg bg-red-50"
                   >
-                    <p className="text-sm text-red-600 text-center">
+                    <p className="text-sm text-center text-red-600">
                       Location access was denied. You can enable it later in
                       your browser settings.
                     </p>

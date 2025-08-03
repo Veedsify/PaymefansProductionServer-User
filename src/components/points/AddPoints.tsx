@@ -239,7 +239,7 @@ const AddPoints = () => {
 
   return (
     <div>
-      <div className="flex items-start gap-2 mb-3">
+      <div className="flex items-start mb-3 gap-2">
         <div className="text-4xl">{symbol}</div>
         <div className="flex-1">
           <input
@@ -305,7 +305,7 @@ const AddPoints = () => {
         <div className="mt-5">
           <button
             onClick={handlePointBuy}
-            className="w-full py-4 font-bold text-white uppercase bg-black dark:bg-primary-dark-pink rounded-md cursor-pointer"
+            className="w-full py-4 font-bold text-white uppercase bg-black cursor-pointer dark:bg-primary-dark-pink rounded-md"
           >
             Add Points
           </button>

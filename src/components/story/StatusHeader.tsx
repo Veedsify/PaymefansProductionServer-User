@@ -1,9 +1,6 @@
 import { StoryHeaderProps } from "@/types/Components";
 import Image from "next/image";
 import Link from "next/link";
-import { Eye } from "lucide-react";
-import { useState } from "react";
-import { useUserAuthContext } from "@/lib/UserUseContext";
 
 const StoriesHeader = ({
   profileImage,
@@ -26,16 +23,16 @@ const StoriesHeader = ({
     );
   };
   return (
-    <div className="absolute top-3 w-full left-0 z-50">
+    <div className="absolute left-0 z-50 w-full top-3">
       <div className="w-full bg-gradient-to-b from-[rgba(0,0,0,0.2)] to-[rgba(0,0,0,0.0)]">
-        <div className="flex items-center justify-between px-4 py-3 md:py-5 bg-transparent">
+        <div className="flex items-center justify-between px-4 py-3 bg-transparent md:py-5">
           {/* Left side - Profile info */}
           <div className="flex items-center space-x-3">
             {/* Back button */}
-            {/* <button className="p-1 hover:bg-gray-700 rounded-full">
+            {/* <button className="p-1 rounded-full hover:bg-gray-700">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                className="h-6 w-6"
+                className="w-6 h-6"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
@@ -50,14 +47,14 @@ const StoriesHeader = ({
             </button> */}
 
             {/* Profile image */}
-            <div className="h-12 w-12 rounded-full overflow-hidden shadow">
+            <div className="w-12 h-12 overflow-hidden rounded-full shadow">
               <Link href={`/${username}`}>
                 <Image
                   height={48}
                   width={48}
                   src={profileImage}
                   alt={username}
-                  className="h-full w-full object-cover"
+                  className="object-cover w-full h-full"
                 />
               </Link>
             </div>

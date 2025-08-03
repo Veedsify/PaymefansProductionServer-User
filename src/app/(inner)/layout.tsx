@@ -81,7 +81,7 @@ export default async function RootLayout({
       </head>
       <body className={`dark:bg-black min-h-dvh`}>
         <ConfigProvider>
-          <UserContextProvider user={user}>
+          <UserContextProvider>
             <GetLocationContext user={user}>
               <QueryProvider>
                 <MessagesConversationProvider>
@@ -111,12 +111,12 @@ export default async function RootLayout({
                       },
                     }}
                   />
-                  <div className="relative grid h-dvh lg:grid-cols-8 select-none">
+                  <div className="relative select-none grid h-dvh lg:grid-cols-8">
                     <ToggleWishListProvider>
                       <div className="col-span-2">
                         <SideBar />
                       </div>
-                      <div className="relative h-dvh col-span-6 overflow-auto border-r border-pink-50">
+                      <div className="relative overflow-auto border-r h-dvh col-span-6 border-pink-50">
                         <Header />
                         <div className="grid lg:grid-cols-6 pt-[66px] lg:pt-[48px] h-dvh">
                           <div className="flex flex-col h-full col-span-3">

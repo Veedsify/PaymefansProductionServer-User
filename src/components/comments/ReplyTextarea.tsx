@@ -38,10 +38,10 @@ const FilesHolder = React.memo(({ file, remove }: FileHolderProps) => {
         alt=""
         width={80}
         height={80}
-        className="rounded-lg w-full aspect-square shadow-lg bg-white object-cover"
+        className="object-cover w-full bg-white rounded-lg shadow-lg aspect-square"
       />
       <span
-        className="absolute top-0 right-0 bg-black text-white flex items-center justify-center w-7 h-7 rounded-full cursor-pointer"
+        className="absolute top-0 right-0 flex items-center justify-center text-white bg-black rounded-full cursor-pointer w-7 h-7"
         onClick={() => remove(file)}
       >
         <X size={20} strokeWidth={3} />
@@ -306,7 +306,7 @@ const ReplyPostComponent = ({ options, isReply }: ReplyPostProps) => {
   return (
     <div>
       {commentSending && (
-        <div className="flex w-full flex-col items-center text-center justify-center p-2">
+        <div className="flex flex-col items-center justify-center w-full p-2 text-center">
           <LucideLoader
             size={30}
             className="animate-spin transition-all duration-300"
@@ -314,17 +314,17 @@ const ReplyPostComponent = ({ options, isReply }: ReplyPostProps) => {
           <p className="text-sm text-gray-500">{progress}%</p>
         </div>
       )}
-      <div className="flex gap-4 items-start mt-5 dark:text-white pb-10 border-black/30 relative">
+      <div className="relative flex items-start pb-10 mt-5 gap-4 dark:text-white border-black/30">
         {/* Mention Suggestions Dropdown */}
         {showMentions && (
           <div
-            className="absolute z-50 bg-white dark:bg-gray-800
-                       border border-gray-300 dark:border-gray-700
-                       rounded-md shadow-lg max-h-60 overflow-y-auto p-1"
+            className="absolute z-50 p-1 overflow-y-auto bg-white border border-gray-300 shadow-lg dark:bg-gray-800
+  dark:border-gray-700
+ rounded-md max-h-60"
             style={{ top: "90px", left: "80px", width: "220px" }}
           >
             {isMentionLoading ? (
-              <div className="p-3 text-center text-sm text-gray-500 dark:text-gray-400">
+              <div className="p-3 text-sm text-center text-gray-500 dark:text-gray-400">
                 Loading...
               </div>
             ) : mentionSuggestions.length > 0 ? (
@@ -348,11 +348,11 @@ const ReplyPostComponent = ({ options, isReply }: ReplyPostProps) => {
                     className="rounded-full"
                   />
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm text-gray-900 dark:text-white truncate">
+                    <p className="text-sm text-gray-900 truncate dark:text-white">
                       {userItem.name}
                       {userItem.isVerified && (
                         <svg
-                          className="w-4 h-4 inline-block ml-1 text-blue-500"
+                          className="inline-block w-4 h-4 ml-1 text-blue-500"
                           fill="currentColor"
                           viewBox="0 0 20 20"
                         >
@@ -371,7 +371,7 @@ const ReplyPostComponent = ({ options, isReply }: ReplyPostProps) => {
                 </div>
               ))
             ) : (
-              <div className="p-3 text-center text-sm text-gray-500 dark:text-gray-400">
+              <div className="p-3 text-sm text-center text-gray-500 dark:text-gray-400">
                 No users found
               </div>
             )}
@@ -384,12 +384,12 @@ const ReplyPostComponent = ({ options, isReply }: ReplyPostProps) => {
             height={65}
             src={user?.profile_image || "/site/avatar.png"}
             alt=""
-            className="w-10 md:w-10 h-auto rounded-full object-cover"
+            className="object-cover w-10 h-auto rounded-full md:w-10"
           />
         </div>
-        <div className="flex-1 flex flex-col items-start">
+        <div className="flex flex-col items-start flex-1">
           <div className="w-full">
-            <p className="mb-1 p-3 text-sm font-semibold">
+            <p className="p-3 mb-1 text-sm font-semibold">
               Replying to{" "}
               <span className="font-bold text-primary-dark-pink">
                 {options.author_username}
@@ -410,7 +410,7 @@ const ReplyPostComponent = ({ options, isReply }: ReplyPostProps) => {
                 className={`block ml-3 leading-none py-2 w-full outline-none border-none resize-none duration-300 transition-all bg-transparent dark:text-white dark:bg-transparent`}
               />
               {!isReply && (
-                <div className="p-2 gap-4 mr-2">
+                <div className="p-2 mr-2 gap-4">
                   <label htmlFor="file" className="cursor-pointer">
                     <LucideCamera size={28} />
                     <input
@@ -426,13 +426,13 @@ const ReplyPostComponent = ({ options, isReply }: ReplyPostProps) => {
               )}
               <button
                 onClick={handleReplyClicked}
-                className="bg-primary-dark-pink hidden mr-1 md:block text-white px-6 py-2 rounded-full"
+                className="hidden px-6 py-2 mr-1 text-white rounded-full bg-primary-dark-pink md:block"
               >
                 Reply
               </button>
               <button
                 onClick={handleReplyClicked}
-                className="bg-primary-dark-pink md:hidden text-white px-3 py-2 mr-1 rounded-full"
+                className="px-3 py-2 mr-1 text-white rounded-full bg-primary-dark-pink md:hidden"
               >
                 <LucideSend size={20} />
               </button>

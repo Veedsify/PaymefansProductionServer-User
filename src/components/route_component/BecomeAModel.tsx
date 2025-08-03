@@ -296,22 +296,22 @@ const BecomeAModel = () => {
   // Render verified model state
   if (userStatus === "verified") {
     return (
-      <div className="m-3 p-8 px-12 rounded-2xl dark:text-white">
+      <div className="p-8 px-12 m-3 rounded-2xl dark:text-white">
         <Image
           src="/icons/feeling_sorry.svg"
           width={300}
           height={300}
           alt="Already verified model"
-          className="w-3/5 mx-auto block"
+          className="block w-3/5 mx-auto"
         />
         <div>
-          <h1 className="text-center mt-6 mb-8 font-bold md:text-3xl text-2xl">
+          <h1 className="mt-6 mb-8 text-2xl font-bold text-center md:text-3xl">
             You&apos;re already a verified model on Paymefans
           </h1>
           <div className="text-center">
             <Link
               href="/profile"
-              className="bg-primary-dark-pink text-white text-sm py-3 px-4 font-bold m-3 rounded-md inline-block"
+              className="inline-block px-4 py-3 m-3 text-sm font-bold text-white bg-primary-dark-pink rounded-md"
             >
               Go to Profile
             </Link>
@@ -324,26 +324,26 @@ const BecomeAModel = () => {
   // Render unverified model state
   if (userStatus === "unverified") {
     return (
-      <div className="m-3 p-8 px-12 rounded-2xl dark:text-white">
+      <div className="p-8 px-12 m-3 rounded-2xl dark:text-white">
         <Image
           src="/icons/feeling_sorry.svg"
           width={300}
           height={300}
           alt="Unverified model"
-          className="w-1/5 mx-auto block"
+          className="block w-1/5 mx-auto"
         />
-        <div className="flex flex-col justify-center items-center">
-          <h1 className="text-center mt-6 mb-8 font-bold md:text-3xl text-2xl">
+        <div className="flex flex-col items-center justify-center">
+          <h1 className="mt-6 mb-8 text-2xl font-bold text-center md:text-3xl">
             Verification Pending
           </h1>
-          <p className="text-center mb-6">
+          <p className="mb-6 text-center">
             You&apos;ve already signed up as a model on Paymefans.
             <br />
             Please complete your verification to start earning.
           </p>
           <Link
             href="/verification"
-            className="bg-primary-dark-pink text-white text-sm py-3 px-4 font-bold rounded-md"
+            className="px-4 py-3 text-sm font-bold text-white bg-primary-dark-pink rounded-md"
           >
             Complete Verification
           </Link>
@@ -354,8 +354,8 @@ const BecomeAModel = () => {
 
   // Main form
   return (
-    <div className="py-8 bg-white dark:bg-gray-900 rounded-2xl p-6">
-      <h1 className="text-2xl font-bold mb-6 text-center text-primary-dark-pink md:hidden block">
+    <div className="p-6 py-8 bg-white dark:bg-gray-900 rounded-2xl">
+      <h1 className="block mb-6 text-2xl font-bold text-center text-primary-dark-pink md:hidden">
         Become a Model
       </h1>
 
@@ -379,7 +379,7 @@ const BecomeAModel = () => {
             }
           />
           {formErrors.firstname && (
-            <p id="firstname-error" className="text-red-500 text-sm mt-1">
+            <p id="firstname-error" className="mt-1 text-sm text-red-500">
               {formErrors.firstname}
             </p>
           )}
@@ -404,7 +404,7 @@ const BecomeAModel = () => {
             }
           />
           {formErrors.lastname && (
-            <p id="lastname-error" className="text-red-500 text-sm mt-1">
+            <p id="lastname-error" className="mt-1 text-sm text-red-500">
               {formErrors.lastname}
             </p>
           )}
@@ -429,7 +429,7 @@ const BecomeAModel = () => {
             aria-describedby={formErrors.dob ? "dob-error" : undefined}
           />
           {formErrors.dob && (
-            <p id="dob-error" className="text-red-500 text-sm mt-1">
+            <p id="dob-error" className="mt-1 text-sm text-red-500">
               {formErrors.dob}
             </p>
           )}
@@ -446,7 +446,7 @@ const BecomeAModel = () => {
             }`}
             onClick={() => setIsDropdownOpen(!isDropdownOpen)}
           >
-            <span className="flex gap-2 items-center text-sm font-semibold">
+            <span className="flex items-center text-sm font-semibold gap-2">
               {selectedGender.icon} {selectedGender.name}
             </span>
             {isDropdownOpen ? (
@@ -457,9 +457,9 @@ const BecomeAModel = () => {
           </button>
 
           {isDropdownOpen && (
-            <div className="absolute z-10 w-full left-0 mt-2 opacity-100 translate-y-0">
+            <div className="absolute left-0 z-10 w-full mt-2 opacity-100 translate-y-0">
               <ul
-                className="bg-white dark:bg-gray-800 rounded-xl shadow-md text-left w-full border border-gray-200 dark:border-gray-700"
+                className="w-full text-left bg-white border border-gray-200 shadow-md dark:bg-gray-800 rounded-xl dark:border-gray-700"
                 role="listbox"
               >
                 {GENDER_OPTIONS.map((option) => (
@@ -467,7 +467,7 @@ const BecomeAModel = () => {
                     key={option.id}
                     data-id={option.id}
                     onClick={handleGenderSelect}
-                    className="p-3 text-sm flex items-center gap-2 text-gray-700 dark:text-gray-200 font-medium hover:bg-primary-dark-pink/10 cursor-pointer transition"
+                    className="flex items-center p-3 text-sm font-medium text-gray-700 cursor-pointer gap-2 dark:text-gray-200 hover:bg-primary-dark-pink/10 transition"
                     role="option"
                     aria-selected={selectedGender.id === option.id}
                   >
@@ -480,7 +480,7 @@ const BecomeAModel = () => {
           )}
 
           {formErrors.audience && (
-            <p className="text-red-500 text-sm mt-1">{formErrors.audience}</p>
+            <p className="mt-1 text-sm text-red-500">{formErrors.audience}</p>
           )}
         </div>
 
@@ -511,41 +511,41 @@ const BecomeAModel = () => {
             <option value="uk">UK</option>
           </select>
           {formErrors.country && (
-            <p className="text-red-500 text-sm mt-1">{formErrors.country}</p>
+            <p className="mt-1 text-sm text-red-500">{formErrors.country}</p>
           )}
         </div>
 
         {/* Availability */}
         <div>
-          <p className="font-medium text-gray-700 dark:text-gray-200 mb-2">
+          <p className="mb-2 font-medium text-gray-700 dark:text-gray-200">
             Are you available hookup?
           </p>
           <div className="flex gap-6">
-            <label className="inline-flex cursor-pointer items-center font-medium gap-2 text-gray-600 dark:text-gray-300">
+            <label className="inline-flex items-center font-medium text-gray-600 cursor-pointer gap-2 dark:text-gray-300">
               <input
                 onChange={handleInputChange}
                 type="radio"
                 name="available"
                 value="yes"
                 checked={formData.available === "yes"}
-                className="accent-primary-dark-pink h-5 w-5 outline-none"
+                className="w-5 h-5 outline-none accent-primary-dark-pink"
               />
               Yes
             </label>
-            <label className="inline-flex cursor-pointer items-center font-medium gap-2 text-gray-600 dark:text-gray-300">
+            <label className="inline-flex items-center font-medium text-gray-600 cursor-pointer gap-2 dark:text-gray-300">
               <input
                 onChange={handleInputChange}
                 type="radio"
                 name="available"
                 value="no"
                 checked={formData.available === "no"}
-                className="accent-primary-dark-pink h-5 w-5 outline-none"
+                className="w-5 h-5 outline-none accent-primary-dark-pink"
               />
               No
             </label>
           </div>
           {formErrors.available && (
-            <p className="text-red-500 text-sm mt-1">{formErrors.available}</p>
+            <p className="mt-1 text-sm text-red-500">{formErrors.available}</p>
           )}
         </div>
 
@@ -553,13 +553,13 @@ const BecomeAModel = () => {
         <button
           type="button"
           onClick={handleSubmit}
-          className="bg-primary-dark-pink w-full p-3 rounded-xl mt-8 text-white font-semibold shadow-md hover:bg-primary-dark-pink/90 transition cursor-pointer flex items-center justify-center disabled:bg-gray-400 disabled:cursor-not-allowed"
+          className="flex items-center justify-center w-full p-3 mt-8 font-semibold text-white shadow-md cursor-pointer bg-primary-dark-pink rounded-xl hover:bg-primary-dark-pink/90 transition disabled:bg-gray-400 disabled:cursor-not-allowed"
           disabled={isSubmitting}
         >
           {isSubmitting ? (
             <>
               Processing Payment
-              <LucideLoader2 className="animate-spin ml-2" size={20} />
+              <LucideLoader2 className="ml-2 animate-spin" size={20} />
             </>
           ) : (
             "Sign Up (₦10,000)"

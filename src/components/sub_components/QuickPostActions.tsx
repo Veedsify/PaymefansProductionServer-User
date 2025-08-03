@@ -46,7 +46,7 @@ const QuickPostActions = ({ options }: QuickPostActionsProps) => {
       <div
         className={`absolute right-0 py-3 z-20 duration-300 transition-all ${open ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"}`}
       >
-        <ul className="bg-white dark:bg-slate-800 dark:border-slate-700 border-black/30 border shadow-2xl overflow-hidden rounded-lg w-52 py-1">
+        <ul className="py-1 overflow-hidden bg-white border rounded-lg shadow-2xl dark:bg-slate-800 dark:border-slate-700 border-black/30 w-52">
           {user?.username === options.username
             ? ownerOptions.map((option, index) => (
                 <li
@@ -57,7 +57,7 @@ const QuickPostActions = ({ options }: QuickPostActionsProps) => {
                     <>
                       <button
                         onClick={option?.func}
-                        className="font-medium dark:text-white text-black flex items-center text-sm py-1 w-full px-3 cursor-pointer"
+                        className="flex items-center w-full px-3 py-1 text-sm font-medium text-black cursor-pointer dark:text-white"
                       >
                         {option?.icon}
                         {option?.name}
@@ -67,7 +67,7 @@ const QuickPostActions = ({ options }: QuickPostActionsProps) => {
                     <>
                       <Link
                         href={option?.link ? option?.link : "#"}
-                        className="font-medium dark:text-white text-black flex items-center text-sm py-1 px-3"
+                        className="flex items-center px-3 py-1 text-sm font-medium text-black dark:text-white"
                       >
                         {option?.icon}
                         {option?.name}
@@ -79,12 +79,12 @@ const QuickPostActions = ({ options }: QuickPostActionsProps) => {
             : publicOptions.map((option, index) => (
                 <li
                   key={index}
-                  className="py-2 hover:bg-gray-50 dark:hover:bg-slate-900 border-b"
+                  className="py-2 border-b hover:bg-gray-50 dark:hover:bg-slate-900"
                 >
                   {!option?.link ? (
                     <button
                       onClick={option?.func}
-                      className="font-medium dark:text-white text-black flex items-center text-sm py-1 w-full px-3 cursor-pointer"
+                      className="flex items-center w-full px-3 py-1 text-sm font-medium text-black cursor-pointer dark:text-white"
                     >
                       {option?.icon}
                       {option?.name}
@@ -92,7 +92,7 @@ const QuickPostActions = ({ options }: QuickPostActionsProps) => {
                   ) : (
                     <Link
                       href={option?.link as string}
-                      className="font-medium dark:text-white text-black flex items-center text-sm py-1 px-3"
+                      className="flex items-center px-3 py-1 text-sm font-medium text-black dark:text-white"
                     >
                       {option?.icon}
                       {option?.name}

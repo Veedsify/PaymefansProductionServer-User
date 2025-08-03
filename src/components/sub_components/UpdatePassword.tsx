@@ -75,21 +75,21 @@ const UpdatePasswords = () => {
             <input
                 type="password"
                 name="oldPassword"
-                className="w-full block border mb-3 border-gray-300 p-4 outline-none text-black rounded-xl dark:border-gray-600 dark:bg-gray-950 dark:text-white"
+                className="block w-full p-4 mb-3 text-black border border-gray-300 outline-none rounded-xl dark:border-gray-600 dark:bg-gray-950 dark:text-white"
                 onChange={handleChange}
                 placeholder="Old Password "
             />
             <input
                 type="password"
                 name="newPassword"
-                className="w-full block border mb-3 border-gray-300 p-4 outline-none text-black rounded-xl dark:border-gray-600 dark:bg-gray-950 dark:text-white"
+                className="block w-full p-4 mb-3 text-black border border-gray-300 outline-none rounded-xl dark:border-gray-600 dark:bg-gray-950 dark:text-white"
                 onChange={handleChange}
                 placeholder="New Password "
             />
             <input
                 type="password"
                 name="confirmNpassword"
-                className="w-full block border mb-3 border-gray-300 p-4 outline-none text-black rounded-xl dark:border-gray-600 dark:bg-gray-950 dark:text-white"
+                className="block w-full p-4 mb-3 text-black border border-gray-300 outline-none rounded-xl dark:border-gray-600 dark:bg-gray-950 dark:text-white"
                 onChange={handleChange}
                 placeholder="Re-enter new Password "
             />
@@ -97,7 +97,7 @@ const UpdatePasswords = () => {
                 type="submit"
                 onClick={handleSubmit}
                 value={"Update Password"}
-                className="w-full block border dark:border-none mb-3 bg-primary-dark-pink p-4 outline-none text-white rounded-xl cursor-pointer"
+                className="block w-full p-4 mb-3 text-white border outline-none cursor-pointer dark:border-none bg-primary-dark-pink rounded-xl"
             />
         </div>
     );

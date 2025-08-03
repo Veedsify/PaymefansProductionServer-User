@@ -56,7 +56,7 @@ const socialLinks = [
 
 const ProfileSocialLinks = ({ Settings }: { Settings: AuthUserProps["Settings"] }) => {
     return (
-        <div className="flex gap-3 flex-wrap text-sm items-center font-semibold text-gray-700 dark:text-gray-300 mb-2">
+        <div className="flex flex-wrap items-center mb-2 text-sm font-semibold text-gray-700 gap-3 dark:text-gray-300">
             {socialLinks.map(({ key, label, icon, alt, color }) =>
                 Settings?.[key as keyof typeof Settings] ? (
                     <Link
@@ -65,7 +65,7 @@ const ProfileSocialLinks = ({ Settings }: { Settings: AuthUserProps["Settings"] 
                         target="_blank"
                         className={`flex gap-2 items-center rounded-full w-32 h-12 border border-gray-200 dark:border-gray-700 p-1 transition-all duration-200 bg-white dark:bg-gray-800 ${color} focus:ring-2 focus:ring-offset-2 focus:ring-blue-400`}
                     >
-                        <Image width={100} height={100} src={icon} alt={alt} className="w-9 h-9 rounded-full" />
+                        <Image width={100} height={100} src={icon} alt={alt} className="rounded-full w-9 h-9" />
                         <span className="truncate">{label}</span>
                     </Link>
                 ) : null

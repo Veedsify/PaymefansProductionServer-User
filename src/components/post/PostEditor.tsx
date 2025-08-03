@@ -436,7 +436,7 @@ const PostEditor = React.memo(({ posts }: PostEditorProps) => {
 
   return (
     <>
-      <div className="md:p-8 p-4 dark:text-white relative">
+      <div className="relative p-4 md:p-8 dark:text-white">
         <div className="flex items-center mb-6">
           <PostCancel />
           <button
@@ -463,7 +463,7 @@ const PostEditor = React.memo(({ posts }: PostEditorProps) => {
             alt="Profile"
             width={56}
             height={56}
-            className="w-14 border border-gray-800 inline-block rounded-full"
+            className="inline-block border border-gray-800 rounded-full w-14"
           />
           <AudienceDropdown
             postAudience={postAudience}
@@ -490,13 +490,13 @@ const PostEditor = React.memo(({ posts }: PostEditorProps) => {
 
           {showMentions && (
             <div
-              className="absolute z-50 w-full bg-white dark:bg-gray-800
-                          border border-gray-300 dark:border-gray-700
-                          rounded-md shadow-lg max-h-60 overflow-y-auto p-1"
+              className="absolute z-50 w-full p-1 overflow-y-auto bg-white border border-gray-300 shadow-lg dark:bg-gray-800
+  dark:border-gray-700
+ rounded-md max-h-60"
               style={{ top: "100%", left: 0 }}
             >
               {isMentionLoading ? (
-                <div className="p-3 text-center text-sm text-gray-500 dark:text-gray-400">
+                <div className="p-3 text-sm text-center text-gray-500 dark:text-gray-400">
                   Loading...
                 </div>
               ) : mentionSuggestions.length > 0 ? (
@@ -521,7 +521,7 @@ const PostEditor = React.memo(({ posts }: PostEditorProps) => {
                     />
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2">
-                        <p className="text-sm font-medium text-gray-900 dark:text-white truncate">
+                        <p className="text-sm font-medium text-gray-900 truncate dark:text-white">
                           {user.name}
                         </p>
                         {user.isVerified && (
@@ -545,7 +545,7 @@ const PostEditor = React.memo(({ posts }: PostEditorProps) => {
                   </div>
                 ))
               ) : (
-                <div className="p-3 text-center text-sm text-gray-500 dark:text-gray-400">
+                <div className="p-3 text-sm text-center text-gray-500 dark:text-gray-400">
                   No users found
                 </div>
               )}
@@ -555,14 +555,14 @@ const PostEditor = React.memo(({ posts }: PostEditorProps) => {
 
         {mentions.length > 0 && (
           <div className="mb-3">
-            <p className="text-xs text-gray-500 dark:text-gray-400 mb-2">
+            <p className="mb-2 text-xs text-gray-500 dark:text-gray-400">
               Mentioned users:
             </p>
             <div className="flex flex-wrap gap-2">
               {mentions.map((mention) => (
                 <div
                   key={mention.id}
-                  className="flex items-center gap-2 bg-gray-100 dark:bg-gray-800 rounded-full px-3 py-1 text-sm"
+                  className="flex items-center px-3 py-1 text-sm bg-gray-100 rounded-full gap-2 dark:bg-gray-800"
                 >
                   <Image
                     src={mention.avatar || "/site/avatar.png"}
@@ -578,7 +578,7 @@ const PostEditor = React.memo(({ posts }: PostEditorProps) => {
                         prev.filter((m) => m.id !== mention.id),
                       )
                     }
-                    className="text-gray-500 hover:text-red-500 ml-1"
+                    className="ml-1 text-gray-500 hover:text-red-500"
                   >
                     ×
                   </button>
@@ -589,7 +589,7 @@ const PostEditor = React.memo(({ posts }: PostEditorProps) => {
         )}
 
         <div className="mt-10">
-          <p className="text-xs text-gray-400 font-medium">
+          <p className="text-xs font-medium text-gray-400">
             {wordLimit} characters remaining
           </p>
         </div>
@@ -597,7 +597,7 @@ const PostEditor = React.memo(({ posts }: PostEditorProps) => {
 
       {/* Existing Media Preview */}
       {editedMedia.length > 0 && !date && (
-        <div className="md:px-8 px-4">
+        <div className="px-4 md:px-8">
           <ExistingMediaPreview
             media={editedMedia}
             onRemove={removeExistingMedia}
@@ -637,12 +637,12 @@ const AudienceDropdown = React.memo(
     config: any;
   }) => {
     return (
-      <div className="flex items-center gap-4 w-full">
+      <div className="flex items-center w-full gap-4">
         <button
-          className="border inline-block border-gray-800 ml-2 rounded-3xl px-3 text-gray-800 dark:text-gray-200 text-sm relative"
+          className="relative inline-block px-3 ml-2 text-sm text-gray-800 border border-gray-800 rounded-3xl dark:text-gray-200"
           onClick={() => setDropdown(!dropdown)}
         >
-          <span className="flex justify-start text-left gap-3 items-center font-medium text-sm p-2 transition-all duration-300 cursor-pointer w-40">
+          <span className="flex items-center justify-start w-40 p-2 text-sm font-medium text-left cursor-pointer gap-3 transition-all duration-300">
             {postAudience?.icon}
             <span className="flex-1">{postAudience?.name}</span>
             {dropdown ? (
@@ -658,12 +658,12 @@ const AudienceDropdown = React.memo(
                 : "opacity-0 -translate-y-4 pointer-events-none"
             }`}
           >
-            <ul className="bg-white dark:bg-gray-950 rounded-2xl overflow-hidden mt-2 border border-gray-800 text-left w-full">
+            <ul className="w-full mt-2 overflow-hidden text-left bg-white border border-gray-800 dark:bg-gray-950 rounded-2xl">
               {postAudienceData.map((audience) => (
                 <li
                   key={audience.id}
                   onClick={() => updatePostAudience(audience)}
-                  className="p-3 pr-5 text-sm flex items-center gap-2 text-gray-600 dark:text-gray-400 font-medium dark:hover:bg-slate-800 hover:bg-violet-50 cursor-pointer"
+                  className="flex items-center p-3 pr-5 text-sm font-medium text-gray-600 cursor-pointer gap-2 dark:text-gray-400 dark:hover:bg-slate-800 hover:bg-violet-50"
                 >
                   {audience.icon}
                   {audience.name}
@@ -674,7 +674,7 @@ const AudienceDropdown = React.memo(
         </button>
         {postAudience?.name === "Price" && (
           <div className="flex items-center gap-1">
-            <div className="flex items-center border border-gray-800 rounded-3xl px-3 text-gray-800 dark:text-gray-200 text-sm">
+            <div className="flex items-center px-3 text-sm text-gray-800 border border-gray-800 rounded-3xl dark:text-gray-200">
               <Image
                 width={20}
                 height={20}
@@ -695,7 +695,7 @@ const AudienceDropdown = React.memo(
                 className="outline-0 border-0 rounded-3xl px-1 text-base py-[6px] text-gray-800 dark:text-gray-200"
               />
               {price > 0 && config?.point_conversion_rate_ngn && (
-                <p className="text-primary-dark-pink ml-auto">
+                <p className="ml-auto text-primary-dark-pink">
                   ≈ ₦
                   {(price * config.point_conversion_rate_ngn).toLocaleString()}
                 </p>

@@ -27,8 +27,8 @@ const Store = () => {
 
   return (
     <section>
-      <div className="mx-auto max-w-screen-xl px-4 py-8 sm:px-6 sm:py-12 lg:px-8">
-        <div className="font-bold text-xl flex-shrink-0 mb-3 md:hidden">
+      <div className="px-4 py-8 mx-auto max-w-screen-xl sm:px-6 sm:py-12 lg:px-8">
+        <div className="flex-shrink-0 mb-3 text-xl font-bold md:hidden">
           Store
         </div>
         <header>
@@ -38,14 +38,14 @@ const Store = () => {
             </h2>
             <CartIcon />
           </div>
-          <p className="mt-4 max-w-md text-gray-500 dark:text-white">
+          <p className="max-w-md mt-4 text-gray-500 dark:text-white">
             Paymefans store is a platform where you can buy products and
             merchandise from your favorite models. We offer a wide range of
             products, including clothing, accessories, and more.
           </p>
           <Link
             href="/store/orders"
-            className="text-primary-dark-pink font-medium inline-flex"
+            className="inline-flex font-medium text-primary-dark-pink"
           >
             View My Orders <LucideArrowRight size={20} />
           </Link>
@@ -74,7 +74,7 @@ const Store = () => {
                 <li key={product.id}>
                   <Link
                     href={`/store/product/${product.product_id}`}
-                    className="group block overflow-hidden"
+                    className="block overflow-hidden group"
                   >
                     <Image
                       src={product.images[0]?.image_url || "/placeholder.png"}
@@ -84,13 +84,13 @@ const Store = () => {
                       priority
                       className="aspect-[3/4] w-full object-cover transition duration-500 group-hover:scale-105"
                     />
-                    <div className="relative bg-white pt-3 p-3 dark:bg-slate-900 dark:text-white">
+                    <div className="relative p-3 pt-3 bg-white dark:bg-slate-900 dark:text-white">
                       <p className="mb-2">
-                        <span className="tracking-wider text-xl text-gray-900 dark:text-white">
+                        <span className="text-xl tracking-wider text-gray-900 dark:text-white">
                           {product.name}
                         </span>
                       </p>
-                      <h3 className="dark:text-white text-gray-700 group-hover:underline group-hover:underline-offset-4">
+                      <h3 className="text-gray-700 dark:text-white group-hover:underline group-hover:underline-offset-4">
                         ₦ {numeral(product.price).format("0,0.00")}
                       </h3>
                     </div>
@@ -103,7 +103,7 @@ const Store = () => {
                 <button
                   onClick={() => fetchNextPage()}
                   disabled={isFetchingNextPage}
-                  className="px-6 py-2 rounded bg-blue-600 text-white font-semibold hover:bg-blue-700 disabled:opacity-50 flex items-center gap-2"
+                  className="flex items-center px-6 py-2 font-semibold text-white bg-blue-600 rounded hover:bg-blue-700 disabled:opacity-50 gap-2"
                 >
                   {isFetchingNextPage ? (
                     <>

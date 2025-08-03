@@ -12,7 +12,7 @@ const HeaderImgClick = () => {
                 className="block w-12 h-12 border-2 border-white rounded-full cursor-pointer"
                 onClick={() => setSideBar(true)}
             >
-                <Image width={50} height={50} priority src={user?.profile_image || "/site/avatar.png"} alt="" className="w-full h-full object-cover rounded-full" />
+                <Image width={50} height={50} priority src={user?.profile_image || "/site/avatar.png"} alt="" className="object-cover w-full h-full rounded-full" />
             </span>
         </li>
     );

@@ -28,7 +28,7 @@ export default function useThemeToggle() {
   //   return (
   //     <button
   //       onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-  //       className="p-2 bg-gray-200 dark:bg-gray-800 rounded"
+  //       className="p-2 bg-gray-200 rounded dark:bg-gray-800"
   //     >
   //       {theme === "dark" ? "🌙 Dark Mode" : "☀️ Light Mode"}
   //     </button>

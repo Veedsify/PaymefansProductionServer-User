@@ -164,7 +164,7 @@ const ReportModal = ({
         initial={{ opacity: 0, scale: 0.9 }}
         animate={{ opacity: 1, scale: 1 }}
         exit={{ opacity: 0, scale: 0.9 }}
-        className="bg-white dark:bg-gray-800 rounded-2xl p-6 w-full max-w-md mx-4"
+        className="w-full max-w-md p-6 mx-4 bg-white dark:bg-gray-800 rounded-2xl"
       >
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
@@ -180,13 +180,13 @@ const ReportModal = ({
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            <label className="block mb-2 text-sm font-medium text-gray-700 dark:text-gray-300">
               Report Type
             </label>
             <select
               value={reportType}
               onChange={(e) => setReportType(e.target.value)}
-              className="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+              className="w-full p-3 text-gray-900 bg-white border border-gray-300 rounded-lg dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
               required
             >
               <option value="">Select a reason</option>
@@ -201,34 +201,34 @@ const ReportModal = ({
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            <label className="block mb-2 text-sm font-medium text-gray-700 dark:text-gray-300">
               Additional Details
             </label>
             <textarea
               value={reportReason}
               onChange={(e) => setReportReason(e.target.value)}
               placeholder="Please provide more details about this report..."
-              className="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 resize-none"
+              className="w-full p-3 text-gray-900 bg-white border border-gray-300 rounded-lg resize-none dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
               rows={4}
               required
             />
           </div>
 
-          <div className="flex gap-3 pt-4">
+          <div className="flex pt-4 gap-3">
             <button
               type="button"
               onClick={onClose}
-              className="flex-1 py-3 px-4 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700"
+              className="flex-1 px-4 py-3 text-gray-700 border border-gray-300 rounded-lg dark:border-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={isSubmitting}
-              className="flex-1 py-3 px-4 bg-red-600 hover:bg-red-700 text-white rounded-lg disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
+              className="flex items-center justify-center flex-1 px-4 py-3 text-white bg-red-600 rounded-lg hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {isSubmitting ? (
-                <LucideLoader2 className="animate-spin w-4 h-4" />
+                <LucideLoader2 className="w-4 h-4 animate-spin" />
               ) : (
                 "Submit Report"
               )}
@@ -400,17 +400,17 @@ const SearchPage = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-white dark:bg-black text-gray-900 dark:text-gray-100">
-      <div className="max-w-6xl mx-auto px-4 lg:px-6 py-6">
+    <div className="min-h-screen text-gray-900 bg-white dark:bg-black dark:text-gray-100">
+      <div className="max-w-6xl px-4 py-6 mx-auto lg:px-6">
         {/* Search Bar */}
         <motion.div
           initial={{ y: -20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ duration: 0.5, ease: "easeOut" }}
-          className="sticky top-0 z-20 bg-white dark:bg-black py-6 -mx-2"
+          className="sticky top-0 z-20 py-6 -mx-2 bg-white dark:bg-black"
         >
           <div className="relative mx-auto">
-            <div className="relative overflow-hidden rounded-lg bg-white dark:bg-black dark:border-gray-700 shadow hover:shadow-xl transition-shadow duration-300 border border-primary-dark-pink/15">
+            <div className="relative overflow-hidden bg-white border rounded-lg shadow dark:bg-black dark:border-gray-700 hover:shadow-xl transition-shadow duration-300 border-primary-dark-pink/15">
               <input
                 ref={ref}
                 type="text"
@@ -419,16 +419,16 @@ const SearchPage = () => {
                 autoComplete={"false"}
                 defaultValue={searchQuery}
                 onChange={handleTypingSearch}
-                className="w-full py-4 pl-14 pr-14 bg-transparent border-0 focus:ring-0 outline-none text-gray-700 dark:text-gray-200 placeholder-gray-400 text-base"
+                className="w-full py-4 text-base text-gray-700 placeholder-gray-400 bg-transparent border-0 outline-none pl-14 pr-14 focus:ring-0 dark:text-gray-200"
                 placeholder="Search PaymeFans..."
               />
               <LucideBot
-                className="absolute left-5 top-1/2 transform -translate-y-1/2 text-gray-400"
+                className="absolute text-gray-400 left-5 top-1/2 transform -translate-y-1/2"
                 size={20}
               />
               <button
                 onClick={HandleSearch}
-                className="absolute right-4 top-1/2 transform -translate-y-1/2 p-2 rounded-lg text-gray-400 hover:text-primary-dark-pink hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-all duration-200"
+                className="absolute p-2 text-gray-400 rounded-lg right-4 top-1/2 transform -translate-y-1/2 hover:text-primary-dark-pink hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-all duration-200"
               >
                 <LucideSearch size={18} />
               </button>
@@ -445,10 +445,10 @@ const SearchPage = () => {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}
               transition={{ duration: 0.4, ease: "easeOut" }}
-              className="sticky top-20 z-10 bg-white dark:bg-gray-950 py-6 -mx-2"
+              className="sticky z-10 py-6 -mx-2 bg-white top-20 dark:bg-gray-950"
             >
               <div className="max-w-4xl mx-auto">
-                <nav className="flex flex-wrap gap-2 justify-center">
+                <nav className="flex flex-wrap justify-center gap-2">
                   {tabs.map((tab) => {
                     const Icon = tab.icon;
                     return (
@@ -486,12 +486,12 @@ const SearchPage = () => {
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -20 }}
                 transition={{ duration: 0.3, ease: "easeOut" }}
-                className="text-center py-32"
+                className="py-32 text-center"
               >
-                <div className="inline-flex items-center justify-center w-16 h-16 bg-primary-dark-pink/10 rounded-full mb-6">
-                  <LucideLoader2 className="animate-spin text-primary-dark-pink w-8 h-8" />
+                <div className="inline-flex items-center justify-center w-16 h-16 mb-6 rounded-full bg-primary-dark-pink/10">
+                  <LucideLoader2 className="w-8 h-8 animate-spin text-primary-dark-pink" />
                 </div>
-                <h3 className="text-xl font-medium text-gray-700 dark:text-gray-300 mb-2">
+                <h3 className="mb-2 text-xl font-medium text-gray-700 dark:text-gray-300">
                   Searching...
                 </h3>
                 <p className="text-gray-500">
@@ -524,14 +524,14 @@ const SearchPage = () => {
                         className="space-y-8"
                       >
                         <div className="flex items-center justify-between">
-                          <h2 className="text-xl font-semibold flex items-center text-gray-800 dark:text-gray-200">
+                          <h2 className="flex items-center text-xl font-semibold text-gray-800 dark:text-gray-200">
                             <User
                               className="mr-3 text-primary-dark-pink"
                               size={28}
                             />
                             People
                           </h2>
-                          <span className="text-sm text-gray-500 bg-gray-100 dark:bg-gray-800 px-3 py-1 rounded-full">
+                          <span className="px-3 py-1 text-sm text-gray-500 bg-gray-100 rounded-full dark:bg-gray-800">
                             {users.length} result{users.length !== 1 ? "s" : ""}
                           </span>
                         </div>
@@ -547,7 +547,7 @@ const SearchPage = () => {
                                 ease: "easeOut",
                               }}
                               whileHover={{ y: -8, scale: 1.01 }}
-                              className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden border border-gray-100 dark:border-gray-700"
+                              className="overflow-hidden bg-white border border-gray-100 dark:bg-gray-800 rounded-2xl shadow-sm hover:shadow-xl transition-all duration-300 dark:border-gray-700"
                             >
                               <div className="relative h-36">
                                 <Image
@@ -555,7 +555,7 @@ const SearchPage = () => {
                                   height={300}
                                   src={user.profile_banner}
                                   alt="Cover"
-                                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                                  className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-300"
                                 />
                                 <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent"></div>
                                 <div className="absolute -bottom-10 left-6">
@@ -566,16 +566,16 @@ const SearchPage = () => {
                                         width={80}
                                         src={user.profile_image}
                                         alt={user.name}
-                                        className="w-20 h-20 rounded-full border-4 border-white dark:border-gray-800 object-cover shadow-lg"
+                                        className="object-cover w-20 h-20 border-4 border-white rounded-full shadow-lg dark:border-gray-800"
                                       />
                                     </Link>
                                     {user.is_model && (
-                                      <div className="absolute bottom-1 right-1 bg-primary-dark-pink rounded-full p-1">
+                                      <div className="absolute p-1 rounded-full bottom-1 right-1 bg-primary-dark-pink">
                                         <Verified className="w-3.5 h-3.5 text-white" />
                                       </div>
                                     )}
                                     {user.admin && (
-                                      <div className="absolute bottom-1 right-1 bg-yellow-500 rounded-full p-1">
+                                      <div className="absolute p-1 bg-yellow-500 rounded-full bottom-1 right-1">
                                         <Verified className="w-3.5 h-3.5 text-white" />
                                       </div>
                                     )}
@@ -585,12 +585,12 @@ const SearchPage = () => {
                               <div className="p-6 pt-12">
                                 <div className="flex items-start justify-between mb-4">
                                   <div className="flex-1">
-                                    <h4 className="font-semibold text-xl text-gray-900 dark:text-gray-100 mb-1">
+                                    <h4 className="mb-1 text-xl font-semibold text-gray-900 dark:text-gray-100">
                                       <Link href={`/${user.username}`}>
                                         {user.name}
                                       </Link>
                                     </h4>
-                                    <p className="text-gray-500 dark:text-white text-sm">
+                                    <p className="text-sm text-gray-500 dark:text-white">
                                       <Link href={`/${user.username}`}>
                                         {user.username}
                                       </Link>
@@ -598,7 +598,7 @@ const SearchPage = () => {
                                   </div>
                                   {user.id !== authUser?.id && (
                                     <div className="relative group">
-                                      <button className="p-2 rounded-full text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+                                      <button className="p-2 text-gray-400 rounded-full hover:text-gray-600 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
                                         <MoreHorizontal size={20} />
                                       </button>
                                       <div className="absolute right-0 top-full mt-1 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 py-2 min-w-[150px] opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-10">
@@ -610,7 +610,7 @@ const SearchPage = () => {
                                               username: user.username,
                                             })
                                           }
-                                          className="w-full px-4 py-2 text-left text-sm text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors flex items-center"
+                                          className="flex items-center w-full px-4 py-2 text-sm text-left text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
                                         >
                                           <ExternalLink
                                             size={16}
@@ -624,12 +624,12 @@ const SearchPage = () => {
                                 </div>
 
                                 {user.bio && (
-                                  <p className="text-gray-600 dark:text-gray-300 text-sm mb-6 line-clamp-3 leading-relaxed">
+                                  <p className="mb-6 text-sm leading-relaxed text-gray-600 dark:text-gray-300 line-clamp-3">
                                     {user.bio}
                                   </p>
                                 )}
 
-                                <div className="flex items-center text-gray-500  dark:text-white text-xs mb-6 space-x-6">
+                                <div className="flex items-center mb-6 text-xs text-gray-500  dark:text-white space-x-6">
                                   {user.location && (
                                     <span className="flex items-center">
                                       <MapPin size={14} className="mr-1.5" />
@@ -652,33 +652,33 @@ const SearchPage = () => {
                                   </span>
                                 </div>
 
-                                <div className="grid grid-cols-3 gap-4 text-center mb-6 py-4 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
+                                <div className="py-4 mb-6 text-center rounded-lg grid grid-cols-3 gap-4 bg-gray-50 dark:bg-gray-700/50">
                                   <div>
-                                    <div className="font-bold text-lg text-gray-900 dark:text-gray-100">
+                                    <div className="text-lg font-bold text-gray-900 dark:text-gray-100">
                                       {user.total_followers?.toLocaleString() ||
                                         0}
                                     </div>
-                                    <div className="text-gray-500 text-xs">
+                                    <div className="text-xs text-gray-500">
                                       Followers
                                     </div>
                                   </div>
                                   {user.is_model && (
                                     <div>
-                                      <div className="font-bold text-lg text-gray-900 dark:text-gray-100">
+                                      <div className="text-lg font-bold text-gray-900 dark:text-gray-100">
                                         {user.total_subscribers?.toLocaleString() ||
                                           0}
                                       </div>
-                                      <div className="text-gray-500 text-xs">
+                                      <div className="text-xs text-gray-500">
                                         Subscribers
                                       </div>
                                     </div>
                                   )}
                                   <div>
-                                    <div className="font-bold text-lg text-gray-900 dark:text-gray-100">
+                                    <div className="text-lg font-bold text-gray-900 dark:text-gray-100">
                                       {user.total_following?.toLocaleString() ||
                                         0}
                                     </div>
-                                    <div className="text-gray-500 text-xs">
+                                    <div className="text-xs text-gray-500">
                                       Following
                                     </div>
                                   </div>
@@ -703,14 +703,14 @@ const SearchPage = () => {
                         className="space-y-8"
                       >
                         <div className="flex items-center justify-between">
-                          <h2 className="text-xl font-semibold flex items-center text-gray-800 dark:text-gray-200">
+                          <h2 className="flex items-center text-xl font-semibold text-gray-800 dark:text-gray-200">
                             <MessageCircle
                               className="mr-3 text-primary-dark-pink"
                               size={28}
                             />
                             Posts
                           </h2>
-                          <span className="text-sm text-gray-500 bg-gray-100 dark:bg-gray-800 px-3 py-1 rounded-full">
+                          <span className="px-3 py-1 text-sm text-gray-500 bg-gray-100 rounded-full dark:bg-gray-800">
                             {posts.length} result{posts.length !== 1 ? "s" : ""}
                           </span>
                         </div>
@@ -760,14 +760,14 @@ const SearchPage = () => {
                         className="space-y-8"
                       >
                         <div className="flex items-center justify-between">
-                          <h2 className="text-xl font-semibold flex items-center text-gray-800 dark:text-gray-200">
+                          <h2 className="flex items-center text-xl font-semibold text-gray-800 dark:text-gray-200">
                             <LucideImage
                               className="mr-3 text-primary-dark-pink"
                               size={28}
                             />
                             Media
                           </h2>
-                          <span className="text-sm text-gray-500 bg-gray-100 dark:bg-gray-800 px-3 py-1 rounded-full">
+                          <span className="px-3 py-1 text-sm text-gray-500 bg-gray-100 rounded-full dark:bg-gray-800">
                             {media.length} result{media.length !== 1 ? "s" : ""}
                           </span>
                         </div>
@@ -783,7 +783,7 @@ const SearchPage = () => {
                                 ease: "easeOut",
                               }}
                               whileHover={{ y: -4, scale: 1.02 }}
-                              className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden border border-gray-100 dark:border-gray-700 group"
+                              className="overflow-hidden bg-white border border-gray-100 dark:bg-gray-800 rounded-2xl shadow-sm hover:shadow-lg transition-all duration-300 dark:border-gray-700 group"
                             >
                               <div className="relative overflow-hidden">
                                 <MediaPanelMediaCard
@@ -797,18 +797,18 @@ const SearchPage = () => {
                               </div>
                               <div className="p-4 space-y-3">
                                 <Link href={`/posts/${m.post.post_id}`}>
-                                  <p className="text-gray-800 dark:text-gray-200 text-sm line-clamp-2 leading-relaxed hover:text-primary-dark-pink transition-colors">
+                                  <p className="text-sm leading-relaxed text-gray-800 dark:text-gray-200 line-clamp-2 hover:text-primary-dark-pink transition-colors">
                                     {m.post.content}
                                   </p>
                                 </Link>
-                                <div className="flex items-center justify-between text-gray-500 text-xs pt-2 border-t border-gray-100 dark:border-gray-700">
+                                <div className="flex items-center justify-between pt-2 text-xs text-gray-500 border-t border-gray-100 dark:border-gray-700">
                                   <div className="flex items-center space-x-2">
                                     <Image
                                       width={24}
                                       height={24}
                                       src={m.user.profile_image}
                                       alt={m.user.name}
-                                      className="w-6 h-6 rounded-full object-cover"
+                                      className="object-cover w-6 h-6 rounded-full"
                                     />
                                     <span className="font-medium truncate">
                                       {m.user.name}
@@ -839,29 +839,29 @@ const SearchPage = () => {
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -20 }}
                   transition={{ duration: 0.5, ease: "easeOut" }}
-                  className="text-center py-32"
+                  className="py-32 text-center"
                 >
-                  <div className="w-32 h-32 bg-gradient-to-br from-gray-100 to-gray-50 dark:from-gray-800 dark:to-gray-700 rounded-full flex items-center justify-center mx-auto mb-8">
+                  <div className="flex items-center justify-center w-32 h-32 mx-auto mb-8 rounded-full bg-gradient-to-br from-gray-100 to-gray-50 dark:from-gray-800 dark:to-gray-700">
                     <LucideSearch size={48} className="text-gray-400" />
                   </div>
-                  <h3 className="text-2xl font-semibold text-gray-700 dark:text-gray-300 mb-3">
+                  <h3 className="mb-3 text-2xl font-semibold text-gray-700 dark:text-gray-300">
                     No results found
                   </h3>
-                  <p className="text-gray-500 max-w-md mx-auto mb-6">
+                  <p className="max-w-md mx-auto mb-6 text-gray-500">
                     We couldn&apos;t find anything for &quot;
                     <span className="font-medium">{searchQuery}</span> &quot;.
                     Try using different keywords or check your spelling.
                   </p>
-                  <div className="space-y-2 text-sm text-gray-400">
+                  <div className="text-sm text-gray-400 space-y-2">
                     <p>Try searching for:</p>
                     <div className="flex flex-wrap justify-center gap-2">
-                      <span className="bg-gray-100 dark:bg-gray-800 px-3 py-1 rounded-full">
+                      <span className="px-3 py-1 bg-gray-100 rounded-full dark:bg-gray-800">
                         usernames
                       </span>
-                      <span className="bg-gray-100 dark:bg-gray-800 px-3 py-1 rounded-full">
+                      <span className="px-3 py-1 bg-gray-100 rounded-full dark:bg-gray-800">
                         hashtags
                       </span>
-                      <span className="bg-gray-100 dark:bg-gray-800 px-3 py-1 rounded-full">
+                      <span className="px-3 py-1 bg-gray-100 rounded-full dark:bg-gray-800">
                         keywords
                       </span>
                     </div>
@@ -877,26 +877,26 @@ const SearchPage = () => {
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -20 }}
                 transition={{ duration: 0.5, ease: "easeOut" }}
-                className="text-center py-32"
+                className="py-32 text-center"
               >
-                <div className="w-32 h-32 bg-gradient-to-br from-primary-dark-pink/10 to-primary-dark-pink/5 rounded-full flex items-center justify-center mx-auto mb-8">
+                <div className="flex items-center justify-center w-32 h-32 mx-auto mb-8 rounded-full bg-gradient-to-br from-primary-dark-pink/10 to-primary-dark-pink/5">
                   <LucideSearch size={48} className="text-primary-dark-pink" />
                 </div>
-                <h3 className="text-3xl font-semibold text-gray-700 dark:text-gray-300 mb-4">
+                <h3 className="mb-4 text-3xl font-semibold text-gray-700 dark:text-gray-300">
                   Discover PaymeFans
                 </h3>
-                <p className="text-gray-500 max-w-lg mx-auto mb-8 text-lg">
+                <p className="max-w-lg mx-auto mb-8 text-lg text-gray-500">
                   Search for people, posts, and media content. Connect with
                   creators and discover amazing content.
                 </p>
-                <div className="flex flex-wrap justify-center gap-2 text-sm">
-                  <span className="bg-primary-dark-pink/10 text-primary-dark-pink px-4 py-2 rounded-full font-medium">
+                <div className="flex flex-wrap justify-center text-sm gap-2">
+                  <span className="px-4 py-2 font-medium rounded-full bg-primary-dark-pink/10 text-primary-dark-pink">
                     People
                   </span>
-                  <span className="bg-primary-dark-pink/10 text-primary-dark-pink px-4 py-2 rounded-full font-medium">
+                  <span className="px-4 py-2 font-medium rounded-full bg-primary-dark-pink/10 text-primary-dark-pink">
                     Posts
                   </span>
-                  <span className="bg-primary-dark-pink/10 text-primary-dark-pink px-4 py-2 rounded-full font-medium">
+                  <span className="px-4 py-2 font-medium rounded-full bg-primary-dark-pink/10 text-primary-dark-pink">
                     Media
                   </span>
                 </div>

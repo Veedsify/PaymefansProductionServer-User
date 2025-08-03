@@ -101,7 +101,7 @@ const PointsBuy = ({
   };
   return (
     <div
-      className="cursor-pointer rounded-2xl bg-coins-card-bottom dark:bg-slate-800 dark:border-slate-800 dark:border select-none"
+      className="cursor-pointer select-none rounded-2xl bg-coins-card-bottom dark:bg-slate-800 dark:border-slate-800 dark:border"
       onClick={() => handlePointsClick(points_buy_id)}
     >
       <div className="flex py-5 rounded-tr-2xl rounded-tl-2xl items-center gap-2 justify-center dark:bg-gray-950 bg-white m-[2px]">

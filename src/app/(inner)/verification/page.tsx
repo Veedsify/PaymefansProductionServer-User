@@ -20,26 +20,26 @@ const Verification = async () => {
   }
 
   return (
-    <div className="min-h-dvh p-5 md:p-7 dark:text-white">
-      <div className="max-w-screen-xl pt-12 mx-auto mb-24 md:mt-16">
+    <div className="p-5 min-h-dvh md:p-7 dark:text-white">
+      <div className="pt-12 mx-auto mb-24 max-w-screen-xl md:mt-16">
         <h1 className="mt-auto mb-16 text-2xl font-bold text-center">
           Verify Yourself
         </h1>
-        <div className="grid max-w-96 mx-auto mb-12">
+        <div className="mx-auto mb-12 grid max-w-96">
           <div>
             <Image
               width={150}
               height={150}
               src="/images/verification.png"
               alt=""
-              className="block text-center mx-auto mb-4 aspect-square rounded-xl"
+              className="block mx-auto mb-4 text-center aspect-square rounded-xl"
             />
           </div>
         </div>
-        <h5 className="text-lg font-bold mb-4 text-center max-w-96 mx-auto">
+        <h5 className="mx-auto mb-4 text-lg font-bold text-center max-w-96">
           Verify your identity by taking a short video
         </h5>
-        <p className="text-sm text-center max-w-96 mx-auto mb-6 leading-relaxed">
+        <p className="mx-auto mb-6 text-sm leading-relaxed text-center max-w-96">
           Help us keep Paymefans safe by verifying your identity. This lets us
           know you&apos;re a real person and helps us keep your account secure.
           <br />
@@ -47,7 +47,7 @@ const Verification = async () => {
           We&apos;ll keep your information private and delete it after
           we&apos;ve confirmed your identity.
         </p>
-        <div className="bg-coins-card-bottom max-w-96 mx-auto p-4 py-4 rounded-xl flex items-center gap-4">
+        <div className="flex items-center p-4 py-4 mx-auto bg-coins-card-bottom max-w-96 rounded-xl gap-4">
           <span>
             <LucideInfo className="text-primary-text-dark-pink" size={30} />
           </span>

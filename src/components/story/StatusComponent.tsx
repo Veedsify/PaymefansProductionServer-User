@@ -38,15 +38,15 @@ function StatusComponent() {
   // Memoized removal handler creator to avoid inline functions in render
   const getRemoveHandler = useCallback(
     (id: number) => () => removeFromStory(id),
-    [removeFromStory],
+    [removeFromStory]
   );
 
   return (
     <>
-      <div className="max-w-[550px] lg:mx-auto mx-2 sm:mx-4 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-lg shadow-gray-100 dark:shadow-gray-900/20 overflow-hidden py-6 rounded-2xl lg:rounded-2xl sm:rounded-xl rounded-lg backdrop-blur-sm min-h-[70vh] sm:min-h-0">
+      <div className="max-w-[550px] lg:mx-auto mx-2 sm:mx-4 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-lg shadow-gray-100 dark:shadow-gray-900/20 overflow-hidden py-6 rounded-2xl lg:rounded-2xl sm:rounded-xl backdrop-blur-sm min-h-[70vh] sm:min-h-0">
         {media.length === 0 ? (
-          <div className="flex flex-col items-center justify-center dark:text-gray-300 gap-4 py-12">
-            <div className="w-16 h-16 bg-gradient-to-br from-primary-dark-pink/20 to-purple-500/20 rounded-full flex items-center justify-center">
+          <div className="flex flex-col items-center justify-center py-12 gap-4 dark:text-gray-300">
+            <div className="flex items-center justify-center w-16 h-16 rounded-full bg-gradient-to-br from-primary-dark-pink/20 to-purple-500/20">
               <svg
                 className="w-8 h-8 text-primary-dark-pink"
                 fill="none"
@@ -61,7 +61,7 @@ function StatusComponent() {
                 />
               </svg>
             </div>
-            <p className="text-gray-500 dark:text-gray-400 font-medium">
+            <p className="font-medium text-gray-500 dark:text-gray-400">
               No media selected
             </p>
             <p className="text-sm text-gray-400 dark:text-gray-500">
@@ -86,7 +86,7 @@ function StatusComponent() {
                           streamUrl={data.media_url}
                           modalOpen={false}
                           allOthers={{ muted: true }}
-                          className="object-cover rounded-xl cursor-pointer ease-in-out duration-300 inset-0 w-full h-full"
+                          className="inset-0 object-cover w-full h-full cursor-pointer duration-300 ease-in-out rounded-xl"
                         />
                         <span className="absolute top-2 left-2 bg-gradient-to-r from-primary-dark-pink to-purple-600 p-1.5 rounded-full shadow-lg backdrop-blur-sm">
                           <LucidePlay fill="#fff" strokeWidth={0} size={12} />
@@ -98,7 +98,7 @@ function StatusComponent() {
                         alt="media"
                         fill
                         sizes="(max-width: 640px) 100vw, 640px"
-                        className="object-cover ease-in-out duration-300 cursor-pointer rounded-xl group-hover:brightness-110"
+                        className="object-cover cursor-pointer duration-300 ease-in-out rounded-xl group-hover:brightness-110"
                       />
                     )}
                   </div>
@@ -108,9 +108,9 @@ function StatusComponent() {
             <div className="flex justify-end">
               <button
                 onClick={handleSubmitStory}
-                className="group flex items-center justify-center gap-3 px-6 py-3 bg-gradient-to-r from-primary-dark-pink to-purple-600 hover:from-primary-dark-pink/90 hover:to-purple-600/90 text-white rounded-full shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200 font-medium"
+                className="flex items-center justify-center px-6 py-3 font-medium text-white rounded-full shadow-lg gap-3 transition-all duration-200 transform group bg-gradient-to-r from-primary-dark-pink to-purple-600 hover:from-primary-dark-pink/90 hover:to-purple-600/90 hover:shadow-xl hover:scale-105"
               >
-                <span className="text-sm hidden sm:block">Continue</span>
+                <span className="hidden text-sm sm:block">Continue</span>
                 <LucideArrowRight
                   size={18}
                   strokeWidth={2.5}
@@ -138,9 +138,9 @@ const SelectMoreItems = React.memo(
     }, []);
 
     return (
-      <div className="border-t border-gray-200 dark:border-gray-700 max-w-[550px] lg:mx-auto mx-2 sm:mx-4 relative bottom-0 left-0 z-20 bg-white dark:bg-gray-800 w-full transition-all duration-300 ease-in-out rounded-b-2xl lg:rounded-b-2xl sm:rounded-b-xl rounded-b-lg">
+      <div className="border-t border-gray-200 dark:border-gray-700 max-w-[550px] lg:mx-auto mx-2 sm:mx-4 relative bottom-0 left-0 z-20 bg-white dark:bg-gray-800 w-full transition-all duration-300 ease-in-out rounded-b-2xl lg:rounded-b-2xl sm:rounded-b-xl">
         <div className="flex flex-col h-[70vh] sm:h-[560px] relative dark:text-white">
-          <div className="flex items-center text-center bg-gray-50 dark:bg-gray-900/50 rounded-t-lg m-2 p-1 sticky top-0 z-10">
+          <div className="sticky top-0 z-10 flex items-center p-1 m-2 text-center rounded-t-lg bg-gray-50 dark:bg-gray-900/50">
             <button
               onClick={() => handleSetTab("new")}
               className={`flex-1 cursor-pointer duration-300 transition-all rounded-md ${
@@ -149,7 +149,7 @@ const SelectMoreItems = React.memo(
                   : "text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200"
               }`}
             >
-              <span className="block py-3 px-4 text-base sm:text-sm font-medium">
+              <span className="block px-4 py-3 text-base font-medium sm:text-sm">
                 New Upload
               </span>
             </button>
@@ -161,7 +161,7 @@ const SelectMoreItems = React.memo(
                   : "text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200"
               }`}
             >
-              <span className="block py-3 px-4 text-base sm:text-sm font-medium">
+              <span className="block px-4 py-3 text-base font-medium sm:text-sm">
                 My Media
               </span>
             </button>
@@ -173,7 +173,7 @@ const SelectMoreItems = React.memo(
         </div>
       </div>
     );
-  },
+  }
 );
 
 SelectMoreItems.displayName = "SelectMoreItems";

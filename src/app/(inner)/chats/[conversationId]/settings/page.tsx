@@ -92,7 +92,7 @@ const ConversationSettingsPage = () => {
   if (loading) {
     return (
       <div className="flex flex-col items-center justify-center min-h-dvh">
-        <Loader2 className="h-8 w-8 animate-spin text-blue-500" />
+        <Loader2 className="w-8 h-8 text-blue-500 animate-spin" />
         <p className="mt-2 text-gray-600 dark:text-gray-400">
           Loading conversation...
         </p>
@@ -125,10 +125,10 @@ const ConversationSettingsPage = () => {
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4 }}
-        className="w-full bg-white overflow-hidden dark:bg-gray-950"
+        className="w-full overflow-hidden bg-white dark:bg-gray-950"
       >
         {/* Profile Section */}
-        <div className="flex items-center gap-4 p-6 border-b border-gray-200 dark:border-gray-800">
+        <div className="flex items-center p-6 border-b border-gray-200 gap-4 dark:border-gray-800">
           <div className="relative">
             {conversationReceiver.profile_image ? (
               <Image
@@ -136,17 +136,17 @@ const ConversationSettingsPage = () => {
                 alt={conversationReceiver.name}
                 width={64}
                 height={64}
-                className="w-16 h-16 rounded-full object-cover shadow-md"
+                className="object-cover w-16 h-16 rounded-full shadow-md"
               />
             ) : (
-              <div className="w-16 h-16 rounded-full bg-gradient-to-tr from-blue-400 to-indigo-500 flex items-center justify-center shadow-md text-xl font-bold text-white dark:from-blue-700 dark:to-indigo-900">
+              <div className="flex items-center justify-center w-16 h-16 text-xl font-bold text-white rounded-full shadow-md bg-gradient-to-tr from-blue-400 to-indigo-500 dark:from-blue-700 dark:to-indigo-900">
                 <span>{getInitials(conversationReceiver.name)}</span>
               </div>
             )}
             <ActiveProfileTag userid={conversationReceiver.username} />
           </div>
           <div>
-            <h2 className="font-semibold text-lg text-gray-800 dark:text-gray-100">
+            <h2 className="text-lg font-semibold text-gray-800 dark:text-gray-100">
               {conversationReceiver.name}
             </h2>
             <div className="text-sm text-gray-500 dark:text-gray-400">
@@ -158,7 +158,7 @@ const ConversationSettingsPage = () => {
         {/* Settings Options */}
         <div className="p-4">
           <div className="mb-4">
-            <h3 className="text-sm uppercase text-gray-500 font-medium px-2 mb-2 dark:text-gray-400">
+            <h3 className="px-2 mb-2 text-sm font-medium text-gray-500 uppercase dark:text-gray-400">
               Notifications & Media
             </h3>
             <SettingsAction
@@ -175,7 +175,7 @@ const ConversationSettingsPage = () => {
           </div>
 
           <div className="mb-4">
-            <h3 className="text-sm uppercase text-gray-500 font-medium px-2 mb-2 dark:text-gray-400">
+            <h3 className="px-2 mb-2 text-sm font-medium text-gray-500 uppercase dark:text-gray-400">
               Chat Options
             </h3>
             <SettingsAction
@@ -192,7 +192,7 @@ const ConversationSettingsPage = () => {
           </div>
 
           <div>
-            <h3 className="text-sm uppercase text-gray-500 font-medium px-2 mb-2 dark:text-gray-400">
+            <h3 className="px-2 mb-2 text-sm font-medium text-gray-500 uppercase dark:text-gray-400">
               Privacy & Support
             </h3>
             <SettingsAction
@@ -261,7 +261,7 @@ const SettingsAction: React.FC<SettingsActionProps> = ({
           group
   `}
   >
-    <div className="text-2xl mr-4 group-hover:scale-110 transition-transform">
+    <div className="mr-4 text-2xl group-hover:scale-110 transition-transform">
       {icon}
     </div>
     <div className="flex-1">
@@ -281,11 +281,11 @@ const SettingsAction: React.FC<SettingsActionProps> = ({
       )}
     </div>
     {badge && (
-      <div className="bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 text-xs px-2 py-1 rounded-full font-medium">
+      <div className="px-2 py-1 text-xs font-medium text-blue-800 bg-blue-100 rounded-full dark:bg-blue-900 dark:text-blue-200">
         {badge}
       </div>
     )}
-    <ChevronRight className="text-gray-400 dark:text-gray-500 ml-1 h-5 w-5" />
+    <ChevronRight className="w-5 h-5 ml-1 text-gray-400 dark:text-gray-500" />
   </motion.button>
 );
 
@@ -339,20 +339,20 @@ const BlockUserModal: React.FC<{
         initial={{ scale: 0.9, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
         onClick={(e) => e.stopPropagation()}
-        className="bg-white dark:bg-gray-900 rounded-xl p-6 max-w-sm w-full mx-4"
+        className="w-full max-w-sm p-6 mx-4 bg-white dark:bg-gray-900 rounded-xl"
       >
         <h3 className="text-xl font-bold text-gray-800 dark:text-gray-100">
           {isCurrentlyBlocked ? "Unblock this user?" : "Block this user?"}
         </h3>
-        <p className="text-gray-600 dark:text-gray-400 mt-2">
+        <p className="mt-2 text-gray-600 dark:text-gray-400">
           {isCurrentlyBlocked
             ? "You will start receiving messages from this user again."
             : "You won't receive messages or calls from this user anymore. They won't be notified that you've blocked them."}
         </p>
-        <div className="mt-6 flex gap-3 justify-end">
+        <div className="flex justify-end mt-6 gap-3">
           <button
             onClick={onClose}
-            className="px-4 py-2 text-gray-700 dark:text-gray-300 font-medium rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800"
+            className="px-4 py-2 font-medium text-gray-700 rounded-lg dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800"
           >
             Cancel
           </button>
@@ -382,26 +382,26 @@ const DeleteChatModal: React.FC<{ onClose: () => void }> = ({ onClose }) => (
     <motion.div
       initial={{ scale: 0.9, opacity: 0 }}
       animate={{ scale: 1, opacity: 1 }}
-      className="bg-white dark:bg-gray-900 rounded-xl p-6 max-w-sm w-full mx-4"
+      className="w-full max-w-sm p-6 mx-4 bg-white dark:bg-gray-900 rounded-xl"
     >
-      <div className="flex items-center justify-center w-12 h-12 rounded-full bg-red-100 dark:bg-red-900 mx-auto mb-4">
+      <div className="flex items-center justify-center w-12 h-12 mx-auto mb-4 bg-red-100 rounded-full dark:bg-red-900">
         <AlertTriangle className="text-red-600 dark:text-red-400" />
       </div>
-      <h3 className="text-xl font-bold text-gray-800 dark:text-gray-100 text-center">
+      <h3 className="text-xl font-bold text-center text-gray-800 dark:text-gray-100">
         Delete Conversation
       </h3>
-      <p className="text-gray-600 dark:text-gray-400 mt-2 text-center">
+      <p className="mt-2 text-center text-gray-600 dark:text-gray-400">
         This will permanently delete all messages in this conversation. This
         action cannot be undone.
       </p>
-      <div className="mt-6 flex gap-3 justify-center">
+      <div className="flex justify-center mt-6 gap-3">
         <button
           onClick={onClose}
-          className="px-4 py-2 text-gray-700 dark:text-gray-300 font-medium rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800"
+          className="px-4 py-2 font-medium text-gray-700 rounded-lg dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800"
         >
           Cancel
         </button>
-        <button className="px-4 py-2 bg-red-600 text-white font-medium rounded-lg hover:bg-red-700">
+        <button className="px-4 py-2 font-medium text-white bg-red-600 rounded-lg hover:bg-red-700">
           Delete
         </button>
       </div>
@@ -418,7 +418,7 @@ const SearchModal: React.FC<{ onClose: () => void }> = ({ onClose }) => (
       onClick={(e) => e.stopPropagation()}
       initial={{ scale: 0.9, opacity: 0 }}
       animate={{ scale: 1, opacity: 1 }}
-      className="bg-white dark:bg-gray-800 lg:rounded-xl p-6 max-w-xl w-full lg:mx-4"
+      className="w-full max-w-xl p-6 bg-white dark:bg-gray-800 lg:rounded-xl lg:mx-4"
     >
       <div className="flex items-center justify-between">
         <h3 className="text-xl font-bold text-gray-800 dark:text-white">
@@ -431,7 +431,7 @@ const SearchModal: React.FC<{ onClose: () => void }> = ({ onClose }) => (
       <input
         type="text"
         placeholder="Search in conversation"
-        className="w-full border dark:text-white border-gray-300 rounded-lg p-2 mt-4"
+        className="w-full p-2 mt-4 border border-gray-300 rounded-lg dark:text-white"
       />
     </motion.div>
   </div>

@@ -37,7 +37,7 @@ export const connectSocket = (username?: string | null): Socket | null => {
     // If there's an existing socket, disconnect it first
     if (socket) {
       socket.removeAllListeners();
-      socket.disconnect();
+      socket?.disconnect();
     }
 
     // Update current username
@@ -115,7 +115,7 @@ export const disconnectSocket = () => {
 
   if (socket) {
     socket.removeAllListeners();
-    socket.disconnect();
+    socket?.disconnect();
     socket = null;
   }
 

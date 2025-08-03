@@ -25,10 +25,10 @@ const MessageMediaPreview = React.memo(
 
     if (!item.id) {
       return (
-        <div className="relative w-full aspect-square bg-gray-200 text-gray-500 flex items-center justify-center">
+        <div className="relative flex items-center justify-center w-full text-gray-500 bg-gray-200 aspect-square">
           <p>Invalid preview</p>
           <button
-            className="absolute top-1 right-1 bg-red-500 hover:bg-red-600 transition-colors rounded-full p-1 shadow"
+            className="absolute p-1 bg-red-500 rounded-full shadow top-1 right-1 hover:bg-red-600 transition-colors"
             onClick={handleRemove}
             aria-label="Remove media"
           >
@@ -40,10 +40,10 @@ const MessageMediaPreview = React.memo(
 
     if (uploadStatus === "error") {
       return (
-        <div className="relative w-full aspect-square bg-red-500 text-white flex items-center justify-center">
+        <div className="relative flex items-center justify-center w-full text-white bg-red-500 aspect-square">
           <p>Error uploading file</p>
           <button
-            className="absolute top-1 right-1 bg-red-600 hover:bg-red-700 transition-colors rounded-full p-1 shadow"
+            className="absolute p-1 bg-red-600 rounded-full shadow top-1 right-1 hover:bg-red-700 transition-colors"
             onClick={handleRemove}
             aria-label="Remove media"
           >
@@ -56,7 +56,7 @@ const MessageMediaPreview = React.memo(
     return (
       <div className="relative w-full aspect-square">
         <button
-          className="absolute top-1 right-1 bg-red-500 hover:bg-red-600 transition-colors rounded-full p-1 shadow z-10"
+          className="absolute z-10 p-1 bg-red-500 rounded-full shadow top-1 right-1 hover:bg-red-600 transition-colors"
           onClick={handleRemove}
           aria-label="Remove media"
         >
@@ -71,18 +71,18 @@ const MessageMediaPreview = React.memo(
 
         {uploadStatus === "uploading" && (
           <div className="absolute inset-0 flex items-center justify-center bg-black/60 rounded-xl">
-            <div className="text-white text-center">
+            <div className="text-center text-white">
               <div className="text-lg font-semibold">
                 {Math.round(progress)}%
               </div>
-              <div className="text-sm lg:block hidden">Uploading...</div>
+              <div className="hidden text-sm lg:block">Uploading...</div>
             </div>
           </div>
         )}
 
         {uploadStatus === "completed" && (
           <div className="absolute inset-0 flex items-center justify-center bg-green-600/60 rounded-xl">
-            <div className="text-white text-center">
+            <div className="text-center text-white">
               <div className="text-lg font-semibold">✓</div>
               <div className="text-sm">Uploaded</div>
             </div>

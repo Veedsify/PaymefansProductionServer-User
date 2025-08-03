@@ -114,19 +114,19 @@ const Login = () => {
   }
 
   return (
-    <div className="min-h-dvh lg:p-0 bg-black p-5">
+    <div className="p-5 bg-black min-h-dvh lg:p-0">
       {!acceptedTerms && typeof window !== "undefined" && (
         <ParentalGuide setAcceptedTerms={handleAcceptTerms} />
       )}
-      <div className="lg:grid grid-cols-2 items-start justify-center mx-auto">
-        <div className="min-h-dvh hidden lg:block relative">
+      <div className="items-start justify-center mx-auto lg:grid grid-cols-2">
+        <div className="relative hidden min-h-dvh lg:block">
           <Image
             width={720}
             height={720}
             priority
             src="/images/auth_image.jpeg"
             alt="Login Image"
-            className="h-full absolute object-cover inset-0 w-full aspect-square"
+            className="absolute inset-0 object-cover w-full h-full aspect-square"
           />
           <div
             style={{
@@ -139,7 +139,7 @@ const Login = () => {
           ></div>
         </div>
         <div className="h-full lg:p-14 2xl:p-28">
-          <div className="max-w-screen-xl pt-12 mx-auto mb-24 md:mt-16">
+          <div className="pt-12 mx-auto mb-24 max-w-screen-xl md:mt-16">
             <Link href="/">
               <Image
                 width={150}
@@ -160,7 +160,7 @@ const Login = () => {
             className="flex-1 w-full mb-5"
             onSubmit={submitLoginForm}
           >
-            <div className="flex flex-col gap-3 mb-4">
+            <div className="flex flex-col mb-4 gap-3">
               <input
                 type="email"
                 name="email"
@@ -170,7 +170,7 @@ const Login = () => {
                 placeholder="Email"
               />
             </div>
-            <div className="flex flex-col gap-3 mb-5">
+            <div className="flex flex-col mb-5 gap-3">
               <input
                 type="password"
                 name="password"
@@ -180,11 +180,11 @@ const Login = () => {
                 placeholder="Password"
               />
             </div>
-            <button className="w-full px-3 py-3 text-sm font-bold text-white rounded-lg bg-primary-dark-pink md:max-w-lg cursor-pointer hover:bg-primary-dark-pink/80 transition-all duration-200">
+            <button className="w-full px-3 py-3 text-sm font-bold text-white rounded-lg cursor-pointer bg-primary-dark-pink md:max-w-lg hover:bg-primary-dark-pink/80 transition-all duration-200">
               Sign in
             </button>
           </form>
-          <div className="flex items-center md:max-w-lg w-full mt-5">
+          <div className="flex items-center w-full mt-5 md:max-w-lg">
             <div className="flex">
               <input
                 type="checkbox"
@@ -194,14 +194,14 @@ const Login = () => {
               />
               <label
                 htmlFor="remember"
-                className="text-sm font-bold    text-white cursor-pointer"
+                className="text-sm font-bold text-white cursor-pointer "
               >
                 Remember me
               </label>
             </div>
             <Link
               href="/reset"
-              className="text-sm font-bold text-primary-dark-pink  ml-auto"
+              className="ml-auto text-sm font-bold text-primary-dark-pink "
             >
               Forgot password?
             </Link>
