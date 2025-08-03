@@ -1,21 +1,14 @@
-import { getToken } from "@/utils/Cookie";
-
+import axiosInstance from "@/utils/Axios";
 export default async function followUser(userId: number, action: "follow" | "unfollow") {
-    const token = getToken();
-    const response = await fetch(
+    const response = await axiosInstance(
         `${process.env.NEXT_PUBLIC_TS_EXPRESS_URL}/profile/action/${action}/${userId}`,
         {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                Authorization: `Bearer ${token}`,
             },
+            withCredentials: true,
         }
     );
-
-    if (!response.ok) {
-        throw new Error("Failed to follow/unfollow user");
-    }
-
-    return response.json();
+    return response.data
 }

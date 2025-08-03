@@ -8,10 +8,6 @@ import {
   Hash,
   MessageCircle,
   Image as LucideImage,
-  Video,
-  Heart,
-  Repeat2,
-  Share,
   MoreHorizontal,
   MapPin,
   Calendar,
@@ -47,7 +43,7 @@ const searchFunction = async (query: string) => {
               "Content-Type": "application/json",
               Authorization: `Bearer ${token}`,
             },
-          },
+          }
         );
         return response.data.results;
       },
@@ -60,7 +56,7 @@ const searchFunction = async (query: string) => {
               "Content-Type": "application/json",
               Authorization: `Bearer ${token}`,
             },
-          },
+          }
         );
         return response.data.results;
       },
@@ -73,7 +69,7 @@ const searchFunction = async (query: string) => {
               "Content-Type": "application/json",
               Authorization: `Bearer ${token}`,
             },
-          },
+          }
         );
         return response.data.results;
       },
@@ -137,7 +133,7 @@ const ReportModal = ({
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
           },
-        },
+        }
       );
 
       if (response.data.success) {
@@ -255,7 +251,13 @@ const FollowButton = ({
     setIsFollowing(!isFollowing);
     try {
       const action = isFollowing ? "unfollow" : "follow";
-      await followUser(user.id, action);
+      const response = await followUser(user.id, action);
+      if (!response.success) {
+        setIsFollowing((prev) => !prev);
+        toast.error(response.message || "Failed to update follow status", {
+          id: "follow-unfollow-toast",
+        });
+      }
     } catch (error: any) {
       console.error("Error following/unfollowing user:", error);
       setIsFollowing(!isFollowing);
@@ -268,7 +270,7 @@ const FollowButton = ({
       whileHover={{ scale: 1.02 }}
       className={`w-full py-3.5 ${
         isFollowing
-          ? "bg-transparent hover:bg-black text-black dark:text-white border"
+          ? "bg-transparent hover:bg-black hover:text-white text-black dark:text-white border"
           : "bg-primary-dark-pink hover:bg-primary-text-dark-pink text-white"
       } rounded-xl text-sm font-semibold cursor-pointer`}
     >
@@ -302,14 +304,14 @@ const SearchPage = () => {
     m: MediaDataTypeOtherProps,
     type: string,
     isSubscriber: boolean,
-    indexId: number,
+    indexId: number
   ) => {
     if (m.accessible_to === "subscribers" && !isSubscriber) return;
     const filteredMedias = media
       .filter((item) => item.media_state !== "processing")
       .filter((media) => media.accessible_to !== "price")
       .filter(
-        (media) => !(media.accessible_to === "subscribers" && !isSubscriber),
+        (media) => !(media.accessible_to === "subscribers" && !isSubscriber)
       );
     // Get the new index after filtering
     const newIndexId = filteredMedias.findIndex((item) => item.id === m.id);
@@ -644,7 +646,7 @@ const SearchPage = () => {
                                     <Calendar size={14} className="mr-1.5" />
                                     Joined{" "}
                                     {new Date(
-                                      user.created_at,
+                                      user.created_at
                                     ).toLocaleDateString("en-US", {
                                       year: "numeric",
                                       month: "long",

@@ -3,6 +3,7 @@ import followUser from "@/utils/data/update/Follow";
 import Image from "next/image";
 import Link from "next/link";
 import { use, useEffect, useState } from "react";
+import toast from "react-hot-toast";
 import { HiOutlineDotsVertical } from "react-icons/hi";
 
 const UserFollowComp: React.FC<UserFollowCompProps> = ({ follower }) => {
@@ -16,7 +17,13 @@ const UserFollowComp: React.FC<UserFollowCompProps> = ({ follower }) => {
     setIsFollowing(!isFollowing);
     try {
       const action = isFollowing ? "unfollow" : "follow";
-      await followUser(follower.user.id, action);
+      const response = await followUser(follower.user.id, action);
+      if (!response.success) {
+        setIsFollowing((prev) => !prev);
+        toast.error(response.message || "Failed to update follow status", {
+          id: "follow-unfollow-toast",
+        });
+      }
     } catch (error: any) {
       console.error("Error following/unfollowing user:", error);
       setIsFollowing(!isFollowing);

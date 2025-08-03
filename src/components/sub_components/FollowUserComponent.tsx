@@ -22,7 +22,12 @@ const FollowUserComponent: React.FC<FollowUserProps> = ({ profileuser }) => {
     const action = isFollowing ? "unfollow" : "follow";
     try {
       const userId = profileuser.id;
-      await followUser(userId, action);
+      const response = await followUser(userId, action);
+      if (!response.success) {
+        toast.error(response.message || `Failed to ${action} user`);
+        setIsFollowing((prev) => !prev); // Revert state on error
+      } else {
+      }
     } catch (error) {
       console.error("Error following/unfollowing user:", error);
       toast.error(`Failed to ${action} user`);
@@ -41,10 +46,9 @@ const FollowUserComponent: React.FC<FollowUserProps> = ({ profileuser }) => {
   return (
     <button
       onClick={followProfile}
-      className={`sm:px-4 py-1 px-2 rounded outline text-sm font-semibold ${isFollowing
-        ? "outline outline-black text-color"
-        : "bg-black text-white"
-        }`}
+      className={`sm:px-4 py-1 px-2 rounded outline text-sm font-semibold ${
+        isFollowing ? "outline outline-black text-color" : "bg-black text-white"
+      }`}
     >
       {buttonLabel}
     </button>
