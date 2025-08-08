@@ -1,64 +1,36 @@
 "use client";
-import PostComponent from "../post/PostComponent";
-import LoadingPost from "./LoadingPost";
-import { formatDate } from "@/utils/FormatDate";
-import { useCallback, useEffect, useState } from "react";
-import { useUserAuthContext } from "@/lib/UserUseContext";
+import { useState } from "react";
+import PrivateMediaImageCardOther from "../media/PrivateMediaImageCardOther";
 import { ProfileUserProps } from "@/types/User";
-import { useInView } from "react-intersection-observer";
-import { LucideLoader } from "lucide-react";
-import PrivatePanelFetchOther from "../custom-hooks/PrivatePanelOtherFetch";
 
 const PrivatePanelOther = ({ userdata }: { userdata: ProfileUserProps }) => {
-  const [page, setPage] = useState(1);
-  const { posts, loading, hasMore } = PrivatePanelFetchOther(userdata.id, page);
-  const { ref, inView } = useInView({
-    threshold: 1,
-  });
+  const [arraySort, setArraySort] = useState("all");
 
-  useEffect(() => {
-    if (loading) return;
-    if (inView && hasMore) {
-      setPage((prev) => prev + 1);
-    }
-  }, [inView, hasMore, loading]);
-
-  const EndMessage = () => (
-    <div className="px-3 py-2">
-      <p className="text-sm font-medium text-center text-gray-500">
-        No Post Found
-      </p>
-    </div>
-  );
+  const toggleThisSort = (sort: string) => {
+    setArraySort(sort);
+  };
 
   return (
-    <div className="mt-3 mb-12 select-none">
-      {posts.map((post, index) => (
-        <div key={index} ref={index === posts.length - 1 ? ref : null}>
-          <PostComponent
-            user={{
-              id: post.user.id,
-              user_id: post.user.user_id,
-              name: post.user.name,
-              link: `/${post.user.username}`,
-              username: post.user.username,
-              image: post.user.profile_image,
-            }}
-            data={{
-              ...post,
-              post: post.content,
-              media: post.UserMedia,
-              time: formatDate(new Date(post.created_at)),
-            }}
-          />
-        </div>
-      ))}
-      {loading && (
-        <div className="flex justify-center">
-          <LucideLoader size={30} className="animate-spin" stroke="purple" />
-        </div>
-      )}
-      {!hasMore && <EndMessage />}
+    <div className="">
+      {/* <div className="flex items-center py-3 mb-2 gap-4">
+        <button
+          onClick={() => toggleThisSort("all")}
+          className={`${arraySort === "all" ? "bg-messages-unread text-primary-dark-pink" : "bg-gray-200"}
+          px-5 leading-none py-2 rounded-lg text-xs font-bold bg-gray-200`}>
+          All
+        </button>
+        <button
+          onClick={() => toggleThisSort("image")}
+          className={`px-5 leading-none py-2 rounded-lg text-xs font-bold ${arraySort === "image" ? "bg-messages-unread text-primary-dark-pink" : "bg-gray-200"}`}>
+          Photos
+        </button>
+        <button
+          onClick={() => toggleThisSort("video")}
+          className={` px-5 leading-none py-2 rounded-lg text-xs font-bold ${arraySort === "video" ? "bg-messages-unread text-primary-dark-pink" : "bg-gray-200"}`}>
+          Videos
+        </button>
+      </div> */}
+      <PrivateMediaImageCardOther sort={arraySort} userdata={userdata} />
     </div>
   );
 };

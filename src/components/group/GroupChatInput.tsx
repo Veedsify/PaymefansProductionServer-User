@@ -9,8 +9,28 @@ import {
   useEffect,
   useRef,
 } from "react";
-import { SendHorizonal as LucideSendHorizonal } from "lucide-react";
+import {
+  SendHorizonal as LucideSendHorizonal,
+  Paperclip,
+  X,
+  File,
+  Image as ImageIcon,
+  Video,
+  FileText,
+} from "lucide-react";
 import { useGroupChatStore } from "@/contexts/GroupChatContext";
+import Image from "next/image";
+import {
+  validateFile,
+  formatFileSize,
+  isImage,
+  createFilePreview,
+  getFileInputAccept,
+  truncateFilename,
+  getFileCategory,
+} from "@/utils/fileUtils";
+import axiosInstance from "@/utils/Axios";
+import toast from "react-hot-toast";
 
 // Utility Functions
 const escapeHtml = (str: string): string => {
@@ -35,11 +55,23 @@ const linkify = (text: string): string => {
   });
 };
 
+interface AttachmentPreview {
+  file: File;
+  id: string;
+  preview?: string;
+  uploadProgress?: number;
+  uploaded?: boolean;
+  uploadedData?: any;
+}
+
 const GroupChatInput = () => {
   const [messageContent, setMessageContent] = useState("");
   const [sendingMessage, setSendingMessage] = useState(false);
+  const [attachments, setAttachments] = useState<AttachmentPreview[]>([]);
+  const [uploadingFiles, setUploadingFiles] = useState(false);
   const { sendMessage, setTypingStatus } = useGroupChatStore();
   const typingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   const handleTyping = (e: ChangeEvent<HTMLInputElement>) => {
     setMessageContent(e.target.value);
@@ -67,23 +99,200 @@ const GroupChatInput = () => {
     }
   };
 
-  const sendIfValid = () => {
+  const uploadFile = async (
+    file: File,
+    onProgress?: (progress: number) => void,
+  ): Promise<any> => {
+    const axios = require("axios");
+    const formData = new FormData();
+    formData.append("attachments", file);
+
+    try {
+      const response = await axiosInstance.post(
+        `/groups/upload-attachment`,
+        formData,
+        {
+          onUploadProgress: (progressEvent: any) => {
+            if (progressEvent.lengthComputable && onProgress) {
+              const progress = Math.round(
+                (progressEvent.loaded / progressEvent.total) * 100,
+              );
+              onProgress(progress);
+            }
+          },
+        },
+      );
+
+      return response.data;
+    } catch (error) {
+      console.error("Error uploading file:", error);
+      throw error;
+    }
+  };
+
+  const handleFileSelect = (e: ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(e.target.files || []);
+    if (files.length === 0) return;
+
+    // Validate files
+    const validFiles = files.filter((file) => {
+      const validation = validateFile(file);
+      if (!validation.isValid) {
+        toast.error(`Sorry, please uplaod an image`);
+        return false;
+      }
+      return true;
+    });
+
+    // Create previews for valid files
+    const newAttachments: AttachmentPreview[] = validFiles.map((file) => {
+      const id = Math.random().toString(36).substr(2, 9);
+      const attachment: AttachmentPreview = { file, id };
+
+      // Create preview for images
+      if (isImage(file.type)) {
+        createFilePreview(file)
+          .then((preview) => {
+            setAttachments((prev) =>
+              prev.map((att) => (att.id === id ? { ...att, preview } : att)),
+            );
+          })
+          .catch((error) => {
+            console.error("Failed to create preview:", error);
+          });
+      }
+
+      return attachment;
+    });
+
+    setAttachments((prev) => [...prev, ...newAttachments]);
+
+    // Auto-upload the new attachments
+    handleAutoUpload(newAttachments);
+
+    // Clear the input
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
+  };
+
+  const removeAttachment = (id: string) => {
+    setAttachments((prev) => prev.filter((att) => att.id !== id));
+  };
+
+  const updateAttachmentProgress = (id: string, progress: number) => {
+    setAttachments((prev) =>
+      prev.map((att) =>
+        att.id === id ? { ...att, uploadProgress: progress } : att,
+      ),
+    );
+  };
+
+  const markAttachmentUploaded = (id: string, uploadedData: any) => {
+    setAttachments((prev) =>
+      prev.map((att) =>
+        att.id === id
+          ? { ...att, uploaded: true, uploadedData, uploadProgress: 100 }
+          : att,
+      ),
+    );
+  };
+
+  const getFileIcon = (fileType: string) => {
+    const category = getFileCategory(fileType);
+    switch (category) {
+      case "image":
+        return <ImageIcon className="w-4 h-4" />;
+      case "video":
+        return <Video className="w-4 h-4" />;
+      case "document":
+        return <FileText className="w-4 h-4" />;
+      default:
+        return <File className="w-4 h-4" />;
+    }
+  };
+
+  // Auto-upload files when selected
+  const handleAutoUpload = async (newAttachments: AttachmentPreview[]) => {
+    for (const attachment of newAttachments) {
+      try {
+        const uploadResult = await uploadFile(attachment.file, (progress) =>
+          updateAttachmentProgress(attachment.id, progress),
+        );
+        markAttachmentUploaded(attachment.id, uploadResult);
+      } catch (error) {
+        console.error("Auto-upload failed:", error);
+        // Mark as failed but keep the attachment for manual retry
+        setAttachments((prev) =>
+          prev.map((att) =>
+            att.id === attachment.id ? { ...att, uploadProgress: 0 } : att,
+          ),
+        );
+      }
+    }
+  };
+
+  const sendIfValid = async () => {
     const trimmedMessage = messageContent.trim();
-    if (!trimmedMessage || sendingMessage) return;
+    if ((!trimmedMessage && attachments.length === 0) || sendingMessage) return;
 
     setSendingMessage(true);
+    setUploadingFiles(true);
 
-    // Clear typing timeout and status when sending
-    if (typingTimeoutRef.current) {
-      clearTimeout(typingTimeoutRef.current);
-      typingTimeoutRef.current = null;
+    try {
+      // Clear typing timeout and status when sending
+      if (typingTimeoutRef.current) {
+        clearTimeout(typingTimeoutRef.current);
+        typingTimeoutRef.current = null;
+      }
+      setTypingStatus(false);
+
+      // Upload attachments if any (only upload non-uploaded ones)
+      const uploadedAttachments = [];
+      if (attachments.length > 0) {
+        for (const attachment of attachments) {
+          try {
+            let uploadResult;
+
+            if (attachment.uploaded && attachment.uploadedData) {
+              // Use already uploaded data
+              uploadResult = attachment.uploadedData;
+            } else {
+              // Upload the file with progress tracking
+              uploadResult = await uploadFile(attachment.file, (progress) =>
+                updateAttachmentProgress(attachment.id, progress),
+              );
+              markAttachmentUploaded(attachment.id, uploadResult);
+            }
+
+            if (
+              uploadResult.success &&
+              uploadResult.data?.attachments?.length > 0
+            ) {
+              uploadedAttachments.push(...uploadResult.data.attachments);
+            }
+          } catch (error) {
+            console.error("Failed to upload attachment:", error);
+            alert(`Failed to upload ${attachment.file.name}`);
+          }
+        }
+      }
+
+      const processedMessage = trimmedMessage
+        ? linkify(escapeHtml(trimmedMessage))
+        : "";
+      await sendMessage(processedMessage, uploadedAttachments);
+
+      // Clear form
+      setMessageContent("");
+      setAttachments([]);
+    } catch (error) {
+      console.error("Error sending message:", error);
+      alert("Failed to send message. Please try again.");
+    } finally {
+      setSendingMessage(false);
+      setUploadingFiles(false);
     }
-    setTypingStatus(false);
-
-    const processedMessage = linkify(escapeHtml(trimmedMessage));
-    sendMessage(processedMessage, []);
-    setMessageContent("");
-    setSendingMessage(false);
   };
 
   const handleSendClick = (
@@ -114,23 +323,127 @@ const GroupChatInput = () => {
   }, []);
 
   return (
-    <div className="flex items-center p-6 space-x-2 dark:bg-gray-800">
-      <input
-        onChange={handleTyping}
-        onKeyDown={handleKeyDown}
-        value={messageContent}
-        className="flex-grow px-4 py-4 border border-gray-300 resize-none rounded-md focus:outline-none focus:border-blue-500"
-        placeholder="Type a message..."
-      />
-      <button
-        disabled={sendingMessage}
-        onClick={handleSendClick}
-        className="px-4 py-4 text-white cursor-pointer bg-primary-dark-pink rounded-md hover:bg-primary-text-dark-pink disabled:bg-gray-500"
-        aria-label="Send message"
-        type="button"
-      >
-        <LucideSendHorizonal className="w-5 h-5" />
-      </button>
+    <div className="p-6 space-y-3 dark:bg-gray-800">
+      {/* Attachment Previews */}
+      {attachments.length > 0 && (
+        <div className="flex flex-wrap gap-2 p-3 bg-gray-50 rounded-lg dark:bg-gray-700">
+          {attachments.map((attachment) => (
+            <div
+              key={attachment.id}
+              className="relative flex items-center p-2 bg-white rounded-lg shadow-sm dark:bg-gray-600 min-w-0 max-w-48"
+            >
+              {attachment.preview ? (
+                <Image
+                  src={attachment.preview}
+                  alt={attachment.file.name}
+                  width={40}
+                  height={40}
+                  className="object-cover w-10 h-10 rounded"
+                />
+              ) : (
+                <div className="flex items-center justify-center w-10 h-10 bg-gray-100 rounded dark:bg-gray-500">
+                  {getFileIcon(attachment.file.type)}
+                </div>
+              )}
+
+              <div className="flex-1 ml-2 min-w-0">
+                <p className="text-sm font-medium text-gray-900 dark:text-white truncate">
+                  {truncateFilename(attachment.file.name)}
+                </p>
+                <div className="flex items-center space-x-2">
+                  <p className="text-xs text-gray-500 dark:text-gray-400">
+                    {formatFileSize(attachment.file.size)}
+                  </p>
+                  {attachment.uploadProgress !== undefined &&
+                    !attachment.uploaded && (
+                      <p className="text-xs text-blue-500">
+                        {attachment.uploadProgress}%
+                      </p>
+                    )}
+                  {attachment.uploaded && (
+                    <p className="text-xs text-green-500">✓</p>
+                  )}
+                </div>
+              </div>
+
+              <button
+                onClick={() => removeAttachment(attachment.id)}
+                className="absolute -top-1 -right-1 p-1 bg-red-500 text-white rounded-full hover:bg-red-600 transition-colors"
+                type="button"
+                aria-label="Remove attachment"
+                disabled={
+                  attachment.uploadProgress !== undefined &&
+                  !attachment.uploaded
+                }
+              >
+                <X className="w-3 h-3" />
+              </button>
+
+              {/* Upload progress bar */}
+              {attachment.uploadProgress !== undefined &&
+                !attachment.uploaded && (
+                  <div className="absolute bottom-0 left-0 w-full h-1 bg-gray-200 rounded-b">
+                    <div
+                      className="h-full bg-blue-500 rounded-b transition-all duration-300"
+                      style={{ width: `${attachment.uploadProgress}%` }}
+                    />
+                  </div>
+                )}
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* Message Input */}
+      <div className="flex items-end space-x-2">
+        <div className="flex-grow">
+          <div className="flex items-center space-x-2">
+            <input
+              ref={fileInputRef}
+              type="file"
+              multiple
+              onChange={handleFileSelect}
+              className="hidden"
+              accept={getFileInputAccept()}
+            />
+
+            <button
+              onClick={() => fileInputRef.current?.click()}
+              disabled={sendingMessage || uploadingFiles}
+              className="p-3 text-gray-500 hover:text-primary-dark-pink hover:bg-gray-100 rounded-md transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              type="button"
+              aria-label="Attach file"
+            >
+              <Paperclip className="w-5 h-5" />
+            </button>
+
+            <input
+              onChange={handleTyping}
+              onKeyDown={handleKeyDown}
+              value={messageContent}
+              disabled={uploadingFiles}
+              className="flex-grow px-4 py-4 border border-gray-300 resize-none rounded-md focus:outline-none focus:border-blue-500 disabled:opacity-50"
+              placeholder={
+                uploadingFiles ? "Uploading files..." : "Type a message..."
+              }
+            />
+          </div>
+        </div>
+
+        <button
+          disabled={sendingMessage || uploadingFiles}
+          onClick={handleSendClick}
+          className="px-4 py-4 text-white cursor-pointer bg-primary-dark-pink rounded-md hover:bg-primary-text-dark-pink disabled:bg-gray-500 flex-shrink-0"
+          aria-label="Send message"
+          type="button"
+        >
+          {sendingMessage || uploadingFiles ? (
+            <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+          ) : (
+            <LucideSendHorizonal className="w-5 h-5" />
+          )}
+        </button>
+      </div>
     </div>
   );
 };

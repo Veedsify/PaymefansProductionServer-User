@@ -294,7 +294,7 @@ const GroupChatPage = () => {
         const messagesResponse = await fetchGroupMessages(
           groupId,
           undefined,
-          100
+          100,
         );
         if (messagesResponse.success && messagesResponse.data.messages) {
           setMessages(messagesResponse.data.messages);
@@ -419,7 +419,7 @@ const GroupChatPage = () => {
       <GroupChatHeader groupData={groupData} />
       <div
         ref={messagesContainerRef}
-        className="flex-grow overflow-y-auto p-6 space-y-4 h-auto transition-all max-h-[calc(100vh-235px)]"
+        className="flex-grow overflow-y-auto p-6 space-y-4 h-auto transition-all max-h-[calc(100vh-215px)]"
         onScroll={handleScroll}
       >
         {messages.length === 0 ? (

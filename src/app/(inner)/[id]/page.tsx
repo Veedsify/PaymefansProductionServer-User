@@ -11,7 +11,6 @@ import {
   LucideMapPin,
   Verified,
 } from "lucide-react";
-
 import { useUserAuthContext } from "@/lib/UserUseContext";
 import { ProfileUserProps } from "@/types/User";
 import getUserProfile from "@/utils/data/ProfileData";

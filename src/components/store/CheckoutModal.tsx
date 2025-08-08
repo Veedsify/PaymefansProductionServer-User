@@ -79,12 +79,12 @@ const CheckoutModal = ({ isOpen, onClose }: CheckoutModalProps) => {
         onError: (error: any) => {
           toast.error(error?.response?.data?.message || "Checkout failed");
         },
-      },
+      }
     );
   };
 
   const handleInputChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
     const { name, value } = e.target;
     setShippingAddress((prev) => ({

@@ -1,6 +1,7 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import ROUTE from "@/config/routes";
+import axiosInstance from "@/utils/Axios";
 
 type CheckoutData = {
   items: Array<{
@@ -22,9 +23,7 @@ type CheckoutData = {
 export const useCheckout = () => {
   return useMutation({
     mutationFn: async (data: CheckoutData) => {
-      const response = await axios.post(ROUTE.STORE_CHECKOUT, data, {
-        withCredentials: true,
-      });
+      const response = await axiosInstance.post(ROUTE.STORE_CHECKOUT, data);
       return response.data;
     },
   });
@@ -34,9 +33,7 @@ export const useVerifyPayment = (reference: string) => {
   return useQuery({
     queryKey: ["verify-payment", reference],
     queryFn: async () => {
-      const response = await axios.get(ROUTE.VERIFY_PAYMENT(reference), {
-        withCredentials: true,
-      });
+      const response = await axiosInstance.get(ROUTE.VERIFY_PAYMENT(reference));
       return response.data;
     },
     enabled: !!reference,

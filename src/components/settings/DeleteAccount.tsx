@@ -8,14 +8,25 @@ import toast from "react-hot-toast";
 const DeleteAccount = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [password, setPassword] = useState("");
+  const [passwordError, setPasswordError] = useState("");
   const token = getToken();
   const handleDeleteClick = () => {
     setIsOpen(true);
   };
   const handleCancel = () => {
     setIsOpen(false);
+    setPassword("");
+    setPasswordError("");
   };
   const confirmDelete = async () => {
+    // Validate password is entered
+    if (!password.trim()) {
+      setPasswordError("Password is required to confirm account deletion");
+      return;
+    }
+
+    setPasswordError("");
     setIsDeleting(true);
     try {
       const response = await fetch(
@@ -26,8 +37,8 @@ const DeleteAccount = () => {
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
           },
-          body: JSON.stringify({}),
-        }
+          body: JSON.stringify({ password }),
+        },
       );
       if (response.ok) {
         // Handle successful deletion, e.g., redirect to home page or show success message
@@ -40,7 +51,7 @@ const DeleteAccount = () => {
       }
     } catch (error) {
       toast.error(
-        "An error occurred while trying to delete your account. Please try again later."
+        "An error occurred while trying to delete your account. Please try again later.",
       );
     } finally {
       // Reset state after deletion attempt
@@ -76,10 +87,33 @@ const DeleteAccount = () => {
               <h2 className="mb-4 text-xl font-bold text-gray-900 dark:text-gray-100">
                 Are you sure you want to delete your account?
               </h2>
-              <p className="mb-6 text-gray-700 dark:text-gray-300">
+              <p className="mb-4 text-gray-700 dark:text-gray-300">
                 This action cannot be undone. All your data will be permanently
                 deleted.
               </p>
+
+              <div className="mb-6">
+                <label
+                  htmlFor="password"
+                  className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+                >
+                  Enter your password to confirm
+                </label>
+                <input
+                  type="password"
+                  id="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-red-500 focus:border-red-500 dark:bg-gray-800 dark:border-gray-600 dark:text-gray-100"
+                  placeholder="Enter your password"
+                  disabled={isDeleting}
+                />
+                {passwordError && (
+                  <p className="mt-1 text-sm text-red-600 dark:text-red-400">
+                    {passwordError}
+                  </p>
+                )}
+              </div>
               <div className="flex justify-end space-x-4">
                 <button
                   onClick={handleCancel}

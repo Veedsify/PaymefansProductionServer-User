@@ -23,7 +23,7 @@ const FollowUserComponent: React.FC<FollowUserProps> = ({ profileuser }) => {
     try {
       const userId = profileuser.id;
       const response = await followUser(userId, action);
-      if (!response.success) {
+      if (!response.status) {
         toast.error(response.message || `Failed to ${action} user`);
         setIsFollowing((prev) => !prev); // Revert state on error
       } else {

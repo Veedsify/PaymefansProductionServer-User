@@ -64,7 +64,7 @@ const MyTicketsModal = ({
   const { user } = useUserAuthContext();
   const [tickets, setTickets] = useState<SupportTicket[]>([]);
   const [selectedTicket, setSelectedTicket] = useState<SupportTicket | null>(
-    null
+    null,
   );
   const [loading, setLoading] = useState(false);
   const [pagination, setPagination] = useState<PaginationInfo | null>(null);
@@ -74,31 +74,32 @@ const MyTicketsModal = ({
 
   useEffect(() => {
     if (isOpen && user) {
+      const fetchTickets = async () => {
+        setLoading(true);
+        try {
+          const response = await axiosInstance.get(
+            `/support/tickets?page=${currentPage}&limit=10`,
+          );
+
+          if (response.data.error) {
+            toast.error(
+              response.data.message || "Failed to fetch support tickets",
+            );
+            return;
+          }
+
+          setTickets(response.data.data.tickets);
+          setPagination(response.data.data.pagination);
+        } catch (error: any) {
+          console.error("Error fetching support tickets:", error);
+          toast.error("Failed to fetch support tickets");
+        } finally {
+          setLoading(false);
+        }
+      };
       fetchTickets();
     }
-  }, [isOpen, user, currentPage, refreshTrigger]);
-
-  const fetchTickets = async () => {
-    setLoading(true);
-    try {
-      const response = await axiosInstance.get(
-        `/support/tickets?page=${currentPage}&limit=10`
-      );
-
-      if (response.data.error) {
-        toast.error(response.data.message || "Failed to fetch support tickets");
-        return;
-      }
-
-      setTickets(response.data.data.tickets);
-      setPagination(response.data.data.pagination);
-    } catch (error: any) {
-      console.error("Error fetching support tickets:", error);
-      toast.error("Failed to fetch support tickets");
-    } finally {
-      setLoading(false);
-    }
-  };
+  }, [isOpen, user, currentPage]);
 
   const fetchTicketDetails = async (ticketId: string) => {
     try {
@@ -125,7 +126,7 @@ const MyTicketsModal = ({
     try {
       const response = await axiosInstance.post(
         `/support/tickets/${selectedTicket.ticket_id}/reply`,
-        { message: replyMessage }
+        { message: replyMessage },
       );
 
       if (response.data.error) {
@@ -185,7 +186,7 @@ const MyTicketsModal = ({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 transition-all"
+      className="fixed inset-0 z-[210] flex items-center justify-center bg-black/60 transition-all"
       aria-modal="true"
       role="dialog"
       tabIndex={-1}
@@ -262,7 +263,7 @@ const MyTicketsModal = ({
                           {getStatusIcon(ticket.status)}
                           <span
                             className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(
-                              ticket.status
+                              ticket.status,
                             )}`}
                           >
                             {ticket.status.toUpperCase()}
@@ -335,7 +336,7 @@ const MyTicketsModal = ({
                     </div>
                     <span
                       className={`px-3 py-1 rounded-full text-sm font-medium ${getStatusColor(
-                        selectedTicket.status
+                        selectedTicket.status,
                       )}`}
                     >
                       {selectedTicket.status.toUpperCase()}

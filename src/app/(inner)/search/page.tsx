@@ -252,7 +252,7 @@ const FollowButton = ({
     try {
       const action = isFollowing ? "unfollow" : "follow";
       const response = await followUser(user.id, action);
-      if (!response.success) {
+      if (!response.status) {
         setIsFollowing((prev) => !prev);
         toast.error(response.message || "Failed to update follow status", {
           id: "follow-unfollow-toast",

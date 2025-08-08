@@ -20,10 +20,10 @@ const CartComponent = () => {
   const handleSizeChange = (
     e: ChangeEvent<HTMLSelectElement>,
     id: number,
-    currentSizeName?: string,
+    currentSizeName?: string
   ) => {
     const product = cart.find(
-      (p) => p.id === id && p.size?.name === currentSizeName,
+      (p) => p.id === id && p.size?.name === currentSizeName
     );
     const size = sizes.find((s) => s.name === e.target.value);
     if (product && size) {
@@ -71,19 +71,11 @@ const CartComponent = () => {
                 {item.description}
               </p>
               <div className="flex flex-col items-center md:flex-row gap-4">
-                <select
-                  onChange={(e) =>
-                    handleSizeChange(e, item.id, item.size?.name)
-                  }
-                  value={item.size?.name || ""}
+                <input
+                  readOnly
+                  defaultValue={item.size?.name || ""}
                   className="w-full px-4 py-2 text-sm text-gray-700 bg-white border border-gray-300 rounded-lg dark:border-gray-700 dark:text-gray-200 dark:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-primary-dark-pink/30 dark:focus:ring-pink-400/30 md:w-auto"
-                >
-                  {sizes.map((s) => (
-                    <option key={s.name} value={s.name}>
-                      {String(s.name).toUpperCase()}
-                    </option>
-                  ))}
-                </select>
+                />
                 <div className="flex items-center overflow-hidden border border-gray-300 rounded-lg dark:border-gray-700 bg-gray-50 dark:bg-gray-800">
                   <button
                     onClick={() => removeFromCart(item.id, item.size?.name)}

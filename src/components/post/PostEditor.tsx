@@ -49,6 +49,7 @@ const PostEditor = React.memo(({ posts }: PostEditorProps) => {
   const [content, setContent] = useState<string>("");
   const { user } = useUserAuthContext();
   const [price, setPrice] = useState<number>(0);
+  const [nairaDisplayValue, setNairaDisplayValue] = useState<string>("");
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const { setVisibility, visibility, setPostText, postText } =
     useNewPostStore();
@@ -58,7 +59,7 @@ const PostEditor = React.memo(({ posts }: PostEditorProps) => {
   const { mediaUploadComplete, setMediaUploadComplete } =
     usePostMediaUploadContext();
   const isWaterMarkEnabled = usePostEditorContext(
-    (state) => state.isWaterMarkEnabled,
+    (state) => state.isWaterMarkEnabled
   );
   const { config } = useConfigContext();
 
@@ -105,7 +106,7 @@ const PostEditor = React.memo(({ posts }: PostEditorProps) => {
             ]
           : []),
       ] as PostAudienceDataProps[],
-    [user],
+    [user]
   );
 
   // User search simulation
@@ -120,7 +121,7 @@ const PostEditor = React.memo(({ posts }: PostEditorProps) => {
         }, 300);
       });
     },
-    [],
+    []
   );
 
   // Mention search
@@ -128,7 +129,7 @@ const PostEditor = React.memo(({ posts }: PostEditorProps) => {
     if (mentionQuery.length > 0) {
       searchUsers(mentionQuery).then((users) => {
         setMentionSuggestions(
-          users.map((user, index) => ({ ...user, highlighted: index === 0 })),
+          users.map((user, index) => ({ ...user, highlighted: index === 0 }))
         );
         setSelectedMentionIndex(0);
       });
@@ -175,7 +176,7 @@ const PostEditor = React.memo(({ posts }: PostEditorProps) => {
         setMentionQuery("");
       }
     },
-    [setPostText],
+    [setPostText]
   );
 
   // Mention selection
@@ -211,7 +212,7 @@ const PostEditor = React.memo(({ posts }: PostEditorProps) => {
         setCursorPosition(newCursorPos);
       }, 0);
     },
-    [mentionStartPos, cursorPosition, mentions, setPostText],
+    [mentionStartPos, cursorPosition, mentions, setPostText]
   );
   // Keydown navigation
   const handleKeyDown = useCallback(
@@ -221,13 +222,13 @@ const PostEditor = React.memo(({ posts }: PostEditorProps) => {
           case "ArrowDown":
             e.preventDefault();
             setSelectedMentionIndex((prev) =>
-              prev < mentionSuggestions.length - 1 ? prev + 1 : 0,
+              prev < mentionSuggestions.length - 1 ? prev + 1 : 0
             );
             break;
           case "ArrowUp":
             e.preventDefault();
             setSelectedMentionIndex((prev) =>
-              prev > 0 ? prev - 1 : mentionSuggestions.length - 1,
+              prev > 0 ? prev - 1 : mentionSuggestions.length - 1
             );
             break;
           case "Enter":
@@ -242,7 +243,7 @@ const PostEditor = React.memo(({ posts }: PostEditorProps) => {
         }
       }
     },
-    [showMentions, mentionSuggestions, selectedMentionIndex, selectMention],
+    [showMentions, mentionSuggestions, selectedMentionIndex, selectMention]
   );
 
   // Preload existing post data
@@ -261,7 +262,7 @@ const PostEditor = React.memo(({ posts }: PostEditorProps) => {
           audienceName = "price";
         }
         const audience = postAudienceData.find(
-          (aud) => aud.name.toLowerCase() === audienceName,
+          (aud) => aud.name.toLowerCase() === audienceName
         );
         if (audience) {
           setVisibility(audience.name);
@@ -273,9 +274,14 @@ const PostEditor = React.memo(({ posts }: PostEditorProps) => {
       }
       if (posts.post_price) {
         setPrice(posts.post_price);
+        // Convert points to Naira for display
+        const nairaValue = config?.point_conversion_rate_ngn
+          ? Math.round(posts.post_price * config.point_conversion_rate_ngn)
+          : posts.post_price;
+        setNairaDisplayValue(nairaValue.toString());
       }
     }
-  }, [posts, setPostText, setVisibility, postAudienceData]);
+  }, [posts, setPostText, setVisibility, postAudienceData, config]);
 
   // Media attachments
   const handleMediaAttachment = useCallback((image: UploadedImageProp) => {
@@ -284,7 +290,7 @@ const PostEditor = React.memo(({ posts }: PostEditorProps) => {
 
   const removeThisMedia = (id: string, type: string) => {
     setMedia((prevMedia) =>
-      prevMedia ? prevMedia.filter((file) => file.fileId !== id) : null,
+      prevMedia ? prevMedia.filter((file) => file.fileId !== id) : null
     );
     const removeId = media?.find((med) => med.fileId === id);
     if (removeId) {
@@ -295,7 +301,7 @@ const PostEditor = React.memo(({ posts }: PostEditorProps) => {
   // Remove existing media
   const removeExistingMedia = (mediaId: string, mediaType: string) => {
     setEditedMedia((prevMedia) =>
-      prevMedia.filter((item) => item.media_id !== mediaId),
+      prevMedia.filter((item) => item.media_id !== mediaId)
     );
     setRemovedIds((prevIds) => [...prevIds, { id: mediaId, type: mediaType }]);
   };
@@ -307,30 +313,37 @@ const PostEditor = React.memo(({ posts }: PostEditorProps) => {
       setVisibility(audience.name);
       setDropdown(false);
     },
-    [setVisibility],
+    [setVisibility]
   );
 
   const setPriceHandler = (value: string) => {
-    const priceValue = parseInt(value.replace(/[^0-9.]/g, ""));
-    if (priceValue < 0) {
+    // Store the display value (Naira)
+    setNairaDisplayValue(value);
+
+    const nairaValue = parseInt(value.replace(/[^0-9.]/g, ""));
+    if (nairaValue < 0) {
       toast.error("Price cannot be negative.", {
         id: "post-price-error",
       });
       return;
     }
-    if (isNaN(priceValue)) {
-      toast.error("Invalid price value.", {
+    if (isNaN(nairaValue)) {
+      setPrice(0);
+      return;
+    }
+    if (nairaValue > 10000000) {
+      // 10 million Naira limit
+      toast.error("Price cannot exceed ₦10,000,000.", {
         id: "post-price-error",
       });
       return;
     }
-    if (priceValue > 100000) {
-      toast.error("Price cannot exceed 100,000.", {
-        id: "post-price-error",
-      });
-      return;
-    }
-    setPrice(priceValue);
+
+    // Convert Naira to points for storage
+    const pointsValue = config?.point_conversion_rate_ngn
+      ? Math.round(nairaValue / config.point_conversion_rate_ngn)
+      : 0;
+    setPrice(pointsValue);
   };
 
   // Submit post
@@ -339,7 +352,11 @@ const PostEditor = React.memo(({ posts }: PostEditorProps) => {
       return; // Prevent double submission
     }
 
-    if ((!content || content.trim() === "") && (!media || !editedMedia)) {
+    if (
+      (!content || content.trim() === "") &&
+      !posts &&
+      (!media || !editedMedia)
+    ) {
       toast.error("Post is empty, please write something.", {
         id: "post-upload",
       });
@@ -371,7 +388,7 @@ const PostEditor = React.memo(({ posts }: PostEditorProps) => {
       isEditing ? "Saving your changes..." : "Creating your post...",
       {
         id: "post-upload",
-      },
+      }
     );
 
     // Convert to HTML
@@ -417,6 +434,7 @@ const PostEditor = React.memo(({ posts }: PostEditorProps) => {
         setRemovedIds([]);
         setMediaUploadComplete(false);
         setPrice(0);
+        setNairaDisplayValue("");
         setMentions([]);
         router.prefetch("/profile");
         router.push("/profile");
@@ -453,8 +471,8 @@ const PostEditor = React.memo(({ posts }: PostEditorProps) => {
                 ? "Saving..."
                 : "Creating..."
               : posts?.post_id
-                ? "Save"
-                : "Post"}
+              ? "Save"
+              : "Post"}
           </button>
         </div>
         <div className="flex items-center gap-2">
@@ -474,6 +492,7 @@ const PostEditor = React.memo(({ posts }: PostEditorProps) => {
             updatePostAudience={updatePostAudience}
             price={price}
             config={config}
+            nairaDisplayValue={nairaDisplayValue}
           />
         </div>
 
@@ -575,7 +594,7 @@ const PostEditor = React.memo(({ posts }: PostEditorProps) => {
                   <button
                     onClick={() =>
                       setMentions((prev) =>
-                        prev.filter((m) => m.id !== mention.id),
+                        prev.filter((m) => m.id !== mention.id)
                       )
                     }
                     className="ml-1 text-gray-500 hover:text-red-500"
@@ -626,6 +645,7 @@ const AudienceDropdown = React.memo(
     updatePostAudience,
     price,
     config,
+    nairaDisplayValue,
   }: {
     postAudience: PostAudienceDataProps | null;
     postAudienceData: PostAudienceDataProps[];
@@ -635,6 +655,7 @@ const AudienceDropdown = React.memo(
     updatePostAudience: (audience: PostAudienceDataProps) => void;
     price: number;
     config: any;
+    nairaDisplayValue: string;
   }) => {
     return (
       <div className="flex items-center w-full gap-4">
@@ -675,15 +696,10 @@ const AudienceDropdown = React.memo(
         {postAudience?.name === "Price" && (
           <div className="flex items-center gap-1">
             <div className="flex items-center px-3 text-sm text-gray-800 border border-gray-800 rounded-3xl dark:text-gray-200">
-              <Image
-                width={20}
-                height={20}
-                src="/site/coin.svg"
-                className="w-5 h-5 aspect-square"
-                alt=""
-              />
+              <span className="text-base">₦</span>
               <input
                 type="text"
+                value={nairaDisplayValue}
                 onChange={(e) => {
                   if (e.target.value === "" || !e.target.value) {
                     setPrice("0");
@@ -691,21 +707,29 @@ const AudienceDropdown = React.memo(
                   }
                   setPrice(e.target.value);
                 }}
-                placeholder="Price"
-                className="outline-0 border-0 rounded-3xl px-1 text-base py-[6px] text-gray-800 dark:text-gray-200"
+                placeholder="Enter amount in Naira"
+                className="outline-0 border-0 rounded-3xl px-1 text-base py-[6px] text-gray-800 dark:text-gray-200 bg-transparent"
               />
-              {price > 0 && config?.point_conversion_rate_ngn && (
-                <p className="ml-auto text-primary-dark-pink">
-                  ≈ ₦
-                  {(price * config.point_conversion_rate_ngn).toLocaleString()}
-                </p>
+              {price > 0 && (
+                <div className="flex items-center ml-auto gap-1">
+                  <Image
+                    width={16}
+                    height={16}
+                    src="/site/coin.svg"
+                    className="w-4 h-4 aspect-square"
+                    alt=""
+                  />
+                  <p className="text-primary-dark-pink">
+                    {price.toLocaleString()} pts
+                  </p>
+                </div>
               )}
             </div>
           </div>
         )}
       </div>
     );
-  },
+  }
 );
 
 AudienceDropdown.displayName = "AudienceDropdown";

@@ -129,7 +129,6 @@ const GroupChatHeader = ({ groupData }: GroupChatHeaderProps) => {
                 ) : activeMembersCount > 0 ? (
                   <>
                     {activeMembersCount}{" "}
-                    {activeMembersCount === 1 ? "Member" : "Members"}{" "}
                     <span className="text-green-500">online</span>
                     {groupData.membersCount > activeMembersCount && (
                       <span className="text-gray-400">

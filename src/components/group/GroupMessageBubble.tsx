@@ -4,6 +4,7 @@ import { MoreHorizontal } from "lucide-react";
 import Image from "next/image";
 import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
+import AttachmentRenderer from "./AttachmentRenderer";
 
 interface GroupMessageBubbleProps {
   isSender: boolean;
@@ -86,9 +87,30 @@ const GroupMessageBubble = ({ isSender, message }: GroupMessageBubbleProps) => {
               <MoreHorizontal size={16} />
             </button>
           </div>
-          <div
-            dangerouslySetInnerHTML={{ __html: message.content as TrustedHTML }}
-          ></div>
+          {message.content && (
+            <div
+              dangerouslySetInnerHTML={{
+                __html: message.content as TrustedHTML,
+              }}
+            ></div>
+          )}
+
+          {/* Render attachments */}
+          {message.attachments && message.attachments.length > 0 && (
+            <div
+              className={`space-y-2 grid gap-2 ${
+                message.attachments.length >= 4 ? "grid-cols-2" : "grid-cols-1"
+              }`}
+            >
+              {message.attachments.map((attachment, index) => (
+                <AttachmentRenderer
+                  allAttachments={message.attachments}
+                  key={attachment.id || index}
+                  attachment={attachment}
+                />
+              ))}
+            </div>
+          )}
         </div>
 
         <AnimatePresence>
