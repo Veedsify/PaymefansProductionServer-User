@@ -21,8 +21,7 @@ import axios from "axios";
 import { getToken } from "@/utils/Cookie";
 import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
 import { fetchGroupMembers } from "@/utils/data/GroupAPI";
-
-const token = getToken();
+import axiosInstance from "@/utils/Axios";
 
 const GroupSettingsPage = () => {
   const params = useParams();
@@ -69,15 +68,9 @@ const GroupSettingsPage = () => {
       setLoading(true);
       setError(null);
 
-      const response = await axios.get(
-        `${process.env.NEXT_PUBLIC_TS_EXPRESS_URL}/groups/${groupId}`,
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        },
-      );
+      const response = await axiosInstance.get(`/groups/${groupId}`, {
+        withCredentials: true,
+      });
 
       const result: ApiResponse<Group> = response.data;
 

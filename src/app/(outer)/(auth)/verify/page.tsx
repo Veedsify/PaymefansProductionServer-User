@@ -18,8 +18,6 @@ const Login = () => {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const token = getToken();
-
   const handleCodeInput = (e: ChangeEvent<HTMLInputElement>) => {
     const codeRegex = /^[0-9]*$/;
     const inputValue = e.target.value;
@@ -48,7 +46,7 @@ const Login = () => {
           headers: {
             "Content-Type": "application/json",
           },
-        }
+        },
       );
 
       if (response.status !== 200) {
@@ -67,7 +65,7 @@ const Login = () => {
       document.cookie = `token=${response.data.token}`;
       setUser(response.data.user);
       const redirect = new URLSearchParams(window.location.search).get(
-        "redirect"
+        "redirect",
       );
       const destination = redirect || "/";
       if (typeof window !== "undefined") {
@@ -78,7 +76,7 @@ const Login = () => {
       setLoading(false);
       console.log(error);
       setError(
-        error?.response?.data?.message || error?.message || "An error occurred"
+        error?.response?.data?.message || error?.message || "An error occurred",
       );
     }
   };

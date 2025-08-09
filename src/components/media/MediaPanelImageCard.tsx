@@ -10,7 +10,8 @@ import { LockedMediaOverlay } from "../sub_components/sub/LockedMediaOverlay";
 import _, { set } from "lodash";
 import { useProfileMediaContext } from "@/contexts/ProfileMediaContext";
 import { useInfiniteQuery } from "@tanstack/react-query";
-import {useUserAuthContext} from "@/lib/UserUseContext";
+import { useUserAuthContext } from "@/lib/UserUseContext";
+import axiosInstance from "@/utils/Axios";
 
 const getUniqueItems = (arr: MediaDataType[]) => {
   const uniqueMap = new Map();
@@ -20,22 +21,13 @@ const getUniqueItems = (arr: MediaDataType[]) => {
 
 const MediaPanelImageCard = React.memo(({ sort }: { sort: string }) => {
   const { fullScreenPreview } = usePostComponent();
-  const {user} = useUserAuthContext();
-  const token = getToken();
+  const { user } = useUserAuthContext();
 
   const fetchMedia = async ({ pageParam = 1 }) => {
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_TS_EXPRESS_URL}/post/personal/media?page=${pageParam}&limit=${process.env.NEXT_PUBLIC_POST_MEDIA_PER_PAGE}`,
-      {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      }
+    const res = await axiosInstance.get(
+      `/post/personal/media?page=${pageParam}&limit=${process.env.NEXT_PUBLIC_POST_MEDIA_PER_PAGE}`,
     );
-    if (!res.ok) throw new Error("Network response was not ok");
-    return res.json();
+    return res.data;
   };
 
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } =
@@ -54,7 +46,7 @@ const MediaPanelImageCard = React.memo(({ sort }: { sort: string }) => {
 
   const allMedia = React.useMemo(
     () => (data ? data.pages.flatMap((page) => page.data) : []),
-    [data]
+    [data],
   );
 
   const sorted = React.useMemo(() => {
@@ -82,7 +74,7 @@ const MediaPanelImageCard = React.memo(({ sort }: { sort: string }) => {
     const newIndexId = medias.findIndex((item) => item.url === media);
     fullScreenPreview({
       username: user?.username,
-      watermarkEnabled:watermarkEnabled,
+      watermarkEnabled: watermarkEnabled,
       url: media,
       type,
       open: true,
@@ -146,7 +138,7 @@ interface MediaPanelMediaCardProps {
     type: string,
     isSubscriber: boolean,
     indexId: number,
-      watermarkEnabled: boolean
+    watermarkEnabled: boolean,
   ) => void;
   isSubscriber: boolean;
   indexId: number;
@@ -187,7 +179,7 @@ const MediaPanelMediaCard = ({
                   media.media_type,
                   isSubscriber,
                   indexId,
-                    media.post.watermark_enabled,
+                  media.post.watermark_enabled,
                 ),
             }}
           />
@@ -198,7 +190,7 @@ const MediaPanelMediaCard = ({
                 media.media_type,
                 isSubscriber,
                 indexId,
-                  media.post.watermark_enabled,
+                media.post.watermark_enabled,
               )
             }
             className="absolute inset-0 flex items-center justify-center w-full h-full cursor-pointer bg-black/20"
@@ -217,7 +209,7 @@ const MediaPanelMediaCard = ({
               media.media_type,
               isSubscriber,
               indexId,
-                media.post.watermark_enabled,
+              media.post.watermark_enabled,
             )
           }
           src={isSubscriber ? media.url : media.blur}

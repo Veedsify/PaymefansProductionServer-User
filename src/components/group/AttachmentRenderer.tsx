@@ -26,15 +26,10 @@ const AttachmentRenderer: React.FC<AttachmentRendererProps> = ({
 }) => {
   const { fullScreenPreview } = usePostComponent();
 
-  // Only handle images - reject other file types
-  if (!attachment.fileType?.startsWith("image")) {
-    return null;
-  }
-
   // Handle image preview
   const handlePreview = useCallback(() => {
     const newIndex = allAttachments.findIndex(
-      (file) => file.fileUrl === attachment.fileUrl,
+      (file) => file.fileUrl === attachment.fileUrl
     );
 
     fullScreenPreview({
@@ -48,7 +43,12 @@ const AttachmentRenderer: React.FC<AttachmentRendererProps> = ({
       })),
       withOptions: true,
     });
-  }, [attachment.fileUrl, index, allAttachments, fullScreenPreview]);
+  }, [attachment.fileUrl, allAttachments, fullScreenPreview]);
+
+  // Only handle images - reject other file types
+  if (!attachment.fileType?.startsWith("image")) {
+    return null;
+  }
 
   return (
     <div

@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { shuffle } from "lodash";
 import { modelsService } from "@/services/modelsService";
 
-export interface UseModelsOptions {
+interface UseModelsOptions {
   staleTime?: number;
   refetchInterval?: number;
   enabled?: boolean;
@@ -58,4 +58,3 @@ export const useModels = (options?: UseModelsOptions) => {
   };
 };
 
-export default useModels;

@@ -1,6 +1,4 @@
 "use client";
-
-import axios from "axios";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   LucideSearch,
@@ -19,8 +17,6 @@ import {
 import { useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
 import toast from "react-hot-toast";
-import { getToken } from "@/utils/Cookie";
-const token = getToken();
 import Image from "next/image";
 import { formatDate } from "@/utils/FormatDate";
 import PostComponent from "@/components/post/PostComponent";
@@ -31,44 +27,36 @@ import Link from "next/link";
 import followUser from "@/utils/data/update/Follow";
 import { useState as useReactState } from "react";
 import { useUserAuthContext } from "@/lib/UserUseContext";
+import axiosInstance from "@/utils/Axios";
 
 const searchFunction = async (query: string) => {
   try {
     const search = [
       async () => {
-        const response = await axios.get(
-          `${process.env.NEXT_PUBLIC_TS_EXPRESS_URL}/search/platform?query=${query}&category=users`,
+        const response = await axiosInstance.get(
+          `/search/platform?query=${query}&category=users`,
           {
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-            },
+            withCredentials: true,
           }
         );
         return response.data.results;
       },
 
       async () => {
-        const response = await axios.get(
-          `${process.env.NEXT_PUBLIC_TS_EXPRESS_URL}/search/platform?query=${query}&category=posts`,
+        const response = await axiosInstance.get(
+          `/search/platform?query=${query}&category=posts`,
           {
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-            },
+            withCredentials: true,
           }
         );
         return response.data.results;
       },
 
       async () => {
-        const response = await axios.get(
-          `${process.env.NEXT_PUBLIC_TS_EXPRESS_URL}/search/platform?query=${query}&category=media`,
+        const response = await axiosInstance.get(
+          `/search/platform?query=${query}&category=media`,
           {
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-            },
+            withCredentials: true,
           }
         );
         return response.data.results;
@@ -121,18 +109,15 @@ const ReportModal = ({
 
     setIsSubmitting(true);
     try {
-      const response = await axios.post(
-        `${process.env.NEXT_PUBLIC_TS_EXPRESS_URL}/report/user`,
+      const response = await axiosInstance.post(
+        `/report/user`,
         {
           reported_id: userId,
           report_type: reportType,
           report: reportReason,
         },
         {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
+          withCredentials: true,
         }
       );
 

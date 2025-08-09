@@ -14,7 +14,7 @@ const ROUTE = {
    * Endpoint for updating the profile image.
    * @type {string}
    */
-  PROFILE_UPDATE: `${NEXT_PUBLIC_TS_EXPRESS_URL}/profile/update`,
+  PROFILE_UPDATE: `/profile/update`,
 
   /**
    * Endpoint for creating a new post.
@@ -40,8 +40,7 @@ const ROUTE = {
    * @param {number} post_id - The ID of the post.
    * @returns {string} The URL to fetch comments for the specified post.
    */
-  GET_COMMENTS: (post_id: string) =>
-    `${NEXT_PUBLIC_TS_EXPRESS_URL}/post/${post_id}/comments`,
+  GET_COMMENTS: (post_id: string) => `/post/${post_id}/comments`,
 
   /**
    * Endpoint for fetching replies for a specific comment.
@@ -49,20 +48,20 @@ const ROUTE = {
    * @returns {string} The URL to fetch replies for the specified comment.
    */
   GET_COMMENT_REPLIES: (comment_id: string) =>
-    `${NEXT_PUBLIC_TS_EXPRESS_URL}/post/comments/${comment_id}/replies`,
+    `/post/comments/${comment_id}/replies`,
 
   /**
    * Endpoint for fetching posts for the home page.
    * @type {string}
    */
-  GET_HOME_POSTS: `${NEXT_PUBLIC_TS_EXPRESS_URL}/feeds/home`,
+  GET_HOME_POSTS: `/feeds/home`,
   // GET_HOME_POSTS: `${NEXT_PUBLIC_TS_EXPRESS_URL}/home/posts`,
 
   /**
    * Endpoint for purchasing points
    * @type {string}
    */
-  PURCHASE_POINTS: `${NEXT_PUBLIC_TS_EXPRESS_URL}/points/purchase`,
+  PURCHASE_POINTS: `/points/purchase`,
 
   /**
    * Endpoint for fetching conversionrate for points
@@ -99,21 +98,20 @@ const ROUTE = {
    * Endpoint for store checkout
    * @type {string}
    */
-  STORE_CHECKOUT: `${NEXT_PUBLIC_TS_EXPRESS_URL}/store/checkout`,
+  STORE_CHECKOUT: `/store/checkout`,
 
   /**
    * Endpoint for verifying payment
    * @param {string} reference - The payment reference
    * @returns {string} The URL to verify payment
    */
-  VERIFY_PAYMENT: (reference: string) =>
-    `${NEXT_PUBLIC_TS_EXPRESS_URL}/store/verify-payment/${reference}`,
+  VERIFY_PAYMENT: (reference: string) => `/store/verify-payment/${reference}`,
 
   /**
    * Endpoint for fetching user orders
    * @type {string}
    */
-  GET_USER_ORDERS: `${NEXT_PUBLIC_TS_EXPRESS_URL}/store/orders`,
+  GET_USER_ORDERS: `/store/orders`,
 
   /**
    * Endpoint for updating order status

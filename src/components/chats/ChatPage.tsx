@@ -11,7 +11,7 @@ import {
 import Image from "next/image";
 import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
 import {
-  FetchConversationReceiver,
+  fetchConversationReceiver,
   GetConversationMessages,
 } from "@/utils/data/GetConversationMessages";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
@@ -50,7 +50,7 @@ const ChatPage = ({ conversationId }: { conversationId: string }) => {
   } = useQuery({
     queryKey: ["chatData", conversationId],
     queryFn: () =>
-      FetchConversationReceiver({
+      fetchConversationReceiver({
         conversationId: conversationId,
         cursor: 1,
         pageParam: 1, // Assuming pageParam is always 1 for initial load
@@ -60,6 +60,7 @@ const ChatPage = ({ conversationId }: { conversationId: string }) => {
     enabled: !!conversationId,
     staleTime: 1000 * 60 * 10, // 10 minutes - receiver data doesn't change often
   });
+
   const receiver = receiverData?.receiver;
   const profilePicture = useMemo(
     () => receiver?.profile_image || "/site/avatar.png",
@@ -318,15 +319,11 @@ const ChatPage = ({ conversationId }: { conversationId: string }) => {
   const searchForSpecificMessage = useCallback(
     async (messageId: string) => {
       try {
-        const token = getToken();
         const response = await fetch(
           `${process.env.NEXT_PUBLIC_TS_EXPRESS_URL}/conversations/search/messages/${conversationId}`,
           {
             method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-            },
+            credentials: "include",
             body: JSON.stringify({ q: messageId }),
           },
         );
@@ -553,7 +550,9 @@ const ChatPage = ({ conversationId }: { conversationId: string }) => {
           />
           <div>
             <Link
-              href={`/${receiver?.username}`}
+              href={
+                receiver?.is_profile_hidden ? `#` : `/${receiver?.username}`
+              }
               className="flex items-center text-sm font-semibold text-gray-900 gap-1 dark:text-white"
             >
               {receiver?.name}
@@ -562,7 +561,7 @@ const ChatPage = ({ conversationId }: { conversationId: string }) => {
               )}
             </Link>
             <div className="flex items-center text-xs text-gray-500 gap-1 dark:text-gray-400">
-              {receiver?.username && (
+              {receiver?.username && !receiver.is_profile_hidden && (
                 <ActiveProfileTag userid={receiver.username} withText />
               )}
               {/* {typing && (

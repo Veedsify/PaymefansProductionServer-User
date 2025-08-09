@@ -16,9 +16,6 @@ import { usePathname, useRouter } from "next/navigation";
 import swal from "sweetalert";
 import { useUserAuthContext } from "@/lib/UserUseContext";
 import { POST_CONFIG } from "@/config/config";
-
-const token = getToken();
-
 const QuickPostActionHooks = ({ options }: QuickPostActionsProps) => {
   const { user } = useUserAuthContext();
   const router = useRouter();
@@ -37,11 +34,6 @@ const QuickPostActionHooks = ({ options }: QuickPostActionsProps) => {
           toast.loading(POST_CONFIG.POST_DELETING_STATUS);
           const deletePost = await axiosInstance.delete(
             `/post/${options.post_id}`,
-            {
-              headers: {
-                Authorization: `Bearer ${token}`,
-              },
-            },
           );
           if (deletePost.status === 200) {
             toast.dismiss();
@@ -130,11 +122,6 @@ const QuickPostActionHooks = ({ options }: QuickPostActionsProps) => {
           {
             visibility: visibility.value,
           },
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          },
         );
         if (setVisibility.status === 200) {
           toast.success(POST_CONFIG.QUICK_ACTION_CONFIG.VISIBILITY_SUCCESSFUL);
@@ -221,12 +208,6 @@ const QuickPostActionHooks = ({ options }: QuickPostActionsProps) => {
       const repost = await axiosInstance.post(
         `/post/repost/${options.post_id}`,
         {},
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        },
       );
       if (repost.status === 200 && repost.data.error === false) {
         toast.success(repost.data.message, {

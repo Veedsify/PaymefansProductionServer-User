@@ -19,6 +19,7 @@ import { blockUser, checkBlockStatus } from "@/utils/data/BlockUser";
 import axios from "axios";
 import { toast } from "react-hot-toast";
 import ActiveProfileTag from "@/components/sub_components/sub/ActiveProfileTag";
+import axiosInstance from "@/utils/Axios";
 
 interface ConversationReceiver {
   id: number;
@@ -30,7 +31,7 @@ interface ConversationReceiver {
   is_verified: boolean;
   Settings: any;
   flags: string;
-  isProfileHidden: boolean;
+  is_profile_hidden: boolean;
 }
 
 const ConversationSettingsPage = () => {
@@ -51,8 +52,8 @@ const ConversationSettingsPage = () => {
     // Fetch conversation receiver data
     const fetchConversationReceiver = async () => {
       try {
-        const response = await axios.get(
-          `${process.env.NEXT_PUBLIC_TS_EXPRESS_URL}/conversations/receiver/${conversationId}`,
+        const response = await axiosInstance.get(
+          `/conversations/receiver/${conversationId}`,
           {
             withCredentials: true,
           },

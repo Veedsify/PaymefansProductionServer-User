@@ -174,7 +174,7 @@ interface CreateGroupRequest {
   };
 }
 
-export interface UpdateGroupRequest {
+interface UpdateGroupRequest {
   name?: string;
   description?: string;
   groupType?: GroupType;
@@ -182,7 +182,7 @@ export interface UpdateGroupRequest {
   groupIcon?: string;
 }
 
-export interface UpdateGroupSettingsRequest {
+interface UpdateGroupSettingsRequest {
   allowMemberInvites?: boolean;
   allowMediaSharing?: boolean;
   allowFileSharing?: boolean;
@@ -234,7 +234,7 @@ interface GroupListResponse {
   pagination: PaginationMeta;
 }
 
-export interface GroupMembersResponse {
+interface GroupMembersResponse {
   members: GroupMember[];
   pagination: {
     cursor?: number;
@@ -276,7 +276,7 @@ interface GroupSearchParams {
   limit?: number;
 }
 
-export interface GroupMemberParams {
+interface GroupMemberParams {
   cursor?: number;
   limit?: number;
   role?: GroupMemberRole;

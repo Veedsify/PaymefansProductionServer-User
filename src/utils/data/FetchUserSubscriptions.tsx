@@ -1,14 +1,10 @@
-import axios, {AxiosResponse} from "axios";
+import axios, { AxiosResponse } from "axios";
+import axiosInstance from "../Axios";
 
-const FetchUserSubscriptions = async (url: string, token: string) => {
-    let response: Promise<AxiosResponse<any, any>>;
-    response = axios.get(url, {
-        headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${token}`
-        }
-    });
-    return response
-}
+const FetchUserSubscriptions = async (url: string) => {
+  let response: Promise<AxiosResponse<any, any>>;
+  response = axiosInstance.get(url);
+  return response;
+};
 
 export default FetchUserSubscriptions;

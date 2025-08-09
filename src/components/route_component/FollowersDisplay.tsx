@@ -4,6 +4,7 @@ import { useRef, useEffect, useState, useCallback } from "react";
 import UserFollowComp from "../sub_components/UserFollowComp";
 import { getToken } from "@/utils/Cookie";
 import { Followers, PaginateProps } from "@/types/Components";
+import axiosInstance from "@/utils/Axios";
 
 const FollowersDisplay = () => {
   const [paginate, setPaginate] = useState<PaginateProps>({
@@ -12,25 +13,17 @@ const FollowersDisplay = () => {
   });
   const [followers, setFollowers] = useState<Followers[]>([]);
   const ref = useRef<HTMLDivElement>(null);
-  const token = getToken();
   const arr = new Array(30).fill(0);
   const fetchFollowers = useCallback(async () => {
     try {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_TS_EXPRESS_URL}/follower/all?min=${paginate.min}&max=${paginate.max}`,
-        {
-          method: "POST",
-          cache: "force-cache",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        }
+      const token = getToken();
+      const response = await axiosInstance.post(
+        `/follower/all?min=${paginate.min}&max=${paginate.max}`,
+        {},
       );
-      const data = await response.json();
+      const data = response.data;
       setFollowers((prev) => {
         const remaining = data.followers.filter((follower: Followers) => {
-          // If the follower's id isn't found in the existing followers list, keep it
           return !prev.some((f) => f.user.id === follower.user.id);
         });
         return [...prev, ...remaining];
@@ -38,7 +31,7 @@ const FollowersDisplay = () => {
     } catch (err) {
       console.log(err);
     }
-  }, [paginate.min, paginate.max, token]);
+  }, [paginate.min, paginate.max]);
 
   useEffect(() => {
     fetchFollowers();

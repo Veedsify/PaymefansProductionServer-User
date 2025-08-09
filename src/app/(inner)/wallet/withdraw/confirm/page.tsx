@@ -10,6 +10,7 @@ import VerifyWithdrawalPin from "@/components/sub_components/VerifyWithdrawalPin
 import { useUserAuthContext } from "@/lib/UserUseContext";
 import axios from "axios";
 import { getToken } from "@/utils/Cookie";
+import axiosInstance from "@/utils/Axios";
 
 const WithdrawConfigPage = () => {
   const [loading, setLoading] = React.useState(true);
@@ -19,7 +20,7 @@ const WithdrawConfigPage = () => {
   const [error, setError] = React.useState<string>("");
   const [processing, setProcessing] = React.useState(false);
   const [step, setStep] = React.useState<"create" | "verify">(
-    user?.hasPin ? "verify" : "create",
+    user?.hasPin ? "verify" : "create"
   );
   const { config } = useConfigContext();
   const router = useRouter();
@@ -46,7 +47,7 @@ const WithdrawConfigPage = () => {
 
   const amountInNgn = Number(withdrawValues?.amountInNgn).toLocaleString();
   const amountToSettle = Number(
-    withdrawValues?.amountToSettle,
+    withdrawValues?.amountToSettle
   ).toLocaleString();
   // Fixed typo: platformFee instead of platfromFee
   const platformFee = Number(withdrawValues?.platformFee).toLocaleString();
@@ -66,7 +67,6 @@ const WithdrawConfigPage = () => {
     action: "create" | "verify";
     pin: string;
   }) => {
-    const token = getToken();
     clearError();
 
     // Consolidated validation
@@ -85,13 +85,10 @@ const WithdrawConfigPage = () => {
 
     try {
       setProcessing(true);
-      const response = await axios({
-        url: `${process.env.NEXT_PUBLIC_TS_EXPRESS_URL}/withdraw/confirm`,
+      const response = await axiosInstance({
+        url: `/withdraw/confirm`,
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
+        withCredentials: true,
         data: JSON.stringify({
           userId: user?.id,
           pin,

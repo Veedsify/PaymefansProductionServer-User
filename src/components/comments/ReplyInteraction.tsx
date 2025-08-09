@@ -39,7 +39,7 @@ const ReplyInteractions = ({
 
       try {
         const response = await axiosInstance.post(
-          `${process.env.NEXT_PUBLIC_TS_EXPRESS_URL}/comments/view`,
+          `/comments/view`,
           {
             commentId,
           },
@@ -88,7 +88,7 @@ const ReplyInteractions = ({
 
     try {
       const response = await axiosInstance.post(
-        `${process.env.NEXT_PUBLIC_TS_EXPRESS_URL}/comments/like`,
+        `/comments/like`,
         {
           commentId,
         },

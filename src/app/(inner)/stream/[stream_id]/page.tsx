@@ -3,6 +3,7 @@ import StreamDeck from "@/components/stream/StreamDeck";
 // import { streamDataProps } from "@/types/components";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
+import axiosInstance from "@/utils/Axios";
 
 const Stream = async ({
   params,
@@ -14,9 +15,9 @@ const Stream = async ({
 
   const fetchStreamData = async () => {
     try {
-      const response = await axios({
+      const response = await axiosInstance({
         method: "GET",
-        url: `${process.env.NEXT_PUBLIC_TS_EXPRESS_URL}/live/host/${stream_id}`,
+        url: `/live/host/${stream_id}`,
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,

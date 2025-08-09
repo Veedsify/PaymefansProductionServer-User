@@ -16,7 +16,6 @@ import Link from "next/link";
 import formatNumber from "@/lib/FormatNumbers";
 import { usePersonalProfileStore } from "@/contexts/PersonalProfileContext";
 import axiosInstance from "@/utils/Axios";
-import { getToken } from "@/utils/Cookie";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 
@@ -30,14 +29,18 @@ interface PostRepostProps {
   isReposted: boolean;
 }
 
-const PostRepost = ({ repostThisPost, repostCount, isReposted }: PostRepostProps) => {
+const PostRepost = ({
+  repostThisPost,
+  repostCount,
+  isReposted,
+}: PostRepostProps) => {
   const [wasReposted, setWasReposted] = useState(isReposted);
   const [postReposts, setPostReposts] = useState(repostCount);
 
   const handleRepost = useCallback(() => {
     repostThisPost();
     setWasReposted(!wasReposted);
-    setPostReposts(prev => wasReposted ? prev - 1 : prev + 1);
+    setPostReposts((prev) => (wasReposted ? prev - 1 : prev + 1));
   }, [repostThisPost, wasReposted]);
 
   return (
@@ -49,8 +52,7 @@ const PostRepost = ({ repostThisPost, repostCount, isReposted }: PostRepostProps
       {postReposts}
     </span>
   );
-}
-
+};
 
 export const PostCompInteractions = ({ data }: PostCompInteractionsProps) => {
   const { likePost: likeThisPost, unlikePost } = usePersonalProfileStore();
@@ -60,7 +62,6 @@ export const PostCompInteractions = ({ data }: PostCompInteractionsProps) => {
   const [like, setLike] = useState<boolean>(false);
   const [likesCount, setLikesCount] = useState<number>(data?.post_likes!);
   const { user } = useUserAuthContext();
-  const token = getToken();
   const router = useRouter();
 
   const repostThisPost = useCallback(async () => {
@@ -68,12 +69,6 @@ export const PostCompInteractions = ({ data }: PostCompInteractionsProps) => {
       const repost = await axiosInstance.post(
         `/post/repost/${data?.post_id}`,
         {},
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        }
       );
       if (repost.status === 200 && repost.data.error === false) {
         toast.success(repost.data.message, {
@@ -89,9 +84,9 @@ export const PostCompInteractions = ({ data }: PostCompInteractionsProps) => {
     } catch (error: any) {
       toast.error(error?.response?.data?.message || "Failed to repost", {
         id: "repost-error",
-      })
+      });
     }
-  }, [router, data?.post_id, token]);
+  }, [router, data?.post_id]);
 
   const handleLikePost = async () => {
     try {

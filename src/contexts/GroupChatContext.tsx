@@ -39,6 +39,10 @@ export interface GroupMember {
   role: "ADMIN" | "MODERATOR" | "MEMBER";
   joinedAt: string;
   isActive: boolean;
+  isMuted?: boolean;
+  mutedBy?: number;
+  mutedUntil?: string;
+  isBlocked?: boolean;
 }
 
 export interface TypingUser {
@@ -56,6 +60,7 @@ interface GroupChatState {
   isConnected: boolean;
   currentGroupId: number | null;
   isJoined: boolean;
+  currentUserMembership: GroupMember | null;
   // Pagination state
   isLoadingMessages: boolean;
   hasMoreMessages: boolean;
@@ -79,6 +84,7 @@ interface GroupChatActions {
   setTyping: (user: TypingUser) => void;
   removeTyping: (userId: string) => void;
   messageSeen: (messageId: number, userId: string) => void;
+  setCurrentUserMembership: (membership: GroupMember | null) => void;
 
   // Pagination actions
   setLoadingMessages: (loading: boolean) => void;
@@ -96,7 +102,7 @@ interface GroupChatActions {
   sendMessage: (
     content: string,
     attachments?: any[],
-    replyToId?: number,
+    replyToId?: number
   ) => void;
   setTypingStatus: (isTyping: boolean) => void;
   markMessageAsSeen: (messageId: number) => void;
@@ -106,6 +112,7 @@ interface GroupChatActions {
   getMessages: () => GroupMessage[];
   getActiveMembers: () => GroupMember[];
   getTypingUsers: () => TypingUser[];
+  getCurrentUserMembership: () => GroupMember | null;
   getPaginationState: () => {
     isLoadingMessages: boolean;
     hasMoreMessages: boolean;
@@ -126,6 +133,7 @@ export const useGroupChatStore = create<GroupChatStore>()((set, get) => ({
   isConnected: false,
   currentGroupId: null,
   isJoined: false,
+  currentUserMembership: null,
   // Pagination state
   isLoadingMessages: false,
   hasMoreMessages: true,
@@ -176,6 +184,7 @@ export const useGroupChatStore = create<GroupChatStore>()((set, get) => ({
       activeMembers: [],
       typingUsers: [],
       currentGroupId: null,
+      currentUserMembership: null,
     });
   },
   setCurrentGroup: (groupId) =>
@@ -206,7 +215,7 @@ export const useGroupChatStore = create<GroupChatStore>()((set, get) => ({
       // Filter out duplicates before adding
       const existingMessageIds = new Set(state.messages.map((m) => m.id));
       const uniqueNewMessages = messages.filter(
-        (message) => !existingMessageIds.has(message.id),
+        (message) => !existingMessageIds.has(message.id)
       );
 
       if (uniqueNewMessages.length === 0) {
@@ -235,7 +244,7 @@ export const useGroupChatStore = create<GroupChatStore>()((set, get) => ({
   memberJoined: (member) =>
     set((state) => {
       const memberExists = state.activeMembers.some(
-        (m) => m.userId === member.userId,
+        (m) => m.userId === member.userId
       );
       if (memberExists) return state;
       return {
@@ -249,7 +258,7 @@ export const useGroupChatStore = create<GroupChatStore>()((set, get) => ({
   setTyping: (user) =>
     set((state) => {
       const updatedTyping = state.typingUsers.filter(
-        (t) => t.userId !== user.userId,
+        (t) => t.userId !== user.userId
       );
       return {
         typingUsers: user.isTyping ? [...updatedTyping, user] : updatedTyping,
@@ -263,6 +272,8 @@ export const useGroupChatStore = create<GroupChatStore>()((set, get) => ({
     // Handle message seen status if needed
     // This is a placeholder as the original reducer did nothing
   },
+  setCurrentUserMembership: (membership) =>
+    set({ currentUserMembership: membership }),
 
   // Pagination actions
   setLoadingMessages: (loading) => set({ isLoadingMessages: loading }),
@@ -376,6 +387,7 @@ export const useGroupChatStore = create<GroupChatStore>()((set, get) => ({
   getMessages: () => get().messages,
   getActiveMembers: () => get().activeMembers,
   getTypingUsers: () => get().typingUsers,
+  getCurrentUserMembership: () => get().currentUserMembership,
   getPaginationState: () => {
     const { isLoadingMessages, hasMoreMessages, currentCursor, totalMessages } =
       get();

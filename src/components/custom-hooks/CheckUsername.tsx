@@ -4,6 +4,7 @@ import { AuthUserProps } from "@/types/User";
 import { getToken } from "@/utils/Cookie";
 import _ from "lodash";
 import useDebounce from "./Debounce"; // Adjust the import path as necessary
+import axiosInstance from "@/utils/Axios";
 const useCheckUsername = (user: AuthUserProps, usernameCheck: string) => {
   const [canSave, setCanSave] = useState(false);
   const [message, setMessage] = useState("");
@@ -22,16 +23,12 @@ const useCheckUsername = (user: AuthUserProps, usernameCheck: string) => {
         setIsloading(true);
         setCanSave(true);
         setMessage("");
-        const token = getToken();
-        const api = `${process.env.NEXT_PUBLIC_TS_EXPRESS_URL}/settings/check-username?username=${usernameCheck}`;
-        const response = await axios.post(
+        const api = `/settings/check-username?username=${usernameCheck}`;
+        const response = await axiosInstance.post(
           api,
           {},
           {
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-            },
+            withCredentials: true,
           },
         );
         if (!response.data.error) {

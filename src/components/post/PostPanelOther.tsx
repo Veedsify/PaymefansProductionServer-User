@@ -8,21 +8,17 @@ import { LucideLoader } from "lucide-react";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { getToken } from "@/utils/Cookie";
+import axiosInstance from "@/utils/Axios";
 
 const PostPanelOther = ({ userdata }: { userdata: ProfileUserProps }) => {
   const postPerPage = Number(process.env.NEXT_PUBLIC_POST_PER_PAGE);
 
   const fetchPosts = async ({ pageParam = 1 }) => {
-    const token = getToken();
-    const api = `${process.env.NEXT_PUBLIC_TS_EXPRESS_URL}/post/user/${userdata?.id}`;
-    const response = await axios.get(api, {
+    const api = `/post/user/${userdata?.id}`;
+    const response = await axiosInstance.get(api, {
       params: {
         page: pageParam,
         limit: postPerPage,
-      },
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
       },
     });
     return response.data;

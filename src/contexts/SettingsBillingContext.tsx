@@ -1,3 +1,4 @@
+import axiosInstance from "@/utils/Axios";
 import { getToken } from "@/utils/Cookie";
 import { useRouter } from "next/navigation";
 import { createContext, useContext, useEffect, useState } from "react";
@@ -28,7 +29,7 @@ export const useSettingsBillingContext = () => {
   const context = useContext(settingsBillingContext);
   if (context === undefined) {
     throw new Error(
-      "useSettingsBillingContext must be used within a SettingsBillingProvider"
+      "useSettingsBillingContext must be used within a SettingsBillingProvider",
     );
   }
   return context;
@@ -40,37 +41,35 @@ export const SettingsBillingProvider: React.FC<SettingsBillingProps> = ({
 }) => {
   const router = useRouter();
   const [settings, setSettings] = useState<Settings>(current_data);
-
-  const token = getToken();
-
   const setSubscription = async (subscription: Settings) => {
     setSettings(subscription);
   };
 
   const saveSettings = async () => {
     try {
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_TS_EXPRESS_URL}/settings/billings/message-price`,
-        {
-          method: "POST",
-          body: JSON.stringify(settings),
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      try {
+        const res = await axiosInstance.post(
+          `${process.env.NEXT_PUBLIC_TS_EXPRESS_URL}/settings/billings/message-price`,
+          settings,
+        );
 
-      if (res.ok) {
-        const data = await res.json();
+        const data = res.data;
         if (data.status) {
           toast.success("Settings saved successfully");
           router.refresh();
           return;
         }
         toast.error("Error saving settings");
-      } else {
-        console.log("Error: ", res.status, res.statusText);
+      } catch (error: any) {
+        if (error.response) {
+          console.log(
+            "Error: ",
+            error.response.status,
+            error.response.statusText,
+          );
+        } else {
+          console.log("Error: ", error.message);
+        }
       }
     } catch (error) {
       console.error("Error setting subscription: ", error);

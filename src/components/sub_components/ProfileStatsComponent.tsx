@@ -16,32 +16,31 @@ import {
 } from "react";
 import toast from "react-hot-toast";
 import { motion } from "framer-motion";
+import axiosInstance from "@/utils/Axios";
 
 const fetchStats = async (
   userId: string | undefined,
   page: number,
   type: string,
-  query: string
+  query: string,
 ) => {
-  const token = getToken();
-  const fetchStats = await fetch(
-    `${
-      process.env.NEXT_PUBLIC_TS_EXPRESS_URL
-    }/profile/stats/${userId}/${type}?cursor=${page}&limit=${25}&query=${query}`,
-    {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
+  try {
+    const response = await axiosInstance.get(
+      `/profile/stats/${userId}/${type}`,
+      {
+        params: {
+          cursor: page,
+          limit: 25,
+          query: query,
+        },
       },
-    }
-  );
-
-  if (!fetchStats.ok) {
-    throw new Error("Network response was not ok");
+    );
+    return response.data;
+  } catch (error: any) {
+    throw new Error(
+      error.response?.data?.message || "Network response was not ok",
+    );
   }
-  const data = await fetchStats.json();
-  return data;
 };
 
 interface ProfileStatsProps {
@@ -182,7 +181,7 @@ export const ProfileStatsComponent = ({
 
   const stats = useMemo(
     () => data?.pages.flatMap((page) => page.data) || [],
-    [data]
+    [data],
   );
 
   const total =
@@ -190,14 +189,14 @@ export const ProfileStatsComponent = ({
 
   const debouncedSearch = useMemo(
     () => debounce((value) => setQuery(value), 400),
-    []
+    [],
   );
 
   const handleInputChange = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => {
       debouncedSearch(e.target.value);
     },
-    [debouncedSearch]
+    [debouncedSearch],
   );
 
   useEffect(() => {
@@ -223,7 +222,7 @@ export const ProfileStatsComponent = ({
           fetchNextPage();
         }
       },
-      { threshold: 1.0 }
+      { threshold: 1.0 },
     );
 
     if (observerRef.current) observer.observe(observerRef.current);

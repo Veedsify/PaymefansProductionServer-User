@@ -5,31 +5,25 @@ import { useEffect, useState } from "react";
 import Toggle from "./Checked";
 import { getToken } from "@/utils/Cookie";
 import toast from "react-hot-toast";
-import _ from "lodash"
+import _ from "lodash";
+import axios from "axios";
+import axiosInstance from "@/utils/Axios";
 
 const TwoFactorAuth = () => {
   const { user } = useUserAuthContext();
   const [twoFactorAuth, setTwoFactorAuth] = useState(false);
-  const token = getToken();
   const toggleTwoFactorAuthentication = async () => {
     try {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_TS_EXPRESS_URL}/auth/two-factor-authentication`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify({ two_factor_auth: !twoFactorAuth }),
-        }
+      const response = await axiosInstance.post(
+        `/auth/two-factor-authentication`,
+        { two_factor_auth: !twoFactorAuth },
       );
-      const data = await response.json();
+      const data = response.data;
       if (data.success) {
         toast.success(data.message);
         setTwoFactorAuth(!twoFactorAuth);
       }
-    } catch (error) {
+    } catch (error: any) {
       console.log(error);
       toast.error("Failed to update two factor authentication");
     }
@@ -38,20 +32,25 @@ const TwoFactorAuth = () => {
   // Debounce the toggleTwoFactorAuthentication function
   const debouncedToggleTwoFactorAuthentication = _.debounce(
     toggleTwoFactorAuthentication,
-    300
+    300,
   );
   useEffect(() => {
     setTwoFactorAuth(user?.Settings?.two_factor_auth!);
   }, [user]);
   return (
     <div>
-      <h2 className="mt-10 mb-4 font-bold dark:text-white">Two Factor Authentication</h2>
+      <h2 className="mt-10 mb-4 font-bold dark:text-white">
+        Two Factor Authentication
+      </h2>
       <p className="mb-3 dark:text-white">
         When you log in, you will be asked for a verification code sent to your
         email address. This code is valid for 30 minutes.
       </p>
       <div>
-        <Toggle set={debouncedToggleTwoFactorAuthentication} state={twoFactorAuth} />
+        <Toggle
+          set={debouncedToggleTwoFactorAuthentication}
+          state={twoFactorAuth}
+        />
       </div>
     </div>
   );

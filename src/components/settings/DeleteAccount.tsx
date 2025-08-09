@@ -1,5 +1,6 @@
 "use client";
 import { useUserAuthContext } from "@/lib/UserUseContext";
+import axiosInstance from "@/utils/Axios";
 import { getToken } from "@/utils/Cookie";
 import { AnimatePresence, motion } from "framer-motion";
 import { LucideLoader, LucideLoader2 } from "lucide-react";
@@ -10,7 +11,6 @@ const DeleteAccount = () => {
   const [isDeleting, setIsDeleting] = useState(false);
   const [password, setPassword] = useState("");
   const [passwordError, setPasswordError] = useState("");
-  const token = getToken();
   const handleDeleteClick = () => {
     setIsOpen(true);
   };
@@ -29,25 +29,20 @@ const DeleteAccount = () => {
     setPasswordError("");
     setIsDeleting(true);
     try {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_TS_EXPRESS_URL}/profile/delete-account`,
-        {
-          method: "DELETE",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify({ password }),
-        },
-      );
-      if (response.ok) {
+      // Make sure to get the token before making the request
+      const axios = (await import("axios")).default;
+      try {
+        const response = await axiosInstance.delete(`/profile/delete-account`, {
+          data: { password },
+        });
         // Handle successful deletion, e.g., redirect to home page or show success message
         window.location.href = "/login";
         document.cookie =
           "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-      } else {
-        const jsonResponse = await response.json();
-        toast.error(jsonResponse.message || "Failed to delete account");
+      } catch (error: any) {
+        const message =
+          error?.response?.data?.message || "Failed to delete account";
+        toast.error(message);
       }
     } catch (error) {
       toast.error(

@@ -19,6 +19,7 @@ import { FileHolderProps, ReplyPostProps } from "@/types/Components";
 import { POST_CONFIG } from "@/config/config";
 import FetchMentions from "@/utils/data/FetchMentions";
 import ParseContentToHtml from "@/utils/ParseHtmlContent";
+import axiosInstance from "@/utils/Axios";
 
 // Mock user data for @mentions (example)
 interface MentionUser {
@@ -236,8 +237,7 @@ const ReplyPostComponent = ({ options, isReply }: ReplyPostProps) => {
     }
     try {
       setCommentSending(true);
-      const token = getToken();
-      const url = `${process.env.NEXT_PUBLIC_TS_EXPRESS_URL}/comments/new`;
+      const url = `/comments/new`;
 
       // Parse final text to HTML (for links & mentions)
       const finalHtmlContent = ParseContentToHtml(typedComment, mentions);
@@ -253,7 +253,7 @@ const ReplyPostComponent = ({ options, isReply }: ReplyPostProps) => {
       }
       files.forEach((file) => formData.append("files", file));
 
-      const res = await axios.post(url, formData, {
+      const res = await axiosInstance.post(url, formData, {
         onUploadProgress: (progressEvent) => {
           if (progressEvent?.total) {
             setProgress(
@@ -261,10 +261,7 @@ const ReplyPostComponent = ({ options, isReply }: ReplyPostProps) => {
             );
           }
         },
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "multipart/form-data",
-        },
+        withCredentials: true,
       });
       const { status, error, data } = res.data;
 

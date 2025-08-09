@@ -8,14 +8,8 @@ export const getCommentReplies = async (
   limit: number = 15,
 ) => {
   try {
-    const token = getToken();
     const response = await axios.get(
       `${ROUTE.GET_COMMENT_REPLIES(commentId)}?page=${page}&limit=${limit}`,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      },
     );
 
     if (!response.data.error) {

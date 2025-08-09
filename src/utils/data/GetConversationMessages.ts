@@ -1,7 +1,7 @@
 import axios from "axios";
-import { getToken } from "../Cookie";
+import axiosInstance from "../Axios";
 
-export const FetchConversationReceiver = async ({
+export const fetchConversationReceiver = async ({
   pageParam,
   conversationId,
   cursor,
@@ -12,14 +12,10 @@ export const FetchConversationReceiver = async ({
 }) => {
   try {
 
-    const token = getToken();
-    const response = await axios(
-      `${process.env.NEXT_PUBLIC_TS_EXPRESS_URL}/conversations/receiver/${conversationId}`,
+    const response = await axiosInstance(
+      `/conversations/receiver/${conversationId}`,
       {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
+        withCredentials: true,
       }
     );
 
@@ -43,18 +39,14 @@ export const GetConversationMessages = async ({
   cursor: number | undefined
 }) => {
   try {
-    const token = getToken();
     const pageQuery = new URLSearchParams();
     if (cursor !== undefined) {
       pageQuery.append("cursor", cursor.toString());
     }
-    const response = await axios(
+    const response = await axiosInstance(
       `${process.env.NEXT_PUBLIC_TS_EXPRESS_URL}/conversations/messages/${conversationId}?${pageQuery.toString()}`,
       {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
+        withCredentials: true,
       }
     );
 

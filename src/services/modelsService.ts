@@ -1,12 +1,12 @@
 import axiosInstance from "@/utils/Axios";
 import { HookupProps } from "@/components/models/SideModels";
 
-export interface ModelsAndHookupsResponse {
+interface ModelsAndHookupsResponse {
   models: any[];
   hookups: HookupProps[];
 }
 
-export interface LocationData {
+interface LocationData {
   latitude: number;
   longitude: number;
 }
@@ -189,4 +189,3 @@ class ModelsService {
 
 // Export singleton instance
 export const modelsService = new ModelsService();
-export default modelsService;

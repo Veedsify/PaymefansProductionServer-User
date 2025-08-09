@@ -275,7 +275,7 @@ const PostComponent: React.FC<PostComponentProps> = ({
               width={50}
               height={50}
               priority
-              src={user?.image.trimEnd()}
+              src={user?.image?.trimEnd()}
               alt=""
               className="object-cover w-8 rounded-full md:w-10 aspect-square"
             />

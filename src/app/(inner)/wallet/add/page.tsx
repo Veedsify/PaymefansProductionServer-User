@@ -1,15 +1,16 @@
 "use client";
 import { getToken } from "@/utils/Cookie";
 import { LucideLoader, LucideTrash2 } from "lucide-react";
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState } from "react";
 import swal from "sweetalert";
 import {
   acceptedBankCountries,
   acceptedBankTypes,
 } from "@/utils/data/AcceptedBankCountries";
-import CountrySelector from "@/components/sub_components/CountrySelector";
 import Image from "next/image";
 import { BANK_CONFIG } from "@/config/config";
+import axios from "axios";
+import axiosInstance from "@/utils/Axios";
 
 interface BankData {
   slug: string;
@@ -27,14 +28,6 @@ const WalletAddBank = () => {
   let [bankType, setBankType] = useState<string>("nuban");
   let [selectCountry, setSelectCountry] =
     useState<keyof typeof acceptedBankTypes>("ng");
-  const token = getToken();
-
-  // const SelectCountry = useCallback(
-  //   (name: keyof typeof acceptedBankTypes, bankType: string) => {
-  //     setSelectCountry("ng");
-  //   },
-  //   []
-  // );
 
   useEffect(() => {
     const validateBannk = (accountNumber: string, selectedBank: string) => {
@@ -100,30 +93,27 @@ const WalletAddBank = () => {
       swal("Error", "Select a bank", "error");
       return;
     }
+    const country = acceptedBankCountries.find(
+      (country) => country.countryIso === selectCountry
+    )?.name;
 
     try {
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_TS_EXPRESS_URL}/wallet/banks/add`,
+      const response = await axiosInstance.put(
+        `/wallet/banks/add`,
         {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}` || "",
-          },
-          body: JSON.stringify({
-            accountNumber,
-            bankCode: selectedBank,
-            accountName: name,
-            country: acceptedBankCountries.find(
-              (country) => country.countryIso === selectCountry
-            )?.name,
-            bankType,
-            otherDetails: banks.find((bank) => bank.code === selectedBank),
-          }),
+          accountNumber,
+          bankCode: selectedBank,
+          accountName: name,
+          country,
+          bankType,
+          otherDetails: banks.find((bank) => bank.code === selectedBank),
+        },
+        {
+          withCredentials: true,
         }
       );
 
-      const data = await res.json();
+      const data = response.data;
       if (data.status === true) {
         swal("Success", data.message, "success").then((res) => {
           if (res) window.location.reload();

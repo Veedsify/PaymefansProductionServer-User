@@ -21,8 +21,6 @@ const LiveStreamSocket = ({ streamId }: LiveStreamSocketProps) => {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const socket = getSocket();
-  const router = useRouter();
-  const token = getToken();
 
   useEffect(() => {
     socket?.emit("connect-stream", { streamId, userId: user?.user_id });

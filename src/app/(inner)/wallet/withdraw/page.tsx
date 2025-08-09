@@ -12,7 +12,7 @@ const Page = async () => {
   const user = await getUserData();
   const { wallet } = await axiosInstance
     .post(
-      `${process.env.NEXT_PUBLIC_TS_EXPRESS_URL}/auth/wallet`,
+      `/auth/wallet`,
       {},
       {
         headers: {
@@ -24,7 +24,7 @@ const Page = async () => {
     .then((res) => res.data as { wallet: number });
   const { points } = await axiosInstance
     .post(
-      `${process.env.NEXT_PUBLIC_TS_EXPRESS_URL}/auth/points`,
+      `/auth/points`,
       {},
       {
         headers: {

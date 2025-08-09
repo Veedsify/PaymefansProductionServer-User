@@ -4,6 +4,7 @@ import { getToken } from "@/utils/Cookie";
 import ROUTE from "@/config/routes";
 import { PostData, UserMediaProps } from "@/types/Components";
 import axios from "axios";
+import axiosInstance from "@/utils/Axios";
 
 interface HomeFeedResponse {
   posts: PostData[];
@@ -16,24 +17,7 @@ const fetchHomeFeed = async ({
 }: {
   pageParam?: string;
 }): Promise<HomeFeedResponse> => {
-  const token = getToken();
-
-  if (!token) {
-    throw new Error("Authentication required");
-  }
-
-  const url = new URL(ROUTE.GET_HOME_POSTS, window.location.origin);
-  if (pageParam) {
-    url.searchParams.set("cursor", pageParam);
-  }
-
-  const response = await axios.get(url.toString(), {
-    headers: {
-      Authorization: `Bearer ${token}`,
-      "Content-Type": "application/json",
-    },
-    withCredentials: true,
-  });
+  const response = await axiosInstance.get(`${ROUTE.GET_HOME_POSTS}?cursor=${pageParam}`);
 
   const data = response.data;
   return data;
@@ -64,4 +48,3 @@ export const useHomeFeedInfinite = () => {
     retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000),
   });
 };
-;

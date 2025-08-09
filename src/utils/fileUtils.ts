@@ -1,8 +1,8 @@
 // File utility functions for handling attachments in group chat
 
-export const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
+const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
 
-export const ALLOWED_FILE_TYPES = [
+const ALLOWED_FILE_TYPES = [
   "image/jpeg",
   "image/png",
   "image/gif",
@@ -10,7 +10,7 @@ export const ALLOWED_FILE_TYPES = [
   "image/svg+xml",
 ];
 
-export const IMAGE_TYPES = [
+const IMAGE_TYPES = [
   "image/jpeg",
   "image/png",
   "image/gif",
@@ -34,14 +34,14 @@ export const formatFileSize = (bytes: number): string => {
 /**
  * Check if file type is allowed
  */
-export const isFileTypeAllowed = (fileType: string): boolean => {
+const isFileTypeAllowed = (fileType: string): boolean => {
   return ALLOWED_FILE_TYPES.includes(fileType);
 };
 
 /**
  * Check if file size is within limit
  */
-export const isFileSizeValid = (fileSize: number): boolean => {
+const isFileSizeValid = (fileSize: number): boolean => {
   return fileSize <= MAX_FILE_SIZE;
 };
 
@@ -65,14 +65,14 @@ export const isImage = (fileType: string): boolean => {
 /**
  * Get file extension from filename
  */
-export const getFileExtension = (filename: string): string => {
+const getFileExtension = (filename: string): string => {
   return filename.split(".").pop()?.toLowerCase() || "";
 };
 
 /**
  * Generate a unique filename with timestamp and random string
  */
-export const generateUniqueFilename = (originalFilename: string): string => {
+const generateUniqueFilename = (originalFilename: string): string => {
   const timestamp = Date.now();
   const randomString = Math.random().toString(36).substring(2, 15);
   const extension = getFileExtension(originalFilename);
@@ -127,7 +127,7 @@ export const createFilePreview = (file: File): Promise<string> => {
 /**
  * Download file from URL
  */
-export const downloadFile = (fileUrl: string, fileName: string): void => {
+const downloadFile = (fileUrl: string, fileName: string): void => {
   const link = document.createElement("a");
   link.href = fileUrl;
   link.download = fileName;

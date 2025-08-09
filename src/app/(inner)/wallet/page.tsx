@@ -1,13 +1,10 @@
 "use client";
-
 import OtherTransactions from "@/components/transactions/OtherTransactions";
 import ROUTE from "@/config/routes";
 import { useConfigContext } from "@/contexts/ConfigContext";
 import { useUserAuthContext } from "@/lib/UserUseContext";
 import { ExchangeRate } from "@/types/Components";
-import { AuthUserProps } from "@/types/User";
 import axiosInstance from "@/utils/Axios";
-import { getToken } from "@/utils/Cookie";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import Image from "next/image";
@@ -19,25 +16,21 @@ const WalletPage = () => {
   const [transactions, setTransactions] = useState<any[]>([]);
   const [rates, setRates] = useState<any>(null);
   const [loading, setLoading] = useState(true);
-  const token = getToken();
   const { config } = useConfigContext();
   const { data: points } = useQuery({
-    queryKey: ['points'],
+    queryKey: ["points"],
     queryFn: async () => {
       const response = await axiosInstance.post(
-        `${process.env.NEXT_PUBLIC_TS_EXPRESS_URL}/auth/points`,
+        `/auth/points`,
         {},
         {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
+          withCredentials: true,
         }
       );
       return response.data.points;
     },
-    enabled: !!token,
-    staleTime: 1000 * 10
+    enabled: true,
+    staleTime: 1000 * 10,
   });
 
   useEffect(() => {
@@ -45,11 +38,9 @@ const WalletPage = () => {
       try {
         // Fetch transactions
         const transactionsResponse = await axiosInstance.get(
-          `${process.env.NEXT_PUBLIC_TS_EXPRESS_URL}/wallet/transactions`,
+          `/wallet/transactions`,
           {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
+            withCredentials: true,
           }
         );
         setTransactions(transactionsResponse.data.data.slice(0, 5));
@@ -65,7 +56,7 @@ const WalletPage = () => {
     };
 
     fetchData();
-  }, [token]);
+  }, []);
 
   const convertCurrency = useCallback(
     (amount: number, fromCurrency: string, toCurrency: string): number => {
@@ -118,7 +109,7 @@ const WalletPage = () => {
   );
 
   const calculateAmount = useMemo(() => {
-    if (!points || !rates || !user) return '0';
+    if (!points || !rates || !user) return "0";
     const convert = convertCurrency(points, "POINTS", "NGN");
     return convert.toLocaleString("en-US", {
       style: "currency",
@@ -129,7 +120,7 @@ const WalletPage = () => {
   }, [points, rates, user, convertCurrency]);
 
   const calculateAmountInDollars = useMemo(() => {
-    if (!points) return '$0.00';
+    if (!points) return "$0.00";
     const usd = convertCurrency(points, "POINTS", "USD");
     return usd.toLocaleString("en-US", {
       style: "currency",
@@ -257,8 +248,9 @@ const WalletPage = () => {
                 <div className="flex items-center justify-between p-2 ">
                   <div>
                     <p
-                      className={`text-sm font-semibold ${transaction.success ? "text-green-600" : "text-red-500"
-                        }`}
+                      className={`text-sm font-semibold ${
+                        transaction.success ? "text-green-600" : "text-red-500"
+                      }`}
                     >
                       {transaction.success
                         ? "Transaction Successful"
@@ -280,8 +272,9 @@ const WalletPage = () => {
                     </div>
                   </div>
                   <p
-                    className={`text-sm font-semibold flex items-center gap-3 ${transaction.success ? "text-green-600" : "text-red-500"
-                      }`}
+                    className={`text-sm font-semibold flex items-center gap-3 ${
+                      transaction.success ? "text-green-600" : "text-red-500"
+                    }`}
                   >
                     +{transaction.points}
                     <Image

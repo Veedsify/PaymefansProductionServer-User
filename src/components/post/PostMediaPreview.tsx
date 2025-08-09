@@ -13,6 +13,7 @@ import { getMaxDurationBase64 } from "@/utils/GetVideoMaxDuration";
 import UploadImageToCloudflare from "../../utils/CloudflareImageUploader";
 import UploadWithTus from "@/utils/TusUploader";
 import { usePostMediaUploadContext } from "@/contexts/PostMediaUploadContext";
+import axiosInstance from "@/utils/Axios";
 
 type PostMediaPreviewProps = {
   submitPost: (image: UploadedImageProp) => void;
@@ -30,7 +31,6 @@ function PostMediaPreview({
   );
   const { setMediaUploadComplete } = usePostMediaUploadContext();
   const { user } = useUserAuthContext();
-  const token = getToken();
 
   const handleMediaRemove = useCallback(
     (id: string, type: string) => {
@@ -90,15 +90,9 @@ function PostMediaPreview({
             };
             if (isVideo) payload.maxDuration = maxVideoDuration;
 
-            const { data } = await axios.post<UploadResponseResponse>(
-              `${process.env.NEXT_PUBLIC_TS_EXPRESS_URL}/post/media/signed-url`,
+            const { data } = await axiosInstance.post<UploadResponseResponse>(
+              `/post/media/signed-url`,
               payload,
-              {
-                headers: {
-                  Authorization: `Bearer ${token}`,
-                  "Content-Type": "application/json",
-                },
-              },
             );
             const { uploadUrl, type, id } = data;
             if (!id || !uploadUrl) throw new Error("Failed to get upload URL");
@@ -155,7 +149,6 @@ function PostMediaPreview({
     },
     [
       user,
-      token,
       media.length,
       submitPost,
       tusUploader,

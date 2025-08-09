@@ -10,6 +10,7 @@ import { MessageResult } from "@/types/Components";
 import Image from "next/image";
 import { useUserAuthContext } from "@/lib/UserUseContext";
 import Link from "next/link";
+import axiosInstance from "@/utils/Axios";
 
 const MessageSearch = () => {
   const [openSearch, setOpenSearch] = useState(false);
@@ -17,7 +18,6 @@ const MessageSearch = () => {
   const [results, setResults] = useState<MessageResult[]>([]);
   const [loading, setLoading] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
-  const token = getToken();
   const { user } = useUserAuthContext();
   const handleOpenSearch = () => setOpenSearch(!openSearch);
 
@@ -35,13 +35,8 @@ const MessageSearch = () => {
       return;
     } // Avoid empty searches
     try {
-      const response = await axios.get(
-        `${process.env.NEXT_PUBLIC_TS_EXPRESS_URL}/conversations/search?q=${searchTerm}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
+      const response = await axiosInstance.get(
+        `/conversations/search?q=${searchTerm}`,
       );
       console.log(response.data);
       setResults(response.data.messages); // Update state with search results
@@ -190,7 +185,7 @@ const MessageSearch = () => {
                               year: "numeric",
                               month: "short",
                               day: "numeric",
-                            }
+                            },
                           )}
                         </span>
                       </div>

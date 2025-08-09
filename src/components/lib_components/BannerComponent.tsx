@@ -1,5 +1,6 @@
 "use client";
 import ROUTE from "@/config/routes";
+import axiosInstance from "@/utils/Axios";
 import { getToken } from "@/utils/Cookie";
 import axios from "axios";
 import { LucideUpload } from "lucide-react";
@@ -21,7 +22,6 @@ const BannerComponent = ({ profile_banner }: BannerComponentProps) => {
   const [crop, setCrop] = useState<Crop>();
   const [completedCrop, setCompletedCrop] = useState<Crop>();
   const imageRef = useRef<HTMLImageElement>(null);
-  const token = getToken();
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -58,10 +58,10 @@ const BannerComponent = ({ profile_banner }: BannerComponentProps) => {
         },
         1980 / 650, // 1980x650 aspect ratio
         naturalWidth,
-        naturalHeight
+        naturalHeight,
       ),
       naturalWidth,
-      naturalHeight
+      naturalHeight,
     );
 
     setCrop(initialCrop);
@@ -86,7 +86,7 @@ const BannerComponent = ({ profile_banner }: BannerComponentProps) => {
       0,
       0,
       crop.width * scaleX,
-      crop.height * scaleY
+      crop.height * scaleY,
     );
 
     return new Promise<Blob>((resolve) => {
@@ -106,7 +106,7 @@ const BannerComponent = ({ profile_banner }: BannerComponentProps) => {
       });
       const croppedImageBlob = await getCroppedImg(
         imageRef.current,
-        completedCrop
+        completedCrop,
       );
       if (!croppedImageBlob) {
         toast.error("Failed to crop image", {
@@ -117,22 +117,19 @@ const BannerComponent = ({ profile_banner }: BannerComponentProps) => {
       const formData = new FormData();
       formData.append(
         "banner",
-        new File([croppedImageBlob], file.name, { type: file.type })
+        new File([croppedImageBlob], file.name, { type: file.type }),
       );
-      const response = await fetch(ROUTE.BANNER_IMAGE_UPLOAD, {
-        method: "POST",
-        body: formData,
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      if (!response.ok) {
+      const response = await axiosInstance.post(
+        ROUTE.BANNER_IMAGE_UPLOAD,
+        formData,
+      );
+      const data = response.data;
+      if (!data.status) {
         toast.error("Failed to upload banner image", {
           id: "banner_upload",
         });
         return;
       }
-      const data = await response.json();
       if (data.status) {
         toast.success("Banner image uploaded successfully", {
           id: "banner_upload",

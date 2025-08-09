@@ -20,7 +20,6 @@ const StreamDeckCamera = ({
   thisUser: AuthUserProps | null;
   streamData: streamDataProps;
 }) => {
-  const token = getToken();
   const router = useRouter();
   const [isLive, setIsLive] = useState(false);
   const [isCamEnabled, setIsCamEnabled] = useState(true);
@@ -47,17 +46,9 @@ const StreamDeckCamera = ({
         }).then((confirmed) => {
           if (confirmed) {
             axiosInstance
-              .post(
-                `/stream/${streamData.stream_id}/go-live`,
-                {
-                  action: "stop-live",
-                },
-                {
-                  headers: {
-                    Authorization: `Bearer ${token}`,
-                  },
-                }
-              )
+              .post(`/stream/${streamData.stream_id}/go-live`, {
+                action: "stop-live",
+              })
               .then((res) => {
                 if (res.status === 200) {
                 }
@@ -119,17 +110,9 @@ const StreamDeckCamera = ({
   const handleCreateStream = async () => {
     if (streamData.user_id === thisUser?.user_id) {
       axiosInstance
-        .post(
-          `/stream/${streamData.stream_id}/go-live`,
-          {
-            action: "go-live",
-          },
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        )
+        .post(`/stream/${streamData.stream_id}/go-live`, {
+          action: "go-live",
+        })
         .then((res) => {
           if (res.status === 200) {
             toast.success("You are now live");

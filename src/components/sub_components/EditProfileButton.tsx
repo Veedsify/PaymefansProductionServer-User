@@ -22,6 +22,7 @@ import { BannerModalProps } from "@/types/Components";
 import { countries } from "@/lib/Locations";
 import { PiSnapchatLogoDuotone } from "react-icons/pi";
 import useCheckUsername from "../custom-hooks/CheckUsername";
+import axiosInstance from "@/utils/Axios";
 
 const EditProfileButton = ({ user }: { user: any }) => {
   const [open, setOpen] = useState(false);
@@ -115,12 +116,10 @@ function BannerModal({ user, open = false, setOpen }: BannerModalProps) {
     }
     try {
       const updateProfile = async (formData: FormData) => {
-        const token = getToken();
-        const response = await axios.post(ROUTE.PROFILE_UPDATE, formData, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        const response = await axiosInstance.post(
+          ROUTE.PROFILE_UPDATE,
+          formData,
+        );
         setOpen(false);
         router.refresh();
         return response;

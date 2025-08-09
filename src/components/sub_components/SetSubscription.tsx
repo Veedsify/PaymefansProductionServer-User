@@ -21,14 +21,13 @@ const initialTier = {
 const SetSubscription = () => {
   const { user } = useUserAuthContext();
   const [tiers, setTiers] = useState<SubscriptionTiersProps[]>([initialTier]);
-  const token = getToken();
   const { config } = useConfigContext();
 
   // Fetch Subscriptions
   const GetSubscriptions = useCallback(async () => {
     try {
-      const url = `${process.env.NEXT_PUBLIC_TS_EXPRESS_URL}/subscribers/subscriptions/${user?.user_id}`;
-      const subscriptions = await FetchUserSubscriptions(url, token);
+      const url = `/subscribers/subscriptions/${user?.user_id}`;
+      const subscriptions = await FetchUserSubscriptions(url);
 
       if (subscriptions.data.data.length === 0) {
         setTiers([initialTier]); // Reset to a single empty tier
@@ -38,10 +37,10 @@ const SetSubscription = () => {
     } catch (e: any) {
       console.log(e);
       toast.error(
-        "Subscription could not be retrieved. Please try again later"
+        "Subscription could not be retrieved. Please try again later",
       );
     }
-  }, [user?.user_id, token]);
+  }, [user?.user_id]);
 
   useEffect(() => {
     GetSubscriptions();
@@ -74,7 +73,7 @@ const SetSubscription = () => {
   const updateTierField = (
     index: number,
     field: keyof SubscriptionTiersProps,
-    value: string
+    value: string,
   ) => {
     const updatedTiers = [...tiers];
     updatedTiers[index] = {

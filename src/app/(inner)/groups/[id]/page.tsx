@@ -16,6 +16,8 @@ import {
   fetchGroupMessages,
   fetchGroupData,
   GroupData,
+  extractUserMembershipFromGroup,
+  checkUserBlockedStatus,
 } from "@/utils/data/GroupAPI";
 import { useUserAuthContext, useUserStore } from "@/lib/UserUseContext";
 import toast from "react-hot-toast";
@@ -39,13 +41,17 @@ const GroupChatPage = () => {
     loadMoreMessages,
     getPaginationState,
     setPaginationData,
+    getCurrentUserMembership,
+    setCurrentUserMembership,
   } = useGroupChatStore();
 
   const [groupData, setGroupData] = useState<GroupData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [isBlocked, setIsBlocked] = useState(false);
   const messages = getMessages();
   const typingUsers = getTypingUsers();
+  const currentUserMembership = getCurrentUserMembership();
   const { isLoadingMessages, hasMoreMessages, totalMessages } =
     getPaginationState();
   const messagesContainerRef = useRef<HTMLDivElement>(null);
@@ -283,9 +289,62 @@ const GroupChatPage = () => {
 
     const initializeGroupChat = async () => {
       try {
-        // Fetch group data
-        const group = await fetchGroupData(groupId);
+        // First, check if user is blocked from this group immediately
+        let isUserBlocked = false;
+        try {
+          const blockingResponse = await checkUserBlockedStatus(groupId);
+          if (blockingResponse.success) {
+            isUserBlocked = blockingResponse.data.isBlocked;
+          }
+        } catch (blockingError) {
+          // If we can't check blocking, assume not blocked and continue
+        }
+
+        // If user is blocked, show blocked message immediately and stop
+        if (isUserBlocked) {
+          setIsBlocked(true);
+          setError("You have been blocked from this group.");
+          return;
+        }
+
+        // Fetch group data only if not blocked
+        let group;
+        try {
+          group = await fetchGroupData(groupId);
+        } catch (groupError: any) {
+          if (groupError.message === "BLOCKED_FROM_GROUP") {
+            setIsBlocked(true);
+            setError("You have been blocked from this group.");
+            return;
+          }
+          throw groupError; // Re-throw if it's not a blocking error
+        }
+
         setGroupData(group);
+
+        // Extract current user's membership status from group data
+        const membership = extractUserMembershipFromGroup(
+          group,
+          user.id,
+          isUserBlocked
+        );
+
+        if (membership) {
+          // Set membership in store
+          setCurrentUserMembership({
+            userId: membership.userId?.toString() || user.id.toString(),
+            username: user.username,
+            profile_image: user.profile_image || "/site/avatar.png",
+            is_verified: user.is_verified || false,
+            role: membership.role || "MEMBER",
+            joinedAt: membership.joinedAt || new Date().toISOString(),
+            isActive: true,
+            isMuted: membership.isMuted || false,
+            mutedBy: membership.mutedBy,
+            mutedUntil: membership.mutedUntil,
+            isBlocked: membership.isBlocked || false,
+          });
+        }
 
         // Set current group in context
         setCurrentGroup(groupId);
@@ -294,7 +353,7 @@ const GroupChatPage = () => {
         const messagesResponse = await fetchGroupMessages(
           groupId,
           undefined,
-          100,
+          100
         );
         if (messagesResponse.success && messagesResponse.data.messages) {
           setMessages(messagesResponse.data.messages);
@@ -334,6 +393,7 @@ const GroupChatPage = () => {
     setPaginationData,
     currentGroupId,
     leaveGroupRoom,
+    setCurrentUserMembership,
   ]);
 
   // Join group room when socket connects and we have set the current group
@@ -397,6 +457,27 @@ const GroupChatPage = () => {
         text="Loading group chat..."
         className="flex-col items-center justify-center h-full"
       />
+    );
+  }
+
+  if (isBlocked) {
+    return (
+      <div className="flex flex-col items-center justify-center h-full">
+        <div className="text-6xl mb-4">🚫</div>
+        <p className="mb-4 text-red-500 text-center font-medium">
+          You have been blocked from this group
+        </p>
+        <p className="mb-6 text-gray-500 text-center text-sm">
+          You no longer have access to view messages or participate in this
+          group.
+        </p>
+        <button
+          onClick={() => router.push("/profile")}
+          className="px-4 py-2 text-white bg-primary-dark-pink rounded-md hover:bg-primary-text-dark-pink cursor-pointer"
+        >
+          Back to Profile
+        </button>
+      </div>
     );
   }
 
@@ -515,7 +596,10 @@ const GroupChatPage = () => {
         )}
       </div>
       <div className="flex-shrink-0 border-t">
-        <GroupChatInput />
+        <GroupChatInput
+          isUserMuted={currentUserMembership?.isMuted}
+          mutedUntil={currentUserMembership?.mutedUntil}
+        />
       </div>
     </div>
   );

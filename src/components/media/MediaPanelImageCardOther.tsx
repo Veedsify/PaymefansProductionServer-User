@@ -11,6 +11,7 @@ import { MediaDataTypeOtherProps } from "@/types/Components";
 import HLSVideoPlayer from "../sub_components/videoplayer";
 import { LockedMediaOverlay } from "../sub_components/sub/LockedMediaOverlay";
 import { useInfiniteQuery } from "@tanstack/react-query";
+import axiosInstance from "@/utils/Axios";
 const getUniqueItems = (arr: MediaDataTypeOtherProps[]) => {
   const uniqueMap = new Map();
   arr.forEach((item) => uniqueMap.set(item.id, item)); // Replace 'id' with the unique property
@@ -28,21 +29,12 @@ interface MediaPanelMediaCardProps {
 }
 const MediaPanelImageCardOther = React.memo(
   ({ sort, userdata }: { sort: string; userdata: ProfileUserProps }) => {
-    const token = getToken();
     const { fullScreenPreview } = usePostComponent();
     const fetchMedia = async ({ pageParam = 1 }) => {
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_TS_EXPRESS_URL}/post/other/media/${userdata.id}?page=${pageParam}&limit=${process.env.NEXT_PUBLIC_POST_MEDIA_PER_PAGE}`,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        },
+      const res = await axiosInstance.get(
+        `/post/other/media/${userdata.id}?page=${pageParam}&limit=${process.env.NEXT_PUBLIC_POST_MEDIA_PER_PAGE}`,
       );
-      if (!res.ok) throw new Error("Network response was not ok");
-      return res.json();
+      return res.data;
     };
     const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } =
       useInfiniteQuery({

@@ -80,6 +80,7 @@ type ConversationCardProps = {
       username: string;
       name: string;
       profile_image: string;
+      is_profile_hidden: boolean;
     };
   };
 };
@@ -115,7 +116,7 @@ const ConversationCard = React.memo(
       ? (() => {
           const cleanMessage = String(conversation.lastMessage.message).replace(
             /<br\s*\/?>/gi,
-            "",
+            ""
           );
           return (
             cleanMessage.substring(0, 100) +
@@ -126,7 +127,7 @@ const ConversationCard = React.memo(
 
     const verifiedUsernames = ["@paymefans", "@paymefans1", "@paymefans2"];
     const isVerified = verifiedUsernames.includes(
-      conversation.receiver.username,
+      conversation.receiver.username
     );
     const isPayMeFans = conversation.receiver.username === "@paymefans";
 
@@ -151,7 +152,11 @@ const ConversationCard = React.memo(
         <Link
           onClick={(e) => e.stopPropagation()}
           className="relative flex-shrink-0 mr-4"
-          href={`/${conversation.receiver.username}`}
+          href={
+            conversation.receiver.is_profile_hidden
+              ? `#`
+              : `/${conversation.receiver.username}`
+          }
           tabIndex={-1}
         >
           <div className="relative">
@@ -160,10 +165,7 @@ const ConversationCard = React.memo(
               height={56}
               src={conversation.receiver.profile_image}
               alt={`${conversation.receiver.name} profile`}
-              className="object-cover border-2 rounded-full w-14 aspect-square
-  transition-colors duration-200
- group-hover:border-primary-dark-pink
- border-primary-light-pink/70 dark:border-primary-light-pink/50"
+              className="object-cover border-2 rounded-full w-14 aspect-square transition-colors duration-200 group-hover:border-primary-dark-pink border-primary-light-pink/70 dark:border-primary-light-pink/50"
             />
             <div className="absolute -right-1 -bottom-1 bg-white dark:bg-gray-900 p-0.5 rounded-full shadow-md">
               <ActiveProfileTag
@@ -181,7 +183,11 @@ const ConversationCard = React.memo(
             {/* Name with Verification Badge */}
             <Link
               onClick={(e) => e.stopPropagation()}
-              href={`/${conversation.receiver.username}`}
+              href={
+                conversation.receiver.is_profile_hidden
+                  ? `#`
+                  : `/${conversation.receiver.username}`
+              }
               className="font-semibold text-gray-900 truncate dark:text-gray-100"
             >
               <span className="flex items-center truncate gap-1">
@@ -258,7 +264,7 @@ const ConversationCard = React.memo(
         </div>
       </div>
     );
-  },
+  }
 );
 
 ConversationCard.displayName = "ConversationCard";

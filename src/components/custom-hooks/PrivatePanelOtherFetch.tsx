@@ -15,7 +15,7 @@ const getUniqueItems = (arr: UserPostProps[]) => {
 };
 export default function PrivatePanelFetchOther(
   userid: number,
-  pageNumber: number
+  pageNumber: number,
 ) {
   const { posts, setPosts } = useOtherPrivatePostsStore();
   const [totalResults, setTotalResults] = useState(0);
@@ -27,8 +27,7 @@ export default function PrivatePanelFetchOther(
     let cancel;
     setLoading(true);
     setError(false);
-    const token = getToken();
-    const api = `${process.env.NEXT_PUBLIC_TS_EXPRESS_URL}/post/other/private-posts/${userid}`;
+    const api = `/post/other/private-posts/${userid}`;
     const postPerPage = process.env.NEXT_PUBLIC_POST_PER_PAGE;
     axios(api, {
       method: "GET",
@@ -36,10 +35,7 @@ export default function PrivatePanelFetchOther(
         page: pageNumber,
         limit: postPerPage,
       },
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
+      withCredentials: true,
       cancelToken: new axios.CancelToken((c) => (cancel = c)),
     })
       .then((res) => {

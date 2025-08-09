@@ -12,6 +12,7 @@ import toast from "react-hot-toast";
 import { ButtonList } from "sweetalert/typings/modules/options/buttons";
 import { LucideLoader2, X } from "lucide-react";
 import { usePointsStore } from "@/contexts/PointsContext";
+import axiosInstance from "@/utils/Axios";
 type Points = {
   id: number;
   points: number;
@@ -85,43 +86,40 @@ const TipModel = ({
         } as ButtonList,
       }).then(async (willGift) => {
         if (willGift) {
-          const token = getToken();
-          const giftPointsToUser = await fetch(
-            `${process.env.NEXT_PUBLIC_TS_EXPRESS_URL}/profile/tip/model`,
-            {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${token}`,
-              },
-              body: JSON.stringify({
+          try {
+            const response = await axiosInstance.post(
+              `${process.env.NEXT_PUBLIC_TS_EXPRESS_URL}/profile/tip/model`,
+              {
                 id: id,
                 points: points,
                 modelId: userdata.id,
-              }),
-            },
-          );
-          if (!giftPointsToUser.ok) {
-            toast.error("An error occurred while gifting points", {
-              id: "buy-points",
-            });
-          }
-          const data = await giftPointsToUser.json();
-          if (!data.error) {
-            toast.success(
-              `You have successfully tipped ${selectedPoint.points} points to ${
-                userdata?.name || userdata?.username
-              }`,
+              },
+            );
+            const data = response.data;
+            if (!data.error) {
+              toast.success(
+                `You have successfully tipped ${selectedPoint.points} points to ${
+                  userdata?.name || userdata?.username
+                }`,
+                {
+                  id: "buy-points",
+                },
+              );
+              close();
+              router.refresh();
+            } else {
+              toast.error(data.message, {
+                id: "buy-points",
+              });
+            }
+          } catch (error: any) {
+            toast.error(
+              error?.response?.data?.message ||
+                "An error occurred while gifting points",
               {
                 id: "buy-points",
               },
             );
-            close();
-            router.refresh();
-          } else {
-            toast.error(data.message, {
-              id: "buy-points",
-            });
           }
         } else {
           toast.dismiss();

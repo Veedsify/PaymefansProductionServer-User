@@ -13,7 +13,6 @@ const StoryUploadForm = () => {
     const fileArrays = Array.from(e.target.files || []);
     setSelected(fileArrays);
   };
-  const token = getToken();
 
   useEffect(() => {
     const UploadImagesAndAddToStory = async () => {
@@ -23,22 +22,14 @@ const StoryUploadForm = () => {
       });
       try {
         toast
-          .promise(
-            axiosServer.post("/stories/upload", formData, {
-              headers: {
-                "Content-Type": "multipart/form-data",
-                Authorization: `Bearer ${token}`,
-              },
-            }),
-            {
-              loading: "Uploading Media...",
-              success: "Media uploaded successfully",
-              error: (err: AxiosError) => {
-                console.error("Error while uploading images", err);
-                return "Error while uploading images";
-              },
+          .promise(axiosServer.post("/stories/upload", formData), {
+            loading: "Uploading Media...",
+            success: "Media uploaded successfully",
+            error: (err: AxiosError) => {
+              console.error("Error while uploading images", err);
+              return "Error while uploading images";
             },
-          )
+          })
           .then(({ data }) => {
             data.data.map((item: any, index: number) => {
               addToStory({
@@ -56,7 +47,7 @@ const StoryUploadForm = () => {
     if (selected.length > 0) {
       UploadImagesAndAddToStory();
     }
-  }, [selected, token, addToStory]);
+  }, [selected, addToStory]);
 
   return (
     <form className="flex-1 h-full">

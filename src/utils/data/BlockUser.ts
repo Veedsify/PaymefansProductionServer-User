@@ -1,4 +1,5 @@
 import { getToken } from "../Cookie";
+import axiosInstance from "@/utils/Axios";
 
 const API_URL = process.env.NEXT_PUBLIC_TS_EXPRESS_URL;
 
@@ -46,26 +47,11 @@ export const blockUser = async (
   blockedId: number,
 ): Promise<BlockUserResponse> => {
   try {
-    const token = getToken();
-
-    if (!token) {
-      return {
-        status: false,
-        message: "Authentication token not found",
-        error: true,
-      };
-    }
-
-    const response = await fetch(`${API_URL}/block/block-user`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify({ blockedId }),
+    const response = await axiosInstance.post(`/block/block-user`, {
+      blockedId,
     });
 
-    const data = await response.json();
+    const data = response.data;
     return data;
   } catch (error) {
     console.error("Error blocking user:", error);
@@ -82,26 +68,11 @@ export const unblockUser = async (
   blockedId: number,
 ): Promise<UnblockUserResponse> => {
   try {
-    const token = getToken();
-
-    if (!token) {
-      return {
-        status: false,
-        message: "Authentication token not found",
-        error: true,
-      };
-    }
-
-    const response = await fetch(`${API_URL}/block/unblock-user`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify({ blockedId }),
+    const response = await axiosInstance.post(`/block/unblock-user`, {
+      blockedId,
     });
 
-    const data = await response.json();
+    const data = response.data;
     return data;
   } catch (error) {
     console.error("Error unblocking user:", error);
@@ -118,27 +89,10 @@ export const checkBlockStatus = async (
   targetUserId: number,
 ): Promise<CheckBlockStatusResponse> => {
   try {
-    const token = getToken();
-
-    if (!token) {
-      return {
-        status: false,
-        isBlocked: false,
-        message: "Authentication token not found",
-        error: true,
-      };
-    }
-
-    const response = await fetch(`${API_URL}/block/check-status`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify({ targetUserId }),
+    const response = await axiosInstance.post(`/block/check-status`, {
+      targetUserId,
     });
-
-    const data = await response.json();
+    const data = response.data;
     return data;
   } catch (error) {
     console.error("Error checking block status:", error);
@@ -156,27 +110,10 @@ export const checkIfBlockedBy = async (
   targetUserId: number,
 ): Promise<CheckBlockStatusResponse> => {
   try {
-    const token = getToken();
-
-    if (!token) {
-      return {
-        status: false,
-        isBlocked: false,
-        message: "Authentication token not found",
-        error: true,
-      };
-    }
-
-    const response = await fetch(`${API_URL}/block/check-blocked-by`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify({ targetUserId }),
+    const response = await axiosInstance.post(`/block/check-blocked-by`, {
+      targetUserId,
     });
-
-    const data = await response.json();
+    const data = response.data;
     return data;
   } catch (error) {
     console.error("Error checking if blocked by user:", error);
@@ -195,30 +132,11 @@ export const getBlockedUsers = async (
   max: number = 20,
 ): Promise<GetBlockedUsersResponse> => {
   try {
-    const token = getToken();
-
-    if (!token) {
-      return {
-        status: false,
-        message: "Authentication token not found",
-        error: true,
-        blockedUsers: [],
-        minmax: "",
-      };
-    }
-
-    const response = await fetch(
-      `${API_URL}/block/blocked-users?min=${min}&max=${max}`,
-      {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      },
+    const response = await axiosInstance.get(
+      `/block/blocked-users?min=${min}&max=${max}`,
     );
 
-    const data = await response.json();
+    const data = response.data;
     return data;
   } catch (error) {
     console.error("Error getting blocked users:", error);

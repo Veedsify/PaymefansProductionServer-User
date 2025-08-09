@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { getToken } from "@/utils/Cookie";
+import axiosInstance from "@/utils/Axios";
 
 const formatDate = (isoDateString: string) => {
   const date = new Date(isoDateString);
@@ -25,28 +26,19 @@ type Transaction = {
 
 const OtherTransactions = React.memo(() => {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
-  const token = getToken();
 
   useEffect(() => {
-    if (!token) return;
-
     const abortController = new AbortController();
 
     const fetchTransactions = async () => {
       try {
-        const res = await fetch(
-          `${process.env.NEXT_PUBLIC_TS_EXPRESS_URL}/wallet/transactions/other`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-            signal: abortController.signal,
-          }
-        );
+        const axios = (await import("axios")).default;
 
-        if (!res.ok) throw new Error("Failed to fetch transactions");
+        const res = await axiosInstance.get(`/wallet/transactions/other`, {
+          signal: abortController.signal,
+        });
 
-        const data = await res.json();
+        const data = res.data;
         const transactions = Array.isArray(data?.data) ? data.data : [];
         setTransactions(transactions.slice(0, 5));
       } catch (error) {
@@ -59,7 +51,7 @@ const OtherTransactions = React.memo(() => {
     fetchTransactions();
 
     return () => abortController.abort();
-  }, [token]);
+  }, []);
 
   if (transactions.length === 0) return null;
 

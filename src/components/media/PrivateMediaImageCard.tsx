@@ -11,6 +11,7 @@ import _, { set } from "lodash";
 import { useProfileMediaContext } from "@/contexts/ProfileMediaContext";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { useUserAuthContext } from "@/lib/UserUseContext";
+import axiosInstance from "@/utils/Axios";
 
 const getUniqueItems = (arr: MediaDataType[]) => {
   const uniqueMap = new Map();
@@ -21,21 +22,12 @@ const getUniqueItems = (arr: MediaDataType[]) => {
 const PrivateMediaImageCard = React.memo(({ sort }: { sort: string }) => {
   const { fullScreenPreview } = usePostComponent();
   const { user } = useUserAuthContext();
-  const token = getToken();
 
   const fetchMedia = async ({ pageParam = 1 }) => {
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_TS_EXPRESS_URL}/post/personal/private-media?page=${pageParam}&limit=${process.env.NEXT_PUBLIC_POST_MEDIA_PER_PAGE}`,
-      {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      },
+    const res = await axiosInstance.get(
+      `/post/personal/private-media?page=${pageParam}&limit=${process.env.NEXT_PUBLIC_POST_MEDIA_PER_PAGE}`,
     );
-    if (!res.ok) throw new Error("Network response was not ok");
-    return res.json();
+    return res.data;
   };
 
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } =

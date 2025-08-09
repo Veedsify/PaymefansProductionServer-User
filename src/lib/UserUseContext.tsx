@@ -44,7 +44,7 @@ export const UserContextProvider = ({ children }: UserContextProviderProps) => {
     async function fetchUser() {
       const res: AxiosResponse<{ user: AuthUserProps }> =
         await axiosInstance.get(
-          `${process.env.NEXT_PUBLIC_TS_EXPRESS_URL}/auth/retrieve`,
+          `/auth/retrieve`,
           {
             withCredentials: true,
           },

@@ -1,11 +1,8 @@
-"use client";
+"use client";;
 import { getSocket } from "@/components/sub_components/sub/Socket";
 import { useUserAuthContext } from "@/lib/UserUseContext";
-import { getToken } from "@/utils/Cookie";
 import { SubscribeToUser } from "@/utils/data/SubscribeToUser";
-import axios from "axios";
 import Image from "next/image";
-import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
@@ -13,6 +10,7 @@ import swal from "sweetalert";
 import numeral from "numeral";
 import getFormattedStringFromDays from "@/utils/data/CalculateDays";
 import { usePointsStore } from "@/contexts/PointsContext";
+import axiosInstance from "@/utils/Axios";
 
 type SubscribeProps = {
   params: {
@@ -46,7 +44,6 @@ type ProfileUser = {
 const Subscribe = () => {
   const { user } = useUserAuthContext();
   const params = useParams();
-  const token = getToken();
   const [profileUser, setProfileUser] = useState<ProfileUser>();
   const router = useRouter();
   const points = usePointsStore((state) => state.points);
@@ -59,14 +56,11 @@ const Subscribe = () => {
     document.title = "Subscribe";
     const fetchUserSubscription = async () => {
       try {
-        const response = await axios.post(
-          `${process.env.NEXT_PUBLIC_TS_EXPRESS_URL}/subscribers/subscription-data/${params.user_id}`,
+        const response = await axiosInstance.post(
+          `/subscribers/subscription-data/${params.user_id}`,
           {},
           {
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-            },
+            withCredentials: true,
           },
         );
         if (response.data.status === false) {
@@ -82,7 +76,7 @@ const Subscribe = () => {
       }
     };
     fetchUserSubscription();
-  }, [params.user_id, router, token]);
+  }, [params.user_id, router]);
 
   useEffect(() => {
     socket?.on("subscription_added", () => {});

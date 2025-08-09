@@ -23,7 +23,7 @@ type Group = {
     profile_image: string;
     profile_banner: string;
   };
-  members: any[]; // Define type if you have members structure
+  members: any[]; // Define type if you have member structures
   settings: {
     id: number;
     allowFileSharing: boolean;
@@ -66,6 +66,7 @@ export interface GroupData {
   };
   userRole: "ADMIN" | "MODERATOR" | "MEMBER";
   isActive: boolean;
+  members?: any[]; // Add members to the interface
   lastMessage?: {
     content: string;
     senderId: string;
@@ -149,10 +150,23 @@ export const getMainGroup = async (): Promise<{ groups: Group }> => {
 
 // Fetch group data by ID
 export const fetchGroupData = async (groupId: number): Promise<GroupData> => {
-  const response = await axiosInstance.get(`/groups/${groupId}`, {
-    withCredentials: true,
-  });
-  return response.data.data;
+  try {
+    const response = await axiosInstance.get(`/groups/${groupId}`, {
+      withCredentials: true,
+    });
+    return response.data.data;
+  } catch (error: any) {
+    // Check if the error indicates the user is blocked
+    if (error.response?.status === 403) {
+      // If it's a 403 error, the user might be blocked
+      const errorMessage = error.response?.data?.message || "";
+      if (errorMessage.toLowerCase().includes("blocked") ||
+        errorMessage.toLowerCase().includes("access denied")) {
+        throw new Error("BLOCKED_FROM_GROUP");
+      }
+    }
+    throw error;
+  }
 };
 
 // Fetch user's groups
@@ -228,6 +242,59 @@ export const fetchGroupMembers = async (
     withCredentials: true,
   });
   return response.data;
+};
+
+// Fetch current user's membership status for a group
+
+// Check if current user is blocked from a group
+export const checkUserBlockedStatus = async (
+  groupId: number,
+): Promise<{ success: boolean; data: { isBlocked: boolean } }> => {
+  try {
+    const response = await axiosInstance.get(
+      `/groups/${groupId}/is-blocked`,
+      {
+        withCredentials: true,
+      },
+    );
+    return response.data;
+  } catch (error: any) {
+    // If the endpoint doesn't exist or returns 404, assume not blocked
+    if (error.response?.status === 404) {
+      return { success: true, data: { isBlocked: false } };
+    }
+    throw error;
+  }
+};
+
+// Extract current user's membership from group data
+export const extractUserMembershipFromGroup = (
+  groupData: any,
+  userId: number | string,
+  isBlocked: boolean = false,
+): any | null => {
+  if (!groupData?.members) {
+    return null;
+  }
+
+  // Find the current user's membership
+  const userMembership = groupData.members.find((member: any) => {
+    return member.userId === userId || member.userId.toString() === userId.toString();
+  });
+
+  if (!userMembership) {
+    return null;
+  }
+
+  return {
+    userId: userMembership.userId,
+    role: userMembership.role,
+    joinedAt: userMembership.joinedAt,
+    isMuted: userMembership.isMuted || false,
+    mutedBy: userMembership.mutedBy,
+    mutedUntil: userMembership.mutedUntil,
+    isBlocked: isBlocked,
+  };
 };
 
 // Join a group

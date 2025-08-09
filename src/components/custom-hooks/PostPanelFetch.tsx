@@ -22,8 +22,7 @@ export default function PostPanelFetch(pageNumber: number) {
     let cancel;
     setLoading(true);
     setError(false);
-    const token = getToken();
-    const api = `${process.env.NEXT_PUBLIC_TS_EXPRESS_URL}/post/personal/posts`;
+    const api = `/post/personal/posts`;
     const postPerPage = process.env.NEXT_PUBLIC_POST_PER_PAGE as string;
 
     axios<any, AxiosResponse>(api, {
@@ -32,10 +31,7 @@ export default function PostPanelFetch(pageNumber: number) {
         page: pageNumber,
         limit: postPerPage,
       },
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
+      withCredentials: true,
       cancelToken: new axios.CancelToken((c) => (cancel = c)),
     })
       .then((res) => {

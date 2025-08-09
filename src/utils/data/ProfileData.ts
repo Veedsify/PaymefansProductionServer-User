@@ -1,35 +1,25 @@
 import { ProfileUserProps } from "@/types/User";
 import { getToken } from "../Cookie";
+import axios from "axios";
+import axiosInstance from "../Axios";
 
 type getUserProfileProps = {
-    user_id: string;
+  user_id: string;
 };
 
 const getUserProfile = async ({ user_id }: getUserProfileProps) => {
-    const token = getToken()
-    const username = user_id.startsWith('@') ? user_id : `@${user_id}`;
-    const res = await fetch(
-        `${process.env.NEXT_PUBLIC_TS_EXPRESS_URL}/profile/user`,
-        {
-            method: "POST",
-            body: JSON.stringify({
-                username: username,
-            }),
-            headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${token}`,
-            },
-        }
-    );
-    if (!res.ok) {
-        throw new Error("Failed to fetch user profile");
-    }
-    const data = await res.json();
+  const username = user_id.startsWith("@") ? user_id : `@${user_id}`;
+  const url = `/profile/user?username=${encodeURIComponent(username)}`;
+  try {
+    const res = await axiosInstance.get(url);
+    const data = res.data;
     if (data.status) {
-        return data.user as ProfileUserProps;
+      return data.user as ProfileUserProps;
     }
     return null;
-}
-
+  } catch (error) {
+    throw new Error("Failed to fetch user profile");
+  }
+};
 
 export default getUserProfile;

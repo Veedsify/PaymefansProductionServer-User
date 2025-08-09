@@ -21,25 +21,20 @@ const RepostPanelFetch = ({
 
     setLoading(true);
     setError(false);
-
-    const token = getToken();
     const api =
       userdata && userdata.id
-        ? `${process.env.NEXT_PUBLIC_TS_EXPRESS_URL}/post/other/reposts/${userdata.id}`
-        : `${process.env.NEXT_PUBLIC_TS_EXPRESS_URL}/post/personal/reposts`;
+        ? `/post/other/reposts/${userdata.id}`
+        : `/post/personal/reposts`;
 
     const postPerPage = parseInt(
       process.env.NEXT_PUBLIC_POST_PER_PAGE || "5",
-      10
+      10,
     );
 
     axios<any, AxiosResponse>(api, {
       method: "GET",
       params: { page: pageNumber, limit: postPerPage },
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
+      withCredentials: true,
       cancelToken: new axios.CancelToken((c) => (cancel = c)),
     })
       .then((res) => {

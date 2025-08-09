@@ -104,15 +104,11 @@ const CommentsHolder = ({ post, postComments }: CommentsHolderProps) => {
       if (viewedComments.has(commentId)) return;
 
       try {
-        const token = getToken();
         const response = await fetch(
           `${process.env.NEXT_PUBLIC_TS_EXPRESS_URL}/comments/view`,
           {
             method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-            },
+            credentials: "include",
             body: JSON.stringify({ commentId }),
           },
         );

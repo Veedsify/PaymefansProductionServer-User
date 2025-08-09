@@ -4,6 +4,7 @@ import ROUTE from "@/config/routes";
 import { useConfigContext } from "@/contexts/ConfigContext";
 import { useUserAuthContext } from "@/lib/UserUseContext";
 import { ExchangeRate } from "@/types/Components";
+import axiosInstance from "@/utils/Axios";
 import { getToken } from "@/utils/Cookie";
 import { LucideLoader } from "lucide-react";
 import Image from "next/image";
@@ -109,7 +110,7 @@ const AddPoints = () => {
   function convertCurrency(
     amount: number,
     fromCurrency: string,
-    toCurrency: string
+    toCurrency: string,
   ): number {
     if (fromCurrency === "POINTS") {
       // Convert points to USD first (16 points = $1)
@@ -160,7 +161,6 @@ const AddPoints = () => {
   }
 
   async function handlePointBuy() {
-    const token = getToken();
     toast.loading(POINTS_CONFIG.POINT_PENDING_PAYMENTS, {
       id: "point-purchase",
     });
@@ -174,34 +174,24 @@ const AddPoints = () => {
       toast.error(
         `Minimum deposit is ${formatConvertedAmount(
           minInUserCurrency,
-          userCurrency
+          userCurrency,
         )}`,
         {
           id: "point-purchase",
-        }
+        },
       );
       return;
     }
     // Calculate USD equivalent
     const usdAmount = convertCurrency(amount, user?.currency || "USD", "USD");
     try {
-      const response = await fetch(ROUTE.PURCHASE_POINTS, {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          amount,
-          currency: user?.currency || "USD",
-          usd_amount: usdAmount,
-          ngn_amount: convertCurrency(amount, user?.currency || "USD", "NGN"),
-        }),
+      const response = await axiosInstance.post(ROUTE.PURCHASE_POINTS, {
+        amount,
+        currency: user?.currency || "USD",
+        usd_amount: usdAmount,
+        ngn_amount: convertCurrency(amount, user?.currency || "USD", "NGN"),
       });
-      if (!response.ok) {
-        throw new Error("Failed to purchase points");
-      }
-      const data = await response.json();
+      const data = response.data;
       if (data.status) {
         toast.loading(data.message, {
           id: "point-purchase",

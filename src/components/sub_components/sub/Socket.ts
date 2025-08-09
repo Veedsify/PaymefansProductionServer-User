@@ -107,7 +107,7 @@ export const getSocket = (): Socket | null => {
 /**
  * Gracefully disconnects the socket.
  */
-export const disconnectSocket = () => {
+const disconnectSocket = () => {
   if (heartbeatInterval) {
     clearInterval(heartbeatInterval);
     heartbeatInterval = null;
@@ -133,6 +133,6 @@ export const isSocketConnected = (): boolean => {
 /**
  * Gets the current username associated with the socket.
  */
-export const getCurrentUsername = (): string | null => {
+const getCurrentUsername = (): string | null => {
   return currentUsername;
 };

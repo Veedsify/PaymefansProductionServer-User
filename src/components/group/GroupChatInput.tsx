@@ -64,7 +64,15 @@ interface AttachmentPreview {
   uploadedData?: any;
 }
 
-const GroupChatInput = () => {
+interface GroupChatInputProps {
+  isUserMuted?: boolean;
+  mutedUntil?: string | null;
+}
+
+const GroupChatInput = ({
+  isUserMuted = false,
+  mutedUntil,
+}: GroupChatInputProps) => {
   const [messageContent, setMessageContent] = useState("");
   const [sendingMessage, setSendingMessage] = useState(false);
   const [attachments, setAttachments] = useState<AttachmentPreview[]>([]);
@@ -73,7 +81,37 @@ const GroupChatInput = () => {
   const typingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
+  // Check if user is currently muted
+  // User is muted if:
+  // 1. isMuted is true AND mutedUntil is null (permanent mute)
+  // 2. isMuted is true AND mutedUntil is in the future (temporary mute)
+  const isMuted =
+    isUserMuted &&
+    (!mutedUntil || // Permanent mute (mutedUntil is null)
+      new Date(mutedUntil) > new Date()); // Temporary mute still active
+
+  // Debug logging
+  useEffect(() => {
+    console.log("GroupChatInput - isUserMuted:", isUserMuted);
+    console.log("GroupChatInput - mutedUntil:", mutedUntil);
+    console.log("GroupChatInput - isMuted calculated:", isMuted);
+
+    if (isUserMuted) {
+      if (!mutedUntil) {
+        console.log("User has permanent mute");
+      } else {
+        const muteExpiry = new Date(mutedUntil);
+        const now = new Date();
+        console.log("Mute expiry:", muteExpiry);
+        console.log("Current time:", now);
+        console.log("Is mute still active?", muteExpiry > now);
+      }
+    }
+  }, [isUserMuted, mutedUntil, isMuted]);
+
   const handleTyping = (e: ChangeEvent<HTMLInputElement>) => {
+    if (isMuted) return; // Don't handle typing if muted
+
     setMessageContent(e.target.value);
 
     // Handle typing indicator
@@ -101,7 +139,7 @@ const GroupChatInput = () => {
 
   const uploadFile = async (
     file: File,
-    onProgress?: (progress: number) => void,
+    onProgress?: (progress: number) => void
   ): Promise<any> => {
     const axios = require("axios");
     const formData = new FormData();
@@ -115,12 +153,12 @@ const GroupChatInput = () => {
           onUploadProgress: (progressEvent: any) => {
             if (progressEvent.lengthComputable && onProgress) {
               const progress = Math.round(
-                (progressEvent.loaded / progressEvent.total) * 100,
+                (progressEvent.loaded / progressEvent.total) * 100
               );
               onProgress(progress);
             }
           },
-        },
+        }
       );
 
       return response.data;
@@ -131,6 +169,8 @@ const GroupChatInput = () => {
   };
 
   const handleFileSelect = (e: ChangeEvent<HTMLInputElement>) => {
+    if (isMuted) return; // Don't allow file selection if muted
+
     const files = Array.from(e.target.files || []);
     if (files.length === 0) return;
 
@@ -154,7 +194,7 @@ const GroupChatInput = () => {
         createFilePreview(file)
           .then((preview) => {
             setAttachments((prev) =>
-              prev.map((att) => (att.id === id ? { ...att, preview } : att)),
+              prev.map((att) => (att.id === id ? { ...att, preview } : att))
             );
           })
           .catch((error) => {
@@ -183,8 +223,8 @@ const GroupChatInput = () => {
   const updateAttachmentProgress = (id: string, progress: number) => {
     setAttachments((prev) =>
       prev.map((att) =>
-        att.id === id ? { ...att, uploadProgress: progress } : att,
-      ),
+        att.id === id ? { ...att, uploadProgress: progress } : att
+      )
     );
   };
 
@@ -193,8 +233,8 @@ const GroupChatInput = () => {
       prev.map((att) =>
         att.id === id
           ? { ...att, uploaded: true, uploadedData, uploadProgress: 100 }
-          : att,
-      ),
+          : att
+      )
     );
   };
 
@@ -217,7 +257,7 @@ const GroupChatInput = () => {
     for (const attachment of newAttachments) {
       try {
         const uploadResult = await uploadFile(attachment.file, (progress) =>
-          updateAttachmentProgress(attachment.id, progress),
+          updateAttachmentProgress(attachment.id, progress)
         );
         markAttachmentUploaded(attachment.id, uploadResult);
       } catch (error) {
@@ -225,14 +265,19 @@ const GroupChatInput = () => {
         // Mark as failed but keep the attachment for manual retry
         setAttachments((prev) =>
           prev.map((att) =>
-            att.id === attachment.id ? { ...att, uploadProgress: 0 } : att,
-          ),
+            att.id === attachment.id ? { ...att, uploadProgress: 0 } : att
+          )
         );
       }
     }
   };
 
   const sendIfValid = async () => {
+    if (isMuted) {
+      toast.error("You are muted and cannot send messages in this group.");
+      return;
+    }
+
     const trimmedMessage = messageContent.trim();
     if ((!trimmedMessage && attachments.length === 0) || sendingMessage) return;
 
@@ -260,7 +305,7 @@ const GroupChatInput = () => {
             } else {
               // Upload the file with progress tracking
               uploadResult = await uploadFile(attachment.file, (progress) =>
-                updateAttachmentProgress(attachment.id, progress),
+                updateAttachmentProgress(attachment.id, progress)
               );
               markAttachmentUploaded(attachment.id, uploadResult);
             }
@@ -296,7 +341,7 @@ const GroupChatInput = () => {
   };
 
   const handleSendClick = (
-    e: KeyboardEvent<HTMLInputElement> | MouseEvent<HTMLButtonElement>,
+    e: KeyboardEvent<HTMLInputElement> | MouseEvent<HTMLButtonElement>
   ) => {
     if ("key" in e && e.key === "Enter" && e.shiftKey) {
       e.preventDefault();
@@ -324,6 +369,30 @@ const GroupChatInput = () => {
 
   return (
     <div className="p-6 space-y-3 dark:bg-gray-800">
+      {/* Muted Status Indicator */}
+      {isMuted && (
+        <div className="flex items-center p-3 bg-red-50 border border-red-200 rounded-lg">
+          <div className="flex items-center space-x-2">
+            <div className="w-5 h-5 text-red-500">🔇</div>
+            <div>
+              <p className="text-sm font-medium text-red-800">
+                You are muted in this group
+              </p>
+              {mutedUntil && (
+                <p className="text-xs text-red-600">
+                  Muted until: {new Date(mutedUntil).toLocaleString()}
+                </p>
+              )}
+              {!mutedUntil && (
+                <p className="text-xs text-red-600">
+                  You cannot send messages or attach files.
+                </p>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Attachment Previews */}
       {attachments.length > 0 && (
         <div className="flex flex-wrap gap-2 p-3 bg-gray-50 rounded-lg dark:bg-gray-700">
@@ -409,10 +478,14 @@ const GroupChatInput = () => {
 
             <button
               onClick={() => fileInputRef.current?.click()}
-              disabled={sendingMessage || uploadingFiles}
+              disabled={sendingMessage || uploadingFiles || isMuted}
               className="p-3 text-gray-500 hover:text-primary-dark-pink hover:bg-gray-100 rounded-md transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               type="button"
-              aria-label="Attach file"
+              aria-label={
+                isMuted
+                  ? "File attachments disabled - you are muted"
+                  : "Attach file"
+              }
             >
               <Paperclip className="w-5 h-5" />
             </button>
@@ -421,20 +494,24 @@ const GroupChatInput = () => {
               onChange={handleTyping}
               onKeyDown={handleKeyDown}
               value={messageContent}
-              disabled={uploadingFiles}
-              className="flex-grow px-4 py-4 border border-gray-300 resize-none rounded-md focus:outline-none focus:border-blue-500 disabled:opacity-50"
+              disabled={uploadingFiles || isMuted}
+              className="flex-grow px-4 py-4 border border-gray-300 resize-none rounded-md focus:outline-none focus:border-blue-500 disabled:opacity-50 disabled:bg-gray-100"
               placeholder={
-                uploadingFiles ? "Uploading files..." : "Type a message..."
+                isMuted
+                  ? "You are muted and cannot send messages..."
+                  : uploadingFiles
+                  ? "Uploading files..."
+                  : "Type a message..."
               }
             />
           </div>
         </div>
 
         <button
-          disabled={sendingMessage || uploadingFiles}
+          disabled={sendingMessage || uploadingFiles || isMuted}
           onClick={handleSendClick}
           className="px-4 py-4 text-white cursor-pointer bg-primary-dark-pink rounded-md hover:bg-primary-text-dark-pink disabled:bg-gray-500 flex-shrink-0"
-          aria-label="Send message"
+          aria-label={isMuted ? "Cannot send - you are muted" : "Send message"}
           type="button"
         >
           {sendingMessage || uploadingFiles ? (

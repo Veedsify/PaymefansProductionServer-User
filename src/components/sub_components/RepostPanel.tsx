@@ -9,25 +9,21 @@ import { LucideLoader } from "lucide-react";
 import axios, { AxiosResponse } from "axios";
 import { getToken } from "@/utils/Cookie";
 import { useInfiniteQuery } from "@tanstack/react-query";
+import axiosInstance from "@/utils/Axios";
 const RepostPanel = ({ userdata }: RespostPanelProps) => {
   async function fetchPost(pageNumber: number) {
-    const token = getToken();
     let cancel: any;
     const api =
       userdata && userdata.id
-        ? `${process.env.NEXT_PUBLIC_TS_EXPRESS_URL}/post/other/reposts/${userdata.id}`
-        : `${process.env.NEXT_PUBLIC_TS_EXPRESS_URL}/post/personal/reposts`;
+        ? `/post/other/reposts/${userdata.id}`
+        : `/post/personal/reposts`;
     const postPerPage = parseInt(
       process.env.NEXT_PUBLIC_POST_PER_PAGE || "5",
-      10
+      10,
     );
-    const response = await axios<any, AxiosResponse>(api, {
+    const response = await axiosInstance<any, AxiosResponse>(api, {
       method: "GET",
       params: { page: pageNumber, limit: postPerPage },
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
       cancelToken: new axios.CancelToken((c) => (cancel = c)),
     });
     return response.data;

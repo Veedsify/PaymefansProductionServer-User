@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { shuffle, uniqBy } from "lodash";
 import { modelsService } from "@/services/modelsService";
 
-export interface UseHookupsOptions {
+interface UseHookupsOptions {
   staleTime?: number;
   refetchInterval?: number;
   enabled?: boolean;
@@ -49,4 +49,3 @@ export const useHookups = (options?: UseHookupsOptions) => {
   };
 };
 
-export default useHookups;

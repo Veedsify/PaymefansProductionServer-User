@@ -6,21 +6,11 @@ import swal from "sweetalert";
 import toast from "react-hot-toast";
 
 const VerificationPageButton = () => {
-  const token = getToken();
   const handleButtonClick = () => {
     axiosInstance
-      .post(
-        "/verification",
-        {
-          action: "start",
-        },
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      )
+      .post("/verification", {
+        action: "start",
+      })
       .then((res) => {
         if (res.data.error) {
           return toast.error(res.data.message);

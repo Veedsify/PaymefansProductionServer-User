@@ -1,5 +1,5 @@
 "use client";
-import { getToken } from "@/utils/Cookie";
+import axiosInstance from "@/utils/Axios";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import axios from "axios";
 import {
@@ -22,22 +22,17 @@ import React, { useState } from "react";
 
 const fetchWithdrawalHostory = async ({ cursor }: { cursor: number }) => {
   try {
-    const token = getToken();
     const queryParams = new URLSearchParams();
     if (cursor) {
       queryParams.set("cursor", String(cursor));
     }
-    const response = await axios.get(
-      `${
-        process.env.NEXT_PUBLIC_TS_EXPRESS_URL
-      }/wallet/history?${queryParams.toString()}`,
-      {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
+    const response = await axiosInstance({
+      method: "GET",
+      url: `/wallet/history?${queryParams.toString()}`,
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
     return response.data;
   } catch (error: any) {
     throw new Error(error.message);
@@ -71,7 +66,8 @@ const WithdrawalHistory = () => {
             <h3 className="font-medium">Something went wrong</h3>
           </div>
           <p className="text-sm leading-relaxed text-gray-600">
-            We couldn&apos;t fetch your withdrawal history. Please try again later.
+            We couldn&apos;t fetch your withdrawal history. Please try again
+            later.
           </p>
         </div>
       </div>
@@ -174,7 +170,7 @@ const WithdrawalHistory = () => {
                   {formatCurrency(
                     withdrawalHistory
                       .filter((w) => w.status === "completed")
-                      .reduce((sum, w) => sum + w.amount * 0.75, 0)
+                      .reduce((sum, w) => sum + w.amount * 0.75, 0),
                   )}
                 </p>
               </div>
@@ -188,7 +184,8 @@ const WithdrawalHistory = () => {
                 <p className="text-lg font-bold text-gray-900">
                   {
                     withdrawalHistory.filter(
-                      (w) => w.status === "pending" || w.status === "processing"
+                      (w) =>
+                        w.status === "pending" || w.status === "processing",
                     ).length
                   }
                 </p>

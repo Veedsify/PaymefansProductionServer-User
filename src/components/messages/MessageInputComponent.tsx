@@ -69,7 +69,6 @@ const MessageInputComponent = React.memo(
     const [isSending, setIsSending] = useState(false);
     const ref = useRef<HTMLDivElement>(null);
     const setIsTyping = useChatStore((state) => state.setIsTyping);
-    const token = getToken();
     const socket = getSocket();
     const addNewMessage = useChatStore((state) => state.addNewMessage);
     const mediaFiles = useChatStore((state) => state.mediaFiles);
@@ -135,11 +134,9 @@ const MessageInputComponent = React.memo(
       setIsSending(true);
 
       try {
-        const { data } = await axiosInstance.post(
-          "/points/price-per-message",
-          { user_id: receiver.user_id },
-          { headers: { Authorization: `Bearer ${token}` } },
-        );
+        const { data } = await axiosInstance.post("/points/price-per-message", {
+          user_id: receiver.user_id,
+        });
         const pricePerMessage = data.price_per_message;
         const receiverName =
           receiver.name.charAt(0).toUpperCase() + receiver.name.slice(1);
@@ -294,7 +291,6 @@ const MessageInputComponent = React.memo(
       conversations,
       message,
       isFirstMessage,
-      token,
       mediaFiles,
       areAllUploadsComplete,
       hasUploadErrors,
@@ -412,7 +408,7 @@ const MessageInputComponent = React.memo(
       fileInput.addEventListener("change", handleFileChange);
     }, [setMediaFiles]);
 
-    if (receiver && receiver.isProfileHidden) {
+    if (receiver && receiver.is_profile_hidden) {
       return (
         <div className="flex items-center justify-center h-full py-3 text-center space-y-2">
           <p className="text-gray-500 dark:text-white">
