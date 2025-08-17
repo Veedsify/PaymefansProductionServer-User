@@ -1,13 +1,8 @@
 import { ReactNode } from "react";
 import { GeistSans } from "geist/font/sans";
-import { Bricolage_Grotesque } from "next/font/google";
-import "./style.css";
+import "@fontsource-variable/geist";
 
-const font = Bricolage_Grotesque({
-  subsets: ["latin", "latin-ext"],
-  display: "swap",
-  adjustFontFallback: false,
-});
+import "./style.css";
 
 export default function OuterPagesLayout({
   children,
@@ -16,7 +11,7 @@ export default function OuterPagesLayout({
 }) {
   return (
     <html lang="en">
-      <body className={`${font.className}`}>{children}</body>
+      <body>{children}</body>
     </html>
   );
 }

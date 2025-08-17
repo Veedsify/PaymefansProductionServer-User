@@ -42,6 +42,7 @@ const RepostPanel = ({ userdata }: RespostPanelProps) => {
     getNextPageParam: (lastPage, allPages) => {
       return lastPage?.hasMore ? allPages.length + 1 : undefined;
     },
+    staleTime:0,
     initialPageParam: 1,
   });
   // Flatten posts from all pages

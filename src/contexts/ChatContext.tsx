@@ -13,7 +13,7 @@ interface ChatState {
     fileId: string,
     status: "idle" | "uploading" | "completed" | "error",
     progress?: number,
-    attachment?: Attachment,
+    attachment?: Attachment
   ) => void;
   addNewMessage: (newMessage: Message) => void;
   paginateMessages: (newMessages: Message[]) => void;
@@ -36,7 +36,7 @@ function paginateMessages(set: (fn: (state: ChatState) => ChatState) => void) {
       ...state,
       messages: uniqBy(
         [...state.messages, ...newMessages].reverse(),
-        "message_id",
+        "message_id"
       ),
     }));
   };
@@ -52,7 +52,7 @@ function addNewMessage(set: (fn: (state: ChatState) => ChatState) => void) {
 }
 
 function setMediaFiles(
-  set: (fn: (state: ChatState) => ChatState) => void,
+  set: (fn: (state: ChatState) => ChatState) => void
 ): (mediaFiles: MediaFile) => void {
   return (mediaFiles: MediaFile) => {
     console.log("➕ Adding new media file:", {
@@ -76,7 +76,7 @@ function setMediaFiles(
 }
 
 function updateSeenMessages(
-  set: (fn: (state: ChatState) => ChatState) => void,
+  set: (fn: (state: ChatState) => ChatState) => void
 ): (messageIds: string[]) => void {
   return (messageIds: string[]) => {
     set((state) => ({
@@ -84,21 +84,40 @@ function updateSeenMessages(
       messages: state.messages.map((message) =>
         messageIds.includes(message.message_id)
           ? { ...message, seen: true }
-          : message,
+          : message
       ),
     }));
   };
 }
 
 function removeMediaFile(
-  set: (fn: (state: ChatState) => ChatState) => void,
+  set: (fn: (state: ChatState) => ChatState) => void
 ): (fileKey: string) => void {
   return (fileKey: string) => {
     console.log("🗑️ Removing media file:", fileKey);
 
     set((state) => {
+      // Find the file to be removed and clean up its blob URL
+      const fileToRemove = state.mediaFiles.find((file) => file.id === fileKey);
+      if (
+        fileToRemove &&
+        fileToRemove.previewUrl &&
+        fileToRemove.previewUrl.startsWith("blob:")
+      ) {
+        URL.revokeObjectURL(fileToRemove.previewUrl);
+        console.log("🧹 Cleaned up blob URL:", fileToRemove.previewUrl);
+      }
+      if (
+        fileToRemove &&
+        fileToRemove.posterUrl &&
+        fileToRemove.posterUrl.startsWith("blob:")
+      ) {
+        URL.revokeObjectURL(fileToRemove.posterUrl);
+        console.log("🧹 Cleaned up poster blob URL:", fileToRemove.posterUrl);
+      }
+
       const filteredFiles = state.mediaFiles.filter(
-        (file) => file.id !== fileKey,
+        (file) => file.id !== fileKey
       );
       console.log("📁 Remaining media files:", filteredFiles.length);
       return {
@@ -110,7 +129,7 @@ function removeMediaFile(
 }
 
 function resetMessages(
-  set: (fn: (state: ChatState) => ChatState) => void,
+  set: (fn: (state: ChatState) => ChatState) => void
 ): () => void {
   return () => {
     set((state) => ({
@@ -121,12 +140,12 @@ function resetMessages(
 }
 
 function updateMediaFileStatus(
-  set: (fn: (state: ChatState) => ChatState) => void,
+  set: (fn: (state: ChatState) => ChatState) => void
 ): (
   fileId: string,
   status: "idle" | "uploading" | "completed" | "error",
   progress?: number,
-  attachment?: Attachment,
+  attachment?: Attachment
 ) => void {
   return (fileId, status, progress, attachment) => {
     console.log("🔄 Updating media file status:", {
@@ -193,14 +212,28 @@ function updateMediaFileStatus(
 }
 
 function resetAllMedia(
-  set: (fn: (state: ChatState) => ChatState) => void,
+  set: (fn: (state: ChatState) => ChatState) => void
 ): () => void {
   return () => {
     console.log("🔄 Resetting all media files");
-    return set((state) => ({
-      ...state,
-      mediaFiles: [],
-    }));
+    return set((state) => {
+      // Clean up all blob URLs before resetting
+      state.mediaFiles.forEach((file) => {
+        if (file.previewUrl && file.previewUrl.startsWith("blob:")) {
+          URL.revokeObjectURL(file.previewUrl);
+          console.log("🧹 Cleaned up blob URL:", file.previewUrl);
+        }
+        if (file.posterUrl && file.posterUrl.startsWith("blob:")) {
+          URL.revokeObjectURL(file.posterUrl);
+          console.log("🧹 Cleaned up poster blob URL:", file.posterUrl);
+        }
+      });
+
+      return {
+        ...state,
+        mediaFiles: [],
+      };
+    });
   };
 }
 

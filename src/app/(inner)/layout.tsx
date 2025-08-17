@@ -6,6 +6,7 @@ import Header from "@/components/common/Header";
 import SideBar from "@/components/common/SideBar";
 import { Toaster } from "react-hot-toast";
 import { Toaster as SonnerToast } from "sonner";
+import { Geist } from "next/font/google";
 import QueryProvider from "@/providers/QueryProvider";
 import getUserData from "@/utils/data/UserData";
 import PostComponentPreview from "@/components/post/FullComponentPreview";
@@ -16,15 +17,18 @@ import WishList from "@/components/sub_components/WishList";
 import { MessagesConversationProvider } from "@/contexts/MessageConversationContext";
 import UserAccountSuspendedScreen from "@/components/sub_components/UserAccountSuspendedScreen";
 import ConfigProvider from "@/contexts/ConfigContext";
-import "@fontsource-variable/bricolage-grotesque";
 import GetLocationContext from "@/contexts/GetLocationContext";
+
+const font = Geist({
+  subsets: ["latin", "latin-ext"],
+});
 
 export const metadata: Metadata = {
   title: "Paymefans",
   description: "Paymefans - The Ultimate Fan Experience",
   icons: {
-    icon: "/site/logo.svg",
-    shortcut: "/site/logo.svg",
+    icon: "/icons/favicon.svg",
+    shortcut: "/site/favicon.svg",
   },
   authors: [
     {
@@ -46,7 +50,7 @@ export default async function RootLayout({
     return (
       <html>
         <body
-          className={`bg-white dark:bg-black min-h-dvh flex items-center justify-center`}
+          className={`bg-white ${font.className} dark:bg-black min-h-dvh flex items-center justify-center`}
         >
           <UserAccountSuspendedScreen user={user} />
         </body>
@@ -57,9 +61,13 @@ export default async function RootLayout({
   return (
     <html lang="en">
       <head>
-        <link rel="icon" href="/site/logo.svg" />
-        <link rel="apple-touch-icon" href="/site/logo.svg" sizes="180x180" />
-        <link rel="manifest" href="/site/site.webmanifest" />
+        <link rel="icon" href="/icons/favicon.svg" />
+        <link
+          rel="apple-touch-icon"
+          href="/icons/favicon.svg"
+          sizes="180x180"
+        />
+        <link rel="manifest" href="/webmanifest.json" />
         <meta name="theme-color" content="#000000" />
         <meta charSet="utf-8" />
         <meta
@@ -79,7 +87,7 @@ export default async function RootLayout({
         <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
         <meta property="og:image" content="/site/logo.svg" />
       </head>
-      <body className={`dark:bg-black min-h-dvh`}>
+      <body className={`${font.className} dark:bg-black min-h-dvh`}>
         <ConfigProvider>
           <UserContextProvider>
             <GetLocationContext user={user}>

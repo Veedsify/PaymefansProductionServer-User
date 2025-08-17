@@ -2,7 +2,7 @@ import { AuthUserProps } from "@/types/User";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import axios, { AxiosResponse } from "axios";
-const getUserData = async (): Promise<AuthUserProps | null> => {
+const getUserData = async (): Promise<Partial<AuthUserProps> | null> => {
   const token = (await cookies()).get("token");
   if (!token) {
     redirect("/login");
@@ -13,7 +13,7 @@ const getUserData = async (): Promise<AuthUserProps | null> => {
       {
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token.value}`,
+          Authorization: `Bearer ${token?.value}`,
         },
       },
     );
@@ -26,13 +26,6 @@ const getUserData = async (): Promise<AuthUserProps | null> => {
     }
     return null;
   } catch (error) {
-    if (axios.isAxiosError(error)) {
-      // Log response if available
-      // console.error("Error response:", error.response?.data);
-      // console.error("Error status:", error.response?.status);
-    } else {
-      // console.error("Unexpected error:", error);
-    }
     redirect("/login");
   }
 };

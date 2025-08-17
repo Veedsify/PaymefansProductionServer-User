@@ -17,8 +17,6 @@ import Image from "next/image";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { Group, GroupType, ApiResponse, GroupMember } from "@/types/GroupTypes";
-import axios from "axios";
-import { getToken } from "@/utils/Cookie";
 import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
 import { fetchGroupMembers } from "@/utils/data/GroupAPI";
 import axiosInstance from "@/utils/Axios";
@@ -124,7 +122,7 @@ const GroupSettingsPage = () => {
   return (
     <div className="min-h-screen bg-white dark:bg-black">
       {/* Header */}
-      <div className="px-4 py-4 bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+      <div className="px-4 py-4 bg-white border-b border-gray-200 dark:bg-gray-800 dark:border-gray-700">
         <div className="flex items-center max-w-4xl mx-auto">
           <Link href={`/groups/${groupId}`} className="mr-4">
             <LucideChevronLeft
@@ -162,7 +160,7 @@ const GroupSettingsPage = () => {
       {/* Error Message */}
       {error && (
         <div className="max-w-4xl px-4 py-4 mx-auto">
-          <div className="p-4 border border-red-200 rounded-lg bg-red-50 dark:bg-red-900/20 dark:border-red-800">
+          <div className="p-4 border border-red-100 rounded-lg bg-red-50 dark:bg-red-900/20 dark:border-red-800">
             <p className="text-sm text-red-600 dark:text-red-400">{error}</p>
           </div>
         </div>
@@ -171,14 +169,14 @@ const GroupSettingsPage = () => {
       <div className="max-w-4xl px-4 py-6 mx-auto">
         {/* Mobile Tab Navigation */}
         <div className="mb-6 lg:hidden">
-          <div className="overflow-hidden bg-white border rounded-lg dark:bg-gray-800 dark:border-gray-700">
+          <div className="overflow-hidden bg-white border border-gray-200 rounded-lg dark:bg-gray-800 dark:border-gray-700">
             {tabs.map((tab) => {
               const IconComponent = tab.icon;
               return (
                 <button
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id)}
-                  className={`w-full flex items-center justify-between px-4 py-3 text-left border-b dark:border-gray-700 last:border-b-0 transition-colors ${
+                  className={`w-full flex items-center justify-between px-4 py-3 border-b border-gray-200 dark:border-gray-700 last:border-b-0 text-left transition-colors ${
                     activeTab === tab.id
                       ? "bg-primary-dark-pink/5 text-primary-dark-pink"
                       : "text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700"
@@ -195,17 +193,17 @@ const GroupSettingsPage = () => {
           </div>
         </div>
 
-        <div className="flex flex-col lg:flex-row gap-6">
+        <div className="flex flex-col sm:flex-row gap-6">
           {/* Desktop Sidebar Navigation */}
           <div className="hidden lg:block lg:w-64">
-            <div className="overflow-hidden bg-white border rounded-lg dark:bg-gray-800 dark:border-gray-700">
+            <div className="overflow-hidden bg-white border border-gray-200 rounded-lg dark:bg-gray-800 dark:border-gray-700">
               {tabs.map((tab) => {
                 const IconComponent = tab.icon;
                 return (
                   <button
                     key={tab.id}
                     onClick={() => setActiveTab(tab.id)}
-                    className={`w-full flex items-center gap-3 px-4 py-3 text-left border-b dark:border-gray-700 last:border-b-0 transition-colors ${
+                    className={`w-full flex items-center gap-3 px-4 py-3 text-left border-b border-gray-200 dark:border-gray-700 last:border-b-0 transition-colors ${
                       activeTab === tab.id
                         ? "bg-primary-dark-pink/5 text-primary-dark-pink border-r-2 border-r-primary-dark-pink"
                         : "text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700"
@@ -224,8 +222,8 @@ const GroupSettingsPage = () => {
             {activeTab === "general" && (
               <div className="space-y-4">
                 {/* Group Icon Section */}
-                <div className="bg-white border rounded-lg dark:bg-gray-800 dark:border-gray-700">
-                  <div className="px-6 py-4 border-b dark:border-gray-700">
+                <div className="bg-white border border-gray-200 rounded-lg dark:bg-gray-800 dark:border-gray-700">
+                  <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
                     <h3 className="font-semibold text-gray-900 dark:text-white">
                       Group Photo
                     </h3>
@@ -252,8 +250,8 @@ const GroupSettingsPage = () => {
                 </div>
 
                 {/* Group Name */}
-                <div className="bg-white border rounded-lg dark:bg-gray-800 dark:border-gray-700">
-                  <div className="px-6 py-4 border-b dark:border-gray-700">
+                <div className="bg-white border border-gray-200 rounded-lg dark:bg-gray-800 dark:border-gray-700">
+                  <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
                     <h3 className="font-semibold text-gray-900 dark:text-white">
                       Group Name
                     </h3>
@@ -266,8 +264,8 @@ const GroupSettingsPage = () => {
                 </div>
 
                 {/* Description */}
-                <div className="bg-white border rounded-lg dark:bg-gray-800 dark:border-gray-700">
-                  <div className="px-6 py-4 border-b dark:border-gray-700">
+                <div className="bg-white border border-gray-200 rounded-lg dark:bg-gray-800 dark:border-gray-700">
+                  <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
                     <h3 className="font-semibold text-gray-900 dark:text-white">
                       Description
                     </h3>
@@ -279,17 +277,85 @@ const GroupSettingsPage = () => {
                   </div>
                 </div>
 
-                {/* Max Members */}
-                <div className="bg-white border rounded-lg dark:bg-gray-800 dark:border-gray-700">
-                  <div className="px-6 py-4 border-b dark:border-gray-700">
+                <div className="bg-white border border-gray-200 rounded-lg dark:bg-gray-800 dark:border-gray-700">
+                  <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
                     <h3 className="font-semibold text-gray-900 dark:text-white">
-                      Maximum Members
+                      Creator Group Chat Rules and Policy
                     </h3>
                   </div>
                   <div className="px-6 py-4">
                     <p className="text-gray-900 dark:text-white">
-                      {group?.maxMembers}
+                      By participating in this group chat, you agree to abide by
+                      these rules and policies. Let's work together to create a
+                      positive and supportive community for all content
+                      creators!
                     </p>
+                    <div className="mt-4 space-y-2">
+                      <strong>Benefits:</strong>
+                      <ul className="list-disc list-inside mt-2 space-y-1">
+                        <li>
+                          Stay updated on group news, announcements, and
+                          resources.
+                        </li>
+                        <li>
+                          Share knowledge, experiences, and best practices.
+                        </li>
+                        <li>
+                          Connect with fellow content creators from around the
+                          world.
+                        </li>
+                      </ul>
+                    </div>
+                    <div className="mt-4 space-y-2">
+                      <strong>Consequences:</strong>
+                      <ul className="list-disc list-inside mt-2 space-y-1">
+                        <li>
+                          Failure to comply with these rules may result in
+                          removal from the group chat.
+                        </li>
+                        <li>
+                          Repeated offenses may lead to a permanent ban from the
+                          group.
+                        </li>
+                      </ul>
+                    </div>
+                    <div className="mt-4 space-y-2">
+                      <strong>Group-Relevant Content:</strong>
+                      <ol className="list-decimal list-inside mt-2 space-y-1">
+                        <li>
+                          Keep conversations focused on topics relevant to
+                          content creation and the group's purpose.
+                        </li>
+                        <li>
+                          <strong>No External Links:</strong> No external links
+                          are allowed in the group chat except for links
+                          specifically related to Paymefans itself (e.g. Profile
+                          links). Posting external websites, social media, or
+                          other platform links to the group is not permitted.
+                        </li>
+                        <li>
+                          <strong>Respectful Communication:</strong> Treat
+                          others with kindness and respect, even if you
+                          disagree. No insults, harassment, or discriminatory
+                          language will be tolerated.
+                        </li>
+                      </ol>
+                    </div>
+                    <div className="mt-4">
+                      <strong>Rules:</strong>
+                      <ol className="list-decimal list-inside mt-2 space-y-1">
+                        <li>
+                          This group chat is designed to facilitate
+                          communication and collaboration among content creators
+                          from around the world.
+                        </li>
+                        <li>
+                          Our goal is to provide a supportive and respectful
+                          community where creators can share ideas, ask
+                          questions, and learn from each other.
+                        </li>
+                      </ol>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -298,8 +364,8 @@ const GroupSettingsPage = () => {
             {activeTab === "privacy" && (
               <div className="space-y-4">
                 {/* Group Type */}
-                <div className="bg-white border rounded-lg dark:bg-gray-800 dark:border-gray-700">
-                  <div className="px-6 py-4 border-b dark:border-gray-700">
+                <div className="bg-white border border-gray-200 rounded-lg dark:bg-gray-800 dark:border-gray-700">
+                  <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
                     <h3 className="font-semibold text-gray-900 dark:text-white">
                       Group Type
                     </h3>
@@ -311,7 +377,7 @@ const GroupSettingsPage = () => {
                         return (
                           <div
                             key={type.value}
-                            className="flex items-start p-4 border rounded-lg gap-4 border-primary-dark-pink bg-primary-dark-pink/5"
+                            className="flex items-start p-4 border border-primary-dark-pink/40 rounded-lg gap-4 bg-primary-dark-pink/5"
                           >
                             <IconComponent
                               className={`h-5 w-5 mt-0.5 ${type.color}`}
@@ -333,13 +399,13 @@ const GroupSettingsPage = () => {
                 </div>
 
                 {/* Permission Settings */}
-                <div className="bg-white border rounded-lg dark:bg-gray-800 dark:border-gray-700">
-                  <div className="px-6 py-4 border-b dark:border-gray-700">
+                <div className="bg-white border border-gray-200 rounded-lg dark:bg-gray-800 dark:border-gray-700">
+                  <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
                     <h3 className="font-semibold text-gray-900 dark:text-white">
                       Member Permissions
                     </h3>
                   </div>
-                  <div className="divide-y dark:divide-gray-700">
+                  <div className="divide-y divide-gray-100 dark:divide-gray-700">
                     <div className="flex items-center justify-between px-6 py-4">
                       <div>
                         <span className="font-medium text-gray-900 dark:text-white">
@@ -353,7 +419,7 @@ const GroupSettingsPage = () => {
                         className={`w-5 h-5 rounded border-2 flex items-center justify-center ${
                           group?.settings?.allowMemberInvites
                             ? "bg-primary-dark-pink border-primary-dark-pink text-white"
-                            : "border-gray-300 dark:border-gray-600"
+                            : "border-gray-200 dark:border-gray-600"
                         }`}
                       >
                         {group?.settings?.allowMemberInvites && "✓"}
@@ -373,7 +439,7 @@ const GroupSettingsPage = () => {
                         className={`w-5 h-5 rounded border-2 flex items-center justify-center ${
                           group?.settings?.allowMediaSharing
                             ? "bg-primary-dark-pink border-primary-dark-pink text-white"
-                            : "border-gray-300 dark:border-gray-600"
+                            : "border-gray-200 dark:border-gray-600"
                         }`}
                       >
                         {group?.settings?.allowMediaSharing && "✓"}
@@ -393,7 +459,7 @@ const GroupSettingsPage = () => {
                         className={`w-5 h-5 rounded border-2 flex items-center justify-center ${
                           group?.settings?.allowFileSharing
                             ? "bg-primary-dark-pink border-primary-dark-pink text-white"
-                            : "border-gray-300 dark:border-gray-600"
+                            : "border-gray-200 dark:border-gray-600"
                         }`}
                       >
                         {group?.settings?.allowFileSharing && "✓"}
@@ -413,7 +479,7 @@ const GroupSettingsPage = () => {
                         className={`w-5 h-5 rounded border-2 flex items-center justify-center ${
                           group?.settings?.moderateMessages
                             ? "bg-primary-dark-pink border-primary-dark-pink text-white"
-                            : "border-gray-300 dark:border-gray-600"
+                            : "border-gray-200 dark:border-gray-600"
                         }`}
                       >
                         {group?.settings?.moderateMessages && "✓"}
@@ -434,7 +500,7 @@ const GroupSettingsPage = () => {
                           className={`w-5 h-5 rounded border-2 flex items-center justify-center ${
                             group?.settings?.autoApproveJoinReqs
                               ? "bg-primary-dark-pink border-primary-dark-pink text-white"
-                              : "border-gray-300 dark:border-gray-600"
+                              : "border-gray-200 dark:border-gray-600"
                           }`}
                         >
                           {group?.settings?.autoApproveJoinReqs && "✓"}
@@ -485,8 +551,8 @@ const MembersTab: React.FC<{ groupId: string; adminId: number }> = ({
 
   if (isLoading) {
     return (
-      <div className="bg-white border rounded-lg dark:bg-gray-800 dark:border-gray-700">
-        <div className="px-6 py-4 border-b dark:border-gray-700">
+      <div className="bg-white border border-gray-200 rounded-lg dark:bg-gray-800 dark:border-gray-700">
+        <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
           <h3 className="font-semibold text-gray-900 dark:text-white">
             Members
           </h3>
@@ -501,8 +567,8 @@ const MembersTab: React.FC<{ groupId: string; adminId: number }> = ({
 
   if (isError) {
     return (
-      <div className="bg-white border rounded-lg dark:bg-gray-800 dark:border-gray-700">
-        <div className="px-6 py-4 border-b dark:border-gray-700">
+      <div className="bg-white border border-gray-200 rounded-lg dark:bg-gray-800 dark:border-gray-700">
+        <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
           <h3 className="font-semibold text-gray-900 dark:text-white">
             Members
           </h3>
@@ -520,8 +586,8 @@ const MembersTab: React.FC<{ groupId: string; adminId: number }> = ({
   const totalMembers = data?.pages[0]?.data?.pagination?.total || 0;
 
   return (
-    <div className="bg-white border rounded-lg dark:bg-gray-800 dark:border-gray-700">
-      <div className="px-6 py-4 border-b dark:border-gray-700">
+    <div className="bg-white border border-gray-200 rounded-lg dark:bg-gray-800 dark:border-gray-700">
+      <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
         <div className="flex items-center justify-between">
           <h3 className="font-semibold text-gray-900 dark:text-white">
             Members
@@ -532,7 +598,7 @@ const MembersTab: React.FC<{ groupId: string; adminId: number }> = ({
         </div>
       </div>
 
-      <div className="divide-y dark:divide-gray-700">
+      <div className="divide-y divide-gray-100 dark:divide-gray-700">
         {allMembers.map((member) => (
           <div key={member.id} className="px-6 py-4">
             <div className="flex items-center justify-between">
@@ -587,7 +653,7 @@ const MembersTab: React.FC<{ groupId: string; adminId: number }> = ({
       </div>
 
       {hasNextPage && (
-        <div className="px-6 py-4 border-t dark:border-gray-700">
+        <div className="px-6 py-4 border-t border-gray-200 dark:border-gray-700">
           <button
             onClick={() => fetchNextPage()}
             disabled={isFetchingNextPage}

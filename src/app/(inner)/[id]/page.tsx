@@ -68,7 +68,7 @@ const ProfileCounts = ({
       <h1 className="text-sm font-bold">{formatNumber(following)}</h1>
       <p className="text-sm font-medium text-gray-500">Following</p>
     </span>
-    {isModel && subscribers && (
+    {isModel && typeof subscribers === "number" && subscribers > 0 && (
       <span className="flex items-center gap-2">
         <h1 className="text-sm font-bold">{formatNumber(subscribers)}</h1>
         <p className="text-sm font-medium text-gray-500">Subscribers</p>
@@ -83,9 +83,11 @@ const ProfilePage = () => {
   const { user } = useUserAuthContext();
   const [userdata, setUserdata] = useState<ProfileUserProps | null>(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  // const [error, setError] = useState<string | null>(null); // Removed unused variable
   const [openTip, setOpenTip] = useState(false);
   const [isBlockedByUser, setIsBlockedByUser] = useState(false);
+
+  console.log("ProfilePage Userdata", userdata);
 
   const toggleTip = () => {
     setOpenTip(!openTip);
@@ -96,7 +98,7 @@ const ProfilePage = () => {
   useEffect(() => {
     const fetchData = async () => {
       if (!params.id) {
-        setError("Invalid user ID");
+        // setError("Invalid user ID");
         setLoading(false);
         return;
       }
@@ -118,7 +120,7 @@ const ProfilePage = () => {
           }
         }
       } catch (err) {
-        setError("Failed to fetch user profile");
+        // setError("Failed to fetch user profile");
       } finally {
         setLoading(false);
       }
@@ -137,17 +139,22 @@ const ProfilePage = () => {
     return null;
   }
 
-  if (error || !params.id || !userdata) {
+  if (!userdata && !loading) {
     return <UserNotFound userid={params.id || "unknown"} />;
   }
 
-  if (!userdata.active_status) {
+  if (userdata && !userdata?.active_status) {
     return <SuspendedUserPage userdata={userdata} />;
   }
 
   // If current user is blocked by this profile user, show user not found
   if (isBlockedByUser) {
     return <UserNotFound userid={params.id || "unknown"} />;
+  }
+
+  // Prevent rendering until userdata is loaded
+  if (!userdata) {
+    return null;
   }
 
   return (
@@ -161,7 +168,6 @@ const ProfilePage = () => {
         priority
         className="inset-0 object-cover w-full h-full aspect-21-9"
       />
-
       {/* Avatar and Actions */}
       <div className="relative flex w-full px-2 md:px-5">
         <Image
@@ -190,7 +196,6 @@ const ProfilePage = () => {
           <MoreProfileOptions user={userdata} authUserId={Number(user?.id)} />
         </div>
       </div>
-
       {/* Info & Bio */}
       <div className="flex flex-col px-2 mt-2 mb-6 gap-2 md:px-5 dark:text-white">
         {/* Name, Badges, and Tag */}
@@ -279,11 +284,9 @@ const ProfilePage = () => {
           isModel={userdata.is_model}
         />
         <ProfileSocialLinks Settings={userdata?.Settings} />
-      </div>
-
+      </div>{" "}
       {/* Profile Tabs */}
       {userdata.id && <ProfileTabsOther userdata={userdata} />}
-
       {userdata.id && openTip && (
         <TipModel userdata={userdata} close={toggleTip} />
       )}

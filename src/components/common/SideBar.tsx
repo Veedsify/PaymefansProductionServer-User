@@ -12,18 +12,14 @@ import {
   LucideShieldCheck,
   LucideGroup,
   LucideLightbulb,
-  LucideLightbulbOff,
   LucideMoon,
-  AlertTriangle,
   LogOutIcon,
   LucideLoader2,
-  Moon,
 } from "lucide-react";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import Image from "next/image";
-import swal from "sweetalert";
 import { useUserAuthContext } from "@/lib/UserUseContext";
 import PointsCount from "../sub_components/sub/PointCount";
 import NotificationSideBarLink from "../sub_components/sub/NotificationSideBarLink";

@@ -28,16 +28,9 @@ const OtherTransactions = React.memo(() => {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
 
   useEffect(() => {
-    const abortController = new AbortController();
-
     const fetchTransactions = async () => {
       try {
-        const axios = (await import("axios")).default;
-
-        const res = await axiosInstance.get(`/wallet/transactions/other`, {
-          signal: abortController.signal,
-        });
-
+        const res = await axiosInstance.get(`/wallet/transactions/other`);
         const data = res.data;
         const transactions = Array.isArray(data?.data) ? data.data : [];
         setTransactions(transactions.slice(0, 5));
@@ -49,8 +42,6 @@ const OtherTransactions = React.memo(() => {
     };
 
     fetchTransactions();
-
-    return () => abortController.abort();
   }, []);
 
   if (transactions.length === 0) return null;

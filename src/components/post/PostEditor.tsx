@@ -59,7 +59,7 @@ const PostEditor = React.memo(({ posts }: PostEditorProps) => {
   const { mediaUploadComplete, setMediaUploadComplete } =
     usePostMediaUploadContext();
   const isWaterMarkEnabled = usePostEditorContext(
-    (state) => state.isWaterMarkEnabled
+    (state) => state.isWaterMarkEnabled,
   );
   const { config } = useConfigContext();
 
@@ -106,7 +106,7 @@ const PostEditor = React.memo(({ posts }: PostEditorProps) => {
             ]
           : []),
       ] as PostAudienceDataProps[],
-    [user]
+    [user],
   );
 
   // User search simulation
@@ -121,7 +121,7 @@ const PostEditor = React.memo(({ posts }: PostEditorProps) => {
         }, 300);
       });
     },
-    []
+    [],
   );
 
   // Mention search
@@ -129,7 +129,7 @@ const PostEditor = React.memo(({ posts }: PostEditorProps) => {
     if (mentionQuery.length > 0) {
       searchUsers(mentionQuery).then((users) => {
         setMentionSuggestions(
-          users.map((user, index) => ({ ...user, highlighted: index === 0 }))
+          users.map((user, index) => ({ ...user, highlighted: index === 0 })),
         );
         setSelectedMentionIndex(0);
       });
@@ -176,7 +176,7 @@ const PostEditor = React.memo(({ posts }: PostEditorProps) => {
         setMentionQuery("");
       }
     },
-    [setPostText]
+    [setPostText],
   );
 
   // Mention selection
@@ -212,7 +212,7 @@ const PostEditor = React.memo(({ posts }: PostEditorProps) => {
         setCursorPosition(newCursorPos);
       }, 0);
     },
-    [mentionStartPos, cursorPosition, mentions, setPostText]
+    [mentionStartPos, cursorPosition, mentions, setPostText],
   );
   // Keydown navigation
   const handleKeyDown = useCallback(
@@ -222,13 +222,13 @@ const PostEditor = React.memo(({ posts }: PostEditorProps) => {
           case "ArrowDown":
             e.preventDefault();
             setSelectedMentionIndex((prev) =>
-              prev < mentionSuggestions.length - 1 ? prev + 1 : 0
+              prev < mentionSuggestions.length - 1 ? prev + 1 : 0,
             );
             break;
           case "ArrowUp":
             e.preventDefault();
             setSelectedMentionIndex((prev) =>
-              prev > 0 ? prev - 1 : mentionSuggestions.length - 1
+              prev > 0 ? prev - 1 : mentionSuggestions.length - 1,
             );
             break;
           case "Enter":
@@ -243,7 +243,7 @@ const PostEditor = React.memo(({ posts }: PostEditorProps) => {
         }
       }
     },
-    [showMentions, mentionSuggestions, selectedMentionIndex, selectMention]
+    [showMentions, mentionSuggestions, selectedMentionIndex, selectMention],
   );
 
   // Preload existing post data
@@ -262,7 +262,7 @@ const PostEditor = React.memo(({ posts }: PostEditorProps) => {
           audienceName = "price";
         }
         const audience = postAudienceData.find(
-          (aud) => aud.name.toLowerCase() === audienceName
+          (aud) => aud.name.toLowerCase() === audienceName,
         );
         if (audience) {
           setVisibility(audience.name);
@@ -290,7 +290,7 @@ const PostEditor = React.memo(({ posts }: PostEditorProps) => {
 
   const removeThisMedia = (id: string, type: string) => {
     setMedia((prevMedia) =>
-      prevMedia ? prevMedia.filter((file) => file.fileId !== id) : null
+      prevMedia ? prevMedia.filter((file) => file.fileId !== id) : null,
     );
     const removeId = media?.find((med) => med.fileId === id);
     if (removeId) {
@@ -301,7 +301,7 @@ const PostEditor = React.memo(({ posts }: PostEditorProps) => {
   // Remove existing media
   const removeExistingMedia = (mediaId: string, mediaType: string) => {
     setEditedMedia((prevMedia) =>
-      prevMedia.filter((item) => item.media_id !== mediaId)
+      prevMedia.filter((item) => item.media_id !== mediaId),
     );
     setRemovedIds((prevIds) => [...prevIds, { id: mediaId, type: mediaType }]);
   };
@@ -313,7 +313,7 @@ const PostEditor = React.memo(({ posts }: PostEditorProps) => {
       setVisibility(audience.name);
       setDropdown(false);
     },
-    [setVisibility]
+    [setVisibility],
   );
 
   const setPriceHandler = (value: string) => {
@@ -341,7 +341,7 @@ const PostEditor = React.memo(({ posts }: PostEditorProps) => {
 
     // Convert Naira to points for storage
     const pointsValue = config?.point_conversion_rate_ngn
-      ? Math.round(nairaValue / config.point_conversion_rate_ngn)
+      ? Math.floor(nairaValue / config.point_conversion_rate_ngn)
       : 0;
     setPrice(pointsValue);
   };
@@ -388,7 +388,7 @@ const PostEditor = React.memo(({ posts }: PostEditorProps) => {
       isEditing ? "Saving your changes..." : "Creating your post...",
       {
         id: "post-upload",
-      }
+      },
     );
 
     // Convert to HTML
@@ -471,11 +471,11 @@ const PostEditor = React.memo(({ posts }: PostEditorProps) => {
                 ? "Saving..."
                 : "Creating..."
               : posts?.post_id
-              ? "Save"
-              : "Post"}
+                ? "Save"
+                : "Post"}
           </button>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-start lg:items-center gap-2">
           <Image
             src={user?.profile_image || "/site/avatar.png"}
             alt="Profile"
@@ -594,7 +594,7 @@ const PostEditor = React.memo(({ posts }: PostEditorProps) => {
                   <button
                     onClick={() =>
                       setMentions((prev) =>
-                        prev.filter((m) => m.id !== mention.id)
+                        prev.filter((m) => m.id !== mention.id),
                       )
                     }
                     className="ml-1 text-gray-500 hover:text-red-500"
@@ -658,7 +658,7 @@ const AudienceDropdown = React.memo(
     nairaDisplayValue: string;
   }) => {
     return (
-      <div className="flex items-center w-full gap-4">
+      <div className="flex flex-wrap items-start w-full gap-4">
         <button
           className="relative inline-block px-3 ml-2 text-sm text-gray-800 border border-gray-800 rounded-3xl dark:text-gray-200"
           onClick={() => setDropdown(!dropdown)}
@@ -702,7 +702,7 @@ const AudienceDropdown = React.memo(
                 value={nairaDisplayValue}
                 onChange={(e) => {
                   if (e.target.value === "" || !e.target.value) {
-                    setPrice("0");
+                    setPrice("");
                     return;
                   }
                   setPrice(e.target.value);
@@ -720,7 +720,7 @@ const AudienceDropdown = React.memo(
                     alt=""
                   />
                   <p className="text-primary-dark-pink">
-                    {price.toLocaleString()} pts
+                    {price.toLocaleString()} points
                   </p>
                 </div>
               )}
@@ -729,7 +729,7 @@ const AudienceDropdown = React.memo(
         )}
       </div>
     );
-  }
+  },
 );
 
 AudienceDropdown.displayName = "AudienceDropdown";

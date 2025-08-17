@@ -39,7 +39,7 @@ const fetchStatusViews = async ({
     `/story/views/${media_id}${pageParam === 0 ? "" : `?cursor=${pageParam}`}`,
     {
       withCredentials: true,
-    }
+    },
   );
   if (response.status === 200) {
     const data = response.data;
@@ -205,7 +205,7 @@ const StoryReplyInput = ({ story }: { story: Story }) => {
         {
           headers: { Authorization: `Bearer ${getToken()}` },
           withCredentials: true,
-        }
+        },
       );
       const receiverUserId = profileResponse.data.user?.user_id;
       if (!receiverUserId) {
@@ -217,7 +217,7 @@ const StoryReplyInput = ({ story }: { story: Story }) => {
         {
           headers: { Authorization: `Bearer ${getToken()}` },
           withCredentials: true,
-        }
+        },
       );
       const pricePerMessage = data.price_per_message || 0;
       const currentPoints = points || 0;
@@ -251,7 +251,7 @@ const StoryReplyInput = ({ story }: { story: Story }) => {
         userId: user.user_id,
         profileId: receiverUserId,
       });
-      const conversation = await conversationResponse;
+      const conversation = conversationResponse;
       const conversationId = conversation?.data?.conversation_id;
       if (!conversationId) {
         throw new Error("Failed to create conversation");
@@ -392,7 +392,7 @@ const StatusPreviewSlide = ({
         { storyMediaId: story.media_id },
         {
           withCredentials: true,
-        }
+        },
       );
       refCounter.current++;
     }
@@ -400,7 +400,7 @@ const StatusPreviewSlide = ({
     return () => {
       refCounter.current = 0;
     };
-  }, [story.media_id]);
+  }, [story.media_id, refCounter]);
   return (
     <div className="relative flex items-center justify-center w-full h-full max-w-full max-h-full">
       {story.media_type === "image" ? (

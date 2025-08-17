@@ -35,7 +35,7 @@ type NotificationState = {
   totalNotifications: number;
   hasMore: boolean;
   setHasmore: (hasMore: boolean) => void;
-  updateNotification: (id: string) => void;
+  updateNotification: (id: number) => void;
   setTotalNotifications: (count: number) => void;
   addNotification: (notification: Notification) => void;
   addAllNotifications: (notifications: Notification[]) => void;
@@ -103,10 +103,10 @@ export const useNotificationStore = create<NotificationState>()((set) => ({
   hasMore: false,
   setHasmore: (hasMore: boolean) => set((state) => ({ hasMore })),
   totalNotifications: 0,
-  updateNotification: (id: string) =>
+  updateNotification: (id: number) =>
     set((state) => {
       const notifications = state.notifications.map((note) =>
-        note.id.toString() === id ? { ...note, read: true } : note
+        note.id === id ? { ...note, read: true } : note
       );
       return { ...state, notifications };
     }),

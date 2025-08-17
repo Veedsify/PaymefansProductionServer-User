@@ -12,8 +12,8 @@ import { ReactNode, useEffect, useRef } from "react";
 import { create } from "zustand";
 
 interface UserState {
-  user: AuthUserProps | null;
-  setUser: (user: AuthUserProps | null) => void;
+  user: Partial<AuthUserProps> | null;
+  setUser: (user: Partial<AuthUserProps | null>) => void;
 }
 
 export const useUserStore = create<UserState>((set) => ({
@@ -35,6 +35,10 @@ export const UserContextProvider = ({ children }: UserContextProviderProps) => {
   const location = usePathname();
   const setUser = useUserStore((state) => state.setUser);
   const ref = useRef<number>(0);
+  const postRegex = /\/posts\/[a-fA-F0-9-]+/;
+  const isPostPage = postRegex.test(location);
+  const profileRegex = /\/(@?[a-zA-Z0-9-]+)/;
+  const isProfilePage = profileRegex.test(location);
 
   useEffect(() => {
     if (ref.current != 0) {
@@ -43,16 +47,9 @@ export const UserContextProvider = ({ children }: UserContextProviderProps) => {
     let intervalId: NodeJS.Timeout | undefined;
     async function fetchUser() {
       const res: AxiosResponse<{ user: AuthUserProps }> =
-        await axiosInstance.get(
-          `/auth/retrieve`,
-          {
-            withCredentials: true,
-          },
-        );
-
-      if (res.status === 401) {
-        window.location.href = `/login?redirect=${location}`;
-      }
+        await axiosInstance.get(`/auth/retrieve`, {
+          withCredentials: true,
+        });
 
       if (res.status === 200 && res.data?.user) {
         const user = res.data.user as AuthUserProps;
@@ -62,10 +59,14 @@ export const UserContextProvider = ({ children }: UserContextProviderProps) => {
           socket?.emit("still-active", user?.username);
         }, 10_000);
         ref.current = 1;
-      } else {
-        window.location.href = `/login?redirect=${location}`;
-        setUser(null);
+        return;
       }
+      if (res.status === 401 && (isPostPage || isProfilePage)) {
+        // Set user to guest if on post or profile page
+        return;
+      }
+      window.location.href = `/login?redirect=${location}`;
+      setUser(null);
     }
 
     fetchUser();

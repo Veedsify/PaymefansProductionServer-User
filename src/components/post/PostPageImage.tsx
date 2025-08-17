@@ -218,7 +218,7 @@ const PostPageImage: React.FC<PostPageImageProps> = ({
           className="absolute inset-0 z-10 flex items-center justify-center overflow-hidden rounded-lg bg-black/20"
         >
           <Image
-            src={media.blur ? media.blur.trimEnd() : "/site/blur.jpg"}
+            src={media.blur ? media.blur.trim() : "/site/blur.jpg"}
             alt=""
             priority
             width={300}
@@ -236,7 +236,7 @@ const PostPageImage: React.FC<PostPageImageProps> = ({
           className="absolute inset-0 z-10 flex items-center justify-center overflow-hidden rounded-lg bg-black/20"
         >
           <Image
-            src={media.blur ? media.blur.trimEnd() : "/site/blur.jpg"}
+            src={media.blur ? media.blur.trim() : "/site/blur.jpg"}
             alt=""
             width={300}
             priority

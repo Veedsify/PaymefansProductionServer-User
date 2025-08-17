@@ -1,11 +1,11 @@
 import { cookies } from "next/headers";
-import axios from "axios";
 import { redirect } from "next/navigation";
+import axiosInstance from "../Axios";
 
 export const getPost = async (postId: string) => {
     try {
         const token = (await cookies()).get("token")?.value;
-        const request = await axios.get(
+        const request = await axiosInstance.get(
             `${process.env.NEXT_PUBLIC_TS_EXPRESS_URL}/post/single/${postId}`,
             {
                 headers: {
@@ -15,8 +15,7 @@ export const getPost = async (postId: string) => {
             }
         );
         if (request.data.status === false) {
-            redirect("/404");
-            return {}
+            return redirect("/404");
         }
         return request.data.data;
     } catch (error) {

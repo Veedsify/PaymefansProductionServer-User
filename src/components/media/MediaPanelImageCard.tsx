@@ -96,7 +96,7 @@ const MediaPanelImageCard = React.memo(({ sort }: { sort: string }) => {
         {sorted.map((media, index) => (
           <div
             key={index}
-            className="aspect-[4/3] md:aspect-square overflow-hidden relative"
+            className="aspect-[4/3] lg:aspect-square object-center  overflow-hidden relative"
           >
             <MediaPanelMediaCard
               isSubscriber={true}
@@ -169,7 +169,7 @@ const MediaPanelMediaCard = ({
           <HLSVideoPlayer
             streamUrl={media.url}
             autoPlay={false}
-            className="w-full h-[400px] cursor-pointer object-cover transition-all duration-300 ease-in-out"
+            className="w-full h-full aspect-[4/3] lg:aspect-square cursor-pointer object-cover transition-all duration-300 ease-in-out"
             allOthers={{
               muted: true,
               poster: media.poster,

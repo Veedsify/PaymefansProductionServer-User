@@ -27,7 +27,7 @@ export const notificationService = {
     },
 
     // Mark notification as read
-    markAsRead: async (notificationId: string): Promise<{ error: boolean; message?: string }> => {
+    markAsRead: async (notificationId: number): Promise<{ error: boolean; message?: string }> => {
         const response = await axiosInstance.put(`/notifications/read/${notificationId}`);
         return response.data;
     },

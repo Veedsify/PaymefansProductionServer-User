@@ -1,23 +1,16 @@
-import { cookies } from "next/headers";
-import { redirect } from "next/navigation";
+import axiosInstance from "@/utils/Axios";
 
-const getSideModels = async ({ limit }: { limit?: number }) => {
-  const token = (await cookies()).get('token')
-  if (!token?.value || token.value == "") redirect("/login");
-  const res = await fetch(`${process.env.NEXT_PUBLIC_TS_EXPRESS_URL}/models/all`, {
-    method: "POST",
-    body: JSON.stringify({
-      limit,
-    }),
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token?.value}`,
-    },
-  });
-  if (res.ok) {
-    const { models } = await res.json();
+const getSideModels = async ({limit}: { limit?: number }) => {
+    const res = await axiosInstance(`/models/all`, {
+        method: "POST",
+        data: {
+            limit,
+        },
+    });
+
+    const {models} = await res.data
     return models;
-  }
+
 };
 
 export default getSideModels;

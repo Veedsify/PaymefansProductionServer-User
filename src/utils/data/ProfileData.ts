@@ -9,9 +9,9 @@ type getUserProfileProps = {
 
 const getUserProfile = async ({ user_id }: getUserProfileProps) => {
   const username = user_id.startsWith("@") ? user_id : `@${user_id}`;
-  const url = `/profile/user?username=${encodeURIComponent(username)}`;
+  const url = `/profile/user?username=${username}`;
   try {
-    const res = await axiosInstance.get(url);
+    const res = await axiosInstance.post(url,{username});
     const data = res.data;
     if (data.status) {
       return data.user as ProfileUserProps;

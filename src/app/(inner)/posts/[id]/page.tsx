@@ -19,7 +19,7 @@ interface PostPageProps {
 
 const Post = React.memo(async ({ params }: PostPageProps) => {
   const postId = (await params).id;
-  const user: AuthUserProps | null = await getUserData();
+  const user: Partial<AuthUserProps> | null = await getUserData();
   const post = await getPost(postId);
   const content = {
     __html: `${post?.content.replace(/(?:\r\n|\r|\n)/g, "<br>")}`,

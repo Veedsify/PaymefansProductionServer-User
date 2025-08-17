@@ -1,14 +1,12 @@
 "use client";
 import { useUserAuthContext } from "@/lib/UserUseContext";
 import PostComponent from "./PostComponent";
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { formatDate } from "@/utils/FormatDate";
-import PostPanelFetch from "../custom-hooks/PostPanelFetch";
 import { useInView } from "react-intersection-observer";
 import { LucideLoader } from "lucide-react";
-import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
+import { useInfiniteQuery } from "@tanstack/react-query";
 import axios, { AxiosResponse } from "axios";
-import { getToken } from "@/utils/Cookie";
 import axiosInstance from "@/utils/Axios";
 
 async function fetchPost(pageNumber: number) {
@@ -69,6 +67,12 @@ const PostPanel = () => {
     </div>
   );
 
+  // Helper to safely provide image src or undefined
+  const getSafeImage = (img: string | undefined | null) => {
+    if (!img || img === "") return null;
+    return img;
+  };
+
   return (
     <div className="mt-3 mb-12 select-none">
       {posts?.map((post, index) => (
@@ -80,7 +84,7 @@ const PostPanel = () => {
               name: user?.name!,
               link: `/${user?.username}`,
               username: user?.username!,
-              image: user?.profile_image!,
+              image: getSafeImage(user?.profile_image) as string,
             }}
             data={{
               ...post,

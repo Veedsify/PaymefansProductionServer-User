@@ -78,7 +78,7 @@ const StoryPreviewComponent = ({
     (canPlay: boolean) => {
       if (canPlay) PlayVideo(true);
     },
-    [PlayVideo]
+    [PlayVideo],
   );
 
   // Handle slide change to update video references
@@ -116,7 +116,7 @@ const StoryPreviewComponent = ({
         viewedStories.current.add(currentStory.media_id);
       }
     },
-    [PlayVideo, stories]
+    [PlayVideo, stories],
   );
 
   // Preload adjacent slides for smoother transitions
@@ -212,6 +212,7 @@ const StoryPreviewComponent = ({
             className="w-full h-full"
             onSlideChange={handleSlideChange}
             speed={300}
+            loop={false}
             initialSlide={activeIndex}
             watchSlidesProgress={true}
           >

@@ -236,7 +236,7 @@ const VideoPlayer = ({
           {...allOthers}
           ref={videoRef}
           loop={shouldLoop}
-          className={`w-full ${className} transition-all duration-300`}
+          className={` ${className} transition-all duration-300 object-center`}
           onTimeUpdate={handleTimeUpdate}
           onLoadedMetadata={() => setDuration(videoRef.current?.duration || 0)}
           style={{ background: "#000000" }}
@@ -327,10 +327,11 @@ const VideoPlayer = ({
                       changeQuality(index);
                       setShowResolutionMenu(false);
                     }}
-                    className={`w-full text-left px-3 py-2 text-sm font-medium rounded-md hover:bg-gray-800/80 transition-colors ${selectedQuality === index
-                      ? "text-blue-400 bg-gray-800/60"
-                      : "text-white"
-                      }`}
+                    className={`w-full text-left px-3 py-2 text-sm font-medium rounded-md hover:bg-gray-800/80 transition-colors ${
+                      selectedQuality === index
+                        ? "text-blue-400 bg-gray-800/60"
+                        : "text-white"
+                    }`}
                   >
                     {label}
                   </button>

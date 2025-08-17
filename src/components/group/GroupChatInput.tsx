@@ -90,24 +90,11 @@ const GroupChatInput = ({
     (!mutedUntil || // Permanent mute (mutedUntil is null)
       new Date(mutedUntil) > new Date()); // Temporary mute still active
 
-  // Debug logging
-  useEffect(() => {
-    console.log("GroupChatInput - isUserMuted:", isUserMuted);
-    console.log("GroupChatInput - mutedUntil:", mutedUntil);
-    console.log("GroupChatInput - isMuted calculated:", isMuted);
-
-    if (isUserMuted) {
-      if (!mutedUntil) {
-        console.log("User has permanent mute");
-      } else {
-        const muteExpiry = new Date(mutedUntil);
-        const now = new Date();
-        console.log("Mute expiry:", muteExpiry);
-        console.log("Current time:", now);
-        console.log("Is mute still active?", muteExpiry > now);
-      }
-    }
-  }, [isUserMuted, mutedUntil, isMuted]);
+  // Check if any media is currently uploading
+  const isMediaUploading = attachments.some(
+    (attachment) =>
+      attachment.uploadProgress !== undefined && !attachment.uploaded,
+  );
 
   const handleTyping = (e: ChangeEvent<HTMLInputElement>) => {
     if (isMuted) return; // Don't handle typing if muted
@@ -139,7 +126,7 @@ const GroupChatInput = ({
 
   const uploadFile = async (
     file: File,
-    onProgress?: (progress: number) => void
+    onProgress?: (progress: number) => void,
   ): Promise<any> => {
     const axios = require("axios");
     const formData = new FormData();
@@ -153,12 +140,12 @@ const GroupChatInput = ({
           onUploadProgress: (progressEvent: any) => {
             if (progressEvent.lengthComputable && onProgress) {
               const progress = Math.round(
-                (progressEvent.loaded / progressEvent.total) * 100
+                (progressEvent.loaded / progressEvent.total) * 100,
               );
               onProgress(progress);
             }
           },
-        }
+        },
       );
 
       return response.data;
@@ -194,7 +181,7 @@ const GroupChatInput = ({
         createFilePreview(file)
           .then((preview) => {
             setAttachments((prev) =>
-              prev.map((att) => (att.id === id ? { ...att, preview } : att))
+              prev.map((att) => (att.id === id ? { ...att, preview } : att)),
             );
           })
           .catch((error) => {
@@ -223,8 +210,8 @@ const GroupChatInput = ({
   const updateAttachmentProgress = (id: string, progress: number) => {
     setAttachments((prev) =>
       prev.map((att) =>
-        att.id === id ? { ...att, uploadProgress: progress } : att
-      )
+        att.id === id ? { ...att, uploadProgress: progress } : att,
+      ),
     );
   };
 
@@ -233,8 +220,8 @@ const GroupChatInput = ({
       prev.map((att) =>
         att.id === id
           ? { ...att, uploaded: true, uploadedData, uploadProgress: 100 }
-          : att
-      )
+          : att,
+      ),
     );
   };
 
@@ -254,10 +241,12 @@ const GroupChatInput = ({
 
   // Auto-upload files when selected
   const handleAutoUpload = async (newAttachments: AttachmentPreview[]) => {
+    setUploadingFiles(true);
+
     for (const attachment of newAttachments) {
       try {
         const uploadResult = await uploadFile(attachment.file, (progress) =>
-          updateAttachmentProgress(attachment.id, progress)
+          updateAttachmentProgress(attachment.id, progress),
         );
         markAttachmentUploaded(attachment.id, uploadResult);
       } catch (error) {
@@ -265,16 +254,23 @@ const GroupChatInput = ({
         // Mark as failed but keep the attachment for manual retry
         setAttachments((prev) =>
           prev.map((att) =>
-            att.id === attachment.id ? { ...att, uploadProgress: 0 } : att
-          )
+            att.id === attachment.id ? { ...att, uploadProgress: 0 } : att,
+          ),
         );
       }
     }
+
+    setUploadingFiles(false);
   };
 
   const sendIfValid = async () => {
     if (isMuted) {
       toast.error("You are muted and cannot send messages in this group.");
+      return;
+    }
+
+    if (isMediaUploading) {
+      toast.error("Please wait for media upload to complete before sending.");
       return;
     }
 
@@ -305,7 +301,7 @@ const GroupChatInput = ({
             } else {
               // Upload the file with progress tracking
               uploadResult = await uploadFile(attachment.file, (progress) =>
-                updateAttachmentProgress(attachment.id, progress)
+                updateAttachmentProgress(attachment.id, progress),
               );
               markAttachmentUploaded(attachment.id, uploadResult);
             }
@@ -341,20 +337,26 @@ const GroupChatInput = ({
   };
 
   const handleSendClick = (
-    e: KeyboardEvent<HTMLInputElement> | MouseEvent<HTMLButtonElement>
+    e: KeyboardEvent<HTMLInputElement> | MouseEvent<HTMLButtonElement>,
   ) => {
     if ("key" in e && e.key === "Enter" && e.shiftKey) {
       e.preventDefault();
-      sendIfValid();
+      if (!isMediaUploading) {
+        sendIfValid();
+      }
     } else if (!("key" in e)) {
-      sendIfValid();
+      if (!isMediaUploading) {
+        sendIfValid();
+      }
     }
   };
 
   const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter" && e.shiftKey) {
       e.preventDefault();
-      sendIfValid();
+      if (!isMediaUploading) {
+        sendIfValid();
+      }
     }
   };
 
@@ -494,27 +496,35 @@ const GroupChatInput = ({
               onChange={handleTyping}
               onKeyDown={handleKeyDown}
               value={messageContent}
-              disabled={uploadingFiles || isMuted}
+              disabled={uploadingFiles || isMuted || isMediaUploading}
               className="flex-grow px-4 py-4 border border-gray-300 resize-none rounded-md focus:outline-none focus:border-blue-500 disabled:opacity-50 disabled:bg-gray-100"
               placeholder={
                 isMuted
                   ? "You are muted and cannot send messages..."
-                  : uploadingFiles
-                  ? "Uploading files..."
-                  : "Type a message..."
+                  : uploadingFiles || isMediaUploading
+                    ? "Uploading files..."
+                    : "Type a message..."
               }
             />
           </div>
         </div>
 
         <button
-          disabled={sendingMessage || uploadingFiles || isMuted}
+          disabled={
+            sendingMessage || uploadingFiles || isMuted || isMediaUploading
+          }
           onClick={handleSendClick}
           className="px-4 py-4 text-white cursor-pointer bg-primary-dark-pink rounded-md hover:bg-primary-text-dark-pink disabled:bg-gray-500 flex-shrink-0"
-          aria-label={isMuted ? "Cannot send - you are muted" : "Send message"}
+          aria-label={
+            isMuted
+              ? "Cannot send - you are muted"
+              : isMediaUploading
+                ? "Cannot send - media uploading"
+                : "Send message"
+          }
           type="button"
         >
-          {sendingMessage || uploadingFiles ? (
+          {sendingMessage || uploadingFiles || isMediaUploading ? (
             <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
           ) : (
             <LucideSendHorizonal className="w-5 h-5" />

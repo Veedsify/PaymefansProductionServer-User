@@ -23,7 +23,7 @@ interface PrivateMediaPanelMediaCardProps {
     media: MediaDataTypeOtherProps,
     type: string,
     isSubscriber: boolean,
-    indexId: number,
+    indexId: number
   ) => void;
   indexId: number;
 }
@@ -32,7 +32,7 @@ const PrivateMediaImageCardOther = React.memo(
     const { fullScreenPreview } = usePostComponent();
     const fetchMedia = async ({ pageParam = 1 }) => {
       const res = await axiosInstance.get(
-        `/post/other/private-media/${userdata.id}?page=${pageParam}&limit=${process.env.NEXT_PUBLIC_POST_MEDIA_PER_PAGE}`,
+        `/post/other/private-media/${userdata.id}?page=${pageParam}&limit=${process.env.NEXT_PUBLIC_POST_MEDIA_PER_PAGE}`
       );
       return res.data;
     };
@@ -50,7 +50,7 @@ const PrivateMediaImageCardOther = React.memo(
       });
     const allMedia = React.useMemo(
       () => (data ? data.pages.flatMap((page) => page.data) : []),
-      [data],
+      [data]
     );
 
     const sorted = React.useMemo(() => {
@@ -65,18 +65,24 @@ const PrivateMediaImageCardOther = React.memo(
       media: MediaDataTypeOtherProps,
       type: string,
       isSubscriber: boolean,
-      indexId: number,
+      indexId: number
     ) => {
       if (media.accessible_to === "subscribers" && !isSubscriber) return;
       const filteredMedias = sorted
         .filter((item) => item.media_state !== "processing")
-        .filter((media) => media.accessible_to !== "price")
+        .filter((media) => {
+          // Don't filter out paid content if user has paid for it
+          if (media.accessible_to === "price") {
+            return media.hasPaid;
+          }
+          return true;
+        })
         .filter(
-          (media) => !(media.accessible_to === "subscribers" && !isSubscriber),
+          (media) => !(media.accessible_to === "subscribers" && !isSubscriber)
         );
       // Get the new index after filtering
       const newIndexId = filteredMedias.findIndex(
-        (item) => item.id === media.id,
+        (item) => item.id === media.id
       );
       const medias = filteredMedias.map((media) => ({
         url: media.url,
@@ -134,7 +140,7 @@ const PrivateMediaImageCardOther = React.memo(
         </div>
       </>
     );
-  },
+  }
 );
 const PrivateMediaPanelMediaCard = ({
   media,
@@ -172,7 +178,7 @@ const PrivateMediaPanelMediaCard = ({
                       media,
                       media.media_type,
                       isSubscribed as boolean,
-                      indexId,
+                      indexId
                     ),
                 }}
               />
@@ -182,7 +188,7 @@ const PrivateMediaPanelMediaCard = ({
                     media,
                     media.media_type,
                     isSubscribed as boolean,
-                    indexId,
+                    indexId
                   )
                 }
                 className="absolute inset-0 flex items-center justify-center w-full h-full cursor-pointer bg-black/20"
@@ -222,7 +228,7 @@ const PrivateMediaPanelMediaCard = ({
                   media,
                   media.media_type,
                   isSubscribed as boolean,
-                  indexId,
+                  indexId
                 )
               }
               src={media.url}

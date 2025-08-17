@@ -16,8 +16,10 @@ import { usePathname, useRouter } from "next/navigation";
 import swal from "sweetalert";
 import { useUserAuthContext } from "@/lib/UserUseContext";
 import { POST_CONFIG } from "@/config/config";
+import { useQueryClient } from "@tanstack/react-query";
 const QuickPostActionHooks = ({ options }: QuickPostActionsProps) => {
   const { user } = useUserAuthContext();
+  const queryClient = useQueryClient();
   const router = useRouter();
   const path = usePathname();
   const handleDelete = (e: MouseEvent<HTMLButtonElement>) => {
@@ -33,11 +35,14 @@ const QuickPostActionHooks = ({ options }: QuickPostActionsProps) => {
         try {
           toast.loading(POST_CONFIG.POST_DELETING_STATUS);
           const deletePost = await axiosInstance.delete(
-            `/post/${options.post_id}`,
+            `/post/${options.post_id}`
           );
           if (deletePost.status === 200) {
             toast.dismiss();
             toast.success(POST_CONFIG.POST_DELETED_SUCCESS_MSG);
+            queryClient.invalidateQueries({
+              queryKey: ["personal-posts"],
+            });
             if (path.startsWith("/profile")) {
               window.location.reload();
             } else {
@@ -98,7 +103,7 @@ const QuickPostActionHooks = ({ options }: QuickPostActionsProps) => {
     // Add dynamic show/hide for price input
     const visibility = modal.querySelector("#visibility") as HTMLSelectElement;
     const priceInputContainer = modal.querySelector(
-      "#price-input-container",
+      "#price-input-container"
     ) as HTMLDivElement;
 
     visibility.addEventListener("change", () => {
@@ -121,7 +126,7 @@ const QuickPostActionHooks = ({ options }: QuickPostActionsProps) => {
           `/post/update/audience/${options.post_id}`,
           {
             visibility: visibility.value,
-          },
+          }
         );
         if (setVisibility.status === 200) {
           toast.success(POST_CONFIG.QUICK_ACTION_CONFIG.VISIBILITY_SUCCESSFUL);
@@ -207,7 +212,7 @@ const QuickPostActionHooks = ({ options }: QuickPostActionsProps) => {
     try {
       const repost = await axiosInstance.post(
         `/post/repost/${options.post_id}`,
-        {},
+        {}
       );
       if (repost.status === 200 && repost.data.error === false) {
         toast.success(repost.data.message, {

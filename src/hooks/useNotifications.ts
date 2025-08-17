@@ -25,8 +25,8 @@ export const useNotifications = (page: string = "1") => {
 
     // Mutation for marking notification as read
     const markAsReadMutation = useMutation({
-        mutationFn: (notificationId: string) => notificationService.markAsRead(notificationId),
-        onMutate: async (notificationId: string) => {
+        mutationFn: (notificationId: number) => notificationService.markAsRead(notificationId),
+        onMutate: async (notificationId: number) => {
             // Cancel any outgoing refetches
             await queryClient.cancelQueries({ queryKey: ["notifications"] });
 

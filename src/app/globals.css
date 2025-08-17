@@ -23,8 +23,6 @@ body {
     -webkit-font-smoothing: antialiased;
     /* for Chrome, Safari */
     -moz-osx-font-smoothing: grayscale;
-    /* for Firefox on macOS */
-    font-family: "Bricolage Grotesque Variable", sans-serif;
 }
 
 ::selection {

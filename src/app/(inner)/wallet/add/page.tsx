@@ -279,32 +279,20 @@ const SavedBanks = () => {
   const [banks, setBanks] = useState<MyBanks[]>([]);
   useEffect(() => {
     const getBanks = async () => {
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_TS_EXPRESS_URL}/wallet/banks`,
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${getToken()}` || "",
-          },
-        }
+      const res = await axiosInstance.get(
+        `/wallet/banks`
       );
-      const data = await res.json();
-      setBanks(data.data);
+      setBanks(res.data.data);
     };
     getBanks();
   }, []);
 
   const deleteAccount = (accountId: number) => async () => {
     async function deleteBank() {
-      return await fetch(
-        `${process.env.NEXT_PUBLIC_TS_EXPRESS_URL}/wallet/banks/delete`,
+      return await axiosInstance.delete(
+        `/wallet/banks/delete`,
         {
-          method: "DELETE",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${getToken()}` || "",
-          },
-          body: JSON.stringify({ accountId }),
+          data: { accountId },
         }
       );
     }
@@ -321,7 +309,7 @@ const SavedBanks = () => {
     }).then(async (willDelete) => {
       if (willDelete) {
         const res = await deleteBank();
-        const data = await res.json();
+        const data = res.data;
         if (data.status === true) {
           swal("Success", data.message, "success").then((res) => {
             if (res) window.location.reload();

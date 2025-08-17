@@ -92,6 +92,14 @@ function BannerModal({ user, open = false, setOpen }: BannerModalProps) {
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.currentTarget.files) {
+      if (e.currentTarget.files[0].size > 5 * 1024 * 1024) {
+        toast.error("File size cannot exceed 5MB.");
+        return;
+      }
+      if(!e.currentTarget.files[0].type.startsWith("image/")) {
+        toast.error("Only image files are allowed.");
+        return;
+      }
       setFile(e.currentTarget.files?.[0]);
       setUserData({ ...userData, profile_image: e.currentTarget.files?.[0] });
     }
@@ -207,6 +215,8 @@ function BannerModal({ user, open = false, setOpen }: BannerModalProps) {
           <input
             onChange={handleFileChange}
             type="file"
+            accept={"image/*"}
+            pattern="image/*"
             id="imageUpload"
             className="hidden"
           />

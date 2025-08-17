@@ -11,7 +11,7 @@ export default function GetLocationContext({
   user,
 }: {
   children: React.ReactNode;
-  user: AuthUserProps | null;
+  user: Partial<AuthUserProps> | null;
 }) {
   const [showLocationModal, setShowLocationModal] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -59,7 +59,7 @@ export default function GetLocationContext({
           enableHighAccuracy: true,
           timeout: 10000,
           maximumAge: 0,
-        },
+        }
       );
     }
   }, [user, sendLocationToServer]);
@@ -70,32 +70,35 @@ export default function GetLocationContext({
       return;
     }
 
-    if (user.is_model && user.Model?.hookup) {
-      // Check if location permission was already handled
-      const locationRequested = sessionStorage.getItem("locationRequested");
-      const hasLocation = localStorage.getItem("userLocation");
+    // For models with hookup, use session storage (ask every session)
+    // For non-models, use localStorage (remember permanently)
+    const isModelWithHookup = user.is_model && user.Model?.hookup;
+    const storageKey = isModelWithHookup
+      ? "locationRequested"
+      : "locationRequested";
+    const storage = isModelWithHookup ? sessionStorage : localStorage;
 
-      if (!locationRequested) {
-        // Small delay to let the page load before showing modal
-        setTimeout(() => {
-          setShowLocationModal(true);
-        }, 1000);
-      } else if (hasLocation) {
-        // If we already have location, check if it needs updating (older than 30 minutes)
-        try {
-          const locationData = JSON.parse(hasLocation);
-          const isStale = Date.now() - locationData.timestamp > 30 * 60 * 1000;
+    const locationRequested = storage.getItem(storageKey);
+    const hasLocation = localStorage.getItem("userLocation");
 
-          if (isStale && locationData.consentGiven) {
-            // Update location in background without showing modal
-            updateLocationInBackground();
-          }
-        } catch (error) {
-          console.error("Error parsing stored location:", error);
+    if (!locationRequested) {
+      // Small delay to let the page load before showing modal
+      setTimeout(() => {
+        setShowLocationModal(true);
+      }, 1000);
+    } else if (hasLocation) {
+      // If we already have location, check if it needs updating (older than 30 minutes)
+      try {
+        const locationData = JSON.parse(hasLocation);
+        const isStale = Date.now() - locationData.timestamp > 30 * 60 * 1000;
+
+        if (isStale && locationData.consentGiven) {
+          // Update location in background without showing modal
+          updateLocationInBackground();
         }
+      } catch (error) {
+        console.error("Error parsing stored location:", error);
       }
-    } else {
-      updateLocationInBackground();
     }
   }, [user, updateLocationInBackground]);
 
@@ -116,7 +119,11 @@ export default function GetLocationContext({
           };
 
           localStorage.setItem("userLocation", JSON.stringify(locationData));
-          sessionStorage.setItem("locationRequested", "true");
+
+          // Store location permission based on user type
+          const isModelWithHookup = user?.is_model && user?.Model?.hookup;
+          const storage = isModelWithHookup ? sessionStorage : localStorage;
+          storage.setItem("locationRequested", "true");
 
           // Send location to server
           sendLocationToServer(locationData);
@@ -132,8 +139,12 @@ export default function GetLocationContext({
           console.error("Error getting location:", error);
           setLocationStatus("denied");
           setIsLoading(false);
-          sessionStorage.setItem("locationRequested", "true");
-          sessionStorage.setItem("locationDeclined", "true");
+
+          // Store declined permission based on user type
+          const isModelWithHookup = user?.is_model && user?.Model?.hookup;
+          const storage = isModelWithHookup ? sessionStorage : localStorage;
+          storage.setItem("locationRequested", "true");
+          storage.setItem("locationDeclined", "true");
 
           // Auto close after error
           setTimeout(() => {
@@ -144,32 +155,46 @@ export default function GetLocationContext({
           enableHighAccuracy: true,
           timeout: 10000,
           maximumAge: 0,
-        },
+        }
       );
     }
   };
 
   const handleLocationDecline = () => {
     setShowLocationModal(false);
-    sessionStorage.setItem("locationRequested", "true");
-    sessionStorage.setItem("locationDeclined", "true");
+
+    // Store declined permission based on user type
+    const isModelWithHookup = user?.is_model && user?.Model?.hookup;
+    const storage = isModelWithHookup ? sessionStorage : localStorage;
+    storage.setItem("locationRequested", "true");
+    storage.setItem("locationDeclined", "true");
   };
 
   const benefits = [
     {
       icon: <Users className="w-5 h-5" />,
-      title: "Enable location for Hook up",
-      description: "Let potential clients know you're active in their area",
+      title: user?.is_model
+        ? "Enable location for Hook up"
+        : "Connect with People Nearby",
+      description: user?.is_model
+        ? "Let potential clients know you're active in their area"
+        : "Discover and connect with models and creators in your area",
     },
     {
       icon: <MapPin className="w-5 h-5" />,
       title: "Location-Based Matching",
-      description: "Connect with clients looking for models nearby",
+      description: user?.is_model
+        ? "Connect with clients looking for models nearby"
+        : "Find the best local content and services",
     },
     {
       icon: <Eye className="w-5 h-5" />,
-      title: "Increased Visibility",
-      description: "Appear in local searches and recommendations",
+      title: user?.is_model
+        ? "Increased Visibility"
+        : "Personalized Experience",
+      description: user?.is_model
+        ? "Appear in local searches and recommendations"
+        : "Get content and recommendations tailored to your location",
     },
   ];
 
@@ -218,7 +243,9 @@ export default function GetLocationContext({
                   transition={{ delay: 0.3 }}
                   className="mb-2 text-2xl font-bold text-center"
                 >
-                  Share Your Location
+                  {user?.is_model
+                    ? "Share Your Location"
+                    : "Enable Location Services"}
                 </motion.h2>
 
                 <motion.p
@@ -227,7 +254,9 @@ export default function GetLocationContext({
                   transition={{ delay: 0.4 }}
                   className="text-center text-white/90"
                 >
-                  Let others find you nearby
+                  {user?.is_model
+                    ? "Let others find you nearby"
+                    : "Discover local content and experiences"}
                 </motion.p>
               </div>
 
@@ -270,8 +299,10 @@ export default function GetLocationContext({
                   className="p-3 mb-6 rounded-lg bg-gray-50 dark:bg-gray-800"
                 >
                   <p className="text-xs text-center text-gray-600 dark:text-white">
-                    🔒 Your exact location is never shared. We only show your
-                    general area to help with matching.
+                    🔒{" "}
+                    {user?.is_model
+                      ? "Your exact location is never shared. We only show your general area to help with matching."
+                      : "Your location data is kept private and secure. We only use it to enhance your experience with local content."}
                   </p>
                 </motion.div>
 
@@ -310,7 +341,11 @@ export default function GetLocationContext({
                     ) : (
                       <>
                         <MapPin className="w-5 h-5" />
-                        <span>Enable my location</span>
+                        <span>
+                          {user?.is_model
+                            ? "Enable my location"
+                            : "Allow Location Access"}
+                        </span>
                       </>
                     )}
                   </motion.button>

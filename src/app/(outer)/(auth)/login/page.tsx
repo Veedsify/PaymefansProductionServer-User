@@ -17,14 +17,14 @@ const Login = () => {
   const router = useRouter();
 
   const handleAcceptTerms = async () => {
-    localStorage.setItem("termsAccepted", "true");
+    sessionStorage.setItem("termsAccepted", "true");
     setAcceptedTerms(true);
   };
 
   useEffect(() => {
-    const terms = localStorage.getItem("termsAccepted");
+    const terms = sessionStorage.getItem("termsAccepted");
     if (terms) {
-      setAcceptedTerms(terms === "true");
+      setAcceptedTerms(true);
     }
     setHasCheckedAcceptedTerms(true);
   }, []);

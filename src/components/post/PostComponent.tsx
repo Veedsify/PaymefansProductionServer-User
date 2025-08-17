@@ -35,7 +35,6 @@ import payForPost from "@/utils/data/PayForPost";
 import { useQueryClient } from "@tanstack/react-query";
 import { usePointsStore } from "@/contexts/PointsContext";
 
-// ---------- Helper component functions ---------- //
 // Audience icon component to display different icons based on audience type
 function AudienceIcon({ audience }: { audience: string }): JSX.Element | null {
   switch (audience) {
@@ -53,8 +52,6 @@ function AudienceIcon({ audience }: { audience: string }): JSX.Element | null {
       return null;
   }
 }
-
-// ---------- Main PostComponent ---------- //
 
 const PostComponent: React.FC<PostComponentProps> = ({
   user,
@@ -75,8 +72,8 @@ const PostComponent: React.FC<PostComponentProps> = ({
   const isSubscribed = data.isSubscribed;
   const isCreator = user?.id === authUser?.id;
   const hasPaid = data.hasPaid;
-  // const isAdmin = user.role === "admin"; // Default commented
 
+  // const isAdmin = user.role === "admin"; // Default commented
   const canView =
     isCreator ||
     data.post_audience === "public" ||
@@ -275,7 +272,7 @@ const PostComponent: React.FC<PostComponentProps> = ({
               width={50}
               height={50}
               priority
-              src={user?.image?.trimEnd()}
+              src={user?.image?.trim()}
               alt=""
               className="object-cover w-8 rounded-full md:w-10 aspect-square"
             />

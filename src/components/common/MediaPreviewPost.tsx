@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useMemo } from "react";
+import React, { useEffect, useMemo, useRef } from "react";
 import { X } from "lucide-react";
 import Image from "next/image";
 import { imageTypes, videoTypes } from "@/lib/FileTypes";
@@ -12,21 +12,27 @@ type MediaProps = {
 };
 
 const Media = ({ id, file, removeThisMedia, progress }: MediaProps) => {
-  // Memoize URL generation and cleanup for videos
+  const urlRef = useRef<string | null>(null);
+
+  // Memoize URL generation but don't revoke during re-renders
   const url = useMemo(() => {
-    if (imageTypes.includes(file.type)) {
-      return URL.createObjectURL(file);
-    } else if (videoTypes.includes(file.type)) {
-      return URL.createObjectURL(file);
+    if (!urlRef.current) {
+      if (imageTypes.includes(file.type) || videoTypes.includes(file.type)) {
+        urlRef.current = URL.createObjectURL(file);
+      }
     }
-    return null;
+    return urlRef.current;
   }, [file]);
 
+  // Only revoke URL when component unmounts
   useEffect(() => {
     return () => {
-      if (url) URL.revokeObjectURL(url);
+      if (urlRef.current) {
+        URL.revokeObjectURL(urlRef.current);
+        urlRef.current = null;
+      }
     };
-  }, [url]);
+  }, []);
 
   if (!url) {
     return (

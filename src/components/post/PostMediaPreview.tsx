@@ -159,7 +159,7 @@ function PostMediaPreview({
 
   return (
     <div className="mb-5">
-      <div className="p-4 overflow-x-auto select-none grid grid-cols-4 gap-3 md:grid-cols-4 lg:grid-cols-6">
+      <div className="p-4 select-none grid grid-cols-4 gap-3 md:grid-cols-4 lg:grid-cols-6">
         {media.map((file) => (
           <div className="relative" key={file.id}>
             <Media

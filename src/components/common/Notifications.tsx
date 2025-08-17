@@ -8,37 +8,116 @@ import {
   useNotificationCount,
 } from "@/hooks/useNotifications";
 import { LucideLoader } from "lucide-react";
-import React, { useState } from "react";
+import React, { useState, useCallback, useMemo } from "react";
 import { useInView } from "react-intersection-observer";
+import { useRouter } from "next/navigation";
+
+interface NotificationHeaderProps {
+  children: string;
+  className?: string;
+}
 
 export function NotificationHeader({
   children,
   className,
-}: {
-  children: string;
-  className?: string;
-}) {
+}: NotificationHeaderProps) {
   const { unreadCount } = useNotificationCount();
+  const displayCount = useMemo(
+    () => (unreadCount > 100 ? "99+" : unreadCount.toString()),
+    [unreadCount]
+  );
 
   return (
-    <>
-      <div className={className}>
-        <div className="flex items-center mb-7">
-          <span className="flex-shrink-0 text-xl font-bold dark:text-white">
-            {children}
-          </span>
-          <div className="flex items-center justify-center flex-shrink-0 w-8 h-8 px-1 py-1 ml-auto font-bold text-white rounded-full aspect-square md:py-3 md:px-3  bg-primary-text-dark-pink">
-            {unreadCount > 100 ? "99+" : unreadCount}
-          </div>
+    <div className={className}>
+      <div className="flex items-center mb-7">
+        <span className="flex-shrink-0 text-xl font-bold dark:text-white">
+          {children}
+        </span>
+        <div className="flex items-center justify-center flex-shrink-0 w-8 h-8 px-1 py-1 ml-auto font-bold text-white rounded-full aspect-square md:py-3 md:px-3 bg-primary-text-dark-pink">
+          {displayCount}
         </div>
       </div>
       <NotificationBody />
-    </>
+    </div>
   );
 }
 
+interface NotificationItemProps {
+  notification: any;
+  onNotificationClick: (
+    url: string,
+    notification_id: string,
+    id: number,
+    read: boolean
+  ) => void;
+  isMarkingAsRead: boolean;
+  types: any[];
+}
+
+const NotificationItem = React.memo(function NotificationItem({
+  notification,
+  onNotificationClick,
+  isMarkingAsRead,
+  types,
+}: NotificationItemProps) {
+  const notificationType = useMemo(
+    () => types.find((type) => type.type === notification.action),
+    [types, notification.action]
+  );
+
+  const formattedDate = useMemo(
+    () =>
+      new Date(notification.created_at).toLocaleDateString("en-US", {
+        year: "numeric",
+        month: "short",
+        day: "numeric",
+        hour: "numeric",
+        minute: "numeric",
+      }),
+    [notification.created_at]
+  );
+
+  const handleClick = useCallback(() => {
+    onNotificationClick(
+      notification.url,
+      notification.notification_id,
+      notification.id,
+      notification.read
+    );
+  }, [notification, onNotificationClick]);
+
+  return (
+    <div
+      onClick={handleClick}
+      className={`rounded-lg cursor-pointer group ${
+        notification.read
+          ? "bg-white dark:bg-gray-950 hover:bg-gray-50 dark:hover:bg-gray-900"
+          : "bg-messages-unread dark:bg-gray-800 hover:bg-messages-unread/90 dark:hover:bg-gray-700"
+      }`}
+    >
+      <div className="flex items-center gap-5 p-4 border-b last:border-b-0 border-gray-100 dark:border-slate-800">
+        <div
+          role="img"
+          style={{ color: notificationType?.color }}
+          className="flex items-center justify-center w-12 h-12 bg-white rounded-full dark:border-gray-700 dark:bg-gray-900"
+        >
+          {notificationType?.icon}
+        </div>
+        <div className="flex-1 min-w-0">
+          <p className="text-base font-medium leading-snug text-gray-900 break-words dark:text-white notification_message_container">
+            <span dangerouslySetInnerHTML={{ __html: notification.message }} />
+          </p>
+          <p className="pt-2 text-xs text-gray-500 dark:text-gray-400">
+            {formattedDate}
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+});
+
 export function NotificationBody() {
-  const [page, setPage] = useState<string>("1");
+  const [page, setPage] = useState(1);
   const {
     notifications,
     hasMore,
@@ -46,44 +125,27 @@ export function NotificationBody() {
     error,
     markAsRead,
     isMarkingAsRead,
-  } = useNotifications(page);
+  } = useNotifications(page.toString());
 
   const { updateNotification } = useNotificationStore();
   const types = NotificationIcontypes;
   const { ref, inView } = useInView();
+  const router = useRouter();
 
-  // Load more notifications when scrolling to bottom
   React.useEffect(() => {
     if (inView && hasMore && !isLoading) {
-      setPage((prev) => (parseInt(prev) + 1).toString());
+      setPage((prev) => prev + 1);
     }
   }, [inView, hasMore, isLoading]);
 
-  const handleNotificationClick = async (
-    url: string,
-    notification_id: string,
-    id: number,
-    read: boolean
-  ) => {
-    if (read) {
-      // If already read, just navigate
-      if (url && url !== "") {
-        window.location.href = url;
-      }
-      return;
-    }
-
-    // Update local store immediately for instant UI feedback
-    updateNotification(id.toString());
-
-    // Mark as read on server using the numeric id
-    markAsRead(id.toString());
-
-    // Then navigate if URL exists
-    if (url && url !== "") {
-      window.location.href = url;
-    }
-  };
+  const handleNotificationClick = useCallback(
+    async (url: string, notification_id: string, id: number, read: boolean) => {
+      if (url) router.push(url);
+      updateNotification(id);
+      markAsRead(id);
+    },
+    [router, updateNotification, markAsRead]
+  );
 
   if (error) {
     return (
@@ -93,78 +155,31 @@ export function NotificationBody() {
     );
   }
 
+  if (!notifications?.length && !isLoading) {
+    return (
+      <div className="py-4 text-center text-gray-500 dark:text-gray-400">
+        No Notifications yet
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-3">
-      {(!notifications || notifications.length === 0) && !isLoading ? (
-        <div className="py-4 text-center text-gray-500 dark:text-gray-400">
-          No Notifications yet
-        </div>
-      ) : (
-        notifications.map((notification, index) => (
-          <div
-            key={`${notification.id}-${index}`}
-            onClick={() =>
-              handleNotificationClick(
-                notification.url,
-                notification.notification_id,
-                notification.id,
-                notification.read
-              )
-            }
-            className={`transition-colors duration-150 rounded-lg cursor-pointer group ${
-              notification.read
-                ? "bg-white dark:bg-gray-950 hover:bg-gray-50 dark:hover:bg-gray-900"
-                : "bg-messages-unread dark:bg-gray-800 hover:bg-messages-unread/90 dark:hover:bg-gray-700"
-            }`}
-          >
-            <div
-              className={`flex items-center gap-5 p-4 border-b last:border-b-0 border-gray-100 dark:border-slate-800`}
-            >
-              <div
-                role="img"
-                style={{
-                  color: types.find((type) => type.type === notification.action)
-                    ?.color,
-                }}
-                className="flex items-center justify-center w-12 h-12 bg-white rounded-full dark:border-gray-700 dark:bg-gray-900"
-              >
-                {notification.action &&
-                  types.find((type) => type.type === notification.action)?.icon}
-              </div>
-              <div className="flex-1 min-w-0">
-                <p className="text-base font-medium leading-snug text-gray-900 break-words dark:text-white notification_message_container">
-                  <span
-                    dangerouslySetInnerHTML={{ __html: notification.message }}
-                  ></span>
-                </p>
-                <p className="pt-2 text-xs text-gray-500 dark:text-gray-400">
-                  {new Date(notification.created_at).toLocaleDateString(
-                    "en-US",
-                    {
-                      year: "numeric",
-                      month: "short",
-                      day: "numeric",
-                      hour: "numeric",
-                      minute: "numeric",
-                    }
-                  )}
-                </p>
-              </div>
-              {isMarkingAsRead && (
-                <div className="flex-shrink-0">
-                  <LucideLoader className="w-4 h-4 text-gray-400 animate-spin" />
-                </div>
-              )}
-            </div>
-          </div>
-        ))
-      )}
+      {notifications?.map((notification, index) => (
+        <NotificationItem
+          key={notification.id}
+          notification={notification}
+          onNotificationClick={handleNotificationClick}
+          isMarkingAsRead={isMarkingAsRead}
+          types={types}
+        />
+      ))}
       {isLoading && (
         <div className="flex items-center justify-center py-5">
           <LucideLoader className="animate-spin text-primary" />
         </div>
       )}
-      <div ref={ref} className="w-full h-1"></div>
+      <div ref={ref} className="w-full h-1" />
     </div>
   );
 }

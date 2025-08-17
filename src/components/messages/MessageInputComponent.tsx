@@ -94,7 +94,7 @@ const MessageInputComponent = React.memo(
     // Debounce typing indicator
     const debounce = <T extends (...args: any[]) => void>(
       func: T,
-      wait: number,
+      wait: number
     ) => {
       let timeout: NodeJS.Timeout | null = null;
       return (...args: Parameters<T>) => {
@@ -208,7 +208,7 @@ const MessageInputComponent = React.memo(
           // Final check - if still not complete after max wait time, show error
           if (!areAllUploadsComplete()) {
             console.error(
-              "❌ Upload timeout - not all files completed uploading",
+              "❌ Upload timeout - not all files completed uploading"
             );
             console.error("📊 Final status:", {
               fileStatuses: mediaFiles.map((f) => ({
@@ -243,7 +243,7 @@ const MessageInputComponent = React.memo(
         const newMessage: Message = {
           id: Math.random(),
           message_id: uuid(),
-          sender_id: user.user_id,
+          sender_id: user?.user_id as string,
           receiver_id: receiver.user_id,
           conversationId: conversationId,
           message: linkify(escapeHtml(message)),
@@ -308,7 +308,7 @@ const MessageInputComponent = React.memo(
           handleSendMessage();
         }
       },
-      [debouncedSendTyping, handleSendMessage, setIsTyping],
+      [debouncedSendTyping, handleSendMessage, setIsTyping]
     );
 
     useEffect(() => {
@@ -340,7 +340,7 @@ const MessageInputComponent = React.memo(
     // Media Handling
     const triggerFileSelect = useCallback(() => {
       const fileInput = document.getElementById(
-        "file-input",
+        "file-input"
       ) as HTMLInputElement;
       fileInput?.click();
 
@@ -354,12 +354,12 @@ const MessageInputComponent = React.memo(
         const selectedFiles = Array.from(files);
         const validFiles = selectedFiles.filter(
           (file) =>
-            imageTypes.includes(file.type) || file.type.startsWith("video/"),
+            imageTypes.includes(file.type) || file.type.startsWith("video/")
         );
 
         if (validFiles.length !== selectedFiles.length) {
           toast.error(
-            "Invalid file type, please select an image or video file",
+            "Invalid file type, please select an image or video file"
           );
           return;
         }
@@ -396,7 +396,7 @@ const MessageInputComponent = React.memo(
               setMediaFiles(mediafile);
             }
             return mediafile;
-          }),
+          })
         );
 
         // Clean up: reset the input value so the same file can be selected again
@@ -554,7 +554,7 @@ const MessageInputComponent = React.memo(
         )}
       </div>
     );
-  },
+  }
 );
 
 MessageInputComponent.displayName = "MessageInputComponent";
