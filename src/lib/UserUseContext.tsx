@@ -71,7 +71,7 @@ export const UserContextProvider = ({ children }: UserContextProviderProps) => {
 
     fetchUser();
     return () => clearInterval(intervalId);
-  }, [location, setUser]);
+  }, [location, setUser, isPostPage, isProfilePage]);
 
   return <>{children}</>;
 };

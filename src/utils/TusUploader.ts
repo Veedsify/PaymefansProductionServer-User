@@ -1,228 +1,104 @@
 import * as tus from "tus-js-client";
 
-async function UploadWithTus(
-  file: File,
-  uploadUrl: string,
-  id: string,
-  setProgress: React.Dispatch<React.SetStateAction<{ [key: string]: number }>>,
-  setUploadError: React.Dispatch<
-    React.SetStateAction<{ [key: string]: boolean }>
-  >,
-): Promise<string> {
+interface UploadOptions {
+  file: File;
+  uploadUrl: string;
+  id: string;
+  setProgress: React.Dispatch<React.SetStateAction<{ [key: string]: number }>>;
+  setUploadError: React.Dispatch<React.SetStateAction<{ [key: string]: boolean }>>;
+}
+
+interface UploadResult {
+  mediaId: string;
+  duration: number;
+}
+
+async function UploadWithTus({
+  file,
+  uploadUrl,
+  id,
+  setProgress,
+  setUploadError
+}: UploadOptions): Promise<string> {
   return new Promise((resolve, reject) => {
     let mediaId: string | null = null;
     let uploadComplete = false;
-    let resolved = false;
+    let isResolved = false;
     let lastProgress = 0;
     const startTime = Date.now();
+    let timeoutId: NodeJS.Timeout;
 
-    // Timeout after 10 minutes for large files
-    const timeout = setTimeout(() => {
-      if (!resolved) {
-        const duration = Date.now() - startTime;
-        console.error(
-          "⏰ Upload timeout after",
-          duration,
-          "ms for:",
-          file.name,
-        );
-        console.log(
-          "📊 Final state - uploadComplete:",
-          uploadComplete,
-          "mediaId:",
-          mediaId,
-        );
-        setUploadError((prev) => ({
-          ...prev,
-          [id]: true,
-        }));
-        reject(new Error("Upload timeout"));
-      }
-    }, 600000); // 10 minutes
+    // Clear all timers and prevent multiple resolutions
+    const cleanupAndReject = (error: Error) => {
+      if (isResolved) return;
+      isResolved = true;
+      clearTimeout(timeoutId);
+      setUploadError(prev => ({ ...prev, [id]: true }));
+      reject(error);
+    };
 
+    // Resolve when both conditions are met
     const tryResolve = () => {
-      if (resolved) {
-        console.log("⚠️ tryResolve called but already resolved");
-        return;
-      }
+      if (isResolved) return;
 
-      console.log(
-        "🔄 tryResolve called - uploadComplete:",
-        uploadComplete,
-        "mediaId:",
-        !!mediaId,
-      );
-
-      // Only resolve when BOTH upload is complete AND we have mediaId
       if (uploadComplete && mediaId) {
-        resolved = true;
-        clearTimeout(timeout);
-        const duration = Date.now() - startTime;
-        console.log(
-          "✅ Upload fully completed:",
-          file.name,
-          "Duration:",
-          duration,
-          "ms",
-        );
-        console.log("🆔 MediaId:", mediaId);
-        setProgress({
-          [id]: 100,
-        });
+        isResolved = true;
+        clearTimeout(timeoutId);
         resolve(mediaId);
-      } else {
-        // Log what we're still waiting for
-        if (!uploadComplete) {
-          console.log("⏳ Still waiting for upload completion...");
-        }
-        if (!mediaId) {
-          console.log("⏳ Still waiting for media ID...");
-        }
-
-        // If we have both but something went wrong, wait a bit and try again
-        if (uploadComplete && !mediaId) {
-          setTimeout(() => {
-            if (!resolved) {
-              if (mediaId) {
-                tryResolve(); // Try again now that we might have mediaId
-              } else {
-                resolved = true;
-                clearTimeout(timeout);
-                const duration = Date.now() - startTime;
-                console.error(
-                  "❌ Upload completed but no media ID received for:",
-                  file.name,
-                  "Duration:",
-                  duration,
-                  "ms",
-                );
-                setUploadError((prev) => ({
-                  ...prev,
-                  [id]: true,
-                }));
-                reject(new Error("No media ID received"));
-              }
-            }
-          }, 5000); // Wait 5 seconds for media ID
-        }
+      } else if (uploadComplete && !mediaId) {
+        // Wait a bit more for media ID
+        setTimeout(() => {
+          if (!isResolved) {
+            cleanupAndReject(new Error("No media ID received after upload completion"));
+          }
+        }, 5000);
       }
     };
+
+    // Set 10-minute timeout
+    timeoutId = setTimeout(() => {
+      cleanupAndReject(new Error("Upload timeout after 10 minutes"));
+    }, 600000);
 
     const upload = new tus.Upload(file, {
       endpoint: uploadUrl,
       retryDelays: [0, 3000, 5000, 10000, 20000],
-      chunkSize: 8388608,
+      chunkSize: 8388608, // 8MB
       uploadSize: file.size,
       metadata: {
         name: file.name,
         filetype: file.type,
       },
-      onError: function (error) {
-        if (!resolved) {
-          resolved = true;
-          clearTimeout(timeout);
-          const duration = Date.now() - startTime;
-          console.error(
-            "❌ Upload failed:",
-            error,
-            "Duration:",
-            duration,
-            "ms",
-          );
-          console.log(
-            "📊 Error state - uploadComplete:",
-            uploadComplete,
-            "mediaId:",
-            mediaId,
-            "lastProgress:",
-            lastProgress,
-          );
-          setUploadError((prev) => ({
-            ...prev,
-            [id]: true,
-          }));
-          reject(error);
+
+      onError: (error) => cleanupAndReject(error),
+
+      onProgress: (bytesUploaded, bytesTotal) => {
+        const percentage = Math.floor((bytesUploaded / bytesTotal) * 100);
+
+        // Only update state when progress changes
+        if (percentage !== lastProgress) {
+          lastProgress = percentage;
+          setProgress(prev => ({ ...prev, [id]: percentage }));
         }
       },
-      onProgress: function (bytesUploaded, bytesTotal) {
-        const percentage = parseFloat(
-          ((bytesUploaded / bytesTotal) * 100).toFixed(2),
-        );
-        const roundedPercentage = Math.floor(percentage);
 
-        // Only update if progress changed
-        if (roundedPercentage !== lastProgress) {
-          lastProgress = roundedPercentage;
-          setProgress((prev) => ({
-            ...prev,
-            [id]: roundedPercentage,
-          }));
-
-          // Log every 10% but don't log 100% here (wait for completion)
-          if (roundedPercentage % 10 === 0 && roundedPercentage < 100) {
-            console.log(
-              "📈",
-              file.name,
-              "progress:",
-              roundedPercentage + "%",
-              `(${bytesUploaded}/${bytesTotal})`,
-            );
-          }
-        }
-      },
-      onSuccess: function () {
-        const duration = Date.now() - startTime;
-        console.log(
-          "✅ onSuccess called for:",
-          file.name,
-          "Duration:",
-          duration,
-          "ms",
-        );
-        console.log(
-          "📊 Success state - mediaId:",
-          !!mediaId,
-          "uploadComplete:",
-          uploadComplete,
-        );
+      onSuccess: () => {
         uploadComplete = true;
-
-        // Set progress to 99% to show upload is done but processing
-        setProgress((prev) => ({
-          ...prev,
-          [id]: 99,
-        }));
-
-        console.log(
-          "📡 Upload finished (99%), waiting for media ID before completion...",
-        );
+        setProgress(prev => ({ ...prev, [id]: 100 }));
         tryResolve();
       },
-      onAfterResponse: function (req, res) {
+
+      onAfterResponse: (_, res) => {
         const mediaIdHeader = res.getHeader("Stream-Media-Id");
-        const status = res.getStatus();
-        const contentType = res.getHeader("Content-Type");
-
-        console.log("🔄 onAfterResponse called for:", file.name);
-        console.log("📋 Response status:", status);
-        console.log("📋 Content-Type:", contentType);
-        console.log("🆔 Stream-Media-Id header:", mediaIdHeader);
-
         if (mediaIdHeader) {
-          console.log("🆔 MediaId received:", mediaIdHeader);
           mediaId = mediaIdHeader;
-          console.log(
-            "📡 Media ID received, checking if upload is complete...",
-          );
           tryResolve();
-        } else {
-          console.warn("⚠️ No Stream-Media-Id header found in response");
         }
       },
     });
 
-    console.log("🎬 Starting upload...");
     upload.start();
   });
 }
+
 export default UploadWithTus;

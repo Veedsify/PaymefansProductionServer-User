@@ -6,6 +6,7 @@ import toast from "react-hot-toast";
 import React from "react";
 import _ from "lodash";
 import { fetchGroupMessages } from "@/utils/data/GroupAPI";
+import { AuthUserProps } from "@/types/User";
 
 export interface GroupMessage {
   id: number;
@@ -144,7 +145,7 @@ export const useGroupChatStore = create<GroupChatStore>()((set, get) => ({
   setConnected: (payload) => set({ isConnected: payload }),
   joinGroupRoom: (groupId) => {
     const socket = getSocket();
-    const user = useUserStore.getState().user;
+    const user = useUserStore.getState().user as AuthUserProps;
     const { isConnected, currentGroupId, isJoined } = get();
 
     // Don't emit if already joined to this group
@@ -161,7 +162,7 @@ export const useGroupChatStore = create<GroupChatStore>()((set, get) => ({
     if (socket && user && isConnected) {
       socket.emit("join-group-room", {
         groupId: groupId.toString(),
-        userId: user.id.toString(),
+        userId: user?.id.toString(),
       });
     }
   },
@@ -174,7 +175,7 @@ export const useGroupChatStore = create<GroupChatStore>()((set, get) => ({
     if (socket && user && isConnected && currentGroupId) {
       socket.emit("leave-group-room", {
         groupId: currentGroupId.toString(),
-        userId: user.id.toString(),
+        userId: user?.id?.toString(),
       });
     }
 
@@ -379,7 +380,7 @@ export const useGroupChatStore = create<GroupChatStore>()((set, get) => ({
     const { isConnected } = get();
 
     if (socket && user && isConnected) {
-      socket?.emit("restore-group-rooms", { userId: user.id.toString() });
+      socket?.emit("restore-group-rooms", { userId: user?.id?.toString() });
     }
   },
 

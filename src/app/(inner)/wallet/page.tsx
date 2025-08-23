@@ -142,7 +142,7 @@ const WalletPage = () => {
           {user && (
             <>
               <Image
-                src={user.profile_image}
+                src={user?.profile_image!}
                 width={56}
                 height={56}
                 alt="Profile"

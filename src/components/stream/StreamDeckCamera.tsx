@@ -17,7 +17,7 @@ const StreamDeckCamera = ({
   thisUser,
   streamData,
 }: {
-  thisUser: AuthUserProps | null;
+  thisUser: Partial<AuthUserProps> | null;
   streamData: streamDataProps;
 }) => {
   const router = useRouter();

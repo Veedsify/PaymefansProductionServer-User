@@ -1,5 +1,13 @@
 "use client";
-import React, { useState, useRef, useCallback } from "react";
+import React, {
+  useState,
+  useRef,
+  useCallback,
+  useMemo,
+  useEffect,
+  Dispatch,
+  SetStateAction,
+} from "react";
 import { useUserAuthContext } from "@/lib/UserUseContext";
 import { POST_CONFIG } from "@/config/config";
 import { v4 as uuid } from "uuid";
@@ -16,6 +24,7 @@ import { usePostMediaUploadContext } from "@/contexts/PostMediaUploadContext";
 import axiosInstance from "@/utils/Axios";
 
 type PostMediaPreviewProps = {
+  setIsSubmitting: Dispatch<SetStateAction<boolean>>;
   submitPost: (image: UploadedImageProp) => void;
   removeThisMedia: (id: string, type: string) => void;
 };
@@ -23,11 +32,12 @@ type PostMediaPreviewProps = {
 function PostMediaPreview({
   submitPost,
   removeThisMedia,
+  setIsSubmitting,
 }: PostMediaPreviewProps) {
   const [media, setMedia] = useState<Array<{ file: File; id: string }>>([]);
   const [progress, setProgress] = useState<{ [key: string]: number }>({});
   const [uploadError, setUploadError] = useState<{ [key: string]: boolean }>(
-    {},
+    {}
   );
   const { setMediaUploadComplete } = usePostMediaUploadContext();
   const { user } = useUserAuthContext();
@@ -37,13 +47,13 @@ function PostMediaPreview({
       setMedia((prev) => prev.filter((file) => file.id !== id));
       removeThisMedia(id, type);
     },
-    [removeThisMedia],
+    [removeThisMedia]
   );
 
   const tusUploader = useCallback(
     (file: File, uploadUrl: string, id: string) =>
-      UploadWithTus(file, uploadUrl, id, setProgress, setUploadError),
-    [],
+      UploadWithTus({ file, uploadUrl, id, setProgress, setUploadError }),
+    []
   );
 
   const imageUploader = useCallback(
@@ -55,7 +65,7 @@ function PostMediaPreview({
         id,
         uploadUrl,
       }),
-    [],
+    []
   );
 
   const handleFileSelect = useCallback(
@@ -68,7 +78,7 @@ function PostMediaPreview({
         toast.error(
           user?.is_model
             ? POST_CONFIG.MODEL_POST_LIMIT_ERROR_MSG
-            : POST_CONFIG.USER_POST_LIMIT_ERROR_MSG,
+            : POST_CONFIG.USER_POST_LIMIT_ERROR_MSG
         );
         return;
       }
@@ -87,13 +97,19 @@ function PostMediaPreview({
               fileSize: mediaItem.file.size,
               fileType: btoa(mediaItem.file.type),
               explicitImageType: mediaItem.file.type,
+              shouldUseSignedUrls: true,
             };
             if (isVideo) payload.maxDuration = maxVideoDuration;
 
             const { data } = await axiosInstance.post<UploadResponseResponse>(
               `/post/media/signed-url`,
-              payload,
+              payload
             );
+            if (!data || data.error) {
+              throw new Error(
+                data?.message || "Failed to get upload URL from server"
+              );
+            }
             const { uploadUrl, type, id } = data;
             if (!id || !uploadUrl) throw new Error("Failed to get upload URL");
 
@@ -101,7 +117,7 @@ function PostMediaPreview({
               const uploadVideo = await tusUploader(
                 mediaItem.file,
                 uploadUrl,
-                mediaItem.id,
+                mediaItem.id
               );
               submitPost({
                 blur: ``,
@@ -117,7 +133,7 @@ function PostMediaPreview({
               const uploadImage = await imageUploader(
                 mediaItem.file,
                 uploadUrl,
-                mediaItem.id,
+                mediaItem.id
               );
               const variants = uploadImage.result.variants ?? [];
               const publicVariant =
@@ -154,19 +170,50 @@ function PostMediaPreview({
       tusUploader,
       imageUploader,
       setMediaUploadComplete,
-    ],
+    ]
   );
+
+  const mediaMap = useMemo(
+    () =>
+      media.map((m) => ({
+        file: m.file,
+        id: m.id,
+        removeThisMedia: handleMediaRemove,
+        url: URL.createObjectURL(m.file),
+      })),
+    [media, handleMediaRemove]
+  );
+
+  useEffect(() => {
+    return () => {
+      mediaMap.forEach((file) => {
+        URL.revokeObjectURL(file.url);
+      });
+    };
+  }, [mediaMap]);
+
+  useEffect(() => {
+    const anyUploading = Object.values(progress).some(
+      (value) => value < 100 && value >= 0
+    );
+    const hasPendingUploads = Object.keys(progress).length !== media.length;
+    setIsSubmitting(anyUploading || (hasPendingUploads && media.length > 0));
+    return () => {
+      setIsSubmitting(false);
+    };
+  }, [setIsSubmitting, progress, media]);
 
   return (
     <div className="mb-5">
       <div className="p-4 select-none grid grid-cols-4 gap-3 md:grid-cols-4 lg:grid-cols-6">
-        {media.map((file) => (
+        {mediaMap.map((file) => (
           <div className="relative" key={file.id}>
             <Media
               file={file.file}
               id={file.id}
+              url={file.url}
               progress={progress[file.id] || 0}
-              removeThisMedia={handleMediaRemove}
+              removeThisMedia={file.removeThisMedia}
             />
           </div>
         ))}

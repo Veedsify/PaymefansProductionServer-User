@@ -3,38 +3,23 @@ import React, { useEffect, useMemo, useRef } from "react";
 import { X } from "lucide-react";
 import Image from "next/image";
 import { imageTypes, videoTypes } from "@/lib/FileTypes";
+import { UrlObject } from "url";
 
 type MediaProps = {
   id: string;
   file: File;
   progress: number;
+  url: UrlObject | Blob | string;
   removeThisMedia: (id: string, type: string) => void;
 };
 
-const Media = ({ id, file, removeThisMedia, progress }: MediaProps) => {
-  const urlRef = useRef<string | null>(null);
+const Media = ({ id, file, removeThisMedia, progress, url }: MediaProps) => {
+  // Memoize the URL to prevent unnecessary re-renders when progress changes
+  const memoizedUrl = useMemo(() => {
+    return url;
+  }, [url]); // Only recompute when file changes, not progress
 
-  // Memoize URL generation but don't revoke during re-renders
-  const url = useMemo(() => {
-    if (!urlRef.current) {
-      if (imageTypes.includes(file.type) || videoTypes.includes(file.type)) {
-        urlRef.current = URL.createObjectURL(file);
-      }
-    }
-    return urlRef.current;
-  }, [file]);
-
-  // Only revoke URL when component unmounts
-  useEffect(() => {
-    return () => {
-      if (urlRef.current) {
-        URL.revokeObjectURL(urlRef.current);
-        urlRef.current = null;
-      }
-    };
-  }, []);
-
-  if (!url) {
+  if (!memoizedUrl) {
     return (
       <div className="relative">
         <div className="w-32 h-32 bg-gray-200 animate-pulse rounded-xl"></div>
@@ -48,14 +33,14 @@ const Media = ({ id, file, removeThisMedia, progress }: MediaProps) => {
     <div className="relative">
       {isVideo ? (
         <video
-          src={url}
+          src={memoizedUrl.toString()}
           playsInline
           className="relative z-10 block object-cover h-auto border shadow-lg aspect-square rounded-xl"
         />
       ) : (
         <Image
           priority
-          src={url}
+          src={memoizedUrl.toString()}
           alt={file.name || "Media preview"}
           width={200}
           height={200}

@@ -1,11 +1,9 @@
 import { UploadResponseResponse } from "@/types/Components";
 import { getMaxDurationBase64 } from "./GetVideoMaxDuration";
-import { getToken } from "./Cookie";
-import axios from "axios";
 import axiosInstance from "./Axios";
 export const GetUploadUrl = async (
   file: File,
-  user: { username: string },
+  user: { username: string; shouldUseSignedUrls: boolean },
 ): Promise<UploadResponseResponse> => {
   if (!file) throw new Error("File is not defined");
   const isVideo = file.type.startsWith("video/");
@@ -16,6 +14,7 @@ export const GetUploadUrl = async (
     fileSize: file.size,
     fileType: btoa(file.type),
     explicitImageType: file.type,
+    shouldUseSignedUrls: user.shouldUseSignedUrls,
   };
   if (isVideo && maxVideoDuration) payload.maxDuration = maxVideoDuration;
 

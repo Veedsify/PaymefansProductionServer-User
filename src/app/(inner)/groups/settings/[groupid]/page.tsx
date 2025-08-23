@@ -286,8 +286,8 @@ const GroupSettingsPage = () => {
                   <div className="px-6 py-4">
                     <p className="text-gray-900 dark:text-white">
                       By participating in this group chat, you agree to abide by
-                      these rules and policies. Let's work together to create a
-                      positive and supportive community for all content
+                      these rules and policies. Let&apos;s work together to
+                      create a positive and supportive community for all content
                       creators!
                     </p>
                     <div className="mt-4 space-y-2">
@@ -324,7 +324,7 @@ const GroupSettingsPage = () => {
                       <ol className="list-decimal list-inside mt-2 space-y-1">
                         <li>
                           Keep conversations focused on topics relevant to
-                          content creation and the group's purpose.
+                          content creation and the group&apos;s purpose.
                         </li>
                         <li>
                           <strong>No External Links:</strong> No external links
@@ -640,8 +640,8 @@ const MembersTab: React.FC<{ groupId: string; adminId: number }> = ({
                     member.userId === adminId
                       ? "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200"
                       : member.role === "MODERATOR"
-                        ? "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200"
-                        : "bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200"
+                      ? "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200"
+                      : "bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200"
                   }`}
                 >
                   {member.userId === adminId ? "Admin" : member.role}

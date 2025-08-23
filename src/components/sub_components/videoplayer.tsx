@@ -7,10 +7,30 @@ import {
   LucideSettings,
   LucideLoader,
   LucideLoaderCircle,
+  LucideVolume2,
+  LucideVolumeX,
+  LucideUser,
 } from "lucide-react";
 import { MouseEvent, useCallback, useEffect, useRef, useState } from "react";
 import { useInView } from "react-intersection-observer";
 import CustomSeekBar from "./CustomSeekBar";
+import Link from "next/link";
+import Image from "next/image";
+
+interface UserProfile {
+  name: string;
+  username: string;
+  avatar?: string;
+}
+
+interface VideoPlayerProps {
+  streamUrl: string;
+  autoPlay?: boolean;
+  className: string;
+  modalOpen?: boolean;
+  allOthers?: React.VideoHTMLAttributes<HTMLVideoElement>;
+  userProfile?: UserProfile | null; // New prop for user profile
+}
 
 const VideoPlayer = ({
   streamUrl,
@@ -18,16 +38,12 @@ const VideoPlayer = ({
   className,
   modalOpen = false,
   allOthers,
-}: {
-  streamUrl: string;
-  autoPlay?: boolean;
-  modalOpen?: boolean;
-  allOthers?: React.VideoHTMLAttributes<HTMLVideoElement>;
-  className: string;
-}) => {
+  userProfile,
+}: VideoPlayerProps) => {
   const videoRef = useRef<HTMLVideoElement>(null);
-  const hlsRef = useRef<Hls | null>(null); // Store HLS instance
+  const hlsRef = useRef<Hls | null>(null);
   const { ref: intersectionRef, inView } = useInView({ threshold: 0.5 });
+  const controlsTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const [isPlaying, setIsPlaying] = useState(false);
   const [duration, setDuration] = useState(0);
@@ -40,12 +56,16 @@ const VideoPlayer = ({
   const [selectedQuality, setSelectedQuality] = useState<number | "auto">(
     "auto"
   );
+  const [volume, setVolume] = useState(1);
+  const [isMuted, setIsMuted] = useState(false);
+  const [showVolumeSlider, setShowVolumeSlider] = useState(false);
+  const [controlsVisible, setControlsVisible] = useState(true);
 
   // New states for loading and buffering
   const [isLoading, setIsLoading] = useState(true);
   const [isBuffering, setIsBuffering] = useState(false);
 
-  const GetResoultion = (height: number) => {
+  const GetResolution = (height: number) => {
     if (height >= 2160) return "4K";
     if (height >= 1440) return "2K";
     if (height >= 1080) return "1080p";
@@ -54,6 +74,35 @@ const VideoPlayer = ({
     if (height >= 360) return "360p";
     return "Auto";
   };
+
+  // Reset controls visibility timer
+  const resetControlsTimer = useCallback(() => {
+    if (controlsTimeoutRef.current) {
+      clearTimeout(controlsTimeoutRef.current);
+    }
+
+    setControlsVisible(true);
+
+    controlsTimeoutRef.current = setTimeout(() => {
+      if (isPlaying) {
+        setControlsVisible(false);
+      }
+    }, 3000);
+  }, [isPlaying]);
+
+  // Handle mouse move to show controls
+  const handleMouseMove = useCallback(() => {
+    resetControlsTimer();
+  }, [resetControlsTimer]);
+
+  // Cleanup timeout on unmount
+  useEffect(() => {
+    return () => {
+      if (controlsTimeoutRef.current) {
+        clearTimeout(controlsTimeoutRef.current);
+      }
+    };
+  }, []);
 
   useEffect(() => {
     const video = videoRef.current;
@@ -65,36 +114,35 @@ const VideoPlayer = ({
       const hls = new Hls();
       hls.loadSource(streamUrl);
       hls.attachMedia(video);
-      hlsRef.current = hls; // Store the HLS instance
+      hlsRef.current = hls;
 
       hls.on(Hls.Events.MANIFEST_PARSED, () => {
         const levels = hls.levels
-          .filter((level) => level.height !== undefined) // Remove undefined heights
-          .sort((a, b) => (b.height || 0) - (a.height || 0)) // Sort safely
+          .filter((level) => level.height !== undefined)
+          .sort((a, b) => (b.height || 0) - (a.height || 0))
           .map((level, index) => ({
-            index: hls.levels.length - 1 - index, // Flip the index
-            label: GetResoultion(level.height),
+            index: hls.levels.length - 1 - index,
+            label: GetResolution(level.height),
             height: level.height,
           }));
+
         const quality = localStorage.getItem("selectedQuality");
-        setSelectedQuality(quality ? parseInt(quality) : levels[0].index);
+        setSelectedQuality(
+          quality ? parseInt(quality) : levels[0]?.index ?? -1
+        );
         setQualityLevels([...levels, { index: -1, label: "Auto" }]);
 
-        // Set loading to false once manifest is parsed
         setIsLoading(false);
       });
 
-      // Handle HLS errors
       hls.on(Hls.Events.ERROR, (event, data) => {
-        console.log("HLS Error:", data);
-        // Could add additional error handling here
+        console.error("HLS Error:", data);
       });
 
       return () => hls.destroy();
     } else if (video.canPlayType("application/vnd.apple.mpegurl")) {
       video.src = streamUrl;
 
-      // For native HLS playback, we need to handle loading states differently
       video.addEventListener("loadeddata", () => {
         setIsLoading(false);
       });
@@ -106,30 +154,16 @@ const VideoPlayer = ({
     const video = videoRef.current;
     if (!video) return;
 
-    const handleWaiting = () => {
-      setIsBuffering(true);
-    };
+    const handleWaiting = () => setIsBuffering(true);
+    const handlePlaying = () => setIsBuffering(false);
+    const handleLoadStart = () => setIsLoading(true);
+    const handleLoadedData = () => setIsLoading(false);
 
-    const handlePlaying = () => {
-      setIsBuffering(false);
-    };
-
-    // Initial load events
-    const handleLoadStart = () => {
-      setIsLoading(true);
-    };
-
-    const handleLoadedData = () => {
-      setIsLoading(false);
-    };
-
-    // Add event listeners
     video.addEventListener("waiting", handleWaiting);
     video.addEventListener("playing", handlePlaying);
     video.addEventListener("loadstart", handleLoadStart);
     video.addEventListener("loadeddata", handleLoadedData);
 
-    // Cleanup event listeners
     return () => {
       video.removeEventListener("waiting", handleWaiting);
       video.removeEventListener("playing", handlePlaying);
@@ -138,7 +172,7 @@ const VideoPlayer = ({
     };
   }, []);
 
-  // Autoplay logic should not conflict with manual play/pause
+  // Autoplay logic
   useEffect(() => {
     const video = videoRef.current;
     if (!video) return;
@@ -151,9 +185,17 @@ const VideoPlayer = ({
     } else if (!inView && isPlaying) {
       video.pause();
       setIsPlaying(false);
-      setManualPlayPause(false); //reset the manual override when out of view.
+      setManualPlayPause(false);
     }
   }, [inView, autoPlay, isPlaying, manualPlayPause]);
+
+  // Volume control
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+
+    video.volume = isMuted ? 0 : volume;
+  }, [volume, isMuted]);
 
   const togglePlay = useCallback(() => {
     const video = videoRef.current;
@@ -169,35 +211,32 @@ const VideoPlayer = ({
         .catch((err) => console.log("Playback error:", err));
     }
     setManualPlayPause(true);
-  }, [videoRef, isPlaying]);
+    resetControlsTimer();
+  }, [isPlaying, resetControlsTimer]);
 
-  // Seek bar updates
+  const toggleMute = useCallback(() => {
+    setIsMuted(!isMuted);
+  }, [isMuted]);
+
+  const handleVolumeChange = (newVolume: number) => {
+    setVolume(newVolume);
+    setIsMuted(newVolume === 0);
+  };
+
   const handleTimeUpdate = () => {
     const video = videoRef.current;
     if (!video) return;
     setCurrentTime(video.currentTime);
   };
 
-  // Change seek position
   const handleSeek = (newTime: number) => {
     if (!videoRef.current) return;
     const video = videoRef.current;
     if (newTime < 0 || newTime > duration) return;
     setCurrentTime(newTime);
-    // Update video current time
-    if (video.paused) {
-      video.play();
-    }
-    // Set the new time
-    if (isPlaying) {
-      video.pause();
-      setIsPlaying(false);
-    }
-    // Set the new Time
     video.currentTime = newTime;
   };
 
-  // Change quality
   const changeQuality = (level: number) => {
     if (hlsRef.current) {
       localStorage.setItem("selectedQuality", String(level));
@@ -218,10 +257,9 @@ const VideoPlayer = ({
   };
 
   const shouldLoop = Boolean(inView) && Boolean(autoPlay);
-  // const shouldMute = Boolean(autoPlay) && !manualPlayPause && !inView;
 
   return (
-    <div className="w-full overflow-hidden bg-black">
+    <div className="w-full flex items-center overflow-hidden bg-black">
       <div
         ref={intersectionRef}
         className="relative group"
@@ -231,18 +269,19 @@ const VideoPlayer = ({
             e.stopPropagation();
           }
         }}
+        onMouseMove={handleMouseMove}
       >
         <video
           {...allOthers}
           ref={videoRef}
           loop={shouldLoop}
-          className={` ${className} transition-all duration-300 object-center`}
+          className={`${className} object-center`}
           onTimeUpdate={handleTimeUpdate}
           onLoadedMetadata={() => setDuration(videoRef.current?.duration || 0)}
           style={{ background: "#000000" }}
         ></video>
 
-        {/* Loading Spinner Overlay - shown during initial loading */}
+        {/* Loading Spinner Overlay */}
         {isLoading && modalOpen && (
           <div className="absolute inset-0 flex items-center justify-center bg-black/50">
             <div className="flex flex-col items-center">
@@ -254,7 +293,7 @@ const VideoPlayer = ({
           </div>
         )}
 
-        {/* Buffering Indicator - shown during playback buffering */}
+        {/* Buffering Indicator */}
         {!isLoading && isBuffering && (
           <div className="absolute inset-0 flex items-center justify-center bg-black/30">
             <div className="p-3 rounded-full bg-black/50">
@@ -263,29 +302,121 @@ const VideoPlayer = ({
           </div>
         )}
 
-        {modalOpen && (
-          <>
-            {/* Overlay gradient for better control visibility */}
-            <div className="absolute inset-0 opacity-100 pointer-events-none transition-opacity duration-300 lg:opacity-0 lg:bg-gradient-to-t lg:from-black/80 lg:via-black/30 lg:to-transparent lg:group-hover:opacity-100"></div>
+        {/* Play Button Overlay (when not playing) */}
+        {!isPlaying && !isLoading && modalOpen && (
+          <div className="absolute inset-0 flex items-center justify-center">
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                togglePlay();
+              }}
+              className="p-4 bg-black/50 rounded-full hover:bg-black/70 transition-all"
+              aria-label="Play"
+            >
+              <LucidePlay className="w-12 h-12 text-white ml-1" />
+            </button>
+          </div>
+        )}
 
-            {/* Controls overlay at the bottom */}
-            <div className="absolute left-0 right-0 z-20 flex items-center justify-between px-6 py-4 opacity-100 transition-opacity duration-300 lg:opacity-0  bottom-20 lg:group-hover:opacity-100">
+        {modalOpen && (
+          <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+            {/* Overlay gradient for better control visibility */}
+            <div
+              className={`absolute inset-0 pointer-events-none transition-opacity duration-300 ${
+                controlsVisible
+                  ? "lg:bg-gradient-to-t lg:from-black/80 lg:via-black/30 lg:to-transparent"
+                  : ""
+              }`}
+            ></div>
+
+            {/* User Profile Card - Top Left */}
+            {userProfile && (
+              <div className="absolute bottom-48 left-4 z-20 flex items-center gap-3 p-2 rounded-full">
+                <Link href={`/${userProfile.username}`}>
+                  {userProfile.avatar ? (
+                    <Image
+                      width={64}
+                      height={64}
+                      quality={100}
+                      src={userProfile.avatar}
+                      alt={userProfile.name}
+                      className="w-16 h-16 rounded-full object-cover border-2 border-white/20"
+                    />
+                  ) : (
+                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-purple-500 to-indigo-600 flex items-center justify-center">
+                      <LucideUser className="w-5 h-5 text-white" />
+                    </div>
+                  )}
+                </Link>
+                <div className="hidden md:block">
+                  <p className="text-white font-semibold text-lg">
+                    <Link href={`/${userProfile.username}`}>
+                      {userProfile.name}
+                    </Link>
+                  </p>
+                  <p className="text-gray-300 text-sm">
+                    <Link href={`/${userProfile.username}`}>
+                      {userProfile.username}
+                    </Link>
+                  </p>
+                </div>
+              </div>
+            )}
+
+            {/* Controls overlay */}
+            <div
+              className={`absolute left-0 right-0 z-20 flex items-center justify-between px-6 py-4 transition-opacity duration-300 ${
+                controlsVisible ? "opacity-100" : "opacity-0"
+              } bottom-28`}
+            >
               {/* Play/Pause button */}
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  togglePlay();
-                }}
-                className="flex items-center justify-center p-3 rounded-full shadow-lg transition-all duration-200 transform outline outline-gray-700 bg-black/70 hover:bg-black/90 hover:scale-110 aspect-square"
-                aria-label={isPlaying ? "Pause" : "Play"}
-                disabled={isLoading}
-              >
-                {isPlaying ? (
-                  <LucidePause className="w-6 h-6 text-white" />
-                ) : (
-                  <LucidePlay className="w-6 h-6 text-white ml-0.5" />
-                )}
-              </button>
+              <div className="flex items-center gap-2">
+                {/* Volume Control */}
+                <div className="relative flex items-center">
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      toggleMute();
+                    }}
+                    className="p-3 rounded-full outline-gray-700 bg-black/70 hover:bg-black/90"
+                    aria-label={isMuted ? "Unmute" : "Mute"}
+                  >
+                    {isMuted || volume === 0 ? (
+                      <LucideVolumeX className="w-5 h-5 text-white" />
+                    ) : (
+                      <LucideVolume2 className="w-5 h-5 text-white" />
+                    )}
+                  </button>
+
+                  <div
+                    className="ml-2 w-0 overflow-hidden transition-all duration-300"
+                    onMouseEnter={() => setShowVolumeSlider(true)}
+                    onMouseLeave={() => setShowVolumeSlider(false)}
+                  >
+                    <CustomSeekBar
+                      currentTime={isMuted ? 0 : volume * 100}
+                      duration={100}
+                      onSeek={(newTime) => handleVolumeChange(newTime / 100)}
+                      isBuffering={false}
+                    />
+                  </div>
+                </div>
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    togglePlay();
+                  }}
+                  className="flex items-center justify-center p-3 rounded-full shadow-lg transform outline outline-gray-700 bg-black/70 hover:bg-black/90 hover:scale-110 aspect-square"
+                  aria-label={isPlaying ? "Pause" : "Play"}
+                  disabled={isLoading}
+                >
+                  {isPlaying ? (
+                    <LucidePause className="w-5 h-5 text-white" />
+                  ) : (
+                    <LucidePlay className="w-5 h-5 text-white ml-0.5" />
+                  )}
+                </button>
+              </div>
 
               {/* Right-side controls */}
               <div className="flex items-center gap-3">
@@ -295,7 +426,7 @@ const VideoPlayer = ({
                     setShowResolutionMenu(!showResolutionMenu);
                     e.stopPropagation();
                   }}
-                  className="bg-black hover:bg-black/90 p-2.5 rounded-full shadow-lg transition-all duration-200 flex items-center justify-center border border-gray-700"
+                  className="bg-black hover:bg-black/90 p-3 rounded-full shadow-lg flex items-center justify-center border border-gray-700"
                   aria-label="Video quality"
                   disabled={isLoading}
                 >
@@ -305,7 +436,7 @@ const VideoPlayer = ({
                 {/* Fullscreen button */}
                 <button
                   onClick={toggleFullscreen}
-                  className="bg-black/70 hover:bg-black/90 p-2.5 rounded-full shadow-lg transition-all duration-200 flex items-center justify-center border border-gray-700"
+                  className="bg-black/70 hover:bg-black/90 p-3 rounded-full shadow-lg flex items-center justify-center border border-gray-700"
                   aria-label="Toggle fullscreen"
                   disabled={isLoading}
                 >
@@ -329,7 +460,7 @@ const VideoPlayer = ({
                     }}
                     className={`w-full text-left px-3 py-2 text-sm font-medium rounded-md hover:bg-gray-800/80 transition-colors ${
                       selectedQuality === index
-                        ? "text-blue-400 bg-gray-800/60"
+                        ? "text-purple-400 bg-gray-800/60"
                         : "text-white"
                     }`}
                   >
@@ -338,12 +469,17 @@ const VideoPlayer = ({
                 ))}
               </div>
             )}
-          </>
+          </div>
         )}
+
         {/* Controls Panel - Time and seek bar */}
         {modalOpen && !isLoading && (
-          <div className="absolute bottom-0 left-0 z-10 flex flex-col w-full px-6 py-3 text-white gap-2 bg-gradient-to-t from-black/80 via-black/40 to-transparent">
-            {/* Seek Bar with custom styling */}
+          <div
+            className={`absolute opacity-0 group-hover:opacity-100 transition-opacity duration-300  ${
+              controlsVisible ? "opacity-100" : "opacity-0"
+            } bottom-10 left-0 z-10 flex flex-col w-full px-6 py-3 text-white gap-2`}
+          >
+            {/* Seek Bar */}
             <CustomSeekBar
               currentTime={currentTime}
               duration={duration}

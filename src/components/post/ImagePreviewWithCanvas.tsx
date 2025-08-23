@@ -1,8 +1,8 @@
 import React, { memo, Suspense } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Loader from "../lib_components/LoadingAnimation";
-import { CONSTANTS } from "./FullComponentPreview";
 import Image from "next/image";
+import { MEDIA_CONSTANTS } from "../common";
 
 type ImagePreviewProps = {
   url: string;
@@ -22,7 +22,7 @@ export const ImagePreview = memo(({ url, alt }: ImagePreviewProps) => {
       animate={{ opacity: 1, scale: 1 }}
       exit={{ opacity: 0, scale: 0.95 }}
       transition={{
-        duration: CONSTANTS.ANIMATION_DURATION_SEC,
+        duration: MEDIA_CONSTANTS.ANIMATION_DURATION_SEC,
         type: "spring",
       }}
       style={{

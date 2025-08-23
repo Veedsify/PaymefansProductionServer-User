@@ -170,18 +170,6 @@ const MessageInputComponent = React.memo(
 
         // Wait for all uploads to complete before proceeding
         if (mediaFiles.length > 0) {
-          console.log("⏳ Waiting for uploads to complete...");
-          console.log("📊 Current upload status:", {
-            totalFiles: mediaFiles.length,
-            allComplete: areAllUploadsComplete(),
-            hasErrors: hasUploadErrors(),
-            fileStatuses: mediaFiles.map((f) => ({
-              id: f.id,
-              status: f.uploadStatus,
-              progress: f.uploadProgress,
-              type: f.type,
-            })),
-          });
 
           // Wait for all uploads to complete with proper polling
           let maxWaitTime = 60000; // 60 seconds max wait
@@ -191,18 +179,6 @@ const MessageInputComponent = React.memo(
           while (!areAllUploadsComplete() && waitTime < maxWaitTime) {
             await new Promise((resolve) => setTimeout(resolve, pollInterval));
             waitTime += pollInterval;
-
-            // Log progress every 5 seconds
-            if (waitTime % 5000 === 0) {
-              console.log(`⏳ Still waiting... ${waitTime / 1000}s elapsed`, {
-                allComplete: areAllUploadsComplete(),
-                fileStatuses: mediaFiles.map((f) => ({
-                  id: f.id,
-                  progress: f.uploadProgress,
-                  status: f.uploadStatus,
-                })),
-              });
-            }
           }
 
           // Final check - if still not complete after max wait time, show error
@@ -210,13 +186,6 @@ const MessageInputComponent = React.memo(
             console.error(
               "❌ Upload timeout - not all files completed uploading"
             );
-            console.error("📊 Final status:", {
-              fileStatuses: mediaFiles.map((f) => ({
-                id: f.id,
-                status: f.uploadStatus,
-                progress: f.uploadProgress,
-              })),
-            });
             toast.error("Upload failed. Please try again.");
             return;
           }
@@ -230,16 +199,9 @@ const MessageInputComponent = React.memo(
         }
 
         const attachments = getCompletedAttachments();
-        console.log("📎 Completed attachments:", {
-          count: attachments.length,
-          attachments: attachments.map((att) => ({
-            id: att.id,
-            type: att.type,
-            url: att.url,
-            size: att.size,
-          })),
-        });
 
+
+  
         const newMessage: Message = {
           id: Math.random(),
           message_id: uuid(),

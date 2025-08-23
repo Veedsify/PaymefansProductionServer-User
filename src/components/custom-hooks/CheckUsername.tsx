@@ -5,7 +5,10 @@ import { getToken } from "@/utils/Cookie";
 import _ from "lodash";
 import useDebounce from "./Debounce"; // Adjust the import path as necessary
 import axiosInstance from "@/utils/Axios";
-const useCheckUsername = (user: AuthUserProps, usernameCheck: string) => {
+const useCheckUsername = (
+  user: Partial<AuthUserProps>,
+  usernameCheck: string
+) => {
   const [canSave, setCanSave] = useState(false);
   const [message, setMessage] = useState("");
   const [isLoading, setIsloading] = useState(false);
@@ -29,7 +32,7 @@ const useCheckUsername = (user: AuthUserProps, usernameCheck: string) => {
           {},
           {
             withCredentials: true,
-          },
+          }
         );
         if (!response.data.error) {
           setError(false);
@@ -41,7 +44,7 @@ const useCheckUsername = (user: AuthUserProps, usernameCheck: string) => {
         setMessage(
           error.response.data.message ||
             error.response.message ||
-            "An Error Occured",
+            "An Error Occured"
         );
         setError(true);
         setIsloading(false);

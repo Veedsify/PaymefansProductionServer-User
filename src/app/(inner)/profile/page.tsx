@@ -23,13 +23,13 @@ export const metadata: Metadata = {
 };
 
 const ProfilePage = async () => {
-  const user: AuthUserProps | null = await getUserData();
+  const user: Partial<AuthUserProps> | null = await getUserData();
   return (
     <>
       <div className="overflow-hidden">
         <div className="relative">
           <Image
-            src={user ? user.profile_banner : "/site/banner.png"}
+            src={user ? user.profile_banner! : "/site/banner.png"}
             alt="Home Banner"
             width={1950}
             height={650}
@@ -39,7 +39,7 @@ const ProfilePage = async () => {
         </div>
         <div className="relative flex w-full px-2 md:px-5">
           <Image
-            src={user ? user.profile_image.trim() : "/site/avatar.png"}
+            src={user ? user?.profile_image?.trim()! : "/site/avatar.png"}
             alt="proile image"
             height={100}
             priority
@@ -118,10 +118,10 @@ const ProfilePage = async () => {
           </div>
           {user && (
             <ProfileCounts
-              followers={user?.total_followers}
-              following={user?.total_following}
+              followers={user?.total_followers!}
+              following={user?.total_following!}
               subscribers={user?.total_subscribers}
-              isModel={user?.is_model}
+              isModel={user?.is_model!}
               userId={user?.user_id}
             />
           )}

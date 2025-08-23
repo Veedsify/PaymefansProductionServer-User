@@ -45,6 +45,7 @@ export const useMediaUpload = () => {
         // Get upload URL
         const uploadResponse = await GetUploadUrl(file.file, {
           username: user.username || "unknown",
+          shouldUseSignedUrls: false,
         });
 
         if (abortController.signal.aborted) return;
@@ -114,11 +115,13 @@ export const useMediaUpload = () => {
 
           try {
             const mediaId = await UploadWithTus(
-              file.file,
-              uploadResponse.uploadUrl,
-              file.id,
-              setProgress,
-              setUploadError,
+              {
+                file: file.file,
+                uploadUrl: uploadResponse.uploadUrl,
+                id: file.id,
+                setProgress,
+                setUploadError,
+              }
             );
 
             if (abortController.signal.aborted) {
@@ -135,7 +138,7 @@ export const useMediaUpload = () => {
                 extension: path.extname(file.file.name),
                 size: file.file.size,
               };
-             } else {
+            } else {
               updateMediaFileStatus(file.id, "error");
               return;
             }

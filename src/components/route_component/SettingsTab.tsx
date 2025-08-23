@@ -11,7 +11,7 @@ import { SettingsBillingProvider } from "@/contexts/SettingsBillingContext";
 import { useUserAuthContext } from "@/lib/UserUseContext";
 import SettingsAutomatedMessage from "../sub_components/SettingsAutomatedMessage";
 
-const SettingsTab = ({ user }: { user: AuthUserProps | null }) => {
+const SettingsTab = ({ user }: { user: Partial<AuthUserProps> | null }) => {
   const searchParams = useSearchParams();
   const handleClick = (e: MouseEvent<HTMLButtonElement>) => {
     const tab = e.currentTarget.getAttribute("data-tab");
@@ -55,29 +55,28 @@ const SettingsTab = ({ user }: { user: AuthUserProps | null }) => {
               Security
             </button>
           </Tab>
-          {user?.is_model &&
-            user.Model?.verification_status === true && (
-              <>
-                <Tab>
-                  <button
-                    onClick={handleClick}
-                    data-tab="billing"
-                    className="py-2 font-bold text-black cursor-pointer dark:text-white"
-                  >
-                    Billing
-                  </button>
-                </Tab>
-                <Tab>
-                  <button
-                    onClick={handleClick}
-                    data-tab="automated_messages"
-                    className="py-2 font-bold text-black cursor-pointer dark:text-white"
-                  >
-                    Automated Messages
-                  </button>
-                </Tab>
-              </>
-            )}
+          {user?.is_model && user.Model?.verification_status === true && (
+            <>
+              <Tab>
+                <button
+                  onClick={handleClick}
+                  data-tab="billing"
+                  className="py-2 font-bold text-black cursor-pointer dark:text-white"
+                >
+                  Billing
+                </button>
+              </Tab>
+              <Tab>
+                <button
+                  onClick={handleClick}
+                  data-tab="automated_messages"
+                  className="py-2 font-bold text-black cursor-pointer dark:text-white"
+                >
+                  Automated Messages
+                </button>
+              </Tab>
+            </>
+          )}
         </TabList>
         <TabPanel>
           <ProfileSettings user={user} />

@@ -194,6 +194,7 @@ const SettingsAutomatedMessage: React.FC = () => {
           // Get upload URL
           const uploadResponse = await GetUploadUrl(file, {
             username: user.username || "unknown",
+            shouldUseSignedUrls: false,
           });
 
           let finalAttachment: Attachment;
@@ -222,13 +223,13 @@ const SettingsAutomatedMessage: React.FC = () => {
             };
           } else {
             // Upload video
-            const mediaId = await UploadWithTus(
-              file,
-              uploadResponse.uploadUrl,
-              tempId,
-              setUploadProgress,
-              () => {} // Error callback
-            );
+            const mediaId = await UploadWithTus({
+              file: file,
+              uploadUrl: uploadResponse.uploadUrl,
+              id: tempId,
+              setProgress: setUploadProgress,
+              setUploadError: () => {},
+            });
 
             finalAttachment = {
               id: mediaId || tempId,
@@ -560,7 +561,10 @@ const SettingsAutomatedMessage: React.FC = () => {
                                 }`}
                                 style={{ width: "60px", height: "60px" }}
                               >
-                                <FileText size={24} className="text-gray-400 dark:text-gray-300" />
+                                <FileText
+                                  size={24}
+                                  className="text-gray-400 dark:text-gray-300"
+                                />
                               </div>
                             )}
 

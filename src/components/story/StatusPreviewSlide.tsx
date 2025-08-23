@@ -39,7 +39,7 @@ const fetchStatusViews = async ({
     `/story/views/${media_id}${pageParam === 0 ? "" : `?cursor=${pageParam}`}`,
     {
       withCredentials: true,
-    },
+    }
   );
   if (response.status === 200) {
     const data = response.data;
@@ -205,7 +205,7 @@ const StoryReplyInput = ({ story }: { story: Story }) => {
         {
           headers: { Authorization: `Bearer ${getToken()}` },
           withCredentials: true,
-        },
+        }
       );
       const receiverUserId = profileResponse.data.user?.user_id;
       if (!receiverUserId) {
@@ -217,7 +217,7 @@ const StoryReplyInput = ({ story }: { story: Story }) => {
         {
           headers: { Authorization: `Bearer ${getToken()}` },
           withCredentials: true,
-        },
+        }
       );
       const pricePerMessage = data.price_per_message || 0;
       const currentPoints = points || 0;
@@ -248,7 +248,7 @@ const StoryReplyInput = ({ story }: { story: Story }) => {
       }
       // Create or find conversation
       const conversationResponse = await createNewConversation({
-        userId: user.user_id,
+        userId: user?.user_id as string,
         profileId: receiverUserId,
       });
       const conversation = conversationResponse;
@@ -392,7 +392,7 @@ const StatusPreviewSlide = ({
         { storyMediaId: story.media_id },
         {
           withCredentials: true,
-        },
+        }
       );
       refCounter.current++;
     }

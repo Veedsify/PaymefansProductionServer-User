@@ -24,6 +24,11 @@ type PostComponentType = {
     open: boolean;
     type: string | null
     watermarkEnabled?: boolean;
+    userProfile?: {
+        name: string;
+        username: string;
+        avatar?: string;
+    } | null;
     close: () => void;
     username?: string;
     withOptions?: boolean;
@@ -38,9 +43,10 @@ const usePostComponent = create<PostComponentType>((set) => ({
     otherUrl: [],
     username: "",
     watermarkEnabled: false,
+    userProfile: null,
     withOptions: false,
     close: () => set({ open: false, withOptions: false, url: "", type: "", ref: 0, otherUrl: [] }),
-    fullScreenPreview: ({ url, type, open, ref, otherUrl, withOptions, username, watermarkEnabled }) => set({ url, type, open, withOptions, ref, otherUrl: otherUrl, watermarkEnabled, username})
+    fullScreenPreview: ({ url, type, open, ref, otherUrl, withOptions, username, watermarkEnabled }) => set({ url, type, open, withOptions, ref, otherUrl: otherUrl, watermarkEnabled, username })
 }));
 
 export default usePostComponent;

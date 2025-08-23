@@ -10,7 +10,7 @@ import { PiSnapchatLogoDuotone } from "react-icons/pi";
 import useCheckUsername from "../custom-hooks/CheckUsername";
 
 type ProfileSettingsProps = {
-  user: AuthUserProps | null;
+  user: Partial<AuthUserProps> | null;
 };
 
 const ProfileSettings = ({ user }: ProfileSettingsProps) => {
@@ -34,7 +34,7 @@ const ProfileSettings = ({ user }: ProfileSettingsProps) => {
   const [usernameCheck, setUsernameCheck] = useState(user?.username || "");
   const { message, canSave, error, isLoading } = useCheckUsername(
     user!,
-    usernameCheck,
+    usernameCheck
   );
 
   const usernameTimeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -42,7 +42,7 @@ const ProfileSettings = ({ user }: ProfileSettingsProps) => {
   const handleInputChange = (
     e: React.ChangeEvent<
       HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
-    >,
+    >
   ) => {
     const { name, value } = e.target;
     setUserData((prev) => ({ ...prev, [name]: value }));

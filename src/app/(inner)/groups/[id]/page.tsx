@@ -100,7 +100,7 @@ const GroupChatPage = () => {
 
     const handleConnect = () => {
       setConnected(true);
-      socket?.emit("group-user-connected", { userId: user.id.toString() });
+      socket?.emit("group-user-connected", { userId: user?.id?.toString() });
     };
 
     const handleDisconnect = () => {
@@ -325,15 +325,15 @@ const GroupChatPage = () => {
         // Extract current user's membership status from group data
         const membership = extractUserMembershipFromGroup(
           group,
-          user.id,
+          user?.id as number,
           isUserBlocked
         );
 
         if (membership) {
           // Set membership in store
           setCurrentUserMembership({
-            userId: membership.userId?.toString() || user.id.toString(),
-            username: user.username,
+            userId: membership.userId?.toString() || user?.id?.toString(),
+            username: user?.username as string,
             profile_image: user.profile_image || "/site/avatar.png",
             is_verified: user.is_verified || false,
             role: membership.role || "MEMBER",
