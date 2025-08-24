@@ -77,6 +77,7 @@ const MediaPanelImageCard = React.memo(({ sort }: { sort: string }) => {
       watermarkEnabled: watermarkEnabled,
       url: media,
       type,
+      userProfile: null,
       open: true,
       ref: newIndexId,
       otherUrl: medias,

@@ -117,6 +117,10 @@ export default function ConfigProvider({ children }: { children: ReactNode }) {
     updateConfig,
   };
 
+  if (!config) {
+    return null;
+  }
+
   return (
     <ConfigContext.Provider value={value}>{children}</ConfigContext.Provider>
   );

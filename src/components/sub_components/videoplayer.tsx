@@ -10,12 +10,14 @@ import {
   LucideVolume2,
   LucideVolumeX,
   LucideUser,
+  LucideUser2,
 } from "lucide-react";
 import { MouseEvent, useCallback, useEffect, useRef, useState } from "react";
 import { useInView } from "react-intersection-observer";
 import CustomSeekBar from "./CustomSeekBar";
 import Link from "next/link";
 import Image from "next/image";
+import UserProfileOverlay from "../post/UserProfileOverlay";
 
 interface UserProfile {
   name: string;
@@ -332,34 +334,7 @@ const VideoPlayer = ({
             {/* User Profile Card - Top Left */}
             {userProfile && (
               <div className="absolute bottom-48 left-4 z-20 flex items-center gap-3 p-2 rounded-full">
-                <Link href={`/${userProfile.username}`}>
-                  {userProfile.avatar ? (
-                    <Image
-                      width={64}
-                      height={64}
-                      quality={100}
-                      src={userProfile.avatar}
-                      alt={userProfile.name}
-                      className="w-16 h-16 rounded-full object-cover border-2 border-white/20"
-                    />
-                  ) : (
-                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-purple-500 to-indigo-600 flex items-center justify-center">
-                      <LucideUser className="w-5 h-5 text-white" />
-                    </div>
-                  )}
-                </Link>
-                <div className="hidden md:block">
-                  <p className="text-white font-semibold text-lg">
-                    <Link href={`/${userProfile.username}`}>
-                      {userProfile.name}
-                    </Link>
-                  </p>
-                  <p className="text-gray-300 text-sm">
-                    <Link href={`/${userProfile.username}`}>
-                      {userProfile.username}
-                    </Link>
-                  </p>
-                </div>
+                <UserProfileOverlay userProfile={userProfile} />
               </div>
             )}
 

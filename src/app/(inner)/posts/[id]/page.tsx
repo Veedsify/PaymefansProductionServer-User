@@ -1,42 +1,57 @@
+"use client";
 import CommentsAndReply from "@/components/comments/CommentsAndReply";
 import { PostCompInteractions } from "@/components/post/PostInteractions";
 import PostPageImage from "@/components/post/PostPageImage";
 import QuickPostActions from "@/components/sub_components/QuickPostActions";
 import { formatDate } from "@/utils/FormatDate";
-import { LucideEye, LucideLock, LucideUsers } from "lucide-react";
+import {
+  LucideEye,
+  LucideLock,
+  LucideUsers,
+  LucideLoader2,
+} from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import getUserData from "@/utils/data/UserData";
-import { AuthUserProps } from "@/types/User";
-import React, { ReactNode } from "react";
-import { getPost } from "@/utils/data/GetPost";
+import React, { ReactNode, useMemo } from "react";
+import { usePost } from "@/hooks/queries/usePost";
+import { useUser } from "@/hooks/queries/useUser";
+import { useParams, useRouter } from "next/navigation";
 
-interface PostPageProps {
-  params: Promise<{
-    id: string;
-  }>;
-}
+const Post = React.memo(() => {
+  const params = useParams();
+  const router = useRouter();
+  const postId = params.id as string;
 
-const Post = React.memo(async ({ params }: PostPageProps) => {
-  const postId = (await params).id;
-  const user: Partial<AuthUserProps> | null = await getUserData();
-  const post = await getPost(postId);
-  const content = {
-    __html: `${post?.content.replace(/(?:\r\n|\r|\n)/g, "<br>")}`,
-  };
+  const { data: user, isLoading: userLoading, error: userError } = useUser();
+  const {
+    data: post,
+    isLoading: postLoading,
+    error: postError,
+  } = usePost(postId);
 
-  const isCreator = post?.user.id === user?.id;
-  // const isAdmin = user.role === "admin";
-  const isSubscribed = post.isSubscribed;
-  const hasPaid = post.hasPaid;
+  // Memoized calculations - must be called before any conditional returns
+  const { isCreator, isSubscribed, hasPaid, canView } = useMemo(() => {
+    if (!post || !user)
+      return {
+        isCreator: false,
+        isSubscribed: false,
+        hasPaid: false,
+        canView: false,
+      };
 
-  // Determine visibility
-  const canView =
-    // isAdmin || // Admin sees all
-    isCreator || // Creator sees their own posts
-    post.post_audience === "public" || // Public posts are visible to all
-    (post.post_audience === "subscribers" && isSubscribed) || // Subscriber-only post for subscribed users
-    (post.post_audience === "price" && hasPaid); // Paid posts if the user has paid
+    const isCreator = post?.user.id === user?.id;
+    const isSubscribed = post?.isSubscribed;
+    const hasPaid = post?.hasPaid;
+
+    // Determine visibility
+    const canView =
+      isCreator || // Creator sees their own posts
+      post?.post_audience === "public" || // Public posts are visible to all
+      (post?.post_audience === "subscribers" && isSubscribed) || // Subscriber-only post for subscribed users
+      (post?.post_audience === "price" && hasPaid); // Paid posts if the user has paid
+
+    return { isCreator, isSubscribed, hasPaid, canView };
+  }, [post, user]);
 
   const GetAudienceIcon = (audience: string): ReactNode => {
     switch (audience) {
@@ -51,6 +66,34 @@ const Post = React.memo(async ({ params }: PostPageProps) => {
       default:
         return null;
     }
+  };
+
+  // Handle errors
+  if (userError || postError) {
+    router.push("/404");
+    return null;
+  }
+
+  // Loading state
+  if (userLoading || postLoading) {
+    return (
+      <div className="flex items-center justify-center p-4 mt-8">
+        <div className="flex flex-col items-center gap-4">
+          <LucideLoader2 className="w-8 h-8 animate-spin" />
+          <p className="text-gray-500">Loading post...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // If no post data, show error
+  if (!post) {
+    router.push("/404");
+    return null;
+  }
+
+  const content = {
+    __html: `${post?.content.replace(/(?:\r\n|\r|\n)/g, "<br>")}`,
   };
 
   return (

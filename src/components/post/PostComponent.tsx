@@ -6,6 +6,7 @@ import React, {
   ReactNode,
   useCallback,
   useEffect,
+  useMemo,
   useRef,
   useState,
 } from "react";
@@ -103,6 +104,15 @@ const PostComponent: React.FC<PostComponentProps> = ({
     return text;
   }, [data.post, isSubscribed, hasPaid, isCreator, data.post_audience]);
 
+  const userProfile = useMemo(
+    () => ({
+      name: user.name,
+      username: user.username,
+      avatar: user.image,
+    }),
+    [user.name, user.username, user.image]
+  );
+
   // --- Handle image/video click event --- //
   const handleMediaClick = useCallback(
     (media: { url: string; media_type: string; index: number }) => {
@@ -118,6 +128,7 @@ const PostComponent: React.FC<PostComponentProps> = ({
         type: media.media_type,
         open: true,
         ref: media.index,
+        userProfile,
         watermarkEnabled: !!data.watermark_enabled,
         username: data.user?.username,
         otherUrl: data.media
@@ -136,8 +147,9 @@ const PostComponent: React.FC<PostComponentProps> = ({
       isCreator,
       fullScreenPreview,
       data.watermark_enabled,
+      userProfile,
       data?.user?.username,
-    ],
+    ]
   );
 
   // --- Click post routing logic --- //
@@ -176,7 +188,7 @@ const PostComponent: React.FC<PostComponentProps> = ({
             "You don't have enough points to pay for this post",
             {
               id: "pay-for-post",
-            },
+            }
           );
         }
         const pay = await payForPost({ price, postId: data.id });
@@ -310,8 +322,8 @@ const PostComponent: React.FC<PostComponentProps> = ({
             data.media.length === 2
               ? "grid-cols-2"
               : data.media.length >= 3
-                ? "grid-cols-3"
-                : "grid-cols-1"
+              ? "grid-cols-3"
+              : "grid-cols-1"
           }`}
         >
           {data.media.slice(0, 3).map((media: UserMediaProps, i) => (
@@ -493,7 +505,7 @@ const VideoComponent: React.FC<VideoComponentProps> = ({
       return;
     }
     const videoElement = document.getElementById(
-      "video_player_post",
+      "video_player_post"
     ) as HTMLVideoElement | null;
     if (videoElement) {
       if (playing) {
@@ -516,7 +528,7 @@ const VideoComponent: React.FC<VideoComponentProps> = ({
 
   useEffect(() => {
     const videoElement = document.getElementById(
-      "video_player_post",
+      "video_player_post"
     ) as HTMLVideoElement | null;
     if (!videoElement) return;
     const handleVideoEnd = () => {

@@ -94,6 +94,7 @@ const PrivateMediaImageCardOther = React.memo(
         open: true,
         ref: newIndexId, // Use new index
         otherUrl: medias,
+        userProfile: null,
       });
     };
     const loading = isLoading || isFetchingNextPage;

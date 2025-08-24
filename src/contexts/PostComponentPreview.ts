@@ -11,6 +11,11 @@ type FullScreenPreviewType = {
         isBlob?: boolean;
     }[],
     username?: string;
+    userProfile: {
+        name: string;
+        username: string;
+        avatar?: string;
+    } | null;
     watermarkEnabled?: boolean;
 }
 type PostComponentType = {
@@ -24,7 +29,7 @@ type PostComponentType = {
     open: boolean;
     type: string | null
     watermarkEnabled?: boolean;
-    userProfile?: {
+    userProfile: {
         name: string;
         username: string;
         avatar?: string;
@@ -32,7 +37,7 @@ type PostComponentType = {
     close: () => void;
     username?: string;
     withOptions?: boolean;
-    fullScreenPreview: ({ url, open, type, withOptions, ref, otherUrl, username, watermarkEnabled }: FullScreenPreviewType) => void
+    fullScreenPreview: ({ url, open, type, withOptions, ref, otherUrl, username, watermarkEnabled, userProfile }: FullScreenPreviewType) => void
 };
 
 const usePostComponent = create<PostComponentType>((set) => ({
@@ -46,7 +51,7 @@ const usePostComponent = create<PostComponentType>((set) => ({
     userProfile: null,
     withOptions: false,
     close: () => set({ open: false, withOptions: false, url: "", type: "", ref: 0, otherUrl: [] }),
-    fullScreenPreview: ({ url, type, open, ref, otherUrl, withOptions, username, watermarkEnabled }) => set({ url, type, open, withOptions, ref, otherUrl: otherUrl, watermarkEnabled, username })
+    fullScreenPreview: ({ url, type, open, ref, otherUrl, withOptions, username, watermarkEnabled, userProfile }) => set({ url, type, open, withOptions, ref, otherUrl: otherUrl, watermarkEnabled, username, userProfile })
 }));
 
 export default usePostComponent;

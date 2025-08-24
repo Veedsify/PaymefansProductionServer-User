@@ -307,6 +307,7 @@ const SearchPage = () => {
     fullScreenPreview({
       url: m.url,
       type,
+      userProfile: null,
       open: true,
       ref: newIndexId, // Use new index
       otherUrl: medias,

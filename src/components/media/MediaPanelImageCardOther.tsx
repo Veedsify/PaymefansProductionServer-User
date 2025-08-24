@@ -91,6 +91,7 @@ const MediaPanelImageCardOther = React.memo(
       fullScreenPreview({
         url: media.url,
         type,
+        userProfile: null,
         open: true,
         ref: newIndexId, // Use new index
         otherUrl: medias,

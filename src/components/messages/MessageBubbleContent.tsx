@@ -32,6 +32,7 @@ const MessageBubbleContent: React.FC<MessageBubbleContentProps> = ({
         url: file.url,
         type: file.type.includes("image") ? "image" : "video",
         open: true,
+        userProfile: null,
         ref: index,
         otherUrl:
           (attachment &&
@@ -40,7 +41,7 @@ const MessageBubbleContent: React.FC<MessageBubbleContentProps> = ({
         withOptions: true,
       });
     },
-    [attachment, fullScreenPreview],
+    [attachment, fullScreenPreview]
   );
   const handleRawPreview = useCallback(
     (file: MediaFile, index: number) => {
@@ -48,6 +49,7 @@ const MessageBubbleContent: React.FC<MessageBubbleContentProps> = ({
         url: file.previewUrl,
         type: file.type.includes("image") ? "image" : "video",
         open: true,
+        userProfile: null,
         ref: index,
         otherUrl: rawFiles.map((f) => ({
           url: f.previewUrl,
@@ -57,7 +59,7 @@ const MessageBubbleContent: React.FC<MessageBubbleContentProps> = ({
         withOptions: true,
       });
     },
-    [rawFiles, fullScreenPreview],
+    [rawFiles, fullScreenPreview]
   );
 
   return (

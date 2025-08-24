@@ -1,6 +1,6 @@
 "use client";
 
-import React, { memo } from "react";
+import React, { memo, useEffect, useMemo } from "react";
 import usePostComponent from "@/contexts/PostComponentPreview";
 import MediaPreviewModal from "../common/MediaPreviewModal";
 
@@ -15,15 +15,33 @@ const PostComponentPreview = memo(() => {
     userProfile,
     watermarkEnabled,
   } = usePostComponent();
+  const [rendered, setRendered] = React.useState(false);
 
+  const mediaItems = useMemo(() => otherUrl || [], [otherUrl]);
+  const userProfileOverlay = useMemo(() => userProfile, [userProfile]);
+  const initialIndex = useMemo(
+    () => (typeof objectRef === "number" ? objectRef : 0),
+    [objectRef]
+  );
+
+  useEffect(() => {
+    if (open) {
+      setRendered(true);
+    }
+    return () => {
+      setRendered(false);
+    };
+  }, [open]);
+
+  if (!rendered) return null;
   return (
     <MediaPreviewModal
       open={open}
       onClose={close}
-      mediaItems={otherUrl || []}
-      initialIndex={typeof objectRef === "number" ? objectRef : 0}
+      mediaItems={mediaItems}
+      initialIndex={initialIndex}
       username={username}
-      userProfile={userProfile}
+      userProfile={userProfileOverlay || null}
       watermarkEnabled={watermarkEnabled}
     />
   );

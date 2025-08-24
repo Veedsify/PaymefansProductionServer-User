@@ -1,11 +1,10 @@
-"use client";
-import { useCallback, useEffect, useRef, useState } from "react";
+"use client";;
+import { useEffect, useState } from "react";
 import { HiPlay } from "react-icons/hi";
 import usePostComponent from "@/contexts/PostComponentPreview";
 import Image from "next/image";
 import swal from "sweetalert";
 import { UserMediaProps } from "@/types/Components";
-import Link from "next/link";
 import { LucideLock } from "lucide-react";
 import { useRouter } from "next/navigation";
 import HLSVideoPlayer from "../sub_components/videoplayer";
@@ -89,6 +88,7 @@ const PostPageImage: React.FC<PostPageImageProps> = ({
       username,
       watermarkEnabled: showWaterMark,
       url: media.url,
+      userProfile: null,
       type: media.media_type,
       open: true,
       ref: indexId,

@@ -89,13 +89,13 @@ const WithdrawConfigPage = () => {
         url: `/withdraw/confirm`,
         method: "POST",
         withCredentials: true,
-        data: JSON.stringify({
+        data: {
           userId: user?.id,
           pin,
           action,
           amount: withdrawValues?.amountInNgn,
           bankId: withdrawValues?.userBank?.id,
-        }),
+        },
       });
 
       if (response.data.error) {
@@ -114,9 +114,8 @@ const WithdrawConfigPage = () => {
       }).then((willConfirm) => {
         if (willConfirm) {
           // Use Next.js router instead of window.location for better SPA behavior
-          clearWithdrawStore();
           router.push("/wallet/withdraw/history");
-          router.refresh();
+          clearWithdrawStore();
         }
       });
     } catch (error: any) {

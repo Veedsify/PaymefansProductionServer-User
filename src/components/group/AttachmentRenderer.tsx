@@ -35,6 +35,7 @@ const AttachmentRenderer: React.FC<AttachmentRendererProps> = ({
     fullScreenPreview({
       url: attachment.fileUrl,
       type: "image",
+      userProfile: null,
       open: true,
       ref: newIndex,
       otherUrl: allAttachments.map((file) => ({

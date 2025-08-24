@@ -13,15 +13,16 @@ interface PointsCountProps {
 const PointsCount = ({ user }: PointsCountProps) => {
   const updatePoints = usePointsStore((state) => state.updatePoints);
   const { isLoading, data } = useQuery({
-    queryKey: ["user"],
+    queryKey: ["userPoints", user?.id],
     queryFn: async () => {
       return await GetUserPointBalance(user.id);
     },
     staleTime: 1000,
+    enabled: !!user?.id, // Only run if user.id exists
   });
 
   useEffect(() => {
-    if (data) {
+    if (data?.data?.points) {
       updatePoints(data.data.points);
     }
   }, [data, updatePoints]);
@@ -35,7 +36,7 @@ const PointsCount = ({ user }: PointsCountProps) => {
 
   return (
     <h2 className="flex items-center mb-1 text-xl font-bold leading-none">
-      {data?.data.points.toLocaleString("en-Us")}
+      {data?.data?.points?.toLocaleString("en-Us") || "0"}
       <span className="ml-2">
         <Image
           width={20}

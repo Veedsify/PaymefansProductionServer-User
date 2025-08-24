@@ -317,6 +317,7 @@ const MediaPreviewModal = memo(
                           index={index}
                           onLoad={() => handleImageLoad(index)}
                           onError={() => handleImageError(index)}
+                          userProfile={userProfile}
                           shouldWatermark={watermarkEnabled}
                         />
                       ) : (

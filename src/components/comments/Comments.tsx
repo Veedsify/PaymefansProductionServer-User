@@ -81,7 +81,7 @@ const CommentsHolder = ({ post, postComments }: CommentsHolderProps) => {
       if (!cancelled && comments) {
         setHasMore(comments.hasMore);
         setPostComments((prev) =>
-          _.uniqBy([...prev, ...comments.data], "comment_id"),
+          _.uniqBy([...prev, ...comments.data], "comment_id")
         );
       }
       setLoading(false);
@@ -110,7 +110,7 @@ const CommentsHolder = ({ post, postComments }: CommentsHolderProps) => {
             method: "POST",
             credentials: "include",
             body: JSON.stringify({ commentId }),
-          },
+          }
         );
 
         if (response.ok) {
@@ -122,7 +122,7 @@ const CommentsHolder = ({ post, postComments }: CommentsHolderProps) => {
         console.error("Failed to track comment view:", error);
       }
     },
-    [viewedComments],
+    [viewedComments]
   );
 
   // Format date for comments
@@ -146,17 +146,18 @@ const CommentsHolder = ({ post, postComments }: CommentsHolderProps) => {
         type: "image",
       }));
       const currentIndex = comment?.attachment?.findIndex(
-        (item: any) => item.name === media.name,
+        (item: any) => item.name === media.name
       );
       fullScreenPreview({
         url: media.path,
         type: "image",
         open: true,
+        userProfile: null,
         otherUrl: allMedia as any,
         ref: currentIndex as number,
       });
     },
-    [fullScreenPreview],
+    [fullScreenPreview]
   );
 
   // Calculate height for vertical line (optional visual improvement)
