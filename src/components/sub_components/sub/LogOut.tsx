@@ -12,8 +12,7 @@ const LogoutButton = ({
 }) => {
   const router = useRouter();
   const LogOut = async () => {
-    document.cookie = `token=; expires=${new Date()}; path=/;`;
-    await axiosInstance.post("/logout", { username: user?.username });
+    await axiosInstance.post("/auth/logout", { username: user?.username });
     router.push("/login");
   };
 

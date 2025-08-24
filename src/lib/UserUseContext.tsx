@@ -6,7 +6,7 @@ import {
 } from "@/components/sub_components/sub/Socket";
 import { AuthUserProps } from "@/types/User";
 import axiosInstance from "@/utils/Axios";
-import { AxiosResponse } from "axios";
+import { AxiosError, AxiosResponse } from "axios";
 import { usePathname } from "next/navigation";
 import { ReactNode, useEffect, useRef } from "react";
 import { create } from "zustand";
@@ -46,12 +46,12 @@ export const UserContextProvider = ({ children }: UserContextProviderProps) => {
     }
     let intervalId: NodeJS.Timeout | undefined;
     async function fetchUser() {
-      const res: AxiosResponse<{ user: AuthUserProps }> =
-        await axiosInstance.get(`/auth/retrieve`, {
-          withCredentials: true,
-        });
+      try {
+        const res: AxiosResponse<{ user: AuthUserProps }> =
+          await axiosInstance.get(`/auth/retrieve`, {
+            withCredentials: true,
+          });
 
-      if (res.status === 200 && res.data?.user) {
         const user = res.data.user as AuthUserProps;
         const socket = connectSocket(user?.username);
         setUser(user);
@@ -60,13 +60,28 @@ export const UserContextProvider = ({ children }: UserContextProviderProps) => {
         }, 10_000);
         ref.current = 1;
         return;
+
+        // if (res.status === 401 && (isPostPage || isProfilePage)) {
+        //   // Set user to guest if on post or profile page
+        //   return;
+        // }
+      } catch (error) {
+        if (error instanceof AxiosError) {
+          if (error.response?.status === 401 && (isPostPage || isProfilePage)) {
+            axiosInstance
+              .post(`/auth/token/refresh`)
+              .then((res) => {
+                console.log("refresihing token");
+                return;
+              })
+              .catch(() => {
+                window.location.href = `/login?redirect=${location}`;
+                setUser(null);
+              });
+            return;
+          }
+        }
       }
-      if (res.status === 401 && (isPostPage || isProfilePage)) {
-        // Set user to guest if on post or profile page
-        return;
-      }
-      window.location.href = `/login?redirect=${location}`;
-      setUser(null);
     }
 
     fetchUser();

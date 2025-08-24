@@ -1,7 +1,9 @@
 "use client";
 import ROUTE from "@/config/routes";
+import axiosInstance from "@/utils/Axios";
 import { X } from "lucide-react";
 import { useState } from "react";
+import toast from "react-hot-toast";
 
 const AccountSuspendedSupportTicket = ({
   user,
@@ -23,24 +25,17 @@ const AccountSuspendedSupportTicket = ({
     setLoading(true);
     setError(null);
     try {
-      const response = await fetch(ROUTE.ACCOUNT_SUSPENDED_TICKET, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
+      const response = await axiosInstance.post(
+        ROUTE.ACCOUNT_SUSPENDED_TICKET,
+        {
           email: userData.email,
           name: userData.name,
           subject,
           message,
-        }),
-      });
+        }
+      );
 
-      if (!response.ok) {
-        throw new Error("Failed to submit ticket");
-      }
-
-      alert("Ticket submitted successfully!");
+      toast.success("Ticket submitted successfully!");
     } catch (error: any) {
       setError(error.message);
     } finally {

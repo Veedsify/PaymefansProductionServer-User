@@ -1,5 +1,5 @@
 import { AuthUserProps } from "@/types/User";
-import { cookies } from "next/headers";
+import { cookies, headers } from "next/headers";
 import { redirect } from "next/navigation";
 import axios, { AxiosResponse } from "axios";
 const getUserData = async (): Promise<Partial<AuthUserProps> | null> => {
@@ -18,15 +18,19 @@ const getUserData = async (): Promise<Partial<AuthUserProps> | null> => {
       },
     );
 
-    if (res.status === 200 && res.data?.user) {
-      return res.data.user as AuthUserProps;
-    }
-    if (res.status === 401) {
-      redirect("/login");
-    }
-    return null;
+    return res.data.user as AuthUserProps;
+
   } catch (error) {
-    redirect("/login");
+    axios
+      .post(`/auth/token/refresh`)
+      .then(() => {
+        console.log("refresihing token");
+        return;
+      })
+      .catch(() => {
+        redirect("/login");
+      });
+    return null;
   }
 };
 export default getUserData;

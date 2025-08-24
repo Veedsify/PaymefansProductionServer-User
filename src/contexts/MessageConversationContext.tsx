@@ -10,20 +10,12 @@ import {
 import { useUserAuthContext } from "@/lib/UserUseContext";
 import { getSocket } from "@/components/sub_components/sub/Socket";
 import { MESSAGE_CONFIG } from "@/config/config";
-import { getToken } from "@/utils/Cookie";
-import axios from "axios";
 import { useInfiniteQuery, useQueryClient } from "@tanstack/react-query";
+import axiosInstance from "@/utils/Axios";
 
 const MessageConversationContext = createContext<ReturnType<
   typeof useProvideConversations
 > | null>(null);
-
-const axiosInstance = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_TS_EXPRESS_URL,
-  headers: {
-    Authorization: `Bearer ${getToken()}`,
-  },
-});
 
 const fetchConversations = async (page: number) => {
   const res = await axiosInstance.get("/conversations/my-conversations", {

@@ -10,6 +10,7 @@ import toast from "react-hot-toast";
 import { useWithdrawStore } from "@/contexts/WithDrawContext";
 import { useRouter } from "next/navigation";
 import { useConfigContext } from "@/contexts/ConfigContext";
+import axiosInstance from "@/utils/Axios";
 
 // You can adjust or import this from a common place
 const FEE_PERCENTAGE = 0.25; // 20% fee
@@ -28,12 +29,14 @@ const WithdrawalInput = ({ points }: { points: number }) => {
     const fetchRates = async () => {
       setLoading(true);
       try {
-        const response = await fetch(ROUTE.GET_PLATFROM_EXCHANGE_RATE);
-        if (!response.ok) throw new Error("Failed to fetch exchange rates");
-        const data = await response.json();
+        const response = await axiosInstance.get(
+          ROUTE.GET_PLATFROM_EXCHANGE_RATE
+        );
+        const data = response.data;
         if (data.data.length) setRates(data.data);
       } catch (error) {
         setError(true);
+        throw new Error("Failed to fetch exchange rates");
       } finally {
         setLoading(false);
       }

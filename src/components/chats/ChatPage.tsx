@@ -26,6 +26,7 @@ import { reverse } from "lodash";
 import { getToken } from "@/utils/Cookie";
 import toast from "react-hot-toast";
 import { checkIfBlockedBy } from "@/utils/data/BlockUser";
+import axiosInstance from "@/utils/Axios";
 
 const ChatPage = ({ conversationId }: { conversationId: string }) => {
   const router = useRouter();
@@ -64,7 +65,7 @@ const ChatPage = ({ conversationId }: { conversationId: string }) => {
   const receiver = receiverData?.receiver;
   const profilePicture = useMemo(
     () => receiver?.profile_image || "/site/avatar.png",
-    [receiver],
+    [receiver]
   );
   if (!receiver && isError) {
     router.push("/messages");
@@ -319,28 +320,22 @@ const ChatPage = ({ conversationId }: { conversationId: string }) => {
   const searchForSpecificMessage = useCallback(
     async (messageId: string) => {
       try {
-        const response = await fetch(
-          `${process.env.NEXT_PUBLIC_TS_EXPRESS_URL}/conversations/search/messages/${conversationId}`,
-          {
-            method: "POST",
-            credentials: "include",
-            body: JSON.stringify({ q: messageId }),
-          },
+        const response = await axiosInstance.post(
+          `/conversations/search/messages/${conversationId}`,
+          { q: messageId }
         );
 
-        if (response.ok) {
-          const searchResult = await response.json();
-          return searchResult.messages?.find(
-            (msg: Message) =>
-              msg.message_id === messageId || String(msg.id) === messageId,
-          );
-        }
+        const searchResult = await response.data;
+        return searchResult.messages?.find(
+          (msg: Message) =>
+            msg.message_id === messageId || String(msg.id) === messageId
+        );
       } catch (error) {
         console.error("Error searching for specific message:", error);
       }
       return null;
     },
-    [conversationId],
+    [conversationId]
   );
 
   // Handle searched message from URL
