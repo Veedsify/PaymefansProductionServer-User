@@ -1,14 +1,30 @@
+import usePostComponent from "@/contexts/PostComponentPreview";
 import { LucideUser2 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import React, { useEffect } from "react";
 
 const UserProfileOverlay = ({
   userProfile,
 }: {
   userProfile: { username: string; name: string; avatar?: string } | null;
 }) => {
+  const ref = React.useRef<HTMLDivElement>(null);
+  const { close } = usePostComponent();
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (ref.current && ref.current.contains(event.target as Node)) {
+        close();
+      }
+    }
+    document.addEventListener("click", handleClickOutside);
+    return () => {
+      document.removeEventListener("click", handleClickOutside);
+    };
+  }, [close, ref]);
+
   return (
-    <div className="z-20 flex items-center gap-3 rounded-full">
+    <div className="z-20 flex items-center gap-3 rounded-full" ref={ref}>
       <Link href={`/${userProfile?.username}`}>
         {userProfile?.avatar ? (
           <Image

@@ -1,5 +1,5 @@
 {
-  "name": "PayMeFans - Creator Economy Platform",
+  "name": "PayMeFans - Support Your Favorite Creators",
   "short_name": "PayMeFans",
   "description": "Connect with your favorite creators and support them through exclusive content and direct payments",
   "start_url": "/",
@@ -30,49 +30,49 @@
       "purpose": "maskable any"
     },
     {
-      "src": "/icons/icon-144x144.png",
+      "src": "/icons/icon-144x144.svg",
       "sizes": "144x144",
       "type": "image/png",
       "purpose": "maskable any"
     },
     {
-      "src": "/icons/icon-152x152.png",
+      "src": "/icons/icon-144x144.svg",
       "sizes": "152x152",
       "type": "image/png",
       "purpose": "maskable any"
     },
     {
-      "src": "/icons/icon-192x192.png",
+      "src": "/icons/icon-144x144.svg",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "maskable any"
     },
     {
-      "src": "/icons/icon-384x384.png",
+      "src": "/icons/icon-144x144.svg",
       "sizes": "384x384",
       "type": "image/png",
       "purpose": "maskable any"
     },
     {
-      "src": "/icons/icon-512x512.png",
+      "src": "/icons/icon-144x144.svg",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "maskable any"
     },
     {
-      "src": "/icons/apple-touch-icon.png",
+      "src": "/icons/icon-144x144.svg",
       "sizes": "180x180",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "/icons/icon-maskable-192x192.png",
+      "src": "/icons/icon-144x144.svg",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "maskable"
     },
     {
-      "src": "/icons/icon-maskable-512x512.png",
+      "src": "/icons/icon-144x144.svg",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "maskable"

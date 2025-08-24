@@ -66,11 +66,11 @@ export const ImagePreview = memo(
               <Image
                 src={url.trim()}
                 alt={alt}
-                fill
                 priority
-                sizes="100vw"
                 quality={100}
-                className={`object-contain transition-opacity duration-200 ${
+                width={1920}
+                height={1920}
+                className={`object-contain w-full h-full transition-opacity duration-200 ${
                   status === "loading" ? "opacity-0" : "opacity-100"
                 }`}
                 onContextMenu={(e) => e.preventDefault()}

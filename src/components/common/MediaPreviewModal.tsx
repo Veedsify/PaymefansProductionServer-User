@@ -253,14 +253,8 @@ const MediaPreviewModal = memo(
             aria-modal="true"
             className="fixed inset-0 z-[9999] flex h-full w-full items-center justify-center bg-black"
             initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{
-              duration: shouldReduceMotion
-                ? 0
-                : MEDIA_CONSTANTS.ANIMATION_DURATION_SEC,
-              type: "spring",
-            }}
+            animate={{ opacity: 1, animationDuration: "200ms" }}
+            exit={{ opacity: 0, animationDuration: "200ms" }}
             onClick={(e) => {
               if (e.target === e.currentTarget) handleClose();
             }}

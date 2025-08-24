@@ -138,7 +138,7 @@ const VideoPlayer = ({
       });
 
       hls.on(Hls.Events.ERROR, (event, data) => {
-        console.error("HLS Error:", data);
+        console.log("HLS Error:", data);
       });
 
       return () => hls.destroy();
@@ -261,10 +261,10 @@ const VideoPlayer = ({
   const shouldLoop = Boolean(inView) && Boolean(autoPlay);
 
   return (
-    <div className="w-full flex items-center overflow-hidden bg-black">
+    <div className="w-full flex items-center overflow-hidden bg-black h-full">
       <div
         ref={intersectionRef}
-        className="relative group"
+        className="relative group h-full w-full"
         onClick={(e) => {
           if (showResolutionMenu) {
             setShowResolutionMenu(false);

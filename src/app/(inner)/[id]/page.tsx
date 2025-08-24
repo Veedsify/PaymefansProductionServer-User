@@ -87,8 +87,6 @@ const ProfilePage = () => {
   const [openTip, setOpenTip] = useState(false);
   const [isBlockedByUser, setIsBlockedByUser] = useState(false);
 
-  console.log("ProfilePage Userdata", userdata);
-
   const toggleTip = () => {
     setOpenTip(!openTip);
   };
