@@ -17,18 +17,20 @@ const getUserData = async (): Promise<Partial<AuthUserProps> | null> => {
         },
       },
     );
-
     return res.data.user as AuthUserProps;
-
   } catch (error) {
     axios
-      .post(`/auth/token/refresh`)
+      .post(`/auth/token/refresh`, {}, {
+        withCredentials: true,
+      })
       .then(() => {
         console.log("refresihing token");
         return;
       })
-      .catch(() => {
-        redirect("/login");
+      .catch((err) => {
+        console.log(err);
+        const loginUrl = new URL("/login");
+        redirect(loginUrl.toString());
       });
     return null;
   }

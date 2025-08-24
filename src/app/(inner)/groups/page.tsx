@@ -46,7 +46,7 @@ const Groups = () => {
 
   // Fetch available groups for search
   const { data: mainGroup, isLoading: isLoadingMainGroup } = useQuery({
-    queryKey: ["main-group", searchQuery],
+    queryKey: ["main-group"],
     queryFn: getMainGroup,
     enabled: !!user,
     staleTime: 1000 * 60 * 5, // 5 minutes
@@ -57,7 +57,7 @@ const Groups = () => {
     if (
       mainGroup?.groups?.id &&
       groupsData?.data?.userGroups?.some(
-        (group: GroupData) => group.id === mainGroup.groups.id,
+        (group: GroupData) => group.id === mainGroup.groups.id
       )
     ) {
       router.push(`/groups/${mainGroup.groups.id}`);
