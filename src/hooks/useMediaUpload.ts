@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef, useTransition, startTransition } from "react";
 import { useUserAuthContext } from "@/lib/UserUseContext";
 import { useChatStore } from "@/contexts/ChatContext";
 import { GetUploadUrl } from "@/utils/GetMediaUploadUrl";
@@ -17,6 +17,7 @@ export const useMediaUpload = () => {
   );
   const mediaFiles = useChatStore((state) => state.mediaFiles);
   const abortControllersRef = useRef<Map<string, AbortController>>(new Map());
+  const [isPending, startTransition] = useTransition();
 
   const uploadFile = useCallback(
     async (file: MediaFile) => {
@@ -52,7 +53,7 @@ export const useMediaUpload = () => {
 
         let attachment: Attachment | null = null;
 
-        // Progress and error callbacks that directly update the store
+        // Progress and error callbacks that use transitions to defer updates
         const setProgress = (
           progressObj:
             | { [key: string]: number }
@@ -64,7 +65,15 @@ export const useMediaUpload = () => {
               : progressObj[file.id];
 
           if (value !== undefined) {
-            updateMediaFileStatus(file.id, "uploading", value);
+            // Use transition for non-urgent progress updates
+            if (value % 10 === 0 || value === 100) {
+              // Only update every 10% or at completion to reduce frequency
+              updateMediaFileStatus(file.id, "uploading", value);
+            } else {
+              startTransition(() => {
+                updateMediaFileStatus(file.id, "uploading", value);
+              });
+            }
           }
         };
 
@@ -81,6 +90,7 @@ export const useMediaUpload = () => {
               : errorObj[file.id];
 
           if (hasError !== undefined && hasError) {
+            // Error updates are urgent, don't defer them
             updateMediaFileStatus(file.id, "error");
           }
         };
@@ -193,24 +203,26 @@ export const useMediaUpload = () => {
     });
   }, [mediaFiles]);
 
-  // Auto-upload when new media files are added
+  // Auto-upload when new media files are added (defer non-urgent checks)
   useEffect(() => {
-    const filesToUpload = mediaFiles.filter((file) => {
-      // Only upload files that are truly idle and not tracked
-      const shouldUpload =
-        file.uploadStatus === "idle" &&
-        !uploadTracker.has(file.id) &&
-        !file.attachment; // Don't re-upload files that already have attachments
+    startTransition(() => {
+      const filesToUpload = mediaFiles.filter((file) => {
+        // Only upload files that are truly idle and not tracked
+        const shouldUpload =
+          file.uploadStatus === "idle" &&
+          !uploadTracker.has(file.id) &&
+          !file.attachment; // Don't re-upload files that already have attachments
 
-      if (!shouldUpload && file.uploadStatus === "idle") {
-      }
+        if (!shouldUpload && file.uploadStatus === "idle") {
+        }
 
-      return shouldUpload;
-    });
+        return shouldUpload;
+      });
 
-    // Only upload files that haven't been processed
-    filesToUpload.forEach((file) => {
-      uploadFile(file);
+      // Only upload files that haven't been processed
+      filesToUpload.forEach((file) => {
+        uploadFile(file);
+      });
     });
   }, [mediaFiles, uploadFile]);
 
@@ -280,5 +292,6 @@ export const useMediaUpload = () => {
     hasUploadErrors,
     getCompletedAttachments,
     getUploadProgress,
+    isPending, // Expose pending state for UI feedback
   };
 };

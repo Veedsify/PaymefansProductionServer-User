@@ -7,6 +7,8 @@ import React, {
   useEffect,
   Dispatch,
   SetStateAction,
+  useTransition,
+  startTransition,
 } from "react";
 import { useUserAuthContext } from "@/lib/UserUseContext";
 import { POST_CONFIG } from "@/config/config";
@@ -39,32 +41,67 @@ function PostMediaPreview({
   const [uploadError, setUploadError] = useState<{ [key: string]: boolean }>(
     {}
   );
+  const [isPending, startTransition] = useTransition();
   const { setMediaUploadComplete } = usePostMediaUploadContext();
   const { user } = useUserAuthContext();
 
   const handleMediaRemove = useCallback(
     (id: string, type: string) => {
-      setMedia((prev) => prev.filter((file) => file.id !== id));
-      removeThisMedia(id, type);
+      startTransition(() => {
+        setMedia((prev) => prev.filter((file) => file.id !== id));
+        removeThisMedia(id, type);
+      });
     },
     [removeThisMedia]
   );
 
   const tusUploader = useCallback(
-    (file: File, uploadUrl: string, id: string) =>
-      UploadWithTus({ file, uploadUrl, id, setProgress, setUploadError }),
+    (file: File, uploadUrl: string, id: string) => {
+      const deferredSetProgress = (progressObj: any) => {
+        startTransition(() => {
+          setProgress(progressObj);
+        });
+      };
+
+      const deferredSetUploadError = (errorObj: any) => {
+        startTransition(() => {
+          setUploadError(errorObj);
+        });
+      };
+
+      return UploadWithTus({
+        file,
+        uploadUrl,
+        id,
+        setProgress: deferredSetProgress,
+        setUploadError: deferredSetUploadError,
+      });
+    },
     []
   );
 
   const imageUploader = useCallback(
-    (file: File, uploadUrl: string, id: string) =>
-      UploadImageToCloudflare({
+    (file: File, uploadUrl: string, id: string) => {
+      const deferredSetProgress = (progressObj: any) => {
+        startTransition(() => {
+          setProgress(progressObj);
+        });
+      };
+
+      const deferredSetUploadError = (errorObj: any) => {
+        startTransition(() => {
+          setUploadError(errorObj);
+        });
+      };
+
+      return UploadImageToCloudflare({
         file,
-        setProgress,
-        setUploadError,
+        setProgress: deferredSetProgress,
+        setUploadError: deferredSetUploadError,
         id,
         uploadUrl,
-      }),
+      });
+    },
     []
   );
 
@@ -83,7 +120,10 @@ function PostMediaPreview({
         return;
       }
       const newMediaItems = files.map((file) => ({ file, id: uuid() }));
-      setMedia((prev) => [...prev, ...newMediaItems]);
+
+      startTransition(() => {
+        setMedia((prev) => [...prev, ...newMediaItems]);
+      });
       try {
         try {
           for (const [index, mediaItem] of newMediaItems.entries()) {
@@ -193,11 +233,14 @@ function PostMediaPreview({
   }, [mediaMap]);
 
   useEffect(() => {
-    const anyUploading = Object.values(progress).some(
-      (value) => value < 100 && value >= 0
-    );
-    const hasPendingUploads = Object.keys(progress).length !== media.length;
-    setIsSubmitting(anyUploading || (hasPendingUploads && media.length > 0));
+    startTransition(() => {
+      const anyUploading = Object.values(progress).some(
+        (value) => value < 100 && value >= 0
+      );
+      const hasPendingUploads = Object.keys(progress).length !== media.length;
+      setIsSubmitting(anyUploading || (hasPendingUploads && media.length > 0));
+    });
+
     return () => {
       setIsSubmitting(false);
     };
@@ -205,7 +248,11 @@ function PostMediaPreview({
 
   return (
     <div className="mb-5">
-      <div className="p-4 select-none grid grid-cols-4 gap-3 md:grid-cols-4 lg:grid-cols-6">
+      <div
+        className={`p-4 select-none grid grid-cols-4 gap-3 md:grid-cols-4 lg:grid-cols-6 ${
+          isPending ? "opacity-90 transition-opacity" : ""
+        }`}
+      >
         {mediaMap.map((file) => (
           <div className="relative" key={file.id}>
             <Media

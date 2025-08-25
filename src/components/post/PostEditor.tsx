@@ -5,6 +5,8 @@ import React, {
   useMemo,
   useState,
   useRef,
+  useTransition,
+  startTransition,
 } from "react";
 import { useUserAuthContext } from "@/lib/UserUseContext";
 import {
@@ -51,6 +53,7 @@ const PostEditor = React.memo(({ posts }: PostEditorProps) => {
   const [price, setPrice] = useState<number>(0);
   const [nairaDisplayValue, setNairaDisplayValue] = useState<string>("");
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+  const [isPending, startTransition] = useTransition();
   const { setVisibility, visibility, setPostText, postText } =
     useNewPostStore();
   const [editedMedia, setEditedMedia] = useState<UserMediaProps[]>([]);
@@ -152,29 +155,33 @@ const PostEditor = React.memo(({ posts }: PostEditorProps) => {
         setWordLimit(1000 - text.length);
       }
 
+      // Update content immediately for responsive typing
       setContent(text);
       setPostText(text);
       setCursorPosition(cursorPos);
 
-      const textBeforeCursor = text.substring(0, cursorPos);
-      const lastAtIndex = textBeforeCursor.lastIndexOf("@");
-      if (lastAtIndex !== -1) {
-        const textAfterAt = textBeforeCursor.substring(lastAtIndex + 1);
-        const hasSpaceAfterAt =
-          textAfterAt.includes(" ") || textAfterAt.includes("\n");
-        // Show mention suggestions if not followed by space/new line
-        if (!hasSpaceAfterAt && textAfterAt.length <= 20) {
-          setShowMentions(true);
-          setMentionQuery(textAfterAt);
-          setMentionStartPos(lastAtIndex);
+      // Defer non-critical mention processing
+      startTransition(() => {
+        const textBeforeCursor = text.substring(0, cursorPos);
+        const lastAtIndex = textBeforeCursor.lastIndexOf("@");
+        if (lastAtIndex !== -1) {
+          const textAfterAt = textBeforeCursor.substring(lastAtIndex + 1);
+          const hasSpaceAfterAt =
+            textAfterAt.includes(" ") || textAfterAt.includes("\n");
+          // Show mention suggestions if not followed by space/new line
+          if (!hasSpaceAfterAt && textAfterAt.length <= 20) {
+            setShowMentions(true);
+            setMentionQuery(textAfterAt);
+            setMentionStartPos(lastAtIndex);
+          } else {
+            setShowMentions(false);
+            setMentionQuery("");
+          }
         } else {
           setShowMentions(false);
           setMentionQuery("");
         }
-      } else {
-        setShowMentions(false);
-        setMentionQuery("");
-      }
+      });
     },
     [setPostText]
   );
@@ -285,26 +292,41 @@ const PostEditor = React.memo(({ posts }: PostEditorProps) => {
 
   // Media attachments
   const handleMediaAttachment = useCallback((image: UploadedImageProp) => {
-    setMedia((prevMedia) => [...(prevMedia || []), image]);
+    startTransition(() => {
+      setMedia((prevMedia) => [...(prevMedia || []), image]);
+    });
   }, []);
 
-  const removeThisMedia = (id: string, type: string) => {
-    setMedia((prevMedia) =>
-      prevMedia ? prevMedia.filter((file) => file.fileId !== id) : null
-    );
-    const removeId = media?.find((med) => med.fileId === id);
-    if (removeId) {
-      setRemovedIds((prevIds) => [...prevIds, { id: removeId.id, type }]);
-    }
-  };
+  const removeThisMedia = useCallback(
+    (id: string, type: string) => {
+      startTransition(() => {
+        setMedia((prevMedia) =>
+          prevMedia ? prevMedia.filter((file) => file.fileId !== id) : null
+        );
+        const removeId = media?.find((med) => med.fileId === id);
+        if (removeId) {
+          setRemovedIds((prevIds) => [...prevIds, { id: removeId.id, type }]);
+        }
+      });
+    },
+    [media]
+  );
 
   // Remove existing media
-  const removeExistingMedia = (mediaId: string, mediaType: string) => {
-    setEditedMedia((prevMedia) =>
-      prevMedia.filter((item) => item.media_id !== mediaId)
-    );
-    setRemovedIds((prevIds) => [...prevIds, { id: mediaId, type: mediaType }]);
-  };
+  const removeExistingMedia = useCallback(
+    (mediaId: string, mediaType: string) => {
+      startTransition(() => {
+        setEditedMedia((prevMedia) =>
+          prevMedia.filter((item) => item.media_id !== mediaId)
+        );
+        setRemovedIds((prevIds) => [
+          ...prevIds,
+          { id: mediaId, type: mediaType },
+        ]);
+      });
+    },
+    []
+  );
 
   // Update audience
   const updatePostAudience = useCallback(
@@ -454,14 +476,18 @@ const PostEditor = React.memo(({ posts }: PostEditorProps) => {
 
   return (
     <>
-      <div className="relative p-4 md:p-8 dark:text-white">
+      <div
+        className={`relative p-4 md:p-8 dark:text-white ${
+          isPending ? "opacity-95 transition-opacity" : ""
+        }`}
+      >
         <div className="flex items-center mb-6">
           <PostCancel />
           <button
             onClick={handlePostSubmit}
-            disabled={isSubmitting}
+            disabled={isSubmitting || isPending}
             className={`text-white p-2 px-8 rounded ml-auto text-sm font-semibold transition-all duration-200 transform ${
-              isSubmitting
+              isSubmitting || isPending
                 ? "bg-gray-400 cursor-not-allowed opacity-50 scale-95"
                 : "bg-primary-dark-pink hover:bg-primary-dark-pink/90 cursor-pointer shadow-lg hover:shadow-xl hover:scale-105 active:scale-95"
             }`}
