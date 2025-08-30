@@ -1,7 +1,7 @@
 "use client";
 import { countries } from "@/lib/Locations";
 import { useUser } from "@/lib/UserContext";
-import { UserRegisterType } from "@/types/User";
+import { UserRegisterType } from "@/features/user/types/user";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";

@@ -1,9 +1,9 @@
 "use client";
-import HookupSubscription from "@/components/sub_components/HookupSubscription";
+import HookupSubscription from "@/features/models/comps/HookupSubscription";
 import { LucideArrowDown, LucideLoader, LucideSearch } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useHookups } from "@/hooks/queries/useHookups";
-import { HookUpLoader } from "@/components/loaders.tsx/ModelLoader";
+import { HookUpLoader } from "@/components/common/loaders/ModelLoader";
 
 export interface HookupProps {
   distance?: number; // Distance in km (optional)

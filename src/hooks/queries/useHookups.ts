@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { shuffle, uniqBy } from "lodash";
-import { modelsService } from "@/services/modelsService";
+import { modelsService } from "@/features/models/services/ModelsService";
 
 interface UseHookupsOptions {
   staleTime?: number;

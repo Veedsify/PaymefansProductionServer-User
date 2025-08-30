@@ -1,4 +1,4 @@
-import { AuthUserProps } from "@/types/User";
+import { AuthUserProps } from "@/features/user/types/user";
 import axios from "axios";
 import { getToken } from "./Cookie";
 import { PostData } from "@/types/Components";

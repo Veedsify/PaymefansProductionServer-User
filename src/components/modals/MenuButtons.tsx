@@ -12,7 +12,7 @@ import {
 import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import PostShareModal from "../post/PostShareComponent";
+import PostShareModal from "@/features/post/PostShareComponent";
 const MenuButtons = () => {
   const pathname = usePathname();
 

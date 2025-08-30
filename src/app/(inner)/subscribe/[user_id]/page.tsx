@@ -1,10 +1,10 @@
-"use client";;
-import { getSocket } from "@/components/sub_components/sub/Socket";
-import { useUserAuthContext } from "@/lib/UserUseContext";
+"use client";
+import { getSocket } from "@/components/common/Socket";
+import { useAuthContext } from "@/contexts/UserUseContext";
 import { SubscribeToUser } from "@/utils/data/SubscribeToUser";
 import Image from "next/image";
 import { useParams, useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useLayoutEffect, useState } from "react";
 import toast from "react-hot-toast";
 import swal from "sweetalert";
 import numeral from "numeral";
@@ -42,18 +42,17 @@ type ProfileUser = {
 };
 
 const Subscribe = () => {
-  const { user } = useUserAuthContext();
+  const { user } = useAuthContext();
   const params = useParams();
   const [profileUser, setProfileUser] = useState<ProfileUser>();
+  const [showSubscribe, setShowSubscribe] = useState(false);
   const router = useRouter();
-  const points = usePointsStore((state) => state.points);
   const socket = getSocket();
   if (user?.user_id === params.user_id) {
     router.push("/profile");
   }
 
-  useEffect(() => {
-    document.title = "Subscribe";
+  useLayoutEffect(() => {
     const fetchUserSubscription = async () => {
       try {
         const response = await axiosInstance.post(
@@ -63,13 +62,11 @@ const Subscribe = () => {
             withCredentials: true,
           },
         );
+        console.log(response.data);
         if (response.data.status === false) {
           router.push("/404");
         }
-
-        if (!response.data.data?.Model) {
-          router.push(`/${response.data.data.username}`);
-        }
+        setShowSubscribe(true);
         setProfileUser(response.data.data);
       } catch (err) {
         console.log(err);
@@ -110,6 +107,10 @@ const Subscribe = () => {
       });
     }
   };
+
+  if (!showSubscribe) {
+    return false;
+  }
 
   return (
     <div className="flex flex-col items-center justify-center p-4 mb-20 lg:mb-4">

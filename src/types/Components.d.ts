@@ -1,5 +1,5 @@
 import React, { ChangeEvent, ReactNode, SetStateAction } from "react";
-import { AuthUserProps, ProfileUserProps } from "./User";
+import { AuthUserProps, ProfileUserProps } from "../features/user/types/user";
 import { LastMessage } from "./Conversations";
 import { StoryType } from "@/contexts/StoryContext";
 

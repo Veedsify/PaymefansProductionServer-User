@@ -3,7 +3,7 @@ import { DyteProvider, useDyteClient } from "@dytesdk/react-web-core";
 import { useCallback, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
 import axios from "axios";
-import VideoStreamer from "@/components/video/VideoStreamer";
+import VideoStreamer from "@/features/media/VideoStreamer";
 
 const ViewStream = () => {
   const [meeting, initMeeting] = useDyteClient();

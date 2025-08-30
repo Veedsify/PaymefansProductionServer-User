@@ -1,6 +1,6 @@
-import ModelsPageSearch from "@/components/models/ModelsPageSearch";
-import ModelsSubscription from "@/components/sub_components/ModelsSubscription";
-import { AllModelsProps, AuthUserProps } from "@/types/User";
+import ModelsPageSearch from "@/features/models/comps/ModelsPageSearch";
+import ModelsSubscription from "@/features/models/comps/ModelsSubscription";
+import { AllModelsProps, AuthUserProps } from "@/features/user/types/user";
 import getSideModels from "@/utils/data/GetSideModels";
 import getUserData from "@/utils/data/UserData";
 import { LucideArrowUp, LucideSearch } from "lucide-react";

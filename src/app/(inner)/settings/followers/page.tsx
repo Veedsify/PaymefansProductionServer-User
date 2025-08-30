@@ -1,5 +1,5 @@
-import FollowersDisplay from "@/components/route_component/FollowersDisplay";
-import UserFollowComp from "@/components/sub_components/UserFollowComp";
+import FollowersDisplay from "@/features/user/comps/FollowersDisplay";
+import UserFollowComp from "@/features/user/comps/UserFollowComp";
 
 function page() {
     return (

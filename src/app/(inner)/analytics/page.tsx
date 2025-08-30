@@ -1,5 +1,5 @@
 "use client";
-import { useUserAuthContext } from "@/lib/UserUseContext";
+import { useAuthContext } from "@/contexts/UserUseContext";
 import { useRouter } from "next/navigation";
 import { ChangeEvent, ReactNode, useEffect } from "react";
 import React, { useState } from "react";
@@ -68,7 +68,7 @@ const timeRangeOptions = [
 ];
 
 export default function Analytics() {
-  const { user } = useUserAuthContext();
+  const { user } = useAuthContext();
   const router = useRouter();
   const [timeRange, setTimeRange] = useState<TimeRangeKey>("7days");
 
@@ -84,7 +84,7 @@ export default function Analytics() {
       queryKey: ["analytics", "account-growth", timeRange],
       queryFn: () => fetchAccountGrowthData(timeRange),
       staleTime: 5 * 60 * 1000, // 5 minutes
-    }
+    },
   );
 
   const { data: engagementData = [], isLoading: isLoadingEngagement } =
@@ -152,8 +152,8 @@ export default function Analytics() {
             trend > 0
               ? "text-green-500"
               : trend < 0
-              ? "text-red-500"
-              : "text-gray-500"
+                ? "text-red-500"
+                : "text-gray-500"
           }`}
         >
           {trend > 0 ? "+" : ""}
@@ -253,7 +253,7 @@ export default function Analytics() {
                 <>
                   {new Date(user?.created_at as Date).toLocaleDateString(
                     "en-US",
-                    { day: "numeric", month: "short", year: "numeric" }
+                    { day: "numeric", month: "short", year: "numeric" },
                   )}{" "}
                   - Now
                 </>
@@ -343,18 +343,18 @@ export default function Analytics() {
                 {timeRange === "24hrs"
                   ? "24 Hours"
                   : timeRange === "48hrs"
-                  ? "48 Hours"
-                  : timeRange === "3days"
-                  ? "3 Days"
-                  : timeRange === "7days"
-                  ? "7 Days"
-                  : timeRange === "1month"
-                  ? "Month"
-                  : timeRange === "3months"
-                  ? "3 Months"
-                  : timeRange === "6months"
-                  ? "6 Months"
-                  : "All Time"}
+                    ? "48 Hours"
+                    : timeRange === "3days"
+                      ? "3 Days"
+                      : timeRange === "7days"
+                        ? "7 Days"
+                        : timeRange === "1month"
+                          ? "Month"
+                          : timeRange === "3months"
+                            ? "3 Months"
+                            : timeRange === "6months"
+                              ? "6 Months"
+                              : "All Time"}
               </span>
             </div>
           </div>
@@ -454,8 +454,7 @@ export default function Analytics() {
                               className="object-cover w-full h-full rounded"
                               onError={(e: any) => {
                                 e.target.onerror = null;
-                                e.target.src =
-                                  "/site/banner.png";
+                                e.target.src = "/site/banner.png";
                               }}
                             />
                           </div>

@@ -1,25 +1,17 @@
-import { ProfileUserProps } from "@/types/User";
-import { getToken } from "../Cookie";
-import axios from "axios";
+import { ProfileUserProps } from "@/features/user/types/user";
 import axiosInstance from "../Axios";
+import { fmt } from "@/constants/path";
 
 type getUserProfileProps = {
   user_id: string;
+  viewerId: number | null;
 };
 
-const getUserProfile = async ({ user_id }: getUserProfileProps) => {
+const getUserProfile = async ({ user_id, viewerId }: getUserProfileProps) => {
   const username = user_id.startsWith("@") ? user_id : `@${user_id}`;
-  const url = `/profile/user?username=${username}`;
-  try {
-    const res = await axiosInstance.post(url,{username});
-    const data = res.data;
-    if (data.status) {
-      return data.user as ProfileUserProps;
-    }
-    return null;
-  } catch (error) {
-    throw new Error("Failed to fetch user profile");
-  }
+  const url = fmt(`/profile/user?username=%s`, username);
+  const res = await axiosInstance.post(url, { username, viewerId });
+  return res.data;
 };
 
 export default getUserProfile;

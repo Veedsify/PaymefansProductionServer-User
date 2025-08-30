@@ -7,7 +7,7 @@ import { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { LOGIN_CONFIG } from "@/config/config";
 import axios from "axios";
-import ParentalGuide from "@/components/common/ParentalGuide";
+import ParentalGuide from "@/components/common/global/ParentalGuide";
 
 const Login = () => {
   const { setUser } = getUser();

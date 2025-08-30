@@ -14,11 +14,11 @@ import { getToken } from "./Cookie";
 import toast from "react-hot-toast";
 import { usePathname, useRouter } from "next/navigation";
 import swal from "sweetalert";
-import { useUserAuthContext } from "@/lib/UserUseContext";
+import { useAuthContext } from "@/contexts/UserUseContext";
 import { POST_CONFIG } from "@/config/config";
 import { useQueryClient } from "@tanstack/react-query";
 const QuickPostActionHooks = ({ options }: QuickPostActionsProps) => {
-  const { user } = useUserAuthContext();
+  const { user, isGuest } = useAuthContext();
   const queryClient = useQueryClient();
   const router = useRouter();
   const path = usePathname();
@@ -35,7 +35,7 @@ const QuickPostActionHooks = ({ options }: QuickPostActionsProps) => {
         try {
           toast.loading(POST_CONFIG.POST_DELETING_STATUS);
           const deletePost = await axiosInstance.delete(
-            `/post/${options.post_id}`
+            `/post/${options.post_id}`,
           );
           if (deletePost.status === 200) {
             toast.dismiss();
@@ -103,7 +103,7 @@ const QuickPostActionHooks = ({ options }: QuickPostActionsProps) => {
     // Add dynamic show/hide for price input
     const visibility = modal.querySelector("#visibility") as HTMLSelectElement;
     const priceInputContainer = modal.querySelector(
-      "#price-input-container"
+      "#price-input-container",
     ) as HTMLDivElement;
 
     visibility.addEventListener("change", () => {
@@ -126,7 +126,7 @@ const QuickPostActionHooks = ({ options }: QuickPostActionsProps) => {
           `/post/update/audience/${options.post_id}`,
           {
             visibility: visibility.value,
-          }
+          },
         );
         if (setVisibility.status === 200) {
           toast.success(POST_CONFIG.QUICK_ACTION_CONFIG.VISIBILITY_SUCCESSFUL);
@@ -212,7 +212,7 @@ const QuickPostActionHooks = ({ options }: QuickPostActionsProps) => {
     try {
       const repost = await axiosInstance.post(
         `/post/repost/${options.post_id}`,
-        {}
+        {},
       );
       if (repost.status === 200 && repost.data.error === false) {
         toast.success(repost.data.message, {
@@ -263,22 +263,19 @@ const QuickPostActionHooks = ({ options }: QuickPostActionsProps) => {
   ].filter((option) => option !== null);
 
   const publicOptions = [
-    {
-      name: "Repost",
-      icon: <Repeat2 className="mr-2" size={16} />,
-      func: repostThisPost,
-    },
+    !isGuest
+      ? {
+          name: "Repost",
+          icon: <Repeat2 className="mr-2" size={16} />,
+          func: repostThisPost,
+        }
+      : null,
     {
       name: "Share",
       icon: <LucideShare className="mr-2" size={16} />,
       func: ShareThisPost,
     },
-    // {
-    //     name: "Hide",
-    //     icon: <LucideEyeOff className="mr-2" size={16}/>,
-    //     link: "/edit-post",
-    // },
-  ] as {
+  ].filter((option) => option !== null) as {
     name: string;
     icon: React.ReactNode;
     link?: string;

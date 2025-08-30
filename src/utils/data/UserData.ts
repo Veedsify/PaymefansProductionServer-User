@@ -1,12 +1,8 @@
-import { AuthUserProps } from "@/types/User";
-import { cookies, headers } from "next/headers";
-import { redirect } from "next/navigation";
+import { AuthUserProps } from "@/features/user/types/user";
+import { cookies } from "next/headers";
 import axios, { AxiosResponse } from "axios";
 const getUserData = async (): Promise<Partial<AuthUserProps> | null> => {
   const token = (await cookies()).get("token");
-  if (!token) {
-    redirect("/login");
-  }
   try {
     const res: AxiosResponse<{ user: AuthUserProps }> = await axios.get(
       `${process.env.NEXT_PUBLIC_TS_EXPRESS_URL}/auth/retrieve`,
@@ -19,20 +15,14 @@ const getUserData = async (): Promise<Partial<AuthUserProps> | null> => {
     );
     return res.data.user as AuthUserProps;
   } catch (error) {
-    axios
-      .post(`/auth/token/refresh`, {}, {
-        withCredentials: true,
-      })
-      .then(() => {
-        console.log("refresihing token");
-        return;
-      })
-      .catch((err) => {
-        console.log(err);
-        const loginUrl = new URL("/login");
-        redirect(loginUrl.toString());
-      });
-    return null;
+    return {
+      email: "Guest",
+      id: 0,
+      name: "Guest",
+      fullname: "Guest User",
+      active_status: true,
+      username: "@guest",
+    };
   }
 };
 export default getUserData;

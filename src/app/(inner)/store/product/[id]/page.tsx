@@ -11,9 +11,9 @@ import {
 import { useParams, useSearchParams } from "next/navigation";
 import { Product } from "@/types/Components";
 import fetchSingleProduct from "@/utils/data/FetchSingleProduct";
-import CartIcon from "@/components/sub_components/CartIcon";
+import CartIcon from "@/components/common/icons/CartIcon";
 import numeral from "numeral";
-import Loader from "@/components/lib_components/LoadingAnimation";
+import Loader from "@/components/common/loaders/LoadingAnimation";
 import Link from "next/link";
 import { useCartStore } from "@/contexts/StoreContext";
 import { useWishlistStore } from "@/contexts/WishlistContext";

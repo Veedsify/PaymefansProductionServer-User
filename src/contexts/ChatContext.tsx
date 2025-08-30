@@ -1,13 +1,11 @@
 import { MediaFile, Message, Attachment } from "@/types/Components";
 import { uniqBy } from "lodash";
 import { create } from "zustand";
-import _ from "lodash";
-
 interface ChatState {
   messages: Message[];
   isTyping: boolean;
   mediaFiles: MediaFile[];
-  setMediaFiles?: (mediaFiles: MediaFile) => void;
+  setMediaFiles?: (mediaFiles: MediaFile[]) => void;
   removeMediaFile: (fileKey: string) => void;
   updateMediaFileStatus: (
     fileId: string,
@@ -22,13 +20,11 @@ interface ChatState {
   resetAllMedia: () => void;
   resetMessages: () => void;
 }
-
 function setIsTyping(set: (fn: (state: ChatState) => ChatState) => void) {
   return (isTyping: boolean) => {
     set((state) => ({ ...state, isTyping }));
   };
 }
-
 function paginateMessages(set: (fn: (state: ChatState) => ChatState) => void) {
   return (newMessages: Message[]) => {
     if (!newMessages) return;
@@ -41,7 +37,6 @@ function paginateMessages(set: (fn: (state: ChatState) => ChatState) => void) {
     }));
   };
 }
-
 function addNewMessage(set: (fn: (state: ChatState) => ChatState) => void) {
   return (newMessage: Message) => {
     set((state) => ({
@@ -50,23 +45,14 @@ function addNewMessage(set: (fn: (state: ChatState) => ChatState) => void) {
     }));
   };
 }
-
 function setMediaFiles(
   set: (fn: (state: ChatState) => ChatState) => void
-): (mediaFiles: MediaFile) => void {
-  return (mediaFiles: MediaFile) => {
-    console.log("➕ Adding new media file:", {
-      id: mediaFiles.id,
-      type: mediaFiles.type,
-      status: mediaFiles.uploadStatus || "idle",
-    });
-
+): (mediaFiles: MediaFile[]) => void {
+  return (mediaFiles: MediaFile[]) => {
     set((state) => {
       const newFiles = state.mediaFiles
-        ? [...state.mediaFiles, mediaFiles]
-        : [mediaFiles];
-
-      console.log("📁 Total media files:", newFiles.length);
+        ? [...state.mediaFiles, ...mediaFiles]
+        : mediaFiles;
       return {
         ...state,
         mediaFiles: newFiles,
@@ -74,7 +60,6 @@ function setMediaFiles(
     });
   };
 }
-
 function updateSeenMessages(
   set: (fn: (state: ChatState) => ChatState) => void
 ): (messageIds: string[]) => void {
@@ -89,13 +74,10 @@ function updateSeenMessages(
     }));
   };
 }
-
 function removeMediaFile(
   set: (fn: (state: ChatState) => ChatState) => void
 ): (fileKey: string) => void {
   return (fileKey: string) => {
-    console.log("🗑️ Removing media file:", fileKey);
-
     set((state) => {
       // Find the file to be removed and clean up its blob URL
       const fileToRemove = state.mediaFiles.find((file) => file.id === fileKey);
@@ -105,7 +87,6 @@ function removeMediaFile(
         fileToRemove.previewUrl.startsWith("blob:")
       ) {
         URL.revokeObjectURL(fileToRemove.previewUrl);
-        console.log("🧹 Cleaned up blob URL:", fileToRemove.previewUrl);
       }
       if (
         fileToRemove &&
@@ -113,13 +94,10 @@ function removeMediaFile(
         fileToRemove.posterUrl.startsWith("blob:")
       ) {
         URL.revokeObjectURL(fileToRemove.posterUrl);
-        console.log("🧹 Cleaned up poster blob URL:", fileToRemove.posterUrl);
       }
-
       const filteredFiles = state.mediaFiles.filter(
         (file) => file.id !== fileKey
       );
-      console.log("📁 Remaining media files:", filteredFiles.length);
       return {
         ...state,
         mediaFiles: filteredFiles,
@@ -127,7 +105,6 @@ function removeMediaFile(
     });
   };
 }
-
 function resetMessages(
   set: (fn: (state: ChatState) => ChatState) => void
 ): () => void {
@@ -138,7 +115,6 @@ function resetMessages(
     }));
   };
 }
-
 function updateMediaFileStatus(
   set: (fn: (state: ChatState) => ChatState) => void
 ): (
@@ -148,18 +124,10 @@ function updateMediaFileStatus(
   attachment?: Attachment
 ) => void {
   return (fileId, status, progress, attachment) => {
-    console.log("🔄 Updating media file status:", {
-      fileId,
-      status,
-      progress,
-      hasAttachment: !!attachment,
-    });
-
     return set((state) => {
       const updatedFiles = state.mediaFiles.map((file) => {
         if (file.id === fileId) {
           const oldStatus = file.uploadStatus;
-
           // CRITICAL: Never reset completed files back to idle or uploading
           if (
             oldStatus === "completed" &&
@@ -172,7 +140,6 @@ function updateMediaFileStatus(
             });
             return file; // Return unchanged
           }
-
           // Don't allow backwards progress for uploading files
           if (oldStatus === "uploading" && status === "idle") {
             console.warn("🚫 Prevented reset of uploading file back to idle:", {
@@ -182,7 +149,6 @@ function updateMediaFileStatus(
             });
             return file; // Return unchanged
           }
-
           const newFile = {
             ...file,
             uploadStatus: status,
@@ -190,19 +156,10 @@ function updateMediaFileStatus(
               progress !== undefined ? progress : file.uploadProgress,
             attachment: attachment || file.attachment,
           };
-
-          console.log("📝 File status change:", {
-            fileId,
-            from: oldStatus,
-            to: status,
-            progress: progress,
-          });
-
           return newFile;
         }
         return file;
       });
-
       return {
         ...state,
         mediaFiles: updatedFiles,
@@ -210,25 +167,20 @@ function updateMediaFileStatus(
     });
   };
 }
-
 function resetAllMedia(
   set: (fn: (state: ChatState) => ChatState) => void
 ): () => void {
   return () => {
-    console.log("🔄 Resetting all media files");
     return set((state) => {
       // Clean up all blob URLs before resetting
       state.mediaFiles.forEach((file) => {
         if (file.previewUrl && file.previewUrl.startsWith("blob:")) {
           URL.revokeObjectURL(file.previewUrl);
-          console.log("🧹 Cleaned up blob URL:", file.previewUrl);
         }
         if (file.posterUrl && file.posterUrl.startsWith("blob:")) {
           URL.revokeObjectURL(file.posterUrl);
-          console.log("🧹 Cleaned up poster blob URL:", file.posterUrl);
         }
       });
-
       return {
         ...state,
         mediaFiles: [],
@@ -236,7 +188,6 @@ function resetAllMedia(
     });
   };
 }
-
 export const useChatStore = create<ChatState>((set) => ({
   messages: [],
   isTyping: false,

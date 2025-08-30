@@ -1,11 +1,11 @@
 import getAllPoints from "@/utils/data/GetPoints";
-import PointsBuy from "@/components/sub_components/Points";
+import PointsBuy from "@/features/points/Points";
 import Image from "next/image";
 import Link from "next/link";
 import { formatDate } from "@/utils/FormatDate";
 import { LucideEye, LucideLock, LucideUsers } from "lucide-react";
-import QuickPostActions from "@/components/sub_components/QuickPostActions";
-import PostPageImage from "@/components/post/PostPageImage";
+import QuickPostActions from "@/features/post/QuickPostActions";
+import PostPageImage from "@/features/post/PostPageImage";
 import React from "react";
 import { cookies } from "next/headers";
 import axios from "axios";

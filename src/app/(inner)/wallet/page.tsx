@@ -1,8 +1,8 @@
 "use client";
-import OtherTransactions from "@/components/transactions/OtherTransactions";
+import OtherTransactions from "@/features/transactions/OtherTransactions";
 import ROUTE from "@/config/routes";
 import { useConfigContext } from "@/contexts/ConfigContext";
-import { useUserAuthContext } from "@/lib/UserUseContext";
+import { useAuthContext } from "@/contexts/UserUseContext";
 import { ExchangeRate } from "@/types/Components";
 import axiosInstance from "@/utils/Axios";
 import { useQuery } from "@tanstack/react-query";
@@ -12,7 +12,7 @@ import Link from "next/link";
 import { useState, useEffect, useMemo, useCallback } from "react";
 
 const WalletPage = () => {
-  const { user } = useUserAuthContext();
+  const { user } = useAuthContext();
   const [transactions, setTransactions] = useState<any[]>([]);
   const [rates, setRates] = useState<any>(null);
   const [loading, setLoading] = useState(true);
@@ -25,7 +25,7 @@ const WalletPage = () => {
         {},
         {
           withCredentials: true,
-        }
+        },
       );
       return response.data.points;
     },
@@ -41,7 +41,7 @@ const WalletPage = () => {
           `/wallet/transactions`,
           {
             withCredentials: true,
-          }
+          },
         );
         setTransactions(transactionsResponse.data.data.slice(0, 5));
 
@@ -105,7 +105,7 @@ const WalletPage = () => {
         return usdAmount * toRate;
       }
     },
-    [rates, points, config]
+    [rates, points, config],
   );
 
   const calculateAmount = useMemo(() => {
@@ -266,7 +266,7 @@ const WalletPage = () => {
                             month: "short",
                             day: "numeric",
                             year: "numeric",
-                          }
+                          },
                         )}
                       </small>
                     </div>

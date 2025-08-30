@@ -1,4 +1,4 @@
-import WithdrawalInput from "@/components/sub_components/WithdrawalInput";
+import WithdrawalInput from "@/features/withdraw/WithdrawalInput";
 import axiosInstance from "@/utils/Axios";
 import { getTransactionsData } from "@/utils/data/Transactions";
 import getUserData from "@/utils/data/UserData";

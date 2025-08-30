@@ -1,4 +1,4 @@
-import { NotificationBody, NotificationHeader } from "@/components/common/Notifications";
+import { NotificationBody, NotificationHeader } from "@/features/notifications/Notifications";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {

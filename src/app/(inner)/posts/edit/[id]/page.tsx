@@ -1,4 +1,4 @@
-import PostEditor from "@/components/post/PostEditor";
+import PostEditor from "@/features/post/PostEditor";
 import axiosInstance from "@/utils/Axios";
 import { Metadata } from "next";
 import { cookies } from "next/headers";

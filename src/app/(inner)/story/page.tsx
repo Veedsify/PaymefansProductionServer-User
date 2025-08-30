@@ -1,4 +1,4 @@
-import StatusComponent from "@/components/story/StatusComponent";
+import StatusComponent from "@/features/story/comps/StatusComponent";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {

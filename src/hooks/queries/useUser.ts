@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import axiosInstance from "@/utils/Axios";
 import { getToken } from "@/utils/Cookie";
-import { AuthUserProps } from "@/types/User";
+import { AuthUserProps } from "@/features/user/types/user";
 
 export const useUser = () => {
     return useQuery({

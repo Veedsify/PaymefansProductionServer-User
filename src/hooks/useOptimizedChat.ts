@@ -1,6 +1,6 @@
 import { useEffect, useCallback } from "react";
 import { useQueryClient } from "@tanstack/react-query";
-import { getSocket } from "@/components/sub_components/sub/Socket";
+import { getSocket } from "@/components/common/Socket";
 
 /**
  * Optimized chat hook that manages real-time socket events

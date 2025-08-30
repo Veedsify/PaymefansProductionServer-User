@@ -7,8 +7,8 @@ import {
   useMemo,
   ReactNode,
 } from "react";
-import { useUserAuthContext } from "@/lib/UserUseContext";
-import { getSocket } from "@/components/sub_components/sub/Socket";
+import { useAuthContext } from "@/contexts/UserUseContext";
+import { getSocket } from "@/components/common/Socket";
 import { MESSAGE_CONFIG } from "@/config/config";
 import { useInfiniteQuery, useQueryClient } from "@tanstack/react-query";
 import axiosInstance from "@/utils/Axios";
@@ -29,7 +29,7 @@ const fetchConversations = async (page: number) => {
 
 const useProvideConversations = () => {
   const queryClient = useQueryClient();
-
+  const { isGuest } = useAuthContext();
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage } =
     useInfiniteQuery({
       queryKey: ["conversations"],
@@ -38,6 +38,7 @@ const useProvideConversations = () => {
         lastPage?.hasMore ? lastPage.page + 1 : undefined,
       staleTime: 1000 * 60 * 5, // 5 minutes
       refetchOnMount: false,
+      enabled: !isGuest,
       refetchOnWindowFocus: false,
       initialPageParam: 1,
     });
@@ -89,7 +90,7 @@ export const MessagesConversationProvider = ({
 }: {
   children: ReactNode;
 }) => {
-  const { user } = useUserAuthContext();
+  const { user } = useAuthContext();
   const socket = getSocket();
   const userid = useMemo(() => user?.user_id, [user?.user_id]);
   const username = useMemo(() => user?.username, [user?.username]);

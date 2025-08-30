@@ -14,11 +14,11 @@ import {
   Loader2,
 } from "lucide-react";
 import { useParams } from "next/navigation";
-import { useUserAuthContext } from "@/lib/UserUseContext";
+import { useAuthContext } from "@/contexts/UserUseContext";
 import { blockUser, checkBlockStatus } from "@/utils/data/BlockUser";
 import axios from "axios";
 import { toast } from "react-hot-toast";
-import ActiveProfileTag from "@/components/sub_components/sub/ActiveProfileTag";
+import ActiveProfileTag from "@/features/profile/ActiveProfileTag";
 import axiosInstance from "@/utils/Axios";
 
 interface ConversationReceiver {
@@ -34,6 +34,11 @@ interface ConversationReceiver {
   is_profile_hidden: boolean;
 }
 
+interface FreeMessageStatus {
+  userEnabled: boolean;
+  bothEnabled: boolean;
+}
+
 const ConversationSettingsPage = () => {
   const [isBlocking, setIsBlocking] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
@@ -43,9 +48,16 @@ const ConversationSettingsPage = () => {
   const [conversationReceiver, setConversationReceiver] =
     useState<ConversationReceiver | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [freeMessageStatus, setFreeMessageStatus] = useState<FreeMessageStatus>(
+    {
+      userEnabled: false,
+      bothEnabled: false,
+    },
+  );
+  const [isUpdatingFreeMessage, setIsUpdatingFreeMessage] = useState(false);
 
   const params = useParams();
-  const { user } = useUserAuthContext();
+  const { user } = useAuthContext();
   const conversationId = params.conversationId as string;
 
   useEffect(() => {
@@ -89,6 +101,71 @@ const ConversationSettingsPage = () => {
       fetchConversationReceiver();
     }
   }, [conversationId, user?.id]);
+
+  // Fetch free message status
+  const fetchFreeMessageStatus = async () => {
+    try {
+      const response = await axiosInstance.get(
+        `/conversations/free-message-status/${conversationId}`,
+        {
+          withCredentials: true,
+        },
+      );
+
+      const data = response.data;
+      if (!data.error) {
+        setFreeMessageStatus({
+          userEnabled: data.userEnabled || false,
+          bothEnabled: data.bothEnabled || false,
+        });
+      }
+    } catch (error) {
+      console.error("Error fetching free message status:", error);
+    }
+  };
+
+  const handleToggleFreeMessage = async () => {
+    if (isUpdatingFreeMessage) return;
+
+    setIsUpdatingFreeMessage(true);
+    try {
+      const response = await axiosInstance.post(
+        `/conversations/toggle-free-messages`,
+        {
+          conversationId,
+          enable: !freeMessageStatus.userEnabled,
+        },
+        {
+          withCredentials: true,
+        },
+      );
+
+      const data = response.data;
+      if (!data.error) {
+        // Refresh the status
+        await fetchFreeMessageStatus();
+        toast.success(
+          freeMessageStatus.userEnabled
+            ? "Free messages disabled for this conversation"
+            : "Free messages enabled for this conversation",
+        );
+      } else {
+        toast.error(data.message || "Failed to update free message setting");
+      }
+    } catch (error) {
+      console.error("Error toggling free message:", error);
+      toast.error("Failed to update free message setting");
+    } finally {
+      setIsUpdatingFreeMessage(false);
+    }
+  };
+
+  // Load free message status on component mount
+  React.useEffect(() => {
+    if (conversationId && !loading) {
+      fetchFreeMessageStatus();
+    }
+  }, [conversationId, loading]);
 
   if (loading) {
     return (
@@ -180,6 +257,35 @@ const ConversationSettingsPage = () => {
               Chat Options
             </h3>
             <SettingsAction
+              icon={
+                <div
+                  className={`p-1 rounded-full ${
+                    freeMessageStatus.userEnabled
+                      ? "bg-green-100 dark:bg-green-900"
+                      : "bg-gray-100 dark:bg-gray-800"
+                  }`}
+                >
+                  <div
+                    className={`w-3 h-3 rounded-full ${
+                      freeMessageStatus.userEnabled
+                        ? "bg-green-500"
+                        : "bg-gray-400"
+                    }`}
+                  />
+                </div>
+              }
+              label="Free messaging"
+              description={
+                freeMessageStatus.bothEnabled
+                  ? "✅ Free messages enabled (both users agree)"
+                  : freeMessageStatus.userEnabled
+                    ? "⏳ You enabled free messages (waiting for other user)"
+                    : "💰 Enable free messages for this conversation"
+              }
+              onClick={handleToggleFreeMessage}
+              isLoading={isUpdatingFreeMessage}
+            />
+            <SettingsAction
               icon={<Star className="text-amber-500 dark:text-amber-400" />}
               label="Starred messages"
               description="View messages you've starred"
@@ -240,6 +346,7 @@ type SettingsActionProps = {
   danger?: boolean;
   badge?: string;
   onClick?: () => void;
+  isLoading?: boolean;
 };
 
 const SettingsAction: React.FC<SettingsActionProps> = ({
@@ -249,21 +356,28 @@ const SettingsAction: React.FC<SettingsActionProps> = ({
   danger,
   badge,
   onClick,
+  isLoading = false,
 }) => (
   <motion.button
     whileHover={{ x: 4 }}
     onClick={onClick}
+    disabled={isLoading}
     className={`flex items-center w-full px-4 py-3 rounded-xl transition text-left
           ${
             danger
               ? "hover:bg-red-50 dark:hover:bg-red-900"
               : "hover:bg-gray-50 dark:hover:bg-gray-800"
           }
+          ${isLoading ? "opacity-50 cursor-not-allowed" : ""}
           group
   `}
   >
     <div className="mr-4 text-2xl group-hover:scale-110 transition-transform">
-      {icon}
+      {isLoading ? (
+        <Loader2 className="w-6 h-6 animate-spin text-blue-500" />
+      ) : (
+        icon
+      )}
     </div>
     <div className="flex-1">
       <div

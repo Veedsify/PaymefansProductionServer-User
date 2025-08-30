@@ -1,3 +1,4 @@
+import { AxiosError } from "axios";
 import { getToken } from "../Cookie";
 import axiosInstance from "@/utils/Axios";
 
@@ -54,7 +55,15 @@ export const blockUser = async (
     const data = response.data;
     return data;
   } catch (error) {
-    console.error("Error blocking user:", error);
+    if (error instanceof AxiosError) {
+      if (error.response?.data) {
+        return {
+          status: false,
+          message: error.response.data.message || "Network error occurred",
+          error: true,
+        };
+      }
+    }
     return {
       status: false,
       message: "Network error occurred",
@@ -71,11 +80,18 @@ export const unblockUser = async (
     const response = await axiosInstance.post(`/block/unblock-user`, {
       blockedId,
     });
-
     const data = response.data;
     return data;
   } catch (error) {
-    console.error("Error unblocking user:", error);
+    if (error instanceof AxiosError) {
+      if (error.response?.data) {
+        return {
+          status: false,
+          message: error.response.data.message || "Network error occurred",
+          error: true,
+        };
+      }
+    }
     return {
       status: false,
       message: "Network error occurred",

@@ -9,7 +9,7 @@ import {
   MailWarning,
 } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
-import { useUserStore } from "@/lib/UserUseContext";
+import { useAuthContext } from "@/contexts/UserUseContext";
 import Link from "next/link";
 import Image from "next/image";
 import { useEffect, useState } from "react";
@@ -21,13 +21,13 @@ import {
   GroupsResponse,
   joinGroup,
 } from "@/utils/data/GroupAPI";
-import GroupCover from "@/components/group/GroupCover";
-import { formatDate } from "@/lib/formatDate";
+import GroupCover from "@/features/group/comps/GroupCover";
+import { formatDate } from "@/lib/FormatDate";
 import { useRouter } from "next/navigation";
-import LoadingSpinner from "@/components/ui/LoadingSpinner";
+import LoadingSpinner from "@/components/common/loaders/LoadingSpinner";
 
 const Groups = () => {
-  const user = useUserStore((state) => state.user);
+  const { user } = useAuthContext();
   const [searchQuery, setSearchQuery] = useState("");
   const router = useRouter();
   // Fetch user's groups
@@ -57,7 +57,7 @@ const Groups = () => {
     if (
       mainGroup?.groups?.id &&
       groupsData?.data?.userGroups?.some(
-        (group: GroupData) => group.id === mainGroup.groups.id
+        (group: GroupData) => group.id === mainGroup.groups.id,
       )
     ) {
       router.push(`/groups/${mainGroup.groups.id}`);

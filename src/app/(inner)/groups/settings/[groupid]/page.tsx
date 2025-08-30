@@ -16,7 +16,7 @@ import {
 import Image from "next/image";
 import Link from "next/link";
 import { useParams } from "next/navigation";
-import { Group, GroupType, ApiResponse, GroupMember } from "@/types/GroupTypes";
+import { Group, GroupType, ApiResponse, GroupMember } from "@/features/group/types/group-types";
 import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
 import { fetchGroupMembers } from "@/utils/data/GroupAPI";
 import axiosInstance from "@/utils/Axios";

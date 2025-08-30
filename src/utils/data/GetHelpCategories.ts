@@ -1,6 +1,7 @@
 import axios from "axios";
+import axiosInstance from "../Axios";
 
-export const getHelpCategories = async  () => {
-    const response = await axios.get(`${process.env.NEXT_PUBLIC_TS_EXPRESS_URL}/help/categories`);
-    return response.data.data;
-}
+export const getHelpCategories = async () => {
+  const response = await axiosInstance.get(`/help/categories`);
+  return response.data.data;
+};

@@ -1,23 +1,24 @@
 import "../globals.css";
 import type { Metadata } from "next";
 import MenuButtons from "@/components/modals/MenuButtons";
-import SideModels from "@/components/models/SideModels";
-import Header from "@/components/common/Header";
-import SideBar from "@/components/common/SideBar";
+import SideModels from "@/features/models/comps/SideModels";
+import Header from "@/components/common/global/Header";
+import SideBar from "@/components/common/global/SideBar";
 import { Toaster } from "react-hot-toast";
 import { Toaster as SonnerToast } from "sonner";
 import { Geist } from "next/font/google";
 import QueryProvider from "@/providers/QueryProvider";
 import getUserData from "@/utils/data/UserData";
-import PostComponentPreview from "@/components/post/FullComponentPreview";
-import { UserContextProvider } from "@/lib/UserUseContext";
-import Loader from "@/components/common/Loader";
+import PostComponentPreview from "@/features/post/FullComponentPreview";
+import { AuthContextProvider } from "@/contexts/UserUseContext";
+import Loader from "@/components/common/loaders/Loader";
 import ToggleWishListProvider from "@/contexts/ToggleWishlist";
-import WishList from "@/components/sub_components/WishList";
+import WishList from "@/features/store/WishList";
 import { MessagesConversationProvider } from "@/contexts/MessageConversationContext";
-import UserAccountSuspendedScreen from "@/components/sub_components/UserAccountSuspendedScreen";
+import UserAccountSuspendedScreen from "@/features/user/comps/UserAccountSuspendedScreen";
 import ConfigProvider from "@/contexts/ConfigContext";
 import GetLocationContext from "@/contexts/GetLocationContext";
+import GuestLoginModal from "@/features/guest/GuestLoginModal";
 
 const font = Geist({
   subsets: ["latin", "latin-ext"],
@@ -45,7 +46,6 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   const user = await getUserData();
-
   if (user && !user.active_status) {
     return (
       <html>
@@ -89,8 +89,8 @@ export default async function RootLayout({
       </head>
       <body className={`${font.className} dark:bg-black min-h-dvh`}>
         <ConfigProvider>
-          <UserContextProvider>
-            <GetLocationContext user={user}>
+          <AuthContextProvider>
+            <GetLocationContext>
               <QueryProvider>
                 <MessagesConversationProvider>
                   <Loader />
@@ -124,11 +124,11 @@ export default async function RootLayout({
                       <div className="col-span-2">
                         <SideBar />
                       </div>
-                      <div className="relative overflow-auto border-r h-dvh col-span-6 border-pink-50">
+                      <div className="relative overflow-auto border-r h-dvh col-span-6 border-gray-300">
                         <Header />
                         <div className="grid lg:grid-cols-6 pt-[66px] lg:pt-[48px] h-dvh">
                           <div className="flex flex-col h-full col-span-3">
-                            <div className="w-full h-full md:border-r border-black/40 dark:border-slate-800">
+                            <div className="w-full h-full md:border-r border-black/20 dark:border-slate-800">
                               {children}
                             </div>
                           </div>
@@ -141,10 +141,11 @@ export default async function RootLayout({
                     {/* <ModalComponent /> */}
                   </div>
                   <PostComponentPreview />
+                  <GuestLoginModal />
                 </MessagesConversationProvider>
               </QueryProvider>
             </GetLocationContext>
-          </UserContextProvider>
+          </AuthContextProvider>
         </ConfigProvider>
       </body>
     </html>

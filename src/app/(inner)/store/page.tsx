@@ -1,5 +1,5 @@
 "use client";
-import CartIcon from "@/components/sub_components/CartIcon";
+import CartIcon from "@/components/common/icons/CartIcon";
 import { StoreProduct } from "@/types/Components.d";
 import { ShoppingCart, Loader2, LucideArrowRight } from "lucide-react";
 import Image from "next/image";

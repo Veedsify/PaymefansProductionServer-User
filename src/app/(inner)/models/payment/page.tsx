@@ -1,13 +1,11 @@
 "use client";
-import { useUserAuthContext } from "@/lib/UserUseContext";
-import {
-  LucideInfo,
-} from "lucide-react";
+import { useAuthContext } from "@/contexts/UserUseContext";
+import { LucideInfo } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
 const PaymentPage = () => {
-  const { user } = useUserAuthContext();
+  const { user } = useAuthContext();
 
   if (user?.is_model && user?.Model?.verification_status === true) {
     return (

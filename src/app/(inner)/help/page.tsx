@@ -1,14 +1,16 @@
-"use client";;
-import ContactSupportModal from "@/components/sub_components/ContactSupportModal";
-import MyTicketsModal from "@/components/sub_components/MyTicketsModal";
+"use client";
+import ContactSupportModal from "@/features/support/ContactSupportModal";
+import MyTicketsModal from "@/features/support/MyTicketsModal";
 import { getHelpCategories } from "@/utils/data/GetHelpCategories";
 import { HelpCategoryProp } from "@/types/Components";
 import { useState, useEffect } from "react";
 import { Ticket } from "lucide-react";
+import { useAuthContext } from "@/contexts/UserUseContext";
 const HelpPage = () => {
   const [helpCategories, setHelpCategories] = useState<HelpCategoryProp[]>([]);
   const [showMyTickets, setShowMyTickets] = useState(false);
   const [loading, setLoading] = useState(true);
+  const { isGuest } = useAuthContext();
   const [refreshTickets, setRefreshTickets] = useState(0);
   useEffect(() => {
     const fetchHelpCategories = async () => {
@@ -24,7 +26,6 @@ const HelpPage = () => {
     fetchHelpCategories();
   }, []);
   const handleTicketCreated = () => {
-    // Trigger refresh of tickets by incrementing refresh counter
     setRefreshTickets((prev) => prev + 1);
   };
   return (
@@ -35,18 +36,20 @@ const HelpPage = () => {
       <header className="py-6 text-white bg-primary-text-dark-pink rounded-xl">
         <div className="container flex items-center justify-between px-4 mx-auto">
           <h1 className="text-xl font-bold lg:text-3xl">Help Center</h1>
-          <div className="flex items-center gap-3">
-            <button
-              onClick={() => setShowMyTickets(true)}
-              className="relative overflow-hidden px-4 py-2 text-sm font-semibold bg-white/20 cursor-pointer group text-nowrap text-white hover:bg-white hover:text-primary-dark-pink rounded-md transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-white/30"
-            >
-              <span className="relative z-10 flex items-center gap-2">
-                <Ticket size={18} />
-                My Tickets
-              </span>
-            </button>
-            <ContactSupportModal onTicketCreated={handleTicketCreated} />
-          </div>
+          {!isGuest && (
+            <div className="flex items-center gap-3">
+              <button
+                onClick={() => setShowMyTickets(true)}
+                className="relative overflow-hidden px-4 py-2 text-sm font-semibold bg-white/20 cursor-pointer group text-nowrap text-white hover:bg-white hover:text-primary-dark-pink rounded-md transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-white/30"
+              >
+                <span className="relative z-10 flex items-center gap-2">
+                  <Ticket size={18} />
+                  My Tickets
+                </span>
+              </button>
+              <ContactSupportModal onTicketCreated={handleTicketCreated} />
+            </div>
+          )}
         </div>
       </header>
       <main className="container py-12 mx-auto">

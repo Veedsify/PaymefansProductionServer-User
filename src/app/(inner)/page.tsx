@@ -1,5 +1,5 @@
-import HomePostComponent from "@/components/post/HomePostComponent";
-import StatusComponent from "@/components/story/Status";
+import HomePostComponent from "@/features/post/HomePostComponent";
+import StatusComponent from "@/features/story/comps/Status";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {

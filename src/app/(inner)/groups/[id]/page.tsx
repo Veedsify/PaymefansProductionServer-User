@@ -2,9 +2,9 @@
 
 import { useEffect, useState, useRef, useCallback } from "react";
 import { useParams } from "next/navigation";
-import GroupChatHeader from "@/components/group/GroupChatHeader";
-import GroupChatInput from "@/components/group/GroupChatInput";
-import GroupMessageBubble from "@/components/group/GroupMessageBubble";
+import GroupChatHeader from "@/features/group/comps/GroupChatHeader";
+import GroupChatInput from "@/features/group/comps/GroupChatInput";
+import GroupMessageBubble from "@/features/group/comps/GroupMessageBubble";
 import { motion } from "framer-motion";
 import {
   GroupMessage,
@@ -19,15 +19,15 @@ import {
   extractUserMembershipFromGroup,
   checkUserBlockedStatus,
 } from "@/utils/data/GroupAPI";
-import { useUserAuthContext, useUserStore } from "@/lib/UserUseContext";
+import { useAuthContext } from "@/contexts/UserUseContext";
 import toast from "react-hot-toast";
-import { getSocket } from "@/components/sub_components/sub/Socket";
-import LoadingSpinner from "@/components/ui/LoadingSpinner";
+import { getSocket } from "@/components/common/Socket";
+import LoadingSpinner from "@/components/common/loaders/LoadingSpinner";
 import { useRouter } from "next/navigation";
 const GroupChatPage = () => {
   const params = useParams();
   const groupId = Number(params.id) as number;
-  const { user } = useUserAuthContext();
+  const { user } = useAuthContext();
   const router = useRouter();
 
   const {
@@ -326,7 +326,7 @@ const GroupChatPage = () => {
         const membership = extractUserMembershipFromGroup(
           group,
           user?.id as number,
-          isUserBlocked
+          isUserBlocked,
         );
 
         if (membership) {
@@ -353,7 +353,7 @@ const GroupChatPage = () => {
         const messagesResponse = await fetchGroupMessages(
           groupId,
           undefined,
-          100
+          100,
         );
         if (messagesResponse.success && messagesResponse.data.messages) {
           setMessages(messagesResponse.data.messages);

@@ -2,7 +2,7 @@
 import { useCartStore } from "@/contexts/StoreContext";
 import { LucideTrash, X } from "lucide-react";
 import Image from "next/image";
-import CustomCartPageHooks from "../custom-hooks/CustomCartHooks";
+import CustomCartPageHooks from "../../hooks/CustomCartHooks";
 import { ChangeEvent, useEffect, useState } from "react";
 
 const CartComponent = () => {

@@ -1,18 +1,18 @@
 "use client";
 
-import { AuthUserProps } from "@/types/User";
+import { AuthUserProps } from "@/features/user/types/user";
 import { useCallback, useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { MapPin, Users, Eye, X, Check } from "lucide-react";
 import axiosInstance from "@/utils/Axios";
+import { useAuthContext } from "./UserUseContext";
 
 export default function GetLocationContext({
   children,
-  user,
 }: {
   children: React.ReactNode;
-  user: Partial<AuthUserProps> | null;
 }) {
+  const { user, isGuest } = useAuthContext();
   const [showLocationModal, setShowLocationModal] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [locationStatus, setLocationStatus] = useState<
@@ -22,6 +22,7 @@ export default function GetLocationContext({
   // Function to send location data to the server via HTTP
   const sendLocationToServer = useCallback(async (locationData: any) => {
     try {
+      if (isGuest || !user) return;
       await axiosInstance.post("/hookup/location", {
         latitude: locationData.latitude,
         longitude: locationData.longitude,
@@ -59,19 +60,17 @@ export default function GetLocationContext({
           enableHighAccuracy: true,
           timeout: 10000,
           maximumAge: 0,
-        }
+        },
       );
     }
   }, [user, sendLocationToServer]);
 
   useEffect(() => {
     if (!user) {
-      console.error("User data is not available.");
       return;
     }
 
     // For models with hookup, use session storage (ask every session)
-    // For non-models, use localStorage (remember permanently)
     const isModelWithHookup = user.is_model && user.Model?.hookup;
     const storageKey = isModelWithHookup
       ? "locationRequested"
@@ -155,7 +154,7 @@ export default function GetLocationContext({
           enableHighAccuracy: true,
           timeout: 10000,
           maximumAge: 0,
-        }
+        },
       );
     }
   };

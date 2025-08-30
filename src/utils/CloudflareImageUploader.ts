@@ -39,7 +39,6 @@ export default async function UploadImageToCloudflare({
                         ...prev,
                         [id]: 100,
                   }));
-                  console.log(response.data);
                   return response.data;
             } else {
                   throw new Error("Upload failed");

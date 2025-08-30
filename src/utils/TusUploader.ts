@@ -27,38 +27,58 @@ async function UploadWithTus({
     let lastProgress = 0;
     const startTime = Date.now();
     let timeoutId: NodeJS.Timeout;
+    let mediaIdTimeoutId: NodeJS.Timeout | null = null;
 
     // Clear all timers and prevent multiple resolutions
     const cleanupAndReject = (error: Error) => {
       if (isResolved) return;
       isResolved = true;
       clearTimeout(timeoutId);
+      if (mediaIdTimeoutId) clearTimeout(mediaIdTimeoutId);
       setUploadError(prev => ({ ...prev, [id]: true }));
       reject(error);
     };
 
-    // Resolve when both conditions are met
+    // Improved resolve logic with better waiting mechanism
     const tryResolve = () => {
       if (isResolved) return;
 
       if (uploadComplete && mediaId) {
         isResolved = true;
         clearTimeout(timeoutId);
+        if (mediaIdTimeoutId) clearTimeout(mediaIdTimeoutId);
         resolve(mediaId);
       } else if (uploadComplete && !mediaId) {
-        // Wait a bit more for media ID
-        setTimeout(() => {
-          if (!isResolved) {
-            cleanupAndReject(new Error("No media ID received after upload completion"));
+        let waitTime = 0;
+        const maxWaitTime = 30000; // 30 seconds
+        const checkInterval = 1000; // Check every second
+
+        const checkForMediaId = () => {
+          waitTime += checkInterval;
+          console.log(`🔍 Checking for mediaId (${waitTime / 1000}s/${maxWaitTime / 1000}s) for ${id}, current mediaId: ${mediaId || 'null'}`);
+
+          if (mediaId && !isResolved) {
+            isResolved = true;
+            clearTimeout(timeoutId);
+            console.log(`✅ MediaId received after ${waitTime}ms for ${id}: ${mediaId}`);
+            resolve(mediaId);
+          } else if (waitTime >= maxWaitTime && !isResolved) {
+            console.error(`❌ MediaId timeout after ${waitTime}ms for ${id}. Upload may still be processing on server.`);
+            cleanupAndReject(new Error(`No media ID received after ${waitTime / 1000} seconds. Upload may still be processing on server. Please wait a moment and try again.`));
+          } else if (!isResolved) {
+            mediaIdTimeoutId = setTimeout(checkForMediaId, checkInterval);
           }
-        }, 5000);
+        };
+
+        mediaIdTimeoutId = setTimeout(checkForMediaId, checkInterval);
       }
     };
 
-    // Set 10-minute timeout
+    // Increased timeout to 15 minutes for large video files
     timeoutId = setTimeout(() => {
-      cleanupAndReject(new Error("Upload timeout after 10 minutes"));
-    }, 600000);
+      console.error(`⏰ Upload timeout after 15 minutes for ${id}`);
+      cleanupAndReject(new Error("Upload timeout after 15 minutes"));
+    }, 900000);
 
     const upload = new tus.Upload(file, {
       endpoint: uploadUrl,
@@ -83,6 +103,7 @@ async function UploadWithTus({
       },
 
       onSuccess: () => {
+        console.log(`🎯 Upload onSuccess triggered for ${id}`);
         uploadComplete = true;
         setProgress(prev => ({ ...prev, [id]: 100 }));
         tryResolve();

@@ -1,6 +1,6 @@
 import axiosInstance from "@/utils/Axios";
 import { getToken } from "@/utils/Cookie";
-import { GroupMember } from "@/types/GroupTypes";
+import { GroupMember } from "@/features/group/types/group-types";
 
 type Group = {
   id: number;

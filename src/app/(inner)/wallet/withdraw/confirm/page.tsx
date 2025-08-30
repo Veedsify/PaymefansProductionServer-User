@@ -6,21 +6,21 @@ import { useRouter } from "next/navigation";
 import React, { useEffect, useCallback } from "react";
 import { motion } from "framer-motion";
 import swal from "sweetalert";
-import VerifyWithdrawalPin from "@/components/sub_components/VerifyWithdrawalPin";
-import { useUserAuthContext } from "@/lib/UserUseContext";
+import VerifyWithdrawalPin from "@/features/withdraw/VerifyWithdrawalPin";
+import { useAuthContext } from "@/contexts/UserUseContext";
 import axios from "axios";
 import { getToken } from "@/utils/Cookie";
 import axiosInstance from "@/utils/Axios";
 
 const WithdrawConfigPage = () => {
   const [loading, setLoading] = React.useState(true);
-  const { user } = useUserAuthContext();
+  const { user } = useAuthContext();
   const { withdrawValues, clearWithdrawStore } = useWithdrawStore();
   const [pinModal, setPinModal] = React.useState(false);
   const [error, setError] = React.useState<string>("");
   const [processing, setProcessing] = React.useState(false);
   const [step, setStep] = React.useState<"create" | "verify">(
-    user?.hasPin ? "verify" : "create"
+    user?.hasPin ? "verify" : "create",
   );
   const { config } = useConfigContext();
   const router = useRouter();
@@ -47,7 +47,7 @@ const WithdrawConfigPage = () => {
 
   const amountInNgn = Number(withdrawValues?.amountInNgn).toLocaleString();
   const amountToSettle = Number(
-    withdrawValues?.amountToSettle
+    withdrawValues?.amountToSettle,
   ).toLocaleString();
   // Fixed typo: platformFee instead of platfromFee
   const platformFee = Number(withdrawValues?.platformFee).toLocaleString();

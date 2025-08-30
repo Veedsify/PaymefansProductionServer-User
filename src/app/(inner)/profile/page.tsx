@@ -1,10 +1,10 @@
-import BannerComponent from "@/components/lib_components/BannerComponent";
-import MoreProfileOptions from "@/components/profile/MoreProfileOptions";
-import EditProfileButton from "@/components/sub_components/EditProfileButton";
-import { ProfileCounts } from "@/components/sub_components/ProfileCount";
-import ProfileSocialLinks from "@/components/sub_components/ProfileSocialLinks";
-import ProfileTabs from "@/components/sub_components/ProfileTabs";
-import { AuthUserProps } from "@/types/User";
+import BannerComponent from "@/features/profile/BannerComponent";
+import MoreProfileOptions from "@/features/profile/MoreProfileOptions";
+import EditProfileButton from "@/features/profile/EditProfileButton";
+import { ProfileCounts } from "@/features/profile/ProfileCount";
+import ProfileSocialLinks from "@/features/profile/ProfileSocialLinks";
+import ProfileTabs from "@/features/profile/ProfileTabs";
+import { AuthUserProps } from "@/features/user/types/user";
 import getUserData from "@/utils/data/UserData";
 
 import {

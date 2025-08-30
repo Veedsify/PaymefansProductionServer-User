@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
-import { useParams, useRouter } from "next/navigation";
+import { useParams, usePathname, useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import { PiCurrencyDollarSimple } from "react-icons/pi";
@@ -11,20 +11,21 @@ import {
   LucideMapPin,
   Verified,
 } from "lucide-react";
-import { useUserAuthContext } from "@/lib/UserUseContext";
-import { ProfileUserProps } from "@/types/User";
-import getUserProfile from "@/utils/data/ProfileData";
-import { checkIfBlockedBy } from "@/utils/data/BlockUser";
-import UserNotFound from "@/components/common/UserNotFound";
-import SuspendedUserPage from "@/components/sub_components/Suspended";
-import FollowUserComponent from "@/components/sub_components/FollowUserComponent";
-import CreateSubscriptionButton from "@/components/sub_components/CreateSubscriptionButton";
-import CreateConversationButton from "@/components/sub_components/CreateConversationButton";
-import ProfileTabsOther from "@/components/sub_components/ProfileTabsOther";
-import ActiveProfileTag from "@/components/sub_components/sub/ActiveProfileTag";
-import ProfileSocialLinks from "@/components/sub_components/ProfileSocialLinks";
-import TipModel from "@/components/sub_components/TipModel";
-import MoreProfileOptions from "@/components/profile/MoreProfileOptions";
+import { useAuthContext } from "@/contexts/UserUseContext";
+import { ProfileUserProps } from "@/features/user/types/user";
+import UserNotFound from "@/features/user/comps/UserNotFound";
+import SuspendedUserPage from "@/features/profile/Suspended";
+import FollowUserComponent from "@/features/follow/FollowUserComponent";
+import CreateSubscriptionButton from "@/features/subscriptions/CreateSubscriptionButton";
+import CreateConversationButton from "@/features/chats/comps/CreateConversationButton";
+import ProfileTabsOther from "@/features/profile/ProfileTabsOther";
+import ActiveProfileTag from "@/features/profile/ActiveProfileTag";
+import ProfileSocialLinks from "@/features/profile/ProfileSocialLinks";
+import TipModel from "@/features/models/comps/TipModel";
+import MoreProfileOptions from "@/features/profile/MoreProfileOptions";
+import { useGuestModal } from "@/contexts/GuestModalContext";
+import { postRegex } from "@/constants/regex";
+import { useProfile } from "@/hooks/queries/useProfile";
 
 // Utility to format numbers
 const formatNumber = (num: number = 0): string => {
@@ -80,64 +81,70 @@ const ProfileCounts = ({
 const ProfilePage = () => {
   const params = useParams<{ id: string }>();
   const router = useRouter();
-  const { user } = useUserAuthContext();
-  const [userdata, setUserdata] = useState<ProfileUserProps | null>(null);
-  const [loading, setLoading] = useState(true);
-  // const [error, setError] = useState<string | null>(null); // Removed unused variable
+  const location = usePathname();
+  const { user, isGuest } = useAuthContext();
+  const { toggleModalOpen } = useGuestModal();
   const [openTip, setOpenTip] = useState(false);
-  const [isBlockedByUser, setIsBlockedByUser] = useState(false);
+
+  // Use TanStack Query to fetch profile data
+  const {
+    data: profileData,
+    isLoading,
+    error,
+    isError,
+  } = useProfile({
+    userId: params.id || "",
+    viewerId: user?.id || null,
+    enabled: !!params.id,
+  });
+
+  const userdata = profileData?.user;
+  const isBlockedByUser = profileData?.isBlockedByUser;
 
   const toggleTip = () => {
-    setOpenTip(!openTip);
+    if (!isGuest) {
+      setOpenTip(!openTip);
+      return;
+    }
+    toggleModalOpen(
+      "You need to login to tip " + (userdata?.name || "this user") + ".",
+    );
   };
 
   const isVerified = userdata?.is_verified;
-  const canTip = user?.id !== userdata?.id && userdata?.is_model;
+  const canTip = user?.id !== userdata?.id && !userdata?.is_model;
+
+  // Handle errors by redirecting to login if not on a post page
   useEffect(() => {
-    const fetchData = async () => {
-      if (!params.id) {
-        // setError("Invalid user ID");
-        setLoading(false);
-        return;
+    if (isError && error) {
+      const isPostPage = postRegex.test(location);
+      if (!isPostPage) {
+        router.push("/login");
       }
-      try {
-        const data = await getUserProfile({
-          user_id: decodeURIComponent(params.id),
-        });
-        setUserdata(data);
+    }
+  }, [isError, error, location, router]);
 
-        // Check if current user is blocked by this profile user
-        if (data && user?.id && data.id !== user.id) {
-          try {
-            const blockResult = await checkIfBlockedBy(data.id);
-            if (blockResult.status && !blockResult.error) {
-              setIsBlockedByUser(blockResult.isBlocked);
-            }
-          } catch (blockError) {
-            console.error("Error checking block status:", blockError);
-          }
-        }
-      } catch (err) {
-        // setError("Failed to fetch user profile");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchData();
-  }, [params.id, user?.id]);
-
+  // Redirect to profile if viewing own profile
   useEffect(() => {
     if (userdata && userdata.id && user?.id === userdata.id) {
       router.push("/profile");
     }
   }, [userdata, user, router]);
 
+  // Early returns for various states
   if (userdata && user?.id === userdata.id) {
     return null;
   }
 
-  if (!userdata && !loading) {
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-dark-pink"></div>
+      </div>
+    );
+  }
+
+  if (isError || (!userdata && !isLoading)) {
     return <UserNotFound userid={params.id || "unknown"} />;
   }
 
@@ -191,7 +198,9 @@ const ProfilePage = () => {
             <CreateSubscriptionButton userdata={userdata} />
           )}
           <CreateConversationButton profileId={userdata.user_id} />
-          <MoreProfileOptions user={userdata} authUserId={Number(user?.id)} />
+          {!isGuest && (
+            <MoreProfileOptions user={userdata} authUserId={Number(user?.id)} />
+          )}
         </div>
       </div>
       {/* Info & Bio */}
@@ -202,7 +211,7 @@ const ProfilePage = () => {
             {userdata.name}
             {isVerified && <VerifiedBadge />}
             {userdata.is_model && <VerifiedBadge type="model" />}
-            {userdata.username && (
+            {userdata && !isGuest && (
               <ActiveProfileTag userid={userdata.username} />
             )}
           </h1>
@@ -284,10 +293,10 @@ const ProfilePage = () => {
         <ProfileSocialLinks Settings={userdata?.Settings} />
       </div>{" "}
       {/* Profile Tabs */}
-      {userdata.id && <ProfileTabsOther userdata={userdata} />}
       {userdata.id && openTip && (
         <TipModel userdata={userdata} close={toggleTip} />
       )}
+      {userdata && <ProfileTabsOther userdata={userdata} />}
     </div>
   );
 };

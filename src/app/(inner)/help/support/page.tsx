@@ -1,6 +1,6 @@
 "use client";
-import { getSocket } from "@/components/sub_components/sub/Socket";
-import { useUserAuthContext } from "@/lib/UserUseContext";
+import { getSocket } from "@/components/common/Socket";
+import { useAuthContext } from "@/contexts/UserUseContext";
 import {
   Send,
   Paperclip,
@@ -51,7 +51,7 @@ const StarRating = ({
 
 const SupportChatPage = () => {
   const router = useRouter();
-  const { user } = useUserAuthContext();
+  const { user } = useAuthContext();
   const [session, setSession] = useState<any>(null);
   const [messages, setMessages] = useState<any[]>([]);
   const [agent, setAgent] = useState<any>(null);

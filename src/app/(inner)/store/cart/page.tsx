@@ -3,7 +3,7 @@ import CartComponent from "@/components/modals/CartComponent";
 import Link from "next/link";
 import { ShoppingBag, Heart } from "lucide-react";
 import { useCartStore } from "@/contexts/StoreContext";
-import CheckoutModal from "@/components/store/CheckoutModal";
+import CheckoutModal from "@/components/modals/CheckoutModal";
 import { useState } from "react";
 
 const CartPage = () => {

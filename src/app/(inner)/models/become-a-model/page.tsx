@@ -1,4 +1,4 @@
-import BecomeAModel from "@/components/route_component/BecomeAModel";
+import BecomeAModel from "@/features/models/comps/BecomeAModel";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {

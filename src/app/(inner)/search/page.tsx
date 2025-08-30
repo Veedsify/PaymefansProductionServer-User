@@ -19,14 +19,14 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import toast from "react-hot-toast";
 import Image from "next/image";
 import { formatDate } from "@/utils/FormatDate";
-import PostComponent from "@/components/post/PostComponent";
-import { MediaPanelMediaCard } from "@/components/media/MediaPanelImageCardOther";
+import PostComponent from "@/features/post/PostComponent";
+import { MediaPanelMediaCard } from "@/features/media/MediaPanelImageCardOther";
 import { MediaDataTypeOtherProps } from "@/types/Components";
 import usePostComponent from "@/contexts/PostComponentPreview";
 import Link from "next/link";
 import followUser from "@/utils/data/update/Follow";
 import { useState as useReactState } from "react";
-import { useUserAuthContext } from "@/lib/UserUseContext";
+import { useAuthContext } from "@/contexts/UserUseContext";
 import axiosInstance from "@/utils/Axios";
 
 const searchFunction = async (query: string) => {
@@ -37,7 +37,7 @@ const searchFunction = async (query: string) => {
           `/search/platform?query=${query}&category=users`,
           {
             withCredentials: true,
-          }
+          },
         );
         return response.data.results;
       },
@@ -47,7 +47,7 @@ const searchFunction = async (query: string) => {
           `/search/platform?query=${query}&category=posts`,
           {
             withCredentials: true,
-          }
+          },
         );
         return response.data.results;
       },
@@ -57,7 +57,7 @@ const searchFunction = async (query: string) => {
           `/search/platform?query=${query}&category=media`,
           {
             withCredentials: true,
-          }
+          },
         );
         return response.data.results;
       },
@@ -118,7 +118,7 @@ const ReportModal = ({
         },
         {
           withCredentials: true,
-        }
+        },
       );
 
       if (response.data.success) {
@@ -274,7 +274,7 @@ const SearchPage = () => {
   const [posts, setPosts] = useState<any[]>([]);
   const [users, setUsers] = useState<any[]>([]);
   const [media, setMedia] = useState<any[]>([]);
-  const { user: authUser } = useUserAuthContext();
+  const { user: authUser } = useAuthContext();
   const [reportModal, setReportModal] = useState<{
     isOpen: boolean;
     userId: number;
@@ -289,14 +289,14 @@ const SearchPage = () => {
     m: MediaDataTypeOtherProps,
     type: string,
     isSubscriber: boolean,
-    indexId: number
+    indexId: number,
   ) => {
     if (m.accessible_to === "subscribers" && !isSubscriber) return;
     const filteredMedias = media
       .filter((item) => item.media_state !== "processing")
       .filter((media) => media.accessible_to !== "price")
       .filter(
-        (media) => !(media.accessible_to === "subscribers" && !isSubscriber)
+        (media) => !(media.accessible_to === "subscribers" && !isSubscriber),
       );
     // Get the new index after filtering
     const newIndexId = filteredMedias.findIndex((item) => item.id === m.id);
@@ -632,7 +632,7 @@ const SearchPage = () => {
                                     <Calendar size={14} className="mr-1.5" />
                                     Joined{" "}
                                     {new Date(
-                                      user.created_at
+                                      user.created_at,
                                     ).toLocaleDateString("en-US", {
                                       year: "numeric",
                                       month: "long",

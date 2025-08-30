@@ -1,12 +1,12 @@
 // groupChatStore.ts
 import { create } from "zustand";
-import { getSocket } from "@/components/sub_components/sub/Socket";
-import { useUserStore } from "@/lib/UserUseContext";
+import { getSocket } from "@/components/common/Socket";
+import { useUserStore } from "@/contexts/UserUseContext";
 import toast from "react-hot-toast";
 import React from "react";
 import _ from "lodash";
 import { fetchGroupMessages } from "@/utils/data/GroupAPI";
-import { AuthUserProps } from "@/types/User";
+import { AuthUserProps } from "@/features/user/types/user";
 
 export interface GroupMessage {
   id: number;
@@ -103,7 +103,7 @@ interface GroupChatActions {
   sendMessage: (
     content: string,
     attachments?: any[],
-    replyToId?: number
+    replyToId?: number,
   ) => void;
   setTypingStatus: (isTyping: boolean) => void;
   markMessageAsSeen: (messageId: number) => void;
@@ -216,7 +216,7 @@ export const useGroupChatStore = create<GroupChatStore>()((set, get) => ({
       // Filter out duplicates before adding
       const existingMessageIds = new Set(state.messages.map((m) => m.id));
       const uniqueNewMessages = messages.filter(
-        (message) => !existingMessageIds.has(message.id)
+        (message) => !existingMessageIds.has(message.id),
       );
 
       if (uniqueNewMessages.length === 0) {
@@ -245,7 +245,7 @@ export const useGroupChatStore = create<GroupChatStore>()((set, get) => ({
   memberJoined: (member) =>
     set((state) => {
       const memberExists = state.activeMembers.some(
-        (m) => m.userId === member.userId
+        (m) => m.userId === member.userId,
       );
       if (memberExists) return state;
       return {
@@ -259,7 +259,7 @@ export const useGroupChatStore = create<GroupChatStore>()((set, get) => ({
   setTyping: (user) =>
     set((state) => {
       const updatedTyping = state.typingUsers.filter(
-        (t) => t.userId !== user.userId
+        (t) => t.userId !== user.userId,
       );
       return {
         typingUsers: user.isTyping ? [...updatedTyping, user] : updatedTyping,

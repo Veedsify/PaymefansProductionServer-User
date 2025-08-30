@@ -1,4 +1,4 @@
-import SettingsTab from "@/components/route_component/SettingsTab";
+import SettingsTab from "@/features/settings/SettingsTab";
 import { Metadata } from "next";
 import Image from "next/image";
 import getUserData from "@/utils/data/UserData";

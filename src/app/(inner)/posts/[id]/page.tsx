@@ -1,8 +1,8 @@
 "use client";
-import CommentsAndReply from "@/components/comments/CommentsAndReply";
-import { PostCompInteractions } from "@/components/post/PostInteractions";
-import PostPageImage from "@/components/post/PostPageImage";
-import QuickPostActions from "@/components/sub_components/QuickPostActions";
+import CommentsAndReply from "@/features/comments/CommentsAndReply";
+import { PostCompInteractions } from "@/features/post/PostInteractions";
+import PostPageImage from "@/features/post/PostPageImage";
+import QuickPostActions from "@/features/post/QuickPostActions";
 import { formatDate } from "@/utils/FormatDate";
 import {
   LucideEye,
@@ -14,15 +14,14 @@ import Image from "next/image";
 import Link from "next/link";
 import React, { ReactNode, useMemo } from "react";
 import { usePost } from "@/hooks/queries/usePost";
-import { useUser } from "@/hooks/queries/useUser";
 import { useParams, useRouter } from "next/navigation";
+import { useAuthContext } from "@/contexts/UserUseContext";
 
 const Post = React.memo(() => {
   const params = useParams();
   const router = useRouter();
   const postId = params.id as string;
-
-  const { data: user, isLoading: userLoading, error: userError } = useUser();
+  const { user, isGuest } = useAuthContext();
   const {
     data: post,
     isLoading: postLoading,
@@ -69,13 +68,17 @@ const Post = React.memo(() => {
   };
 
   // Handle errors
-  if (userError || postError) {
-    router.push("/404");
+  if (postError) {
+    if (isGuest) {
+      router.push("/login");
+    } else {
+      router.push("/404");
+    }
     return null;
   }
 
   // Loading state
-  if (userLoading || postLoading) {
+  if (postLoading) {
     return (
       <div className="flex items-center justify-center p-4 mt-8">
         <div className="flex flex-col items-center gap-4">

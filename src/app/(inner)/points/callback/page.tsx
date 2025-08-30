@@ -1,7 +1,7 @@
 "use client";
-import CoinUsedUp from "@/components/sub_components/coinpurchase/Cancelled";
-import CoinProcessing from "@/components/sub_components/coinpurchase/Processing";
-import CoinPurchaseSuccessful from "@/components/sub_components/coinpurchase/Successful";
+import CoinUsedUp from "@/components/common/toggles/Cancelled";
+import CoinProcessing from "@/components/common/loaders/Processing";
+import CoinPurchaseSuccessful from "@/components/common/toggles/Successful";
 import axiosInstance from "@/utils/Axios";
 import { FetchQueryOptions } from "@tanstack/react-query";
 import { useRouter, useSearchParams } from "next/navigation";
