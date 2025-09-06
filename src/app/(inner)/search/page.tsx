@@ -37,7 +37,7 @@ const searchFunction = async (query: string) => {
           `/search/platform?query=${query}&category=users`,
           {
             withCredentials: true,
-          },
+          }
         );
         return response.data.results;
       },
@@ -47,7 +47,7 @@ const searchFunction = async (query: string) => {
           `/search/platform?query=${query}&category=posts`,
           {
             withCredentials: true,
-          },
+          }
         );
         return response.data.results;
       },
@@ -57,7 +57,7 @@ const searchFunction = async (query: string) => {
           `/search/platform?query=${query}&category=media`,
           {
             withCredentials: true,
-          },
+          }
         );
         return response.data.results;
       },
@@ -118,7 +118,7 @@ const ReportModal = ({
         },
         {
           withCredentials: true,
-        },
+        }
       );
 
       if (response.data.success) {
@@ -284,19 +284,21 @@ const SearchPage = () => {
     userId: 0,
     username: "",
   });
-  const { fullScreenPreview } = usePostComponent();
+  const fullScreenPreview = usePostComponent(
+    (state) => state.fullScreenPreview
+  );
   const previewImageHandler = (
     m: MediaDataTypeOtherProps,
     type: string,
     isSubscriber: boolean,
-    indexId: number,
+    indexId: number
   ) => {
     if (m.accessible_to === "subscribers" && !isSubscriber) return;
     const filteredMedias = media
       .filter((item) => item.media_state !== "processing")
       .filter((media) => media.accessible_to !== "price")
       .filter(
-        (media) => !(media.accessible_to === "subscribers" && !isSubscriber),
+        (media) => !(media.accessible_to === "subscribers" && !isSubscriber)
       );
     // Get the new index after filtering
     const newIndexId = filteredMedias.findIndex((item) => item.id === m.id);
@@ -632,7 +634,7 @@ const SearchPage = () => {
                                     <Calendar size={14} className="mr-1.5" />
                                     Joined{" "}
                                     {new Date(
-                                      user.created_at,
+                                      user.created_at
                                     ).toLocaleDateString("en-US", {
                                       year: "numeric",
                                       month: "long",

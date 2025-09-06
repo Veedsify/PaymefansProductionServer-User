@@ -9,13 +9,10 @@ interface PayForPostProps {
 const payForPost = async ({ price, postId }: PayForPostProps) => {
   try {
     // Make sure to import axios at the top of your file: import axios from "axios";
-    const response = await axiosInstance.post(
-      `${process.env.NEXT_PUBLIC_TS_EXPRESS_URL}/post/pay`,
-      {
-        price,
-        postId,
-      },
-    );
+    const response = await axiosInstance.post(`/post/pay`, {
+      price,
+      postId,
+    });
 
     return response.data;
   } catch (error: any) {

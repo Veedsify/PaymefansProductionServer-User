@@ -49,7 +49,7 @@ export const SettingsBillingProvider: React.FC<SettingsBillingProps> = ({
     try {
       try {
         const res = await axiosInstance.post(
-          `${process.env.NEXT_PUBLIC_TS_EXPRESS_URL}/settings/billings/message-price`,
+          `/settings/billings/message-price`,
           settings,
         );
 

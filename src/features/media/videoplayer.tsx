@@ -9,14 +9,10 @@ import {
   LucideLoaderCircle,
   LucideVolume2,
   LucideVolumeX,
-  LucideUser,
-  LucideUser2,
 } from "lucide-react";
-import { MouseEvent, useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useInView } from "react-intersection-observer";
 import CustomSeekBar from "./CustomSeekBar";
-import Link from "next/link";
-import Image from "next/image";
 import UserProfileOverlay from "@/features/post/UserProfileOverlay";
 
 interface UserProfile {
@@ -46,7 +42,6 @@ const VideoPlayer = ({
   const hlsRef = useRef<Hls | null>(null);
   const { ref: intersectionRef, inView } = useInView({ threshold: 0.5 });
   const controlsTimeoutRef = useRef<NodeJS.Timeout | null>(null);
-
   const [isPlaying, setIsPlaying] = useState(false);
   const [duration, setDuration] = useState(0);
   const [currentTime, setCurrentTime] = useState(0);
@@ -286,17 +281,14 @@ const VideoPlayer = ({
         {/* Loading Spinner Overlay */}
         {isLoading && modalOpen && (
           <div className="absolute inset-0 flex items-center justify-center bg-black/50">
-            <div className="flex flex-col items-center">
-              <LucideLoader className="w-10 h-10 text-pink-400 animate-spin" />
-              <p className="mt-3 text-sm font-medium text-white">
-                Loading video...
-              </p>
+            <div className="p-3 rounded-full bg-black/50">
+              <LucideLoaderCircle className="w-8 h-8 text-gray-200 animate-spin" />
             </div>
           </div>
         )}
 
         {/* Buffering Indicator */}
-        {!isLoading && isBuffering && (
+        {!isLoading && isBuffering && modalOpen && (
           <div className="absolute inset-0 flex items-center justify-center bg-black/30">
             <div className="p-3 rounded-full bg-black/50">
               <LucideLoaderCircle className="w-8 h-8 text-gray-200 animate-spin" />
@@ -305,7 +297,7 @@ const VideoPlayer = ({
         )}
 
         {/* Play Button Overlay (when not playing) */}
-        {!isPlaying && !isLoading && modalOpen && (
+        {/* {!isPlaying && (
           <div className="absolute inset-0 flex items-center justify-center">
             <button
               onClick={(e) => {
@@ -318,7 +310,7 @@ const VideoPlayer = ({
               <LucidePlay className="w-12 h-12 text-white ml-1" />
             </button>
           </div>
-        )}
+        )} */}
 
         {modalOpen && (
           <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-300">

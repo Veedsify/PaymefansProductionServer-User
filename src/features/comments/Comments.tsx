@@ -20,6 +20,7 @@ import { getCommentReplies } from "@/utils/data/GetCommentReplies";
 import CommentReplyChildren from "./CommentsReplyWithchildren";
 import ReplyInteractions from "./ReplyInteraction";
 import { useAuthContext } from "@/contexts/UserUseContext";
+import axiosInstance from "@/utils/Axios";
 
 export interface Comment {
   comment_id: string;
@@ -52,9 +53,11 @@ const CommentsHolder = ({ post, postComments }: CommentsHolderProps) => {
   const [loading, setLoading] = useState(true);
   const [postComment, setPostComments] = useState<Comment[]>([]);
   const [page, setPage] = useState(1);
-  const { isGuest } = useAuthContext();
+  const { isGuest, user } = useAuthContext();
   const [hasMore, setHasMore] = useState(false);
-  const { fullScreenPreview } = usePostComponent();
+  const fullScreenPreview = usePostComponent(
+    (state) => state.fullScreenPreview
+  );
   const commentsRef = useRef<HTMLDivElement>(null);
   const [openReply, setOpenReply] = useState<{
     commentId: string;
@@ -79,7 +82,7 @@ const CommentsHolder = ({ post, postComments }: CommentsHolderProps) => {
     let cancelled = false;
     const fetchComments = async () => {
       setLoading(true);
-      const comments = await getUserComments(post, page);
+      const comments = await getUserComments(post, page, user?.id);
       if (!cancelled && comments) {
         setHasMore(comments.hasMore);
         setPostComments((prev) =>
@@ -105,18 +108,10 @@ const CommentsHolder = ({ post, postComments }: CommentsHolderProps) => {
       if (viewedComments.has(commentId)) return;
 
       try {
-        const response = await fetch(
-          `${process.env.NEXT_PUBLIC_TS_EXPRESS_URL}/comments/view`,
-          {
-            method: "POST",
-            credentials: "include",
-            body: JSON.stringify({ commentId }),
-          }
-        );
-
-        if (response.ok) {
-          setViewedComments((prev) => new Set(prev).add(commentId));
-        }
+        await axiosInstance.post(`/comments/view`, {
+          commentId,
+        });
+        setViewedComments((prev) => new Set(prev).add(commentId));
       } catch (error) {
         console.error("Failed to track comment view:", error);
       }

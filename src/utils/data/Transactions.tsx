@@ -8,7 +8,7 @@ export const getTransactionsData = async (token: string) => {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-      }
+      },
     );
 
     return res.data;

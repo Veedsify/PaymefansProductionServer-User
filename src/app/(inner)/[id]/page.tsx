@@ -107,7 +107,7 @@ const ProfilePage = () => {
       return;
     }
     toggleModalOpen(
-      "You need to login to tip " + (userdata?.name || "this user") + ".",
+      "You need to login to tip " + (userdata?.name || "this user") + "."
     );
   };
 
@@ -118,7 +118,7 @@ const ProfilePage = () => {
   useEffect(() => {
     if (isError && error) {
       const isPostPage = postRegex.test(location);
-      if (!isPostPage) {
+      if (!isPostPage && !location.startsWith("/404")) {
         router.push("/login");
       }
     }

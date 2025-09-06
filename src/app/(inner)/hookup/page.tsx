@@ -47,7 +47,7 @@ const HookupPage = () => {
             ?.toLowerCase()
             .includes(searchQuery.toLowerCase()) ||
           hookup.location?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          hookup.state?.toLowerCase().includes(searchQuery.toLowerCase()),
+          hookup.state?.toLowerCase().includes(searchQuery.toLowerCase())
       );
       setFilteredHookups(filtered);
     }
@@ -68,12 +68,12 @@ const HookupPage = () => {
   }
 
   return (
-    <div className="block p-4 md:p-8">
+    <div className="block p-4 md:p-4">
       <div className="flex items-center mb-7 lg:hidden">
         <span className="flex-shrink-0 text-xl font-bold">Hookup</span>
       </div>
 
-      <div className="relative overflow-auto pb-7">
+      <div className="relative overflow-auto">
         <label className="flex justify-between pr-5 overflow-hidden border border-gray-400 rounded-md">
           <input
             type="search"
@@ -91,14 +91,14 @@ const HookupPage = () => {
 
       {/* Search Results Info */}
       {searchQuery && (
-        <div className="mb-4 text-sm text-gray-600">
+        <div className="mb-4 py-4 text-sm text-gray-600">
           {filteredHookups.length} result
           {filteredHookups.length !== 1 ? "s" : ""} found for &apos;
           {searchQuery}&apos;
         </div>
       )}
 
-      <div className="py-6">
+      <div className="py-3">
         {isLoading ? (
           <HookUpLoader />
         ) : filteredHookups.length === 0 ? (
@@ -107,8 +107,8 @@ const HookupPage = () => {
               {error
                 ? "Failed to load hookups"
                 : searchQuery
-                  ? `No hookups found matching "${searchQuery}"`
-                  : "No hookups available"}
+                ? `No hookups found matching "${searchQuery}"`
+                : "No hookups available"}
             </div>
             {error && (
               <button

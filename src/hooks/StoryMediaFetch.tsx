@@ -29,7 +29,6 @@ const StoryMediaFetch = ({ page }: StoryMediaFetchProps) => {
     })
       .then((res) => {
         setHasMore(res.data.hasMore);
-        console.log(res.data.hasMore);
         setLoading(false);
         setMedia((prev: any) => {
           return lodash.uniqBy([...prev, ...res.data.data], "id");

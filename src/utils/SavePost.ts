@@ -20,9 +20,7 @@ type SavePostType = {
 export const SavePost = async ({ data, action, post_id }: SavePostType) => {
   try {
     const url =
-      action === "create"
-        ? ROUTE.POST_CREATE
-        : `${process.env.NEXT_PUBLIC_TS_EXPRESS_URL}/post/update/${post_id}`;
+      action === "create" ? ROUTE.POST_CREATE : `/post/update/${post_id}`;
 
     // Make an axios POST request with onUploadProgress to track the progress
     const res = await axiosInstance.post(url, data, {

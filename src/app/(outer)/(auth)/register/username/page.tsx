@@ -10,6 +10,7 @@ import swal from "sweetalert";
 import axios from "axios";
 import toast from "react-hot-toast";
 import { REGISTER_CONFIG } from "@/config/config";
+import axiosInstance from "@/utils/Axios";
 
 const ChooseUserName = () => {
   const router = useRouter();
@@ -53,20 +54,9 @@ const ChooseUserName = () => {
     }
 
     try {
-      const res = await axios(
-        `${process.env.NEXT_PUBLIC_TS_EXPRESS_URL}/auth/signup/username`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          data: {
-            username: ref.current?.value,
-          },
-        }
-      );
-
-      console.log(res.data);
+      const res = await axiosInstance.post(`/auth/signup/username`, {
+        username: ref.current?.value,
+      });
 
       if (res.data && res.data.status) {
         setMessage(res.data.message);
@@ -87,27 +77,18 @@ const ChooseUserName = () => {
       });
       try {
         if (ref.current?.value) {
-          const createUser = await axios(
-            `${process.env.NEXT_PUBLIC_TS_EXPRESS_URL}/auth/signup`,
-            {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              data: {
-                fullname: user?.name,
-                user_id: String(Math.floor(Math.random() * 1000000)),
-                username: ref.current?.value,
-                name: user?.name,
-                email: user?.email,
-                phone: user?.phone,
-                location: user?.location,
-                password: user?.password,
-              },
-            }
-          );
+          const createUser = await axiosInstance.post(`/auth/signup`, {
+            fullname: user?.name,
+            user_id: String(Math.floor(Math.random() * 1000000)),
+            username: ref.current?.value,
+            name: user?.name,
+            email: user?.email,
+            phone: user?.phone,
+            location: user?.location,
+            password: user?.password,
+          });
 
-          const { data } = createUser;
+          const { data } = createUser.data;
 
           if (!data.error) {
             setUser(null);
@@ -123,7 +104,6 @@ const ChooseUserName = () => {
 
             // Handle successful registration with token
             if (!data.tfa && data.token) {
-              document.cookie = `token=${data.token}`;
               router.push("/");
               return;
             }
@@ -155,7 +135,7 @@ const ChooseUserName = () => {
         });
       }
     },
-    [user, router, setUser]
+    [user, router, setUser],
   );
 
   return (

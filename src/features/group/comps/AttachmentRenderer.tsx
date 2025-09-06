@@ -24,7 +24,9 @@ const AttachmentRenderer: React.FC<AttachmentRendererProps> = ({
   allAttachments = [],
   index = 0,
 }) => {
-  const { fullScreenPreview } = usePostComponent();
+  const fullScreenPreview = usePostComponent(
+    (state) => state.fullScreenPreview
+  );
 
   // Handle image preview
   const handlePreview = useCallback(() => {

@@ -40,13 +40,13 @@ const StatusComponent = () => {
 
   const prioritizedStories = stories
     ? [...stories].sort((a, b) =>
-        a.user.id === user?.id ? -1 : b.user.id === user?.id ? 1 : 0,
+        a.user.id === user?.id ? -1 : b.user.id === user?.id ? 1 : 0
       )
     : [];
   return (
     <div ref={storyContainer} className="border-b select-none border-black/30">
       <div
-        className="flex items-center p-4 py-6 gap-4 pb-9 clean-sidebar whitespace-nowrap"
+        className="flex items-baseline p-4 py-6 gap-4 pb-9 clean-sidebar whitespace-nowrap"
         style={{
           maxWidth: maxWidth,
           overflowX: "auto",
@@ -116,24 +116,25 @@ const Status = ({
   };
   return (
     <div>
-      <div className="relative block" onClick={OpenThisStory}>
+      <div
+        className="relative flex flex-col items-center cursor-pointer"
+        onClick={OpenThisStory}
+      >
         <div
           className={`flex items-center ${
             islive ? "bg-red-300" : "bg-gray-300"
-          } flex-shrink-0 justify-center cursor-pointer rounded-full aspect-square h-20 w-20 md:h-[80px] md:w-[80px] relative mb-2`}
+          } flex-shrink-0 justify-center rounded-full aspect-square h-18 w-18 md:h-22 md:w-22 relative mb-3.5`}
         >
           {islive && (
             <div className="absolute w-2/3 border border-red-600 rounded-full h-2/3 animate-ping"></div>
           )}
-          <div className="flex p-[5px] bg-white items-center justify-center rounded-full">
+          <div className="flex p-[3px] bg-primary-dark-pink items-center justify-center rounded-full aspect-square w-full h-full">
             <Image
               width={80}
               height={80}
               priority
               src={data.image}
-              className={`rounded-full w-auto border-2 ${
-                islive ? "border-red-600" : "border-gray-300"
-              } object-cover h-16 md:h-20 aspect-square`}
+              className="rounded-full aspect-square border-2 border-gray-200 object-cover w-full h-full"
               alt=""
             />
           </div>
@@ -143,7 +144,7 @@ const Status = ({
             </div>
           )}
         </div>
-        <div className="absolute overflow-hidden text-xs font-medium text-center text-gray-600 whitespace-pre md:text-sm left-1/2 -translate-x-1/2 dark:text-gray-200 text-truncate max-w-20">
+        <div className="text-xs font-medium text-center text-gray-600 whitespace-pre md:text-sm dark:text-gray-200 text-truncate max-w-20">
           {data.name}
         </div>
       </div>

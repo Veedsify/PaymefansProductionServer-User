@@ -24,6 +24,7 @@ interface CaptionElement {
 export type StoryType = {
   id: number;
   index: number;
+  media_id: string;
   media_type: string;
   media_url: string;
   caption?: string;
@@ -55,7 +56,7 @@ export const useStoryStore = create<StoryState>()(
       updateStorySlide: (index: number, data: Partial<StoryType>) =>
         set((state) => ({
           story: state.story.map((slide, i) =>
-            i === index ? { ...slide, ...data } : slide
+            i === index ? { ...slide, ...data } : slide,
           ),
         })),
       addCaptionToStory: (id, caption) => {
@@ -89,6 +90,6 @@ export const useStoryStore = create<StoryState>()(
     {
       name: "story-storage",
       storage: createJSONStorage(() => localStorage),
-    }
-  )
+    },
+  ),
 );

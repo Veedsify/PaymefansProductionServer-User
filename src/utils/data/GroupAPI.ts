@@ -1,6 +1,5 @@
+import { GroupMember } from "@/features/group/types/group";
 import axiosInstance from "@/utils/Axios";
-import { getToken } from "@/utils/Cookie";
-import { GroupMember } from "@/features/group/types/group-types";
 
 type Group = {
   id: number;
@@ -160,8 +159,10 @@ export const fetchGroupData = async (groupId: number): Promise<GroupData> => {
     if (error.response?.status === 403) {
       // If it's a 403 error, the user might be blocked
       const errorMessage = error.response?.data?.message || "";
-      if (errorMessage.toLowerCase().includes("blocked") ||
-        errorMessage.toLowerCase().includes("access denied")) {
+      if (
+        errorMessage.toLowerCase().includes("blocked") ||
+        errorMessage.toLowerCase().includes("access denied")
+      ) {
         throw new Error("BLOCKED_FROM_GROUP");
       }
     }
@@ -251,12 +252,9 @@ export const checkUserBlockedStatus = async (
   groupId: number,
 ): Promise<{ success: boolean; data: { isBlocked: boolean } }> => {
   try {
-    const response = await axiosInstance.get(
-      `/groups/${groupId}/is-blocked`,
-      {
-        withCredentials: true,
-      },
-    );
+    const response = await axiosInstance.get(`/groups/${groupId}/is-blocked`, {
+      withCredentials: true,
+    });
     return response.data;
   } catch (error: any) {
     // If the endpoint doesn't exist or returns 404, assume not blocked
@@ -279,7 +277,9 @@ export const extractUserMembershipFromGroup = (
 
   // Find the current user's membership
   const userMembership = groupData.members.find((member: any) => {
-    return member.userId === userId || member.userId.toString() === userId.toString();
+    return (
+      member.userId === userId || member.userId.toString() === userId.toString()
+    );
   });
 
   if (!userMembership) {

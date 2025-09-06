@@ -244,118 +244,112 @@ const MediaPreviewModal = memo(
 
     if (!mediaItems.length) return null;
 
+    if (!open) return null;
     return (
-      <AnimatePresence>
-        {open && (
-          <motion.div
-            role="dialog"
-            aria-labelledby="media-preview-title"
-            aria-modal="true"
-            className="fixed inset-0 z-[9999] flex h-full w-full items-center justify-center bg-black"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1, animationDuration: "200ms" }}
-            exit={{ opacity: 0, animationDuration: "200ms" }}
-            onClick={(e) => {
-              if (e.target === e.currentTarget) handleClose();
-            }}
+      <motion.div
+        role="dialog"
+        aria-labelledby="media-preview-title"
+        aria-modal="true"
+        className="fixed inset-0 z-[9999] flex h-full w-full items-center justify-center bg-black"
+        onClick={(e) => {
+          if (e.target === e.currentTarget) handleClose();
+        }}
+      >
+        <div className="sr-only" id="media-preview-title">
+          Media Preview Modal
+        </div>
+
+        {/* Close button */}
+        <button
+          className="absolute z-20 p-2 text-white bg-black/60 hover:bg-black/80 rounded-full top-3 right-3 md:top-4 md:right-4 focus:outline-none focus:ring-2 focus:ring-white/50 transition-colors backdrop-blur-sm"
+          onClick={handleClose}
+          aria-label="Close preview"
+        >
+          <X className="w-4 h-4 md:w-5 md:h-5" />
+        </button>
+
+        {/* Slide counter */}
+        {totalSlides > 1 && (
+          <div
+            aria-live="polite"
+            className="absolute z-20 px-3 py-1 text-xs md:text-sm text-white rounded-full top-3 left-1/2 -translate-x-1/2 bg-black/60 backdrop-blur-sm"
           >
-            <div className="sr-only" id="media-preview-title">
-              Media Preview Modal
-            </div>
-
-            {/* Close button */}
-            <button
-              className="absolute z-20 p-2 text-white bg-black/60 hover:bg-black/80 rounded-full top-3 right-3 md:top-4 md:right-4 focus:outline-none focus:ring-2 focus:ring-white/50 transition-colors backdrop-blur-sm"
-              onClick={handleClose}
-              aria-label="Close preview"
-            >
-              <X className="w-4 h-4 md:w-5 md:h-5" />
-            </button>
-
-            {/* Slide counter */}
-            {totalSlides > 1 && (
-              <div
-                aria-live="polite"
-                className="absolute z-20 px-3 py-1 text-xs md:text-sm text-white rounded-full top-3 left-1/2 -translate-x-1/2 bg-black/60 backdrop-blur-sm"
-              >
-                {currentSlide + 1} / {totalSlides}
-              </div>
-            )}
-
-            <Swiper
-              {...MEDIA_CONSTANTS.SWIPER_CONFIG}
-              modules={[Navigation, Pagination, Keyboard, A11y]}
-              onSwiper={(swiper) => (swiperRef.current = swiper)}
-              onSlideChange={handleSlideChange}
-              className="relative h-full w-full"
-              keyboard={{ enabled: true }}
-              a11y={{
-                prevSlideMessage: "Previous slide",
-                nextSlideMessage: "Next slide",
-                firstSlideMessage: "This is the first slide",
-                lastSlideMessage: "This is the last slide",
-              }}
-            >
-              {mediaItems.map((item, index) => (
-                <SwiperSlide
-                  key={`media-${index}-${item.url.slice(-20)}`}
-                  className="flex items-center justify-center h-full w-full"
-                >
-                  <MediaErrorBoundary>
-                    {shouldLoadSlide(index) ? (
-                      item.type === "image" ? (
-                        <ImagePreview
-                          url={item.url}
-                          username={username}
-                          alt={item.alt || `Media preview ${index + 1}`}
-                          index={index}
-                          onLoad={() => handleImageLoad(index)}
-                          onError={() => handleImageError(index)}
-                          userProfile={userProfile}
-                          shouldWatermark={watermarkEnabled}
-                        />
-                      ) : (
-                        <VideoPreview
-                          url={item.url}
-                          isBlob={!!item.isBlob}
-                          playAction={currentSlide === index}
-                          index={index}
-                          userProfile={userProfile}
-                        />
-                      )
-                    ) : (
-                      // Placeholder for unloaded slides
-                      <div className="flex items-center justify-center w-full h-full">
-                        <div className="w-8 h-8 border-4 border-white/30 border-t-white rounded-full animate-spin"></div>
-                      </div>
-                    )}
-                  </MediaErrorBoundary>
-                </SwiperSlide>
-              ))}
-            </Swiper>
-
-            {/* Navigation buttons */}
-            {totalSlides > 1 && (
-              <>
-                <NavigationButton
-                  direction="prev"
-                  className="left-2 md:left-4 top-1/2"
-                  ariaLabel="Previous slide"
-                  onClick={handlePrevSlide}
-                  disabled={isFirstSlide}
-                />
-                <NavigationButton
-                  direction="next"
-                  className="right-2 md:right-4 top-1/2"
-                  ariaLabel="Next slide"
-                  onClick={handleNextSlide}
-                  disabled={isLastSlide}
-                />
-              </>
-            )}
-          </motion.div>
+            {currentSlide + 1} / {totalSlides}
+          </div>
         )}
-      </AnimatePresence>
+
+        <Swiper
+          {...MEDIA_CONSTANTS.SWIPER_CONFIG}
+          modules={[Navigation, Pagination, Keyboard, A11y]}
+          onSwiper={(swiper) => (swiperRef.current = swiper)}
+          onSlideChange={handleSlideChange}
+          className="relative h-full w-full"
+          keyboard={{ enabled: true }}
+          a11y={{
+            prevSlideMessage: "Previous slide",
+            nextSlideMessage: "Next slide",
+            firstSlideMessage: "This is the first slide",
+            lastSlideMessage: "This is the last slide",
+          }}
+        >
+          {mediaItems.map((item, index) => (
+            <SwiperSlide
+              key={`media-${index}-${item.url.slice(-20)}`}
+              className="flex items-center justify-center h-full w-full"
+            >
+              <MediaErrorBoundary>
+                {shouldLoadSlide(index) ? (
+                  item.type === "image" ? (
+                    <ImagePreview
+                      url={item.url}
+                      username={username}
+                      alt={item.alt || `Media preview ${index + 1}`}
+                      index={index}
+                      onLoad={() => handleImageLoad(index)}
+                      onError={() => handleImageError(index)}
+                      userProfile={userProfile}
+                      shouldWatermark={watermarkEnabled}
+                    />
+                  ) : (
+                    <VideoPreview
+                      url={item.url}
+                      isBlob={!!item.isBlob}
+                      playAction={currentSlide === index}
+                      index={index}
+                      userProfile={userProfile}
+                    />
+                  )
+                ) : (
+                  // Placeholder for unloaded slides
+                  <div className="flex items-center justify-center w-full h-full">
+                    <div className="w-8 h-8 border-4 border-white/30 border-t-white rounded-full animate-spin"></div>
+                  </div>
+                )}
+              </MediaErrorBoundary>
+            </SwiperSlide>
+          ))}
+        </Swiper>
+
+        {/* Navigation buttons */}
+        {totalSlides > 1 && (
+          <>
+            <NavigationButton
+              direction="prev"
+              className="left-2 md:left-4 top-1/2"
+              ariaLabel="Previous slide"
+              onClick={handlePrevSlide}
+              disabled={isFirstSlide}
+            />
+            <NavigationButton
+              direction="next"
+              className="right-2 md:right-4 top-1/2"
+              ariaLabel="Next slide"
+              onClick={handleNextSlide}
+              disabled={isLastSlide}
+            />
+          </>
+        )}
+      </motion.div>
     );
   }
 );

@@ -34,7 +34,7 @@ export interface GroupMember {
   user: User;
 }
 
-interface GroupMessage {
+export interface GroupMessage {
   id: number;
   content?: string;
   senderId: number;

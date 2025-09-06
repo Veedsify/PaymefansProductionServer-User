@@ -23,13 +23,6 @@ export const ImagePreview = memo(
     return (
       <motion.div
         className="relative flex items-center justify-center w-full h-full overflow-hidden"
-        initial={{ opacity: 0, scale: 0.95 }}
-        animate={{ opacity: 1, scale: 1 }}
-        exit={{ opacity: 0, scale: 0.95 }}
-        transition={{
-          duration: MEDIA_CONSTANTS.ANIMATION_DURATION_SEC,
-          type: "spring",
-        }}
         style={{
           userSelect: "none",
           WebkitUserSelect: "none",
@@ -51,12 +44,7 @@ export const ImagePreview = memo(
             </AnimatePresence>
           }
         >
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.95 }}
-            className="flex items-center justify-center w-full h-full overflow-hidden relative"
-          >
+          <motion.div className="flex items-center justify-center w-full h-full overflow-hidden relative">
             <div className="relative w-full h-full select-none object-contain">
               {userProfile && (
                 <div className="absolute bottom-10 left-2 z-20 flex items-center gap-3 p-2 rounded-full">

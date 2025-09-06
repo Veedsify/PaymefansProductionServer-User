@@ -19,8 +19,9 @@ import { StoryCaptionComponentProps } from "@/types/Components";
 import { useState, useRef, useEffect, useCallback } from "react";
 import SubmitUserStory from "@/utils/story/submit-user-story";
 import toast from "react-hot-toast";
-import { fontFamilies } from "@/lib/story/FontFamilies";
 import { StoryType, useStoryStore } from "@/contexts/StoryContext";
+import { fontFamilies } from "@/lib/FontFamilies";
+import HlsViewer from "@/features/media/HlsViewer";
 
 // Enhanced types for captions and links
 interface CaptionElement {
@@ -678,14 +679,9 @@ const EnhancedSlideComponent = ({
         onClick={handleContainerClick}
       >
         {story?.media_type === "video" && (
-          <video
-            controlsList="nodownload noremoteplayback nofullscreen nopip noplaybackrate"
-            preload="auto"
-            autoPlay
-            muted
-            src={story?.media_url}
-            controls
-            className="object-contain w-full h-full bg-black rounded-xl brightness-90"
+          <HlsViewer
+            streamUrl={story?.media_url}
+            className="w-full h-full object-contain bg-black rounded-xl brightness-90"
           />
         )}
         {story?.media_type === "image" && (

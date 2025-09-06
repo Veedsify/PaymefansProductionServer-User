@@ -1,9 +1,8 @@
 // groupChatStore.ts
 import { create } from "zustand";
 import { getSocket } from "@/components/common/Socket";
-import { useUserStore } from "@/contexts/UserUseContext";
+import { useAuthContext } from "@/contexts/UserUseContext";
 import toast from "react-hot-toast";
-import React from "react";
 import _ from "lodash";
 import { fetchGroupMessages } from "@/utils/data/GroupAPI";
 import { AuthUserProps } from "@/features/user/types/user";
@@ -145,7 +144,7 @@ export const useGroupChatStore = create<GroupChatStore>()((set, get) => ({
   setConnected: (payload) => set({ isConnected: payload }),
   joinGroupRoom: (groupId) => {
     const socket = getSocket();
-    const user = useUserStore.getState().user as AuthUserProps;
+    const { user } = useAuthContext();
     const { isConnected, currentGroupId, isJoined } = get();
 
     // Don't emit if already joined to this group
@@ -159,7 +158,7 @@ export const useGroupChatStore = create<GroupChatStore>()((set, get) => ({
     });
 
     // Emit socket event to actually join the room
-    if (socket && user && isConnected) {
+    if (socket && user?.id && isConnected) {
       socket.emit("join-group-room", {
         groupId: groupId.toString(),
         userId: user?.id.toString(),
@@ -168,7 +167,7 @@ export const useGroupChatStore = create<GroupChatStore>()((set, get) => ({
   },
   leaveGroupRoom: () => {
     const socket = getSocket();
-    const user = useUserStore.getState().user;
+    const { user } = useAuthContext();
     const { isConnected, currentGroupId } = get();
 
     // Emit socket event to leave the room
@@ -337,7 +336,7 @@ export const useGroupChatStore = create<GroupChatStore>()((set, get) => ({
   // Socket action helpers
   sendMessage: (content, attachments = [], replyToId) => {
     const socket = getSocket();
-    const user = useUserStore.getState().user;
+    const { user } = useAuthContext();
     const { isConnected, currentGroupId } = get();
 
     if (socket && user && isConnected && currentGroupId) {
@@ -355,7 +354,7 @@ export const useGroupChatStore = create<GroupChatStore>()((set, get) => ({
   },
   setTypingStatus: (isTyping) => {
     const socket = getSocket();
-    const user = useUserStore.getState().user;
+    const { user } = useAuthContext();
     const { isConnected, currentGroupId } = get();
 
     if (socket && user && isConnected && currentGroupId) {
@@ -364,7 +363,7 @@ export const useGroupChatStore = create<GroupChatStore>()((set, get) => ({
   },
   markMessageAsSeen: (messageId) => {
     const socket = getSocket();
-    const user = useUserStore.getState().user;
+    const { user } = useAuthContext();
     const { isConnected, currentGroupId } = get();
 
     if (socket && user && isConnected && currentGroupId) {
@@ -376,7 +375,7 @@ export const useGroupChatStore = create<GroupChatStore>()((set, get) => ({
   },
   restoreGroupRoom: () => {
     const socket = getSocket();
-    const user = useUserStore.getState().user;
+    const { user } = useAuthContext();
     const { isConnected } = get();
 
     if (socket && user && isConnected) {

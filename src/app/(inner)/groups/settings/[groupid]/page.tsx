@@ -16,10 +16,14 @@ import {
 import Image from "next/image";
 import Link from "next/link";
 import { useParams } from "next/navigation";
-import { Group, GroupType, ApiResponse, GroupMember } from "@/features/group/types/group-types";
 import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
 import { fetchGroupMembers } from "@/utils/data/GroupAPI";
 import axiosInstance from "@/utils/Axios";
+import {
+  GroupType,
+  type ApiResponse,
+  type Group,
+} from "@/features/group/types/group";
 
 const GroupSettingsPage = () => {
   const params = useParams();
@@ -640,8 +644,8 @@ const MembersTab: React.FC<{ groupId: string; adminId: number }> = ({
                     member.userId === adminId
                       ? "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200"
                       : member.role === "MODERATOR"
-                      ? "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200"
-                      : "bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200"
+                        ? "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200"
+                        : "bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200"
                   }`}
                 >
                   {member.userId === adminId ? "Admin" : member.role}

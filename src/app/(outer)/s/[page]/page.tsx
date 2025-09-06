@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { useParams } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
+import axiosInstance from "@/utils/Axios";
 
 interface PageData {
   title: string;
@@ -24,13 +25,8 @@ export default function Page() {
     page: string,
   ): Promise<PageData | ErrorData | null> => {
     try {
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_TS_EXPRESS_URL}/pages/${page}`,
-      );
-      if (!res.ok) {
-        throw new Error("Failed to fetch data");
-      }
-      const response = await res.json();
+      const res = await axiosInstance(`/pages/${page}`);
+      const response = res.data;
       if (!response.error) {
         return response as PageData;
       }

@@ -92,12 +92,15 @@ const StatusMediaPanel = () => {
 
 const StoryMediaItem = React.memo(({ data }: { data: any }) => {
   const { removeFromStory, addToStory, story } = useStoryStore();
-
   // Memoize selected state instead of using useState
   const selected = useMemo(
     () => story.some((item) => item.id === data.id),
     [story, data.id],
   );
+
+  const mediaUrl = useMemo(() => {
+    return data.url;
+  }, [data.media_url]);
 
   const handleSelect = useCallback(() => {
     if (selected) {
@@ -106,6 +109,7 @@ const StoryMediaItem = React.memo(({ data }: { data: any }) => {
       addToStory({
         index: 0,
         id: data.id,
+        media_id: data.media_id,
         media_type: data.media_type,
         media_url: data.url,
       });
@@ -144,7 +148,7 @@ const StoryMediaItem = React.memo(({ data }: { data: any }) => {
           )}
           <VideoPlayer
             allOthers={{ onClick: handleSelect, muted: true }}
-            streamUrl={data.url}
+            streamUrl={mediaUrl}
             className={`object-cover rounded-lg sm:rounded-xl cursor-pointer transition-all duration-300 inset-0 w-full h-full ${
               selected ? "brightness-110" : "brightness-75 hover:brightness-90"
             }`}
@@ -174,7 +178,7 @@ const StoryMediaItem = React.memo(({ data }: { data: any }) => {
             </div>
           )}
           <Image
-            src={data.url}
+            src={mediaUrl}
             alt={data.url}
             fill
             sizes="(max-width: 640px) 100vw, 640px"

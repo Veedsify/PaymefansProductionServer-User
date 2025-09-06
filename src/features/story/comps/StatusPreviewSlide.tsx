@@ -17,6 +17,7 @@ import { getToken } from "@/utils/Cookie";
 import { usePointsStore } from "@/contexts/PointsContext";
 import { getSocket } from "../../../components/common/Socket";
 import { v4 as uuid } from "uuid";
+import HlsViewer from "@/features/media/HlsViewer";
 type StatusPreviewSlideProps = {
   story: Story;
   index: number;
@@ -39,7 +40,7 @@ const fetchStatusViews = async ({
     `/story/views/${media_id}${pageParam === 0 ? "" : `?cursor=${pageParam}`}`,
     {
       withCredentials: true,
-    },
+    }
   );
   if (response.status === 200) {
     const data = response.data;
@@ -205,7 +206,7 @@ const StoryReplyInput = ({ story }: { story: Story }) => {
         {
           headers: { Authorization: `Bearer ${getToken()}` },
           withCredentials: true,
-        },
+        }
       );
       const receiverUserId = profileResponse.data.user?.user_id;
       if (!receiverUserId) {
@@ -217,7 +218,7 @@ const StoryReplyInput = ({ story }: { story: Story }) => {
         {
           headers: { Authorization: `Bearer ${getToken()}` },
           withCredentials: true,
-        },
+        }
       );
       const pricePerMessage = data.price_per_message || 0;
       const currentPoints = points || 0;
@@ -392,7 +393,7 @@ const StatusPreviewSlide = ({
         { storyMediaId: story.media_id },
         {
           withCredentials: true,
-        },
+        }
       );
       refCounter.current++;
     }
@@ -425,27 +426,27 @@ const StatusPreviewSlide = ({
         </div>
       ) : story.media_type === "video" ? (
         <div className="relative flex items-center justify-center w-full h-full">
-          <VideoPlayer
-            modalOpen={false}
-            autoPlay={index === activeIndex}
-            allOthers={{
-              className: "z-30",
-              playsInline: true,
-              muted: false,
-              controls: false,
-              loop: false,
-              preload: index === activeIndex ? "auto" : "metadata",
-              onEnded: () => moveToNextSlide(),
-              style: {
-                width: "100%",
-                height: "100%",
-                maxHeight: "calc(100vh - 120px)",
-                objectFit: "contain",
-                background: "black",
-                borderRadius: "0.75rem",
-                boxShadow: "0 4px 24px rgba(0,0,0,0.7)",
-              },
-            }}
+          <HlsViewer
+            // modalOpen={false}
+            // autoPlay={index === activeIndex}
+            // allOthers={{
+            //   className: "z-30",
+            //   playsInline: true,
+            //   muted: false,
+            //   controls: false,
+            //   loop: false,
+            //   preload: index === activeIndex ? "auto" : "metadata",
+            //   onEnded: () => moveToNextSlide(),
+            //   style: {
+            //     width: "100%",
+            //     height: "100%",
+            //     maxHeight: "calc(100vh - 120px)",
+            //     objectFit: "contain",
+            //     background: "black",
+            //     borderRadius: "0.75rem",
+            //     boxShadow: "0 4px 24px rgba(0,0,0,0.7)",
+            //   },
+            // }}
             className="w-full h-full bg-black rounded-lg shadow-lg"
             streamUrl={story.media_url}
           />

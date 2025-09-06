@@ -45,7 +45,9 @@ const PostPageImage: React.FC<PostPageImageProps> = ({
   postOwnerId,
 }) => {
   const router = useRouter();
-  const { fullScreenPreview } = usePostComponent();
+  const fullScreenPreview = usePostComponent(
+    (state) => state.fullScreenPreview
+  );
   const { user: authUser } = useAuthContext();
   const [canplay, setCanplay] = useState(false);
   const points = usePointsStore((state) => state.points);
@@ -142,7 +144,7 @@ const PostPageImage: React.FC<PostPageImageProps> = ({
             "You don't have enough points to pay for this post",
             {
               id: "pay-for-post",
-            },
+            }
           );
         }
         const pay = await payForPost({ price, postId: data.id });

@@ -5,6 +5,7 @@ import { getToken } from "@/utils/Cookie";
 import { AxiosError } from "axios";
 import toast from "react-hot-toast";
 import { useStoryStore } from "@/contexts/StoryContext";
+import { v4 as uuid } from "uuid";
 
 const StoryUploadForm = () => {
   const [selected, setSelected] = useState<File[]>([]);
@@ -34,6 +35,7 @@ const StoryUploadForm = () => {
             data.data.map((item: any, index: number) => {
               addToStory({
                 index,
+                media_id: uuid(),
                 id: Math.random() * 1000,
                 media_url: item.filename,
                 media_type: item.mimetype.split("/")[0],

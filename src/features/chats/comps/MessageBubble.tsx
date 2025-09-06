@@ -8,7 +8,6 @@ import StoryReplyPreview from "./StoryReplyPreview";
 import { motion } from "framer-motion";
 import { useInView } from "react-intersection-observer";
 import { formatDate } from "@/lib/FormatDate";
-// import { useStoryModal } from "@/contexts/StoryModalContext";
 
 const MessageBubble: React.FC<MessageBubbleProps> = ({
   receiver,
@@ -55,8 +54,6 @@ const MessageBubble: React.FC<MessageBubbleProps> = ({
     socket,
     inView,
   ]);
-
-  // const { openStoryModal } = useStoryModal();
 
   const handleStoryClick = useCallback(() => {
     if (message?.story_reply) {

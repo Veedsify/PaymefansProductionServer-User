@@ -1,4 +1,3 @@
-import BannerComponent from "@/features/profile/BannerComponent";
 import MoreProfileOptions from "@/features/profile/MoreProfileOptions";
 import EditProfileButton from "@/features/profile/EditProfileButton";
 import { ProfileCounts } from "@/features/profile/ProfileCount";
@@ -16,6 +15,9 @@ import {
 import { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
+import { useMemo } from "react";
+import ProfilePicture from "@/features/profile/ProfilePicture";
+import ProfileBanner from "@/features/profile/ProfileBanner";
 
 export const metadata: Metadata = {
   title: "Profile",
@@ -28,25 +30,10 @@ const ProfilePage = async () => {
     <>
       <div className="overflow-hidden">
         <div className="relative">
-          <Image
-            src={user ? user.profile_banner! : "/site/banner.png"}
-            alt="Home Banner"
-            width={1950}
-            height={650}
-            priority
-            className="inset-0 object-cover w-full h-full aspect-21-9"
-          />
+          <ProfileBanner user={user} />
         </div>
         <div className="relative flex w-full px-2 md:px-5">
-          <Image
-            src={user ? user?.profile_image?.trim()! : "/site/avatar.png"}
-            alt="proile image"
-            height={100}
-            priority
-            unoptimized
-            width={100}
-            className="absolute object-cover w-20 h-20 border-2 rounded-full md:w-24 md:h-24 sm:border-4 md:-top-12  -top-6 border-primary-dark-pink"
-          />
+          <ProfilePicture user={user} />
           <div className="flex items-center p-3 ml-auto gap-3 sm:p-3 ">
             <EditProfileButton user={user} />
             <MoreProfileOptions
@@ -148,18 +135,6 @@ const ProfilePage = async () => {
       <ProfileTabs />
     </>
   );
-
-  function formatNumber(number: any): string {
-    if (number >= 1000000000) {
-      return (number / 1000000000).toFixed(1) + "B";
-    } else if (number >= 1000000) {
-      return (number / 1000000).toFixed(1) + "M";
-    } else if (number >= 1000) {
-      return (number / 1000).toFixed(1) + "K";
-    } else {
-      return Number(number).toLocaleString();
-    }
-  }
 };
 
 export default ProfilePage;

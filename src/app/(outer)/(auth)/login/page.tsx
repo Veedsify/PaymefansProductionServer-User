@@ -8,6 +8,7 @@ import toast from "react-hot-toast";
 import { LOGIN_CONFIG } from "@/config/config";
 import axios from "axios";
 import ParentalGuide from "@/components/common/global/ParentalGuide";
+import axiosInstance from "@/utils/Axios";
 
 const Login = () => {
   const { setUser } = getUser();
@@ -48,15 +49,9 @@ const Login = () => {
   const submitLoginForm = async (e: FormEvent) => {
     e.preventDefault();
     try {
-      const loginThisUser = await axios.post(
-        `${process.env.NEXT_PUBLIC_TS_EXPRESS_URL}/auth/login`,
-        {
-          ...loginCredentials,
-        },
-        {
-          withCredentials: true,
-        },
-      );
+      const loginThisUser = await axiosInstance.post(`/auth/login`, {
+        ...loginCredentials,
+      });
 
       const loginError = loginThisUser?.data?.error;
       const loginToken = loginThisUser?.data?.token;

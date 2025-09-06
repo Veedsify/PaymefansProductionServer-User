@@ -10,8 +10,6 @@ import {
 } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { useAuthContext } from "@/contexts/UserUseContext";
-import Link from "next/link";
-import Image from "next/image";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import {

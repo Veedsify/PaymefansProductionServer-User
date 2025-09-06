@@ -10,6 +10,7 @@ import { getToken } from "@/utils/Cookie";
 import { LOGIN_CONFIG } from "@/config/config";
 import { LucideLoader } from "lucide-react";
 import _ from "lodash";
+import axiosInstance from "@/utils/Axios";
 
 const Login = () => {
   const { setUser } = getUser();
@@ -37,17 +38,9 @@ const Login = () => {
 
   const submitLoginForm = async (e: FormEvent) => {
     try {
-      const response = await axios.post(
-        `${process.env.NEXT_PUBLIC_TS_EXPRESS_URL}/auth/verify/authentication`,
-        {
-          code: Number(code),
-        },
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        },
-      );
+      const response = await axiosInstance.post(`/auth/verify/authentication`, {
+        code: Number(code),
+      });
 
       if (response.status !== 200) {
         setError("Invalid code");

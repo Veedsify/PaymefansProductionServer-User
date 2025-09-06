@@ -11,32 +11,31 @@ export const fetchConversationReceiver = async ({
   cursor: number;
 }) => {
   try {
-
     const response = await axiosInstance(
       `/conversations/receiver/${conversationId}`,
       {
         withCredentials: true,
-      }
+      },
     );
 
     if (response.data.error) {
-      throw new Error(response.data.message || "Failed to retrieve conversation data");
+      throw new Error(
+        response.data.message || "Failed to retrieve conversation data",
+      );
     }
 
     return response.data;
-
   } catch (error) {
     throw new Error("Failed to fetch conversation data");
   }
 };
-
 
 export const GetConversationMessages = async ({
   conversationId,
   cursor,
 }: {
   conversationId: string;
-  cursor: number | undefined
+  cursor: number | undefined;
 }) => {
   try {
     const pageQuery = new URLSearchParams();
@@ -44,10 +43,10 @@ export const GetConversationMessages = async ({
       pageQuery.append("cursor", cursor.toString());
     }
     const response = await axiosInstance(
-      `${process.env.NEXT_PUBLIC_TS_EXPRESS_URL}/conversations/messages/${conversationId}?${pageQuery.toString()}`,
+      `/conversations/messages/${conversationId}?${pageQuery.toString()}`,
       {
         withCredentials: true,
-      }
+      },
     );
 
     if (response.data.error) {
@@ -55,8 +54,7 @@ export const GetConversationMessages = async ({
     }
 
     return response.data;
-
   } catch (error) {
     throw new Error("Failed to fetch messages");
   }
-}
+};

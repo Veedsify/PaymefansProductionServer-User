@@ -1,21 +1,23 @@
 ﻿import { create } from "zustand";
 
+type OtherUrl = {
+    url: URL;
+    type: "video" | "image";
+    isBlob?: boolean;
+}
+type UserProfile = {
+    name: string;
+    username: string;
+    avatar?: string;
+} | null;
 type URL = string;
 type FullScreenPreviewType = {
     url: string, type: string, open: boolean, withOptions?: boolean
     ref: number,
     isBlob?: boolean,
-    otherUrl: {
-        url: URL;
-        type: "video" | "image";
-        isBlob?: boolean;
-    }[],
+    otherUrl: OtherUrl[],
     username?: string;
-    userProfile: {
-        name: string;
-        username: string;
-        avatar?: string;
-    } | null;
+    userProfile: UserProfile;
     watermarkEnabled?: boolean;
 }
 type PostComponentType = {

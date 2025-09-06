@@ -48,18 +48,11 @@ export const ValidateModelPayment = async (
 ): Promise<PaymentValidationResponse> => {
   try {
     // Validate the payment
-    const token = getToken();
-    const response = await axios.post(
-      `${process.env.NEXT_PUBLIC_TS_EXPRESS_URL}/models/validate-model-payment`,
+    const response = await axiosInstance.post(
+      `/models/validate-model-payment`,
       {
         status,
         reference, // Added reference parameter that was unused before
-      },
-      {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
       },
     );
 

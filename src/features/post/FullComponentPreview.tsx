@@ -6,15 +6,13 @@ import MediaPreviewModal from "../media/MediaPreviewModal";
 
 // Main Component
 const PostComponentPreview = memo(() => {
-  const {
-    ref: objectRef,
-    otherUrl,
-    open,
-    close,
-    username,
-    userProfile,
-    watermarkEnabled,
-  } = usePostComponent();
+  const objectRef = usePostComponent((state) => state.ref);
+  const otherUrl = usePostComponent((state) => state.otherUrl);
+  const open = usePostComponent((state) => state.open);
+  const close = usePostComponent((state) => state.close);
+  const username = usePostComponent((state) => state.username);
+  const userProfile = usePostComponent((state) => state.userProfile);
+  const watermarkEnabled = usePostComponent((state) => state.watermarkEnabled);
   const [rendered, setRendered] = React.useState(false);
 
   const mediaItems = useMemo(() => otherUrl || [], [otherUrl]);

@@ -7,8 +7,8 @@ const UserStatus = () => {
   const { user } = useAuthContext();
   return (
     <div className="relative block">
-      <div className="relative flex items-center justify-center flex-shrink-0 w-20 h-20 mb-2 bg-gray-300 rounded-full cursor-pointer aspect-square md:h-24 md:w-24">
-        <div className="flex p-[5px] bg-white items-center justify-center rounded-full">
+      <div className="relative flex items-center justify-center flex-shrink-0 w-19 h-19 mb-2 bg-gray-300  dark:bg-primary-dark-pink rounded-full cursor-pointer aspect-square md:h-24 md:w-24">
+        <div className="flex p-[3px] bg-white items-center justify-center rounded-full">
           <Link href={"/story"}>
             <Image
               width={80}

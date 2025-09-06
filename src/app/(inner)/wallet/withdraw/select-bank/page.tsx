@@ -1,5 +1,6 @@
 "use client";
 import { useWithdrawStore } from "@/contexts/WithDrawContext";
+import axiosInstance from "@/utils/Axios";
 import { getToken } from "@/utils/Cookie";
 import { LucideBuilding2, LucideLoader2 } from "lucide-react";
 import Link from "next/link";
@@ -48,34 +49,12 @@ export default function ConfirmWithdrawPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
-  const token = useMemo(() => getToken(), []); // Memoize token to prevent repeated calls
-
   const getBanks = useCallback(async () => {
-    if (!token) {
-      setError("Authentication token missing");
-      setLoading(false);
-      return;
-    }
-
     try {
       setLoading(true);
       setError(null);
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_TS_EXPRESS_URL}/wallet/banks`,
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          cache: "no-store", // Ensure fresh data
-        }
-      );
-
-      if (!res.ok) {
-        throw new Error(`HTTP error! status: ${res.status}`);
-      }
-
-      const data = await res.json();
+      const res = await axiosInstance.get(`/wallet/banks`);
+      const data = res.data;
       setBanks(data.data || []);
     } catch (error) {
       console.error("Error fetching banks:", error);
@@ -83,7 +62,7 @@ export default function ConfirmWithdrawPage() {
     } finally {
       setLoading(false);
     }
-  }, [token]);
+  }, []);
 
   // Handle redirect logic in useEffect
   useEffect(() => {
@@ -111,7 +90,7 @@ export default function ConfirmWithdrawPage() {
       });
       router.push("/wallet/withdraw/confirm");
     },
-    [router, setWithDrawStore, withdrawValues, banks]
+    [router, setWithDrawStore, withdrawValues, banks],
   );
 
   // Early return if bank is already selected

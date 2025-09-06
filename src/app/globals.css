@@ -13,11 +13,17 @@
     --color-coins-card-top: #e057ff;
 }
 
+@layer utilities {
+    .scrollbar-stable {
+        scrollbar-gutter: stable;
+    }
+}
+
 @custom-variant dark (&:where(.dark, .dark *));
 
-html {
+/* html {
     font-size: 92.2%;
-}
+} */
 
 body {
     -webkit-font-smoothing: antialiased;
@@ -30,8 +36,7 @@ body {
     color: #000000;
 }
 
-@media (prefers-color-scheme: light) {
-}
+@media (prefers-color-scheme: light) {}
 
 img {
     max-width: 100%;
@@ -207,7 +212,7 @@ img {
 /* Custom scrollbar */
 .clean-sidebar::-webkit-scrollbar {
     height: 5px;
-    width: 5px;
+    width: 3px;
 }
 
 .clean-sidebar::-webkit-scrollbar-track {
@@ -252,7 +257,7 @@ img {
 
     /* Custom scrollbar */
     ::-webkit-scrollbar {
-        width: 8px;
+        width: 5px;
     }
 
     ::-webkit-scrollbar-track {
@@ -260,12 +265,12 @@ img {
     }
 
     ::-webkit-scrollbar-thumb {
-        background-color: #671172;
+        background-color: #991caa;
         border-radius: 4px;
     }
 
     ::-webkit-scrollbar-thumb:hover {
-        background-color: #400546;
+        background-color: #6b0876;
     }
 
     .min-h-dvh-custom {
@@ -339,7 +344,7 @@ img {
 }
 
 /* 1 child: full size of the container */
-.str-video__livestream-layout__wrapper > div:only-child {
+.str-video__livestream-layout__wrapper>div:only-child {
     grid-template-columns: 1fr !important;
     grid-template-rows: 1fr !important;
     width: 100%;
@@ -359,13 +364,13 @@ img {
     grid-template-columns: 1fr;
 }
 
-.str-video__livestream-layout__wrapper > div:nth-child(1) {
+.str-video__livestream-layout__wrapper>div:nth-child(1) {
     grid-column: 1 / -1 !important;
     /* Span across all columns */
 }
 
-.str-video__livestream-layout__wrapper > div:nth-child(2),
-.str-video__livestream-layout__wrapper > div:nth-child(3) {
+.str-video__livestream-layout__wrapper>div:nth-child(2),
+.str-video__livestream-layout__wrapper>div:nth-child(3) {
     grid-template-rows: 1fr !important;
     /* Adjust for 3 children */
 }
@@ -487,11 +492,11 @@ img {
     width: fit-content !important;
 }
 
-.livestream-view > div > div {
+.livestream-view>div>div {
     min-height: 100vh;
 }
 
-.livestream-view > div > div video {
+.livestream-view>div>div video {
     object-fit: cover;
 }
 

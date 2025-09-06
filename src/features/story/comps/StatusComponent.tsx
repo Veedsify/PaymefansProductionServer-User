@@ -85,8 +85,8 @@ function StatusComponent() {
                         <HLSVideoPlayer
                           streamUrl={data.media_url}
                           modalOpen={false}
-                          allOthers={{ muted: true }}
-                          className="inset-0 object-cover w-full h-full cursor-pointer duration-300 ease-in-out rounded-xl"
+                          allOthers={{ muted: true, loop: false }}
+                          className="inset-0 object-cover aspect-square w-full h-full cursor-pointer duration-300 ease-in-out"
                         />
                         <span className="absolute top-2 left-2 bg-gradient-to-r from-primary-dark-pink to-purple-600 p-1.5 rounded-full shadow-lg backdrop-blur-sm">
                           <LucidePlay fill="#fff" strokeWidth={0} size={12} />

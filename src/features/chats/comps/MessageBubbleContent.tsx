@@ -23,7 +23,9 @@ const MessageBubbleContent: React.FC<MessageBubbleContentProps> = ({
   rawFiles = [],
   isSender,
 }) => {
-  const { fullScreenPreview } = usePostComponent();
+  const fullScreenPreview = usePostComponent(
+    (state) => state.fullScreenPreview
+  );
 
   // Media preview handlers
   const handlePreview = useCallback(
@@ -41,7 +43,7 @@ const MessageBubbleContent: React.FC<MessageBubbleContentProps> = ({
         withOptions: true,
       });
     },
-    [attachment, fullScreenPreview],
+    [attachment, fullScreenPreview]
   );
   const handleRawPreview = useCallback(
     (file: MediaFile, index: number) => {
@@ -59,7 +61,7 @@ const MessageBubbleContent: React.FC<MessageBubbleContentProps> = ({
         withOptions: true,
       });
     },
-    [rawFiles, fullScreenPreview],
+    [rawFiles, fullScreenPreview]
   );
 
   return (

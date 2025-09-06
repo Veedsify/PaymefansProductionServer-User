@@ -12,7 +12,7 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import React, { ReactNode, useMemo } from "react";
+import React, { ReactNode, useEffect, useMemo } from "react";
 import { usePost } from "@/hooks/queries/usePost";
 import { useParams, useRouter } from "next/navigation";
 import { useAuthContext } from "@/contexts/UserUseContext";
@@ -29,7 +29,7 @@ const Post = React.memo(() => {
   } = usePost(postId);
 
   // Memoized calculations - must be called before any conditional returns
-  const { isCreator, isSubscribed, hasPaid, canView } = useMemo(() => {
+  const { canView } = useMemo(() => {
     if (!post || !user)
       return {
         isCreator: false,

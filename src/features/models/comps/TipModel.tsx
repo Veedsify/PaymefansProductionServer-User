@@ -87,14 +87,11 @@ const TipModel = ({
       }).then(async (willGift) => {
         if (willGift) {
           try {
-            const response = await axiosInstance.post(
-              `${process.env.NEXT_PUBLIC_TS_EXPRESS_URL}/profile/tip/model`,
-              {
-                id: id,
-                points: points,
-                modelId: userdata.id,
-              },
-            );
+            const response = await axiosInstance.post(`/profile/tip/model`, {
+              id: id,
+              points: points,
+              modelId: userdata.id,
+            });
             const data = response.data;
             if (!data.error) {
               toast.success(

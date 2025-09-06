@@ -6,7 +6,7 @@ import Header from "@/components/common/global/Header";
 import SideBar from "@/components/common/global/SideBar";
 import { Toaster } from "react-hot-toast";
 import { Toaster as SonnerToast } from "sonner";
-import { Geist } from "next/font/google";
+import { Inter } from "next/font/google";
 import QueryProvider from "@/providers/QueryProvider";
 import getUserData from "@/utils/data/UserData";
 import PostComponentPreview from "@/features/post/FullComponentPreview";
@@ -20,8 +20,9 @@ import ConfigProvider from "@/contexts/ConfigContext";
 import GetLocationContext from "@/contexts/GetLocationContext";
 import GuestLoginModal from "@/features/guest/GuestLoginModal";
 
-const font = Geist({
-  subsets: ["latin", "latin-ext"],
+const font = Inter({
+  subsets: ["latin", "latin-ext", "cyrillic", "cyrillic-ext", "vietnamese"],
+  weight: ["100", "200", "300", "400", "500", "600", "700", "800"],
 });
 
 export const metadata: Metadata = {

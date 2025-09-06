@@ -64,15 +64,17 @@ const PostComponent: React.FC<PostComponentProps> = ({
   const router = useRouter();
   const { ref, inView } = useInView({ threshold: 0.5, triggerOnce: true });
   const points = usePointsStore((state) => state.points);
-  const { fullScreenPreview } = usePostComponent();
+  const fullScreenPreview = usePostComponent(
+    (state) => state.fullScreenPreview
+  );
   const { user: authUser } = useAuthContext();
   const queryClient = useQueryClient();
   const socket = getSocket();
   const userImage = useMemo(
     () => (user?.image ? user.image.trim() : "/site/avatar.svg"),
-    [user?.image],
+    [user?.image]
   );
-  
+
   // --- Permission/role checks --- //
   const isSubscribed = data.isSubscribed;
   const isCreator = user?.id === authUser?.id;
@@ -114,7 +116,7 @@ const PostComponent: React.FC<PostComponentProps> = ({
       username: user.username,
       avatar: user.image,
     }),
-    [user.name, user.username, user.image],
+    [user.name, user.username, user.image]
   );
 
   // --- Handle image/video click event --- //
@@ -153,7 +155,7 @@ const PostComponent: React.FC<PostComponentProps> = ({
       data.watermark_enabled,
       userProfile,
       data?.user?.username,
-    ],
+    ]
   );
 
   // --- Click post routing logic --- //
@@ -192,7 +194,7 @@ const PostComponent: React.FC<PostComponentProps> = ({
             "You don't have enough points to pay for this post",
             {
               id: "pay-for-post",
-            },
+            }
           );
         }
         const pay = await payForPost({ price, postId: data.id });
@@ -326,8 +328,8 @@ const PostComponent: React.FC<PostComponentProps> = ({
             data.media.length === 2
               ? "grid-cols-2"
               : data.media.length >= 3
-                ? "grid-cols-3"
-                : "grid-cols-1"
+              ? "grid-cols-3"
+              : "grid-cols-1"
           }`}
         >
           {data.media.slice(0, 3).map((media: UserMediaProps, i) => (
@@ -508,7 +510,7 @@ const VideoComponent: React.FC<VideoComponentProps> = ({
       return;
     }
     const videoElement = document.getElementById(
-      "video_player_post",
+      "video_player_post"
     ) as HTMLVideoElement | null;
     if (videoElement) {
       if (playing) {
@@ -531,7 +533,7 @@ const VideoComponent: React.FC<VideoComponentProps> = ({
 
   useEffect(() => {
     const videoElement = document.getElementById(
-      "video_player_post",
+      "video_player_post"
     ) as HTMLVideoElement | null;
     if (!videoElement) return;
     const handleVideoEnd = () => {

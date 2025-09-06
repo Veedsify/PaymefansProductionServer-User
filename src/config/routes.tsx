@@ -20,7 +20,7 @@ const ROUTE = {
    * Endpoint for creating a new post.
    * @type {string}
    */
-  POST_CREATE: `${NEXT_PUBLIC_TS_EXPRESS_URL}/post/create`,
+  POST_CREATE: `/post/create`,
 
   /**
    * Endpoint for fetching all products from the store.
