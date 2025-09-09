@@ -104,7 +104,7 @@ const StatusViewBlock = ({ story }: { story: Story }) => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: 20 }}
-              className={`absolute bottom-0 pointer-events-auto bg-white ${
+              className={`absolute bottom-0 pointer-events-auto text-black bg-white ${
                 viewsCount > 0 ? "h-96" : "h-auto"
               } w-full z-10`}
             >
@@ -427,27 +427,7 @@ const StatusPreviewSlide = ({
       ) : story.media_type === "video" ? (
         <div className="relative flex items-center justify-center w-full h-full">
           <HlsViewer
-            // modalOpen={false}
-            // autoPlay={index === activeIndex}
-            // allOthers={{
-            //   className: "z-30",
-            //   playsInline: true,
-            //   muted: false,
-            //   controls: false,
-            //   loop: false,
-            //   preload: index === activeIndex ? "auto" : "metadata",
-            //   onEnded: () => moveToNextSlide(),
-            //   style: {
-            //     width: "100%",
-            //     height: "100%",
-            //     maxHeight: "calc(100vh - 120px)",
-            //     objectFit: "contain",
-            //     background: "black",
-            //     borderRadius: "0.75rem",
-            //     boxShadow: "0 4px 24px rgba(0,0,0,0.7)",
-            //   },
-            // }}
-            className="w-full h-full bg-black rounded-lg shadow-lg"
+            className="w-auto h-full object-contain bg-black rounded-lg shadow-lg"
             streamUrl={story.media_url}
           />
           {/* Caption Overlay for Videos */}

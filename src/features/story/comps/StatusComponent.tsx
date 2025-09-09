@@ -8,6 +8,7 @@ import StoryCaptionComponent from "./StoryCaptionComponent";
 import StatusMediaPanel from "@/features/story/comps/StatusMediaPanel";
 import type { SelectMoreProps } from "@/types/Components";
 import { useStoryStore } from "../../../contexts/StoryContext";
+import HlsViewer from "@/features/media/HlsViewer";
 
 // Dynamically import HLSVideoPlayer to reduce initial load bundle
 const HLSVideoPlayer = dynamic(() => import("../../media/videoplayer"), {
@@ -70,7 +71,7 @@ function StatusComponent() {
           </div>
         ) : (
           <div className="p-4 md:p-6">
-            <div className="grid grid-cols-3 gap-4 mb-6 overflow-y-auto max-h-[400px] scrollbar-thin scrollbar-thumb-gray-300 dark:scrollbar-thumb-gray-600 scrollbar-track-transparent">
+            <div className="grid grid-cols-3 gap-4 mb-6 scrollbar-thin scrollbar-thumb-gray-300 dark:scrollbar-thumb-gray-600 scrollbar-track-transparent">
               {media.map((data: any) => (
                 <div key={data.id} className="group">
                   <div className="bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-700 dark:to-gray-800 w-full aspect-square rounded-xl flex items-center justify-center relative ring-2 ring-transparent group-hover:ring-primary-dark-pink/30 transition-all duration-300 transform group-hover:scale-[1.02] shadow-md hover:shadow-lg">
@@ -82,10 +83,9 @@ function StatusComponent() {
                     </button>
                     {data.media_type === "video" ? (
                       <>
-                        <HLSVideoPlayer
+                        <HlsViewer
                           streamUrl={data.media_url}
-                          modalOpen={false}
-                          allOthers={{ muted: true, loop: false }}
+                          muted={true}
                           className="inset-0 object-cover aspect-square w-full h-full cursor-pointer duration-300 ease-in-out"
                         />
                         <span className="absolute top-2 left-2 bg-gradient-to-r from-primary-dark-pink to-purple-600 p-1.5 rounded-full shadow-lg backdrop-blur-sm">

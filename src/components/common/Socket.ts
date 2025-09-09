@@ -37,7 +37,7 @@ export const connectSocket = (username?: string | null): Socket | null => {
     // If there's an existing socket, disconnect it first
     if (socket) {
       socket.removeAllListeners();
-      socket?.disconnect();
+      socket.disconnect();
     }
 
     // Update current username
@@ -46,6 +46,7 @@ export const connectSocket = (username?: string | null): Socket | null => {
     // Create new socket connection
     socket = io(process.env.NEXT_PUBLIC_TS_EXPRESS_URL_DIRECT as string, {
       query: { username: normalizedUsername },
+      path: "/socket.io",
       // Avoid unnecessary forceNew; we're manually managing singleton
       reconnection: true,
       reconnectionAttempts: Infinity,
@@ -115,7 +116,7 @@ const disconnectSocket = () => {
 
   if (socket) {
     socket.removeAllListeners();
-    socket?.disconnect();
+    socket.disconnect();
     socket = null;
   }
 
@@ -128,11 +129,4 @@ const disconnectSocket = () => {
  */
 export const isSocketConnected = (): boolean => {
   return socket?.connected || false;
-};
-
-/**
- * Gets the current username associated with the socket.
- */
-const getCurrentUsername = (): string | null => {
-  return currentUsername;
 };

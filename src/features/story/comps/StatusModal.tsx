@@ -31,7 +31,7 @@ const StatusModal = ({
   return (
     <>
       <div
-        className={`fixed bg-black/90 inset-0 z-[200] w-full h-dvh md:h-dvh p-3 flex items-center justify-center ${
+        className={`fixed bg-black/90 inset-0 z-[200] w-full h-dvh md:h-dvh flex items-center justify-center ${
           open
             ? "pointer-events-auto opacity-100 visible"
             : "opacity-0 pointer-events-none invisible"

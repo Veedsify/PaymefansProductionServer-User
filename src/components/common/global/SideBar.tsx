@@ -113,7 +113,7 @@ const SideBar = React.memo(() => {
                   Your Balance
                 </span>
               </div>
-              <div className="flex pt-4 mb-5 gap-3 ">
+              <div className="flex pt-4 mb-5 gap-3 text-nowrap">
                 <Link
                   href="/points"
                   className="p-2 px-8 text-xs font-semibold text-white bg-black rounded dark:bg-primary-dark-pink"

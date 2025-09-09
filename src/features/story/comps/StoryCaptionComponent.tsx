@@ -373,7 +373,7 @@ const DraggableElement = ({
             } ${isEditing ? "cursor-text" : "cursor-move"}`}
             placeholder="Link text"
           />
-          <div className="text-xs text-white/90 max-w-[200px] truncate bg-black/50 px-2 py-1 rounded-full backdrop-blur-sm border border-white/20">
+          <div className="text-xs text-black/90 max-w-[200px] truncate bg-black/50 px-2 py-1 rounded-full backdrop-blur-sm border border-white/20">
             {element.url}
           </div>
         </div>
@@ -561,7 +561,7 @@ const EnhancedSlideComponent = ({
         </button>
       </div>
       {selectedElement && selectedElementData && (
-        <div className="absolute z-40 p-4 border shadow-2xl top-20 left-4 right-4 backdrop-blur-md bg-white/10 rounded-2xl border-white/20">
+        <div className="absolute z-40 p-4 border shadow-2xl top-20 left-4 right-4 backdrop-blur-md bg-white rounded-2xl border-white/20">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div className="flex items-center gap-2">
               <div className="flex items-center p-1 rounded-lg gap-1 bg-white/10">
@@ -571,8 +571,8 @@ const EnhancedSlideComponent = ({
                   }
                   className={`p-2 rounded-lg transition-all duration-200 ${
                     selectedElementData.style.textAlign === "left"
-                      ? "bg-white/30 text-white"
-                      : "hover:bg-white/20 text-white/70"
+                      ? "bg-white/30 text-black"
+                      : "hover:bg-black/20 text-black/70"
                   }`}
                   title="Align Left"
                 >
@@ -584,8 +584,8 @@ const EnhancedSlideComponent = ({
                   }
                   className={`p-2 rounded-lg transition-all duration-200 ${
                     selectedElementData.style.textAlign === "center"
-                      ? "bg-white/30 text-white"
-                      : "hover:bg-white/20 text-white/70"
+                      ? "bg-black/30 text-black"
+                      : "hover:bg-black/20 text-black/70"
                   }`}
                   title="Align Center"
                 >
@@ -597,15 +597,15 @@ const EnhancedSlideComponent = ({
                   }
                   className={`p-2 rounded-lg transition-all duration-200 ${
                     selectedElementData.style.textAlign === "right"
-                      ? "bg-white/30 text-white"
-                      : "hover:bg-white/20 text-white/70"
+                      ? "bg-black/30 text-black"
+                      : "hover:bg-black/20 text-black/70"
                   }`}
                   title="Align Right"
                 >
                   <AlignRight size={16} />
                 </button>
               </div>
-              <div className="flex items-center p-1 rounded-lg gap-1 bg-white/10">
+              <div className="flex items-center p-1 rounded-lg gap-1 bg-black/10">
                 <button
                   onClick={() =>
                     updateElementStyle(selectedElement, {
@@ -617,8 +617,8 @@ const EnhancedSlideComponent = ({
                   }
                   className={`p-2 rounded-lg transition-all duration-200 ${
                     selectedElementData.style.fontWeight === "bold"
-                      ? "bg-white/30 text-white"
-                      : "hover:bg-white/20 text-white/70"
+                      ? "bg-white/30 text-black"
+                      : "hover:bg-white/20 text-black/70"
                   }`}
                   title="Bold"
                 >
@@ -635,8 +635,8 @@ const EnhancedSlideComponent = ({
                   }
                   className={`p-2 rounded-lg transition-all duration-200 ${
                     selectedElementData.style.fontStyle === "italic"
-                      ? "bg-white/30 text-white"
-                      : "hover:bg-white/20 text-white/70"
+                      ? "bg-white/30 text-black"
+                      : "hover:bg-white/20 text-black/70"
                   }`}
                   title="Italic"
                 >
@@ -645,13 +645,13 @@ const EnhancedSlideComponent = ({
               </div>
               <button
                 onClick={() => setShowColorPicker(!showColorPicker)}
-                className="p-2 text-white rounded-lg bg-white/10 hover:bg-white/20 transition-all duration-200"
+                className="p-2 text-black rounded-lg bg-white/10 hover:bg-white/20 transition-all duration-200"
                 title="Change Color"
               >
                 <Palette size={16} />
               </button>
             </div>
-            <div className="text-sm font-medium text-white/80">
+            <div className="text-sm font-medium text-black/80">
               Tap to edit • Drag to move
             </div>
           </div>
@@ -681,7 +681,7 @@ const EnhancedSlideComponent = ({
         {story?.media_type === "video" && (
           <HlsViewer
             streamUrl={story?.media_url}
-            className="w-full h-full object-contain bg-black rounded-xl brightness-90"
+            className="w-full h-full object-contain bg-black rounded-xl"
           />
         )}
         {story?.media_type === "image" && (
@@ -690,7 +690,7 @@ const EnhancedSlideComponent = ({
             alt={story?.caption ? story.caption : "status"}
             width={800}
             height={800}
-            className="object-contain w-full h-full bg-black rounded-xl brightness-90"
+            className="object-contain w-full h-full bg-black rounded-xl"
           />
         )}
         {containerRef.current &&
@@ -723,7 +723,7 @@ const EnhancedSlideComponent = ({
               <button
                 onClick={createLink}
                 disabled={!tempLinkUrl}
-                className="flex-1 py-3 font-medium text-white shadow-lg bg-gradient-to-r from-blue-500 to-purple-500 disabled:from-gray-300 disabled:to-gray-400 rounded-xl hover:from-blue-600 hover:to-purple-600 transition-all duration-200 disabled:shadow-none transform hover:scale-105 disabled:transform-none"
+                className="flex-1 py-3 font-medium text-black shadow-lg bg-gradient-to-r from-blue-500 to-purple-500 disabled:from-gray-300 disabled:to-gray-400 rounded-xl hover:from-blue-600 hover:to-purple-600 transition-all duration-200 disabled:shadow-none transform hover:scale-105 disabled:transform-none"
               >
                 Add Link
               </button>
@@ -732,7 +732,7 @@ const EnhancedSlideComponent = ({
                   setShowLinkDialog(false);
                   setTempLinkUrl("");
                 }}
-                className="flex-1 py-3 font-medium text-white shadow-lg bg-gradient-to-r from-gray-400 to-gray-500 rounded-xl hover:from-gray-500 hover:to-gray-600 transition-all duration-200 transform hover:scale-105"
+                className="flex-1 py-3 font-medium text-black shadow-lg bg-gradient-to-r from-gray-400 to-gray-500 rounded-xl hover:from-gray-500 hover:to-gray-600 transition-all duration-200 transform hover:scale-105"
               >
                 Cancel
               </button>

@@ -22,27 +22,25 @@ const StoryUploadForm = () => {
         formData.append("files[]", file);
       });
       try {
-        toast
-          .promise(axiosServer.post("/stories/upload", formData), {
-            loading: "Uploading Media...",
-            success: "Media uploaded successfully",
-            error: (err: AxiosError) => {
-              console.error("Error while uploading images", err);
-              return "Error while uploading images";
-            },
-          })
-          .then(({ data }) => {
-            data.data.map((item: any, index: number) => {
-              addToStory({
-                index,
-                media_id: uuid(),
-                id: Math.random() * 1000,
-                media_url: item.filename,
-                media_type: item.mimetype.split("/")[0],
-              });
+        toast.loading("Uploading Media...", {
+          id: "story-upload",
+        });
+        const response = await axiosServer.post("/stories/upload", formData);
+        if (response) {
+          response.data.data.map((item: any, index: number) => {
+            addToStory({
+              index,
+              media_id: uuid(),
+              id: Math.random() * 1000,
+              media_url: item.url,
+              media_type: item.mimetype.split("/")[0],
             });
           });
+        }
       } catch (err: unknown) {
+        toast.error("An Error Occurred While Uploading Your Story", {
+          id: "story-upload",
+        });
         console.error("Error while uploading images", err);
       }
     };
