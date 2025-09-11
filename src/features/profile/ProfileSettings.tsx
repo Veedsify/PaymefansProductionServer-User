@@ -1,6 +1,9 @@
 "use client";
 import { Facebook, Instagram, LucideLoader2, Twitter } from "lucide-react";
-import { AuthUserProps, UserUpdateProfileType } from "@/features/user/types/user";
+import {
+  AuthUserProps,
+  UserUpdateProfileType,
+} from "@/features/user/types/user";
 import React, { useRef, useState } from "react";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
@@ -18,7 +21,6 @@ const ProfileSettings = ({ user }: ProfileSettingsProps) => {
   const [userData, setUserData] = useState<UserUpdateProfileType>({
     name: user?.name || "",
     username: user?.username || "",
-    email: user?.email || "",
     location: user?.location || "",
     bio: user?.bio || "",
     state: user?.state || "",
@@ -34,7 +36,7 @@ const ProfileSettings = ({ user }: ProfileSettingsProps) => {
   const [usernameCheck, setUsernameCheck] = useState(user?.username || "");
   const { message, canSave, error, isLoading } = useCheckUsername(
     user!,
-    usernameCheck
+    usernameCheck,
   );
 
   const usernameTimeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -42,7 +44,7 @@ const ProfileSettings = ({ user }: ProfileSettingsProps) => {
   const handleInputChange = (
     e: React.ChangeEvent<
       HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
-    >
+    >,
   ) => {
     const { name, value } = e.target;
     setUserData((prev) => ({ ...prev, [name]: value }));
@@ -59,13 +61,10 @@ const ProfileSettings = ({ user }: ProfileSettingsProps) => {
 
   const handleSaveClick = async () => {
     try {
-      if (!userData.email) {
-        return toast.error("Email is required");
-      }
-      const regex = /^[a-zA-Z0-9._:$!%-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-      if (!regex.test(userData.email)) {
-        return toast.error("Invalid email address");
-      }
+      // const regex = /^[a-zA-Z0-9._:$!%-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+      // if (!regex.test(userData.email)) {
+      //   return toast.error("Invalid email address");
+      // }
       const response = await saveUserSettings(userData);
       if (response.status === 200) {
         toast.success("Profile updated successfully");
@@ -175,7 +174,7 @@ const ProfileSettings = ({ user }: ProfileSettingsProps) => {
             </p>
           )}
         </div>
-        <div>
+        {/*<div>
           <label
             className="block mb-1 font-semibold text-gray-700 dark:text-gray-200"
             htmlFor="email"
@@ -192,7 +191,7 @@ const ProfileSettings = ({ user }: ProfileSettingsProps) => {
             className="w-full p-3 text-black bg-gray-100 border border-gray-300 rounded-lg outline-none select-none dark:border-gray-700 dark:text-white dark:bg-gray-800"
             placeholder="Email"
           />
-        </div>
+        </div>*/}
         <div>
           <label
             className="block mb-1 font-semibold text-gray-700 dark:text-gray-200"

@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useLayoutEffect, useState } from "react";
 import { useParams, usePathname, useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
@@ -12,7 +12,7 @@ import {
   Verified,
 } from "lucide-react";
 import { useAuthContext } from "@/contexts/UserUseContext";
-import { ProfileUserProps } from "@/features/user/types/user";
+// import { ProfileUserProps } from "@/features/user/types/user"; // Removed unused import
 import UserNotFound from "@/features/user/comps/UserNotFound";
 import SuspendedUserPage from "@/features/profile/Suspended";
 import FollowUserComponent from "@/features/follow/FollowUserComponent";
@@ -98,36 +98,34 @@ const ProfilePage = () => {
     enabled: !!params.id,
   });
 
-  const userdata = profileData?.user;
-  const isBlockedByUser = profileData?.isBlockedByUser;
-
-  const toggleTip = () => {
-    if (!isGuest) {
-      setOpenTip(!openTip);
-      return;
-    }
-    toggleModalOpen(
-      "You need to login to tip " + (userdata?.name || "this user") + "."
-    );
-  };
-
-  const isVerified = userdata?.is_verified;
-  const canTip = user?.id !== userdata?.id && !userdata?.is_model;
-
-  // Handle errors by redirecting to login if not on a post page
-  useEffect(() => {
+  // Handle errors if a particular user is not found and the authenticated user is not a guest
+  useLayoutEffect(() => {
     if (isError && error) {
       const isPostPage = postRegex.test(location);
-      if (!isPostPage && !location.startsWith("/404")) {
+      // If guest, redirect to login as before
+      if (!isPostPage && !location.startsWith("/404") && isGuest) {
         router.push("/login");
+        return;
       }
     }
-  }, [isError, error, location, router]);
+  }, [isError, error, location, router, isGuest]);
+
+  const userdata = profileData?.user;
+  const isBlockedByUser = profileData?.isBlockedByUser;
+  const isVerified = userdata?.is_verified;
+  const canTip = user?.id !== userdata?.id && !userdata?.is_model;
 
   // Redirect to profile if viewing own profile
   useEffect(() => {
     if (userdata && userdata.id && user?.id === userdata.id) {
       router.push("/profile");
+    }
+    if (
+      userdata &&
+      userdata.username !== params.id &&
+      user?.id !== userdata.id
+    ) {
+      router.replace(`/${userdata.username}`);
     }
   }, [userdata, user, router]);
 
@@ -144,8 +142,17 @@ const ProfilePage = () => {
     );
   }
 
-  if (isError || (!userdata && !isLoading)) {
+  // If error or user not found, and NOT a guest, show UserNotFound
+  if ((isError || (!userdata && !isLoading)) && !isGuest) {
     return <UserNotFound userid={params.id || "unknown"} />;
+  }
+
+  // If error or user not found, and IS a guest, redirect to login
+  if ((isError || (!userdata && !isLoading)) && isGuest) {
+    if (typeof window !== "undefined") {
+      router.push("/login");
+    }
+    return null;
   }
 
   if (userdata && !userdata?.active_status) {
@@ -162,6 +169,15 @@ const ProfilePage = () => {
     return null;
   }
 
+  const toggleTip = () => {
+    if (!isGuest) {
+      setOpenTip(!openTip);
+      return;
+    }
+    toggleModalOpen(
+      "You need to login to tip " + (userdata?.name || "this user") + ".",
+    );
+  };
   return (
     <div className="overflow-hidden">
       {/* Profile Banner */}

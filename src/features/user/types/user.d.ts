@@ -125,7 +125,7 @@ export type UserUpdateProfileType = {
   profile_image?: File;
   name: string;
   username: string;
-  email: string;
+  email?: string;
   location: string;
   bio: string | null;
   website: string | null;
