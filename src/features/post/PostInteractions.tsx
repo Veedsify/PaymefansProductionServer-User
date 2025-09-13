@@ -19,6 +19,7 @@ import axiosInstance from "@/utils/Axios";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import { useGuestModal } from "@/contexts/GuestModalContext";
+import {useQueryClient} from "@tanstack/react-query";
 
 type PostCompInteractionsProps = {
   data: PostData | undefined;
@@ -71,7 +72,7 @@ export const PostCompInteractions = ({ data }: PostCompInteractionsProps) => {
   const { user, isGuest } = useAuthContext();
   const toggleModalOpen = useGuestModal((state) => state.toggleModalOpen);
   const router = useRouter();
-
+  const queryClient = useQueryClient()
   const repostThisPost = useCallback(async () => {
     if (isGuest) {
       toggleModalOpen("You need to login to like this post.");
@@ -112,6 +113,10 @@ export const PostCompInteractions = ({ data }: PostCompInteractionsProps) => {
           // If the post is already liked, unlike it
           unlikePost(data?.post_id as string, user?.id as number);
           setLikesCount((prevCount) => Math.max(prevCount - 1, 0)); // Ensure likes count doesn't go below 0
+          await queryClient.invalidateQueries({queryKey: ["personal-posts"]});
+          await queryClient.invalidateQueries({queryKey: ["posts", data?.post_id]});
+          await queryClient.invalidateQueries({queryKey: ["posts-other", data?.user.id]});
+          await queryClient.invalidateQueries({queryKey: ["homeFeed"]});
         } else {
           // If the post is not liked, like it
           likeThisPost(data?.post_id as string);

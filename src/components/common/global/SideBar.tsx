@@ -205,6 +205,13 @@ const SideBar = React.memo(() => {
             {!isGuest && (
               <>
                 <Link
+                  href="/referral"
+                  className="flex items-center p-2 mb-2 gap-5 transition-all duration-200 hover:bg-gray-200 dark:hover:bg-gray-900 rounded-xl"
+                >
+                  <LucideUserPlus />
+                  <p>Referrals</p>
+                </Link>
+                <Link
                   href="/settings"
                   className="flex items-center p-2 mb-2 gap-5 transition-all duration-200 hover:bg-gray-200 dark:hover:bg-gray-900 rounded-xl"
                 >

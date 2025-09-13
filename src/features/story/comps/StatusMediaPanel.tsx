@@ -109,6 +109,7 @@ const StoryMediaItem = React.memo(({ data }: { data: any }) => {
       addToStory({
         index: 0,
         id: data.id,
+        media_state: "completed",
         media_id: data.media_id,
         media_type: data.media_type,
         media_url: data.url,

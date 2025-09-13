@@ -403,7 +403,6 @@ const EnhancedSlideComponent = ({
   close: () => void;
 }) => {
   const { updateStorySlide, story: mystory, clearStory } = useStoryStore();
-
   const [fontIndex, setFontIndex] = useState(0);
   // Remove local captionElements state - use store directly
   const captionElements = story.captionElements || [];
@@ -505,9 +504,38 @@ const EnhancedSlideComponent = ({
     setSelectedElement(null);
   };
 
-  // Rest of your component remains the same...
+  // Helper to get video durations and embed in mystory
+  const getStoriesWithDurations = async () => {
+    const videoStories = mystory.filter(
+      (s) => s.media_type === "video" && s.media_url
+    );
+    const durations: Record<string, number> = {};
+    await Promise.all(
+      videoStories.map(
+        (video) =>
+          new Promise<void>((resolve) => {
+            const videoEl = document.createElement("video");
+            videoEl.src = video.media_url;
+            videoEl.preload = "metadata";
+            videoEl.onloadedmetadata = () => {
+              durations[video.media_url] = videoEl.duration;
+              resolve();
+            };
+            videoEl.onerror = () => resolve();
+          })
+      )
+    );
+    // Embed duration in each story object
+    return mystory.map((story) =>
+      story.media_type === "video" && story.media_url
+        ? { ...story, duration: durations[story.media_url] || 0 }
+        : { ...story, duration: 5000 }
+    );
+  };
+
   const submitStory = async () => {
-    const submit = await SubmitUserStory(mystory);
+    const storiesWithDurations = await getStoriesWithDurations();
+    const submit = await SubmitUserStory(storiesWithDurations);
     if (submit.success) {
       toast.success("Story uploaded successfully");
       close();

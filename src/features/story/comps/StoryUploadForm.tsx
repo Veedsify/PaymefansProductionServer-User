@@ -30,9 +30,10 @@ const StoryUploadForm = () => {
           response.data.data.map((item: any, index: number) => {
             addToStory({
               index,
-              media_id: uuid(),
+              media_id: item.media_id || uuid(),
               id: Math.random() * 1000,
               media_url: item.url,
+              media_state: item.media_state,
               media_type: item.mimetype.split("/")[0],
             });
           });

@@ -18,6 +18,7 @@ import Link from "next/link";
 import { useMemo } from "react";
 import ProfilePicture from "@/features/profile/ProfilePicture";
 import ProfileBanner from "@/features/profile/ProfileBanner";
+import CreatorDashboardButton from "@/features/profile/CreatorDashboardButton";
 
 export const metadata: Metadata = {
   title: "Profile",
@@ -113,23 +114,7 @@ const ProfilePage = async () => {
             />
           )}
           <ProfileSocialLinks Settings={user?.Settings} />
-          {user?.is_model && (
-            <>
-              <div className="w-full p-4 text-gray-700 border rounded-lg bg-gray-50 dark:bg-gray-800 dark:text-gray-300 border-black/10">
-                <h2 className="mb-2 text-lg font-semibold">
-                  Creator Dashboard
-                </h2>
-                <Link
-                  href={"/analytics"}
-                  className="text-sm text-primary-text-dark-pink dark:text-primary-dark-pink hover:underline"
-                >
-                  <p className="mb-2">
-                    View your account performance and engagement metrics
-                  </p>
-                </Link>
-              </div>
-            </>
-          )}
+          {user?.is_model && <CreatorDashboardButton />}
         </div>
       </div>
       <ProfileTabs />

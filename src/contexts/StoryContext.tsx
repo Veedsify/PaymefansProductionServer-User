@@ -26,8 +26,10 @@ export type StoryType = {
   index: number;
   media_id: string;
   media_type: string;
+  media_state: "completed" | "processing" | "failed";
   media_url: string;
   caption?: string;
+  duration?: number;
   captionElements?: CaptionElement[];
 };
 
@@ -39,6 +41,7 @@ type StoryState = {
   updateStorySlide: (id: number, data: Partial<StoryType>) => void;
   updateCaptionStyle: (id: number, captionStyle: CaptionElement) => void;
   editingSlideIndex: number | null;
+  updateStoryState: (media_id: string, state: StoryType["media_state"]) => void;
   setEditingSlide: (index: number) => void;
   clearStory: () => void;
 };
@@ -52,6 +55,14 @@ export const useStoryStore = create<StoryState>()(
       removeFromStory: (id) =>
         set((state) => ({
           story: state.story.filter((storyId) => storyId.id !== id),
+        })),
+      updateStoryState: (media_id, media_state) =>
+        set((state) => ({
+          story: state.story.map((slide) =>
+            slide.media_id === media_id
+              ? { ...slide, media_state: media_state }
+              : slide,
+          ),
         })),
       updateStorySlide: (index: number, data: Partial<StoryType>) =>
         set((state) => ({

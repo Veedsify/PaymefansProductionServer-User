@@ -1,5 +1,5 @@
 "use client";
-import React, { useCallback, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import dynamic from "next/dynamic";
 import Image from "next/image";
 import { LucideArrowRight, LucidePlay, X } from "lucide-react";
@@ -7,8 +7,10 @@ import StoryUploadForm from "./StoryUploadForm";
 import StoryCaptionComponent from "./StoryCaptionComponent";
 import StatusMediaPanel from "@/features/story/comps/StatusMediaPanel";
 import type { SelectMoreProps } from "@/types/Components";
-import { useStoryStore } from "../../../contexts/StoryContext";
+import { StoryType, useStoryStore } from "../../../contexts/StoryContext";
 import HlsViewer from "@/features/media/HlsViewer";
+import toast from "react-hot-toast";
+import { useAuthContext } from "@/contexts/UserUseContext";
 
 // Dynamically import HLSVideoPlayer to reduce initial load bundle
 const HLSVideoPlayer = dynamic(() => import("../../media/videoplayer"), {
@@ -18,10 +20,10 @@ const HLSVideoPlayer = dynamic(() => import("../../media/videoplayer"), {
 function StatusComponent() {
   const [openMore, setOpenMore] = useState(true);
   const [openStoryCaption, setStoryCaption] = useState(false);
-  const { story, removeFromStory } = useStoryStore();
-
+  const [canContinue, setCanContinue] = useState(false);
+  const { story, removeFromStory, updateStoryState } = useStoryStore();
+  const { user } = useAuthContext();
   const media = useMemo(() => story, [story]);
-
   const toggleOpenMore = useCallback(() => {
     setOpenMore((prev) => !prev);
   }, []);
@@ -30,7 +32,41 @@ function StatusComponent() {
     setStoryCaption(false);
   }, []);
 
+  useEffect(() => {
+    if (media.length > 0 && media.some((m) => m.media_state !== "processing")) {
+      setCanContinue(true);
+    } else {
+      setCanContinue(false);
+    }
+  }, [media]);
+
+  useEffect(() => {
+    if (!user?.id) return;
+    const evtSource = new EventSource(
+      process.env.NEXT_PUBLIC_TS_EXPRESS_URL +
+        `/events/story-media-state?userId=${user?.id}`,
+    );
+    evtSource.addEventListener("story-update", (event: MessageEvent) => {
+      console.log("SSE message received:", event.data);
+      // const data = JSON.parse(event.data);
+      // if (data.mediaId && data.userid === user?.id) {
+      //   updateStoryState(data.mediaId, "completed");
+      // }
+    });
+    evtSource.onerror = (err) => {
+      console.error("SSE error:", err);
+    };
+
+    return () => evtSource.close();
+  }, [user?.id, updateStoryState]);
+
   const handleSubmitStory = useCallback(() => {
+    if (media.some((m) => m.media_state === "processing")) {
+      toast.error(
+        "Please wait for all media to finish processing before continuing.",
+      );
+      return;
+    }
     if (media.length > 0) {
       setStoryCaption(true);
     }
@@ -39,7 +75,7 @@ function StatusComponent() {
   // Memoized removal handler creator to avoid inline functions in render
   const getRemoveHandler = useCallback(
     (id: number) => () => removeFromStory(id),
-    [removeFromStory]
+    [removeFromStory],
   );
 
   return (
@@ -72,7 +108,7 @@ function StatusComponent() {
         ) : (
           <div className="p-4 md:p-6">
             <div className="grid grid-cols-3 gap-4 mb-6 scrollbar-thin scrollbar-thumb-gray-300 dark:scrollbar-thumb-gray-600 scrollbar-track-transparent">
-              {media.map((data: any) => (
+              {media.map((data: StoryType) => (
                 <div key={data.id} className="group">
                   <div className="bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-700 dark:to-gray-800 w-full aspect-square rounded-xl flex items-center justify-center relative ring-2 ring-transparent group-hover:ring-primary-dark-pink/30 transition-all duration-300 transform group-hover:scale-[1.02] shadow-md hover:shadow-lg">
                     <button
@@ -82,7 +118,7 @@ function StatusComponent() {
                       <X strokeWidth={2.5} stroke="#fff" size={14} />
                     </button>
                     {data.media_type === "video" ? (
-                      <>
+                      <div className="relative">
                         <HlsViewer
                           streamUrl={data.media_url}
                           muted={true}
@@ -91,7 +127,12 @@ function StatusComponent() {
                         <span className="absolute top-2 left-2 bg-gradient-to-r from-primary-dark-pink to-purple-600 p-1.5 rounded-full shadow-lg backdrop-blur-sm">
                           <LucidePlay fill="#fff" strokeWidth={0} size={12} />
                         </span>
-                      </>
+                        {data.media_state === "processing" && (
+                          <span className="absolute bottom-2 left-2 bg-black/60 text-white text-xs px-2 py-1 rounded-lg">
+                            Processing...
+                          </span>
+                        )}
+                      </div>
                     ) : (
                       <Image
                         src={data.media_url}
@@ -107,8 +148,12 @@ function StatusComponent() {
             </div>
             <div className="flex justify-end">
               <button
+                disabled={!canContinue}
+                type="button"
+                aria-label="Continue to add caption and share story"
+                title="Continue to add caption and share story"
                 onClick={handleSubmitStory}
-                className="flex items-center justify-center px-6 py-3 font-medium text-white rounded-full shadow-lg gap-3 transition-all duration-200 transform group bg-gradient-to-r from-primary-dark-pink to-purple-600 hover:from-primary-dark-pink/90 hover:to-purple-600/90 hover:shadow-xl hover:scale-105"
+                className="flex items-center disabled:from-black/40 disabled:to-gray-500 justify-center px-6 py-3 font-medium text-white rounded-full shadow-lg gap-3 transition-all duration-200 transform group bg-gradient-to-r from-primary-dark-pink to-purple-600 hover:from-primary-dark-pink/90 hover:to-purple-600/90 hover:shadow-xl hover:scale-105"
               >
                 <span className="hidden text-sm sm:block">Continue</span>
                 <LucideArrowRight
@@ -132,7 +177,6 @@ function StatusComponent() {
 const SelectMoreItems = React.memo(
   ({ openMore, handleOpenMore }: SelectMoreProps) => {
     const [activeTab, setActiveTab] = useState<"new" | "media">("new");
-
     const handleSetTab = useCallback((tab: "new" | "media") => {
       setActiveTab(tab);
     }, []);
@@ -173,7 +217,7 @@ const SelectMoreItems = React.memo(
         </div>
       </div>
     );
-  }
+  },
 );
 
 SelectMoreItems.displayName = "SelectMoreItems";

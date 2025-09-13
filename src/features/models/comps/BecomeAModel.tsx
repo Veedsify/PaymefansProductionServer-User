@@ -50,6 +50,7 @@ interface ModelSignUpData {
   available: string;
   gender: string;
   audience?: string;
+  referral_code?: string;
   reference?: string;
 }
 
@@ -58,6 +59,7 @@ interface FormErrors {
   lastname?: string;
   dob?: string;
   country?: string;
+  referral_code?: string;
   available?: string;
   audience?: string;
 }
@@ -511,6 +513,32 @@ const BecomeAModel = () => {
           </select>
           {formErrors.country && (
             <p className="mt-1 text-sm text-red-500">{formErrors.country}</p>
+          )}
+        </div>
+        <div>
+          <p className="mb-2 font-medium text-gray-700 dark:text-gray-200">
+            Do you have a referral code?
+          </p>
+          <input
+            onChange={handleInputChange}
+            type="text"
+            placeholder="Referral Code : PF-000000"
+            name="referral_code"
+            value={formData.referral_code || ""}
+            className={`border p-4 w-full rounded-lg font-semibold outline-none focus:ring-2 focus:ring-primary-dark-pink transition ${
+              formErrors.referral_code
+                ? "border-red-500 dark:border-red-500"
+                : "border-gray-300 dark:border-gray-700"
+            }`}
+            aria-invalid={!!formErrors.lastname}
+            aria-describedby={
+              formErrors.referral_code ? "referral_code-error" : undefined
+            }
+          />
+          {formErrors.referral_code && (
+            <p id="referral_code-error" className="mt-1 text-sm text-red-500">
+              {formErrors.referral_code}
+            </p>
           )}
         </div>
 
