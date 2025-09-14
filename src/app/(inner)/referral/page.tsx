@@ -1,9 +1,26 @@
 "use client";
 
-import { useState } from "react";
+import React, { useState } from "react";
 import Image from "next/image";
-import { Copy, Check, Users, TrendingUp, Gift, Share2 } from "lucide-react";
+import {
+  Copy,
+  Check,
+  Users,
+  TrendingUp,
+  Gift,
+  Share2,
+  Loader2,
+} from "lucide-react";
 import { useAuthContext } from "@/contexts/UserUseContext";
+import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
+import {
+  fetchReferralStats,
+  fetchReferredUsers,
+  fetchReferralEarnings,
+  type ReferralUser,
+  type ReferralEarning,
+} from "@/utils/data/ReferralAPI";
+import { useInView } from "react-intersection-observer";
 
 const ReferralPage = () => {
   const [activeTab, setActiveTab] = useState<"users" | "earnings">("users");
@@ -11,44 +28,93 @@ const ReferralPage = () => {
   const [copiedLink, setCopiedLink] = useState(false);
   const { user } = useAuthContext();
 
-  // Mock data - replace with actual API calls
-  const referralCode = "PF-" + user?.user_id; // Replace with dynamic code
-  const referralLink = `https://paymefans.com/referral?ref=${referralCode}`;
-  const referredUsers = [
-    {
-      id: 1,
-      name: "John Doe",
-      username: "johndoe",
-      joinDate: "2023-10-01",
-      earnings: 50,
-      profileImage: "/site/avatar.png",
-      status: "active",
-    },
-    {
-      id: 2,
-      name: "Jane Smith",
-      username: "janesmith",
-      joinDate: "2023-09-15",
-      earnings: 75,
-      profileImage: "/site/avatar.png",
-      status: "active",
-    },
-    {
-      id: 3,
-      name: "Mike Johnson",
-      username: "mikej",
-      joinDate: "2023-08-20",
-      earnings: 100,
-      profileImage: "/site/avatar.png",
-      status: "active",
-    },
-  ];
+  // Intersection observer for infinite scroll
+  const { ref, inView } = useInView({
+    threshold: 0,
+  });
 
-  const totalEarnings = referredUsers.reduce(
-    (sum, user) => sum + user.earnings,
-    0
-  );
-  const totalUsers = referredUsers.length;
+  // Fetch referral stats
+  const {
+    data: statsData,
+    isLoading: statsLoading,
+    error: statsError,
+  } = useQuery({
+    queryKey: ["referral-stats"],
+    queryFn: fetchReferralStats,
+    enabled: !!user,
+  });
+
+  // Fetch referred users with infinite query
+  const {
+    data: usersData,
+    fetchNextPage: fetchNextUsers,
+    hasNextPage: hasNextUsers,
+    isFetchingNextPage: isFetchingNextUsers,
+    isLoading: usersLoading,
+    error: usersError,
+  } = useInfiniteQuery({
+    queryKey: ["referred-users"],
+    queryFn: ({ pageParam }) => fetchReferredUsers(pageParam, 10),
+    getNextPageParam: (lastPage) => lastPage.nextCursor,
+    enabled: !!user && activeTab === "users",
+    initialPageParam: null as number | null,
+  });
+
+  // Fetch referral earnings with infinite query
+  const {
+    data: earningsData,
+    fetchNextPage: fetchNextEarnings,
+    hasNextPage: hasNextEarnings,
+    isFetchingNextPage: isFetchingNextEarnings,
+    isLoading: earningsLoading,
+    error: earningsError,
+  } = useInfiniteQuery({
+    queryKey: ["referral-earnings"],
+    queryFn: ({ pageParam }) => fetchReferralEarnings(pageParam, 10),
+    getNextPageParam: (lastPage) => lastPage.nextCursor,
+    enabled: !!user && activeTab === "earnings",
+    initialPageParam: null as number | null,
+  });
+
+  // Handle infinite scroll
+  React.useEffect(() => {
+    if (
+      inView &&
+      activeTab === "users" &&
+      hasNextUsers &&
+      !isFetchingNextUsers
+    ) {
+      fetchNextUsers();
+    }
+  }, [inView, activeTab, hasNextUsers, isFetchingNextUsers, fetchNextUsers]);
+
+  React.useEffect(() => {
+    if (
+      inView &&
+      activeTab === "earnings" &&
+      hasNextEarnings &&
+      !isFetchingNextEarnings
+    ) {
+      fetchNextEarnings();
+    }
+  }, [
+    inView,
+    activeTab,
+    hasNextEarnings,
+    isFetchingNextEarnings,
+    fetchNextEarnings,
+  ]);
+
+  // Flatten data for display
+  const referredUsers = usersData?.pages?.flatMap((page) => page.users) || [];
+  const referralEarnings =
+    earningsData?.pages?.flatMap((page) => page.earnings) || [];
+
+  // Get stats from API or fallback
+  const referralCode = statsData?.referralCode || `PF-${user?.user_id}`;
+  const referralLink = `https://paymefans.com/referral?ref=${referralCode}`;
+  const totalEarnings = statsData?.totalEarnings || 0;
+  const totalUsers = statsData?.totalReferrals || 0;
 
   const copyReferralCode = async () => {
     try {
@@ -83,17 +149,26 @@ const ReferralPage = () => {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm opacity-90 mb-1">Total Earnings</p>
-              <h3 className="text-3xl font-bold">{totalEarnings}</h3>
-              <div className="flex items-center gap-2 mt-2">
-                <Image
-                  width={20}
-                  height={20}
-                  className="w-5 h-5"
-                  src="/site/coin.svg"
-                  alt="Points"
-                />
-                <span className="text-sm">Points</span>
-              </div>
+              {statsLoading ? (
+                <div className="flex items-center gap-2">
+                  <Loader2 className="w-6 h-6 animate-spin" />
+                  <span className="text-xl">Loading...</span>
+                </div>
+              ) : (
+                <>
+                  <h3 className="text-3xl font-bold">{totalEarnings}</h3>
+                  <div className="flex items-center gap-2 mt-2">
+                    <Image
+                      width={20}
+                      height={20}
+                      className="w-5 h-5"
+                      src="/site/coin.svg"
+                      alt="Points"
+                    />
+                    <span className="text-sm">Points</span>
+                  </div>
+                </>
+              )}
             </div>
             <TrendingUp className="w-10 h-10 opacity-80" />
           </div>
@@ -105,12 +180,23 @@ const ReferralPage = () => {
               <p className="text-sm text-gray-600 dark:text-gray-400 mb-1">
                 Referred Users
               </p>
-              <h3 className="text-3xl font-bold text-primary-dark-pink">
-                {totalUsers}
-              </h3>
-              <p className="text-sm text-gray-500 dark:text-gray-400 mt-2">
-                Active members
-              </p>
+              {statsLoading ? (
+                <div className="flex items-center gap-2">
+                  <Loader2 className="w-6 h-6 animate-spin text-primary-dark-pink" />
+                  <span className="text-xl text-primary-dark-pink">
+                    Loading...
+                  </span>
+                </div>
+              ) : (
+                <>
+                  <h3 className="text-3xl font-bold text-primary-dark-pink">
+                    {totalUsers}
+                  </h3>
+                  <p className="text-sm text-gray-500 dark:text-gray-400 mt-2">
+                    Active members
+                  </p>
+                </>
+              )}
             </div>
             <Users className="w-10 h-10 text-primary-dark-pink opacity-80" />
           </div>
@@ -240,9 +326,28 @@ const ReferralPage = () => {
             )}
           </div>
 
-          {referredUsers.length > 0 ? (
+          {usersLoading ? (
+            <div className="flex justify-center items-center py-12">
+              <Loader2 className="w-8 h-8 animate-spin text-primary-dark-pink" />
+              <span className="ml-2 text-gray-500">
+                Loading referred users...
+              </span>
+            </div>
+          ) : usersError ? (
+            <div className="text-center py-12">
+              <div className="text-red-500 mb-4">
+                Error loading referred users: {usersError.message}
+              </div>
+              <button
+                onClick={() => window.location.reload()}
+                className="px-4 py-2 bg-primary-dark-pink text-white rounded-md hover:bg-pink-700"
+              >
+                Retry
+              </button>
+            </div>
+          ) : referredUsers.length > 0 ? (
             <div className="space-y-3">
-              {referredUsers.map((user) => (
+              {referredUsers.map((user: ReferralUser) => (
                 <div
                   key={user.id}
                   className="p-4 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 hover:border-primary-dark-pink/30 transition-colors duration-200 rounded-lg shadow-sm hover:shadow"
@@ -251,7 +356,7 @@ const ReferralPage = () => {
                     <div className="flex items-center gap-4">
                       <div className="relative">
                         <Image
-                          src="/site/avatar.png"
+                          src={user.profile_image || "/site/avatar.png"}
                           width={48}
                           height={48}
                           alt={user.name}
@@ -264,15 +369,18 @@ const ReferralPage = () => {
                           {user.name}
                         </h4>
                         <p className="text-sm text-gray-500 dark:text-gray-400">
-                          @{user.username}
+                          {user.username}
                         </p>
                         <p className="text-xs text-gray-400 dark:text-gray-500">
                           Joined:{" "}
-                          {new Date(user.joinDate).toLocaleDateString("en-US", {
-                            month: "short",
-                            day: "numeric",
-                            year: "numeric",
-                          })}
+                          {new Date(user.created_at).toLocaleDateString(
+                            "en-US",
+                            {
+                              month: "short",
+                              day: "numeric",
+                              year: "numeric",
+                            },
+                          )}
                         </p>
                       </div>
                     </div>
@@ -296,6 +404,27 @@ const ReferralPage = () => {
                   </div>
                 </div>
               ))}
+
+              {/* Load More Button for Users */}
+              {hasNextUsers && (
+                <div className="flex justify-center pt-4">
+                  <button
+                    ref={ref}
+                    onClick={() => fetchNextUsers()}
+                    disabled={isFetchingNextUsers}
+                    className="px-6 py-3 bg-primary-dark-pink text-white rounded-md hover:bg-pink-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                  >
+                    {isFetchingNextUsers ? (
+                      <>
+                        <Loader2 className="w-4 h-4 animate-spin" />
+                        Loading...
+                      </>
+                    ) : (
+                      "Load More"
+                    )}
+                  </button>
+                </div>
+              )}
             </div>
           ) : (
             <div className="text-center py-12">
@@ -351,49 +480,108 @@ const ReferralPage = () => {
             <h4 className="font-semibold text-gray-900 dark:text-white">
               Recent Earnings
             </h4>
-            {referredUsers.map((user) => (
-              <div
-                key={user.id}
-                className="p-4 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm"
-              >
-                <div className="flex justify-between items-center">
-                  <div className="flex items-center gap-3">
-                    <Image
-                      src="/site/avatar.png"
-                      width={32}
-                      height={32}
-                      alt={user.name}
-                      className="w-8 h-8 object-cover rounded-full"
-                    />
-                    <div>
-                      <p className="font-semibold text-gray-900 dark:text-white">
-                        {user.name}
-                      </p>
-                      <p className="text-xs text-gray-500 dark:text-gray-400">
-                        Earned on{" "}
-                        {new Date(user.joinDate).toLocaleDateString("en-US", {
-                          month: "short",
-                          day: "numeric",
-                          year: "numeric",
-                        })}
-                      </p>
+
+            {earningsLoading ? (
+              <div className="flex justify-center items-center py-8">
+                <Loader2 className="w-8 h-8 animate-spin text-primary-dark-pink" />
+                <span className="ml-2 text-gray-500">Loading earnings...</span>
+              </div>
+            ) : earningsError ? (
+              <div className="text-center py-8">
+                <div className="text-red-500 mb-4">
+                  Error loading earnings: {earningsError.message}
+                </div>
+                <button
+                  onClick={() => window.location.reload()}
+                  className="px-4 py-2 bg-primary-dark-pink text-white rounded-md hover:bg-pink-700"
+                >
+                  Retry
+                </button>
+              </div>
+            ) : referralEarnings.length > 0 ? (
+              <div className="space-y-3">
+                {referralEarnings.map((earning: ReferralEarning) => (
+                  <div
+                    key={earning.id}
+                    className="p-4 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm"
+                  >
+                    <div className="flex justify-between items-center">
+                      <div className="flex items-center gap-3">
+                        <Image
+                          src={
+                            earning.referredUser?.profile_image ||
+                            "/site/avatar.png"
+                          }
+                          width={32}
+                          height={32}
+                          alt={earning.referredUser?.name || "User"}
+                          className="w-8 h-8 object-cover rounded-full"
+                        />
+                        <div>
+                          <p className="font-semibold text-gray-900 dark:text-white">
+                            {earning.referredUser?.name || earning.description}
+                          </p>
+                          <p className="text-xs text-gray-500 dark:text-gray-400">
+                            Earned on{" "}
+                            {new Date(earning.created_at).toLocaleDateString(
+                              "en-US",
+                              {
+                                month: "short",
+                                day: "numeric",
+                                year: "numeric",
+                              },
+                            )}
+                          </p>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <span className="font-semibold text-primary-dark-pink">
+                          +{earning.points}
+                        </span>
+                        <Image
+                          width={16}
+                          height={16}
+                          className="w-4 h-4"
+                          src="/site/coin.svg"
+                          alt="Points"
+                        />
+                      </div>
                     </div>
                   </div>
-                  <div className="flex items-center gap-2">
-                    <span className="font-semibold text-primary-dark-pink">
-                      +{user.earnings}
-                    </span>
-                    <Image
-                      width={16}
-                      height={16}
-                      className="w-4 h-4"
-                      src="/site/coin.svg"
-                      alt="Points"
-                    />
+                ))}
+
+                {/* Load More Button for Earnings */}
+                {hasNextEarnings && (
+                  <div className="flex justify-center pt-4">
+                    <button
+                      ref={ref}
+                      onClick={() => fetchNextEarnings()}
+                      disabled={isFetchingNextEarnings}
+                      className="px-6 py-3 bg-primary-dark-pink text-white rounded-md hover:bg-pink-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                    >
+                      {isFetchingNextEarnings ? (
+                        <>
+                          <Loader2 className="w-4 h-4 animate-spin" />
+                          Loading...
+                        </>
+                      ) : (
+                        "Load More"
+                      )}
+                    </button>
                   </div>
-                </div>
+                )}
               </div>
-            ))}
+            ) : (
+              <div className="text-center py-8">
+                <TrendingUp className="w-16 h-16 text-gray-300 dark:text-gray-600 mx-auto mb-4" />
+                <h3 className="text-lg font-semibold text-gray-600 dark:text-gray-400 mb-2">
+                  No earnings yet
+                </h3>
+                <p className="text-gray-500 dark:text-gray-500">
+                  Start referring users to earn referral points!
+                </p>
+              </div>
+            )}
           </div>
         </div>
       )}

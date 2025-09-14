@@ -24,6 +24,7 @@ const StoryUploadForm = () => {
       try {
         toast.loading("Uploading Media...", {
           id: "story-upload",
+          duration: Infinity,
         });
         const response = await axiosServer.post("/stories/upload", formData);
         if (response) {
@@ -35,6 +36,10 @@ const StoryUploadForm = () => {
               media_url: item.url,
               media_state: item.media_state,
               media_type: item.mimetype.split("/")[0],
+            });
+            toast.success("Story Uploaded Successfully", {
+              id: "story-upload",
+              duration: 4000,
             });
           });
         }

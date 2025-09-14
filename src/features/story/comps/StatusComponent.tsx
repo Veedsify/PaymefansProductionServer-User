@@ -21,9 +21,8 @@ function StatusComponent() {
   const [openMore, setOpenMore] = useState(true);
   const [openStoryCaption, setStoryCaption] = useState(false);
   const [canContinue, setCanContinue] = useState(false);
-  const { story, removeFromStory, updateStoryState } = useStoryStore();
+  const { story: media, removeFromStory, updateStoryState } = useStoryStore();
   const { user } = useAuthContext();
-  const media = useMemo(() => story, [story]);
   const toggleOpenMore = useCallback(() => {
     setOpenMore((prev) => !prev);
   }, []);
@@ -46,13 +45,16 @@ function StatusComponent() {
       process.env.NEXT_PUBLIC_TS_EXPRESS_URL +
         `/events/story-media-state?userId=${user?.id}`,
     );
-    evtSource.addEventListener("story-update", (event: MessageEvent) => {
-      console.log("SSE message received:", event.data);
-      // const data = JSON.parse(event.data);
-      // if (data.mediaId && data.userid === user?.id) {
-      //   updateStoryState(data.mediaId, "completed");
-      // }
-    });
+    evtSource.addEventListener(
+      "story-processing-complete",
+      (event: MessageEvent) => {
+        console.log("SSE message received:", event.data);
+        if (event.data) {
+          const data = JSON.parse(event.data);
+          updateStoryState(data.mediaId, "completed");
+        }
+      },
+    );
     evtSource.onerror = (err) => {
       console.error("SSE error:", err);
     };
@@ -120,6 +122,7 @@ function StatusComponent() {
                     {data.media_type === "video" ? (
                       <div className="relative">
                         <HlsViewer
+                          key={`${data.id}-${data.media_state}`}
                           streamUrl={data.media_url}
                           muted={true}
                           className="inset-0 object-cover aspect-square w-full h-full cursor-pointer duration-300 ease-in-out"

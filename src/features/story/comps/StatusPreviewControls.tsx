@@ -105,7 +105,7 @@ const ProgressBar = ({
     const progressRef = progressBarRef.current;
     const observer = new IntersectionObserver(
       ([entry]) => setIsIntersecting(entry.isIntersecting),
-      { threshold: 1, rootMargin: "0px 0px 0px 0px" }
+      { threshold: 1, rootMargin: "0px 0px 0px 0px" },
     );
 
     if (progressRef) {
@@ -139,9 +139,9 @@ const ProgressBar = ({
       cleanupAnimation();
 
       if (mainIndex === slideIndex && isIntersecting) {
-        const updateInterval = 50;
+        const updateInterval = 100;
         const totalIntervals = duration / updateInterval;
-        const increment = 50 / totalIntervals;
+        const increment = 100 / totalIntervals;
         let lastTime = performance.now();
 
         const updateProgress = () => {

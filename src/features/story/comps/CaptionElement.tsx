@@ -10,7 +10,7 @@ const CaptionElement = ({ element }: { element: any }) => {
     left: `${element.position.x}%`,
     top: `${element.position.y}%`,
     transform: "translate(-50%, -50%)",
-    fontFamily: "Bricolage Grotesque Variable",
+    // fontFamily: "Bricolage Grotesque Variable",
     fontSize: element.style.fontSize,
     fontWeight: element.style.fontWeight,
     color: element.style.color,

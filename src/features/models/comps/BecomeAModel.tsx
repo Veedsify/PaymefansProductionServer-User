@@ -177,7 +177,7 @@ const BecomeAModel = () => {
         setFormErrors((prev) => ({ ...prev, [name]: undefined }));
       }
     },
-    [formErrors]
+    [formErrors],
   );
 
   const handleGenderSelect = useCallback(
@@ -194,7 +194,7 @@ const BecomeAModel = () => {
         }
       }
     },
-    [formErrors.audience]
+    [formErrors.audience],
   );
 
   const handleSubmit = useCallback(
@@ -236,12 +236,13 @@ const BecomeAModel = () => {
               callback_url: callbackUrl,
               metadata: {
                 type: "model_signup",
+                referral: formData.referral_code || null,
                 user_id: user?.id,
                 firstname: formData.firstname,
                 lastname: formData.lastname,
               },
             }),
-          }
+          },
         );
 
         if (!response.ok) {
@@ -257,6 +258,7 @@ const BecomeAModel = () => {
           lastname: formData.lastname!,
           dob: formData.dob!,
           gender: selectedGender.name,
+          referral_code: formData.referral_code || undefined,
           country: formData.country!,
           available: formData.available!,
           audience: selectedGender.name.toLowerCase(),
@@ -282,7 +284,7 @@ const BecomeAModel = () => {
         setIsSubmitting(false);
       }
     },
-    [formData, selectedGender, user, validateForm]
+    [formData, selectedGender, user, validateForm],
   );
 
   // Render loading state
@@ -419,7 +421,7 @@ const BecomeAModel = () => {
             name="dob"
             value={formData.dob || ""}
             max={new Date(
-              Date.now() - 18 * 365 * 24 * 60 * 60 * 1000
+              Date.now() - 18 * 365 * 24 * 60 * 60 * 1000,
             ).toISOString()}
             className={`border p-4 w-full rounded-lg font-semibold outline-none focus:ring-2 focus:ring-primary-dark-pink transition ${
               formErrors.dob

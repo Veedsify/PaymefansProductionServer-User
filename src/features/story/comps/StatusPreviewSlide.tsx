@@ -40,7 +40,7 @@ const fetchStatusViews = async ({
     `/story/views/${media_id}${pageParam === 0 ? "" : `?cursor=${pageParam}`}`,
     {
       withCredentials: true,
-    }
+    },
   );
   if (response.status === 200) {
     const data = response.data;
@@ -206,7 +206,7 @@ const StoryReplyInput = ({ story }: { story: Story }) => {
         {
           headers: { Authorization: `Bearer ${getToken()}` },
           withCredentials: true,
-        }
+        },
       );
       const receiverUserId = profileResponse.data.user?.user_id;
       if (!receiverUserId) {
@@ -218,7 +218,7 @@ const StoryReplyInput = ({ story }: { story: Story }) => {
         {
           headers: { Authorization: `Bearer ${getToken()}` },
           withCredentials: true,
-        }
+        },
       );
       const pricePerMessage = data.price_per_message || 0;
       const currentPoints = points || 0;
@@ -393,7 +393,7 @@ const StatusPreviewSlide = ({
         { storyMediaId: story.media_id },
         {
           withCredentials: true,
-        }
+        },
       );
       refCounter.current++;
     }
@@ -429,6 +429,9 @@ const StatusPreviewSlide = ({
           <HlsViewer
             className="w-auto h-full object-contain bg-black rounded-lg shadow-lg"
             streamUrl={story.media_url}
+            muted={false}
+            isOpen={true}
+            showControls={false}
           />
           {/* Caption Overlay for Videos */}
           {canShowViewBlock && <StatusViewBlock story={story} />}
