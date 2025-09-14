@@ -55,10 +55,9 @@ const Login = () => {
 
       setLoading(false);
       toast.success(LOGIN_CONFIG.LOGIN_SUCCESSFUL_MSG);
-      document.cookie = `token=${response.data.token}`;
       setUser(response.data.user);
       const redirect = new URLSearchParams(window.location.search).get(
-        "redirect",
+        "redirect"
       );
       const destination = redirect || "/";
       if (typeof window !== "undefined") {
@@ -69,7 +68,7 @@ const Login = () => {
       setLoading(false);
       console.log(error);
       setError(
-        error?.response?.data?.message || error?.message || "An error occurred",
+        error?.response?.data?.message || error?.message || "An error occurred"
       );
     }
   };
