@@ -1,5 +1,5 @@
 import PostEditor from "@/features/post/PostEditor";
-import axiosInstance from "@/utils/Axios";
+import axios from "axios";
 import { Metadata } from "next";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
@@ -24,11 +24,14 @@ const EditPost = async ({ params }: EditPostProps) => {
   }
 
   try {
-    const response = await axiosInstance.get(`/post/edit/${id}`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
+    const response = await axios.get(
+      `${process.env.NEXT_PUBLIC_TS_EXPRESS_URL}/post/edit/${id}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       },
-    });
+    );
 
     if (!response.data.status) {
       redirect("/profile");
