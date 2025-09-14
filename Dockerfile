@@ -1,5 +1,10 @@
 # Use a specific version of Bun (e.g., bun:latest)
-FROM oven/bun:1 
+FROM oven/bun:1
+
+ARG NEXT_PUBLIC_TS_EXPRESS_URL
+ARG NEXT_PUBLIC_TS_EXPRESS_URL_DIRECT
+ENV NEXT_PUBLIC_TS_EXPRESS_URL_DIRECT=$NEXT_PUBLIC_TS_EXPRESS_URL_DIRECT
+ENV NEXT_PUBLIC_TS_EXPRESS_URL=$NEXT_PUBLIC_TS_EXPRESS_URL
 
 # Set the working directory
 WORKDIR /app
@@ -20,7 +25,7 @@ ENV PYTHON=/usr/bin/python3
 COPY package.json bun.lockb* ./
 
 # Install dependencies with Bun (equivalent to npm install)
-RUN bun install 
+RUN bun install
 
 # Copy the rest of the application code
 COPY . .
