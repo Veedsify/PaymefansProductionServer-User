@@ -1,47 +1,91 @@
 "use client";
 
-import React, { memo, useEffect, useMemo } from "react";
-import usePostComponent from "@/contexts/PostComponentPreview";
-import MediaPreviewModal from "../media/MediaPreviewModal";
+import React, { memo, useMemo, lazy, Suspense, useCallback } from "react";
+import { usePostPreviewState } from "@/hooks/usePostPreviewSelectors";
+import MediaPreviewErrorBoundary from "@/components/error-boundaries/MediaPreviewErrorBoundary";
+import { LucideLoader } from "lucide-react";
+
+// Lazy load the heavy MediaPreviewModal component
+const MediaPreviewModal = lazy(() => import("../media/MediaPreviewModal"));
+
+// Optimized loading fallback
+const ModalLoader = memo(() => (
+  <div
+    className="fixed inset-0 z-[200] flex items-center justify-center bg-black bg-opacity-90"
+    role="dialog"
+    aria-modal="true"
+    aria-label="Loading media preview"
+  >
+    {/* <div className="flex items-center space-x-2 text-white">
+      <div
+        className="w-6 h-6 border-2 border-white border-t-transparent rounded-full animate-spin"
+        aria-hidden="true"
+      />
+      <span>
+        <LucideLoader className="w-6 h-6 animate-spin" aria-hidden="true" />
+      </span>
+    </div> */}
+  </div>
+));
+ModalLoader.displayName = "ModalLoader";
 
 // Main Component
 const PostComponentPreview = memo(() => {
-  const objectRef = usePostComponent((state) => state.ref);
-  const otherUrl = usePostComponent((state) => state.otherUrl);
-  const open = usePostComponent((state) => state.open);
-  const close = usePostComponent((state) => state.close);
-  const username = usePostComponent((state) => state.username);
-  const userProfile = usePostComponent((state) => state.userProfile);
-  const watermarkEnabled = usePostComponent((state) => state.watermarkEnabled);
-  const [rendered, setRendered] = React.useState(false);
+  const {
+    ref: objectRef,
+    otherUrl,
+    open,
+    close,
+    username,
+    userProfile,
+    watermarkEnabled,
+  } = usePostPreviewState();
 
-  const mediaItems = useMemo(() => otherUrl || [], [otherUrl]);
-  const userProfileOverlay = useMemo(() => userProfile, [userProfile]);
-  const initialIndex = useMemo(
-    () => (typeof objectRef === "number" ? objectRef : 0),
-    [objectRef]
-  );
+  // Stable close handler to prevent re-renders
+  const handleClose = useCallback(() => {
+    close();
+  }, [close]);
 
-  useEffect(() => {
-    if (open) {
-      setRendered(true);
-    }
-    return () => {
-      setRendered(false);
+  // Memoize modal props with validation
+  const modalProps = useMemo(() => {
+    if (!open || !otherUrl?.length) return null;
+
+    // Validate initial index
+    const validIndex =
+      typeof objectRef === "number" && objectRef >= 0
+        ? Math.min(objectRef, otherUrl.length - 1)
+        : 0;
+
+    return {
+      open,
+      onClose: handleClose,
+      mediaItems: otherUrl,
+      initialIndex: validIndex,
+      username: username || "",
+      userProfile: userProfile || null,
+      watermarkEnabled: watermarkEnabled ?? false,
     };
-  }, [open]);
+  }, [
+    open,
+    otherUrl,
+    objectRef,
+    handleClose,
+    username,
+    userProfile,
+    watermarkEnabled,
+  ]);
 
-  if (!rendered) return null;
+  // Early return if modal should not be rendered
+  if (!open || !modalProps) {
+    return null;
+  }
+
   return (
-    <MediaPreviewModal
-      open={open}
-      onClose={close}
-      mediaItems={mediaItems}
-      initialIndex={initialIndex}
-      username={username}
-      userProfile={userProfileOverlay || null}
-      watermarkEnabled={watermarkEnabled}
-    />
+    <MediaPreviewErrorBoundary>
+      <Suspense fallback={<ModalLoader />}>
+        <MediaPreviewModal {...modalProps} />
+      </Suspense>
+    </MediaPreviewErrorBoundary>
   );
 });
 PostComponentPreview.displayName = "PostComponentPreview";

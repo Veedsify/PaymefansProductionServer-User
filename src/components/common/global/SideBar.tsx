@@ -105,7 +105,7 @@ const SideBar = React.memo(() => {
             <>
               <div className="pt-5 mb-3">
                 {user ? (
-                  <PointsCount user={user} />
+                  <PointsCount enableBackgroundUpdates={true} user={user} />
                 ) : (
                   <div className="w-1/2 p-2 py-3 bg-gray-300 animate-pulse rounded-md"></div>
                 )}
