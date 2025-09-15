@@ -1,11 +1,11 @@
 "use client";
-import { useNewPostStore } from "@/contexts/NewPostContext";
+import { usePostContext } from "@/contexts/PostContext";
 import { useRouter } from "next/navigation";
 import swal from "sweetalert";
 
 export const PostCancel = () => {
   const router = useRouter();
-  const { clearAll } = useNewPostStore();
+  const { clearAll } = usePostContext();
   const confirmCancel = () => {
     swal({
       title: "Are you sure?",

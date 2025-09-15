@@ -1,12 +1,11 @@
 "use client";
-import { useNewPostStore } from "@/contexts/NewPostContext";
+import { usePostContext } from "@/contexts/PostContext";
 import { MdOutlinePermMedia } from "react-icons/md";
 import toast from "react-hot-toast";
 import Toggle from "../../components/common/toggles/Checked";
 import { imageTypes, videoTypes } from "@/lib/FileTypes";
 import { useAuthContext } from "@/contexts/UserUseContext";
 import { POST_CONFIG } from "@/config/config";
-import { usePostEditorContext } from "@/contexts/PostEditorContext";
 const {
   MODEL_POST_LIMIT,
   IMAGE_FILE_SIZE_LIMIT,
@@ -22,7 +21,7 @@ const AddNewPostMedia = ({
   handleFileSelect: (files: File[]) => void;
 }) => {
   const { user } = useAuthContext();
-  const { setWatermarkEnabled } = usePostEditorContext();
+  const { setWatermarkEnabled } = usePostContext();
   const handleImageSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files as FileList;
     if (files) {

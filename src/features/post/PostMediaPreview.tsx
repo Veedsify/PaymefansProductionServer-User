@@ -1,29 +1,19 @@
 "use client";
 import React, {
-  useState,
-  useRef,
-  useCallback,
   useMemo,
   useEffect,
   Dispatch,
   SetStateAction,
-  useTransition,
-  startTransition,
+  useCallback,
 } from "react";
 import { useAuthContext } from "@/contexts/UserUseContext";
 import { POST_CONFIG } from "@/config/config";
-import { v4 as uuid } from "uuid";
-import { getToken } from "@/utils/Cookie";
-import { UploadedImageProp, UploadResponseResponse } from "@/types/Components";
+import { UploadedImageProp } from "@/types/Components";
 import toast from "react-hot-toast";
 import AddNewPostMedia from "./AddNewPostMedia";
 import Media from "@/features/media/MediaPreviewPost";
-import axios from "axios";
-import { getMaxDurationBase64 } from "@/utils/GetVideoMaxDuration";
-import UploadImageToCloudflare from "../../utils/CloudflareImageUploader";
-import UploadWithTus from "@/utils/TusUploader";
-import { usePostMediaUploadContext } from "@/contexts/PostMediaUploadContext";
-import axiosInstance from "@/utils/Axios";
+import { usePostContext } from "@/contexts/PostContext";
+import { useUploadProgress } from "@/contexts/UploadProgressContext";
 
 type PostMediaPreviewProps = {
   setIsSubmitting: Dispatch<SetStateAction<boolean>>;
@@ -36,77 +26,30 @@ function PostMediaPreview({
   removeThisMedia,
   setIsSubmitting,
 }: PostMediaPreviewProps) {
-  const [media, setMedia] = useState<Array<{ file: File; id: string }>>([]);
-  const [progress, setProgress] = useState<{ [key: string]: number }>({});
-  const [uploadError, setUploadError] = useState<{ [key: string]: boolean }>(
-    {},
-  );
-  const [isPending, startTransition] = useTransition();
-  const { setMediaUploadComplete } = usePostMediaUploadContext();
+  const { setMediaUploadComplete } = usePostContext();
+  const {
+    media,
+    progress,
+    isUploadComplete,
+    isAnyUploading,
+    addMediaFiles,
+    removeMediaItem,
+  } = useUploadProgress();
   const { user } = useAuthContext();
 
   const handleMediaRemove = useCallback(
     (id: string, type: string) => {
-      startTransition(() => {
-        setMedia((prev) => prev.filter((file) => file.id !== id));
-        removeThisMedia(id, type);
-      });
+      removeMediaItem(id, removeThisMedia);
     },
-    [removeThisMedia],
-  );
-
-  const tusUploader = useCallback(
-    (file: File, uploadUrl: string, id: string) => {
-      const deferredSetProgress = (progressObj: any) => {
-        startTransition(() => {
-          setProgress(progressObj);
-        });
-      };
-
-      const deferredSetUploadError = (errorObj: any) => {
-        startTransition(() => {
-          setUploadError(errorObj);
-        });
-      };
-
-      return UploadWithTus({
-        file,
-        uploadUrl,
-        id,
-        setProgress: deferredSetProgress,
-        setUploadError: deferredSetUploadError,
-      });
-    },
-    [],
-  );
-
-  const imageUploader = useCallback(
-    (file: File, uploadUrl: string, id: string) => {
-      const deferredSetProgress = (progressObj: any) => {
-        startTransition(() => {
-          setProgress(progressObj);
-        });
-      };
-
-      const deferredSetUploadError = (errorObj: any) => {
-        startTransition(() => {
-          setUploadError(errorObj);
-        });
-      };
-
-      return UploadImageToCloudflare({
-        file,
-        setProgress: deferredSetProgress,
-        setUploadError: deferredSetUploadError,
-        id,
-        uploadUrl,
-      });
-    },
-    [],
+    [removeMediaItem, removeThisMedia]
   );
 
   const handleFileSelect = useCallback(
     async (files: File[]) => {
+      console.log(
+        "PostMediaPreview: handleFileSelect called with files:",
+        files.length
+      );
       if (!files?.length) return;
       const fileLimit = user?.is_model
         ? POST_CONFIG.MODEL_POST_LIMIT
@@ -115,102 +58,20 @@ function PostMediaPreview({
         toast.error(
           user?.is_model
             ? POST_CONFIG.MODEL_POST_LIMIT_ERROR_MSG
-            : POST_CONFIG.USER_POST_LIMIT_ERROR_MSG,
+            : POST_CONFIG.USER_POST_LIMIT_ERROR_MSG
         );
         return;
       }
-      const newMediaItems = files.map((file) => ({ file, id: uuid() }));
 
-      startTransition(() => {
-        setMedia((prev) => [...prev, ...newMediaItems]);
-      });
-      try {
-        try {
-          for (const [index, mediaItem] of newMediaItems.entries()) {
-            const isVideo = mediaItem.file.type.startsWith("video/");
-            const maxVideoDuration = isVideo
-              ? getMaxDurationBase64(mediaItem.file)
-              : null;
-            const payload: any = {
-              type: isVideo ? "video" : "image",
-              fileName: btoa(`paymefans-${user?.username}-${Date.now()}`),
-              fileSize: mediaItem.file.size,
-              fileType: btoa(mediaItem.file.type),
-              explicitImageType: mediaItem.file.type,
-              shouldUseSignedUrls: true,
-            };
-            if (isVideo) payload.maxDuration = maxVideoDuration;
+      console.log("PostMediaPreview: Setting mediaUploadComplete to false");
+      // Reset upload completion flag when new media is added
+      setMediaUploadComplete(false);
 
-            const { data } = await axiosInstance.post<UploadResponseResponse>(
-              `/post/media/signed-url`,
-              payload,
-            );
-            if (!data || data.error) {
-              throw new Error(
-                data?.message || "Failed to get upload URL from server",
-              );
-            }
-            const { uploadUrl, type, id } = data;
-            if (!id || !uploadUrl) throw new Error("Failed to get upload URL");
-
-            if (type === "video") {
-              const uploadVideo = await tusUploader(
-                mediaItem.file,
-                uploadUrl,
-                mediaItem.id,
-              );
-              submitPost({
-                blur: ``,
-                public: `${process.env.NEXT_PUBLIC_CLOUDFLARE_CUSTOMER_SUBDOMAIN}${uploadVideo}/manifest/video.m3u8`,
-                id: uploadVideo,
-                type: "video",
-                fileId: mediaItem.id,
-              });
-              if (index === newMediaItems.length - 1) {
-                setMediaUploadComplete(true); // Set upload complete after last item
-              }
-            } else if (type === "image") {
-              const uploadImage = await imageUploader(
-                mediaItem.file,
-                uploadUrl,
-                mediaItem.id,
-              );
-              const variants = uploadImage.result.variants ?? [];
-              const publicVariant =
-                variants.find((v: string) => v?.includes("/public")) ??
-                variants[0] ??
-                "";
-              const blurVariant =
-                variants.find((v: string) => v?.includes("/blur")) ??
-                variants[0] ??
-                "";
-              submitPost({
-                blur: blurVariant,
-                public: publicVariant,
-                id: uploadImage.result.id,
-                type: "image",
-                fileId: mediaItem.id,
-              });
-              if (index === newMediaItems.length - 1) {
-                setMediaUploadComplete(true); // Set upload complete after last item
-              }
-            }
-          }
-        } catch (error: any) {
-          throw new Error(error.message);
-        }
-      } catch {
-        toast.error("Some uploads failed.");
-      }
+      console.log("PostMediaPreview: Calling addMediaFiles");
+      // Handle upload via context
+      await addMediaFiles(files, user, submitPost);
     },
-    [
-      user,
-      media.length,
-      submitPost,
-      tusUploader,
-      imageUploader,
-      setMediaUploadComplete,
-    ],
+    [user, media.length, addMediaFiles, submitPost, setMediaUploadComplete]
   );
 
   const mediaMap = useMemo(
@@ -221,7 +82,7 @@ function PostMediaPreview({
         removeThisMedia: handleMediaRemove,
         url: URL.createObjectURL(m.file),
       })),
-    [media, handleMediaRemove],
+    [media, handleMediaRemove]
   );
 
   useEffect(() => {
@@ -232,27 +93,24 @@ function PostMediaPreview({
     };
   }, [mediaMap]);
 
+  // Track upload completion using the shared progress context
   useEffect(() => {
-    startTransition(() => {
-      const anyUploading = Object.values(progress).some(
-        (value) => value < 100 && value >= 0,
-      );
-      const hasPendingUploads = Object.keys(progress).length !== media.length;
-      setIsSubmitting(anyUploading || (hasPendingUploads && media.length > 0));
-    });
+    // Set upload complete when progress context indicates completion
+    if (isUploadComplete && media.length > 0) {
+      setMediaUploadComplete(true);
+    }
+  }, [isUploadComplete, media.length, setMediaUploadComplete]);
 
-    return () => {
-      setIsSubmitting(false);
-    };
-  }, [setIsSubmitting, progress, media]);
+  // Track submission state using the shared progress context
+  useEffect(() => {
+    const shouldBeSubmitting =
+      isAnyUploading || (media.length > 0 && !isUploadComplete);
+    setIsSubmitting(shouldBeSubmitting);
+  }, [isAnyUploading, isUploadComplete, media.length, setIsSubmitting]);
 
   return (
     <div className="mb-5">
-      <div
-        className={`p-4 select-none grid grid-cols-4 gap-3 md:grid-cols-4 lg:grid-cols-6 ${
-          isPending ? "opacity-90 transition-opacity" : ""
-        }`}
-      >
+      <div className="p-4 select-none grid grid-cols-4 gap-3 md:grid-cols-4 lg:grid-cols-6">
         {mediaMap.map((file) => (
           <div className="relative" key={file.id}>
             <Media

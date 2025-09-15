@@ -19,14 +19,11 @@ export const useUserPoints = ({
         queryKey: ["userPoints", userId],
         queryFn: async () => {
             if (!userId) throw new Error("User ID is required");
-
             const response = await GetUserPointBalance(userId);
-
             // Only update store if points have changed to prevent unnecessary re-renders
             if (response?.data?.points !== undefined && response.data.points !== currentPoints) {
                 updatePoints(response.data.points);
             }
-
             return response;
         },
         staleTime: 5 * 60 * 1000, // 5 minutes

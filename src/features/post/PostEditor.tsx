@@ -30,11 +30,11 @@ import {
   RemovedMediaIdProps,
   MentionUser,
 } from "@/types/Components";
-import { useNewPostStore } from "@/contexts/NewPostContext";
+
 import { PostCancel } from "@/features/post/PostCancel";
-import { usePostMediaUploadContext } from "@/contexts/PostMediaUploadContext";
+
 import FetchMentions from "@/utils/data/FetchMentions";
-import { usePostEditorContext } from "@/contexts/PostEditorContext";
+import { usePostContext } from "@/contexts/PostContext";
 import { useConfigContext } from "@/contexts/ConfigContext";
 import ExistingMediaPreview from "./ExistingMediaPreview";
 import Loader from "@/components/common/loaders/LoadingAnimation";
@@ -54,16 +54,19 @@ const PostEditor = React.memo(({ posts }: PostEditorProps) => {
   const [nairaDisplayValue, setNairaDisplayValue] = useState<string>("");
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [isPending, startTransition] = useTransition();
-  const { setVisibility, visibility, setPostText, postText } =
-    useNewPostStore();
+  const {
+    postText,
+    setPostText,
+    visibility,
+    setVisibility,
+    mediaUploadComplete,
+    setMediaUploadComplete,
+    isWaterMarkEnabled,
+    clearAll,
+  } = usePostContext();
   const [editedMedia, setEditedMedia] = useState<UserMediaProps[]>([]);
   const [removedIds, setRemovedIds] = useState<RemovedMediaIdProps[]>([]);
   const [media, setMedia] = useState<UploadedImageProp[] | null>(null);
-  const { mediaUploadComplete, setMediaUploadComplete } =
-    usePostMediaUploadContext();
-  const isWaterMarkEnabled = usePostEditorContext(
-    (state) => state.isWaterMarkEnabled,
-  );
   const { config } = useConfigContext();
 
   // Mentions state
@@ -109,7 +112,7 @@ const PostEditor = React.memo(({ posts }: PostEditorProps) => {
             ]
           : []),
       ] as PostAudienceDataProps[],
-    [user],
+    [user]
   );
 
   // User search simulation
@@ -124,7 +127,7 @@ const PostEditor = React.memo(({ posts }: PostEditorProps) => {
         }, 300);
       });
     },
-    [],
+    []
   );
 
   // Mention search
@@ -132,7 +135,7 @@ const PostEditor = React.memo(({ posts }: PostEditorProps) => {
     if (mentionQuery.length > 0) {
       searchUsers(mentionQuery).then((users) => {
         setMentionSuggestions(
-          users.map((user, index) => ({ ...user, highlighted: index === 0 })),
+          users.map((user, index) => ({ ...user, highlighted: index === 0 }))
         );
         setSelectedMentionIndex(0);
       });
@@ -183,7 +186,7 @@ const PostEditor = React.memo(({ posts }: PostEditorProps) => {
         }
       });
     },
-    [setPostText],
+    [setPostText]
   );
 
   // Mention selection
@@ -219,7 +222,7 @@ const PostEditor = React.memo(({ posts }: PostEditorProps) => {
         setCursorPosition(newCursorPos);
       }, 0);
     },
-    [mentionStartPos, cursorPosition, mentions, setPostText],
+    [mentionStartPos, cursorPosition, mentions, setPostText]
   );
   // Keydown navigation
   const handleKeyDown = useCallback(
@@ -229,13 +232,13 @@ const PostEditor = React.memo(({ posts }: PostEditorProps) => {
           case "ArrowDown":
             e.preventDefault();
             setSelectedMentionIndex((prev) =>
-              prev < mentionSuggestions.length - 1 ? prev + 1 : 0,
+              prev < mentionSuggestions.length - 1 ? prev + 1 : 0
             );
             break;
           case "ArrowUp":
             e.preventDefault();
             setSelectedMentionIndex((prev) =>
-              prev > 0 ? prev - 1 : mentionSuggestions.length - 1,
+              prev > 0 ? prev - 1 : mentionSuggestions.length - 1
             );
             break;
           case "Enter":
@@ -250,7 +253,7 @@ const PostEditor = React.memo(({ posts }: PostEditorProps) => {
         }
       }
     },
-    [showMentions, mentionSuggestions, selectedMentionIndex, selectMention],
+    [showMentions, mentionSuggestions, selectedMentionIndex, selectMention]
   );
 
   // Preload existing post data
@@ -269,7 +272,7 @@ const PostEditor = React.memo(({ posts }: PostEditorProps) => {
           audienceName = "price";
         }
         const audience = postAudienceData.find(
-          (aud) => aud.name.toLowerCase() === audienceName,
+          (aud) => aud.name.toLowerCase() === audienceName
         );
         if (audience) {
           setVisibility(audience.name);
@@ -301,7 +304,7 @@ const PostEditor = React.memo(({ posts }: PostEditorProps) => {
     (id: string, type: string) => {
       startTransition(() => {
         setMedia((prevMedia) =>
-          prevMedia ? prevMedia.filter((file) => file.fileId !== id) : null,
+          prevMedia ? prevMedia.filter((file) => file.fileId !== id) : null
         );
         const removeId = media?.find((med) => med.fileId === id);
         if (removeId) {
@@ -309,7 +312,7 @@ const PostEditor = React.memo(({ posts }: PostEditorProps) => {
         }
       });
     },
-    [media],
+    [media]
   );
 
   // Remove existing media
@@ -317,7 +320,7 @@ const PostEditor = React.memo(({ posts }: PostEditorProps) => {
     (mediaId: string, mediaType: string) => {
       startTransition(() => {
         setEditedMedia((prevMedia) =>
-          prevMedia.filter((item) => item.media_id !== mediaId),
+          prevMedia.filter((item) => item.media_id !== mediaId)
         );
         setRemovedIds((prevIds) => [
           ...prevIds,
@@ -325,7 +328,7 @@ const PostEditor = React.memo(({ posts }: PostEditorProps) => {
         ]);
       });
     },
-    [],
+    []
   );
 
   // Update audience
@@ -335,7 +338,7 @@ const PostEditor = React.memo(({ posts }: PostEditorProps) => {
       setVisibility(audience.name);
       setDropdown(false);
     },
-    [setVisibility],
+    [setVisibility]
   );
 
   const setPriceHandler = (value: string) => {
@@ -410,7 +413,7 @@ const PostEditor = React.memo(({ posts }: PostEditorProps) => {
       isEditing ? "Saving your changes..." : "Creating your post...",
       {
         id: "post-upload",
-      },
+      }
     );
 
     // Convert to HTML
@@ -497,8 +500,8 @@ const PostEditor = React.memo(({ posts }: PostEditorProps) => {
                 ? "Saving..."
                 : "Processing..."
               : posts?.post_id
-                ? "Save"
-                : "Post"}
+              ? "Save"
+              : "Post"}
           </button>
         </div>
         <div className="flex items-start lg:items-center gap-2">
@@ -620,7 +623,7 @@ const PostEditor = React.memo(({ posts }: PostEditorProps) => {
                   <button
                     onClick={() =>
                       setMentions((prev) =>
-                        prev.filter((m) => m.id !== mention.id),
+                        prev.filter((m) => m.id !== mention.id)
                       )
                     }
                     className="ml-1 text-gray-500 hover:text-red-500"
@@ -756,7 +759,7 @@ const AudienceDropdown = React.memo(
         )}
       </div>
     );
-  },
+  }
 );
 
 AudienceDropdown.displayName = "AudienceDropdown";
