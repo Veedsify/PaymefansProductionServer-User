@@ -7,12 +7,11 @@ const ImageComponent = memo<ImageCompProps>(
     <Image
       src={media.url.trimEnd()}
       alt={data.post}
-      width={900}
-      height={900}
-      unselectable="on"
-      priority
+      width={960}
+      height={960}
+      quality={100}
       onClick={() => clickImageEvent(media)}
-      className="w-full h-full rounded-lg aspect-[3/4] md:aspect-square object-cover cursor-pointer"
+      className="w-full rounded-lg aspect-[3/4] md:aspect-square object-cover cursor-pointer"
     />
   )
 );

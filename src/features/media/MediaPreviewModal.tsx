@@ -22,8 +22,6 @@ import {
   MEDIA_CONSTANTS,
   MediaItem,
   UserProfile,
-  MediaState,
-  MediaAction,
   mediaReducer,
   preloadMedia,
 } from "./mediaPreviewTypes";

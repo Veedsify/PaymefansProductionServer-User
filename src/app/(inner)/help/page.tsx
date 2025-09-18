@@ -4,8 +4,9 @@ import MyTicketsModal from "@/features/support/MyTicketsModal";
 import { getHelpCategories } from "@/utils/data/GetHelpCategories";
 import { HelpCategoryProp } from "@/types/Components";
 import { useState, useEffect } from "react";
-import { Ticket } from "lucide-react";
+import { LucideLoader, Ticket } from "lucide-react";
 import { useAuthContext } from "@/contexts/UserUseContext";
+
 const HelpPage = () => {
   const [helpCategories, setHelpCategories] = useState<HelpCategoryProp[]>([]);
   const [showMyTickets, setShowMyTickets] = useState(false);
@@ -29,12 +30,12 @@ const HelpPage = () => {
     setRefreshTickets((prev) => prev + 1);
   };
   return (
-    <div className={`block p-4 md:p-6 relative h-full z-[200]`}>
+    <div className={`block p-4 md:p-6 relative h-full`}>
       <div className="flex items-center mb-7 lg:hidden">
         <span className="flex-shrink-0 text-xl font-bold ">Help & Support</span>
       </div>
       <header className="py-6 text-white bg-primary-text-dark-pink rounded-xl">
-        <div className="container flex items-center justify-between px-4 mx-auto">
+        <div className="container flex flex-wrap items-center justify-between px-4 md:space-y-0 space-y-4">
           <h1 className="text-xl font-bold lg:text-3xl">Help Center</h1>
           {!isGuest && (
             <div className="flex items-center gap-3">
@@ -58,12 +59,12 @@ const HelpPage = () => {
             type="text"
             id="searchInput"
             placeholder="Search for help..."
-            className="w-full p-3 text-lg border rounded-lg shadow md:p-4 focus:ring-2 focus:text-primary-text-dark-pink focus:outline-none"
+            className="w-full p-3 text-lg border border-gray-300 rounded-lg md:p-4 focus:ring-2 focus:text-primary-text-dark-pink focus:outline-none"
           />
         </div>
         {loading ? (
           <div className="flex items-center justify-center py-12">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-dark-pink"></div>
+            <LucideLoader className="animate-spin h-12 w-12  border-primary-dark-pink" />
           </div>
         ) : (
           <section className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-2 2xl:grid-cols-3 gap-8">

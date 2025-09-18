@@ -36,14 +36,9 @@ export const useProfile = ({
 
       // Check if current user is blocked by this profile user
       if (profileData && viewerId && profileData.user.id !== viewerId) {
-        try {
-          const blockResult = await checkIfBlockedBy(profileData.user.id);
-          if (blockResult.status && !blockResult.error) {
-            isBlockedByUser = blockResult.isBlocked;
-          }
-        } catch (error) {
-          console.error("Error checking block status:", error);
-          // Continue without blocking check if it fails
+        const blockResult = await checkIfBlockedBy(profileData.user.id);
+        if (blockResult.status && !blockResult.error) {
+          isBlockedByUser = blockResult.isBlocked;
         }
       }
 
@@ -52,14 +47,7 @@ export const useProfile = ({
         isBlockedByUser,
       };
     },
-    enabled: enabled && !!userId,
+    enabled: enabled,
     staleTime: 5 * 60 * 1000, // 5 minutes
-    retry: (failureCount, error) => {
-      // Don't retry if it's a 404 or similar user not found error
-      if (error instanceof Error && error.message.includes("404")) {
-        return false;
-      }
-      return failureCount < 2;
-    },
   });
 };

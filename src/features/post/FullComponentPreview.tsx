@@ -4,9 +4,10 @@ import React, { memo, useMemo, lazy, Suspense, useCallback } from "react";
 import { usePostPreviewState } from "@/hooks/usePostPreviewSelectors";
 import MediaPreviewErrorBoundary from "@/components/error-boundaries/MediaPreviewErrorBoundary";
 import { LucideLoader } from "lucide-react";
+import dynamic from "next/dynamic";
 
 // Lazy load the heavy MediaPreviewModal component
-const MediaPreviewModal = lazy(() => import("../media/MediaPreviewModal"));
+const MediaPreviewModal = dynamic(() => import("../media/MediaPreviewModal"));
 
 // Optimized loading fallback
 const ModalLoader = memo(() => (

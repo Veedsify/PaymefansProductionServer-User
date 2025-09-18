@@ -7,7 +7,7 @@ import {
   LucideChevronDown,
   LucideChevronUp,
   LucideEye,
-  LucideLoader2,
+  LucideLoader,
   LucideUser,
   LucideUser2,
 } from "lucide-react";
@@ -177,7 +177,7 @@ const BecomeAModel = () => {
         setFormErrors((prev) => ({ ...prev, [name]: undefined }));
       }
     },
-    [formErrors],
+    [formErrors]
   );
 
   const handleGenderSelect = useCallback(
@@ -194,7 +194,7 @@ const BecomeAModel = () => {
         }
       }
     },
-    [formErrors.audience],
+    [formErrors.audience]
   );
 
   const handleSubmit = useCallback(
@@ -242,7 +242,7 @@ const BecomeAModel = () => {
                 lastname: formData.lastname,
               },
             }),
-          },
+          }
         );
 
         if (!response.ok) {
@@ -284,14 +284,14 @@ const BecomeAModel = () => {
         setIsSubmitting(false);
       }
     },
-    [formData, selectedGender, user, validateForm],
+    [formData, selectedGender, user, validateForm]
   );
 
   // Render loading state
   if (isPageLoading) {
     return (
       <div className="flex items-center justify-center h-[30dvh]">
-        <LucideLoader2 className="animate-spin" size={40} stroke="#FF007A" />
+        <LucideLoader className="animate-spin" size={40} stroke="#FF007A" />
       </div>
     );
   }
@@ -421,7 +421,7 @@ const BecomeAModel = () => {
             name="dob"
             value={formData.dob || ""}
             max={new Date(
-              Date.now() - 18 * 365 * 24 * 60 * 60 * 1000,
+              Date.now() - 18 * 365 * 24 * 60 * 60 * 1000
             ).toISOString()}
             className={`border p-4 w-full rounded-lg font-semibold outline-none focus:ring-2 focus:ring-primary-dark-pink transition ${
               formErrors.dob
@@ -588,7 +588,7 @@ const BecomeAModel = () => {
           {isSubmitting ? (
             <>
               Processing Payment
-              <LucideLoader2 className="ml-2 animate-spin" size={20} />
+              <LucideLoader className="ml-2 animate-spin" size={20} />
             </>
           ) : (
             "Sign Up (₦10,000)"

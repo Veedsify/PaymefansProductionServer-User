@@ -10,7 +10,7 @@ import { useCallback, useEffect, useState } from "react";
 import swal from "sweetalert";
 import toast from "react-hot-toast";
 import { ButtonList } from "sweetalert/typings/modules/options/buttons";
-import { LucideLoader2, X } from "lucide-react";
+import { LucideLoader, X } from "lucide-react";
 import { usePointsStore } from "@/contexts/PointsContext";
 import axiosInstance from "@/utils/Axios";
 type Points = {
@@ -55,7 +55,7 @@ const TipModel = ({
           `You don't have enough points to tip ${selectedPoint.points} points`,
           {
             id: "buy-points",
-          },
+          }
         );
         return;
       }
@@ -72,7 +72,7 @@ const TipModel = ({
         text: `Are you sure you want to tip ${selectedPoint.points} points to ${
           userdata.name || userdata.username
         }? This will cost you ₦${Number(
-          selectedPoint.amount,
+          selectedPoint.amount
         ).toLocaleString()}.`,
         icon: "info",
         buttons: {
@@ -95,12 +95,12 @@ const TipModel = ({
             const data = response.data;
             if (!data.error) {
               toast.success(
-                `You have successfully tipped ${selectedPoint.points} points to ${
-                  userdata?.name || userdata?.username
-                }`,
+                `You have successfully tipped ${
+                  selectedPoint.points
+                } points to ${userdata?.name || userdata?.username}`,
                 {
                   id: "buy-points",
-                },
+                }
               );
               close();
               router.refresh();
@@ -115,7 +115,7 @@ const TipModel = ({
                 "An error occurred while gifting points",
               {
                 id: "buy-points",
-              },
+              }
             );
           }
         } else {
@@ -123,7 +123,7 @@ const TipModel = ({
         }
       });
     },
-    [points, pointBalance, user, userdata, router, close],
+    [points, pointBalance, user, userdata, router, close]
   );
 
   return (
@@ -164,7 +164,7 @@ const TipModel = ({
         <div className="flex items-center justify-center w-full">
           {loading && (
             <span className="p-8">
-              <LucideLoader2
+              <LucideLoader
                 size={25}
                 className="text-primary-dark-pink animate-spin"
               />

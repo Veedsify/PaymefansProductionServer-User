@@ -78,7 +78,6 @@ const ChooseUserName = () => {
       try {
         if (ref.current?.value) {
           const createUser = await axiosInstance.post(`/auth/signup`, {
-            fullname: user?.name,
             user_id: String(Math.floor(Math.random() * 1000000)),
             username: ref.current?.value,
             name: user?.name,
@@ -88,32 +87,24 @@ const ChooseUserName = () => {
             password: user?.password,
           });
 
-          const { data } = createUser.data;
+          const data = createUser.data;
+          setUser(null);
+          toast.success(REGISTER_CONFIG.REGISTER_SUCCESSFUL_MSG, {
+            id: "register",
+          });
 
-          if (!data.error) {
-            setUser(null);
-            toast.success(REGISTER_CONFIG.REGISTER_SUCCESSFUL_MSG, {
-              id: "register",
-            });
-
-            // Handle two-factor authentication flow
-            if (data.tfa && !data.token) {
-              router.push("/verify");
-              return;
-            }
-
-            // Handle successful registration with token
-            if (!data.tfa && data.token) {
-              router.push("/");
-              return;
-            }
-          } else {
-            toast.error(data.message || "Registration failed", {
-              id: "register",
-            });
+          // Handle two-factor authentication flow
+          if (data.tfa) {
+            router.push("/verify");
+            return;
           }
 
-          // Fallback redirect to login
+          // Handle successful registration with token
+          if (!data.tfa && data.token && data.user) {
+            router.push("/");
+            return;
+          }
+
           router.push("/login");
         }
       } catch (err) {
@@ -135,7 +126,7 @@ const ChooseUserName = () => {
         });
       }
     },
-    [user, router, setUser],
+    [user, router, setUser]
   );
 
   return (
@@ -148,83 +139,111 @@ const ChooseUserName = () => {
             priority
             src="/images/auth_image.jpeg"
             alt="Login Image"
-            className="absolute inset-0 object-cover w-full h-full "
+            className="absolute inset-0 object-cover w-full h-full"
           />
+          {/* Enhanced gradient overlay */}
+          <div className="absolute inset-0 bg-gradient-to-r from-black/20 via-black/60 to-black/95"></div>
+          {/* Secondary gradient for extra depth */}
+          <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent"></div>
         </div>
         <div className="h-full lg:p-14 2xl:p-28">
-          <div className="pt-12 mx-auto mb-24 max-w-screen-xl md:mt-16">
-            <Link href="/">
+          <div className="pt-12 mx-auto mb-16 max-w-screen-xl md:mt-16">
+            <Link
+              href="/"
+              className="inline-block transition-transform hover:scale-105"
+            >
               <Image
                 width={150}
                 height={150}
                 priority
                 src="/site/logo.svg"
                 alt="Logo"
-                className="h-auto"
+                className="h-auto w-[150px]"
               />
             </Link>
           </div>
-          <div className="mb-3">
+
+          <div className="mb-6">
             <Link
               href="/register"
-              className="flex items-center font-bold text-white gap-2"
+              className="inline-flex items-center font-medium text-gray-300 hover:text-white transition-colors duration-200 gap-2"
             >
-              <LucideArrowLeft size={20} stroke="#CC0DF8" />
-              Back
+              <LucideArrowLeft size={18} className="text-primary-dark-pink" />
+              Back to registration
             </Link>
           </div>
+
           <div className="flex flex-col items-start justify-center mx-auto max-w-screen-xl">
-            <h1 className="mt-auto mb-5 text-2xl font-bold text-white">
-              Choose your Username
-            </h1>
+            <div className="max-w-lg mb-8">
+              <h1 className="mb-2 text-3xl font-bold text-white">
+                Choose your username
+              </h1>
+              <p className="text-gray-300">
+                This will be your unique identifier on the platform
+              </p>
+            </div>
+
             <form
               onSubmit={createNewUser}
               action=""
-              className="flex-1 w-full mb-5"
+              className="flex-1 w-full mb-6"
               autoComplete="false"
             >
-              <div className="flex flex-col mb-4 gap-3 md:max-w-96">
-                <div className="flex items-center px-3 rounded-lg gap-1 outline-white outline-1">
+              <div className="flex flex-col mb-6 gap-2 md:max-w-96">
+                <label
+                  htmlFor="username"
+                  className="text-sm font-medium text-gray-300"
+                >
+                  Username
+                </label>
+                <div className="relative">
                   <input
                     onChange={checkForUsername}
                     ref={ref}
                     required
                     pattern="\S*"
                     type="text"
-                    id="name"
-                    className="block w-full py-3 text-sm font-bold text-white bg-transparent outline-none accent-primary-dark-pink"
-                    placeholder="Username"
+                    id="username"
+                    name="username"
+                    className="block w-full px-4 py-3 pr-12 text-sm font-medium text-white bg-white/5 border border-white/10 rounded-xl outline-none focus:border-primary-dark-pink/50 focus:ring-2 focus:ring-primary-dark-pink/20 transition-all duration-200 backdrop-blur-sm"
+                    placeholder="Enter your username"
                   />
-                  <div onClick={clearInput}>
-                    <X
-                      className="w-5 h-5 cursor-pointer"
-                      stroke="#CC0DF8"
-                      strokeWidth={3}
-                      size={25}
-                    />
-                  </div>
+                  <button
+                    type="button"
+                    onClick={clearInput}
+                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-primary-dark-pink hover:text-primary-dark-pink/70 transition-colors duration-200"
+                  >
+                    <X className="w-5 h-5" strokeWidth={2} />
+                  </button>
                 </div>
               </div>
-              <div className={"py-2"}>
-                {buttonActive && message ? (
-                  <p className={"text-sm text-green-500"}>{message}</p>
-                ) : (
-                  <p className={"text-sm text-red-500"}>{message}</p>
-                )}
-              </div>
-              <div>
-                {buttonActive ? (
-                  <button className="block w-full px-3 py-3 text-sm font-bold text-white rounded-lg bg-primary-dark-pink md:max-w-96 disabled:bg-gray-600">
-                    Next
-                  </button>
-                ) : (
-                  <button
-                    disabled={true}
-                    className="block w-full px-3 py-3 text-sm font-bold text-white bg-gray-600 rounded-lg md:max-w-96"
+
+              {message && (
+                <div className="mb-6 md:max-w-96">
+                  <p
+                    className={`text-sm font-medium px-3 py-2 rounded-lg border ${
+                      buttonActive
+                        ? "text-green-400 bg-green-400/10 border-green-400/20"
+                        : "text-red-400 bg-red-400/10 border-red-400/20"
+                    }`}
                   >
-                    Next
-                  </button>
-                )}
+                    {message}
+                  </p>
+                </div>
+              )}
+
+              <div className="md:max-w-96">
+                <button
+                  type="submit"
+                  disabled={!buttonActive}
+                  className={`block w-full px-4 py-3 text-sm font-semibold text-white rounded-xl transition-all duration-200 shadow-lg ${
+                    buttonActive
+                      ? "bg-gradient-to-r from-primary-dark-pink to-primary-dark-pink/80 hover:from-primary-dark-pink/90 hover:to-primary-dark-pink/70 hover:shadow-primary-dark-pink/25 hover:shadow-xl active:scale-[0.98]"
+                      : "bg-gray-600 cursor-not-allowed opacity-50"
+                  }`}
+                >
+                  Continue
+                </button>
               </div>
             </form>
           </div>

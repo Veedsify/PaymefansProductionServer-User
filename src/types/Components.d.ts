@@ -422,7 +422,6 @@ export interface Followers {
   user: {
     id: number;
     username: string;
-    fullname: string;
     profile_image: string;
     name: string;
   };
@@ -497,7 +496,6 @@ interface UserFollowCompProps {
     user: {
       id: number;
       username: string;
-      fullname: string;
       profile_image: string;
       name: string;
     };
@@ -715,7 +713,6 @@ interface User {
   id: number;
   email: string;
   name: string;
-  fullname: string;
   user_id: string;
   username: string;
   admin: boolean;

@@ -56,13 +56,7 @@ const Login = () => {
       setLoading(false);
       toast.success(LOGIN_CONFIG.LOGIN_SUCCESSFUL_MSG);
       setUser(response.data.user);
-      const redirect = new URLSearchParams(window.location.search).get(
-        "redirect"
-      );
-      const destination = redirect || "/";
-      if (typeof window !== "undefined") {
-        window.location.href = destination;
-      }
+      router.push("/");
       return;
     } catch (error: any) {
       setLoading(false);
@@ -85,12 +79,19 @@ const Login = () => {
             priority
             src="/images/auth_image.jpeg"
             alt="Login Image"
-            className="absolute inset-0 object-cover w-full h-full "
+            className="absolute inset-0 object-cover w-full h-full"
           />
+          {/* Enhanced gradient overlay */}
+          <div className="absolute inset-0 bg-gradient-to-r from-black/20 via-black/60 to-black/95"></div>
+          {/* Secondary gradient for extra depth */}
+          <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent"></div>
         </div>
         <div className="h-full lg:p-14 2xl:p-28">
-          <div className="pt-12 mx-auto mb-24 max-w-screen-xl md:mt-16">
-            <Link href="/client/public">
+          <div className="pt-12 mx-auto mb-16 max-w-screen-xl md:mt-16">
+            <Link
+              href="/client/public"
+              className="inline-block transition-transform hover:scale-105"
+            >
               <Image
                 width={150}
                 height={150}
@@ -101,18 +102,21 @@ const Login = () => {
               />
             </Link>
           </div>
-          <h1 className="mt-auto mb-5 text-2xl font-bold text-white ">
-            Verify Your Account
-          </h1>
-          <p className="mb-5 text-sm text-white md:max-w-lg">
-            We sent a verification code to your email. Enter the code below to
-            verify your account. Check spam folder if not received or request a
-            new code.
-          </p>
+
+          <div className="max-w-lg mb-8">
+            <h1 className="mb-2 text-3xl font-bold text-white">
+              Verify your account
+            </h1>
+            <p className="mb-6 text-gray-300 leading-relaxed">
+              We sent a verification code to your email. Enter the code below to
+              verify your account. Check your spam folder if not received.
+            </p>
+          </div>
+
           <form
             action=""
             method="post"
-            className="flex-1 w-full mb-5"
+            className="flex-1 w-full mb-6"
             onSubmit={(e) => {
               e.preventDefault();
               setLoading(true);
@@ -120,43 +124,67 @@ const Login = () => {
               debounceSubmitLoginForm(e);
             }}
           >
-            <div className="flex flex-col mb-4 gap-3">
+            <div className="flex flex-col mb-6 gap-2">
+              <label
+                htmlFor="verificationCode"
+                className="text-sm font-medium text-gray-300"
+              >
+                Verification Code
+              </label>
               <input
                 type="text"
                 name="verificationCode"
                 id="verificationCode"
                 maxLength={6}
                 onChange={handleCodeInput}
-                className="block w-full px-3 py-3 text-lg font-bold text-white bg-transparent rounded-lg outline-white outline-1 md:max-w-lg"
-                placeholder="*** ***"
+                className="block w-full px-4 py-3 text-xl font-medium text-white bg-white/5 border border-white/10 rounded-xl outline-none focus:border-primary-dark-pink/50 focus:ring-2 focus:ring-primary-dark-pink/20 transition-all duration-200 md:max-w-lg backdrop-blur-sm text-center tracking-widest"
+                placeholder="000000"
               />
             </div>
-            <div className="mb-3">
-              {error && (
-                <p className="text-sm font-bold text-red-500">{error}</p>
-              )}
-              {loading && (
-                <LucideLoader className="w-5 h-5 text-primary-dark-pink animate-spin" />
-              )}
-            </div>
-            <button className="w-full px-3 py-3 text-sm font-bold text-white rounded-lg bg-primary-dark-pink md:max-w-lg">
+
+            {(error || loading) && (
+              <div className="mb-6 md:max-w-lg">
+                {error && (
+                  <p className="text-sm font-medium text-red-400 bg-red-400/10 border border-red-400/20 rounded-lg px-3 py-2 mb-2">
+                    {error}
+                  </p>
+                )}
+                {loading && (
+                  <div className="flex items-center gap-2 text-primary-dark-pink">
+                    <LucideLoader className="w-4 h-4 animate-spin" />
+                    <span className="text-sm font-medium">Verifying...</span>
+                  </div>
+                )}
+              </div>
+            )}
+
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full px-4 py-3 text-sm font-semibold text-white rounded-xl bg-gradient-to-r from-primary-dark-pink to-primary-dark-pink/80 md:max-w-lg hover:from-primary-dark-pink/90 hover:to-primary-dark-pink/70 transition-all duration-200 shadow-lg hover:shadow-primary-dark-pink/25 hover:shadow-xl active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
+            >
               Verify Account
             </button>
           </form>
-          <div className="flex items-center w-full mt-5 md:max-w-lg">
+
+          <div className="flex items-center w-full mt-6 md:max-w-lg">
             <Link
               href="/client/public"
-              className="ml-auto text-sm font-bold text-primary-dark-pink "
+              className="ml-auto text-sm font-medium text-primary-dark-pink hover:text-primary-dark-pink/80 transition-colors duration-200"
             >
               Resend Code
             </Link>
           </div>
-          <div className="mt-28">
-            <p className="text-sm font-bold text-white">
+
+          <div className="mt-12">
+            <p className="text-sm font-medium text-gray-300">
               Back to{" "}
-              <Link href="/login" className="text-primary-dark-pink">
+              <Link
+                href="/login"
+                className="font-semibold text-primary-dark-pink hover:text-primary-dark-pink/80 transition-colors duration-200"
+              >
                 Login
-              </Link>{" "}
+              </Link>
             </p>
           </div>
         </div>

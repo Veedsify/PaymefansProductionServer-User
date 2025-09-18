@@ -45,7 +45,7 @@ const UserFollowComp: React.FC<UserFollowCompProps> = ({ follower }) => {
       <div>
         <h2 className="mb-0 font-bold leading-none">
           <Link href={`/${follower.user.username}`} className="w-full truncate">
-            {follower.user.fullname}
+            {follower.user.name}
           </Link>
         </h2>
         <span className="flex items-center text-sm text-gray-600 gap-3">

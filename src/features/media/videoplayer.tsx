@@ -256,7 +256,7 @@ const VideoPlayer = ({
   const shouldLoop = Boolean(inView) && Boolean(autoPlay);
 
   return (
-    <div className="w-full flex items-center overflow-hidden bg-black h-full">
+    <div className="w-full flex items-center overflow-hidden bg-black h-full ">
       <div
         ref={intersectionRef}
         className="relative group h-full w-full"
@@ -280,7 +280,7 @@ const VideoPlayer = ({
 
         {/* Loading Spinner Overlay */}
         {isLoading && modalOpen && (
-          <div className="absolute inset-0 flex items-center justify-center bg-black/50">
+          <div className="absolute inset-0 flex items-center justify-center min-w-sm bg-black/50">
             <div className="p-3 rounded-full bg-black/50">
               <LucideLoaderCircle className="w-8 h-8 text-gray-200 animate-spin" />
             </div>
@@ -313,7 +313,7 @@ const VideoPlayer = ({
         )} */}
 
         {modalOpen && (
-          <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+          <div className="opacity-0 group-hover:opacity-100 transition-opacity min-w-sm duration-300">
             {/* Overlay gradient for better control visibility */}
             <div
               className={`absolute inset-0 pointer-events-none transition-opacity duration-300 ${

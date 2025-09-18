@@ -2,7 +2,7 @@
 
 import FetchActiveSubscribers from "@/utils/data/FetchActiveSubscribers";
 import { useInfiniteQuery } from "@tanstack/react-query";
-import { LucideLoader2 } from "lucide-react";
+import { LucideLoader } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useRef } from "react";
@@ -72,7 +72,7 @@ function Page() {
           ))}
           <div className="flex items-center justify-center mt-4">
             {isFetchingNextPage && (
-              <LucideLoader2 className="w-5 h-5 text-gray-500 animate-spin" />
+              <LucideLoader className="w-5 h-5 text-gray-500 animate-spin" />
             )}
           </div>
           {!hasNextPage && (

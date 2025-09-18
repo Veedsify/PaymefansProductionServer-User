@@ -81,7 +81,6 @@ const ProfileCounts = ({
 const ProfilePage = () => {
   const params = useParams<{ id: string }>();
   const router = useRouter();
-  const location = usePathname();
   const { user, isGuest } = useAuthContext();
   const { toggleModalOpen } = useGuestModal();
   const [openTip, setOpenTip] = useState(false);
@@ -90,7 +89,6 @@ const ProfilePage = () => {
   const {
     data: profileData,
     isLoading,
-    error,
     isError,
   } = useProfile({
     userId: params.id || "",
@@ -99,16 +97,12 @@ const ProfilePage = () => {
   });
 
   // Handle errors if a particular user is not found and the authenticated user is not a guest
-  useLayoutEffect(() => {
-    if (isError && error) {
-      const isPostPage = postRegex.test(location);
-      // If guest, redirect to login as before
-      if (!isPostPage && !location.startsWith("/404") && isGuest) {
-        router.push("/login");
-        return;
-      }
+  useEffect(() => {
+    if (isError) {
+      router.push("/login");
+      return;
     }
-  }, [isError, error, location, router, isGuest]);
+  }, [isError, router]);
 
   const userdata = profileData?.user;
   const isBlockedByUser = profileData?.isBlockedByUser;
@@ -134,25 +128,9 @@ const ProfilePage = () => {
     return null;
   }
 
-  if (isLoading) {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-dark-pink"></div>
-      </div>
-    );
-  }
-
   // If error or user not found, and NOT a guest, show UserNotFound
   if ((isError || (!userdata && !isLoading)) && !isGuest) {
     return <UserNotFound userid={params.id || "unknown"} />;
-  }
-
-  // If error or user not found, and IS a guest, redirect to login
-  if ((isError || (!userdata && !isLoading)) && isGuest) {
-    if (typeof window !== "undefined") {
-      router.push("/login");
-    }
-    return null;
   }
 
   if (userdata && !userdata?.active_status) {
@@ -175,7 +153,7 @@ const ProfilePage = () => {
       return;
     }
     toggleModalOpen(
-      "You need to login to tip " + (userdata?.name || "this user") + ".",
+      "You need to login to tip " + (userdata?.name || "this user") + "."
     );
   };
   return (

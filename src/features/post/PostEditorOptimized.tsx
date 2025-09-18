@@ -30,10 +30,12 @@ import { usePostInitialization } from "@/hooks/usePostInitialization";
 // Components
 import MentionDropdown from "./components/MentionDropdown";
 import MentionList from "./components/MentionList";
+import { useQueryClient } from "@tanstack/react-query";
 
 const PostEditor = React.memo(({ posts }: PostEditorProps) => {
   const router = useRouter();
   const { user } = useAuthContext();
+  const queryClient = useQueryClient();
   const { isUploadComplete, isAnyUploading } = useUploadProgress();
 
   // Custom hooks
@@ -249,15 +251,13 @@ const PostEditor = React.memo(({ posts }: PostEditorProps) => {
         ? "Post updated successfully!"
         : POST_CONFIG.POST_CREATED_SUCCESS_MSG;
       toast.success(successMessage, { id: "post-upload" });
-
+      queryClient.invalidateQueries({ queryKey: ["personal-posts"] });  
       if (isEditing) {
-        router.prefetch("/profile");
         router.push("/profile");
       } else {
         setPostText("");
         setVisibility("Public");
         setMediaUploadComplete(false);
-        router.prefetch("/profile");
         router.push("/profile");
       }
     }

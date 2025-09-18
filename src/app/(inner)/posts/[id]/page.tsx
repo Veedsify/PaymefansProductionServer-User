@@ -4,12 +4,7 @@ import { PostCompInteractions } from "@/features/post/PostInteractions";
 import PostPageImage from "@/features/post/PostPageImage";
 import QuickPostActions from "@/features/post/QuickPostActions";
 import { formatDate } from "@/utils/FormatDate";
-import {
-  LucideEye,
-  LucideLock,
-  LucideUsers,
-  LucideLoader2,
-} from "lucide-react";
+import { LucideEye, LucideLock, LucideUsers, LucideLoader } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import React, { ReactNode, useEffect, useMemo } from "react";
@@ -82,7 +77,7 @@ const Post = React.memo(() => {
     return (
       <div className="flex items-center justify-center p-4 mt-8">
         <div className="flex flex-col items-center gap-4">
-          <LucideLoader2 className="w-8 h-8 animate-spin" />
+          <LucideLoader className="w-8 h-8 animate-spin" />
           <p className="text-gray-500">Loading post...</p>
         </div>
       </div>
@@ -115,10 +110,12 @@ const Post = React.memo(() => {
               href={`/${[post?.user.username]}`}
               className="flex items-center gap-1"
             >
-              <p className="font-bold text-black dark:text-white">
+              <p className="font-bold text-gray-800 dark:text-white ">
                 {post?.user.name}
               </p>
-              {post?.user.username}
+              <p className="text-gray-500 dark:text-gray-400 font-bold  hidden md:inline-block">
+                {post?.user.username}
+              </p>
             </Link>
             <small className="ml-auto">
               {formatDate(new Date(post?.created_at))}

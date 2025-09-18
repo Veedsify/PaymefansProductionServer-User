@@ -11,8 +11,9 @@ export const useNotifications = (page: string = "1") => {
     const notificationsQuery = useQuery({
         queryKey: ["notifications", page],
         queryFn: () => notificationService.getNotifications(page),
-        staleTime: 30000, // 30 seconds
-        refetchInterval: 60000, // Refetch every minute
+        staleTime: 30000 * 5, // 2.5 minutes
+        refetchInterval: 30000 * 5, // Refetch every 5 minutes
+        refetchOnWindowFocus: true,
     });
 
     // Query for unread count

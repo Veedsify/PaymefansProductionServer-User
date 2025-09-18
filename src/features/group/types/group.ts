@@ -34,7 +34,7 @@ export interface GroupMember {
   user: User;
 }
 
-export interface GroupMessage {
+interface GroupMessage {
   id: number;
   content?: string;
   senderId: number;
@@ -124,7 +124,7 @@ interface BlockedGroupParticipant {
 interface User {
   id: number;
   username: string;
-  fullname: string;
+  name: string;
   profile_image?: string;
   is_active: boolean;
   role: string;

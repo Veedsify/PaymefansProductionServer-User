@@ -12,7 +12,7 @@ const NotificationSideBarLink = () => {
         href="/notifications"
         className="flex items-center p-2 mb-2 gap-5 transition-all duration-200 hover:bg-gray-200 dark:hover:bg-gray-900 rounded-xl"
       >
-        <LucideBell />
+        <LucideBell className="h-6 md:h-6" />
         <p>Notifications</p>
         {!isLoading && unreadCount > 0 && (
           <span className="flex items-center justify-center w-8 h-8 p-0 ml-auto text-sm font-bold text-white rounded-full bg-primary-dark-pink">

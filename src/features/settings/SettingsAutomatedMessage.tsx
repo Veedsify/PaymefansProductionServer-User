@@ -12,6 +12,7 @@ import {
   UserPlus,
   AlertCircle,
   LucideIcon,
+  LucideLoader,
 } from "lucide-react";
 import { automatedMessagesAPI } from "@/utils/data/AutomatedMessages";
 import { GetUploadUrl } from "@/utils/GetMediaUploadUrl";
@@ -83,7 +84,7 @@ const SettingsAutomatedMessage: React.FC = () => {
   const [showSuccess, setShowSuccess] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [uploadProgress, setUploadProgress] = useState<Record<string, number>>(
-    {},
+    {}
   );
   const [activeUploads, setActiveUploads] = useState<Set<string>>(new Set());
 
@@ -156,7 +157,7 @@ const SettingsAutomatedMessage: React.FC = () => {
   };
 
   const handleFileSelect = async (
-    event: React.ChangeEvent<HTMLInputElement>,
+    event: React.ChangeEvent<HTMLInputElement>
   ): Promise<void> => {
     const files = Array.from(event.target.files || []);
     if (files.length > 0 && currentUploadType && user) {
@@ -217,7 +218,7 @@ const SettingsAutomatedMessage: React.FC = () => {
               extension: path.extname(file.name),
               url:
                 imgRes.result?.variants.find((v: string) =>
-                  v.includes("/public"),
+                  v.includes("/public")
                 ) || "",
               poster: "",
             };
@@ -248,7 +249,7 @@ const SettingsAutomatedMessage: React.FC = () => {
             [currentUploadType]: {
               ...prev[currentUploadType],
               attachments: prev[currentUploadType].attachments.map((att) =>
-                att.id === tempId ? finalAttachment : att,
+                att.id === tempId ? finalAttachment : att
               ),
             },
           }));
@@ -274,7 +275,7 @@ const SettingsAutomatedMessage: React.FC = () => {
             [currentUploadType]: {
               ...prev[currentUploadType],
               attachments: prev[currentUploadType].attachments.filter(
-                (att) => att.id !== tempId,
+                (att) => att.id !== tempId
               ),
             },
           }));
@@ -301,7 +302,7 @@ const SettingsAutomatedMessage: React.FC = () => {
   const removeAttachment = (type: MessageType, attachmentId: string): void => {
     setMessages((prev) => {
       const attachmentToRemove = prev[type].attachments.find(
-        (att) => att.id === attachmentId,
+        (att) => att.id === attachmentId
       );
 
       // Clean up preview URL if it exists
@@ -314,7 +315,7 @@ const SettingsAutomatedMessage: React.FC = () => {
         [type]: {
           ...prev[type],
           attachments: prev[type].attachments.filter(
-            (att) => att.id !== attachmentId,
+            (att) => att.id !== attachmentId
           ),
         },
       };
@@ -417,7 +418,7 @@ const SettingsAutomatedMessage: React.FC = () => {
     type: MessageType,
     title: string,
     icon: LucideIcon,
-    placeholder: string,
+    placeholder: string
   ) => {
     const message = messages[type];
     const isEditing = editingMode[type];
@@ -661,7 +662,7 @@ const SettingsAutomatedMessage: React.FC = () => {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center py-12">
-        <div className="w-8 h-8 border-2 rounded-full border-primary-dark-pink border-t-transparent animate-spin"></div>
+        <LucideLoader className="w-8 h-8 text-primary-dark-pink animate-spin" />
         <span className="ml-3 text-gray-600 dark:text-gray-300">
           Loading automated messages...
         </span>
@@ -701,14 +702,14 @@ const SettingsAutomatedMessage: React.FC = () => {
           "followers",
           "New Followers",
           Users,
-          "Welcome! Thank you for following. I'm excited to share my content with you...",
+          "Welcome! Thank you for following. I'm excited to share my content with you..."
         )}
 
         {renderMessageCard(
           "subscribers",
           "New Subscribers",
           UserPlus,
-          "Welcome to my exclusive content! Thank you for subscribing...",
+          "Welcome to my exclusive content! Thank you for subscribing..."
         )}
 
         <div className="pt-6 border-t border-gray-200 dark:border-gray-700">
@@ -723,8 +724,8 @@ const SettingsAutomatedMessage: React.FC = () => {
                       activeUploads.size > 1 ? "s" : ""
                     }...`
                   : hasChanges
-                    ? "You have unsaved changes"
-                    : "All changes saved"}
+                  ? "You have unsaved changes"
+                  : "All changes saved"}
               </p>
             </div>
             <button
@@ -737,15 +738,15 @@ const SettingsAutomatedMessage: React.FC = () => {
               }`}
             >
               {isSaving ? (
-                <div className="w-4 h-4 border-2 border-gray-400 rounded-full border-t-transparent animate-spin dark:border-gray-500" />
+                <LucideLoader className="w-4 h-4 text-gray-500 animate-spin" />
               ) : (
                 <Save size={16} />
               )}
               {isSaving
                 ? "Saving..."
                 : activeUploads.size > 0
-                  ? "Uploading..."
-                  : "Save Settings"}
+                ? "Uploading..."
+                : "Save Settings"}
             </button>
           </div>
         </div>

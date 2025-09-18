@@ -3,7 +3,7 @@ import { useAuthContext } from "@/contexts/UserUseContext";
 import axiosInstance from "@/utils/Axios";
 import { getToken } from "@/utils/Cookie";
 import { AnimatePresence, motion } from "framer-motion";
-import { LucideLoader, LucideLoader2 } from "lucide-react";
+import { LucideLoader } from "lucide-react";
 import { useState } from "react";
 import toast from "react-hot-toast";
 const DeleteAccount = () => {
@@ -46,7 +46,7 @@ const DeleteAccount = () => {
       }
     } catch (error) {
       toast.error(
-        "An error occurred while trying to delete your account. Please try again later.",
+        "An error occurred while trying to delete your account. Please try again later."
       );
     } finally {
       // Reset state after deletion attempt
@@ -124,7 +124,7 @@ const DeleteAccount = () => {
                   Confirm Delete{" "}
                   {isDeleting && (
                     <span className="ml-2">
-                      <LucideLoader2 className="w-4 h-4 animate-spin" />
+                      <LucideLoader className="w-4 h-4 animate-spin" />
                     </span>
                   )}
                 </button>

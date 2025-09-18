@@ -8,7 +8,7 @@ import { useRouter } from "next/navigation";
 import { ChangeEvent, FormEvent, MouseEvent, useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { getToken } from "@/utils/Cookie";
-import { LucideLoader2 } from "lucide-react";
+import { LucideLoader } from "lucide-react";
 import axiosInstance from "@/utils/Axios";
 
 const Register = () => {
@@ -116,54 +116,90 @@ const Register = () => {
             priority
             src="/images/auth_image.jpeg"
             alt="Login Image"
-            className="absolute inset-0 object-cover w-full h-full "
+            className="absolute inset-0 object-cover w-full h-full"
           />
+          {/* Enhanced gradient overlay */}
+          <div className="absolute inset-0 bg-gradient-to-r from-black/20 via-black/60 to-black/95"></div>
+          {/* Secondary gradient for extra depth */}
+          <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent"></div>
         </div>
         <div className="h-full lg:p-14 2xl:p-28">
-          <div className="pt-12 mx-auto mb-24 max-w-screen-xl md:mt-16">
-            <Link href="/">
+          <div className="pt-12 mx-auto mb-16 max-w-screen-xl md:mt-16">
+            <Link
+              href="/"
+              className="inline-block transition-transform hover:scale-105"
+            >
               <Image
                 width={150}
                 height={150}
                 priority
-                className="h-auto"
+                className="h-auto w-[150px]"
                 src="/site/logo.svg"
                 alt="Logo"
               />
             </Link>
           </div>
-          <h1 className="mt-auto mb-5 text-2xl font-bold text-white ">
-            Sign up
-          </h1>
+
+          <div className="max-w-lg mb-8">
+            <h1 className="mb-2 text-3xl font-bold text-white">
+              Create your account
+            </h1>
+            <p className="text-gray-300">
+              Join thousands of creators and fans worldwide
+            </p>
+          </div>
           <form
             action=""
-            className="flex-1 w-full mb-5"
+            className="flex-1 w-full mb-6"
             autoComplete="false"
             onSubmit={CreateNewUserFunction}
           >
-            <div className="flex flex-col max-w-lg mb-4 gap-3">
+            <div className="flex flex-col max-w-lg mb-6 gap-2">
+              <label
+                htmlFor="name"
+                className="text-sm font-medium text-gray-300"
+              >
+                Full Name
+              </label>
               <input
                 type="text"
                 onChange={UserInputCaptured}
                 name="name"
-                className="block w-full px-3 py-3 text-sm font-bold text-white bg-transparent rounded-lg  outline-white outline-1"
-                placeholder="Full Name"
+                id="name"
+                className="block w-full px-4 py-3 text-sm font-medium text-white bg-white/5 border border-white/10 rounded-xl outline-none focus:border-primary-dark-pink/50 focus:ring-2 focus:ring-primary-dark-pink/20 transition-all duration-200 backdrop-blur-sm"
+                placeholder="Enter your full name"
               />
             </div>
-            <div className="flex flex-col max-w-lg mb-4 gap-3">
+
+            <div className="flex flex-col max-w-lg mb-6 gap-2">
+              <label
+                htmlFor="email"
+                className="text-sm font-medium text-gray-300"
+              >
+                Email Address
+              </label>
               <input
                 type="email"
                 onChange={UserInputCaptured}
                 name="email"
-                className="block w-full px-3 py-3 text-sm font-bold text-white bg-transparent rounded-lg  outline-white outline-1"
-                placeholder="Email"
+                id="email"
+                className="block w-full px-4 py-3 text-sm font-medium text-white bg-white/5 border border-white/10 rounded-xl outline-none focus:border-primary-dark-pink/50 focus:ring-2 focus:ring-primary-dark-pink/20 transition-all duration-200 backdrop-blur-sm"
+                placeholder="Enter your email"
               />
             </div>
-            <div className="flex flex-col max-w-lg mb-4 gap-3">
+
+            <div className="flex flex-col max-w-lg mb-6 gap-2">
+              <label
+                htmlFor="phone"
+                className="text-sm font-medium text-gray-300"
+              >
+                Phone Number
+              </label>
               <div className="flex">
                 <select
-                  className="px-2 py-3 text-sm font-bold text-white bg-black border-r border-white rounded-l-lg outline-white outline-1"
-                  style={{ maxWidth: 100 }}
+                  className="px-3 py-3 text-sm font-medium text-white bg-white/5 border border-white/10 border-r-0 rounded-l-xl outline-none focus:border-primary-dark-pink/50 focus:ring-2 focus:ring-primary-dark-pink/20 backdrop-blur-sm"
+                  style={{ maxWidth: 120 }}
+                  defaultValue={userData?.countryCode || ""}
                   onChange={(e) => {
                     const selected = countries.find(
                       (c) => c.code === e.target.value
@@ -171,18 +207,18 @@ const Register = () => {
                     if (selected) {
                       setUserData({
                         ...userData,
-                        countryCode: selected.dial_code, // Add this field to your UserRegisterType if needed
+                        countryCode: selected.dial_code,
                       } as UserRegisterType);
                     }
                   }}
-                  defaultValue=""
                 >
-                  <option value="" disabled>
-                    Code
-                  </option>
                   {countries.map((country, idx) => (
-                    <option key={idx} value={country.code as string}>
-                      {country.dial_code} {country.name}
+                    <option
+                      key={idx}
+                      value={country.code?.toString()}
+                      className="bg-black"
+                    >
+                      {country?.dial_code} {country?.name}
                     </option>
                   ))}
                 </select>
@@ -190,27 +226,38 @@ const Register = () => {
                   type="tel"
                   onChange={UserInputCaptured}
                   name="phone"
-                  className="block w-full px-3 py-3 text-sm font-bold text-white bg-transparent rounded-r-lg outline-white outline-1"
-                  placeholder="Phone Number"
+                  id="phone"
+                  className="block w-full px-4 py-3 text-sm font-medium text-white bg-white/5 border border-white/10 rounded-r-xl outline-none focus:border-primary-dark-pink/50 focus:ring-2 focus:ring-primary-dark-pink/20 transition-all duration-200 backdrop-blur-sm"
+                  placeholder="Enter your phone number"
                 />
               </div>
             </div>
-            <div className="flex flex-col max-w-lg mb-4 gap-3">
+            <div className="flex flex-col max-w-lg mb-6 gap-2 relative">
+              <label
+                htmlFor="location"
+                className="text-sm font-medium text-gray-300"
+              >
+                Country/Location
+              </label>
               <input
                 onFocus={() => setCountryList(true)}
                 onChange={UserInputCaptured}
                 name="location"
-                className="block w-full px-3 py-3 text-sm font-medium text-white bg-transparent rounded-lg  outline-white outline-1"
+                id="location"
+                className="block w-full px-4 py-3 text-sm font-medium text-white bg-white/5 border border-white/10 rounded-xl outline-none focus:border-primary-dark-pink/50 focus:ring-2 focus:ring-primary-dark-pink/20 transition-all duration-200 backdrop-blur-sm cursor-pointer"
                 value={country}
+                placeholder="Select your country"
+                readOnly
               />
               {countryList && (
-                <div className="p-3 overflow-y-auto bg-white rounded-lg max-h-80 ">
+                <div className="absolute top-full left-0 right-0 z-50 mt-1 p-2 overflow-y-auto bg-white/95 backdrop-blur-md rounded-xl max-h-60 border border-white/20 shadow-xl">
                   {countries.map((country, index) => (
                     <button
                       onClick={selectCountry}
                       data-code={country.code}
-                      className="block w-full py-2 text-sm font-bold text-left text-black border-b cursor-pointer hover:bg-messages-unread"
+                      className="block w-full py-2 px-3 text-sm font-medium text-left text-black rounded-lg hover:bg-primary-dark-pink/10 transition-colors duration-150"
                       key={index}
+                      type="button"
                     >
                       {country.name}
                     </button>
@@ -218,52 +265,78 @@ const Register = () => {
                 </div>
               )}
             </div>
-            <div className="flex flex-col max-w-lg mb-5 gap-3">
+
+            <div className="flex flex-col max-w-lg mb-6 gap-2">
+              <label
+                htmlFor="password"
+                className="text-sm font-medium text-gray-300"
+              >
+                Password
+              </label>
               <input
                 type="password"
                 onChange={UserInputCaptured}
                 name="password"
-                className="block w-full px-3 py-3 text-sm font-bold text-white bg-transparent rounded-lg  outline-white outline-1"
-                placeholder="Password"
+                id="password"
+                className="block w-full px-4 py-3 text-sm font-medium text-white bg-white/5 border border-white/10 rounded-xl outline-none focus:border-primary-dark-pink/50 focus:ring-2 focus:ring-primary-dark-pink/20 transition-all duration-200 backdrop-blur-sm"
+                placeholder="Create a strong password"
               />
             </div>
-            <div className="flex items-center w-full mb-6">
+            <div className="flex items-start w-full mb-8 max-w-lg">
               <input
                 type="checkbox"
                 name="terms"
+                id="terms"
                 onChange={UserInputCaptured}
-                className="w-5 h-5 mt-1 mr-2 bg-transparent accent-primary-dark-pink"
+                className="w-4 h-4 mt-1 mr-3 rounded border-white/20 bg-white/5 text-primary-dark-pink focus:ring-primary-dark-pink/50 focus:ring-2 accent-primary-dark-pink"
                 value="accepted"
               />
               <label
                 htmlFor="terms"
-                className="text-sm font-bold text-white cursor-pointer "
+                className="text-sm font-medium text-gray-300 cursor-pointer select-none leading-relaxed"
               >
-                I am 18+ and it is legal to access this site in my country.
+                I am 18+ and it is legal to access this site in my country. I
+                agree to the{" "}
+                <span className="text-primary-dark-pink hover:text-primary-dark-pink/80 transition-colors">
+                  Terms of Service
+                </span>{" "}
+                and{" "}
+                <span className="text-primary-dark-pink hover:text-primary-dark-pink/80 transition-colors">
+                  Privacy Policy
+                </span>
+                .
               </label>
             </div>
+
             <div className="max-w-lg">
               <button
                 type="submit"
                 disabled={loading}
-                className={`block w-full px-3 py-3 text-sm font-bold text-white rounded-lg cursor-pointer ${
+                className={`block w-full px-4 py-3 text-sm font-semibold text-white rounded-xl transition-all duration-200 shadow-lg ${
                   loading
                     ? "bg-gray-500 cursor-not-allowed"
-                    : "bg-primary-dark-pink"
+                    : "bg-gradient-to-r from-primary-dark-pink to-primary-dark-pink/80 hover:from-primary-dark-pink/90 hover:to-primary-dark-pink/70 hover:shadow-primary-dark-pink/25 hover:shadow-xl active:scale-[0.98]"
                 }`}
               >
                 {loading ? (
-                  <LucideLoader2 className={"animate-spin text-center"} />
+                  <div className="flex items-center justify-center gap-2">
+                    <LucideLoader className="w-4 h-4 animate-spin" />
+                    Creating Account...
+                  </div>
                 ) : (
                   "Create Account"
                 )}
               </button>
             </div>
           </form>
-          <div className="mt-12">
-            <p className="text-sm font-bold text-white ">
-              Have an account?{" "}
-              <Link href="/login" className="font-bold text-primary-dark-pink">
+
+          <div className="mt-8">
+            <p className="text-sm font-medium text-gray-300">
+              Already have an account?{" "}
+              <Link
+                href="/login"
+                className="font-semibold text-primary-dark-pink hover:text-primary-dark-pink/80 transition-colors duration-200"
+              >
                 Sign in
               </Link>
             </p>

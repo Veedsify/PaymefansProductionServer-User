@@ -35,6 +35,10 @@ const PostPanel = () => {
     isFetchingNextPage,
   } = useInfiniteQuery({
     queryKey: ["personal-posts"],
+    refetchOnWindowFocus: true,
+    staleTime: 5 * 1000 * 60, // 5 minutes
+    retry: 2,
+    refetchInterval: 5 * 1000 * 60, // 5 minutes
     queryFn: ({ pageParam = 1 }: { pageParam?: number }) =>
       fetchPost(Number(pageParam)),
     getNextPageParam: (lastPage, allPages) => {

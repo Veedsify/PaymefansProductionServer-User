@@ -27,15 +27,17 @@ export const metadata: Metadata = {
 
 const ProfilePage = async () => {
   const user: Partial<AuthUserProps> | null = await getUserData();
+
   return (
     <>
       <div className="overflow-hidden">
         <div className="relative">
           <ProfileBanner user={user} />
         </div>
+
         <div className="relative flex w-full px-2 md:px-5">
           <ProfilePicture user={user} />
-          <div className="flex items-center p-3 ml-auto gap-3 sm:p-3 ">
+          <div className="flex items-center p-3 ml-auto gap-3 sm:p-3">
             <EditProfileButton user={user} />
             <MoreProfileOptions
               user={user as AuthUserProps}
@@ -43,6 +45,7 @@ const ProfilePage = async () => {
             />
           </div>
         </div>
+
         <div className="flex flex-col items-start px-2 mt-2 mb-6 gap-2 md:px-5">
           <div className="flex flex-col">
             <h1 className="font-bold text-gray-900 dark:text-gray-100">
@@ -52,6 +55,7 @@ const ProfilePage = async () => {
               {user?.username}
             </small>
           </div>
+
           <div
             className="mb-2 font-medium leading-loose text-gray-700 dark:text-gray-300"
             dangerouslySetInnerHTML={{
@@ -59,21 +63,20 @@ const ProfilePage = async () => {
                 ? user?.bio?.replace(/(?:\r\n|\r|\n)/g, "<br>")
                 : "",
             }}
-          ></div>
+          />
+
           {user?.website && (
-            <>
-              <Link
-                href={user.website ? user.website : ""}
-                target="_blank"
-                className="inline-block mb-2 text-sm font-medium text-primary-text-dark-pink dark:text-primary-dark-pink"
-              >
-                <LucideLink
-                  className="inline-block mr-2 text-primary-dark-pink"
-                  size={18}
-                />
-                {user.website ? user.website : ""}
-              </Link>
-            </>
+            <Link
+              href={user.website ? user.website : ""}
+              target="_blank"
+              className="inline-block mb-2 text-sm font-medium text-primary-text-dark-pink dark:text-primary-dark-pink"
+            >
+              <LucideLink
+                className="inline-block mr-2 text-primary-dark-pink"
+                size={18}
+              />
+              {user.website ? user.website : ""}
+            </Link>
           )}
 
           <div className="flex flex-wrap items-center mb-2 text-sm font-semibold text-gray-700 gap-3 dark:text-gray-300">
@@ -83,14 +86,14 @@ const ProfilePage = async () => {
                 {user && user.state ? user.state + "," : ""} {user?.location}
               </span>
             </span>
-            {user?.is_model ? (
+
+            {user?.is_model && (
               <span className="flex items-center gap-2">
                 <LucideLock className="text-primary-dark-pink" size={18} />
                 <span>Model</span>
               </span>
-            ) : (
-              ""
             )}
+
             <span className="flex items-center gap-2">
               <LucideCalendar className="text-primary-dark-pink" size={18} />
               <span>
@@ -104,6 +107,7 @@ const ProfilePage = async () => {
               </span>
             </span>
           </div>
+
           {user && (
             <ProfileCounts
               followers={user?.total_followers!}
@@ -113,10 +117,13 @@ const ProfilePage = async () => {
               userId={user?.user_id}
             />
           )}
+
           <ProfileSocialLinks Settings={user?.Settings} />
+
           {user?.is_model && <CreatorDashboardButton />}
         </div>
       </div>
+
       <ProfileTabs />
     </>
   );

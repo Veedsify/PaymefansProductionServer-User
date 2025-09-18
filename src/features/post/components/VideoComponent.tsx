@@ -93,7 +93,7 @@ const VideoComponent = memo<VideoComponentProps>(
             poster: media.poster ? media.poster : "",
             muted: true,
           }}
-          className="h-full shadow-md aspect-[3/4] md:aspect-square w-full object-cover"
+          className="shadow-md aspect-[3/4] md:aspect-square w-full object-cover"
         />
         {!playing && (
           <div

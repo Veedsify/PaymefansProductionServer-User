@@ -2,7 +2,7 @@
 import { useWithdrawStore } from "@/contexts/WithDrawContext";
 import axiosInstance from "@/utils/Axios";
 import { getToken } from "@/utils/Cookie";
-import { LucideBuilding2, LucideLoader2 } from "lucide-react";
+import { LucideBuilding2, LucideLoader } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useState, useMemo } from "react";
@@ -90,7 +90,7 @@ export default function ConfirmWithdrawPage() {
       });
       router.push("/wallet/withdraw/confirm");
     },
-    [router, setWithDrawStore, withdrawValues, banks],
+    [router, setWithDrawStore, withdrawValues, banks]
   );
 
   // Early return if bank is already selected
@@ -102,7 +102,7 @@ export default function ConfirmWithdrawPage() {
     <div className="flex flex-col items-center justify-center min-h-[20vh] px-4">
       {loading ? (
         <div className="flex items-center justify-center py-8">
-          <LucideLoader2 className="w-10 h-10 animate-spin text-primary-dark-pink" />
+          <LucideLoader className="w-10 h-10 animate-spin text-primary-dark-pink" />
         </div>
       ) : error ? (
         <div className="flex flex-col items-center justify-center py-8">

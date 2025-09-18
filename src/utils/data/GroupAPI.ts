@@ -16,7 +16,6 @@ type Group = {
     id: number;
     email: string;
     name: string;
-    fullname: string;
     user_id: string;
     username: string;
     profile_image: string;
@@ -322,7 +321,7 @@ const leaveGroup = async (groupId: string): Promise<any> => {
 };
 
 // Upload group attachment
-export const uploadGroupAttachment = async (files: File[]): Promise<any> => {
+const uploadGroupAttachment = async (files: File[]): Promise<any> => {
   const formData = new FormData();
 
   files.forEach((file) => {

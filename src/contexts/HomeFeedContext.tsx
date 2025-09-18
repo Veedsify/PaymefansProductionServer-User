@@ -4,7 +4,6 @@ type User = {
   id: number;
   email: string;
   name: string;
-  fullname: string;
   user_id: string;
   username: string;
   profile_image: string;

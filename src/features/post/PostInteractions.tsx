@@ -5,21 +5,18 @@ import {
   LucideHeart,
   LucideMessageSquare,
   LucideRepeat2,
-  LucideShare,
 } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 import { useAuthContext } from "@/contexts/UserUseContext";
-import { LikeThisPost } from "@/utils/PostInteractions";
+import { likePost } from "@/utils/PostLikeUtils";
 import numeral from "numeral";
 import { PostData } from "@/types/Components";
-import Link from "next/link";
 import formatNumber from "@/lib/FormatNumbers";
-import { usePersonalProfileStore } from "@/contexts/PersonalProfileContext";
 import axiosInstance from "@/utils/Axios";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import { useGuestModal } from "@/contexts/GuestModalContext";
-import {useQueryClient} from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
 
 type PostCompInteractionsProps = {
   data: PostData | undefined;
@@ -54,7 +51,9 @@ const PostRepost = ({
   return (
     <span
       onClick={handleRepost}
-      className={`flex items-center gap-1 text-sm font-medium cursor-pointer ${wasReposted ? " text-primary-dark-pink" : ""}`}
+      className={`flex items-center gap-1 text-sm font-medium cursor-pointer ${
+        wasReposted ? " text-primary-dark-pink" : ""
+      }`}
     >
       <LucideRepeat2 className={`w-5 h-5 lg:w-6 lg:h-6 `} />
       {postReposts}
@@ -63,16 +62,92 @@ const PostRepost = ({
 };
 
 export const PostCompInteractions = ({ data }: PostCompInteractionsProps) => {
-  const { likePost: likeThisPost, unlikePost } = usePersonalProfileStore();
   const [isShareModalOpen, setIsShareModalOpen] = useState(false);
+  const [likeCount, setLikeCount] = useState(data?.post_likes || 0);
+  const [isLiked, setIsLiked] = useState(data?.likedByme || false);
+  const [isLikeLoading, setIsLikeLoading] = useState(false);
+
   const formattedNumber = (number: number) =>
     numeral(number).format("0a").toUpperCase(); // Converts the suffix to uppercase
-  const [like, setLike] = useState<boolean>(false);
-  const [likesCount, setLikesCount] = useState<number>(data?.post_likes!);
-  const { user, isGuest } = useAuthContext();
+
+  const { isGuest } = useAuthContext();
   const toggleModalOpen = useGuestModal((state) => state.toggleModalOpen);
   const router = useRouter();
-  const queryClient = useQueryClient()
+  const queryClient = useQueryClient();
+
+  // Update state when data prop changes
+  useEffect(() => {
+    setLikeCount(data?.post_likes || 0);
+    setIsLiked(data?.likedByme || false);
+  }, [data?.post_likes, data?.likedByme]);
+
+  // Handle like/unlike action
+  const handleLike = useCallback(async () => {
+    if (isGuest) {
+      toggleModalOpen("You need to login to like this post.");
+      return;
+    }
+
+    if (isLikeLoading || !data?.post_id) {
+      return;
+    }
+
+    setIsLikeLoading(true);
+
+    // Optimistic UI update
+    const wasLiked = isLiked;
+    const previousCount = likeCount;
+
+    setIsLiked(!wasLiked);
+    setLikeCount(wasLiked ? Math.max(previousCount - 1, 0) : previousCount + 1);
+
+    try {
+      const response = await likePost(data.post_id);
+
+      if (response.success) {
+        // Update with actual response from server
+        setIsLiked(response.isLiked);
+        setLikeCount(response.likeCount);
+
+        // Invalidate related queries to refresh cached data
+        await queryClient.invalidateQueries({
+          queryKey: ["personal-posts"],
+        });
+        await queryClient.invalidateQueries({
+          queryKey: ["posts", data.post_id],
+        });
+        await queryClient.invalidateQueries({
+          queryKey: ["homeFeed"],
+        });
+        await queryClient.invalidateQueries({
+          queryKey: ["post", data.post_id],
+        });
+      } else {
+        // Revert optimistic update on failure
+        setIsLiked(wasLiked);
+        setLikeCount(previousCount);
+        toast.error("Failed to update like status");
+      }
+    } catch (error: any) {
+      console.error("Error in handleLike:", error);
+
+      // Revert optimistic update on error
+      setIsLiked(wasLiked);
+      setLikeCount(previousCount);
+
+      toast.error(error.message || "Failed to update like status");
+    } finally {
+      setIsLikeLoading(false);
+    }
+  }, [
+    isGuest,
+    isLikeLoading,
+    data?.post_id,
+    isLiked,
+    likeCount,
+    toggleModalOpen,
+    queryClient,
+  ]);
   const repostThisPost = useCallback(async () => {
     if (isGuest) {
       toggleModalOpen("You need to login to like this post.");
@@ -81,7 +156,7 @@ export const PostCompInteractions = ({ data }: PostCompInteractionsProps) => {
     try {
       const repost = await axiosInstance.post(
         `/post/repost/${data?.post_id}`,
-        {},
+        {}
       );
       if (repost.status === 200 && repost.data.error === false) {
         toast.success(repost.data.message, {
@@ -101,52 +176,9 @@ export const PostCompInteractions = ({ data }: PostCompInteractionsProps) => {
     }
   }, [router, data?.post_id]);
 
-  const handleLikePost = async () => {
-    if (isGuest) {
-      toggleModalOpen("You need to login to like this post.");
-      return;
-    }
-    try {
-      const response = await LikeThisPost({ data: data! });
-      if (response) {
-        if (like) {
-          // If the post is already liked, unlike it
-          unlikePost(data?.post_id as string, user?.id as number);
-          setLikesCount((prevCount) => Math.max(prevCount - 1, 0)); // Ensure likes count doesn't go below 0
-          await queryClient.invalidateQueries({queryKey: ["personal-posts"]});
-          await queryClient.invalidateQueries({queryKey: ["posts", data?.post_id]});
-          await queryClient.invalidateQueries({queryKey: ["posts-other", data?.user.id]});
-          await queryClient.invalidateQueries({queryKey: ["homeFeed"]});
-        } else {
-          // If the post is not liked, like it
-          likeThisPost(data?.post_id as string);
-          setLikesCount((prevCount) => prevCount + 1);
-        }
-        setLike((prevLike) => !prevLike); // Toggle like state
-      }
-    } catch (error) {
-      console.error("Error liking/unliking post:", error);
-    }
-  };
-
-  useEffect(() => {
-    setLike(data!.likedByme); // Ensure `likedByme` is treated as a boolean
-  }, [user, data]);
-
   return (
     <>
       <div className="flex justify-around w-full py-6 mt-6 text-sm border-b dark:text-gray-300 dark:border-slate-700 border-black/20">
-        <span
-          className="flex items-center text-sm font-medium cursor-pointer gap-1"
-          onClick={handleLikePost}
-        >
-          <LucideHeart
-            fill={like ? "#f20" : "none"}
-            strokeWidth={like ? 0 : 2}
-            className="w-5 h-5 lg:w-6 lg:h-6"
-          />
-          {formattedNumber(likesCount)}
-        </span>
         <span className="flex items-center text-sm font-medium cursor-pointer gap-1">
           <LucideMessageSquare className="w-5 h-5 lg:w-6 lg:h-6" />
           {data?.post_comments}
@@ -156,6 +188,19 @@ export const PostCompInteractions = ({ data }: PostCompInteractionsProps) => {
           repostCount={data?.post_reposts || 0}
           isReposted={data?.wasReposted || false}
         />
+        <span
+          className={`flex items-center text-sm font-medium cursor-pointer gap-1 ${
+            isLikeLoading ? "opacity-50 pointer-events-none" : ""
+          }`}
+          onClick={handleLike}
+        >
+          <LucideHeart
+            fill={isLiked ? "#f20" : "none"}
+            strokeWidth={isLiked ? 0 : 2}
+            className="w-5 h-5 lg:w-6 lg:h-6"
+          />
+          {formattedNumber(likeCount)}
+        </span>
         {data && data.post_audience !== "private" && data.user?.is_model && (
           <button
             onClick={(e) => {

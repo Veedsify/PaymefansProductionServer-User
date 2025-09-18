@@ -21,7 +21,10 @@ const MoreProfileOptions = ({
   const ref = useRef<HTMLDivElement>(null);
 
   const copyProfileLink = () => {
-    const link = `${process.env.NEXT_PUBLIC_SERVER_URL}/${user.username.replace("@", "")}`;
+    const link = `${process.env.NEXT_PUBLIC_SERVER_URL}/${user.username.replace(
+      "@",
+      ""
+    )}`;
     navigator.clipboard.writeText(link);
     toast.success("Link copied to clipboard");
     setIsOpen(false);
@@ -82,8 +85,7 @@ const MoreProfileOptions = ({
         {isOpen && (
           <motion.div
             className="
-              absolute top-12 right-0 z-20
-              w-[150px] py-2
+              absolute top-12 right-0 z-20 py-2
               bg-white dark:bg-gray-900
               border border-gray-200 dark:border-gray-700
               rounded-lg shadow-lg
@@ -123,9 +125,9 @@ const MoreProfileOptions = ({
                 <button
                   onClick={copyProfileLink}
                   className="flex items-center justify-center px-3 py-1 text-sm text-white bg-black  dark:text-gray-300 dark:hover:bg-gray-800
- rounded-md transition-colors duration-150 cursor-pointer
- gap-3 text-center
-"
+                  rounded-md transition-colors duration-150 cursor-pointer
+                  gap-3 text-center text-nowrap
+                  "
                 >
                   <ProfileLink size={14} /> Copy Profile Link
                 </button>

@@ -15,7 +15,6 @@ export type User = {
   username: string;
   profile_image: string;
   bio: string | null;
-  fullname: string;
   name: string;
   LiveStream: unknown[]; // Define more specific export type if available
   Follow: unknown[]; // Define more specific export type if available

@@ -23,22 +23,22 @@ const ProfileTabsOther = ({ userdata }: { userdata: ProfileUserProps }) => {
 
   const tabs = [
     {
-      icon: <LucidePodcast size={24} />,
+      icon: <LucidePodcast strokeWidth={2} className="h-5  md:h-6" />,
       label: "Posts",
       content: <PostPanelOther userdata={userdata} />,
     },
     {
-      icon: <LucideImage size={24} />,
+      icon: <LucideImage strokeWidth={2} className="h-5  md:h-6" />,
       label: "Media",
       content: !isGuest && <MediaPanelOther userdata={userdata} />,
     },
     {
-      icon: <LucideRepeat2 size={24} />,
+      icon: <LucideRepeat2 strokeWidth={2} className="h-5  md:h-6" />,
       label: "Reposts",
       content: !isGuest && <RepostPanel userdata={userdata} />,
     },
     {
-      icon: <LucideLock size={24} />,
+      icon: <LucideLock strokeWidth={2} className="h-5  md:h-6" />,
       label: "Private",
       content: !isGuest && <PrivatePanelOther userdata={userdata} />,
     },
@@ -55,7 +55,7 @@ const ProfileTabsOther = ({ userdata }: { userdata: ProfileUserProps }) => {
         return;
       }
     },
-    [isGuest, activeTab, toggleModalOpen],
+    [isGuest, activeTab, toggleModalOpen]
   );
 
   return (
@@ -66,12 +66,12 @@ const ProfileTabsOther = ({ userdata }: { userdata: ProfileUserProps }) => {
           {tabs.map((tab, index) => (
             <button
               key={index}
-              className={`flex-1 outline-none cursor-pointer py-4 transition-colors ${
+              className={`flex-1 outline-none cursor-pointer py-4 transition-colors dark:text-white ${
                 activeTab === index
                   ? "text-primary-dark-pink"
-                  : "text-gray-500 hover:text-gray-700 dark:hover:text-gray-300"
+                  : "text-black hover:text-gray-700 dark:hover:text-gray-300"
               }`}
-              onClick={() => handleTabClick(index)}
+              onClick={() => setActiveTab(index)}
             >
               <span className="inline-flex flex-col items-center justify-center gap-1">
                 <span className="flex items-center gap-2">

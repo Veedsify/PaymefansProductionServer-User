@@ -5,7 +5,7 @@ import {
   LucideBan,
   LucideChevronUp,
   LucideGrip,
-  LucideLoader2,
+  LucideLoader,
   LucideVerified,
 } from "lucide-react";
 import Image from "next/image";
@@ -65,7 +65,7 @@ const ChatPage = ({ conversationId }: { conversationId: string }) => {
   const receiver = receiverData?.receiver;
   const profilePicture = useMemo(
     () => receiver?.profile_image || "/site/avatar.png",
-    [receiver],
+    [receiver]
   );
   if (!receiver && isError) {
     router.push("/messages");
@@ -322,20 +322,20 @@ const ChatPage = ({ conversationId }: { conversationId: string }) => {
       try {
         const response = await axiosInstance.post(
           `/conversations/search/messages/${conversationId}`,
-          { q: messageId },
+          { q: messageId }
         );
 
         const searchResult = await response.data;
         return searchResult.messages?.find(
           (msg: Message) =>
-            msg.message_id === messageId || String(msg.id) === messageId,
+            msg.message_id === messageId || String(msg.id) === messageId
         );
       } catch (error) {
         console.error("Error searching for specific message:", error);
       }
       return null;
     },
-    [conversationId],
+    [conversationId]
   );
 
   // Handle searched message from URL
@@ -468,7 +468,7 @@ const ChatPage = ({ conversationId }: { conversationId: string }) => {
     return (
       <div className="flex items-center justify-center h-full">
         <div className="flex flex-col items-center gap-2">
-          <LucideLoader2 className="w-6 h-6 text-blue-500 animate-spin" />
+          <LucideLoader className="w-6 h-6 text-blue-500 animate-spin" />
           <p className="text-gray-600 dark:text-gray-400">Loading chat...</p>
         </div>
       </div>
@@ -587,7 +587,7 @@ const ChatPage = ({ conversationId }: { conversationId: string }) => {
         {isSearchingMessage && (
           <div className="flex items-center justify-center py-4">
             <div className="flex items-center text-sm text-gray-500 gap-2 dark:text-gray-400">
-              <LucideLoader2 className="animate-spin" size={16} />
+              <LucideLoader className="animate-spin" size={16} />
               <span>Searching for message...</span>
             </div>
           </div>
@@ -600,7 +600,7 @@ const ChatPage = ({ conversationId }: { conversationId: string }) => {
               className="flex items-center justify-center rounded-full cursor-pointer h-7 w-7 aspect-square bg-primary-dark-pink"
             >
               {loading ? (
-                <LucideLoader2
+                <LucideLoader
                   className="w-4 h-4 text-white animate-spin"
                   size={20}
                 />

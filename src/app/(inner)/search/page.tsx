@@ -12,7 +12,7 @@ import {
   ExternalLink,
   Verified,
   LucideBot,
-  LucideLoader2,
+  LucideLoader,
 } from "lucide-react";
 import { useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -209,7 +209,7 @@ const ReportModal = ({
               className="flex items-center justify-center flex-1 px-4 py-3 text-white bg-red-600 rounded-lg hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {isSubmitting ? (
-                <LucideLoader2 className="w-4 h-4 animate-spin" />
+                <LucideLoader className="w-4 h-4 animate-spin" />
               ) : (
                 "Submit Report"
               )}
@@ -479,7 +479,7 @@ const SearchPage = () => {
                 className="py-32 text-center"
               >
                 <div className="inline-flex items-center justify-center w-16 h-16 mb-6 rounded-full bg-primary-dark-pink/10">
-                  <LucideLoader2 className="w-8 h-8 animate-spin text-primary-dark-pink" />
+                  <LucideLoader className="w-8 h-8 animate-spin text-primary-dark-pink" />
                 </div>
                 <h3 className="mb-2 text-xl font-medium text-gray-700 dark:text-gray-300">
                   Searching...

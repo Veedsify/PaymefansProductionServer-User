@@ -2,7 +2,7 @@
 import { usePointsStore } from "@/contexts/PointsContext";
 import { useAuthContext } from "@/contexts/UserUseContext";
 import axiosInstance from "@/utils/Axios";
-import { getToken } from "@/utils/Cookie";
+import { useQueryClient } from "@tanstack/react-query";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
@@ -23,6 +23,7 @@ const PointsBuy = ({
 }) => {
   const { points: userPointBalance } = usePointsStore();
   const { user } = useAuthContext();
+  const queryClient = useQueryClient();
   const router = useRouter();
   const handlePointsClick = async (id: string) => {
     if (userPointBalance < points) {
@@ -72,9 +73,15 @@ const PointsBuy = ({
               `You have successfully gifted ${points} points to this post`,
               {
                 id: "buy-points",
-              },
+              }
             );
-            router.refresh();
+            queryClient.invalidateQueries({
+              queryKey: ["userPoints", user?.id],
+            });
+            queryClient.invalidateQueries({
+              queryKey: ["notifications", "1"],
+            });
+            // router.refresh();
           } else {
             toast.error(data.message, {
               id: "buy-points",
@@ -86,7 +93,7 @@ const PointsBuy = ({
               "An error occurred while gifting points",
             {
               id: "buy-points",
-            },
+            }
           );
         }
       } else {

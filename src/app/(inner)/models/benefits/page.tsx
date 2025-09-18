@@ -49,7 +49,7 @@ async function Models() {
   }
 
   return (
-    <div>
+    <div className="pb-28">
       <div className="relative p-8 px-12 m-3 border border-black/10 dark:border-white/10 rounded-2xl dark:bg-gray-800">
         <h2 className="relative z-10 mb-8 text-3xl font-bold text-center dark:text-white">
           Exclusive Benefits of Becoming a Model

@@ -12,7 +12,7 @@ import {
   PostData,
 } from "@/types/Components";
 import { useInView } from "react-intersection-observer";
-import _ from "lodash";
+import { useInfiniteQuery } from "@tanstack/react-query";
 import { getUserComments } from "@/utils/data/GetPostComments";
 import { useRouter } from "next/navigation";
 import { getToken } from "@/utils/Cookie";
@@ -50,11 +50,7 @@ interface CommentsHolderProps {
 }
 
 const CommentsHolder = ({ post, postComments }: CommentsHolderProps) => {
-  const [loading, setLoading] = useState(true);
-  const [postComment, setPostComments] = useState<Comment[]>([]);
-  const [page, setPage] = useState(1);
   const { isGuest, user } = useAuthContext();
-  const [hasMore, setHasMore] = useState(false);
   const fullScreenPreview = usePostComponent(
     (state) => state.fullScreenPreview
   );
@@ -70,32 +66,43 @@ const CommentsHolder = ({ post, postComments }: CommentsHolderProps) => {
     threshold: 0,
   });
 
-  // Infinite scroll: load next page when inView and hasMore and not loading
-  useEffect(() => {
-    if (inView && hasMore && !loading) {
-      setPage((prev) => prev + 1);
-    }
-  }, [inView, hasMore, loading]);
+  // TanStack Query infinite query for comments
+  const {
+    data,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+    isLoading,
+    isError,
+  } = useInfiniteQuery({
+    queryKey: ["comments", post.id, user?.id],
+    queryFn: async ({ pageParam = 1 }) => {
+      const result = await getUserComments(post, pageParam, user?.id);
+      return result;
+    },
+    getNextPageParam: (lastPage, allPages) => {
+      if (!lastPage?.hasMore) return undefined;
+      return allPages.length + 1;
+    },
+    initialPageParam: 1,
+    enabled: !!post.id,
+  });
 
-  // Fetch comments with enhanced backend data
+  // Flatten all comments from all pages
+  const allComments = data?.pages.flatMap((page) => page?.data || []) || [];
+
+  // Remove duplicates based on comment_id
+  const uniqueComments = allComments.filter(
+    (comment, index, self) =>
+      index === self.findIndex((c) => c.comment_id === comment.comment_id)
+  );
+
+  // Infinite scroll: load next page when inView and hasNextPage
   useEffect(() => {
-    let cancelled = false;
-    const fetchComments = async () => {
-      setLoading(true);
-      const comments = await getUserComments(post, page, user?.id);
-      if (!cancelled && comments) {
-        setHasMore(comments.hasMore);
-        setPostComments((prev) =>
-          _.uniqBy([...prev, ...comments.data], "comment_id")
-        );
-      }
-      setLoading(false);
-    };
-    fetchComments();
-    return () => {
-      cancelled = true;
-    };
-  }, [post, page]);
+    if (inView && hasNextPage && !isFetchingNextPage) {
+      fetchNextPage();
+    }
+  }, [inView, hasNextPage, isFetchingNextPage, fetchNextPage]);
 
   // Add new comment callback
   const setNewComment = useCallback(() => {
@@ -165,20 +172,25 @@ const CommentsHolder = ({ post, postComments }: CommentsHolderProps) => {
 
   return (
     <>
-      <div
-        className={`${
-          postComments.length > 1 ? "border-black/30 dark:border-slate-700" : ""
-        } dark:text-gray-100 dark:border-slate-800 p-0 md:px-3 relative overflow-hidden`}
-        ref={commentsRef}
-      >
-        <div
-          className="absolute top-4 left-[14px] lg:left-9 w-[1px] h-full bg-black/20 dark:bg-slate-700"
-          style={{
-            width: "1px",
-            height: `${calculateHeight()}px`,
-          }}
-        ></div>
-        {postComment.map((comment, index) => (
+      {isError && (
+        <div className="text-center p-4">
+          <p className="text-red-500 text-sm">
+            Failed to load comments. Please try again.
+          </p>
+        </div>
+      )}
+
+      <div className="relative overflow-hidden" ref={commentsRef}>
+        {uniqueComments.length > 1 && (
+          <div
+            className="absolute top-4 left-[14px] lg:left-9 w-[1px] h-full bg-black/20 dark:bg-slate-700"
+            style={{
+              width: "1px",
+              height: `${calculateHeight()}px`,
+            }}
+          ></div>
+        )}
+        {uniqueComments.map((comment: Comment, index: number) => (
           <div
             className={`flex gap-1 md:gap-3 items-start relative w-full`}
             key={comment.comment_id}
@@ -203,7 +215,7 @@ const CommentsHolder = ({ post, postComments }: CommentsHolderProps) => {
                 &nbsp;
                 <Link
                   href={`/${comment.username}`}
-                  className="text-sm md:text-base"
+                  className="text-sm md:text-base  hidden md:inline-block"
                 >
                   {comment.username}
                 </Link>
@@ -276,7 +288,7 @@ const CommentsHolder = ({ post, postComments }: CommentsHolderProps) => {
             </div>
           </div>
         ))}
-        {loading && (
+        {(isLoading || isFetchingNextPage) && (
           <div className="flex items-center justify-center h-36">
             <LucideLoader
               size={20}
@@ -287,9 +299,9 @@ const CommentsHolder = ({ post, postComments }: CommentsHolderProps) => {
         {/* Infinite scroll trigger */}
         <div ref={ref}></div>
       </div>
-      {!hasMore && !loading && (
+      {!hasNextPage && !isLoading && !isFetchingNextPage && (
         <div className="text-center">
-          {postComment.length > 0 ? (
+          {uniqueComments.length > 0 ? (
             <p className="text-sm font-semibold text-gray-400">
               No more comments
             </p>

@@ -64,7 +64,7 @@ const Login = () => {
             id: "login",
           });
           const redirect = new URLSearchParams(window.location.search).get(
-            "redirect",
+            "redirect"
           );
           if (redirect) {
             if (typeof window !== "undefined") {
@@ -98,7 +98,7 @@ const Login = () => {
         error.response?.data.message || "An error occurred while logging in",
         {
           id: "login",
-        },
+        }
       );
     }
   };
@@ -123,19 +123,17 @@ const Login = () => {
             alt="Login Image"
             className="absolute inset-0 object-cover w-full h-full aspect-square"
           />
-          <div
-            style={{
-              position: "absolute",
-              inset: 0,
-              background:
-                "linear-gradient(to right, transparent 70%, rgba(0,0,0,9) 100%)",
-              pointerEvents: "none",
-            }}
-          ></div>
+          {/* Enhanced gradient overlay */}
+          <div className="absolute inset-0 bg-gradient-to-r from-black/20 via-black/60 to-black/95"></div>
+          {/* Secondary gradient for extra depth */}
+          <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent"></div>
         </div>
         <div className="h-full lg:p-14 2xl:p-28">
-          <div className="pt-12 mx-auto mb-24 max-w-screen-xl md:mt-16">
-            <Link href="/">
+          <div className="pt-12 mx-auto mb-16 max-w-screen-xl md:mt-16">
+            <Link
+              href="/"
+              className="inline-block transition-transform hover:scale-105"
+            >
               <Image
                 width={150}
                 height={25}
@@ -146,71 +144,92 @@ const Login = () => {
               />
             </Link>
           </div>
-          <h1 className="mt-auto mb-5 text-2xl font-bold text-white ">
-            Sign in
-          </h1>
+
+          <div className="max-w-lg">
+            <h1 className="mb-2 text-3xl font-bold text-white">Welcome back</h1>
+            <p className="mb-8 text-gray-300">
+              Sign in to your account to continue
+            </p>
+          </div>
+
           <form
             action=""
             method="post"
-            className="flex-1 w-full mb-5"
+            className="flex-1 w-full mb-6"
             onSubmit={submitLoginForm}
           >
-            <div className="flex flex-col mb-4 gap-3">
+            <div className="flex flex-col mb-6 gap-2">
+              <label
+                htmlFor="email"
+                className="text-sm font-medium text-gray-300"
+              >
+                Email address
+              </label>
               <input
                 type="email"
                 name="email"
                 id="email"
                 onChange={handleLoginInput}
-                className="block w-full px-3 py-3 text-sm font-bold text-white bg-transparent rounded-lg outline-white outline-1 md:max-w-lg"
-                placeholder="Email"
+                className="block w-full px-4 py-3 text-sm font-medium text-white bg-white/5 border border-white/10 rounded-xl outline-none focus:border-primary-dark-pink/50 focus:ring-2 focus:ring-primary-dark-pink/20 transition-all duration-200 md:max-w-lg backdrop-blur-sm"
+                placeholder="Enter your email"
               />
             </div>
-            <div className="flex flex-col mb-5 gap-3">
+            <div className="flex flex-col mb-6 gap-2">
+              <label
+                htmlFor="password"
+                className="text-sm font-medium text-gray-300"
+              >
+                Password
+              </label>
               <input
                 type="password"
                 name="password"
                 id="password"
                 onChange={handleLoginInput}
-                className="block w-full px-3 py-3 text-sm font-bold text-white bg-transparent rounded-lg outline-white outline-1 md:max-w-lg"
-                placeholder="Password"
+                className="block w-full px-4 py-3 text-sm font-medium text-white bg-white/5 border border-white/10 rounded-xl outline-none focus:border-primary-dark-pink/50 focus:ring-2 focus:ring-primary-dark-pink/20 transition-all duration-200 md:max-w-lg backdrop-blur-sm"
+                placeholder="Enter your password"
               />
             </div>
-            <button className="w-full px-3 py-3 text-sm font-bold text-white rounded-lg cursor-pointer bg-primary-dark-pink md:max-w-lg hover:bg-primary-dark-pink/80 transition-all duration-200">
+            <button className="w-full px-4 py-3 text-sm font-semibold text-white rounded-xl cursor-pointer bg-gradient-to-r from-primary-dark-pink to-primary-dark-pink/80 md:max-w-lg hover:from-primary-dark-pink/90 hover:to-primary-dark-pink/70 transition-all duration-200 shadow-lg hover:shadow-primary-dark-pink/25 hover:shadow-xl active:scale-[0.98]">
               Sign in
             </button>
           </form>
-          <div className="flex items-center w-full mt-5 md:max-w-lg">
-            <div className="flex">
+          <div className="flex items-center w-full mt-6 md:max-w-lg">
+            <div className="flex items-center">
               <input
                 type="checkbox"
                 name="remember"
                 id="remember"
-                className="mr-2 text-sm accent-primary-dark-pink"
+                className="w-4 h-4 mr-3 rounded border-white/20 bg-white/5 text-primary-dark-pink focus:ring-primary-dark-pink/50 focus:ring-2 accent-primary-dark-pink"
               />
               <label
                 htmlFor="remember"
-                className="text-sm font-bold text-white cursor-pointer "
+                className="text-sm font-medium text-gray-300 cursor-pointer select-none"
               >
                 Remember me
               </label>
             </div>
             <Link
               href="/reset"
-              className="ml-auto text-sm font-bold text-primary-dark-pink "
+              className="ml-auto text-sm font-medium text-primary-dark-pink hover:text-primary-dark-pink/80 transition-colors duration-200"
             >
               Forgot password?
             </Link>
           </div>
-          <div className="mt-28">
-            <p className="text-sm font-bold text-white">
+          <div className="mt-16">
+            <p className="text-sm font-medium text-gray-300">
               Don&apos;t have an account?{" "}
-              <Link href="/register" className="text-primary-dark-pink">
+              <Link
+                href="/register"
+                className="font-semibold text-primary-dark-pink hover:text-primary-dark-pink/80 transition-colors duration-200"
+              >
                 Sign up
               </Link>
             </p>
           </div>
         </div>
       </div>
+      <div className="bg-white min-h-screen"></div>
     </div>
   );
 };

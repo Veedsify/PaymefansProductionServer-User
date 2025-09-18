@@ -1,5 +1,5 @@
 "use client";
-import { Facebook, Instagram, LucideLoader2, Twitter } from "lucide-react";
+import { Facebook, Instagram, LucideLoader, Twitter } from "lucide-react";
 import {
   AuthUserProps,
   UserUpdateProfileType,
@@ -36,7 +36,7 @@ const ProfileSettings = ({ user }: ProfileSettingsProps) => {
   const [usernameCheck, setUsernameCheck] = useState(user?.username || "");
   const { message, canSave, error, isLoading } = useCheckUsername(
     user!,
-    usernameCheck,
+    usernameCheck
   );
 
   const usernameTimeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -44,7 +44,7 @@ const ProfileSettings = ({ user }: ProfileSettingsProps) => {
   const handleInputChange = (
     e: React.ChangeEvent<
       HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
-    >,
+    >
   ) => {
     const { name, value } = e.target;
     setUserData((prev) => ({ ...prev, [name]: value }));
@@ -162,7 +162,7 @@ const ProfileSettings = ({ user }: ProfileSettingsProps) => {
           />
           {isLoading && (
             <div className={"py-2"}>
-              <LucideLoader2
+              <LucideLoader
                 size={10}
                 className={"animate-spin text-primary-dark-pink"}
               />

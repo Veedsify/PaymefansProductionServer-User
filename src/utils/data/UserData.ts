@@ -19,7 +19,6 @@ const getUserData = async (): Promise<Partial<AuthUserProps> | null> => {
       email: "Guest",
       id: 0,
       name: "Guest",
-      fullname: "Guest User",
       active_status: true,
       username: "@guest",
     };

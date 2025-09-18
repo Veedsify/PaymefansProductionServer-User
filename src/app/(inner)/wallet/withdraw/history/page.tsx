@@ -3,7 +3,7 @@ import axiosInstance from "@/utils/Axios";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import axios from "axios";
 import {
-  LucideLoader2,
+  LucideLoader,
   Building,
   Calendar,
   Hash,
@@ -78,7 +78,7 @@ const WithdrawalHistory = () => {
     return (
       <div className="flex items-center justify-center min-h-64">
         <div className="flex items-center text-gray-500 gap-3">
-          <LucideLoader2 className="animate-spin" size={20} />
+          <LucideLoader className="animate-spin" size={20} />
           <span className="text-sm font-medium">Loading your history...</span>
         </div>
       </div>
@@ -170,7 +170,7 @@ const WithdrawalHistory = () => {
                   {formatCurrency(
                     withdrawalHistory
                       .filter((w) => w.status === "completed")
-                      .reduce((sum, w) => sum + w.amount * 0.75, 0),
+                      .reduce((sum, w) => sum + w.amount * 0.75, 0)
                   )}
                 </p>
               </div>
@@ -184,8 +184,7 @@ const WithdrawalHistory = () => {
                 <p className="text-lg font-bold text-gray-900">
                   {
                     withdrawalHistory.filter(
-                      (w) =>
-                        w.status === "pending" || w.status === "processing",
+                      (w) => w.status === "pending" || w.status === "processing"
                     ).length
                   }
                 </p>
@@ -310,7 +309,7 @@ const WithdrawalHistory = () => {
           >
             {isFetchingNextPage ? (
               <>
-                <LucideLoader2 className="animate-spin" size={16} />
+                <LucideLoader className="animate-spin" size={16} />
                 Loading more...
               </>
             ) : (

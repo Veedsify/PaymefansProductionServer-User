@@ -168,10 +168,12 @@ const PostComponent = memo<PostComponentProps>(
                 href={user?.link}
                 className="flex items-center text-xs gap-1 md:text-sm"
               >
-                <p className="font-bold text-black dark:text-white">
+                <p className="font-bold text-gray-800 dark:text-white ">
                   {user.name}
                 </p>
-                {user.username}
+                <p className="text-gray-500 dark:text-gray-400 font-bold  hidden md:inline-block">
+                  {user.username}
+                </p>
               </Link>
               <small className="ml-auto">{data.time}</small>
               <div className="text-black dark:text-white">

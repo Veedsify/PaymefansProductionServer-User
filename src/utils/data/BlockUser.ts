@@ -34,7 +34,6 @@ interface GetBlockedUsersResponse {
       id: number;
       username: string;
       name: string;
-      fullname: string;
       profile_image: string | null;
     } | null;
     blockId: string;

@@ -12,7 +12,6 @@ interface BlockedUser {
     id: number;
     username: string;
     name: string;
-    fullname: string;
     profile_image: string | null;
   } | null;
   blockId: string;
@@ -69,7 +68,7 @@ const BlockedUsersPage = () => {
       if (result.status && !result.error) {
         // Remove the user from the blocked list
         setBlockedUsers((prev) =>
-          prev.filter((item) => item.blockId !== blockId),
+          prev.filter((item) => item.blockId !== blockId)
         );
         toast.success("User unblocked successfully");
       } else {
@@ -97,7 +96,7 @@ const BlockedUsersPage = () => {
     return (
       user.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
       user.username?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      user.fullname?.toLowerCase().includes(searchTerm.toLowerCase())
+      user.name?.toLowerCase().includes(searchTerm.toLowerCase())
     );
   });
 

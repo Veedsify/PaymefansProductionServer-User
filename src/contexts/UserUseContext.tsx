@@ -48,48 +48,47 @@ export const AuthContextProvider = ({ children }: { children: ReactNode }) => {
     if (ref.current != 0) {
       return;
     }
-    axiosInstance
-      .get(`/auth/retrieve`, {
+    try {
+      const res = await axiosInstance.get(`/auth/retrieve`, {
         withCredentials: true,
-      })
-      .then((res) => {
-        if (res.status === 401) {
-          setUser({
-            name: "Guest",
-            username: "guest",
-            email: "",
-            id: 0,
-            active_status: true,
-            is_model: false,
-          });
-          if (!isProfilePage) {
-            router.push("/login");
-          }
-          return null;
-        }
-        const user = res.data && (res.data.user as AuthUserProps);
-        socket = connectSocket(user?.username);
-        setIsGuest(false);
-        setUser(user);
-        ref.current += 1;
-        return user;
-      })
-      .catch((err: AxiosError) => {
+      });
+
+      if (res.status === 401) {
         setUser({
-          id: 0,
           name: "Guest",
-          username: "@guest",
-          fullname: "Guest User",
+          username: "guest",
           email: "",
+          id: 0,
           active_status: true,
           is_model: false,
         });
-        ref.current += 1;
-        if (!isProfilePage && !isPostPage) {
+        if (!isProfilePage) {
           router.push("/login");
         }
         return null;
+      }
+
+      const user = res.data && (res.data.user as AuthUserProps);
+      socket = connectSocket(user?.username);
+      setIsGuest(false);
+      setUser(user);
+      ref.current += 1;
+      return user;
+    } catch (err: unknown) {
+      setUser({
+        id: 0,
+        name: "Guest",
+        username: "@guest",
+        email: "",
+        active_status: true,
+        is_model: false,
       });
+      ref.current += 1;
+      // if (!isProfilePage && !isPostPage) {
+      //   router.push("/login");
+      // }
+      return null;
+    }
   }, []);
 
   useLayoutEffect(() => {

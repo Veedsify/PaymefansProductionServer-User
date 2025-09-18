@@ -12,7 +12,6 @@ export type AuthUserProps = {
   id: number;
   email: string;
   name: string;
-  fullname: string;
   user_id: string;
   username: string;
   admin: boolean;
@@ -87,7 +86,6 @@ export type AllModelsProps = {
   id: number;
   email: string;
   name: string;
-  fullname: string;
   user_id: string;
   username: string;
   admin: boolean;
@@ -143,7 +141,6 @@ export type ProfileUserProps = {
   id: number;
   email: string;
   name: string;
-  fullname: string;
   user_id: string;
   username: string;
   admin: boolean;

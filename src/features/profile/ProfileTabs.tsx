@@ -16,22 +16,22 @@ const ProfileTabs = () => {
 
   const tabs = [
     {
-      icon: <LucidePodcast size={24} />,
+      icon: <LucidePodcast strokeWidth={2} className="h-5  md:h-6" />,
       label: "Posts",
       content: <PostPanel />,
     },
     {
-      icon: <LucideImage size={24} />,
+      icon: <LucideImage strokeWidth={2} className="h-5  md:h-6" />,
       label: "Media",
       content: <MediaPanel />,
     },
     {
-      icon: <LucideRepeat2 size={24} />,
+      icon: <LucideRepeat2 strokeWidth={2} className="h-5  md:h-6" />,
       label: "Reposts",
       content: <RepostPanel />,
     },
     {
-      icon: <LucideLock size={24} />,
+      icon: <LucideLock strokeWidth={2} className="h-5  md:h-6" />,
       label: "Private",
       content: <PrivatePanel />,
     },
@@ -45,10 +45,10 @@ const ProfileTabs = () => {
           {tabs.map((tab, index) => (
             <button
               key={index}
-              className={`flex-1 outline-none cursor-pointer py-4 transition-colors ${
+              className={`flex-1 outline-none cursor-pointer py-4 transition-colors dark:text-white ${
                 activeTab === index
                   ? "text-primary-dark-pink"
-                  : "text-gray-500 hover:text-gray-700 dark:hover:text-gray-300"
+                  : "text-black hover:text-gray-700 dark:hover:text-gray-300"
               }`}
               onClick={() => setActiveTab(index)}
             >

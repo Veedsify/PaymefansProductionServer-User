@@ -14,7 +14,7 @@ import { useAuthContext } from "@/contexts/UserUseContext";
 export interface HookupProps {
   distance?: number; // Distance in km (optional)
   price_per_message: number;
-  fullname: string;
+  name: string;
   hookup: boolean;
   id: number;
   is_model: boolean;

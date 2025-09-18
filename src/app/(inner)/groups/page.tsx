@@ -4,7 +4,7 @@ import {
   LucideSearch,
   LucideUsers,
   LucideVerified,
-  LucideLoader2,
+  LucideLoader,
   LucidePlus,
   MailWarning,
 } from "lucide-react";
@@ -55,7 +55,7 @@ const Groups = () => {
     if (
       mainGroup?.groups?.id &&
       groupsData?.data?.userGroups?.some(
-        (group: GroupData) => group.id === mainGroup.groups.id,
+        (group: GroupData) => group.id === mainGroup.groups.id
       )
     ) {
       router.push(`/groups/${mainGroup.groups.id}`);

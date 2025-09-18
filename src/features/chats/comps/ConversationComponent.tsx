@@ -12,6 +12,7 @@ import { getSocket } from "../../../components/common/Socket";
 import { Conversation } from "@/types/Components";
 import { useMessagesConversation } from "@/contexts/MessageConversationContext";
 import { useQueryClient } from "@tanstack/react-query";
+import { cn } from "@/components/ui/cn";
 
 const ConversationComponent = () => {
   const [loading, setLoading] = useState(true);
@@ -53,8 +54,9 @@ const ConversationComponent = () => {
   }
   return (
     <>
-      {conversations.map((conversation) => (
+      {conversations.map((conversation, index) => (
         <ConversationCard
+          isLast={index === conversations.length - 1}
           key={conversation.conversation_id}
           conversation={conversation}
         />
@@ -65,12 +67,18 @@ const ConversationComponent = () => {
 };
 
 const ConversationCardLoader = () => (
-  <div className="flex items-center justify-center p-3 gap-2 md:gap-5 dark:text-white">
-    <LucideLoader className="text-gray-700 animate-spin" size={25} />
+  <div className="flex items-center justify-center p-6 gap-3">
+    <div className="flex items-center gap-3">
+      <LucideLoader className="text-primary-dark-pink animate-spin" size={20} />
+      <span className="text-sm font-medium text-gray-600 dark:text-gray-300">
+        Loading conversations...
+      </span>
+    </div>
   </div>
 );
 
 type ConversationCardProps = {
+  isLast: boolean;
   conversation: {
     conversation: Conversation;
     conversation_id: string;
@@ -85,7 +93,7 @@ type ConversationCardProps = {
   };
 };
 const ConversationCard = React.memo(
-  ({ conversation }: ConversationCardProps) => {
+  ({ conversation, isLast }: ConversationCardProps) => {
     const router = useRouter();
     const { user } = useAuthContext();
     const socket = getSocket();
@@ -116,18 +124,18 @@ const ConversationCard = React.memo(
       ? (() => {
           const cleanMessage = String(conversation.lastMessage.message).replace(
             /<br\s*\/?>/gi,
-            "",
+            ""
           );
           return (
-            cleanMessage.substring(0, 100) +
-            (cleanMessage.length > 100 ? "..." : "")
+            cleanMessage.substring(0, 60) +
+            (cleanMessage.length > 60 ? "..." : "")
           );
         })()
       : "";
 
     const verifiedUsernames = ["@paymefans", "@paymefans1", "@paymefans2"];
     const isVerified = verifiedUsernames.includes(
-      conversation.receiver.username,
+      conversation.receiver.username
     );
     const isPayMeFans = conversation.receiver.username === "@paymefans";
 
@@ -135,18 +143,17 @@ const ConversationCard = React.memo(
       // Improved Conversation Item Component
       <div
         onClick={handleClick}
-        className={`
-        group flex items-center p-4
-        border-b border-gray-200 dark:border-gray-800
-        transition-all duration-200 ease-in-out
-        ${
+        className={cn(
+          "group flex flex-wrap items-center px-2 py-4",
+          " border-gray-200 dark:border-gray-800",
+          "transition-all duration-200 ease-in-out",
+          "hover:bg-primary-light-pink/5 dark:hover:bg-primary-dark-pink/10",
+          "cursor-pointer",
+          !isLast && "border-b",
           isUnread
             ? "bg-indigo-50 dark:bg-indigo-900/30 font-medium"
             : "bg-white dark:bg-gray-950"
-        }
-        hover:bg-primary-light-pink/5 dark:hover:bg-primary-dark-pink/10
-        cursor-pointer
-      `}
+        )}
       >
         {/* Profile Image with Active Status */}
         <Link
@@ -231,12 +238,9 @@ const ConversationCard = React.memo(
             >
               {conversation.lastMessage?.created_at ? (
                 <>
-                  <span
-                    className="truncate max-w-[90%]"
-                    dangerouslySetInnerHTML={{
-                      __html: lastMessageText,
-                    }}
-                  />
+                  <p className="text-wrap truncate max-w-full">
+                    {lastMessageText}
+                  </p>
                   {conversation.lastMessage.attachment?.length > 0 && (
                     <span className="flex items-center text-gray-400 gap-1">
                       {conversation.lastMessage.attachment
@@ -264,7 +268,7 @@ const ConversationCard = React.memo(
         </div>
       </div>
     );
-  },
+  }
 );
 
 ConversationCard.displayName = "ConversationCard";

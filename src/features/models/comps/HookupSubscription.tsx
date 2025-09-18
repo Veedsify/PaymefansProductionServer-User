@@ -32,10 +32,10 @@ const HookupSubscription = ({ hookup }: { hookup: HookupProps }) => {
       <p
         className={cn(
           `text-sm font-bold text-center inline-flex items-center`,
-          hookup?.gender === "male" ? "text-blue-500" : "text-pink-500",
+          hookup?.gender === "male" ? "text-blue-500" : "text-pink-500"
         )}
       >
-        {hookup?.fullname}
+        {hookup?.name || hookup?.username}
         {hookup?.gender && (
           <span className="ml-1 text-xs text-gray-600">
             {hookup?.gender === "male" ? (

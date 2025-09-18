@@ -1,6 +1,12 @@
 "use client";
 import { useAuthContext } from "@/contexts/UserUseContext";
-import { LucideCamera, LucideLoader, LucideSend, X } from "lucide-react";
+import {
+  LucideCamera,
+  LucideCheck,
+  LucideLoader,
+  LucideSend,
+  X,
+} from "lucide-react";
 import Image from "next/image";
 import React, {
   ChangeEvent,
@@ -12,14 +18,13 @@ import React, {
 } from "react";
 import { imageTypes } from "@/lib/FileTypes";
 import toast from "react-hot-toast";
-import { getToken } from "../../utils/Cookie";
-import axios from "axios";
 import { useRouter } from "next/navigation";
 import { FileHolderProps, ReplyPostProps } from "@/types/Components";
 import { POST_CONFIG } from "@/config/config";
 import FetchMentions from "@/utils/data/FetchMentions";
 import ParseContentToHtml from "@/utils/ParseHtmlContent";
 import axiosInstance from "@/utils/Axios";
+import { useQueryClient } from "@tanstack/react-query";
 
 // Mock user data for @mentions (example)
 interface MentionUser {
@@ -54,8 +59,7 @@ FilesHolder.displayName = "FilesHolder";
 
 const ReplyPostComponent = ({ options, isReply }: ReplyPostProps) => {
   const { user } = useAuthContext();
-  const router = useRouter();
-
+  const queryClient = useQueryClient();
   // Existing states
   const [replyPostOpen, setReplyPostOpen] = useState(false);
   const [typedComment, setTypedComment] = useState("");
@@ -68,7 +72,7 @@ const ReplyPostComponent = ({ options, isReply }: ReplyPostProps) => {
   const [showMentions, setShowMentions] = useState(false);
   const [mentionQuery, setMentionQuery] = useState("");
   const [mentionSuggestions, setMentionSuggestions] = useState<MentionUser[]>(
-    [],
+    []
   );
   const [selectedMentionIndex, setSelectedMentionIndex] = useState(0);
   const [mentions, setMentions] = useState<MentionUser[]>([]);
@@ -88,7 +92,7 @@ const ReplyPostComponent = ({ options, isReply }: ReplyPostProps) => {
         }, 300);
       });
     },
-    [],
+    []
   );
 
   // On mention query update
@@ -169,7 +173,7 @@ const ReplyPostComponent = ({ options, isReply }: ReplyPostProps) => {
         setCursorPosition(newCursorPos);
       }, 0);
     },
-    [mentionStartPos, cursorPosition, typedComment, mentions],
+    [mentionStartPos, cursorPosition, typedComment, mentions]
   );
   // Keydown for mention navigation
   const handleKeyDown = useCallback(
@@ -179,13 +183,13 @@ const ReplyPostComponent = ({ options, isReply }: ReplyPostProps) => {
           case "ArrowDown":
             e.preventDefault();
             setSelectedMentionIndex((prev) =>
-              prev < mentionSuggestions.length - 1 ? prev + 1 : 0,
+              prev < mentionSuggestions.length - 1 ? prev + 1 : 0
             );
             break;
           case "ArrowUp":
             e.preventDefault();
             setSelectedMentionIndex((prev) =>
-              prev > 0 ? prev - 1 : mentionSuggestions.length - 1,
+              prev > 0 ? prev - 1 : mentionSuggestions.length - 1
             );
             break;
           case "Enter":
@@ -200,7 +204,7 @@ const ReplyPostComponent = ({ options, isReply }: ReplyPostProps) => {
         }
       }
     },
-    [showMentions, mentionSuggestions, selectedMentionIndex, selectMention],
+    [showMentions, mentionSuggestions, selectedMentionIndex, selectMention]
   );
 
   // File handling
@@ -223,7 +227,7 @@ const ReplyPostComponent = ({ options, isReply }: ReplyPostProps) => {
         });
       }
     },
-    [files],
+    [files]
   );
 
   const removeFile = useCallback((file: File) => {
@@ -257,7 +261,7 @@ const ReplyPostComponent = ({ options, isReply }: ReplyPostProps) => {
         onUploadProgress: (progressEvent) => {
           if (progressEvent?.total) {
             setProgress(
-              Math.round((progressEvent.loaded / progressEvent.total) * 100),
+              Math.round((progressEvent.loaded / progressEvent.total) * 100)
             );
           }
         },
@@ -268,27 +272,13 @@ const ReplyPostComponent = ({ options, isReply }: ReplyPostProps) => {
       if (status && !error) {
         setCommentSending(false);
         toast.success(POST_CONFIG.COMMENT.COMMENT_CREATED_SUCCESS_MSG);
-        options.setNewComment?.({
-          userId: user?.id as number,
-          postId: options.post_id,
-          parentId: options.parentId as string,
-          comment: finalHtmlContent,
-          attachment: files,
-          likes: 0,
-          impressions: 0,
-          replies: 0,
-          likedByme: false,
-          date: new Date(),
-          username: user?.username || "",
-          name: user?.name || "",
-          profile_image: user?.profile_image || "",
-          comment_id: data.comment_id,
+        queryClient.invalidateQueries({
+          queryKey: ["comments", options.post_id, user?.id],
         });
-
-        // Reset fields
         setTypedComment("");
         setFiles([]);
         setMentions([]);
+
       } else {
         toast.error(POST_CONFIG.COMMENT.COMMENT_CREATED_ERROR_MSG);
       }
@@ -311,13 +301,11 @@ const ReplyPostComponent = ({ options, isReply }: ReplyPostProps) => {
           <p className="text-sm text-gray-500">{progress}%</p>
         </div>
       )}
-      <div className="relative flex items-start pb-10 mt-5 gap-4 dark:text-white border-black/30">
+      <div className="relative flex items-start pb-5 mt-5 gap-4 dark:text-white border-black/30">
         {/* Mention Suggestions Dropdown */}
         {showMentions && (
           <div
-            className="absolute z-50 p-1 overflow-y-auto bg-white border border-gray-300 shadow-lg dark:bg-gray-800
-  dark:border-gray-700
- rounded-md max-h-60"
+            className="absolute z-50 p-1 overflow-y-auto bg-white border border-gray-300 shadow-lg dark:bg-gray-800 dark:border-gray-700 rounded-md max-h-60"
             style={{ top: "90px", left: "80px", width: "220px" }}
           >
             {isMentionLoading ? (
@@ -347,19 +335,7 @@ const ReplyPostComponent = ({ options, isReply }: ReplyPostProps) => {
                   <div className="flex-1 min-w-0">
                     <p className="text-sm text-gray-900 truncate dark:text-white">
                       {userItem.name}
-                      {userItem.isVerified && (
-                        <svg
-                          className="inline-block w-4 h-4 ml-1 text-blue-500"
-                          fill="currentColor"
-                          viewBox="0 0 20 20"
-                        >
-                          <path
-                            fillRule="evenodd"
-                            d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                            clipRule="evenodd"
-                          />
-                        </svg>
-                      )}
+                      {userItem.isVerified && <LucideCheck size={8} />}
                     </p>
                     <p className="text-xs text-gray-500 dark:text-gray-400">
                       {userItem.username}
@@ -386,14 +362,14 @@ const ReplyPostComponent = ({ options, isReply }: ReplyPostProps) => {
         </div>
         <div className="flex flex-col items-start flex-1">
           <div className="w-full">
-            <p className="p-3 mb-1 text-sm font-semibold">
+            <p className="mb-2 text-xs md:text-sm font-semibold">
               Replying to{" "}
-              <span className="font-bold text-primary-dark-pink">
+              <span className="font-bold text text-primary-dark-pink">
                 {options.author_username}
               </span>
             </p>
             <div
-              className={`h-auto w-full flex items-center justify-center rounded-full outline outline-gray-200 mb-3`}
+              className={`h-12 w-full flex items-center justify-center rounded-full outline outline-gray-200 mb-3`}
             >
               <input
                 ref={inputRef}
@@ -404,12 +380,15 @@ const ReplyPostComponent = ({ options, isReply }: ReplyPostProps) => {
                 disabled={commentSending}
                 value={typedComment}
                 placeholder="Type a reply"
-                className={`block ml-3 leading-none py-2 w-full outline-none border-none resize-none duration-300 transition-all bg-transparent dark:text-white dark:bg-transparent`}
+                className={`block pl-6 leading-none py-2 text-xs md:text-sm w-full outline-none border-none resize-none duration-300 transition-all bg-transparent dark:text-white dark:bg-transparent`}
               />
               {!isReply && (
                 <div className="p-2 mr-2 gap-4">
                   <label htmlFor="file" className="cursor-pointer">
-                    <LucideCamera size={28} />
+                    <LucideCamera
+                      className="h-6 w-6 md:h-7 md:w-7"
+                      strokeWidth={1.5}
+                    />
                     <input
                       type="file"
                       id="file"
@@ -431,7 +410,10 @@ const ReplyPostComponent = ({ options, isReply }: ReplyPostProps) => {
                 onClick={handleReplyClicked}
                 className="px-3 py-2 mr-1 text-white rounded-full bg-primary-dark-pink md:hidden"
               >
-                <LucideSend size={20} />
+                <LucideSend
+                  className="h-5 w-5 md:h-6 md:w-6"
+                  strokeWidth={2}
+                />
               </button>
             </div>
 

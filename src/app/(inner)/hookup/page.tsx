@@ -8,7 +8,7 @@ import { HookUpLoader } from "@/components/common/loaders/ModelLoader";
 export interface HookupProps {
   distance?: number; // Distance in km (optional)
   price_per_message: number;
-  fullname: string;
+  name: string;
   hookup: boolean;
   id: number;
   is_model: boolean;
@@ -40,7 +40,7 @@ const HookupPage = () => {
     } else {
       const filtered = hookups.filter(
         (hookup) =>
-          hookup.fullname.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          hookup.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
           hookup.username.toLowerCase().includes(searchQuery.toLowerCase()) ||
           hookup.user_city?.toLowerCase().includes(searchQuery.toLowerCase()) ||
           hookup.user_state

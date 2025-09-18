@@ -1,7 +1,7 @@
 import { PostCommentAttachments } from "@/types/Components";
 import { Comment } from "./Comments";
 import { getCommentReplies } from "@/utils/data/GetCommentReplies";
-import { LucideChevronDown, LucideLoader2 } from "lucide-react";
+import { LucideChevronDown, LucideLoader } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
@@ -63,7 +63,7 @@ const CommentReplyChildren = ({
               (reply: Comment) => ({
                 ...reply,
                 likedByme: Boolean(reply.likedByme), // Explicitly convert to boolean
-              }),
+              })
             );
             setLoadedChildren(repliesWithLikedStatus);
             setHasMoreRepliesLocal(response.hasMore);
@@ -94,7 +94,7 @@ const CommentReplyChildren = ({
           {!loading && (
             <LucideChevronDown className={showReplies ? "rotate-180" : ""} />
           )}
-          {loading && <LucideLoader2 size={16} className="animate-spin" />}
+          {loading && <LucideLoader size={16} className="animate-spin" />}
         </button>
 
         {/* Render child comments */}
@@ -170,7 +170,7 @@ const CommentReplyChildren = ({
                     const nextPage = replyPage + 1;
                     const response = await getCommentReplies(
                       commentId,
-                      nextPage,
+                      nextPage
                     );
                     if (response && !response.error && response.data) {
                       // Ensure likedByme property is preserved for new replies
@@ -178,7 +178,7 @@ const CommentReplyChildren = ({
                         (reply: Comment) => ({
                           ...reply,
                           likedByme: Boolean(reply.likedByme), // Explicitly convert to boolean
-                        }),
+                        })
                       );
                       setLoadedChildren((prev) => [
                         ...prev,
@@ -198,7 +198,7 @@ const CommentReplyChildren = ({
               >
                 {loading ? "Loading..." : "Load more replies"}
                 {loading ? (
-                  <LucideLoader2 size={16} className="animate-spin" />
+                  <LucideLoader size={16} className="animate-spin" />
                 ) : (
                   <LucideChevronDown size={16} />
                 )}

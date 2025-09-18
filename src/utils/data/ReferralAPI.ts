@@ -21,28 +21,28 @@ export interface ReferralEarning {
   };
 }
 
-export interface ReferralStats {
+interface ReferralStats {
   totalEarnings: number;
   totalReferrals: number;
   referralCode: string;
   status: boolean;
 }
 
-export interface ReferralUsersResponse {
+interface ReferralUsersResponse {
   users: ReferralUser[];
   hasMore: boolean;
   nextCursor: number | null;
   status: boolean;
 }
 
-export interface ReferralEarningsResponse {
+interface ReferralEarningsResponse {
   earnings: ReferralEarning[];
   hasMore: boolean;
   nextCursor: number | null;
   status: boolean;
 }
 
-export interface ApiResponse<T> {
+interface ApiResponse<T> {
   data?: T;
   error?: string;
   status: boolean;
@@ -116,7 +116,7 @@ export const fetchReferralEarnings = async (
 /**
  * Create a new referral relationship
  */
-export const createReferral = async (
+const createReferral = async (
   referralCode: string,
   referredUserId: number
 ): Promise<ApiResponse<any>> => {
@@ -137,7 +137,7 @@ export const createReferral = async (
 /**
  * Validate a referral code
  */
-export const validateReferralCode = async (
+const validateReferralCode = async (
   code: string
 ): Promise<ApiResponse<{ referrerId?: number; message: string }>> => {
   try {
@@ -154,7 +154,7 @@ export const validateReferralCode = async (
 /**
  * Add referral earnings (admin function)
  */
-export const addReferralEarnings = async (
+const addReferralEarnings = async (
   userId: number,
   points: number,
   description: string

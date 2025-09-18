@@ -11,7 +11,7 @@ import {
   LucideLock,
   LucideEyeOff,
   LucideChevronRight,
-  LucideLoader2,
+  LucideLoader,
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -95,14 +95,6 @@ const GroupSettingsPage = () => {
       fetchGroup();
     }
   }, [groupId, fetchGroup]);
-
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center min-h-screen bg-gray-50 dark:bg-gray-900">
-        <div className="w-8 h-8 border-b-2 rounded-full animate-spin border-primary-dark-pink"></div>
-      </div>
-    );
-  }
 
   if (error && !group) {
     return (
@@ -562,7 +554,7 @@ const MembersTab: React.FC<{ groupId: string; adminId: number }> = ({
           </h3>
         </div>
         <div className="px-6 py-12 text-center">
-          <LucideLoader2 className="w-8 h-8 mx-auto mb-4 animate-spin text-primary-dark-pink" />
+          <LucideLoader className="w-8 h-8 mx-auto mb-4 animate-spin text-primary-dark-pink" />
           <p className="text-gray-500 dark:text-gray-400">Loading members...</p>
         </div>
       </div>
@@ -631,7 +623,7 @@ const MembersTab: React.FC<{ groupId: string; adminId: number }> = ({
                 </div>
                 <div>
                   <h4 className="font-medium text-gray-900 dark:text-white">
-                    {member.user?.fullname || member.user?.username}
+                    {member.user?.name || member.user?.username}
                   </h4>
                   <p className="text-sm text-gray-500 dark:text-gray-400">
                     {member.user?.username}
@@ -644,8 +636,8 @@ const MembersTab: React.FC<{ groupId: string; adminId: number }> = ({
                     member.userId === adminId
                       ? "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200"
                       : member.role === "MODERATOR"
-                        ? "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200"
-                        : "bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200"
+                      ? "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200"
+                      : "bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200"
                   }`}
                 >
                   {member.userId === adminId ? "Admin" : member.role}
@@ -665,7 +657,7 @@ const MembersTab: React.FC<{ groupId: string; adminId: number }> = ({
           >
             {isFetchingNextPage ? (
               <>
-                <LucideLoader2 className="w-4 h-4 animate-spin" />
+                <LucideLoader className="w-4 h-4 animate-spin" />
                 Loading more...
               </>
             ) : (

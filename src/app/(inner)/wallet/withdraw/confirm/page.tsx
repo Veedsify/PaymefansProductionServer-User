@@ -1,7 +1,7 @@
 "use client";
 import { useConfigContext } from "@/contexts/ConfigContext";
 import { useWithdrawStore } from "@/contexts/WithDrawContext";
-import { LucideDollarSign, LucideLoader2 } from "lucide-react";
+import { LucideDollarSign, LucideLoader } from "lucide-react";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useCallback } from "react";
 import { motion } from "framer-motion";
@@ -20,7 +20,7 @@ const WithdrawConfigPage = () => {
   const [error, setError] = React.useState<string>("");
   const [processing, setProcessing] = React.useState(false);
   const [step, setStep] = React.useState<"create" | "verify">(
-    user?.hasPin ? "verify" : "create",
+    user?.hasPin ? "verify" : "create"
   );
   const { config } = useConfigContext();
   const router = useRouter();
@@ -47,7 +47,7 @@ const WithdrawConfigPage = () => {
 
   const amountInNgn = Number(withdrawValues?.amountInNgn).toLocaleString();
   const amountToSettle = Number(
-    withdrawValues?.amountToSettle,
+    withdrawValues?.amountToSettle
   ).toLocaleString();
   // Fixed typo: platformFee instead of platfromFee
   const platformFee = Number(withdrawValues?.platformFee).toLocaleString();
@@ -169,7 +169,7 @@ const WithdrawConfigPage = () => {
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-dvh bg-primary-50">
-        <LucideLoader2 className="w-16 h-16 text-primary-dark-pink animate-spin" />
+        <LucideLoader className="w-16 h-16 text-primary-dark-pink animate-spin" />
       </div>
     );
   }
@@ -241,7 +241,7 @@ const WithdrawConfigPage = () => {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.3 }}
               >
-                <LucideLoader2 className="w-5 h-5 animate-spin" />
+                <LucideLoader className="w-5 h-5 animate-spin" />
               </motion.div>
             ) : (
               "Confirm Withdrawal"

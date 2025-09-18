@@ -20,7 +20,7 @@ const ModelsSubscription = ({ model }: { model: any }) => {
               height={100}
               priority
               src={model?.profile_image}
-              alt={model ? model.fullname : ""}
+              alt={model ? model.name : ""}
               className="object-cover w-20 h-20 rounded-full lg:w-24 lg:h-24 aspect-square"
             />
           </motion.div>

@@ -4,7 +4,7 @@ import {
   LucideHeadphones,
   LucideUser,
   LucideSend,
-  LucideLoader2,
+  LucideLoader,
 } from "lucide-react";
 import { LegacyRef, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";

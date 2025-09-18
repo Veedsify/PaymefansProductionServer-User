@@ -344,7 +344,7 @@ const DraggableElement = ({
             textShadow: "2px 2px 4px rgba(0,0,0,0.7)",
             background: "transparent",
           }}
-          className={`bg-transparent border-none outline-none resize-none text-center w-full min-h-[2em] ${
+          className={`bg-transparent border-none outline-none resize text-center w-full min-h-[2em] ${
             element.style.fontFamily
           } ${isEditing ? "cursor-text" : "cursor-move"}`}
           placeholder="Enter text..."
@@ -368,7 +368,7 @@ const DraggableElement = ({
               textShadow: "2px 2px 4px rgba(0,0,0,0.7)",
               background: "transparent",
             }}
-            className={`bg-transparent border-none outline-none text-center w-full min-w-[100px] ${
+            className={`bg-transparent border-none outline-none text-center w-full h-fit min-w-[100px] ${
               element.style.fontFamily
             } ${isEditing ? "cursor-text" : "cursor-move"}`}
             placeholder="Link text"
