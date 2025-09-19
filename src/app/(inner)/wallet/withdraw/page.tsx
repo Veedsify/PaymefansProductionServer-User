@@ -1,39 +1,39 @@
+"use client";
+import LoadingSpinner from "@/components/common/loaders/LoadingSpinner";
+import { useAuthContext } from "@/contexts/UserUseContext";
 import WithdrawalInput from "@/features/withdraw/WithdrawalInput";
 import axiosInstance from "@/utils/Axios";
 import { getTransactionsData } from "@/utils/data/Transactions";
 import getUserData from "@/utils/data/UserData";
+import { useQuery } from "@tanstack/react-query";
 import { LucideArrowRight } from "lucide-react";
 import { cookies } from "next/headers";
 import Image from "next/image";
 import Link from "next/link";
 
-const Page = async () => {
-  const token = (await cookies()).get("token");
-  const user = await getUserData();
-  const { wallet } = await axiosInstance
-    .post(
-      `/auth/wallet`,
-      {},
-      {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token?.value}`,
-        },
-      }
-    )
-    .then((res) => res.data as { wallet: number });
-  const { points } = await axiosInstance
-    .post(
-      `/auth/points`,
-      {},
-      {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token?.value}`,
-        },
-      }
-    )
-    .then((res) => res.data as { points: number });
+const Page = () => {
+  const { user } = useAuthContext();
+  const { data: walletData } = useQuery({
+    queryKey: ["wallet"],
+    queryFn: async () => {
+      const res = await axiosInstance.post(`/auth/wallet`, {});
+      return res.data as { wallet: number };
+    },
+  });
+
+  const { data: pointsData } = useQuery({
+    queryKey: ["points"],
+    queryFn: async () => {
+      const res = await axiosInstance.post(`/auth/points`, {});
+      return res.data as { points: number };
+    },
+  });
+
+  const points = pointsData?.points ?? 0;
+
+  if (!user) {
+    return <div className="p-4">No user data found</div>;
+  }
 
   return (
     <div className="p-4 py-8">

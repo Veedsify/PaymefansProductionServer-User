@@ -21,6 +21,8 @@ import {
   type ReferralEarning,
 } from "@/utils/data/ReferralAPI";
 import { useInView } from "react-intersection-observer";
+import { fmt } from "@/constants/path";
+const NEXT_PUBLIC_SERVER_URL = process.env.NEXT_PUBLIC_SERVER_URL;
 
 const ReferralPage = () => {
   const [activeTab, setActiveTab] = useState<"users" | "earnings">("users");
@@ -110,9 +112,32 @@ const ReferralPage = () => {
   const referralEarnings =
     earningsData?.pages?.flatMap((page) => page.earnings) || [];
 
+  if (!NEXT_PUBLIC_SERVER_URL) {
+    return (
+      <div className="p-4 py-8 pb-24 dark:text-white">
+        <div className="flex items-center gap-3 pt-4 mb-10">
+          <Gift className="w-8 h-8 text-primary-dark-pink" />
+          <h1 className="text-2xl font-bold">Referral Program</h1>
+        </div>
+        <div className="text-center py-12">
+          <div className="text-red-500 mb-4">
+            Error: Server URL is not configured.
+          </div>
+          <p className="text-gray-500 dark:text-gray-500">
+            Please contact support or try again later.
+          </p>
+        </div>
+      </div>
+    );
+  }
+
   // Get stats from API or fallback
   const referralCode = statsData?.referralCode || `PF-${user?.user_id}`;
-  const referralLink = `https://paymefans.com/referral?ref=${referralCode}`;
+  const referralLink = fmt(
+    `%s/refer?code=%s`,
+    NEXT_PUBLIC_SERVER_URL as string,
+    referralCode
+  );
   const totalEarnings = statsData?.totalEarnings || 0;
   const totalUsers = statsData?.totalReferrals || 0;
 
@@ -137,7 +162,7 @@ const ReferralPage = () => {
   };
 
   return (
-    <div className="p-4 py-8 dark:text-white">
+    <div className="p-4 py-8 pb-24 dark:text-white">
       <div className="flex items-center gap-3 pt-4 mb-10">
         <Gift className="w-8 h-8 text-primary-dark-pink" />
         <h1 className="text-2xl font-bold">Referral Program</h1>
@@ -379,7 +404,7 @@ const ReferralPage = () => {
                               month: "short",
                               day: "numeric",
                               year: "numeric",
-                            },
+                            }
                           )}
                         </p>
                       </div>
@@ -529,7 +554,7 @@ const ReferralPage = () => {
                                 month: "short",
                                 day: "numeric",
                                 year: "numeric",
-                              },
+                              }
                             )}
                           </p>
                         </div>

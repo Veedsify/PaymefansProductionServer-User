@@ -1,16 +1,12 @@
-import getUserData from "@/utils/data/UserData";
+"use client";
 import { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
-import ProfilePage from "../../[id]/page";
-
-export const metadata: Metadata = {
-  title: "Become a model",
-  description: "Profile page",
-};
+import { useAuthContext } from "@/contexts/UserUseContext";
 
 async function Models() {
-  const user = await getUserData();
+  const { user } = useAuthContext();
+
   if (user?.is_model) {
     return (
       <>

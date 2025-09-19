@@ -1,14 +1,18 @@
+"use client";
 import SettingsTab from "@/features/settings/SettingsTab";
-import { Metadata } from "next";
+
 import Image from "next/image";
 import getUserData from "@/utils/data/UserData";
+import { useQuery } from "@tanstack/react-query";
+import { useAuthContext } from "@/contexts/UserUseContext";
 
-export const metadata: Metadata = {
-  title: "Setings & Privacy | Paymefans",
-  description: "Profile page",
-};
-const Settings = async () => {
-  const user = await getUserData();
+const Settings = () => {
+  const { user } = useAuthContext();
+
+  if (!user) {
+    return <div className="p-4">No user data found</div>;
+  }
+
   return (
     <div className="p-4 mb-20 lg:mb-4">
       <div className="border-[3px] border-black/30 mb-3 inline-block p-2 rounded-full border-dotted">
@@ -23,7 +27,7 @@ const Settings = async () => {
       </div>
 
       {/* <form onSubmit={(e) => e.preventDefault()} action=""> */}
-      <SettingsTab user={user} />
+      {user && <SettingsTab user={user} />}
     </div>
   );
 };

@@ -43,7 +43,6 @@ const Post = React.memo(() => {
       post?.post_audience === "public" || // Public posts are visible to all
       (post?.post_audience === "subscribers" && isSubscribed) || // Subscriber-only post for subscribed users
       (post?.post_audience === "price" && hasPaid); // Paid posts if the user has paid
-
     return { isCreator, isSubscribed, hasPaid, canView };
   }, [post, user]);
 
@@ -62,15 +61,12 @@ const Post = React.memo(() => {
     }
   };
 
-  // Handle errors
-  if (postError) {
-    if (isGuest) {
-      router.push("/login");
-    } else {
-      router.push("/404");
-    }
-    return null;
-  }
+  const content = useMemo(
+    () => ({
+      __html: `${post?.content.replace(/(?:\r\n|\r|\n)/g, "<br>")}`,
+    }),
+    [post?.content]
+  );
 
   // Loading state
   if (postLoading) {
@@ -84,15 +80,20 @@ const Post = React.memo(() => {
     );
   }
 
+  // Handle errors
+  if (postError) {
+    if (isGuest) {
+      router.push("/login");
+    } else {
+      router.push("/404");
+    }
+  }
+
   // If no post data, show error
   if (!post) {
     router.push("/404");
     return null;
   }
-
-  const content = {
-    __html: `${post?.content.replace(/(?:\r\n|\r|\n)/g, "<br>")}`,
-  };
 
   return (
     <div className="p-4 mt-8">

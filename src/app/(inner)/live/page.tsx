@@ -1,15 +1,29 @@
+"use client";
 // import CreateLiveStream from "@/components/sub_components/sub/create-live-stream";
+import LoadingSpinner from "@/components/common/loaders/LoadingSpinner";
 import getUserData from "@/utils/data/UserData";
-import { Metadata } from "next";
+import { useQuery } from "@tanstack/react-query";
+
 import Image from "next/image";
 import Link from "next/link";
 
-export const metadata: Metadata = {
-  title: "Live",
-  description: "Profile page",
-};
-const Live = async () => {
-  const user = await getUserData();
+const Live = () => {
+  const {
+    data: user,
+    isLoading,
+    error,
+  } = useQuery({
+    queryKey: ["userProfileData"],
+    queryFn: getUserData,
+  });
+
+  if (isLoading) {
+    return <LoadingSpinner />;
+  }
+
+  if (error || !user) {
+    return <div className="p-4">Error loading user data.</div>;
+  }
 
   if (
     (user?.Model?.verification_status === false ||

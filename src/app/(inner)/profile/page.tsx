@@ -1,3 +1,4 @@
+"use client";
 import MoreProfileOptions from "@/features/profile/MoreProfileOptions";
 import EditProfileButton from "@/features/profile/EditProfileButton";
 import { ProfileCounts } from "@/features/profile/ProfileCount";
@@ -12,21 +13,25 @@ import {
   LucideLock,
   LucideMapPin,
 } from "lucide-react";
-import { Metadata } from "next";
-import Image from "next/image";
 import Link from "next/link";
-import { useMemo } from "react";
 import ProfilePicture from "@/features/profile/ProfilePicture";
 import ProfileBanner from "@/features/profile/ProfileBanner";
 import CreatorDashboardButton from "@/features/profile/CreatorDashboardButton";
+import { useQuery } from "@tanstack/react-query";
 
-export const metadata: Metadata = {
-  title: "Profile",
-  description: "Profile page",
-};
+const ProfilePage = () => {
+  const {
+    data: user,
+    isLoading,
+    error,
+  } = useQuery({
+    queryKey: ["userProfileData"],
+    queryFn: getUserData,
+  });
 
-const ProfilePage = async () => {
-  const user: Partial<AuthUserProps> | null = await getUserData();
+  if (isLoading) return <div>Loading...</div>;
+  if (error) return <div>Error loading user data</div>;
+  if (!user) return <div>No user data found</div>;
 
   return (
     <>

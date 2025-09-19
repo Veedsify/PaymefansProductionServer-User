@@ -23,16 +23,14 @@ axiosInstance.interceptors.response.use(
 
     // Check if we should attempt token refresh
     if (
-      error.response?.status === 403 &&
+      error.response?.status === 401 &&
       originalRequest &&
       !originalRequest._retry
     ) {
       originalRequest._retry = true;
 
       try {
-        // Use the same axios instance for token refresh
         await axiosInstance.post("/auth/token/refresh");
-        // Retry the original request
         return axiosInstance(originalRequest);
       } catch (refreshError) {
         // Redirect to login on refresh failure

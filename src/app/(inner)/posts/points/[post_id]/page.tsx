@@ -1,3 +1,6 @@
+"use client";
+
+import React, { useEffect, useState } from "react";
 import getAllPoints from "@/utils/data/GetPoints";
 import PointsBuy from "@/features/points/Points";
 import Image from "next/image";
@@ -6,12 +9,12 @@ import { formatDate } from "@/utils/FormatDate";
 import { LucideEye, LucideLock, LucideUsers } from "lucide-react";
 import QuickPostActions from "@/features/post/QuickPostActions";
 import PostPageImage from "@/features/post/PostPageImage";
-import React from "react";
-import { cookies } from "next/headers";
-import axios from "axios";
-import { redirect } from "next/navigation";
-import getUserData from "@/utils/data/UserData";
+import { useParams, useRouter } from "next/navigation";
 import { getPost } from "@/utils/data/GetPost";
+import { useAuthContext } from "@/contexts/UserUseContext";
+import { useQuery } from "@tanstack/react-query";
+import LoadingSpinner from "@/components/common/loaders/LoadingSpinner";
+import { PostData } from "@/types/Components";
 
 type Points = {
   points: number;
@@ -19,33 +22,51 @@ type Points = {
   points_buy_id: string;
 };
 
-type params = Promise<{ post_id: string }>;
+export default function Page() {
+  const params = useParams();
+  const postId = params?.post_id as string;
+  const { user } = useAuthContext();
+  const {
+    data: post,
+    isLoading,
+    error,
+  } = useQuery<PostData, Error>({
+    queryKey: ["usePostData", postId],
+    queryFn: () => getPost(postId),
+  });
 
-async function Page({ params }: { params: params }) {
-  const user = await getUserData();
-  const postId = (await params).post_id;
-  const post = await getPost(postId);
-  const points: Points[] = await getAllPoints();
+  const { data: points } = useQuery({
+    queryKey: ["getAllPoints"],
+    queryFn: async () => getAllPoints(),
+  });
 
-  if (!post?.user?.is_model) {
-    redirect(`/posts/${postId}`);
+  console.log("Post data:", post);
+
+  if (isLoading) {
+    return <LoadingSpinner className="py-4" />;
+  }
+  if (error) {
+    return <div className="p-4">Error loading post data.</div>;
+  }
+  if (!post) {
+    return <div className="p-4">No post data found</div>;
   }
 
-  const isCreator = post?.user.id === user?.id;
-  // const isAdmin = user.role === "admin";
-  const isSubscribed = post.isSubscribed;
+  const isCreator = post?.user?.id === user?.id;
+  // const isAdmin = user?.role === "admin";
+  const isSubscribed = post?.isSubscribed;
   const hasPaid = post?.hasPaid;
 
   // Determine visibility
   const canView =
     // isAdmin || // Admin sees all
-    isCreator || // Creator sees their own posts
-    post.post_audience === "public" || // Public posts are visible to all
-    (post.post_audience === "subscribers" && isSubscribed) || // Subscriber-only post for subscribed users
-    (post.post_audience === "price" && hasPaid); // Paid posts if the user has paid
+    isCreator ||
+    post.post_audience === "public" ||
+    (post.post_audience === "subscribers" && isSubscribed) ||
+    (post.post_audience === "price" && hasPaid);
 
   const content = {
-    __html: `${post?.content.replace(/\r\n|\r|\n/g, "<br>")}`,
+    __html: `${post?.content?.replace(/\r\n|\r|\n/g, "<br>")}`,
   };
 
   return (
@@ -102,11 +123,16 @@ async function Page({ params }: { params: params }) {
           {post?.UserMedia.map((media: any, index: number) => (
             <PostPageImage
               key={index}
-              data={post}
+              data={{
+                id: post.id,
+                post_status: post.post_status,
+                post_price: post.post_price,
+                userId: post.user.id,
+              }}
               media={media}
               indexId={index}
               canView={canView as boolean}
-              postOwnerId={post?.user?.id}
+              postOwnerId={post.user.user_id}
               medias={post?.UserMedia}
             />
           ))}
@@ -122,7 +148,7 @@ async function Page({ params }: { params: params }) {
       </div>
       <div className="p-4 md:p-8 dark:text-white">
         <div className="mb-20 grid grid-cols-3 gap-3 md:gap-6 md:mb-0">
-          {points.map((point, index) => (
+          {points?.map((point: Points, index: number) => (
             <PointsBuy
               key={index}
               {...point}
@@ -135,5 +161,3 @@ async function Page({ params }: { params: params }) {
     </div>
   );
 }
-
-export default Page;

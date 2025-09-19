@@ -33,8 +33,16 @@ export const useAuthContext = () => {
   return context;
 };
 
-export const AuthContextProvider = ({ children }: { children: ReactNode }) => {
-  const [user, setUser] = useState<Partial<AuthUserProps | null>>(null);
+export const AuthContextProvider = ({
+  children,
+  user: initialUser,
+}: {
+  children: ReactNode;
+  user: Partial<AuthUserProps> | undefined;
+}) => {
+  const [user, setUser] = useState<Partial<AuthUserProps | null>>(
+    initialUser || null
+  );
   const [isGuest, setIsGuest] = useState(true);
   const router = useRouter();
   const location = usePathname();
@@ -84,16 +92,19 @@ export const AuthContextProvider = ({ children }: { children: ReactNode }) => {
         is_model: false,
       });
       ref.current += 1;
-      // if (!isProfilePage && !isPostPage) {
-      //   router.push("/login");
-      // }
+      if (!isProfilePage && !isPostPage) {
+        router.push("/login");
+      }
       return null;
     }
   }, []);
 
   useLayoutEffect(() => {
-    fetchUser();
-  }, [fetchUser]);
+    if (!user) {
+      fetchUser();
+    }
+    setIsGuest(!user || user?.username === "guest");
+  }, [fetchUser, user]);
 
   useLayoutEffect(() => {
     if (ref.current != 0) {

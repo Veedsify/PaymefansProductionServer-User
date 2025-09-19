@@ -125,8 +125,8 @@ const PrivateMediaImageCard = React.memo(({ sort }: { sort: string }) => {
           </button>
         )}
         {!hasMore && !loading && (
-          <p className="italic font-medium text-center text-gray-500 col-span-3">
-            No more private media
+          <p className="font-medium text-center text-gray-500 text-sm col-span-3">
+            No more media
           </p>
         )}
       </div>

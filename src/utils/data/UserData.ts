@@ -1,27 +1,13 @@
+
 import { AuthUserProps } from "@/features/user/types/user";
-import { cookies } from "next/headers";
-import axios, { AxiosResponse } from "axios";
-const getUserData = async (): Promise<Partial<AuthUserProps> | null> => {
-  const token = (await cookies()).get("token");
+import axiosInstance from "../Axios";
+const getUserData = async (): Promise<Partial<AuthUserProps>> => {
   try {
-    const res: AxiosResponse<{ user: AuthUserProps }> = await axios.get(
-      `${process.env.NEXT_PUBLIC_TS_EXPRESS_URL}/auth/retrieve`,
-      {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token?.value}`,
-        },
-      },
-    );
+    const res = await axiosInstance.get(`/auth/retrieve`);
     return res.data.user as AuthUserProps;
   } catch (error) {
-    return {
-      email: "Guest",
-      id: 0,
-      name: "Guest",
-      active_status: true,
-      username: "@guest",
-    };
+    console.error("Error fetching user data:", error);
+    throw error;
   }
 };
 export default getUserData;

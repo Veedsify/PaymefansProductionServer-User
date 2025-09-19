@@ -136,7 +136,7 @@ const WalletPage = () => {
   }
 
   return (
-    <div className="p-4 py-8">
+    <div className="p-4 py-8 pb-24">
       <div className="flex flex-wrap items-center justify-between pb-8 mb-6 border-b border-gray-200 gap-6 dark:border-gray-700">
         <div className="flex items-center gap-4">
           {user && (

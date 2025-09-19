@@ -1,5 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
+import { LucideLoader2 } from 'lucide-react';
 
 interface LoadingSpinnerProps {
   size?: 'sm' | 'md' | 'lg';
@@ -30,23 +31,23 @@ const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({
   return (
     <div className={`flex items-center justify-center ${className}`}>
       <div className="flex flex-col items-center space-y-2">
-        <motion.div
+        <span
           className={`
-            ${sizeClasses[size]}
-            border-2 border-t-transparent
-            ${colorClasses[color]}
-            rounded-full
+        ${sizeClasses[size]}
+        ${color === 'primary' ? 'text-primary-dark-pink' : ''}
+        ${color === 'secondary' ? 'text-blue-500' : ''}
+        ${color === 'white' ? 'text-white' : ''}
+        ${color === 'gray' ? 'text-gray-400' : ''}
+        animate-spin
+        flex items-center justify-center
           `}
-          animate={{ rotate: 360 }}
-          transition={{
-            duration: 1,
-            repeat: Infinity,
-            ease: "linear"
-          }}
-        />
+        >
+          {/* Example Lucide icon: Loader2 */}
+         <LucideLoader2 className="animate-spin" size={size === 'sm' ? 16 : size === 'md' ? 24 : 32} />
+        </span>
         {text && (
           <p className="text-sm text-gray-600 dark:text-gray-400 animate-pulse">
-            {text}
+        {text}
           </p>
         )}
       </div>

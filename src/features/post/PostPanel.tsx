@@ -78,7 +78,7 @@ const PostPanel = () => {
   };
 
   return (
-    <div className="mt-3 mb-12 select-none">
+    <div className="mt-3 pb-24 select-none">
       {posts?.map((post, index) => (
         <div key={index}>
           <PostComponent

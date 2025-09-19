@@ -1,18 +1,29 @@
-
+"use client";;
+import LoadingSpinner from "@/components/common/loaders/LoadingSpinner";
 import VerificationPageButton from "@/features/verification/VerificationButton";
 import getUserData from "@/utils/data/UserData";
+import { useQuery } from "@tanstack/react-query";
 import { LucideInfo } from "lucide-react";
-import { Metadata } from "next";
 import Image from "next/image";
 import { redirect } from "next/navigation";
 
-export const metadata: Metadata = {
-  title: "Verification",
-  description: "Verify your identity by taking a short peace sign video",
-};
+const Verification = () => {
+  const {
+    data: user,
+    isLoading,
+    error,
+  } = useQuery({
+    queryKey: ["userProfileData"],
+    queryFn: getUserData,
+  });
 
-const Verification = async () => {
-  const user = await getUserData();
+  if (isLoading) {
+    return <LoadingSpinner />;
+  }
+
+  if (error || !user) {
+    return <div className="p-4">Error loading user data.</div>;
+  }
 
   if (user?.Model?.verification_status || !user?.is_model) {
     redirect("/profile");

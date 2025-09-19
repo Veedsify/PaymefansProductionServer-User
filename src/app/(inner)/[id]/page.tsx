@@ -1,6 +1,6 @@
-"use client";
-import { useEffect, useLayoutEffect, useState } from "react";
-import { useParams, usePathname, useRouter } from "next/navigation";
+"use client";;
+import { useEffect, useState } from "react";
+import { useParams, useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import { PiCurrencyDollarSimple } from "react-icons/pi";
@@ -24,9 +24,7 @@ import ProfileSocialLinks from "@/features/profile/ProfileSocialLinks";
 import TipModel from "@/features/models/comps/TipModel";
 import MoreProfileOptions from "@/features/profile/MoreProfileOptions";
 import { useGuestModal } from "@/contexts/GuestModalContext";
-import { postRegex } from "@/constants/regex";
 import { useProfile } from "@/hooks/queries/useProfile";
-
 // Utility to format numbers
 const formatNumber = (num: number = 0): string => {
   if (num >= 1e9) return `${(num / 1e9).toFixed(1)}B`;
@@ -34,7 +32,6 @@ const formatNumber = (num: number = 0): string => {
   if (num >= 1e3) return `${(num / 1e3).toFixed(1)}K`;
   return num.toLocaleString();
 };
-
 // Verified Badge Component
 const VerifiedBadge = ({ type = "user" }: { type?: "user" | "model" }) => (
   <span
@@ -47,7 +44,6 @@ const VerifiedBadge = ({ type = "user" }: { type?: "user" | "model" }) => (
     </span>
   </span>
 );
-
 // Profile Counts Component
 const ProfileCounts = ({
   followers,
@@ -77,14 +73,12 @@ const ProfileCounts = ({
     )}
   </div>
 );
-
 const ProfilePage = () => {
   const params = useParams<{ id: string }>();
   const router = useRouter();
   const { user, isGuest } = useAuthContext();
   const { toggleModalOpen } = useGuestModal();
   const [openTip, setOpenTip] = useState(false);
-
   // Use TanStack Query to fetch profile data
   const {
     data: profileData,
@@ -95,7 +89,6 @@ const ProfilePage = () => {
     viewerId: user?.id || null,
     enabled: !!params.id,
   });
-
   // Handle errors if a particular user is not found and the authenticated user is not a guest
   useEffect(() => {
     if (isError) {
@@ -103,12 +96,10 @@ const ProfilePage = () => {
       return;
     }
   }, [isError, router]);
-
   const userdata = profileData?.user;
   const isBlockedByUser = profileData?.isBlockedByUser;
   const isVerified = userdata?.is_verified;
   const canTip = user?.id !== userdata?.id && !userdata?.is_model;
-
   // Redirect to profile if viewing own profile
   useEffect(() => {
     if (userdata && userdata.id && user?.id === userdata.id) {
@@ -122,31 +113,25 @@ const ProfilePage = () => {
       router.replace(`/${userdata.username}`);
     }
   }, [userdata, user, router]);
-
   // Early returns for various states
   if (userdata && user?.id === userdata.id) {
     return null;
   }
-
   // If error or user not found, and NOT a guest, show UserNotFound
   if ((isError || (!userdata && !isLoading)) && !isGuest) {
     return <UserNotFound userid={params.id || "unknown"} />;
   }
-
   if (userdata && !userdata?.active_status) {
     return <SuspendedUserPage userdata={userdata} />;
   }
-
   // If current user is blocked by this profile user, show user not found
   if (isBlockedByUser) {
     return <UserNotFound userid={params.id || "unknown"} />;
   }
-
   // Prevent rendering until userdata is loaded
   if (!userdata) {
     return null;
   }
-
   const toggleTip = () => {
     if (!isGuest) {
       setOpenTip(!openTip);
@@ -211,7 +196,6 @@ const ProfilePage = () => {
           </h1>
           <small className="text-gray-500">{userdata.username}</small>
         </div>
-
         {/* Bio */}
         {userdata.bio && (
           <div
@@ -221,7 +205,6 @@ const ProfilePage = () => {
             }}
           />
         )}
-
         {/* Website */}
         {userdata.website && (
           <Link
@@ -276,7 +259,6 @@ const ProfilePage = () => {
             </span>
           </span>
         </div>
-
         {/* Counts */}
         <ProfileCounts
           followers={userdata.total_followers}
@@ -294,5 +276,4 @@ const ProfilePage = () => {
     </div>
   );
 };
-
 export default ProfilePage;

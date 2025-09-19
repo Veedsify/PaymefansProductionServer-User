@@ -235,7 +235,7 @@ const ConversationSettingsPage = () => {
 
         {/* Settings Options */}
         <div className="p-4">
-          <div className="mb-4">
+          {/* <div className="mb-4">
             <h3 className="px-2 mb-2 text-sm font-medium text-gray-500 uppercase dark:text-gray-400">
               Notifications & Media
             </h3>
@@ -250,7 +250,7 @@ const ConversationSettingsPage = () => {
               description="View shared media, links and files"
               badge="23"
             />
-          </div>
+          </div> */}
 
           <div className="mb-4">
             <h3 className="px-2 mb-2 text-sm font-medium text-gray-500 uppercase dark:text-gray-400">
@@ -285,7 +285,7 @@ const ConversationSettingsPage = () => {
               onClick={handleToggleFreeMessage}
               isLoading={isUpdatingFreeMessage}
             />
-            <SettingsAction
+            {/* <SettingsAction
               icon={<Star className="text-amber-500 dark:text-amber-400" />}
               label="Starred messages"
               description="View messages you've starred"
@@ -295,7 +295,7 @@ const ConversationSettingsPage = () => {
               label="Search in conversation"
               description="Find specific messages or content"
               onClick={() => setIsSearching(true)}
-            />
+            /> */}
           </div>
 
           <div>
@@ -313,13 +313,13 @@ const ConversationSettingsPage = () => {
               danger={!isUserBlocked}
               onClick={() => setIsBlocking(true)}
             />
-            <SettingsAction
+            {/* <SettingsAction
               icon={<Trash2 className="text-red-600 dark:text-red-400" />}
               label="Delete conversation"
               description="Permanently delete all messages"
               danger
               onClick={() => setIsDeleting(true)}
-            />
+            /> */}
           </div>
         </div>
       </motion.div>

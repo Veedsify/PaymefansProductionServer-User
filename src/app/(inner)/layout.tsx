@@ -7,13 +7,12 @@ import SideBar from "@/components/common/global/SideBar";
 import { Toaster } from "react-hot-toast";
 import { Toaster as SonnerToast } from "sonner";
 import { Geist } from "next/font/google";
-import getUserData from "@/utils/data/UserData";
 import PostComponentPreview from "@/features/post/FullComponentPreview";
 import Loader from "@/components/common/loaders/Loader";
-import UserAccountSuspendedScreen from "@/features/user/comps/UserAccountSuspendedScreen";
 import GuestLoginModal from "@/features/guest/GuestLoginModal";
 import CombinedProviders from "@/providers/CombinedProviders";
 import LayoutWithWishlist from "@/components/layout/LayoutWithWishlist";
+import QueryProvider from "@/providers/QueryProvider";
 
 const font = Geist({
   subsets: ["latin", "latin-ext"],
@@ -41,19 +40,6 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const user = await getUserData();
-  if (user && !user.active_status) {
-    return (
-      <html>
-        <body
-          className={`bg-white ${font.className} dark:bg-black min-h-dvh flex items-center justify-center`}
-        >
-          <UserAccountSuspendedScreen user={user} />
-        </body>
-      </html>
-    );
-  }
-
   return (
     <html lang="en">
       <head>
@@ -84,56 +70,58 @@ export default async function RootLayout({
         <meta property="og:image" content="/site/logo.svg" />
       </head>
       <body className={`${font.className} dark:bg-black min-h-dvh`}>
-        <CombinedProviders>
-          <Loader />
-          <Toaster
-            toastOptions={{
-              duration: 5000,
-              style: {
-                fontSize: "14px",
-                fontWeight: "500",
-                border: "1px solid #CC0DF8",
-                borderRadius: "100vmax",
-              },
-              className:
-                "dark:bg-gray-900 dark:text-white dark:border-gray-600",
-            }}
-          />
-          <SonnerToast
-            richColors
-            position="top-center"
-            toastOptions={{
-              closeButton: true,
-              duration: 10000,
-              style: {
-                fontSize: "16px",
-                borderRadius: "100vmax",
-              },
-            }}
-          />
-          <div className="relative select-none grid h-dvh lg:grid-cols-8">
-            <div className="col-span-2">
-              <SideBar />
-            </div>
-            <div className="relative overflow-auto border-r h-dvh col-span-6 border-gray-300">
-              <Header />
-              <div className="grid lg:grid-cols-6 pt-[66px] lg:pt-[48px] h-dvh">
-                <div className="flex flex-col h-full col-span-3">
-                  <div className="w-full h-full md:border-r border-black/20 dark:border-slate-800">
-                    {children}
-                  </div>
-                </div>
-                <LayoutWithWishlist>
-                  <SideModels />
-                </LayoutWithWishlist>
+        <QueryProvider>
+          <CombinedProviders>
+            <Loader />
+            <Toaster
+              toastOptions={{
+                duration: 5000,
+                style: {
+                  fontSize: "14px",
+                  fontWeight: "500",
+                  border: "1px solid #CC0DF8",
+                  borderRadius: "100vmax",
+                },
+                className:
+                  "dark:bg-gray-900 dark:text-white dark:border-gray-600",
+              }}
+            />
+            <SonnerToast
+              richColors
+              position="top-center"
+              toastOptions={{
+                closeButton: true,
+                duration: 10000,
+                style: {
+                  fontSize: "16px",
+                  borderRadius: "100vmax",
+                },
+              }}
+            />
+            <div className="relative select-none grid h-dvh lg:grid-cols-8">
+              <div className="col-span-2">
+                <SideBar />
               </div>
+              <div className="relative overflow-auto border-r h-dvh col-span-6 border-gray-300">
+                <Header />
+                <div className="grid lg:grid-cols-6 pt-[66px] lg:pt-[48px] h-dvh">
+                  <div className="flex flex-col h-full col-span-3">
+                    <div className="w-full h-full md:border-r border-black/20 dark:border-slate-800">
+                      {children}
+                    </div>
+                  </div>
+                  <LayoutWithWishlist>
+                    <SideModels />
+                  </LayoutWithWishlist>
+                </div>
+              </div>
+              <MenuButtons />
+              {/* <ModalComponent /> */}
             </div>
-            <MenuButtons />
-            {/* <ModalComponent /> */}
-          </div>
-          <PostComponentPreview />
-          <GuestLoginModal />
-        </CombinedProviders>
+            <PostComponentPreview />
+            <GuestLoginModal />
+          </CombinedProviders>
+        </QueryProvider>
       </body>
     </html>
   );

@@ -37,7 +37,7 @@ class MediaPreviewErrorBoundary extends Component<
     if (this.state.hasError) {
       return (
         this.props.fallback || (
-          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-90">
+          <div className="fixed inset-0 z-[200] flex items-center justify-center bg-black bg-opacity-90">
             <div className="bg-white dark:bg-gray-800 rounded-lg p-6 max-w-sm mx-4">
               <h3 className="text-lg font-semibold mb-2 text-gray-900 dark:text-white">
                 Unable to load media
@@ -47,7 +47,7 @@ class MediaPreviewErrorBoundary extends Component<
               </p>
               <button
                 onClick={() => this.setState({ hasError: false })}
-                className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors"
+                className="px-4 py-2 bg-primary-dark-pink text-white rounded hover:bg-primary-text-dark-pink transition-colors"
               >
                 Try Again
               </button>
