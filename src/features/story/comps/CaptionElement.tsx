@@ -22,21 +22,21 @@ const CaptionElement = ({ element }: { element: any }) => {
     pointerEvents: (element.type === "link" ? "auto" : "none") as any,
     textShadow: "1px 1px 2px rgba(0,0,0,0.8)", // Better readability on images/videos
     zIndex: 200,
-    maxWidth: "80%",
-    wordWrap: "break-word" as any,
+    width: "90%",
   };
 
   return (
-    <div
+    <p
       style={elementStyle}
       onClick={handleClick}
       className={`
+        text-wrap
         ${element.type === "link" ? "hover:opacity-80 transition-opacity" : ""}
         ${element.type === "link" ? "underline" : ""}
       `}
     >
       {element.content}
-    </div>
+    </p>
   );
 };
 

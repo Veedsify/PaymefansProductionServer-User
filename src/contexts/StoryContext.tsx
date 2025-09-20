@@ -26,11 +26,13 @@ export type StoryType = {
   index: number;
   media_id: string;
   media_type: string;
-  media_state: "completed" | "processing" | "failed";
+  media_state: "completed" | "processing" | "failed" | "uploading" | "pending";
   media_url: string;
   caption?: string;
   duration?: number;
   captionElements?: CaptionElement[];
+  uploadProgress?: number;
+  file?: File;
 };
 
 type StoryState = {
@@ -38,10 +40,11 @@ type StoryState = {
   addToStory: (story: StoryType) => void;
   removeFromStory: (id: number) => void;
   addCaptionToStory: (id: number, caption: string) => void;
-  updateStorySlide: (id: number, data: Partial<StoryType>) => void;
+  updateStorySlide: (media_id: string, data: Partial<StoryType>) => void;
   updateCaptionStyle: (id: number, captionStyle: CaptionElement) => void;
   editingSlideIndex: number | null;
   updateStoryState: (media_id: string, state: StoryType["media_state"]) => void;
+  updateUploadProgress: (media_id: string, progress: number) => void;
   setEditingSlide: (index: number) => void;
   clearStory: () => void;
 };
@@ -64,10 +67,22 @@ export const useStoryStore = create<StoryState>()(
               : slide,
           ),
         })),
-      updateStorySlide: (index: number, data: Partial<StoryType>) =>
+      updateUploadProgress: (media_id, progress) =>
         set((state) => ({
-          story: state.story.map((slide, i) =>
-            i === index ? { ...slide, ...data } : slide,
+          story: state.story.map((slide) =>
+            slide.media_id === media_id
+              ? {
+                  ...slide,
+                  uploadProgress: progress,
+                  media_state: progress === 100 ? "completed" : "uploading",
+                }
+              : slide,
+          ),
+        })),
+      updateStorySlide: (media_id: string, data: Partial<StoryType>) =>
+        set((state) => ({
+          story: state.story.map((slide) =>
+            slide.media_id === media_id ? { ...slide, ...data } : slide,
           ),
         })),
       addCaptionToStory: (id, caption) => {

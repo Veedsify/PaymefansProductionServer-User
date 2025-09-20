@@ -8,6 +8,7 @@ import UserStatus from "@/features/story/comps/UserStatus";
 import type { Story } from "@/features/story/types/story";
 import useFetchStories from "../../../hooks/FetchStories";
 import StatusModal from "./StatusModal";
+import FormatName from "@/lib/FormatName";
 
 const StatusComponent = () => {
   const { stories, loading } = useFetchStories();
@@ -145,7 +146,7 @@ const Status = ({
           )}
         </div>
         <div className="text-xs font-medium text-center text-gray-600 whitespace-pre md:text-sm dark:text-gray-200 text-truncate max-w-20">
-          {data.name}
+          {FormatName(data.name)}
         </div>
       </div>
       {setStoriesOpen && (

@@ -8,9 +8,12 @@ import {
   FileSignature,
   Italic,
   Link,
+  LucideScaling,
   LucideSend,
+  Minus,
   Move,
   Palette,
+  Plus,
   Text,
   X,
 } from "lucide-react";
@@ -215,45 +218,82 @@ const DraggableElement = ({
   containerRef: React.RefObject<HTMLDivElement | null>;
 }) => {
   const [isDragging, setIsDragging] = useState(false);
+  const [isScaling, setIsScaling] = useState(false);
   const [dragMoved, setDragMoved] = useState(false);
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
   const [initialPosition, setInitialPosition] = useState({ x: 0, y: 0 });
+  const [initialFontSize, setInitialFontSize] = useState(0);
   const [isEditing, setIsEditing] = useState(false);
   const elementRef = useRef<HTMLDivElement>(null);
 
   // Start drag or tap
-  const handleStart = (clientX: number, clientY: number, isTouch = false) => {
+  const handleStart = (
+    clientX: number,
+    clientY: number,
+    isTouch = false,
+    isScaleMode = false,
+  ) => {
     setDragStart({ x: clientX, y: clientY });
     setInitialPosition(element.position);
     setDragMoved(false);
     onSelect(element.id);
-    setIsDragging(true);
+
+    if (isScaleMode) {
+      setIsScaling(true);
+      const currentSize = parseFloat(element.style.fontSize);
+      setInitialFontSize(currentSize);
+    } else {
+      setIsDragging(true);
+    }
   };
 
-  // Move drag
+  // Move drag or scale
   const handleMove = useCallback(
     (clientX: number, clientY: number) => {
-      if (!isDragging || !containerRef.current) return;
+      if ((!isDragging && !isScaling) || !containerRef.current) return;
+
       const rect = containerRef.current.getBoundingClientRect();
       const deltaX = clientX - dragStart.x;
       const deltaY = clientY - dragStart.y;
       const moved = Math.abs(deltaX) > 2 || Math.abs(deltaY) > 2;
       setDragMoved(moved);
       if (!moved) return;
-      const deltaXPercent = (deltaX / rect.width) * 100;
-      const deltaYPercent = (deltaY / rect.height) * 100;
-      const newX = Math.max(5, Math.min(95, initialPosition.x + deltaXPercent));
-      const newY = Math.max(5, Math.min(95, initialPosition.y + deltaYPercent));
-      onPositionChange(element.id, { x: newX, y: newY });
+
+      if (isScaling) {
+        // Scale based on vertical drag distance
+        const scaleDistance = -deltaY; // Negative because dragging up should increase size
+        const scaleFactor = scaleDistance / 100; // Adjust sensitivity
+        const newSize = Math.max(
+          0.75,
+          Math.min(5, initialFontSize + scaleFactor),
+        );
+        onStyleChange(element.id, { fontSize: `${newSize}rem` });
+      } else if (isDragging) {
+        // Regular dragging
+        const deltaXPercent = (deltaX / rect.width) * 100;
+        const deltaYPercent = (deltaY / rect.height) * 100;
+        const newX = Math.max(
+          5,
+          Math.min(95, initialPosition.x + deltaXPercent),
+        );
+        const newY = Math.max(
+          5,
+          Math.min(95, initialPosition.y + deltaYPercent),
+        );
+        onPositionChange(element.id, { x: newX, y: newY });
+      }
     },
     [
       isDragging,
+      isScaling,
       containerRef,
       dragStart.x,
       dragStart.y,
       initialPosition.x,
       initialPosition.y,
+      initialFontSize,
       onPositionChange,
+      onStyleChange,
       element.id,
     ],
   );
@@ -261,6 +301,7 @@ const DraggableElement = ({
   // End drag or tap
   const handleEnd = useCallback(() => {
     setIsDragging(false);
+    setIsScaling(false);
     if (!dragMoved) {
       setIsEditing(true);
       onSelect(element.id);
@@ -270,15 +311,20 @@ const DraggableElement = ({
 
   // Mouse/touch handlers
   useEffect(() => {
-    if (!isDragging) return;
-    const handleMouseMove = (e: MouseEvent) => handleMove(e.clientX, e.clientY);
+    if (!isDragging && !isScaling) return;
+    const handleMouseMove = (e: MouseEvent) => {
+      e.preventDefault();
+      handleMove(e.clientX, e.clientY);
+    };
     const handleTouchMove = (e: TouchEvent) => {
+      e.preventDefault();
       const touch = e.touches[0];
       handleMove(touch.clientX, touch.clientY);
     };
     const handleMouseUp = () => handleEnd();
     const handleTouchEnd = () => handleEnd();
-    document.addEventListener("mousemove", handleMouseMove);
+
+    document.addEventListener("mousemove", handleMouseMove, { passive: false });
     document.addEventListener("mouseup", handleMouseUp);
     document.addEventListener("touchmove", handleTouchMove, { passive: false });
     document.addEventListener("touchend", handleTouchEnd);
@@ -290,8 +336,10 @@ const DraggableElement = ({
     };
   }, [
     isDragging,
+    isScaling,
     dragStart,
     initialPosition,
+    initialFontSize,
     dragMoved,
     handleEnd,
     handleMove,
@@ -301,62 +349,80 @@ const DraggableElement = ({
   return (
     <div
       ref={elementRef}
-      className={`absolute cursor-move select-none transition-all duration-200 ${
+      className={`absolute select-none transition-all duration-100 ${
         isSelected
           ? "ring-2 ring-blue-400 ring-opacity-70 scale-105 shadow-lg"
           : "hover:shadow-md"
-      } ${isDragging ? "z-50 scale-110" : "z-30"}`}
+      } ${isDragging || isScaling ? "z-50" : "z-30"}`}
       style={{
         left: `${element.position.x}%`,
         top: `${element.position.y}%`,
         transform: "translate(-50%, -50%)",
         maxWidth: "80%",
         minWidth: "100px",
+        cursor: isDragging ? "grabbing" : "grab",
       }}
-      onMouseDown={(e) => handleStart(e.clientX, e.clientY)}
-      onTouchStart={(e) =>
-        handleStart(e.touches[0].clientX, e.touches[0].clientY, true)
-      }
-      // No onClick here; tap/click-to-edit handled in drag end logic
     >
       {isSelected && (
-        <div className="absolute flex items-center -top-10 left-1/2 transform -translate-x-1/2 gap-1">
-          <div className="bg-blue-500/80 rounded-full p-1.5 backdrop-blur-sm border border-white/20">
-            <Move stroke="#fff" size={14} />
+        <div className="absolute flex items-center -top-12 left-1/2 transform -translate-x-1/2 gap-2">
+          <div
+            className="bg-blue-500/80 rounded-full p-2 backdrop-blur-sm border border-white/20 cursor-grab active:cursor-grabbing hover:bg-blue-600/80 transition-colors"
+            onMouseDown={(e) => {
+              e.stopPropagation();
+              handleStart(e.clientX, e.clientY);
+            }}
+            onTouchStart={(e) => {
+              e.stopPropagation();
+              handleStart(e.touches[0].clientX, e.touches[0].clientY, true);
+            }}
+            title="Drag to move"
+          >
+            <Move stroke="#fff" size={16} />
+          </div>
+          <div
+            className="bg-white/80 rounded-full p-2 backdrop-blur-sm border border-white/20 cursor-ns-resize hover:bg-white/80 transition-colors"
+            onMouseDown={(e) => {
+              e.stopPropagation();
+              handleStart(e.clientX, e.clientY, false, true);
+            }}
+            onTouchStart={(e) => {
+              e.stopPropagation();
+              handleStart(
+                e.touches[0].clientX,
+                e.touches[0].clientY,
+                true,
+                true,
+              );
+            }}
+            title="Drag up/down to scale"
+          >
+            <LucideScaling stroke="#000" size={16} />
           </div>
         </div>
       )}
-      {element.type === "text" ? (
-        <textarea
-          maxLength={100}
-          onChange={(e) => onContentChange(element.id, e.target.value)}
-          value={element.content}
-          onFocus={() => setIsEditing(true)}
-          onBlur={() => setIsEditing(false)}
-          style={{
-            fontSize: element.style.fontSize,
-            fontWeight: element.style.fontWeight,
-            color: element.style.color,
-            textAlign: element.style.textAlign,
-            fontStyle: element.style.fontStyle,
-            textDecoration: element.style.textDecoration,
-            pointerEvents: isSelected ? "auto" : "none",
-            textShadow: "2px 2px 4px rgba(0,0,0,0.7)",
-            background: "transparent",
-          }}
-          className={`bg-transparent border-none outline-none resize text-center w-full min-h-[2em] ${
-            element.style.fontFamily
-          } ${isEditing ? "cursor-text" : "cursor-move"}`}
-          placeholder="Enter text..."
-        />
-      ) : (
-        <div className="flex flex-col items-center gap-1">
-          <input
-            type="text"
-            onChange={(e) => onContentChange(element.id, e.target.value)}
+      <div className="w-full h-full">
+        {element.type === "text" ? (
+          <textarea
+            maxLength={100}
+            onChange={(e) => {
+              e.target.style.height = "auto";
+              e.target.style.height = `${e.target.scrollHeight}px`;
+              onContentChange(element.id, e.target.value);
+            }}
             value={element.content}
             onFocus={() => setIsEditing(true)}
             onBlur={() => setIsEditing(false)}
+            onClick={(e) => {
+              e.stopPropagation();
+              onSelect(element.id);
+              setIsEditing(true);
+            }}
+            onMouseDown={(e) => {
+              e.stopPropagation();
+            }}
+            onTouchStart={(e) => {
+              e.stopPropagation();
+            }}
             style={{
               fontSize: element.style.fontSize,
               fontWeight: element.style.fontWeight,
@@ -364,20 +430,60 @@ const DraggableElement = ({
               textAlign: element.style.textAlign,
               fontStyle: element.style.fontStyle,
               textDecoration: element.style.textDecoration,
-              pointerEvents: isSelected ? "auto" : "none",
+              pointerEvents: "auto",
               textShadow: "2px 2px 4px rgba(0,0,0,0.7)",
               background: "transparent",
             }}
-            className={`bg-transparent border-none outline-none text-center w-full h-fit min-w-[100px] ${
+            className={`bg-transparent text-wrap border-none outline-none resize-none text-center  min-h-[2em] ${
               element.style.fontFamily
-            } ${isEditing ? "cursor-text" : "cursor-move"}`}
-            placeholder="Link text"
+            } ${isEditing ? "cursor-text" : "cursor-pointer"}`}
+            placeholder="Enter text..."
           />
-          <div className="text-xs text-white/90 max-w-[200px] truncate bg-black/50 px-2 py-1 rounded-full backdrop-blur-sm border border-white/20">
-            {element.url}
+        ) : (
+          <div className="flex flex-col items-center gap-1">
+            <textarea
+              // type="text"
+              onChange={(e) => {
+                e.target.style.height = "auto";
+                e.target.style.height = `${e.target.scrollHeight}px`;
+                onContentChange(element.id, e.target.value);
+              }}
+              value={element.content}
+              onFocus={() => setIsEditing(true)}
+              onBlur={() => setIsEditing(false)}
+              onClick={(e) => {
+                e.stopPropagation();
+                onSelect(element.id);
+                setIsEditing(true);
+              }}
+              onMouseDown={(e) => {
+                e.stopPropagation();
+              }}
+              onTouchStart={(e) => {
+                e.stopPropagation();
+              }}
+              style={{
+                fontSize: element.style.fontSize,
+                fontWeight: element.style.fontWeight,
+                color: element.style.color,
+                textAlign: element.style.textAlign,
+                fontStyle: element.style.fontStyle,
+                textDecoration: element.style.textDecoration,
+                pointerEvents: "auto",
+                textShadow: "2px 2px 4px rgba(0,0,0,0.7)",
+                background: "transparent",
+              }}
+              className={`bg-transparent border-none outline-none resize-none text-center h-fit w-[160px] ${
+                element.style.fontFamily
+              } ${isEditing ? "cursor-text" : "cursor-pointer"}`}
+              placeholder="Link text"
+            />
+            <div className="text-xs text-white/90 max-w-[200px] truncate bg-black/50 px-2 py-1 rounded-full backdrop-blur-sm border border-white/20">
+              {element.url}
+            </div>
           </div>
-        </div>
-      )}
+        )}
+      </div>
       {isSelected && (
         <button
           onClick={(e) => {
@@ -433,7 +539,7 @@ const EnhancedSlideComponent = ({
       position: { x: 50, y: 50 },
       style: {
         fontFamily: fontFamilies[fontIndex],
-        fontSize: "1.875rem",
+        fontSize: "1.5rem",
         fontWeight: "bold",
         color: "#fff",
         textAlign: "center",
@@ -496,6 +602,26 @@ const EnhancedSlideComponent = ({
       el.id === id ? { ...el, style: { ...el.style, ...styleUpdate } } : el,
     );
     updateCaptionElements(newElements);
+  };
+
+  const increaseFontSize = () => {
+    if (!selectedElement) return;
+    const element = captionElements.find((el) => el.id === selectedElement);
+    if (!element) return;
+
+    const currentSize = parseFloat(element.style.fontSize);
+    const newSize = Math.min(currentSize + 0.25, 5); // Max 5rem
+    updateElementStyle(selectedElement, { fontSize: `${newSize}rem` });
+  };
+
+  const decreaseFontSize = () => {
+    if (!selectedElement) return;
+    const element = captionElements.find((el) => el.id === selectedElement);
+    if (!element) return;
+
+    const currentSize = parseFloat(element.style.fontSize);
+    const newSize = Math.max(currentSize - 0.25, 0.75); // Min 0.75rem
+    updateElementStyle(selectedElement, { fontSize: `${newSize}rem` });
   };
 
   const deleteElement = (id: string) => {
@@ -669,6 +795,22 @@ const EnhancedSlideComponent = ({
                   title="Italic"
                 >
                   <Italic size={16} />
+                </button>
+              </div>
+              <div className="flex items-center p-1 rounded-lg gap-1 bg-black/10">
+                <button
+                  onClick={decreaseFontSize}
+                  className="p-2 rounded-lg transition-all duration-200 hover:bg-white/20 text-black/70"
+                  title="Decrease Font Size"
+                >
+                  <Minus size={16} />
+                </button>
+                <button
+                  onClick={increaseFontSize}
+                  className="p-2 rounded-lg transition-all duration-200 hover:bg-white/20 text-black/70"
+                  title="Increase Font Size"
+                >
+                  <Plus size={16} />
                 </button>
               </div>
               <button

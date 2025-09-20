@@ -1,59 +1,42 @@
-import { AxiosError } from "axios";
-import { useEffect, useState } from "react";
-import toast from "react-hot-toast";
+import { useCallback } from "react";
 import { HiCamera } from "react-icons/hi";
 import { v4 as uuid } from "uuid";
 import { useStoryStore } from "@/contexts/StoryContext";
-import axiosServer from "@/utils/Axios";
-import { getToken } from "@/utils/Cookie";
 
 const StoryUploadForm = () => {
-  const [selected, setSelected] = useState<File[]>([]);
   const { addToStory } = useStoryStore();
-  const handleSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const fileArrays = Array.from(e.target.files || []);
-    setSelected(fileArrays);
-  };
 
-  useEffect(() => {
-    const UploadImagesAndAddToStory = async () => {
-      const formData = new FormData();
-      selected.forEach((file) => {
-        formData.append("files[]", file);
-      });
-      try {
-        toast.loading("Uploading Media...", {
-          id: "story-upload",
-          duration: Infinity,
-        });
-        const response = await axiosServer.post("/stories/upload", formData);
-        if (response) {
-          response.data.data.map((item: any, index: number) => {
-            addToStory({
-              index,
-              media_id: item.media_id || uuid(),
-              id: Math.random() * 1000,
-              media_url: item.url,
-              media_state: item.media_state,
-              media_type: item.mimetype.split("/")[0],
-            });
-            toast.success("Story Uploaded Successfully", {
-              id: "story-upload",
-              duration: 4000,
-            });
+  const handleSelect = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const files = Array.from(e.target.files || []);
+
+      if (files.length > 0) {
+        files.forEach((file, index) => {
+          const media_id = uuid();
+          const fileUrl = URL.createObjectURL(file);
+          const isVideo = file.type.startsWith("video/");
+
+          // Add media_id to file object for server sync
+          (file as any).media_id = media_id;
+
+          addToStory({
+            id: Date.now() + index,
+            index,
+            media_id,
+            media_type: isVideo ? "video" : "image",
+            media_state: "pending",
+            media_url: fileUrl,
+            uploadProgress: 0,
+            file,
           });
-        }
-      } catch (err: unknown) {
-        toast.error("An Error Occurred While Uploading Your Story", {
-          id: "story-upload",
         });
-        console.error("Error while uploading images", err);
+
+        // Clear the input
+        e.target.value = "";
       }
-    };
-    if (selected.length > 0) {
-      UploadImagesAndAddToStory();
-    }
-  }, [selected, addToStory]);
+    },
+    [addToStory],
+  );
 
   return (
     <form className="flex-1 h-full">
@@ -67,6 +50,7 @@ const StoryUploadForm = () => {
             className="text-primary-dark-pink group-hover:scale-110 transition-transform duration-300 sm:w-8 sm:h-8"
           />
         </div>
+
         <div className="text-center space-y-3 sm:space-y-2">
           <span className="block text-xl font-semibold text-gray-700 sm:text-lg dark:text-gray-200 group-hover:text-primary-dark-pink dark:group-hover:text-primary-dark-pink transition-colors duration-300">
             Select photos or videos
@@ -78,9 +62,11 @@ const StoryUploadForm = () => {
             Supports JPG, PNG, MP4, MOV
           </span>
         </div>
+
         <div className="px-8 py-3 text-base font-medium text-gray-600 bg-white border border-gray-200 rounded-full sm:px-6 sm:py-2 dark:bg-gray-800 dark:border-gray-600 sm:text-sm dark:text-gray-300 group-hover:bg-primary-dark-pink group-hover:text-white group-hover:border-primary-dark-pink transition-all duration-300 shadow-sm">
           Choose Files
         </div>
+
         <input
           type="file"
           multiple

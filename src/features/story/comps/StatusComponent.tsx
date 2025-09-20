@@ -1,4 +1,5 @@
 "use client";
+import axios from "axios";
 import { LucideArrowRight, LucidePlay, X } from "lucide-react";
 import dynamic from "next/dynamic";
 import Image from "next/image";
@@ -9,8 +10,19 @@ import HlsViewer from "@/features/media/HlsViewer";
 import StatusMediaPanel from "@/features/story/comps/StatusMediaPanel";
 import type { SelectMoreProps } from "@/types/Components";
 import { type StoryType, useStoryStore } from "../../../contexts/StoryContext";
+import axiosServer from "@/utils/Axios";
 import StoryCaptionComponent from "./StoryCaptionComponent";
 import StoryUploadForm from "./StoryUploadForm";
+
+interface PresignedUrlResponse {
+  media_id: string;
+  presignedUrl: string;
+  key: string;
+  fileName: string;
+  fileType: string;
+  fileSize: number;
+  isVideo: boolean;
+}
 
 // Dynamically import HLSVideoPlayer to reduce initial load bundle
 const HLSVideoPlayer = dynamic(() => import("../../media/videoplayer"), {
@@ -21,7 +33,14 @@ function StatusComponent() {
   const [openMore, setOpenMore] = useState(true);
   const [openStoryCaption, setStoryCaption] = useState(false);
   const [canContinue, setCanContinue] = useState(false);
-  const { story: media, removeFromStory, updateStoryState } = useStoryStore();
+  const [isUploading, setIsUploading] = useState(false);
+  const {
+    story: media,
+    removeFromStory,
+    updateStoryState,
+    updateUploadProgress,
+    updateStorySlide,
+  } = useStoryStore();
   const { user } = useAuthContext();
   const toggleOpenMore = useCallback(() => {
     setOpenMore((prev) => !prev);
@@ -32,7 +51,15 @@ function StatusComponent() {
   }, []);
 
   useEffect(() => {
-    if (media.length > 0 && media.some((m) => m.media_state !== "processing")) {
+    if (
+      media.length > 0 &&
+      media.some(
+        (m) =>
+          m.media_state !== "processing" &&
+          m.media_state !== "uploading" &&
+          m.media_state !== "pending",
+      )
+    ) {
       setCanContinue(true);
     } else {
       setCanContinue(false);
@@ -62,8 +89,156 @@ function StatusComponent() {
     return () => evtSource.close();
   }, [user?.id, updateStoryState]);
 
+  // S3 upload functions
+  const getPresignedUrls = async (
+    files: File[],
+    mediaIds: string[],
+  ): Promise<PresignedUrlResponse[]> => {
+    const fileData = files.map((file, index) => ({
+      name: file.name,
+      type: file.type,
+      size: file.size,
+      media_id: mediaIds[index],
+    }));
+
+    const response = await axiosServer.post("/stories/presigned-urls", {
+      files: fileData,
+    });
+
+    return response.data.data;
+  };
+
+  const uploadToS3 = async (
+    file: File,
+    presignedUrl: string,
+    media_id: string,
+  ): Promise<void> => {
+    await axios.put(presignedUrl, file, {
+      headers: {
+        "Content-Type": file.type,
+      },
+      onUploadProgress: (progressEvent) => {
+        if (progressEvent.total) {
+          const progress = (progressEvent.loaded / progressEvent.total) * 100;
+          updateUploadProgress(media_id, Math.round(progress));
+        }
+      },
+    });
+  };
+
+  const completeUpload = async (
+    uploadedFiles: Array<{
+      media_id: string;
+      key: string;
+      fileName: string;
+      fileType: string;
+      fileSize: number;
+      isVideo: boolean;
+    }>,
+  ) => {
+    const response = await axiosServer.post("/stories/complete-upload", {
+      uploadedFiles,
+    });
+
+    return response.data.data;
+  };
+
+  // Upload pending files
+  const uploadPendingFiles = async () => {
+    const pendingFiles = media.filter(
+      (item) => item.media_state === "pending" && item.file,
+    );
+
+    if (pendingFiles.length === 0) return;
+
+    setIsUploading(true);
+
+    try {
+      // Step 1: Get presigned URLs
+      const files = pendingFiles.map((item) => item.file!);
+      const mediaIds = pendingFiles.map((item) => item.media_id);
+      const presignedData = await getPresignedUrls(files, mediaIds);
+
+      // Step 2: Mark files as uploading (media_ids should already match)
+      pendingFiles.forEach((item) => {
+        updateStorySlide(item.media_id, {
+          media_state: "uploading",
+        });
+      });
+
+      // Step 3: Upload files to S3
+      const uploadPromises = presignedData.map((data, index) =>
+        uploadToS3(files[index], data.presignedUrl, data.media_id),
+      );
+
+      await Promise.all(uploadPromises);
+
+      // Step 4: Complete upload and save to database
+      toast.loading("Processing upload...", { id: toastId });
+
+      const uploadedFiles = presignedData.map((data) => ({
+        media_id: data.media_id,
+        key: data.key,
+        fileName: data.fileName,
+        fileType: data.fileType,
+        fileSize: data.fileSize,
+        isVideo: data.isVideo,
+      }));
+
+      const completedFiles = await completeUpload(uploadedFiles);
+
+      // Step 5: Update story items with final URLs and states
+      completedFiles.forEach((item: any) => {
+        const storyItem = media.find((m) => m.media_id === item.media_id);
+        if (storyItem) {
+          // Clean up blob URL
+          if (storyItem.media_url.startsWith("blob:")) {
+            URL.revokeObjectURL(storyItem.media_url);
+          }
+
+          // For images, mark as completed immediately. For videos, set to processing
+          const finalState = item.mimetype.startsWith("video/")
+            ? "processing"
+            : "completed";
+
+          updateStorySlide(storyItem.media_id, {
+            media_url: item.url,
+            media_state: finalState,
+            file: undefined, // Remove file reference
+            uploadProgress: undefined,
+          });
+        }
+      });
+    } catch (error) {
+      console.error("Upload failed:", error);
+      toast.error("Upload failed. Please try again.", { id: toastId });
+
+      // Mark failed uploads
+      pendingFiles.forEach((item) => {
+        updateStoryState(item.media_id, "failed");
+      });
+    } finally {
+      setIsUploading(false);
+    }
+  };
+
+  // Start upload when pending files are added
+  useEffect(() => {
+    const pendingFiles = media.filter((item) => item.media_state === "pending");
+    if (pendingFiles.length > 0 && !isUploading) {
+      uploadPendingFiles();
+    }
+  }, [media.length]);
+
   const handleSubmitStory = useCallback(() => {
-    if (media.some((m) => m.media_state === "processing")) {
+    if (
+      media.some(
+        (m) =>
+          m.media_state === "processing" ||
+          m.media_state === "uploading" ||
+          m.media_state === "pending",
+      )
+    ) {
       toast.error(
         "Please wait for all media to finish processing before continuing.",
       );
@@ -121,12 +296,21 @@ function StatusComponent() {
                     </button>
                     {data.media_type === "video" ? (
                       <div className="relative">
-                        <HlsViewer
-                          key={`${data.id}-${data.media_state}`}
-                          streamUrl={data.media_url}
-                          muted={true}
-                          className="inset-0 object-cover aspect-square w-full h-full cursor-pointer duration-300 ease-in-out"
-                        />
+                        {data.media_state === "pending" ||
+                        data.media_state === "uploading" ? (
+                          <video
+                            src={data.media_url}
+                            muted
+                            className="inset-0 object-cover aspect-square w-full h-full cursor-pointer duration-300 ease-in-out rounded-xl"
+                          />
+                        ) : (
+                          <HlsViewer
+                            key={`${data.id}-${data.media_state}`}
+                            streamUrl={data.media_url}
+                            muted={true}
+                            className="inset-0 object-cover aspect-square w-full h-full cursor-pointer duration-300 ease-in-out"
+                          />
+                        )}
                         <span className="absolute top-2 left-2 bg-gradient-to-r from-primary-dark-pink to-purple-600 p-1.5 rounded-full shadow-lg backdrop-blur-sm">
                           <LucidePlay fill="#fff" strokeWidth={0} size={12} />
                         </span>
@@ -135,15 +319,47 @@ function StatusComponent() {
                             Processing...
                           </span>
                         )}
+                        {data.media_state === "uploading" && (
+                          <span className="absolute bottom-2 left-2 bg-blue-500/80 text-white text-xs px-2 py-1 rounded-lg">
+                            Uploading... {data.uploadProgress || 0}%
+                          </span>
+                        )}
+                        {data.media_state === "pending" && (
+                          <span className="absolute bottom-2 left-2 bg-yellow-500/80 text-white text-xs px-2 py-1 rounded-lg">
+                            Pending...
+                          </span>
+                        )}
+                        {data.media_state === "failed" && (
+                          <span className="absolute bottom-2 left-2 bg-red-500/80 text-white text-xs px-2 py-1 rounded-lg">
+                            Failed
+                          </span>
+                        )}
                       </div>
                     ) : (
-                      <Image
-                        src={data.media_url}
-                        alt="media"
-                        fill
-                        sizes="(max-width: 640px) 100vw, 640px"
-                        className="object-cover cursor-pointer duration-300 ease-in-out rounded-xl group-hover:brightness-110"
-                      />
+                      <div className="relative w-full h-full">
+                        <Image
+                          src={data.media_url}
+                          alt="media"
+                          fill
+                          sizes="(max-width: 640px) 100vw, 640px"
+                          className="object-cover cursor-pointer duration-300 ease-in-out rounded-xl group-hover:brightness-110"
+                        />
+                        {data.media_state === "uploading" && (
+                          <span className="absolute bottom-2 left-2 bg-blue-500/80 text-white text-xs px-2 py-1 rounded-lg">
+                            Uploading... {data.uploadProgress || 0}%
+                          </span>
+                        )}
+                        {data.media_state === "pending" && (
+                          <span className="absolute bottom-2 left-2 bg-yellow-500/80 text-white text-xs px-2 py-1 rounded-lg">
+                            Pending...
+                          </span>
+                        )}
+                        {data.media_state === "failed" && (
+                          <span className="absolute bottom-2 left-2 bg-red-500/80 text-white text-xs px-2 py-1 rounded-lg">
+                            Failed
+                          </span>
+                        )}
+                      </div>
                     )}
                   </div>
                 </div>

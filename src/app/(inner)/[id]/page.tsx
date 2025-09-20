@@ -94,8 +94,11 @@ const ProfilePage = () => {
   });
   // Handle errors if a particular user is not found and the authenticated user is not a guest
   useEffect(() => {
-    if (isError) {
-      router.push("/login");
+    if (isError && !isGuest) {
+      router.replace("/404");
+      return;
+    } else if (isError && isGuest) {
+      router.replace("/login");
       return;
     }
   }, [isError, router]);
