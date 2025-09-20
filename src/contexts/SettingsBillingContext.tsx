@@ -1,8 +1,8 @@
-import axiosInstance from "@/utils/Axios";
-import { getToken } from "@/utils/Cookie";
 import { useRouter } from "next/navigation";
 import { createContext, useContext, useEffect, useState } from "react";
 import toast from "react-hot-toast";
+import axiosInstance from "@/utils/Axios";
+import { getToken } from "@/utils/Cookie";
 
 interface SettingsBillingProps {
   children: React.ReactNode;

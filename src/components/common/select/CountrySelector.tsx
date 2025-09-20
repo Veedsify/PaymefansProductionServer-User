@@ -1,8 +1,8 @@
 "use client";
-import { useState, useEffect, useRef, ChangeEvent } from "react";
 import { ChevronDown } from "lucide-react";
 import Image from "next/image";
-import { acceptedBankTypes } from "@/utils/data/AcceptedBankCountries";
+import { ChangeEvent, useEffect, useRef, useState } from "react";
+import type { acceptedBankTypes } from "@/utils/data/AcceptedBankCountries";
 
 type CountrySelectorProps = {
   acceptedBankCountries: {
@@ -10,7 +10,10 @@ type CountrySelectorProps = {
     name: string;
     bankType: string;
   }[];
-  onCountryChange?: (countryIso: keyof typeof acceptedBankTypes, bankType: string) => void;
+  onCountryChange?: (
+    countryIso: keyof typeof acceptedBankTypes,
+    bankType: string,
+  ) => void;
   defaultCountry?: string;
 };
 
@@ -32,12 +35,15 @@ const CountrySelector = ({
   // Filter countries based on search term
   const filteredCountries = searchTerm
     ? acceptedBankCountries.filter((country) =>
-      country.name.toLowerCase().includes(searchTerm.toLowerCase())
-    )
+        country.name.toLowerCase().includes(searchTerm.toLowerCase()),
+      )
     : acceptedBankCountries;
 
   // Handle selection
-  const handleSelect = (countryIso: keyof typeof acceptedBankTypes, bankType: string) => {
+  const handleSelect = (
+    countryIso: keyof typeof acceptedBankTypes,
+    bankType: string,
+  ) => {
     if (countryIso !== selectedCountry) {
       setSelectedCountry(countryIso);
       if (onCountryChange) onCountryChange(countryIso, bankType);
@@ -180,8 +186,9 @@ const CountrySelector = ({
           </span>
         </div>
         <ChevronDown
-          className={`w-5 h-5 text-gray-500 transform transition-transform duration-200 ${isOpen ? "rotate-180" : ""
-            }`}
+          className={`w-5 h-5 text-gray-500 transform transition-transform duration-200 ${
+            isOpen ? "rotate-180" : ""
+          }`}
           aria-hidden="true"
         />
       </button>
@@ -229,10 +236,11 @@ const CountrySelector = ({
                       handleSelect(country.countryIso, country.bankType);
                     }
                   }}
-                  className={`flex items-center w-full px-4 py-3 text-left hover:bg-gray-50 transition-colors duration-150 cursor-pointer ${selectedCountry === country.countryIso
-                    ? "bg-primary-dark-pink text-white bg-opacity-10 font-medium"
-                    : ""
-                    }`}
+                  className={`flex items-center w-full px-4 py-3 text-left hover:bg-gray-50 transition-colors duration-150 cursor-pointer ${
+                    selectedCountry === country.countryIso
+                      ? "bg-primary-dark-pink text-white bg-opacity-10 font-medium"
+                      : ""
+                  }`}
                 >
                   <div className="flex items-center space-x-3">
                     {/* Flag */}
@@ -250,10 +258,11 @@ const CountrySelector = ({
                       }}
                     />
                     <span
-                      className={`${selectedCountry === country.countryIso
-                        ? "text-primary-dark-pink"
-                        : "text-gray-800"
-                        }`}
+                      className={`${
+                        selectedCountry === country.countryIso
+                          ? "text-primary-dark-pink"
+                          : "text-gray-800"
+                      }`}
                     >
                       {country.name}
                     </span>

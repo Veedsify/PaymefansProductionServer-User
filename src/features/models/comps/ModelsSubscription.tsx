@@ -1,8 +1,8 @@
-import { AllModelsProps } from "@/features/user/types/user";
+import { motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
 import { useMemo } from "react";
-import { motion } from "framer-motion";
+import { AllModelsProps } from "@/features/user/types/user";
 
 const ModelsSubscription = ({ model }: { model: any }) => {
   const memoizedModelSubscription = useMemo(() => {

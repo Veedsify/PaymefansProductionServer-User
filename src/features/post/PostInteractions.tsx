@@ -1,22 +1,22 @@
 "use client";
-import { PiCurrencyDollarSimple } from "react-icons/pi";
+import { useQueryClient } from "@tanstack/react-query";
 import {
   BarChart,
   LucideHeart,
   LucideMessageSquare,
   LucideRepeat2,
 } from "lucide-react";
-import { useCallback, useEffect, useState } from "react";
-import { useAuthContext } from "@/contexts/UserUseContext";
-import { likePost } from "@/utils/PostLikeUtils";
-import numeral from "numeral";
-import { PostData } from "@/types/Components";
-import formatNumber from "@/lib/FormatNumbers";
-import axiosInstance from "@/utils/Axios";
-import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
+import numeral from "numeral";
+import { useCallback, useEffect, useState } from "react";
+import toast from "react-hot-toast";
+import { PiCurrencyDollarSimple } from "react-icons/pi";
 import { useGuestModal } from "@/contexts/GuestModalContext";
-import { useQueryClient } from "@tanstack/react-query";
+import { useAuthContext } from "@/contexts/UserUseContext";
+import formatNumber from "@/lib/FormatNumbers";
+import type { PostData } from "@/types/Components";
+import axiosInstance from "@/utils/Axios";
+import { likePost } from "@/utils/PostLikeUtils";
 
 type PostCompInteractionsProps = {
   data: PostData | undefined;
@@ -156,7 +156,7 @@ export const PostCompInteractions = ({ data }: PostCompInteractionsProps) => {
     try {
       const repost = await axiosInstance.post(
         `/post/repost/${data?.post_id}`,
-        {}
+        {},
       );
       if (repost.status === 200 && repost.data.error === false) {
         toast.success(repost.data.message, {

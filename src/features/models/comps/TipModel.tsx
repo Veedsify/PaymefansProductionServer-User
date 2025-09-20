@@ -1,18 +1,19 @@
 "use client";
 
-import { useAuthContext } from "@/contexts/UserUseContext";
-import { getToken } from "@/utils/Cookie";
-import getAllPoints from "@/utils/data/GetPoints";
 import { motion } from "framer-motion";
+import { LucideLoader, X } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
-import swal from "sweetalert";
 import toast from "react-hot-toast";
-import { ButtonList } from "sweetalert/typings/modules/options/buttons";
-import { LucideLoader, X } from "lucide-react";
+import swal from "sweetalert";
+import type { ButtonList } from "sweetalert/typings/modules/options/buttons";
 import { usePointsStore } from "@/contexts/PointsContext";
+import { useAuthContext } from "@/contexts/UserUseContext";
 import axiosInstance from "@/utils/Axios";
+import { getToken } from "@/utils/Cookie";
+import getAllPoints from "@/utils/data/GetPoints";
+
 type Points = {
   id: number;
   points: number;
@@ -55,7 +56,7 @@ const TipModel = ({
           `You don't have enough points to tip ${selectedPoint.points} points`,
           {
             id: "buy-points",
-          }
+          },
         );
         return;
       }
@@ -72,7 +73,7 @@ const TipModel = ({
         text: `Are you sure you want to tip ${selectedPoint.points} points to ${
           userdata.name || userdata.username
         }? This will cost you ₦${Number(
-          selectedPoint.amount
+          selectedPoint.amount,
         ).toLocaleString()}.`,
         icon: "info",
         buttons: {
@@ -100,7 +101,7 @@ const TipModel = ({
                 } points to ${userdata?.name || userdata?.username}`,
                 {
                   id: "buy-points",
-                }
+                },
               );
               close();
               router.refresh();
@@ -115,7 +116,7 @@ const TipModel = ({
                 "An error occurred while gifting points",
               {
                 id: "buy-points",
-              }
+              },
             );
           }
         } else {
@@ -123,7 +124,7 @@ const TipModel = ({
         }
       });
     },
-    [points, pointBalance, user, userdata, router, close]
+    [points, pointBalance, user, userdata, router, close],
   );
 
   return (

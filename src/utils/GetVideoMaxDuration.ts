@@ -9,14 +9,14 @@ function getMaxDurationBase64(file: File): Promise<Base64URLString> {
     const video = document.createElement("video");
     video.preload = "metadata";
 
-    video.onloadedmetadata = function () {
+    video.onloadedmetadata = () => {
       window.URL.revokeObjectURL(video.src);
       const duration = Math.ceil(video.duration);
       const base64Duration = btoa(duration.toString());
       resolve(base64Duration);
     };
 
-    video.onerror = function () {
+    video.onerror = () => {
       reject(new Error("Failed to load video metadata."));
     };
 

@@ -1,12 +1,12 @@
 "use client";
-import { usePointsStore } from "@/contexts/PointsContext";
-import { useAuthContext } from "@/contexts/UserUseContext";
-import axiosInstance from "@/utils/Axios";
 import { useQueryClient } from "@tanstack/react-query";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
-import { ButtonList } from "sweetalert/typings/modules/options/buttons";
+import type { ButtonList } from "sweetalert/typings/modules/options/buttons";
+import { usePointsStore } from "@/contexts/PointsContext";
+import { useAuthContext } from "@/contexts/UserUseContext";
+import axiosInstance from "@/utils/Axios";
 
 const PointsBuy = ({
   points,
@@ -73,7 +73,7 @@ const PointsBuy = ({
               `You have successfully gifted ${points} points to this post`,
               {
                 id: "buy-points",
-              }
+              },
             );
             queryClient.invalidateQueries({
               queryKey: ["userPoints", user?.id],
@@ -93,7 +93,7 @@ const PointsBuy = ({
               "An error occurred while gifting points",
             {
               id: "buy-points",
-            }
+            },
           );
         }
       } else {

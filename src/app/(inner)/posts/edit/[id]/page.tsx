@@ -1,8 +1,8 @@
-import PostEditor from "@/features/post/PostEditor";
 import axios from "axios";
-import { Metadata } from "next";
+import type { Metadata } from "next";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
+import PostEditor from "@/features/post/PostEditor";
 
 export const metadata: Metadata = {
   title: "Edit Post",

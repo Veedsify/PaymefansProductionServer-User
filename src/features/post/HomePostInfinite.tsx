@@ -1,10 +1,10 @@
 "use client";
-import { formatDate } from "@/utils/FormatDate";
-import PostComponent from "./PostComponent";
-import LoadingPost from "../../components/common/loaders/LoadingPost";
-import { useHomeFeedInfinite } from "@/hooks/useHomeFeedInfinite";
 import { useEffect, useRef } from "react";
 import { useInView } from "react-intersection-observer";
+import { useHomeFeedInfinite } from "@/hooks/useHomeFeedInfinite";
+import { formatDate } from "@/utils/FormatDate";
+import LoadingPost from "../../components/common/loaders/LoadingPost";
+import PostComponent from "./PostComponent";
 
 const HomePostInfinite = () => {
   const {

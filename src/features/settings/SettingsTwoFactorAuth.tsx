@@ -1,13 +1,13 @@
 "use client";
 
-import { useAuthContext } from "@/contexts/UserUseContext";
-import { useEffect, useState } from "react";
-import Toggle from "../../components/common/toggles/Checked";
-import { getToken } from "@/utils/Cookie";
-import toast from "react-hot-toast";
-import _ from "lodash";
 import axios from "axios";
+import _ from "lodash";
+import { useEffect, useState } from "react";
+import toast from "react-hot-toast";
+import { useAuthContext } from "@/contexts/UserUseContext";
 import axiosInstance from "@/utils/Axios";
+import { getToken } from "@/utils/Cookie";
+import Toggle from "../../components/common/toggles/Checked";
 
 const TwoFactorAuth = () => {
   const { user } = useAuthContext();

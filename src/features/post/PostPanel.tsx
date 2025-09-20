@@ -1,13 +1,13 @@
 "use client";
-import { useAuthContext } from "@/contexts/UserUseContext";
-import PostComponent from "./PostComponent";
-import React, { useEffect } from "react";
-import { formatDate } from "@/utils/FormatDate";
-import { useInView } from "react-intersection-observer";
-import { LucideLoader } from "lucide-react";
 import { useInfiniteQuery } from "@tanstack/react-query";
-import axios, { AxiosResponse } from "axios";
+import axios, { type AxiosResponse } from "axios";
+import { LucideLoader } from "lucide-react";
+import React, { useEffect } from "react";
+import { useInView } from "react-intersection-observer";
+import { useAuthContext } from "@/contexts/UserUseContext";
 import axiosInstance from "@/utils/Axios";
+import { formatDate } from "@/utils/FormatDate";
+import PostComponent from "./PostComponent";
 
 async function fetchPost(pageNumber: number) {
   const api = `/post/personal/posts`;

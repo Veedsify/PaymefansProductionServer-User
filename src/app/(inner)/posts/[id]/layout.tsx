@@ -1,12 +1,12 @@
-import { Metadata } from "next";
+import type { Metadata } from "next";
 
 type PostLayoutProps = {
-  children: React.ReactNode;  
+  children: React.ReactNode;
 };
 
 export const metadata: Metadata = {
-     title: 'Posts'
-}
+  title: "Posts",
+};
 
 function PostLayout({ children }: PostLayoutProps) {
   return <>{children}</>;

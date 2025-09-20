@@ -38,7 +38,7 @@ const PointsDisplay = memo(
         )}
       </span>
     );
-  }
+  },
 );
 
 PointsDisplay.displayName = "PointsDisplay";

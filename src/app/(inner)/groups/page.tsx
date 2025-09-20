@@ -1,28 +1,28 @@
 "use client";
 
+import { useQuery } from "@tanstack/react-query";
 import {
+  LucideLoader,
+  LucidePlus,
   LucideSearch,
   LucideUsers,
   LucideVerified,
-  LucideLoader,
-  LucidePlus,
   MailWarning,
 } from "lucide-react";
-import { useQuery } from "@tanstack/react-query";
-import { useAuthContext } from "@/contexts/UserUseContext";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
-import {
-  fetchUserGroups,
-  getMainGroup,
-  GroupData,
-  GroupsResponse,
-  joinGroup,
-} from "@/utils/data/GroupAPI";
+import LoadingSpinner from "@/components/common/loaders/LoadingSpinner";
+import { useAuthContext } from "@/contexts/UserUseContext";
 import GroupCover from "@/features/group/comps/GroupCover";
 import { formatDate } from "@/lib/FormatDate";
-import { useRouter } from "next/navigation";
-import LoadingSpinner from "@/components/common/loaders/LoadingSpinner";
+import {
+  fetchUserGroups,
+  type GroupData,
+  type GroupsResponse,
+  getMainGroup,
+  joinGroup,
+} from "@/utils/data/GroupAPI";
 
 const Groups = () => {
   const { user } = useAuthContext();
@@ -55,7 +55,7 @@ const Groups = () => {
     if (
       mainGroup?.groups?.id &&
       groupsData?.data?.userGroups?.some(
-        (group: GroupData) => group.id === mainGroup.groups.id
+        (group: GroupData) => group.id === mainGroup.groups.id,
       )
     ) {
       router.push(`/groups/${mainGroup.groups.id}`);

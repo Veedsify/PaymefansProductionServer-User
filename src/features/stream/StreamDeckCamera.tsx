@@ -1,17 +1,17 @@
 "use client";
 import "@/app/globals.css";
-import Image from "next/image";
 import { LucidePin, LucideSend } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
-import { ChangeEvent, useEffect, useState } from "react";
-import toast from "react-hot-toast";
-import StreamStats from "./StreamStats";
-import { AuthUserProps } from "@/features/user/types/user";
-import swal from "sweetalert";
 import { useRouter } from "next/navigation";
-import { streamDataProps } from "@/types/Components";
+import { type ChangeEvent, useEffect, useState } from "react";
+import toast from "react-hot-toast";
+import swal from "sweetalert";
+import type { AuthUserProps } from "@/features/user/types/user";
+import type { streamDataProps } from "@/types/Components";
 import axiosInstance from "@/utils/Axios";
 import { getToken } from "@/utils/Cookie";
+import StreamStats from "./StreamStats";
 
 const StreamDeckCamera = ({
   thisUser,

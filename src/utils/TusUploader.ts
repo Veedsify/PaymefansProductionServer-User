@@ -5,7 +5,9 @@ interface UploadOptions {
   uploadUrl: string;
   id: string;
   setProgress: React.Dispatch<React.SetStateAction<{ [key: string]: number }>>;
-  setUploadError: React.Dispatch<React.SetStateAction<{ [key: string]: boolean }>>;
+  setUploadError: React.Dispatch<
+    React.SetStateAction<{ [key: string]: boolean }>
+  >;
 }
 
 interface UploadResult {
@@ -18,7 +20,7 @@ async function UploadWithTus({
   uploadUrl,
   id,
   setProgress,
-  setUploadError
+  setUploadError,
 }: UploadOptions): Promise<string> {
   return new Promise((resolve, reject) => {
     let mediaId: string | null = null;
@@ -35,7 +37,7 @@ async function UploadWithTus({
       isResolved = true;
       clearTimeout(timeoutId);
       if (mediaIdTimeoutId) clearTimeout(mediaIdTimeoutId);
-      setUploadError(prev => ({ ...prev, [id]: true }));
+      setUploadError((prev) => ({ ...prev, [id]: true }));
       reject(error);
     };
 
@@ -55,16 +57,26 @@ async function UploadWithTus({
 
         const checkForMediaId = () => {
           waitTime += checkInterval;
-          console.log(`🔍 Checking for mediaId (${waitTime / 1000}s/${maxWaitTime / 1000}s) for ${id}, current mediaId: ${mediaId || 'null'}`);
+          console.log(
+            `🔍 Checking for mediaId (${waitTime / 1000}s/${maxWaitTime / 1000}s) for ${id}, current mediaId: ${mediaId || "null"}`,
+          );
 
           if (mediaId && !isResolved) {
             isResolved = true;
             clearTimeout(timeoutId);
-            console.log(`✅ MediaId received after ${waitTime}ms for ${id}: ${mediaId}`);
+            console.log(
+              `✅ MediaId received after ${waitTime}ms for ${id}: ${mediaId}`,
+            );
             resolve(mediaId);
           } else if (waitTime >= maxWaitTime && !isResolved) {
-            console.error(`❌ MediaId timeout after ${waitTime}ms for ${id}. Upload may still be processing on server.`);
-            cleanupAndReject(new Error(`No media ID received after ${waitTime / 1000} seconds. Upload may still be processing on server. Please wait a moment and try again.`));
+            console.error(
+              `❌ MediaId timeout after ${waitTime}ms for ${id}. Upload may still be processing on server.`,
+            );
+            cleanupAndReject(
+              new Error(
+                `No media ID received after ${waitTime / 1000} seconds. Upload may still be processing on server. Please wait a moment and try again.`,
+              ),
+            );
           } else if (!isResolved) {
             mediaIdTimeoutId = setTimeout(checkForMediaId, checkInterval);
           }
@@ -98,14 +110,14 @@ async function UploadWithTus({
         // Only update state when progress changes
         if (percentage !== lastProgress) {
           lastProgress = percentage;
-          setProgress(prev => ({ ...prev, [id]: percentage }));
+          setProgress((prev) => ({ ...prev, [id]: percentage }));
         }
       },
 
       onSuccess: () => {
         console.log(`🎯 Upload onSuccess triggered for ${id}`);
         uploadComplete = true;
-        setProgress(prev => ({ ...prev, [id]: 100 }));
+        setProgress((prev) => ({ ...prev, [id]: 100 }));
         tryResolve();
       },
 

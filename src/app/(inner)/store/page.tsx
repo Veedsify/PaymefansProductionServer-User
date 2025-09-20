@@ -1,12 +1,12 @@
 "use client";
-import CartIcon from "@/components/common/icons/CartIcon";
-import { StoreProduct } from "@/types/Components.d";
-import { ShoppingCart, Loader2, LucideArrowRight } from "lucide-react";
+import { Loader2, LucideArrowRight, ShoppingCart } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import numeral from "numeral";
-import { useStoreProducts } from "@/hooks/useStoreProducts";
 import { useMemo } from "react";
+import CartIcon from "@/components/common/icons/CartIcon";
+import { useStoreProducts } from "@/hooks/useStoreProducts";
+import { StoreProduct } from "@/types/Components.d";
 
 const Store = () => {
   const {

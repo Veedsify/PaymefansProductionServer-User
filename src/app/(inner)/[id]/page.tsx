@@ -1,9 +1,5 @@
-"use client";;
-import { useEffect, useState } from "react";
-import { useParams, useRouter } from "next/navigation";
-import Image from "next/image";
-import Link from "next/link";
-import { PiCurrencyDollarSimple } from "react-icons/pi";
+"use client";
+
 import {
   LucideCalendar,
   LucideLink,
@@ -11,20 +7,27 @@ import {
   LucideMapPin,
   Verified,
 } from "lucide-react";
+import Image from "next/image";
+import Link from "next/link";
+import { useParams, useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { PiCurrencyDollarSimple } from "react-icons/pi";
+import { useGuestModal } from "@/contexts/GuestModalContext";
 import { useAuthContext } from "@/contexts/UserUseContext";
+import CreateConversationButton from "@/features/chats/comps/CreateConversationButton";
+import FollowUserComponent from "@/features/follow/FollowUserComponent";
+import TipModel from "@/features/models/comps/TipModel";
+import ActiveProfileTag from "@/features/profile/ActiveProfileTag";
+import MoreProfileOptions from "@/features/profile/MoreProfileOptions";
+import ProfileSocialLinks from "@/features/profile/ProfileSocialLinks";
+import ProfileTabsOther from "@/features/profile/ProfileTabsOther";
+import SuspendedUserPage from "@/features/profile/Suspended";
+import CreateSubscriptionButton from "@/features/subscriptions/CreateSubscriptionButton";
 // import { ProfileUserProps } from "@/features/user/types/user"; // Removed unused import
 import UserNotFound from "@/features/user/comps/UserNotFound";
-import SuspendedUserPage from "@/features/profile/Suspended";
-import FollowUserComponent from "@/features/follow/FollowUserComponent";
-import CreateSubscriptionButton from "@/features/subscriptions/CreateSubscriptionButton";
-import CreateConversationButton from "@/features/chats/comps/CreateConversationButton";
-import ProfileTabsOther from "@/features/profile/ProfileTabsOther";
-import ActiveProfileTag from "@/features/profile/ActiveProfileTag";
-import ProfileSocialLinks from "@/features/profile/ProfileSocialLinks";
-import TipModel from "@/features/models/comps/TipModel";
-import MoreProfileOptions from "@/features/profile/MoreProfileOptions";
-import { useGuestModal } from "@/contexts/GuestModalContext";
 import { useProfile } from "@/hooks/queries/useProfile";
+import FormatName from "@/lib/FormatName";
+
 // Utility to format numbers
 const formatNumber = (num: number = 0): string => {
   if (num >= 1e9) return `${(num / 1e9).toFixed(1)}B`;
@@ -138,7 +141,7 @@ const ProfilePage = () => {
       return;
     }
     toggleModalOpen(
-      "You need to login to tip " + (userdata?.name || "this user") + "."
+      "You need to login to tip " + (userdata?.name || "this user") + ".",
     );
   };
   return (
@@ -162,7 +165,7 @@ const ProfilePage = () => {
           width={100}
           className="absolute object-cover w-20 h-20 border-2 rounded-full md:w-24 md:h-24 sm:border-4 md:-top-12 -top-6 border-primary-dark-pink"
         />
-        <div className="flex items-center p-3 ml-auto gap-3 sm:p-3">
+        <div className="flex items-center py-3 ml-auto gap-3 sm:p-3">
           {canTip && (
             <button
               onClick={toggleTip}
@@ -187,7 +190,7 @@ const ProfilePage = () => {
         {/* Name, Badges, and Tag */}
         <div className="flex flex-col">
           <h1 className="flex items-center text-lg font-bold gap-2">
-            {userdata.name}
+            {FormatName(userdata.name)}
             {isVerified && <VerifiedBadge />}
             {userdata.is_model && <VerifiedBadge type="model" />}
             {userdata && !isGuest && (

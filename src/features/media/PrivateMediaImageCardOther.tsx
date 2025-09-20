@@ -1,17 +1,18 @@
 "use client";
-import { LucideLoader, LucideLock, LucidePlay } from "lucide-react";
-import { BiSolidLock } from "react-icons/bi";
-import React, { useCallback, useEffect, useState } from "react";
-import Image from "next/image";
-import usePostComponent from "@/contexts/PostComponentPreview";
-import { getToken } from "@/utils/Cookie";
-import { ProfileUserProps } from "@/features/user/types/user";
-import { useAuthContext } from "@/contexts/UserUseContext";
-import { MediaDataTypeOtherProps } from "@/types/Components";
-import HLSVideoPlayer from "./videoplayer";
-import { LockedMediaOverlay } from "./LockedMediaOverlay";
 import { useInfiniteQuery } from "@tanstack/react-query";
+import { LucideLoader, LucideLock, LucidePlay } from "lucide-react";
+import Image from "next/image";
+import React, { useCallback, useEffect, useState } from "react";
+import { BiSolidLock } from "react-icons/bi";
+import usePostComponent from "@/contexts/PostComponentPreview";
+import { useAuthContext } from "@/contexts/UserUseContext";
+import type { ProfileUserProps } from "@/features/user/types/user";
+import type { MediaDataTypeOtherProps } from "@/types/Components";
 import axiosInstance from "@/utils/Axios";
+import { getToken } from "@/utils/Cookie";
+import { LockedMediaOverlay } from "./LockedMediaOverlay";
+import HLSVideoPlayer from "./videoplayer";
+
 const getUniqueItems = (arr: MediaDataTypeOtherProps[]) => {
   const uniqueMap = new Map();
   arr.forEach((item) => uniqueMap.set(item.id, item)); // Replace 'id' with the unique property
@@ -23,18 +24,18 @@ interface PrivateMediaPanelMediaCardProps {
     media: MediaDataTypeOtherProps,
     type: string,
     isSubscriber: boolean,
-    indexId: number
+    indexId: number,
   ) => void;
   indexId: number;
 }
 const PrivateMediaImageCardOther = React.memo(
   ({ sort, userdata }: { sort: string; userdata: ProfileUserProps }) => {
     const fullScreenPreview = usePostComponent(
-      (state) => state.fullScreenPreview
+      (state) => state.fullScreenPreview,
     );
     const fetchMedia = async ({ pageParam = 1 }) => {
       const res = await axiosInstance.get(
-        `/post/other/private-media/${userdata.id}?page=${pageParam}&limit=${process.env.NEXT_PUBLIC_POST_MEDIA_PER_PAGE}`
+        `/post/other/private-media/${userdata.id}?page=${pageParam}&limit=${process.env.NEXT_PUBLIC_POST_MEDIA_PER_PAGE}`,
       );
       return res.data;
     };
@@ -52,7 +53,7 @@ const PrivateMediaImageCardOther = React.memo(
       });
     const allMedia = React.useMemo(
       () => (data ? data.pages.flatMap((page) => page.data) : []),
-      [data]
+      [data],
     );
 
     const sorted = React.useMemo(() => {
@@ -67,7 +68,7 @@ const PrivateMediaImageCardOther = React.memo(
       media: MediaDataTypeOtherProps,
       type: string,
       isSubscriber: boolean,
-      indexId: number
+      indexId: number,
     ) => {
       if (media.accessible_to === "subscribers" && !isSubscriber) return;
       const filteredMedias = sorted
@@ -80,11 +81,11 @@ const PrivateMediaImageCardOther = React.memo(
           return true;
         })
         .filter(
-          (media) => !(media.accessible_to === "subscribers" && !isSubscriber)
+          (media) => !(media.accessible_to === "subscribers" && !isSubscriber),
         );
       // Get the new index after filtering
       const newIndexId = filteredMedias.findIndex(
-        (item) => item.id === media.id
+        (item) => item.id === media.id,
       );
       const medias = filteredMedias.map((media) => ({
         url: media.url,
@@ -143,7 +144,7 @@ const PrivateMediaImageCardOther = React.memo(
         </div>
       </>
     );
-  }
+  },
 );
 const PrivateMediaPanelMediaCard = ({
   media,
@@ -181,7 +182,7 @@ const PrivateMediaPanelMediaCard = ({
                       media,
                       media.media_type,
                       isSubscribed as boolean,
-                      indexId
+                      indexId,
                     ),
                 }}
               />
@@ -191,7 +192,7 @@ const PrivateMediaPanelMediaCard = ({
                     media,
                     media.media_type,
                     isSubscribed as boolean,
-                    indexId
+                    indexId,
                   )
                 }
                 className="absolute inset-0 flex items-center justify-center w-full h-full cursor-pointer bg-black/20"
@@ -231,7 +232,7 @@ const PrivateMediaPanelMediaCard = ({
                   media,
                   media.media_type,
                   isSubscribed as boolean,
-                  indexId
+                  indexId,
                 )
               }
               src={media.url}

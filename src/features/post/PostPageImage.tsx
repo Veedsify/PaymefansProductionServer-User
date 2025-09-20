@@ -1,21 +1,21 @@
 "use client";
-import { useEffect, useState } from "react";
-import { HiPlay } from "react-icons/hi";
-import usePostComponent from "@/contexts/PostComponentPreview";
-import Image from "next/image";
-import swal from "sweetalert";
-import { UserMediaProps } from "@/types/Components";
-import { LucideLock } from "lucide-react";
-import { useRouter } from "next/navigation";
-import HLSVideoPlayer from "../media/videoplayer";
-import { MouseEvent } from "react";
-import { useInView } from "react-intersection-observer";
-import { useAuthContext } from "@/contexts/UserUseContext";
-import { getSocket } from "../../components/common/Socket";
-import toast from "react-hot-toast";
-import payForPost from "@/utils/data/PayForPost";
 import { useQueryClient } from "@tanstack/react-query";
+import { LucideLock } from "lucide-react";
+import Image from "next/image";
+import { useRouter } from "next/navigation";
+import type { MouseEvent } from "react";
+import { useEffect, useState } from "react";
+import toast from "react-hot-toast";
+import { HiPlay } from "react-icons/hi";
+import { useInView } from "react-intersection-observer";
+import swal from "sweetalert";
 import { usePointsStore } from "@/contexts/PointsContext";
+import usePostComponent from "@/contexts/PostComponentPreview";
+import { useAuthContext } from "@/contexts/UserUseContext";
+import type { UserMediaProps } from "@/types/Components";
+import payForPost from "@/utils/data/PayForPost";
+import { getSocket } from "../../components/common/Socket";
+import HLSVideoPlayer from "../media/videoplayer";
 
 // Define props type for the component
 interface PostPageImageProps {
@@ -46,7 +46,7 @@ const PostPageImage: React.FC<PostPageImageProps> = ({
 }) => {
   const router = useRouter();
   const fullScreenPreview = usePostComponent(
-    (state) => state.fullScreenPreview
+    (state) => state.fullScreenPreview,
   );
   const { user: authUser } = useAuthContext();
   const [canplay, setCanplay] = useState(false);
@@ -144,7 +144,7 @@ const PostPageImage: React.FC<PostPageImageProps> = ({
             "You don't have enough points to pay for this post",
             {
               id: "pay-for-post",
-            }
+            },
           );
         }
         const pay = await payForPost({ price, postId: data.id });

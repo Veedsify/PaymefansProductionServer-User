@@ -1,10 +1,10 @@
 "use client";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { useAuthContext } from "@/contexts/UserUseContext";
+import type { Comment, PostData } from "@/types/Components";
 import CommentsHolder from "./Comments";
 import ReplyPostComponent from "./ReplyTextarea";
-import { Comment, PostData } from "@/types/Components";
-import { useRouter } from "next/navigation";
-import { useAuthContext } from "@/contexts/UserUseContext";
 
 const CommentsAndReply = ({ post }: { post: PostData }) => {
   const [postComments, setPostComments] = useState<Comment[]>([]);

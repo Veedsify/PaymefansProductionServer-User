@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 import PrivateMediaImageCardOther from "@/features/media/PrivateMediaImageCardOther";
-import { ProfileUserProps } from "@/features/user/types/user";
+import type { ProfileUserProps } from "@/features/user/types/user";
 
 const PrivatePanelOther = ({ userdata }: { userdata: ProfileUserProps }) => {
   const [arraySort, setArraySort] = useState("all");

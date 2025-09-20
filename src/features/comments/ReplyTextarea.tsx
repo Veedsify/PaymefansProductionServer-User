@@ -1,5 +1,5 @@
 "use client";
-import { useAuthContext } from "@/contexts/UserUseContext";
+import { useQueryClient } from "@tanstack/react-query";
 import {
   LucideCamera,
   LucideCheck,
@@ -8,23 +8,23 @@ import {
   X,
 } from "lucide-react";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import React, {
-  ChangeEvent,
-  KeyboardEvent,
+  type ChangeEvent,
+  type KeyboardEvent,
   useCallback,
   useEffect,
   useRef,
   useState,
 } from "react";
-import { imageTypes } from "@/lib/FileTypes";
 import toast from "react-hot-toast";
-import { useRouter } from "next/navigation";
-import { FileHolderProps, ReplyPostProps } from "@/types/Components";
 import { POST_CONFIG } from "@/config/config";
+import { useAuthContext } from "@/contexts/UserUseContext";
+import { imageTypes } from "@/lib/FileTypes";
+import type { FileHolderProps, ReplyPostProps } from "@/types/Components";
+import axiosInstance from "@/utils/Axios";
 import FetchMentions from "@/utils/data/FetchMentions";
 import ParseContentToHtml from "@/utils/ParseHtmlContent";
-import axiosInstance from "@/utils/Axios";
-import { useQueryClient } from "@tanstack/react-query";
 
 // Mock user data for @mentions (example)
 interface MentionUser {
@@ -72,7 +72,7 @@ const ReplyPostComponent = ({ options, isReply }: ReplyPostProps) => {
   const [showMentions, setShowMentions] = useState(false);
   const [mentionQuery, setMentionQuery] = useState("");
   const [mentionSuggestions, setMentionSuggestions] = useState<MentionUser[]>(
-    []
+    [],
   );
   const [selectedMentionIndex, setSelectedMentionIndex] = useState(0);
   const [mentions, setMentions] = useState<MentionUser[]>([]);
@@ -92,7 +92,7 @@ const ReplyPostComponent = ({ options, isReply }: ReplyPostProps) => {
         }, 300);
       });
     },
-    []
+    [],
   );
 
   // On mention query update
@@ -173,7 +173,7 @@ const ReplyPostComponent = ({ options, isReply }: ReplyPostProps) => {
         setCursorPosition(newCursorPos);
       }, 0);
     },
-    [mentionStartPos, cursorPosition, typedComment, mentions]
+    [mentionStartPos, cursorPosition, typedComment, mentions],
   );
   // Keydown for mention navigation
   const handleKeyDown = useCallback(
@@ -183,13 +183,13 @@ const ReplyPostComponent = ({ options, isReply }: ReplyPostProps) => {
           case "ArrowDown":
             e.preventDefault();
             setSelectedMentionIndex((prev) =>
-              prev < mentionSuggestions.length - 1 ? prev + 1 : 0
+              prev < mentionSuggestions.length - 1 ? prev + 1 : 0,
             );
             break;
           case "ArrowUp":
             e.preventDefault();
             setSelectedMentionIndex((prev) =>
-              prev > 0 ? prev - 1 : mentionSuggestions.length - 1
+              prev > 0 ? prev - 1 : mentionSuggestions.length - 1,
             );
             break;
           case "Enter":
@@ -204,7 +204,7 @@ const ReplyPostComponent = ({ options, isReply }: ReplyPostProps) => {
         }
       }
     },
-    [showMentions, mentionSuggestions, selectedMentionIndex, selectMention]
+    [showMentions, mentionSuggestions, selectedMentionIndex, selectMention],
   );
 
   // File handling
@@ -227,7 +227,7 @@ const ReplyPostComponent = ({ options, isReply }: ReplyPostProps) => {
         });
       }
     },
-    [files]
+    [files],
   );
 
   const removeFile = useCallback((file: File) => {
@@ -261,7 +261,7 @@ const ReplyPostComponent = ({ options, isReply }: ReplyPostProps) => {
         onUploadProgress: (progressEvent) => {
           if (progressEvent?.total) {
             setProgress(
-              Math.round((progressEvent.loaded / progressEvent.total) * 100)
+              Math.round((progressEvent.loaded / progressEvent.total) * 100),
             );
           }
         },
@@ -278,7 +278,6 @@ const ReplyPostComponent = ({ options, isReply }: ReplyPostProps) => {
         setTypedComment("");
         setFiles([]);
         setMentions([]);
-
       } else {
         toast.error(POST_CONFIG.COMMENT.COMMENT_CREATED_ERROR_MSG);
       }
@@ -410,10 +409,7 @@ const ReplyPostComponent = ({ options, isReply }: ReplyPostProps) => {
                 onClick={handleReplyClicked}
                 className="px-3 py-2 mr-1 text-white rounded-full bg-primary-dark-pink md:hidden"
               >
-                <LucideSend
-                  className="h-5 w-5 md:h-6 md:w-6"
-                  strokeWidth={2}
-                />
+                <LucideSend className="h-5 w-5 md:h-6 md:w-6" strokeWidth={2} />
               </button>
             </div>
 

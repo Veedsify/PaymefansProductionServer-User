@@ -1,6 +1,6 @@
 "use client";
 
-import { ReactNode } from "react";
+import type { ReactNode } from "react";
 import ToggleWishListProvider from "@/contexts/ToggleWishlist";
 import WishList from "@/features/store/WishList";
 

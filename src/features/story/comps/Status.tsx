@@ -4,10 +4,10 @@ import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import swal from "sweetalert";
 import { useAuthContext } from "@/contexts/UserUseContext";
-import useFetchStories from "../../../hooks/FetchStories";
-import { Story } from "@/features/story/types/story";
-import StatusModal from "./StatusModal";
 import UserStatus from "@/features/story/comps/UserStatus";
+import type { Story } from "@/features/story/types/story";
+import useFetchStories from "../../../hooks/FetchStories";
+import StatusModal from "./StatusModal";
 
 const StatusComponent = () => {
   const { stories, loading } = useFetchStories();
@@ -40,7 +40,7 @@ const StatusComponent = () => {
 
   const prioritizedStories = stories
     ? [...stories].sort((a, b) =>
-        a.user.id === user?.id ? -1 : b.user.id === user?.id ? 1 : 0
+        a.user.id === user?.id ? -1 : b.user.id === user?.id ? 1 : 0,
       )
     : [];
   return (

@@ -1,9 +1,9 @@
-import ROUTE from "@/config/routes";
-import { PostData } from "@/types/Components";
 import axios from "axios";
-import { getToken } from "../Cookie";
-import axiosInstance from "@/utils/Axios";
+import ROUTE from "@/config/routes";
 import { fmt } from "@/constants/path";
+import type { PostData } from "@/types/Components";
+import axiosInstance from "@/utils/Axios";
+import { getToken } from "../Cookie";
 
 export const getUserComments = async (
   post: PostData,

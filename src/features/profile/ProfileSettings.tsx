@@ -1,15 +1,16 @@
 "use client";
 import { Facebook, Instagram, LucideLoader, Twitter } from "lucide-react";
-import {
+import { useRouter } from "next/navigation";
+import type React from "react";
+import { useRef, useState } from "react";
+import toast from "react-hot-toast";
+import { PiSnapchatLogoDuotone } from "react-icons/pi";
+import type {
   AuthUserProps,
   UserUpdateProfileType,
 } from "@/features/user/types/user";
-import React, { useRef, useState } from "react";
-import toast from "react-hot-toast";
-import { useRouter } from "next/navigation";
-import { saveUserSettings } from "@/utils/data/SaveUserSettings";
 import { countries } from "@/lib/Locations";
-import { PiSnapchatLogoDuotone } from "react-icons/pi";
+import { saveUserSettings } from "@/utils/data/SaveUserSettings";
 import useCheckUsername from "../../hooks/CheckUsername";
 
 type ProfileSettingsProps = {
@@ -36,7 +37,7 @@ const ProfileSettings = ({ user }: ProfileSettingsProps) => {
   const [usernameCheck, setUsernameCheck] = useState(user?.username || "");
   const { message, canSave, error, isLoading } = useCheckUsername(
     user!,
-    usernameCheck
+    usernameCheck,
   );
 
   const usernameTimeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -44,7 +45,7 @@ const ProfileSettings = ({ user }: ProfileSettingsProps) => {
   const handleInputChange = (
     e: React.ChangeEvent<
       HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
-    >
+    >,
   ) => {
     const { name, value } = e.target;
     setUserData((prev) => ({ ...prev, [name]: value }));

@@ -1,7 +1,7 @@
-import Image from "next/image";
 import { LucidePlus } from "lucide-react";
-import { useAuthContext } from "@/contexts/UserUseContext";
+import Image from "next/image";
 import Link from "next/link";
+import { useAuthContext } from "@/contexts/UserUseContext";
 
 const UserStatus = () => {
   const { user } = useAuthContext();

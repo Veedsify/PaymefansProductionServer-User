@@ -1,9 +1,9 @@
 "use client";
-import React, { useEffect, useMemo, useRef } from "react";
 import { X } from "lucide-react";
 import Image from "next/image";
+import React, { useEffect, useMemo, useRef } from "react";
+import type { UrlObject } from "url";
 import { imageTypes, videoTypes } from "@/lib/FileTypes";
-import { UrlObject } from "url";
 
 type MediaProps = {
   id: string;

@@ -34,7 +34,7 @@ const HeaderTitle = React.memo(() => {
   if (pathname.startsWith("/live")) return null;
   const title =
     Object.entries(PATHNAME_TITLES).find(([key]) =>
-      pathname.includes(key)
+      pathname.includes(key),
     )?.[1] || "Home";
   return <h1 className="hidden text-lg font-bold lg:block">{title}</h1>;
 });

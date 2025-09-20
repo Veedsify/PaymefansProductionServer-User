@@ -1,6 +1,6 @@
-import { useCartStore } from "@/contexts/StoreContext";
 import { useState } from "react";
 import toast from "react-hot-toast";
+import { useCartStore } from "@/contexts/StoreContext";
 
 const CustomCartPageHooks = () => {
   const { addProduct, reduceProductPrice, removeProduct } = useCartStore();

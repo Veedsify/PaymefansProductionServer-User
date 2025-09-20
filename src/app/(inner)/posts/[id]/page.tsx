@@ -1,16 +1,16 @@
 "use client";
+import { LucideEye, LucideLoader, LucideLock, LucideUsers } from "lucide-react";
+import Image from "next/image";
+import Link from "next/link";
+import { useParams, useRouter } from "next/navigation";
+import React, { type ReactNode, useEffect, useMemo } from "react";
+import { useAuthContext } from "@/contexts/UserUseContext";
 import CommentsAndReply from "@/features/comments/CommentsAndReply";
 import { PostCompInteractions } from "@/features/post/PostInteractions";
 import PostPageImage from "@/features/post/PostPageImage";
 import QuickPostActions from "@/features/post/QuickPostActions";
-import { formatDate } from "@/utils/FormatDate";
-import { LucideEye, LucideLock, LucideUsers, LucideLoader } from "lucide-react";
-import Image from "next/image";
-import Link from "next/link";
-import React, { ReactNode, useEffect, useMemo } from "react";
 import { usePost } from "@/hooks/queries/usePost";
-import { useParams, useRouter } from "next/navigation";
-import { useAuthContext } from "@/contexts/UserUseContext";
+import { formatDate } from "@/utils/FormatDate";
 
 const Post = React.memo(() => {
   const params = useParams();
@@ -65,7 +65,7 @@ const Post = React.memo(() => {
     () => ({
       __html: `${post?.content.replace(/(?:\r\n|\r|\n)/g, "<br>")}`,
     }),
-    [post?.content]
+    [post?.content],
   );
 
   // Loading state

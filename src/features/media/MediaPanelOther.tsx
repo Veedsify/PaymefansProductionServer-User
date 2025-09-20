@@ -1,18 +1,18 @@
-"use client"
+"use client";
 import { useState } from "react";
+import type { ProfileUserProps } from "@/features/user/types/user";
 import MediaPanelImageCardOther from "./MediaPanelImageCardOther";
-import { ProfileUserProps } from "@/features/user/types/user";
 
 const MediaPanelOther = ({ userdata }: { userdata: ProfileUserProps }) => {
-    const [arraySort, setArraySort] = useState("all")
+  const [arraySort, setArraySort] = useState("all");
 
-    const toggleThisSort = (sort: string) => {
-        setArraySort(sort)
-    }
+  const toggleThisSort = (sort: string) => {
+    setArraySort(sort);
+  };
 
-    return (
-        <div className="">
-            {/* <div className="flex items-center py-3 mb-2 gap-4">
+  return (
+    <div className="">
+      {/* <div className="flex items-center py-3 mb-2 gap-4">
                 <button
                     onClick={() => toggleThisSort("all")}
                     className={`${arraySort === "all" ? "bg-messages-unread text-primary-dark-pink" : "bg-gray-200"}
@@ -30,9 +30,9 @@ const MediaPanelOther = ({ userdata }: { userdata: ProfileUserProps }) => {
                     Videos
                 </button>
             </div> */}
-            <MediaPanelImageCardOther sort={arraySort} userdata={userdata} />
-        </div>
-    );
-}
+      <MediaPanelImageCardOther sort={arraySort} userdata={userdata} />
+    </div>
+  );
+};
 
 export default MediaPanelOther;

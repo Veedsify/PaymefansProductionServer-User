@@ -1,4 +1,5 @@
 "use client";
+import { useQueryClient } from "@tanstack/react-query";
 import {
   LucideEye,
   LucideEyeOff,
@@ -7,16 +8,16 @@ import {
   LucideTrash,
   Repeat2,
 } from "lucide-react";
-import axiosInstance from "./Axios";
-import { MouseEvent, useCallback } from "react";
-import { OwnerOption, QuickPostActionsProps } from "@/types/Components";
-import { getToken } from "./Cookie";
-import toast from "react-hot-toast";
 import { usePathname, useRouter } from "next/navigation";
+import { type MouseEvent, useCallback } from "react";
+import toast from "react-hot-toast";
 import swal from "sweetalert";
-import { useAuthContext } from "@/contexts/UserUseContext";
 import { POST_CONFIG } from "@/config/config";
-import { useQueryClient } from "@tanstack/react-query";
+import { useAuthContext } from "@/contexts/UserUseContext";
+import type { OwnerOption, QuickPostActionsProps } from "@/types/Components";
+import axiosInstance from "./Axios";
+import { getToken } from "./Cookie";
+
 const QuickPostActionHooks = ({ options }: QuickPostActionsProps) => {
   const { user, isGuest } = useAuthContext();
   const queryClient = useQueryClient();

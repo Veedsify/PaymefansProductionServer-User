@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { useMemo } from "react";
-import { AuthUserProps } from "../user/types/user";
+import type { AuthUserProps } from "../user/types/user";
 
 const ProfileBanner = ({ user }: { user: Partial<AuthUserProps> | null }) => {
   const profileBanner = useMemo(

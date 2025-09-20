@@ -1,16 +1,16 @@
 "use client";
+import { LucideLoader } from "lucide-react";
+import { useRouter } from "next/navigation";
+import React, { useCallback, useMemo, useState } from "react";
+import { useInView } from "react-intersection-observer";
 import {
   NotificationIcontypes,
   useNotificationStore,
 } from "@/contexts/NotificationContext";
 import {
-  useNotifications,
   useNotificationCount,
+  useNotifications,
 } from "@/hooks/useNotifications";
-import { LucideLoader } from "lucide-react";
-import React, { useState, useCallback, useMemo } from "react";
-import { useInView } from "react-intersection-observer";
-import { useRouter } from "next/navigation";
 
 interface NotificationHeaderProps {
   children: string;
@@ -24,7 +24,7 @@ export function NotificationHeader({
   const { unreadCount } = useNotificationCount();
   const displayCount = useMemo(
     () => (unreadCount > 100 ? "99+" : unreadCount.toString()),
-    [unreadCount]
+    [unreadCount],
   );
 
   return (
@@ -48,7 +48,7 @@ interface NotificationItemProps {
     url: string,
     notification_id: string,
     id: number,
-    read: boolean
+    read: boolean,
   ) => void;
   isMarkingAsRead: boolean;
   types: any[];
@@ -62,7 +62,7 @@ const NotificationItem = React.memo(function NotificationItem({
 }: NotificationItemProps) {
   const notificationType = useMemo(
     () => types.find((type) => type.type === notification.action),
-    [types, notification.action]
+    [types, notification.action],
   );
 
   const formattedDate = useMemo(
@@ -74,7 +74,7 @@ const NotificationItem = React.memo(function NotificationItem({
         hour: "numeric",
         minute: "numeric",
       }),
-    [notification.created_at]
+    [notification.created_at],
   );
 
   const handleClick = useCallback(() => {
@@ -82,7 +82,7 @@ const NotificationItem = React.memo(function NotificationItem({
       notification.url,
       notification.notification_id,
       notification.id,
-      notification.read
+      notification.read,
     );
   }, [notification, onNotificationClick]);
 
@@ -144,7 +144,7 @@ export function NotificationBody() {
       updateNotification(id);
       markAsRead(id);
     },
-    [router, updateNotification, markAsRead]
+    [router, updateNotification, markAsRead],
   );
 
   if (error) {

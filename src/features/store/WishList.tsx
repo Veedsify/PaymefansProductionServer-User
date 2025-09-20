@@ -1,7 +1,7 @@
 "use client";
 
-import { useToggleWishList } from "@/contexts/ToggleWishlist";
 import { X } from "lucide-react";
+import { useToggleWishList } from "@/contexts/ToggleWishlist";
 
 const WishList = () => {
   const { wishList = false, toggleWishList } = useToggleWishList();
@@ -11,16 +11,18 @@ const WishList = () => {
   return (
     <div
       onClick={toggleWishList}
-      className={`fixed h-dvh w-full top-0 z-[200] left-0 duration-500 ${wishList
+      className={`fixed h-dvh w-full top-0 z-[200] left-0 duration-500 ${
+        wishList
           ? "bg-black/60 pointer-events-auto"
           : "bg-black/0 pointer-events-none"
-        }`}
+      }`}
     >
       <div
         onClick={(e) => e.stopPropagation()}
         className={`bg-white p-4 pb-10 w-full md:w-2/4 lg:w-1/4 absolute right-0 top-0 h-dvh
-     dark:bg-slate-900 dark:text-white duration-300 ${wishList ? "translate-x-0 opacity-100" : "opacity-0 translate-x-full"
-          } 
+     dark:bg-slate-900 dark:text-white duration-300 ${
+       wishList ? "translate-x-0 opacity-100" : "opacity-0 translate-x-full"
+     } 
           `}
       >
         <div className="flex items-center justify-between">

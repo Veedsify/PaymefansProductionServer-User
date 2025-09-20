@@ -1,10 +1,9 @@
 "use client";
-import { useCartStore } from "@/contexts/StoreContext";
-import { useWishlistStore } from "@/contexts/WishlistContext";
 import { Heart, ShoppingCart } from "lucide-react";
 import Link from "next/link";
-
 import { useEffect, useState } from "react";
+import { useCartStore } from "@/contexts/StoreContext";
+import { useWishlistStore } from "@/contexts/WishlistContext";
 
 const CartIcon = () => {
   const { total } = useCartStore();

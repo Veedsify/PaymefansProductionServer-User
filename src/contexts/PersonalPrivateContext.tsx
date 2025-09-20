@@ -1,6 +1,6 @@
-import { UserMediaProps, UserPostPropsOther } from "@/types/Components";
-import { create } from "zustand";
 import _ from "lodash";
+import { create } from "zustand";
+import type { UserMediaProps, UserPostPropsOther } from "@/types/Components";
 
 type Post = {
   id: number;
@@ -37,53 +37,51 @@ type PersonalPrivateContext = {
   repostPost: (postId: string) => void;
 };
 
-const usePersonalPrivateStore = create<PersonalPrivateContext>(
-  (set) => ({
-    posts: [],
-    setPosts: (post: Post[]) =>
-      set((state) => ({
-        posts: _.uniqBy(
-          [...state.posts, ...post],
-          (item) => `${item.id}-${item.post_likes}`
-        ),
-      })),
-    likePost: (postId) =>
-      set((state) => ({
-        posts: state.posts.map((post) =>
-          post.post_id === postId
-            ? {
+const usePersonalPrivateStore = create<PersonalPrivateContext>((set) => ({
+  posts: [],
+  setPosts: (post: Post[]) =>
+    set((state) => ({
+      posts: _.uniqBy(
+        [...state.posts, ...post],
+        (item) => `${item.id}-${item.post_likes}`,
+      ),
+    })),
+  likePost: (postId) =>
+    set((state) => ({
+      posts: state.posts.map((post) =>
+        post.post_id === postId
+          ? {
               ...post,
               post_likes: post.post_likes + 1,
               likedByme: true,
             }
-            : post
-        ),
-      })),
-    unlikePost: (postId, _) =>
-      set((state) => ({
-        posts: state.posts.map((post) =>
-          post.post_id === postId
-            ? {
+          : post,
+      ),
+    })),
+  unlikePost: (postId, _) =>
+    set((state) => ({
+      posts: state.posts.map((post) =>
+        post.post_id === postId
+          ? {
               ...post,
               post_likes: Math.max(0, post.post_likes - 1),
               likedByme: false,
             }
-            : post
-        ),
-      })),
-    repostPost: (postId) =>
-      set((state) => ({
-        posts: state.posts.map((post) =>
-          post.post_id === postId
-            ? {
+          : post,
+      ),
+    })),
+  repostPost: (postId) =>
+    set((state) => ({
+      posts: state.posts.map((post) =>
+        post.post_id === postId
+          ? {
               ...post,
               post_reposts: post.post_reposts + 1,
             }
-            : post
-        ),
-      })),
-  })
-);
+          : post,
+      ),
+    })),
+}));
 
 type OtherPrivateContext = {
   posts: UserPostPropsOther[];
@@ -102,11 +100,11 @@ export const useOtherPrivatePostsStore = create<OtherPrivateContext>((set) => ({
       posts: state.posts.map((post) =>
         post.post_id === postId
           ? {
-            ...post,
-            post_likes: post.post_likes + 1,
-            likedByme: true,
-          }
-          : post
+              ...post,
+              post_likes: post.post_likes + 1,
+              likedByme: true,
+            }
+          : post,
       ),
     })),
   unlikePost: (postId, _) =>
@@ -114,11 +112,11 @@ export const useOtherPrivatePostsStore = create<OtherPrivateContext>((set) => ({
       posts: state.posts.map((post) =>
         post.post_id === postId
           ? {
-            ...post,
-            post_likes: Math.max(0, post.post_likes - 1),
-            likedByme: false,
-          }
-          : post
+              ...post,
+              post_likes: Math.max(0, post.post_likes - 1),
+              likedByme: false,
+            }
+          : post,
       ),
     })),
   repostPost: (postId) =>
@@ -126,10 +124,10 @@ export const useOtherPrivatePostsStore = create<OtherPrivateContext>((set) => ({
       posts: state.posts.map((post) =>
         post.post_id === postId
           ? {
-            ...post,
-            post_reposts: post.post_reposts + 1,
-          }
-          : post
+              ...post,
+              post_reposts: post.post_reposts + 1,
+            }
+          : post,
       ),
     })),
 }));

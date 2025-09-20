@@ -1,10 +1,10 @@
 "use client";
 
-import { MediaFile } from "@/types/Components";
-import MessageInputAttachmentPreview from "./MessageInputAttachmentPreview";
 import { X } from "lucide-react";
 import React from "react";
 import { useChatStore } from "@/contexts/ChatContext";
+import type { MediaFile } from "@/types/Components";
+import MessageInputAttachmentPreview from "./MessageInputAttachmentPreview";
 
 interface MessageMediaPreviewProps {
   index: number;

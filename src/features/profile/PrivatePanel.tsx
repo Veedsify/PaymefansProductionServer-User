@@ -10,7 +10,7 @@ const PrivatePanel = () => {
   };
 
   return (
-    <div className="py-4">
+    <div>
       {/* <div className="flex items-center py-3 mb-2 gap-4">
         <button
           onClick={() => toggleThisSort("all")}

@@ -1,10 +1,10 @@
 "use client";
 import { useInfiniteQuery } from "@tanstack/react-query";
-import { getToken } from "@/utils/Cookie";
-import ROUTE from "@/config/routes";
-import { PostData, UserMediaProps } from "@/types/Components";
 import axios from "axios";
+import ROUTE from "@/config/routes";
+import { type PostData, UserMediaProps } from "@/types/Components";
 import axiosInstance from "@/utils/Axios";
+import { getToken } from "@/utils/Cookie";
 
 interface HomeFeedResponse {
   posts: PostData[];
@@ -17,7 +17,9 @@ const fetchHomeFeed = async ({
 }: {
   pageParam?: string;
 }): Promise<HomeFeedResponse> => {
-  const response = await axiosInstance.get(`${ROUTE.GET_HOME_POSTS}?cursor=${pageParam}`);
+  const response = await axiosInstance.get(
+    `${ROUTE.GET_HOME_POSTS}?cursor=${pageParam}`,
+  );
 
   const data = response.data;
   return data;

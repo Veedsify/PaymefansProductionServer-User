@@ -1,8 +1,8 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
-import { useWishlistStore } from "@/contexts/WishlistContext";
 import toast from "react-hot-toast";
 import ROUTE from "@/config/routes";
+import { useWishlistStore } from "@/contexts/WishlistContext";
 
 // Add to wishlist
 const useAddToWishlist = () => {

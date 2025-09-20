@@ -1,34 +1,33 @@
 "use client";
 import {
+  LucideCamera,
+  LucideLoader,
+  LucidePlus,
+  LucideSendHorizonal,
+} from "lucide-react";
+import React, {
+  type KeyboardEvent,
+  type RefObject,
   useCallback,
   useEffect,
+  useMemo,
   useRef,
   useState,
-  KeyboardEvent,
-  RefObject,
-  useMemo,
 } from "react";
-import { v4 as uuid } from "uuid";
-import {
-  LucidePlus,
-  LucideCamera,
-  LucideSendHorizonal,
-  LucideLoader,
-} from "lucide-react";
 import toast from "react-hot-toast";
 import swal from "sweetalert";
-import axiosInstance from "@/utils/Axios";
-import { useAuthContext } from "@/contexts/UserUseContext";
-import { useMessagesConversation } from "@/contexts/MessageConversationContext";
-import { MessageInputProps, MediaFile, Message } from "@/types/Components";
-import MessageMediaPreview from "./MessageMediaPreview";
-import React from "react";
+import { v4 as uuid } from "uuid";
 import { useChatStore } from "@/contexts/ChatContext";
+import { useMessagesConversation } from "@/contexts/MessageConversationContext";
 import { usePointsStore } from "@/contexts/PointsContext";
-import { getSocket } from "../../../components/common/Socket";
-import GenerateVideoPoster from "@/utils/GenerateVideoPoster";
-import { imageTypes } from "@/lib/FileTypes";
+import { useAuthContext } from "@/contexts/UserUseContext";
 import { useMediaUpload } from "@/hooks/useMediaUpload";
+import { imageTypes } from "@/lib/FileTypes";
+import type { MediaFile, Message, MessageInputProps } from "@/types/Components";
+import axiosInstance from "@/utils/Axios";
+import GenerateVideoPoster from "@/utils/GenerateVideoPoster";
+import { getSocket } from "../../../components/common/Socket";
+import MessageMediaPreview from "./MessageMediaPreview";
 
 // Utility Functions (memoized)
 const escapeHtml = (str: string) => {

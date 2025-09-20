@@ -15,7 +15,7 @@ const PointsCount = memo(
       {
         userId: user?.id,
         enableBackgroundUpdates,
-      }
+      },
     );
 
     // Show loading only on initial load
@@ -57,7 +57,7 @@ const PointsCount = memo(
         </span>
       </h2>
     );
-  }
+  },
 );
 
 PointsCount.displayName = "PointsCount";

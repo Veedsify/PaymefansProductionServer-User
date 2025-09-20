@@ -1,27 +1,28 @@
 "use client";
 
-import React, { useState } from "react";
-import Image from "next/image";
-import {
-  Copy,
-  Check,
-  Users,
-  TrendingUp,
-  Gift,
-  Share2,
-  Loader2,
-} from "lucide-react";
-import { useAuthContext } from "@/contexts/UserUseContext";
 import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
 import {
-  fetchReferralStats,
-  fetchReferredUsers,
-  fetchReferralEarnings,
-  type ReferralUser,
-  type ReferralEarning,
-} from "@/utils/data/ReferralAPI";
+  Check,
+  Copy,
+  Gift,
+  Loader2,
+  Share2,
+  TrendingUp,
+  Users,
+} from "lucide-react";
+import Image from "next/image";
+import React, { useState } from "react";
 import { useInView } from "react-intersection-observer";
 import { fmt } from "@/constants/path";
+import { useAuthContext } from "@/contexts/UserUseContext";
+import {
+  fetchReferralEarnings,
+  fetchReferralStats,
+  fetchReferredUsers,
+  type ReferralEarning,
+  type ReferralUser,
+} from "@/utils/data/ReferralAPI";
+
 const NEXT_PUBLIC_SERVER_URL = process.env.NEXT_PUBLIC_SERVER_URL;
 
 const ReferralPage = () => {
@@ -136,7 +137,7 @@ const ReferralPage = () => {
   const referralLink = fmt(
     `%s/refer?code=%s`,
     NEXT_PUBLIC_SERVER_URL as string,
-    referralCode
+    referralCode,
   );
   const totalEarnings = statsData?.totalEarnings || 0;
   const totalUsers = statsData?.totalReferrals || 0;
@@ -404,7 +405,7 @@ const ReferralPage = () => {
                               month: "short",
                               day: "numeric",
                               year: "numeric",
-                            }
+                            },
                           )}
                         </p>
                       </div>
@@ -554,7 +555,7 @@ const ReferralPage = () => {
                                 month: "short",
                                 day: "numeric",
                                 year: "numeric",
-                              }
+                              },
                             )}
                           </p>
                         </div>

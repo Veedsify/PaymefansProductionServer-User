@@ -5,12 +5,12 @@ import {
   LucideUsers,
 } from "lucide-react";
 import Link from "next/link";
-import SettingsHookupCheck from "./SettingsHookupCheck";
-import UpdatePasswords from "../user/comps/UpdatePassword";
 import { useAuthContext } from "@/contexts/UserUseContext";
 import Toggle from "../../components/common/toggles/Checked";
-import TwoFactorAuth from "./SettingsTwoFactorAuth";
+import UpdatePasswords from "../user/comps/UpdatePassword";
 import DeleteAccount from "./DeleteAccount";
+import SettingsHookupCheck from "./SettingsHookupCheck";
+import TwoFactorAuth from "./SettingsTwoFactorAuth";
 
 const SettingsSecurity = () => {
   const { user } = useAuthContext();

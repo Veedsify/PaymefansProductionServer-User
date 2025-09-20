@@ -1,13 +1,13 @@
 "use client";
 import {
-  LucideMessageCircle,
   LucideHeadphones,
-  LucideUser,
-  LucideSend,
   LucideLoader,
+  LucideMessageCircle,
+  LucideSend,
+  LucideUser,
 } from "lucide-react";
-import { LegacyRef, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
+import { type LegacyRef, useEffect, useRef, useState } from "react";
 import { useAuthContext } from "@/contexts/UserUseContext";
 
 const SupportHelp = () => {

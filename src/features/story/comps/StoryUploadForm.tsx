@@ -1,11 +1,11 @@
+import { AxiosError } from "axios";
 import { useEffect, useState } from "react";
+import toast from "react-hot-toast";
 import { HiCamera } from "react-icons/hi";
+import { v4 as uuid } from "uuid";
+import { useStoryStore } from "@/contexts/StoryContext";
 import axiosServer from "@/utils/Axios";
 import { getToken } from "@/utils/Cookie";
-import { AxiosError } from "axios";
-import toast from "react-hot-toast";
-import { useStoryStore } from "@/contexts/StoryContext";
-import { v4 as uuid } from "uuid";
 
 const StoryUploadForm = () => {
   const [selected, setSelected] = useState<File[]>([]);

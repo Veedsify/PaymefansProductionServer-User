@@ -1,5 +1,4 @@
 "use client";
-import { UserUpdateProfileType } from "@/features/user/types/user";
 import axios from "axios";
 import {
   Facebook,
@@ -14,15 +13,16 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import toast from "react-hot-toast";
-import BannerComponent from "./BannerComponent";
-import { getToken } from "@/utils/Cookie";
+import { PiSnapchatLogoDuotone } from "react-icons/pi";
 import { PROFILE_CONFIG } from "@/config/config";
 import ROUTE from "@/config/routes";
-import { BannerModalProps } from "@/types/Components";
+import type { UserUpdateProfileType } from "@/features/user/types/user";
 import { countries } from "@/lib/Locations";
-import { PiSnapchatLogoDuotone } from "react-icons/pi";
-import useCheckUsername from "../../hooks/CheckUsername";
+import type { BannerModalProps } from "@/types/Components";
 import axiosInstance from "@/utils/Axios";
+import { getToken } from "@/utils/Cookie";
+import useCheckUsername from "../../hooks/CheckUsername";
+import BannerComponent from "./BannerComponent";
 
 const EditProfileButton = ({ user }: { user: any }) => {
   const [open, setOpen] = useState(false);
@@ -43,12 +43,12 @@ const EditProfileButton = ({ user }: { user: any }) => {
 function BannerModal({ user, open = false, setOpen }: BannerModalProps) {
   const [file, setFile] = useState<File | null>(null);
   const [userData, setUserData] = useState<UserUpdateProfileType>(
-    {} as UserUpdateProfileType
+    {} as UserUpdateProfileType,
   );
   const [usernameCheck, setUsernameCheck] = useState("");
   const { message, canSave, error, isLoading } = useCheckUsername(
     user,
-    usernameCheck
+    usernameCheck,
   );
 
   const usernameTimeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -58,7 +58,7 @@ function BannerModal({ user, open = false, setOpen }: BannerModalProps) {
   const handleInputChange = (
     e: React.ChangeEvent<
       HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
-    >
+    >,
   ) => {
     if (e.target.name === "bio") {
       if (e.target.value.length > 1000) {
@@ -115,7 +115,7 @@ function BannerModal({ user, open = false, setOpen }: BannerModalProps) {
 
     const formData = new FormData();
     for (const key in userData) {
-      if (Object.prototype.hasOwnProperty.call(userData, key)) {
+      if (Object.hasOwn(userData, key)) {
         const value = userData[key as keyof UserUpdateProfileType] as
           | string
           | File;
@@ -126,7 +126,7 @@ function BannerModal({ user, open = false, setOpen }: BannerModalProps) {
       const updateProfile = async (formData: FormData) => {
         const response = await axiosInstance.post(
           ROUTE.PROFILE_UPDATE,
-          formData
+          formData,
         );
         setOpen(false);
         router.refresh();
@@ -142,7 +142,7 @@ function BannerModal({ user, open = false, setOpen }: BannerModalProps) {
         },
         {
           id: "profile-update-toast",
-        }
+        },
       );
     } catch (error) {
       console.error(error);

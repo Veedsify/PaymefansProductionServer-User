@@ -1,9 +1,9 @@
-import { GroupData } from "@/utils/data/GroupAPI";
 import { LucideChevronLeft, LucideMoreVertical, Users } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { getSocket } from "@/components/common/Socket";
+import type { GroupData } from "@/utils/data/GroupAPI";
 
 interface GroupChatHeaderProps {
   groupData: GroupData | null;

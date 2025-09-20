@@ -1,30 +1,30 @@
 "use client";
 
+import { X } from "lucide-react";
 import React, {
-  useEffect,
-  useRef,
-  useState,
   memo,
   useCallback,
+  useEffect,
   useMemo,
   useReducer,
+  useRef,
+  useState,
 } from "react";
-import { Swiper, SwiperClass, SwiperSlide } from "swiper/react";
-import { Navigation, Pagination, Keyboard, A11y } from "swiper/modules";
-import { X } from "lucide-react";
+import { A11y, Keyboard, Navigation, Pagination } from "swiper/modules";
+import { Swiper, type SwiperClass, SwiperSlide } from "swiper/react";
 import "swiper/css/bundle";
-import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
+import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { ImagePreview } from "@/features/post/ImagePreviewWithCanvas";
 import MediaErrorBoundary from "../../providers/MediaErrorBoundary";
-import VideoPreview from "./VideoPreview";
 import NavigationButton from "../navigation/NavigationButton";
 import {
   MEDIA_CONSTANTS,
-  MediaItem,
-  UserProfile,
+  type MediaItem,
   mediaReducer,
   preloadMedia,
+  type UserProfile,
 } from "./mediaPreviewTypes";
+import VideoPreview from "./VideoPreview";
 
 interface MediaPreviewModalProps {
   open: boolean;
@@ -72,7 +72,7 @@ const MediaPreviewModal = memo(
           alt: item.alt || `Media preview ${index + 1}`,
         };
       },
-      []
+      [],
     );
 
     const mediaItems = useMemo(() => {
@@ -86,7 +86,7 @@ const MediaPreviewModal = memo(
         isFirstSlide: currentSlide === 0,
         isLastSlide: currentSlide === mediaItems.length - 1,
       }),
-      [mediaItems.length, currentSlide]
+      [mediaItems.length, currentSlide],
     );
 
     const shouldLoadSlide = useCallback(
@@ -98,7 +98,7 @@ const MediaPreviewModal = memo(
         // After initial load, use wider preload range
         return Math.abs(index - currentSlide) <= MEDIA_CONSTANTS.PRELOAD_RANGE;
       },
-      [currentSlide, initialLoadComplete]
+      [currentSlide, initialLoadComplete],
     );
 
     // Preload media with priority
@@ -203,7 +203,7 @@ const MediaPreviewModal = memo(
       if (swiperRef.current && typeof initialIndex === "number" && open) {
         const targetSlide = Math.max(
           0,
-          Math.min(initialIndex, totalSlides - 1)
+          Math.min(initialIndex, totalSlides - 1),
         );
         swiperRef.current.slideTo(targetSlide, 0, false);
         setCurrentSlide(targetSlide);
@@ -349,7 +349,7 @@ const MediaPreviewModal = memo(
         )}
       </motion.div>
     );
-  }
+  },
 );
 
 MediaPreviewModal.displayName = "MediaPreviewModal";

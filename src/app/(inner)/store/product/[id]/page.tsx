@@ -1,25 +1,25 @@
 "use client";
-import React, { useEffect, useState } from "react";
 import {
-  Heart,
-  Share2,
-  ShoppingCart,
   ChevronLeft,
   ChevronRight,
+  Heart,
   Loader2,
+  Share2,
+  ShoppingCart,
 } from "lucide-react";
-import { useParams, useSearchParams } from "next/navigation";
-import { Product } from "@/types/Components";
-import fetchSingleProduct from "@/utils/data/FetchSingleProduct";
-import CartIcon from "@/components/common/icons/CartIcon";
-import numeral from "numeral";
-import Loader from "@/components/common/loaders/LoadingAnimation";
+import Image from "next/image";
 import Link from "next/link";
+import { useParams, useSearchParams } from "next/navigation";
+import numeral from "numeral";
+import React, { useEffect, useState } from "react";
+import toast from "react-hot-toast";
+import CartIcon from "@/components/common/icons/CartIcon";
+import Loader from "@/components/common/loaders/LoadingAnimation";
 import { useCartStore } from "@/contexts/StoreContext";
 import { useWishlistStore } from "@/contexts/WishlistContext";
 import { useToggleWishlist } from "@/hooks/useWishlist";
-import toast from "react-hot-toast";
-import Image from "next/image";
+import type { Product } from "@/types/Components";
+import fetchSingleProduct from "@/utils/data/FetchSingleProduct";
 
 const ProductPreview = () => {
   const params = useParams();

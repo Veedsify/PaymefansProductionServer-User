@@ -1,6 +1,6 @@
 "use client";
-import ChatPage from "@/features/chats/comps/ChatPage";
 import { useParams } from "next/navigation";
+import ChatPage from "@/features/chats/comps/ChatPage";
 
 const ChatsPage = () => {
   const params = useParams<{ conversationId: string }>();

@@ -1,15 +1,16 @@
 "use client";
-import OtherTransactions from "@/features/transactions/OtherTransactions";
-import ROUTE from "@/config/routes";
-import { useConfigContext } from "@/contexts/ConfigContext";
-import { useAuthContext } from "@/contexts/UserUseContext";
-import { ExchangeRate } from "@/types/Components";
-import axiosInstance from "@/utils/Axios";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import Image from "next/image";
 import Link from "next/link";
-import { useState, useEffect, useMemo, useCallback } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import ROUTE from "@/config/routes";
+import { useConfigContext } from "@/contexts/ConfigContext";
+import { useAuthContext } from "@/contexts/UserUseContext";
+import OtherTransactions from "@/features/transactions/OtherTransactions";
+import type { ExchangeRate } from "@/types/Components";
+import axiosInstance from "@/utils/Axios";
+import FormatName from "@/lib/FormatName";
 
 const WalletPage = () => {
   const { user } = useAuthContext();
@@ -150,7 +151,7 @@ const WalletPage = () => {
                 className="object-cover border-2 rounded-full shadow w-14 h-14 border-primary-dark-pink"
               />
               <div className="self-center dark:text-gray-200">
-                <h2 className="text-lg font-bold">{user.name}</h2>
+                <h2 className="text-lg font-bold">{FormatName(user?.name)}</h2>
                 <p className="text-sm text-gray-500 dark:text-gray-400">
                   {user.username}
                 </p>

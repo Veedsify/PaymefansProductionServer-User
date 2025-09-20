@@ -1,22 +1,23 @@
 import "../globals.css";
 import type { Metadata } from "next";
-import MenuButtons from "@/components/modals/MenuButtons";
-import SideModels from "@/features/models/comps/SideModels";
-import Header from "@/components/common/global/Header";
-import SideBar from "@/components/common/global/SideBar";
+import { Bricolage_Grotesque } from "next/font/google";
+import type React from "react";
 import { Toaster } from "react-hot-toast";
 import { Toaster as SonnerToast } from "sonner";
-import { Geist } from "next/font/google";
-import PostComponentPreview from "@/features/post/FullComponentPreview";
+import Header from "@/components/common/global/Header";
+import SideBar from "@/components/common/global/SideBar";
 import Loader from "@/components/common/loaders/Loader";
-import GuestLoginModal from "@/features/guest/GuestLoginModal";
-import CombinedProviders from "@/providers/CombinedProviders";
 import LayoutWithWishlist from "@/components/layout/LayoutWithWishlist";
+import MenuButtons from "@/components/modals/MenuButtons";
+import GuestLoginModal from "@/features/guest/GuestLoginModal";
+import SideModels from "@/features/models/comps/SideModels";
+import PostComponentPreview from "@/features/post/FullComponentPreview";
+import CombinedProviders from "@/providers/CombinedProviders";
 import QueryProvider from "@/providers/QueryProvider";
 
-const font = Geist({
-  subsets: ["latin", "latin-ext"],
-  weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
+const font = Bricolage_Grotesque({
+  subsets: ["latin", "latin-ext", "vietnamese"],
+  weight: ["200", "300", "400", "500", "600", "700", "800"],
 });
 
 export const metadata: Metadata = {

@@ -1,9 +1,9 @@
 // Main components
-export { default as PointsCount } from './PointCount';
-export { default as PointsDisplay } from './PointsDisplay';
 
 // Hooks
-export { useUserPoints } from '@/hooks/useUserPoints';
+export { useUserPoints } from "@/hooks/useUserPoints";
+export { default as PointsCount } from "./PointCount";
+export { default as PointsDisplay } from "./PointsDisplay";
 
 // Usage guidelines:
 // - PointsCount: Use for main points display that needs real-time updates

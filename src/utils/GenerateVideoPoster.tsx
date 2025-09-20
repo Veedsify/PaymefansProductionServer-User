@@ -33,7 +33,7 @@ const GenerateVideoPoster = (file: File): Promise<string> => {
           }
         },
         "image/jpeg",
-        0.8
+        0.8,
       );
 
       // Clean up

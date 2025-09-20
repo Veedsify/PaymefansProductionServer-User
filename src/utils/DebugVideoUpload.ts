@@ -36,7 +36,7 @@ const debugVideoUpload = async (
         name: file.name,
         filetype: file.type,
       },
-      onError: function (error) {
+      onError: (error) => {
         hasError = true;
         errorMessage = error.message || "Unknown error";
         console.error("❌ Upload failed:", error);
@@ -48,7 +48,7 @@ const debugVideoUpload = async (
           progressLog,
         });
       },
-      onProgress: function (bytesUploaded, bytesTotal) {
+      onProgress: (bytesUploaded, bytesTotal) => {
         const percentage = Math.floor((bytesUploaded / bytesTotal) * 100);
 
         // Log every 10% increment
@@ -59,7 +59,7 @@ const debugVideoUpload = async (
           );
         }
       },
-      onSuccess: function () {
+      onSuccess: () => {
         uploadComplete = true;
         console.log("✅ Upload onSuccess called");
         console.log("⏱️  Upload duration:", Date.now() - startTime, "ms");
@@ -98,7 +98,7 @@ const debugVideoUpload = async (
           }, 10000);
         }
       },
-      onAfterResponse: function (req, res) {
+      onAfterResponse: (req, res) => {
         const mediaIdHeader = res.getHeader("Stream-Media-Id");
         console.log("🔄 onAfterResponse called");
         console.log("📋 Response headers:", {

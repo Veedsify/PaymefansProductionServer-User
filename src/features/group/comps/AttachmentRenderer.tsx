@@ -1,6 +1,7 @@
-import React, { useCallback } from "react";
-import Image from "next/image";
 import { LucideImage } from "lucide-react";
+import Image from "next/image";
+import type React from "react";
+import { useCallback } from "react";
 import usePostComponent from "@/contexts/PostComponentPreview";
 
 interface AttachmentProps {
@@ -25,13 +26,13 @@ const AttachmentRenderer: React.FC<AttachmentRendererProps> = ({
   index = 0,
 }) => {
   const fullScreenPreview = usePostComponent(
-    (state) => state.fullScreenPreview
+    (state) => state.fullScreenPreview,
   );
 
   // Handle image preview
   const handlePreview = useCallback(() => {
     const newIndex = allAttachments.findIndex(
-      (file) => file.fileUrl === attachment.fileUrl
+      (file) => file.fileUrl === attachment.fileUrl,
     );
 
     fullScreenPreview({

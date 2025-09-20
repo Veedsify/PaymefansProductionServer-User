@@ -1,26 +1,28 @@
 "use client";
-
-import { connectSocket } from "@/components/common/Socket";
-import { postRegex, profileRegex } from "@/constants/regex";
-import { AuthUserProps } from "@/features/user/types/user";
-import axiosInstance from "@/utils/Axios";
-import { AxiosError } from "axios";
+import type { AxiosError } from "axios";
 import { usePathname, useRouter } from "next/navigation";
 import {
   createContext,
-  ReactNode,
+  type ReactNode,
   useCallback,
   useContext,
   useLayoutEffect,
   useRef,
   useState,
 } from "react";
-import { Socket } from "socket.io-client";
+import type { Socket } from "socket.io-client";
+import { connectSocket } from "@/components/common/Socket";
+import ERROR_STATUS from "@/constants/error_status";
+import { postRegex, profileRegex } from "@/constants/regex";
+import type { AuthUserProps } from "@/features/user/types/user";
+import axiosInstance, { AuthFailureError } from "@/utils/Axios";
 
 interface AuthContextType {
   user: Partial<AuthUserProps> | null;
   setUser: (user: Partial<AuthUserProps | null>) => void;
   isGuest: boolean;
+  isLoading: boolean;
+  setGuestUser: () => void; // Add method to manually set guest state
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -41,9 +43,10 @@ export const AuthContextProvider = ({
   user: Partial<AuthUserProps> | undefined;
 }) => {
   const [user, setUser] = useState<Partial<AuthUserProps | null>>(
-    initialUser || null
+    initialUser || null,
   );
   const [isGuest, setIsGuest] = useState(true);
+  const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
   const location = usePathname();
   const ref = useRef<number>(0);
@@ -52,58 +55,111 @@ export const AuthContextProvider = ({
   let socket: Socket | null;
   let intervalId: NodeJS.Timeout | undefined;
 
+  // Standardized guest user object
+  const createGuestUser = () => ({
+    id: 0,
+    name: "Guest",
+    username: "guest",
+    email: "",
+    active_status: true,
+    is_model: false,
+  });
+
+  // Method to set guest user state
+  const setGuestUser = useCallback(() => {
+    const guestUser = createGuestUser();
+    setUser(guestUser);
+    setIsGuest(true);
+    setIsLoading(false);
+  }, []);
+
   const fetchUser = useCallback(async () => {
     if (ref.current != 0) {
       return;
     }
-    try {
-      const res = await axiosInstance.get(`/auth/retrieve`, {
-        withCredentials: true,
-      });
 
-      if (res.status === 401) {
-        setUser({
-          name: "Guest",
-          username: "guest",
-          email: "",
-          id: 0,
-          active_status: true,
-          is_model: false,
-        });
-        if (!isProfilePage) {
-          router.push("/login");
-        }
-        return null;
-      }
+    // Check if we have a token before making the request
+    const token = document.cookie
+      .split("; ")
+      .find((row) => row.startsWith("token="))
+      ?.split("=")[1];
 
-      const user = res.data && (res.data.user as AuthUserProps);
-      socket = connectSocket(user?.username);
-      setIsGuest(false);
-      setUser(user);
+    if (!token) {
+      setGuestUser();
       ref.current += 1;
-      return user;
-    } catch (err: unknown) {
-      setUser({
-        id: 0,
-        name: "Guest",
-        username: "@guest",
-        email: "",
-        active_status: true,
-        is_model: false,
-      });
-      ref.current += 1;
+
       if (!isProfilePage && !isPostPage) {
         router.push("/login");
       }
       return null;
     }
-  }, []);
+
+    setIsLoading(true);
+
+    try {
+      const res = await axiosInstance.get(`/auth/retrieve`, {
+        withCredentials: true,
+      });
+
+      const user = res.data && (res.data.user as AuthUserProps);
+      if (user) {
+        socket = connectSocket(user?.username);
+        setIsGuest(false);
+        setUser(user);
+      } else {
+        setGuestUser();
+      }
+
+      setIsLoading(false);
+      ref.current += 1;
+      return user;
+    } catch (err: unknown) {
+      const axiosError = err as AxiosError;
+
+      // Handle AuthFailureError specifically (from failed token refresh)
+      if (err instanceof AuthFailureError) {
+        console.log("Authentication failed - setting guest user");
+        setGuestUser();
+        ref.current += 1;
+        return null;
+      }
+
+      // For 401 errors from initial auth call, also set guest
+      if (axiosError?.response?.status === 401) {
+        console.log("401 error - setting guest user");
+        setGuestUser();
+        ref.current += 1;
+
+        if (!isProfilePage && !isPostPage) {
+          router.push("/login");
+        }
+        return null;
+      }
+
+      // For other errors, also set guest user
+      if (axiosError?.response?.status !== 401) {
+        setGuestUser();
+        ref.current += 1;
+
+        if (!isProfilePage && !isPostPage) {
+          router.push("/login");
+        }
+      } else {
+        // For other 401 errors, let the Axios interceptor handle it
+        setIsLoading(false);
+      }
+
+      return null;
+    }
+  }, [router, isProfilePage, isPostPage]);
 
   useLayoutEffect(() => {
     if (!user) {
       fetchUser();
+    } else {
+      setIsGuest(user?.username === "guest");
+      setIsLoading(false);
     }
-    setIsGuest(!user || user?.username === "guest");
   }, [fetchUser, user]);
 
   useLayoutEffect(() => {
@@ -121,6 +177,6 @@ export const AuthContextProvider = ({
     };
   }, [user?.username, fetchUser]);
 
-  const value = { user, setUser, isGuest };
+  const value = { user, setUser, isGuest, isLoading, setGuestUser };
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };

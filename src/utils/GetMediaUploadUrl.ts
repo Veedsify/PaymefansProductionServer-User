@@ -1,6 +1,6 @@
-import { UploadResponseResponse } from "@/types/Components";
-import { getMaxDurationBase64 } from "./GetVideoMaxDuration";
+import type { UploadResponseResponse } from "@/types/Components";
 import axiosInstance from "./Axios";
+import { getMaxDurationBase64 } from "./GetVideoMaxDuration";
 export const GetUploadUrl = async (
   file: File,
   options: { username: string; shouldUseSignedUrls: boolean },

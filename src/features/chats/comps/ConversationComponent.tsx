@@ -1,18 +1,18 @@
 "use client";
-import { useAuthContext } from "@/contexts/UserUseContext";
-import { LastMessage } from "@/types/Conversations";
+import { useQueryClient } from "@tanstack/react-query";
 import { LucideLink2, LucideLoader, LucideVerified } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import React, { MouseEvent, useEffect, useState } from "react";
-import ActiveProfileTag from "../../profile/ActiveProfileTag";
+import React, { type MouseEvent, useEffect, useState } from "react";
 import { useInView } from "react-intersection-observer";
-import { getSocket } from "../../../components/common/Socket";
-import { Conversation } from "@/types/Components";
-import { useMessagesConversation } from "@/contexts/MessageConversationContext";
-import { useQueryClient } from "@tanstack/react-query";
 import { cn } from "@/components/ui/cn";
+import { useMessagesConversation } from "@/contexts/MessageConversationContext";
+import { useAuthContext } from "@/contexts/UserUseContext";
+import type { Conversation } from "@/types/Components";
+import type { LastMessage } from "@/types/Conversations";
+import { getSocket } from "../../../components/common/Socket";
+import ActiveProfileTag from "../../profile/ActiveProfileTag";
 
 const ConversationComponent = () => {
   const [loading, setLoading] = useState(true);
@@ -124,7 +124,7 @@ const ConversationCard = React.memo(
       ? (() => {
           const cleanMessage = String(conversation.lastMessage.message).replace(
             /<br\s*\/?>/gi,
-            ""
+            "",
           );
           return (
             cleanMessage.substring(0, 60) +
@@ -135,7 +135,7 @@ const ConversationCard = React.memo(
 
     const verifiedUsernames = ["@paymefans", "@paymefans1", "@paymefans2"];
     const isVerified = verifiedUsernames.includes(
-      conversation.receiver.username
+      conversation.receiver.username,
     );
     const isPayMeFans = conversation.receiver.username === "@paymefans";
 
@@ -152,7 +152,7 @@ const ConversationCard = React.memo(
           !isLast && "border-b",
           isUnread
             ? "bg-indigo-50 dark:bg-indigo-900/30 font-medium"
-            : "bg-white dark:bg-gray-950"
+            : "bg-white dark:bg-gray-950",
         )}
       >
         {/* Profile Image with Active Status */}
@@ -268,7 +268,7 @@ const ConversationCard = React.memo(
         </div>
       </div>
     );
-  }
+  },
 );
 
 ConversationCard.displayName = "ConversationCard";

@@ -1,8 +1,4 @@
 "use client";
-import { countries } from "@/lib/Locations";
-import { useAuthContext } from "@/contexts/UserUseContext";
-import { postAudienceDataProps2 } from "@/types/Components";
-import { ValidateModelPayment } from "@/utils/data/ModelSignup";
 import {
   LucideChevronDown,
   LucideChevronUp,
@@ -15,15 +11,19 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import {
-  ChangeEvent,
-  MouseEvent,
+  type ChangeEvent,
+  type MouseEvent,
   useCallback,
-  useState,
   useEffect,
   useMemo,
+  useState,
 } from "react";
 import toast from "react-hot-toast";
 import swal from "sweetalert";
+import { useAuthContext } from "@/contexts/UserUseContext";
+import { countries } from "@/lib/Locations";
+import type { postAudienceDataProps2 } from "@/types/Components";
+import { ValidateModelPayment } from "@/utils/data/ModelSignup";
 
 // Constants
 const GENDER_OPTIONS: postAudienceDataProps2[] = [
@@ -177,7 +177,7 @@ const BecomeAModel = () => {
         setFormErrors((prev) => ({ ...prev, [name]: undefined }));
       }
     },
-    [formErrors]
+    [formErrors],
   );
 
   const handleGenderSelect = useCallback(
@@ -194,7 +194,7 @@ const BecomeAModel = () => {
         }
       }
     },
-    [formErrors.audience]
+    [formErrors.audience],
   );
 
   const handleSubmit = useCallback(
@@ -242,7 +242,7 @@ const BecomeAModel = () => {
                 lastname: formData.lastname,
               },
             }),
-          }
+          },
         );
 
         if (!response.ok) {
@@ -284,7 +284,7 @@ const BecomeAModel = () => {
         setIsSubmitting(false);
       }
     },
-    [formData, selectedGender, user, validateForm]
+    [formData, selectedGender, user, validateForm],
   );
 
   // Render loading state
@@ -421,7 +421,7 @@ const BecomeAModel = () => {
             name="dob"
             value={formData.dob || ""}
             max={new Date(
-              Date.now() - 18 * 365 * 24 * 60 * 60 * 1000
+              Date.now() - 18 * 365 * 24 * 60 * 60 * 1000,
             ).toISOString()}
             className={`border p-4 w-full rounded-lg font-semibold outline-none focus:ring-2 focus:ring-primary-dark-pink transition ${
               formErrors.dob

@@ -1,8 +1,8 @@
 import { Bricolage_Grotesque } from "next/font/google";
 import Image from "next/image";
 import "../globals.css";
-import Link from "next/link";
 import { LucideArrowLeft } from "lucide-react";
+import Link from "next/link";
 
 const font = Bricolage_Grotesque({
   weight: ["200", "300", "400", "500", "600", "700", "800"],

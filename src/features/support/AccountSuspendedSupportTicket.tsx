@@ -1,9 +1,9 @@
 "use client";
-import ROUTE from "@/config/routes";
-import axiosInstance from "@/utils/Axios";
 import { X } from "lucide-react";
 import { useState } from "react";
 import toast from "react-hot-toast";
+import ROUTE from "@/config/routes";
+import axiosInstance from "@/utils/Axios";
 
 const AccountSuspendedSupportTicket = ({
   user,
@@ -32,7 +32,7 @@ const AccountSuspendedSupportTicket = ({
           name: userData.name,
           subject,
           message,
-        }
+        },
       );
 
       toast.success("Ticket submitted successfully!");

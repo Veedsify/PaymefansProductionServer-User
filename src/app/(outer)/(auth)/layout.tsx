@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "@fontsource-variable/geist";
 import "../../globals.css";
 import { Toaster } from "react-hot-toast";
+import Footer from "@/components/common/global/Footer";
 
 export const metadata: Metadata = {
   title: "Paymefans - Login or Sign Up",
@@ -28,6 +29,7 @@ export default function RootLayout({
           }}
         />
         {children}
+        <Footer />
       </body>
     </html>
   );

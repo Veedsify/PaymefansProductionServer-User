@@ -1,25 +1,25 @@
 "use client";
-import React, { useEffect } from "react";
 import {
-  Heart,
-  ShoppingCart,
   ArrowLeft,
-  Trash2,
-  Plus,
+  Heart,
   Loader2,
+  Plus,
+  ShoppingCart,
+  Trash2,
 } from "lucide-react";
-import Link from "next/link";
 import Image from "next/image";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import numeral from "numeral";
+import React, { useEffect } from "react";
+import toast from "react-hot-toast";
+import { useCartStore } from "@/contexts/StoreContext";
+import { useWishlistStore } from "@/contexts/WishlistContext";
 import {
-  useWishlist,
   useClearWishlist,
   useToggleWishlist,
+  useWishlist,
 } from "@/hooks/useWishlist";
-import { useWishlistStore } from "@/contexts/WishlistContext";
-import { useCartStore } from "@/contexts/StoreContext";
-import numeral from "numeral";
-import toast from "react-hot-toast";
-import { useRouter } from "next/navigation";
 
 const WishlistPage = () => {
   const { data, isLoading, isError, error } = useWishlist();

@@ -1,11 +1,11 @@
 "use client";
+import { LucideLoader, Ticket } from "lucide-react";
+import { useEffect, useState } from "react";
+import { useAuthContext } from "@/contexts/UserUseContext";
 import ContactSupportModal from "@/features/support/ContactSupportModal";
 import MyTicketsModal from "@/features/support/MyTicketsModal";
+import type { HelpCategoryProp } from "@/types/Components";
 import { getHelpCategories } from "@/utils/data/GetHelpCategories";
-import { HelpCategoryProp } from "@/types/Components";
-import { useState, useEffect } from "react";
-import { LucideLoader, Ticket } from "lucide-react";
-import { useAuthContext } from "@/contexts/UserUseContext";
 
 const HelpPage = () => {
   const [helpCategories, setHelpCategories] = useState<HelpCategoryProp[]>([]);

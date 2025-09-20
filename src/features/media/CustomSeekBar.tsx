@@ -1,4 +1,5 @@
-import React, { useState, useRef, MouseEvent } from "react";
+import type React from "react";
+import { type MouseEvent, useRef, useState } from "react";
 
 interface SeekBarProps {
   currentTime: number;

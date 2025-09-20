@@ -1,12 +1,9 @@
 import { useQuery } from "@tanstack/react-query";
-import axiosInstance from "@/utils/Axios";
 import { fmt } from "@/constants/path";
+import axiosInstance from "@/utils/Axios";
 
 const fetchPost = async (postId: string) => {
-  const response = await axiosInstance.post(
-    fmt(`/post/single/%s`, postId),
-    {},
-  );
+  const response = await axiosInstance.post(fmt(`/post/single/%s`, postId), {});
   return response.data.data;
 };
 

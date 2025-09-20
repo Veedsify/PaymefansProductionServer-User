@@ -1,10 +1,10 @@
 "use client";
-import React, { useEffect, useState, useCallback, useMemo } from "react";
-import StoryMediaFetch from "@/hooks/StoryMediaFetch";
 import { LucideCheck, LucideLoader, LucidePlay } from "lucide-react";
 import Image from "next/image";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useInView } from "react-intersection-observer";
 import { useStoryStore } from "@/contexts/StoryContext";
+import StoryMediaFetch from "@/hooks/StoryMediaFetch";
 import VideoPlayer from "../../media/videoplayer";
 
 const StatusMediaPanel = () => {

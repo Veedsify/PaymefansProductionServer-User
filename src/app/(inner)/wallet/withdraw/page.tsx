@@ -1,15 +1,11 @@
 "use client";
-import LoadingSpinner from "@/components/common/loaders/LoadingSpinner";
+import { useQuery } from "@tanstack/react-query";
+import { LucideArrowRight } from "lucide-react";
+import Image from "next/image";
+import Link from "next/link";
 import { useAuthContext } from "@/contexts/UserUseContext";
 import WithdrawalInput from "@/features/withdraw/WithdrawalInput";
 import axiosInstance from "@/utils/Axios";
-import { getTransactionsData } from "@/utils/data/Transactions";
-import getUserData from "@/utils/data/UserData";
-import { useQuery } from "@tanstack/react-query";
-import { LucideArrowRight } from "lucide-react";
-import { cookies } from "next/headers";
-import Image from "next/image";
-import Link from "next/link";
 
 const Page = () => {
   const { user } = useAuthContext();

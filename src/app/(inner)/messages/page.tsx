@@ -1,7 +1,7 @@
+import type { Metadata } from "next";
 import ConversationComponent from "@/features/chats/comps/ConversationComponent";
 import MessageCounter from "@/features/chats/comps/MessageCounter";
 import MessageSearch from "@/features/chats/comps/MessageSearch";
-import { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Messages",

@@ -1,5 +1,5 @@
 "use client";
-import { createContext, ReactNode, useContext, useState } from "react";
+import { createContext, type ReactNode, useContext, useState } from "react";
 
 type ToggleWishListContextType = {
   wishList: boolean;
@@ -7,14 +7,14 @@ type ToggleWishListContextType = {
 };
 
 const ToggleWishListContext = createContext<ToggleWishListContextType | null>(
-  null
+  null,
 );
 
 export const useToggleWishList = () => {
   const context = useContext(ToggleWishListContext);
   if (!context) {
     throw new Error(
-      "useToggleWishList must be used within a ToggleWishListProvider or wishList is undefined"
+      "useToggleWishList must be used within a ToggleWishListProvider or wishList is undefined",
     );
   }
   return context;

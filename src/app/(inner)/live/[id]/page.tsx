@@ -1,8 +1,9 @@
-"use client";;
+"use client";
+
 import { DyteProvider, useDyteClient } from "@dytesdk/react-web-core";
-import { useCallback, useEffect } from "react";
-import { useParams, useRouter } from "next/navigation";
 import axios from "axios";
+import { useParams, useRouter } from "next/navigation";
+import { useCallback, useEffect } from "react";
 import VideoStreamer from "@/features/media/VideoStreamer";
 
 const ViewStream = () => {
@@ -14,9 +15,9 @@ const ViewStream = () => {
   const fetchStream = useCallback(async () => {
     try {
       const response = await axios.get(
-        `${process.env.NEXT_PUBLIC_LIVE_SERVER}/stream/${streamId}`
+        `${process.env.NEXT_PUBLIC_LIVE_SERVER}/stream/${streamId}`,
       );
-     } catch (error) {
+    } catch (error) {
       console.log(error);
     }
   }, [streamId]);

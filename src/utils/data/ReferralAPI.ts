@@ -58,7 +58,7 @@ export const fetchReferralStats = async (): Promise<ReferralStats> => {
   } catch (error: any) {
     console.error("Error fetching referral stats:", error);
     throw new Error(
-      error.response?.data?.error || "Failed to fetch referral statistics"
+      error.response?.data?.error || "Failed to fetch referral statistics",
     );
   }
 };
@@ -68,7 +68,7 @@ export const fetchReferralStats = async (): Promise<ReferralStats> => {
  */
 export const fetchReferredUsers = async (
   cursor?: number | null,
-  limit: number = 10
+  limit: number = 10,
 ): Promise<ReferralUsersResponse> => {
   try {
     const params = new URLSearchParams();
@@ -83,7 +83,7 @@ export const fetchReferredUsers = async (
   } catch (error: any) {
     console.error("Error fetching referred users:", error);
     throw new Error(
-      error.response?.data?.error || "Failed to fetch referred users"
+      error.response?.data?.error || "Failed to fetch referred users",
     );
   }
 };
@@ -93,7 +93,7 @@ export const fetchReferredUsers = async (
  */
 export const fetchReferralEarnings = async (
   cursor?: number | null,
-  limit: number = 10
+  limit: number = 10,
 ): Promise<ReferralEarningsResponse> => {
   try {
     const params = new URLSearchParams();
@@ -108,7 +108,7 @@ export const fetchReferralEarnings = async (
   } catch (error: any) {
     console.error("Error fetching referral earnings:", error);
     throw new Error(
-      error.response?.data?.error || "Failed to fetch referral earnings"
+      error.response?.data?.error || "Failed to fetch referral earnings",
     );
   }
 };
@@ -118,7 +118,7 @@ export const fetchReferralEarnings = async (
  */
 const createReferral = async (
   referralCode: string,
-  referredUserId: number
+  referredUserId: number,
 ): Promise<ApiResponse<any>> => {
   try {
     const response = await axiosInstance.post("/referral/create", {
@@ -128,9 +128,7 @@ const createReferral = async (
     return response.data;
   } catch (error: any) {
     console.error("Error creating referral:", error);
-    throw new Error(
-      error.response?.data?.error || "Failed to create referral"
-    );
+    throw new Error(error.response?.data?.error || "Failed to create referral");
   }
 };
 
@@ -138,7 +136,7 @@ const createReferral = async (
  * Validate a referral code
  */
 const validateReferralCode = async (
-  code: string
+  code: string,
 ): Promise<ApiResponse<{ referrerId?: number; message: string }>> => {
   try {
     const response = await axiosInstance.get(`/referral/validate?code=${code}`);
@@ -146,7 +144,7 @@ const validateReferralCode = async (
   } catch (error: any) {
     console.error("Error validating referral code:", error);
     throw new Error(
-      error.response?.data?.error || "Failed to validate referral code"
+      error.response?.data?.error || "Failed to validate referral code",
     );
   }
 };
@@ -157,7 +155,7 @@ const validateReferralCode = async (
 const addReferralEarnings = async (
   userId: number,
   points: number,
-  description: string
+  description: string,
 ): Promise<ApiResponse<any>> => {
   try {
     const response = await axiosInstance.post("/referral/add-earnings", {
@@ -169,7 +167,7 @@ const addReferralEarnings = async (
   } catch (error: any) {
     console.error("Error adding referral earnings:", error);
     throw new Error(
-      error.response?.data?.error || "Failed to add referral earnings"
+      error.response?.data?.error || "Failed to add referral earnings",
     );
   }
 };

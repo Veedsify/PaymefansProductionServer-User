@@ -59,4 +59,3 @@ export const useModelsAndHookups = (options?: UseModelsAndHookupsOptions) => {
     isEmpty: query.isSuccess && !hasLoadedData,
   };
 };
-

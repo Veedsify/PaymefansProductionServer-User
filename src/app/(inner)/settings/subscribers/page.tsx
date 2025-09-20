@@ -1,12 +1,12 @@
 "use client";
 
-import FetchActiveSubscribers from "@/utils/data/FetchActiveSubscribers";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { LucideLoader } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useRef } from "react";
 import { useInView } from "react-intersection-observer";
+import FetchActiveSubscribers from "@/utils/data/FetchActiveSubscribers";
 
 function Page() {
   const {

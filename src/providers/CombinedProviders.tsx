@@ -1,15 +1,15 @@
 "use client";
 
-import { ReactNode } from "react";
-import QueryProvider from "./QueryProvider";
-import { AuthContextProvider } from "@/contexts/UserUseContext";
-import ToggleWishListProvider from "@/contexts/ToggleWishlist";
-import UserAccountSuspendedScreen from "@/features/user/comps/UserAccountSuspendedScreen";
-import { MessagesConversationProvider } from "@/contexts/MessageConversationContext";
+import { useQuery } from "@tanstack/react-query";
+import type { ReactNode } from "react";
 import ConfigProvider from "@/contexts/ConfigContext";
 import GetLocationContext from "@/contexts/GetLocationContext";
-import { useQuery } from "@tanstack/react-query";
+import { MessagesConversationProvider } from "@/contexts/MessageConversationContext";
+import ToggleWishListProvider from "@/contexts/ToggleWishlist";
+import { AuthContextProvider } from "@/contexts/UserUseContext";
+import UserAccountSuspendedScreen from "@/features/user/comps/UserAccountSuspendedScreen";
 import getUserData from "@/utils/data/UserData";
+import QueryProvider from "./QueryProvider";
 
 interface CombinedProvidersProps {
   children: ReactNode;

@@ -1,4 +1,4 @@
-import { GroupMember } from "@/features/group/types/group";
+import type { GroupMember } from "@/features/group/types/group";
 import axiosInstance from "@/utils/Axios";
 
 type Group = {

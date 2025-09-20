@@ -1,7 +1,7 @@
-import { AuthUserProps } from "@/features/user/types/user";
 import axios from "axios";
-import { getToken } from "../Cookie";
+import type { AuthUserProps } from "@/features/user/types/user";
 import axiosInstance from "../Axios";
+import { getToken } from "../Cookie";
 
 type PostComponentUser = {
   id: number;

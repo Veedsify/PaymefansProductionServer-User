@@ -1,10 +1,10 @@
 "use client";
 
-import React, { memo, useMemo, lazy, Suspense, useCallback } from "react";
-import { usePostPreviewState } from "@/hooks/usePostPreviewSelectors";
-import MediaPreviewErrorBoundary from "@/components/error-boundaries/MediaPreviewErrorBoundary";
 import { LucideLoader } from "lucide-react";
 import dynamic from "next/dynamic";
+import React, { lazy, memo, Suspense, useCallback, useMemo } from "react";
+import MediaPreviewErrorBoundary from "@/components/error-boundaries/MediaPreviewErrorBoundary";
+import { usePostPreviewState } from "@/hooks/usePostPreviewSelectors";
 
 // Lazy load the heavy MediaPreviewModal component
 const MediaPreviewModal = dynamic(() => import("../media/MediaPreviewModal"));

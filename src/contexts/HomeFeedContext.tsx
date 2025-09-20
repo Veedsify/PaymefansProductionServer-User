@@ -100,9 +100,9 @@ export const useHomeFeedStore = create<HomeStoreFeed>((set) => ({
     set((state) => {
       const uniquePosts = posts.filter(
         (newPost) =>
-          !state.posts.some((existingPost) => existingPost.id === newPost.id)
+          !state.posts.some((existingPost) => existingPost.id === newPost.id),
       );
-      let currentposts = [...state.posts, ...uniquePosts];
+      const currentposts = [...state.posts, ...uniquePosts];
       return { posts: currentposts };
     }),
 }));

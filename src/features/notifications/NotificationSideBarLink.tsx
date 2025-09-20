@@ -1,6 +1,6 @@
 "use client";
-import Link from "next/link";
 import { LucideBell } from "lucide-react";
+import Link from "next/link";
 import { useNotificationCount } from "@/hooks/useNotifications";
 
 const NotificationSideBarLink = () => {

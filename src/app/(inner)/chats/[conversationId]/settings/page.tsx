@@ -1,25 +1,25 @@
 "use client";
-import React, { useState, useEffect } from "react";
-import Image from "next/image";
+import axios from "axios";
 import { motion } from "framer-motion";
 import {
-  BellOff,
-  Images,
-  Star,
-  Search,
-  Ban,
-  Trash2,
-  ChevronRight,
   AlertTriangle,
+  Ban,
+  BellOff,
+  ChevronRight,
+  Images,
   Loader2,
+  Search,
+  Star,
+  Trash2,
 } from "lucide-react";
+import Image from "next/image";
 import { useParams } from "next/navigation";
-import { useAuthContext } from "@/contexts/UserUseContext";
-import { blockUser, checkBlockStatus } from "@/utils/data/BlockUser";
-import axios from "axios";
+import React, { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
+import { useAuthContext } from "@/contexts/UserUseContext";
 import ActiveProfileTag from "@/features/profile/ActiveProfileTag";
 import axiosInstance from "@/utils/Axios";
+import { blockUser, checkBlockStatus } from "@/utils/data/BlockUser";
 
 interface ConversationReceiver {
   id: number;

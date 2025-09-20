@@ -1,5 +1,5 @@
-import React from "react";
 import { motion } from "framer-motion";
+import React from "react";
 
 type GroupCoverProps = {
   handleJoinGroup: () => void;
@@ -197,11 +197,11 @@ const GroupCover = ({ handleJoinGroup }: GroupCoverProps) => {
 
   return (
     <div className="min-h-screen">
-      <div className="flex items-center justify-center w-full overflow-hidden bg-white h-dvh">
+      <div className="flex items-center justify-center w-full overflow-hidden bg-white dark:bg-black h-dvh">
         {/* Main content */}
         <div className="px-8 py-8 text-center">
           {/* Title */}
-          <h1 className="mb-8 text-2xl font-black tracking-tight text-center text-black md:text-4xl">
+          <h1 className="mb-8 text-2xl font-black tracking-tight text-center text-black md:text-4xl dark:text-white">
             CREATORS GROUP
           </h1>
 
@@ -246,7 +246,7 @@ const GroupCover = ({ handleJoinGroup }: GroupCoverProps) => {
 
           {/* Description */}
           <div className="mt-8 mb-8">
-            <p className="max-w-xl font-medium leading-relaxed text-center text-gray-800">
+            <p className="max-w-xl font-medium leading-relaxed text-center text-gray-800 dark:text-white">
               Join the Paymefans Creator Group to connect with fellow creators
               and models worldwide, explore collaboration opportunities, and
               build business relationships.

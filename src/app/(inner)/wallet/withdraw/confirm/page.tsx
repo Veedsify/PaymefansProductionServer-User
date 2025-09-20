@@ -1,16 +1,16 @@
 "use client";
-import { useConfigContext } from "@/contexts/ConfigContext";
-import { useWithdrawStore } from "@/contexts/WithDrawContext";
+import axios from "axios";
+import { motion } from "framer-motion";
 import { LucideDollarSign, LucideLoader } from "lucide-react";
 import { useRouter } from "next/navigation";
-import React, { useEffect, useCallback } from "react";
-import { motion } from "framer-motion";
+import React, { useCallback, useEffect } from "react";
 import swal from "sweetalert";
-import VerifyWithdrawalPin from "@/features/withdraw/VerifyWithdrawalPin";
+import { useConfigContext } from "@/contexts/ConfigContext";
 import { useAuthContext } from "@/contexts/UserUseContext";
-import axios from "axios";
-import { getToken } from "@/utils/Cookie";
+import { useWithdrawStore } from "@/contexts/WithDrawContext";
+import VerifyWithdrawalPin from "@/features/withdraw/VerifyWithdrawalPin";
 import axiosInstance from "@/utils/Axios";
+import { getToken } from "@/utils/Cookie";
 
 const WithdrawConfigPage = () => {
   const [loading, setLoading] = React.useState(true);
@@ -20,7 +20,7 @@ const WithdrawConfigPage = () => {
   const [error, setError] = React.useState<string>("");
   const [processing, setProcessing] = React.useState(false);
   const [step, setStep] = React.useState<"create" | "verify">(
-    user?.hasPin ? "verify" : "create"
+    user?.hasPin ? "verify" : "create",
   );
   const { config } = useConfigContext();
   const router = useRouter();
@@ -47,7 +47,7 @@ const WithdrawConfigPage = () => {
 
   const amountInNgn = Number(withdrawValues?.amountInNgn).toLocaleString();
   const amountToSettle = Number(
-    withdrawValues?.amountToSettle
+    withdrawValues?.amountToSettle,
   ).toLocaleString();
   // Fixed typo: platformFee instead of platfromFee
   const platformFee = Number(withdrawValues?.platformFee).toLocaleString();

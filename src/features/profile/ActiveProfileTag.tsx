@@ -1,9 +1,9 @@
 "use client";
 
-import { ActiveProfileTagProps } from "@/types/Components";
 import { useEffect } from "react";
-import { getSocket, isSocketConnected } from "../../components/common/Socket";
 import { useActiveUsersManager } from "@/context/ActiveUsersManagerContext";
+import type { ActiveProfileTagProps } from "@/types/Components";
+import { getSocket, isSocketConnected } from "../../components/common/Socket";
 
 // ActiveProfileTag component
 const ActiveProfileTag = ({

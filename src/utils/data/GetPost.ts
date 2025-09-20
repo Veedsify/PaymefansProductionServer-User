@@ -3,9 +3,7 @@ import axiosInstance from "../Axios";
 
 export const getPost = async (postId: string) => {
   try {
-    const request = await axiosInstance.post(
-      `/post/single/${postId}`, {}
-    );
+    const request = await axiosInstance.post(`/post/single/${postId}`, {});
     return request.data.data;
   } catch (error) {
     console.log(error);

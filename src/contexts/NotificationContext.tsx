@@ -106,7 +106,7 @@ export const useNotificationStore = create<NotificationState>()((set) => ({
   updateNotification: (id: number) =>
     set((state) => {
       const notifications = state.notifications.map((note) =>
-        note.id === id ? { ...note, read: true } : note
+        note.id === id ? { ...note, read: true } : note,
       );
       return { ...state, notifications };
     }),

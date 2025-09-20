@@ -1,10 +1,10 @@
 "use client";
-import { StoryMediaFetchProps } from "@/types/Components";
-import { useEffect, useState } from "react";
 import axios, { CancelToken } from "axios";
-import { getToken } from "@/utils/Cookie";
 import lodash from "lodash";
+import { useEffect, useState } from "react";
+import type { StoryMediaFetchProps } from "@/types/Components";
 import axiosInstance from "@/utils/Axios";
+import { getToken } from "@/utils/Cookie";
 
 const StoryMediaFetch = ({ page }: StoryMediaFetchProps) => {
   const [media, setMedia] = useState<any>([]);
@@ -17,14 +17,13 @@ const StoryMediaFetch = ({ page }: StoryMediaFetchProps) => {
     setError(false);
     const URL = `/stories/media`;
     let cancel;
-    // @ts-ignore
     axiosInstance({
       url: URL,
       method: "GET",
       params: {
         page,
       },
-      // @ts-ignore
+      // @ts-expect-error
       cancelToken: new CancelToken((c: any) => (cancel = c)),
     })
       .then((res) => {

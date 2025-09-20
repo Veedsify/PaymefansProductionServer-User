@@ -1,6 +1,6 @@
 import { create } from "zustand";
-import { UserRegisterType } from "../features/user/types/user";
 import { createJSONStorage, persist } from "zustand/middleware";
+import type { UserRegisterType } from "../features/user/types/user";
 
 type UserState = {
   user: UserRegisterType | null;
@@ -16,6 +16,6 @@ export const useUser = create<UserState>()(
     {
       name: "user_register_context",
       storage: createJSONStorage(() => sessionStorage),
-    }
-  )
+    },
+  ),
 );

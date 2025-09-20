@@ -1,10 +1,10 @@
 "use client";
+import { AnimatePresence, motion } from "framer-motion";
 import { Ban, MoreVertical, Link as ProfileLink } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
-import BlockUserButton from "../user/comps/BlockUserButton";
-import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
+import { useEffect, useRef, useState } from "react";
 import toast from "react-hot-toast";
+import BlockUserButton from "../user/comps/BlockUserButton";
 
 const MoreProfileOptions = ({
   user,
@@ -23,7 +23,7 @@ const MoreProfileOptions = ({
   const copyProfileLink = () => {
     const link = `${process.env.NEXT_PUBLIC_SERVER_URL}/${user.username.replace(
       "@",
-      ""
+      "",
     )}`;
     navigator.clipboard.writeText(link);
     toast.success("Link copied to clipboard");

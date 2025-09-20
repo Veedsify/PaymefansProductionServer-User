@@ -1,5 +1,4 @@
 "use client";
-import { useModalContext } from "@/lib/PageContext";
 import {
   LucideChevronDown,
   LucideChevronUp,
@@ -9,15 +8,21 @@ import {
   LucideSearch,
   LucideUser2,
 } from "lucide-react";
-import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useState } from "react";
 import PostShareModal from "@/features/post/PostShareComponent";
-const MenuButtons = () => {
-  const pathname = usePathname();
+import { useModalContext } from "@/lib/PageContext";
+import { useAuthContext } from "@/contexts/UserUseContext";
 
+const MenuButtons = () => {
+  const { isGuest } = useAuthContext();
+  const pathname = usePathname();
   const paths = ["/live", "/chats", "/groups"];
   const hideOn = paths.some((path) => pathname.includes(path));
+  if (isGuest) {
+    return null;
+  }
   return (
     <div className={`z-[100] ${hideOn ? "hidden" : "block"} lg:block`}>
       <NavigationBar />
@@ -35,7 +40,7 @@ const NavigationBar = () => {
         <Link href="/search" className="cursor-pointer">
           <LucideSearch className="h-5 md:h-8" />
         </Link>
-        <Link href="/posts/new" className="cursor-pointer">
+        <Link href="/new" className="cursor-pointer">
           <LucidePlus className="h-5 md:h-8" />
         </Link>
         <Link href="/models" className="cursor-pointer">

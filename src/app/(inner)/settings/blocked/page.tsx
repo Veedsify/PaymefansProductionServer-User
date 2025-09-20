@@ -1,11 +1,11 @@
 "use client";
-import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { Ban, Loader2, User, Calendar, Search, X } from "lucide-react";
+import { Ban, Calendar, Loader2, Search, User, X } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { getBlockedUsers, unblockUser } from "@/utils/data/BlockUser";
+import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
+import { getBlockedUsers, unblockUser } from "@/utils/data/BlockUser";
 
 interface BlockedUser {
   user: {
@@ -68,7 +68,7 @@ const BlockedUsersPage = () => {
       if (result.status && !result.error) {
         // Remove the user from the blocked list
         setBlockedUsers((prev) =>
-          prev.filter((item) => item.blockId !== blockId)
+          prev.filter((item) => item.blockId !== blockId),
         );
         toast.success("User unblocked successfully");
       } else {

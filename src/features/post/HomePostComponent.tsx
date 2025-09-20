@@ -1,10 +1,11 @@
 "use client";
-import { formatDate } from "@/utils/FormatDate";
-import PostComponent from "./PostComponent";
-import LoadingPost from "../../components/common/loaders/LoadingPost";
-import { useHomeFeedInfinite } from "@/hooks/useHomeFeedInfinite";
 import { useEffect } from "react";
 import { useInView } from "react-intersection-observer";
+import { useHomeFeedInfinite } from "@/hooks/useHomeFeedInfinite";
+import { formatDate } from "@/utils/FormatDate";
+import LoadingPost from "../../components/common/loaders/LoadingPost";
+import PostComponent from "./PostComponent";
+import { fmt } from "@/constants/path";
 
 const HomePostComponent = () => {
   const {
@@ -69,10 +70,11 @@ const HomePostComponent = () => {
   // No posts state
   if (!isLoading && allPosts.length === 0) {
     return (
-      <div className="relative p-2 md:p-5">
-        <div className="flex items-center justify-center min-h-[200px]">
-          <p className="text-lg text-gray-500">
-            No posts found. Follow some users to see their content!
+      <div className="relative p-2 md:p-2">
+        <div className="flex items-center justify-center min-h-[100px]">
+          <p className=" text-gray-500 text-center dark:text-white">
+            No posts found. <br />
+            Follow some users to see their content!
           </p>
         </div>
       </div>
@@ -94,7 +96,7 @@ const HomePostComponent = () => {
             id: post.user.id,
             user_id: post.user.user_id,
             name: post.user.name,
-            link: `/${post.user.username}`,
+            link: fmt(`/%s`, post.user.username),
             username: post.user.username,
             image: post.user.profile_image,
           }}

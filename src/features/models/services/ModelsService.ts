@@ -1,6 +1,5 @@
-
+import type { HookupProps } from "@/features/models/comps/SideModels";
 import axiosInstance from "@/utils/Axios";
-import { HookupProps } from "@/features/models/comps/SideModels";
 
 interface ModelsAndHookupsResponse {
   models: any[];

@@ -1,13 +1,12 @@
 "use client";
-import { getToken } from "@/utils/Cookie";
-import followUser from "@/utils/data/update/Follow";
 import { useInfiniteQuery } from "@tanstack/react-query";
+import { motion } from "framer-motion";
 import { debounce } from "lodash";
 import { LucideLoader, XIcon } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import {
-  ChangeEvent,
+  type ChangeEvent,
   useCallback,
   useEffect,
   useMemo,
@@ -15,14 +14,15 @@ import {
   useState,
 } from "react";
 import toast from "react-hot-toast";
-import { motion } from "framer-motion";
 import axiosInstance from "@/utils/Axios";
+import { getToken } from "@/utils/Cookie";
+import followUser from "@/utils/data/update/Follow";
 
 const fetchStats = async (
   userId: string | undefined,
   page: number,
   type: string,
-  query: string
+  query: string,
 ) => {
   try {
     const response = await axiosInstance.get(
@@ -33,12 +33,12 @@ const fetchStats = async (
           limit: 25,
           query: query,
         },
-      }
+      },
     );
     return response.data;
   } catch (error: any) {
     throw new Error(
-      error.response?.data?.message || "Network response was not ok"
+      error.response?.data?.message || "Network response was not ok",
     );
   }
 };
@@ -181,7 +181,7 @@ export const ProfileStatsComponent = ({
 
   const stats = useMemo(
     () => data?.pages.flatMap((page) => page.data) || [],
-    [data]
+    [data],
   );
 
   const total =
@@ -189,14 +189,14 @@ export const ProfileStatsComponent = ({
 
   const debouncedSearch = useMemo(
     () => debounce((value) => setQuery(value), 400),
-    []
+    [],
   );
 
   const handleInputChange = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => {
       debouncedSearch(e.target.value);
     },
-    [debouncedSearch]
+    [debouncedSearch],
   );
 
   useEffect(() => {
@@ -222,7 +222,7 @@ export const ProfileStatsComponent = ({
           fetchNextPage();
         }
       },
-      { threshold: 1.0 }
+      { threshold: 1.0 },
     );
 
     if (observerRef.current) observer.observe(observerRef.current);

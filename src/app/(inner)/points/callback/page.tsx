@@ -1,11 +1,11 @@
 "use client";
-import CoinUsedUp from "@/components/common/toggles/Cancelled";
-import CoinProcessing from "@/components/common/loaders/Processing";
-import CoinPurchaseSuccessful from "@/components/common/toggles/Successful";
-import axiosInstance from "@/utils/Axios";
 import { FetchQueryOptions } from "@tanstack/react-query";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
+import CoinProcessing from "@/components/common/loaders/Processing";
+import CoinUsedUp from "@/components/common/toggles/Cancelled";
+import CoinPurchaseSuccessful from "@/components/common/toggles/Successful";
+import axiosInstance from "@/utils/Axios";
 
 const PageCallBack = () => {
   const router = useRouter();

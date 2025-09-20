@@ -1,6 +1,6 @@
 "use client";
-import React, { useEffect, useRef } from "react";
 import Image from "next/image";
+import React, { useEffect, useRef } from "react";
 
 type MessageInputAttachmentPreviewProps = {
   type: "image" | "video";

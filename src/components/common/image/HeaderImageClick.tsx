@@ -1,7 +1,7 @@
 "use client";
-import { useSideBarContext } from "@/lib/PageContext";
-import { useAuthContext } from "@/contexts/UserUseContext";
 import Image from "next/image";
+import { useAuthContext } from "@/contexts/UserUseContext";
+import { useSideBarContext } from "@/lib/PageContext";
 
 const HeaderImgClick = () => {
   const { setSideBar } = useSideBarContext();

@@ -15,6 +15,6 @@ export const getUser = create<UserState>()(
     {
       name: "user_register_context",
       storage: createJSONStorage(() => sessionStorage),
-    }
-  )
+    },
+  ),
 );

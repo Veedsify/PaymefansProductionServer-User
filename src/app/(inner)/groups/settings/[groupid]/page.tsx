@@ -1,29 +1,30 @@
 "use client";
 
-import React, { useState, useEffect, useCallback } from "react";
+import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
 import {
   LucideChevronLeft,
-  LucideSettings,
-  LucideUsers,
-  LucideShield,
-  LucideImage,
-  LucideGlobe,
-  LucideLock,
-  LucideEyeOff,
   LucideChevronRight,
+  LucideEyeOff,
+  LucideGlobe,
+  LucideImage,
   LucideLoader,
+  LucideLock,
+  LucideSettings,
+  LucideShield,
+  LucideUsers,
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useParams } from "next/navigation";
-import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
-import { fetchGroupMembers } from "@/utils/data/GroupAPI";
-import axiosInstance from "@/utils/Axios";
+import type React from "react";
+import { useCallback, useEffect, useState } from "react";
 import {
-  GroupType,
   type ApiResponse,
   type Group,
+  GroupType,
 } from "@/features/group/types/group";
+import axiosInstance from "@/utils/Axios";
+import { fetchGroupMembers } from "@/utils/data/GroupAPI";
 
 const GroupSettingsPage = () => {
   const params = useParams();
@@ -636,8 +637,8 @@ const MembersTab: React.FC<{ groupId: string; adminId: number }> = ({
                     member.userId === adminId
                       ? "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200"
                       : member.role === "MODERATOR"
-                      ? "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200"
-                      : "bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200"
+                        ? "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200"
+                        : "bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200"
                   }`}
                 >
                   {member.userId === adminId ? "Admin" : member.role}

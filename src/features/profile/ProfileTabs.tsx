@@ -1,15 +1,15 @@
 "use client";
-import { useState } from "react";
-import PostPanel from "@/features/post/PostPanel";
-import MediaPanel from "@/features/media/MediaPanel";
-import RepostPanel from "./RepostPanel";
 import {
   LucideImage,
   LucideLock,
   LucidePodcast,
   LucideRepeat2,
 } from "lucide-react";
+import { useState } from "react";
+import MediaPanel from "@/features/media/MediaPanel";
+import PostPanel from "@/features/post/PostPanel";
 import PrivatePanel from "./PrivatePanel";
+import RepostPanel from "./RepostPanel";
 
 const ProfileTabs = () => {
   const [activeTab, setActiveTab] = useState(0);

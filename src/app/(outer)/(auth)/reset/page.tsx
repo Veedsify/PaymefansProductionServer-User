@@ -1,13 +1,13 @@
 "use client";
-import { getUser } from "@/lib/User";
-import axiosServer from "@/utils/Axios";
+import axios from "axios";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { ChangeEvent, FormEvent, useEffect, useState } from "react";
+import { type ChangeEvent, FormEvent, useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { LOGIN_CONFIG } from "@/config/config";
-import axios from "axios";
+import { getUser } from "@/lib/User";
+import axiosServer from "@/utils/Axios";
 
 const Login = () => {
   const { setUser } = getUser();

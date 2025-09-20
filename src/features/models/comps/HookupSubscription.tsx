@@ -1,8 +1,8 @@
-import { AuthUserProps } from "@/features/user/types/user";
+import { MapPin, Mars, Venus } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { MapPin, Mars, Venus } from "lucide-react";
-import { HookupProps } from "@/features/models/comps/SideModels";
+import type { HookupProps } from "@/features/models/comps/SideModels";
+import { AuthUserProps } from "@/features/user/types/user";
 import { cn } from "../../../components/ui/cn";
 import ActiveProfileTag from "../../profile/ActiveProfileTag";
 
@@ -32,7 +32,7 @@ const HookupSubscription = ({ hookup }: { hookup: HookupProps }) => {
       <p
         className={cn(
           `text-sm font-bold text-center inline-flex items-center`,
-          hookup?.gender === "male" ? "text-blue-500" : "text-pink-500"
+          hookup?.gender === "male" ? "text-blue-500" : "text-pink-500",
         )}
       >
         {hookup?.name || hookup?.username}

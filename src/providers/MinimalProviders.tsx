@@ -1,8 +1,8 @@
 "use client";
 
-import { ReactNode } from "react";
-import QueryProvider from "./QueryProvider";
+import type { ReactNode } from "react";
 import ConfigProvider from "@/contexts/ConfigContext";
+import QueryProvider from "./QueryProvider";
 
 interface MinimalProvidersProps {
   children: ReactNode;

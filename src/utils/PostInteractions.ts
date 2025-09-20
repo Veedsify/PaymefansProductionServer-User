@@ -1,8 +1,9 @@
-import { AuthUserProps } from "@/features/user/types/user";
 import axios from "axios";
+import { AuthUserProps } from "@/features/user/types/user";
+import type { PostData } from "@/types/Components";
 import { getToken } from "./Cookie";
-import { PostData } from "@/types/Components";
-let token = getToken();
+
+const token = getToken();
 
 const axionsIns = axios.create({
   baseURL: process.env.NEXT_PUBLIC_TS_EXPRESS_URL,

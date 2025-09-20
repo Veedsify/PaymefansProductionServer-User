@@ -1,12 +1,5 @@
 "use client";
-import MoreProfileOptions from "@/features/profile/MoreProfileOptions";
-import EditProfileButton from "@/features/profile/EditProfileButton";
-import { ProfileCounts } from "@/features/profile/ProfileCount";
-import ProfileSocialLinks from "@/features/profile/ProfileSocialLinks";
-import ProfileTabs from "@/features/profile/ProfileTabs";
-import { AuthUserProps } from "@/features/user/types/user";
-import getUserData from "@/utils/data/UserData";
-
+import { useQuery } from "@tanstack/react-query";
 import {
   LucideCalendar,
   LucideLink,
@@ -14,10 +7,17 @@ import {
   LucideMapPin,
 } from "lucide-react";
 import Link from "next/link";
-import ProfilePicture from "@/features/profile/ProfilePicture";
-import ProfileBanner from "@/features/profile/ProfileBanner";
 import CreatorDashboardButton from "@/features/profile/CreatorDashboardButton";
-import { useQuery } from "@tanstack/react-query";
+import EditProfileButton from "@/features/profile/EditProfileButton";
+import MoreProfileOptions from "@/features/profile/MoreProfileOptions";
+import ProfileBanner from "@/features/profile/ProfileBanner";
+import { ProfileCounts } from "@/features/profile/ProfileCount";
+import ProfilePicture from "@/features/profile/ProfilePicture";
+import ProfileSocialLinks from "@/features/profile/ProfileSocialLinks";
+import ProfileTabs from "@/features/profile/ProfileTabs";
+import type { AuthUserProps } from "@/features/user/types/user";
+import getUserData from "@/utils/data/UserData";
+import FormatName from "@/lib/FormatName";
 
 const ProfilePage = () => {
   const {
@@ -42,7 +42,7 @@ const ProfilePage = () => {
 
         <div className="relative flex w-full px-2 md:px-5">
           <ProfilePicture user={user} />
-          <div className="flex items-center p-3 ml-auto gap-3 sm:p-3">
+          <div className="flex items-center py-3 ml-auto gap-3 sm:p-3">
             <EditProfileButton user={user} />
             <MoreProfileOptions
               user={user as AuthUserProps}
@@ -54,7 +54,7 @@ const ProfilePage = () => {
         <div className="flex flex-col items-start px-2 mt-2 mb-6 gap-2 md:px-5">
           <div className="flex flex-col">
             <h1 className="font-bold text-gray-900 dark:text-gray-100">
-              {user?.name ? user.name : ""}
+              {user?.name ? FormatName(user.name) : ""}
             </h1>
             <small className="text-gray-500 dark:text-gray-400">
               {user?.username}

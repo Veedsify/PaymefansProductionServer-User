@@ -1,13 +1,14 @@
-import { useState, useEffect, useCallback } from "react";
 import axios from "axios";
-import { AuthUserProps } from "@/features/user/types/user";
-import { getToken } from "@/utils/Cookie";
 import _ from "lodash";
-import useDebounce from "./Debounce"; // Adjust the import path as necessary
+import { useCallback, useEffect, useState } from "react";
+import type { AuthUserProps } from "@/features/user/types/user";
 import axiosInstance from "@/utils/Axios";
+import { getToken } from "@/utils/Cookie";
+import useDebounce from "./Debounce"; // Adjust the import path as necessary
+
 const useCheckUsername = (
   user: Partial<AuthUserProps>,
-  usernameCheck: string
+  usernameCheck: string,
 ) => {
   const [canSave, setCanSave] = useState(false);
   const [message, setMessage] = useState("");
@@ -32,7 +33,7 @@ const useCheckUsername = (
           {},
           {
             withCredentials: true,
-          }
+          },
         );
         if (!response.data.error) {
           setError(false);
@@ -44,7 +45,7 @@ const useCheckUsername = (
         setMessage(
           error.response.data.message ||
             error.response.message ||
-            "An Error Occured"
+            "An Error Occured",
         );
         setError(true);
         setIsloading(false);

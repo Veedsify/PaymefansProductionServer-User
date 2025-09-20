@@ -3,10 +3,10 @@
 import { create } from "zustand";
 
 type handleActiveUsersProps = {
-    username: string;
-    last_active: number;
-    socket_id: string;
-  }
+  username: string;
+  last_active: number;
+  socket_id: string;
+};
 
 interface ActiveUsersState {
   activeUsers: handleActiveUsersProps[]; // Array of active users with their last active time
@@ -20,6 +20,8 @@ export const useActiveUsersManager = create<ActiveUsersState>((set, get) => ({
     set({ activeUsers: users });
   },
   isActive: (username: string) => {
-    return get().activeUsers.find((user) => user.username === username) !== undefined;
+    return (
+      get().activeUsers.find((user) => user.username === username) !== undefined
+    );
   },
 }));

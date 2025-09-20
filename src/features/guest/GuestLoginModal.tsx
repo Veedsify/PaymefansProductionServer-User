@@ -1,15 +1,15 @@
 "use client";
-import { useGuestModal } from "@/contexts/GuestModalContext";
-import { motion, AnimatePresence } from "framer-motion";
+import axios from "axios";
+import { AnimatePresence, motion } from "framer-motion";
 import { LucideHelpCircle } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { getUser } from "@/lib/User";
 import { useRouter } from "next/navigation";
-import { ChangeEvent, FormEvent, useState } from "react";
+import { type ChangeEvent, type FormEvent, useState } from "react";
 import toast from "react-hot-toast";
 import { LOGIN_CONFIG } from "@/config/config";
-import axios from "axios";
+import { useGuestModal } from "@/contexts/GuestModalContext";
+import { getUser } from "@/lib/User";
 
 const GuestLoginModal = () => {
   const open = useGuestModal((state) => state.open);
@@ -101,7 +101,7 @@ const GuestLoginModal = () => {
       {open && (
         <motion.div
           onClick={toggleModalClose}
-          className="fixed flex items-center justify-center bg-black/70 inset-0 z-[999] backdrop-blur-xs"
+          className="fixed flex items-center justify-center bg-black/70 inset-0 z-[999] "
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
@@ -113,12 +113,6 @@ const GuestLoginModal = () => {
             initial={{ scale: 0.95, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0.95, opacity: 0 }}
-            transition={{
-              type: "spring",
-              stiffness: 400,
-              damping: 30,
-              duration: 0.3,
-            }}
           >
             <div className="mb-8">
               <Image

@@ -7,12 +7,12 @@ import {
   LucideVolumeOff,
 } from "lucide-react";
 import React, {
+  memo,
+  useCallback,
   useEffect,
   useLayoutEffect,
   useRef,
   useState,
-  memo,
-  useCallback,
 } from "react";
 import { useInView } from "react-intersection-observer";
 

@@ -1,10 +1,10 @@
-import { memo } from "react";
+import { LucideLock, LucidePlus } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { LucideLock, LucidePlus } from "lucide-react";
-import { UserMediaProps } from "@/types/Components";
-import VideoComponent from "./VideoComponent";
+import { memo } from "react";
+import type { UserMediaProps } from "@/types/Components";
 import ImageComponent from "./ImageComponent";
+import VideoComponent from "./VideoComponent";
 
 interface MediaGridItemProps {
   media: UserMediaProps;
@@ -54,7 +54,7 @@ const MediaGridItem = memo(
             )}
           </span>
         </div>
-      )
+      ),
     );
     LockedOverlay.displayName = "LockedOverlay";
 
@@ -135,7 +135,7 @@ const MediaGridItem = memo(
         )}
       </div>
     );
-  }
+  },
 );
 
 MediaGridItem.displayName = "MediaGridItem";

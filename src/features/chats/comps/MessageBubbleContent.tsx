@@ -1,18 +1,19 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import { LucideImage, LucideLoader, LucideVideo } from "lucide-react";
+import Image from "next/image";
 import path from "path";
+import type React from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { HiPlay } from "react-icons/hi";
+import usePostComponent from "@/contexts/PostComponentPreview";
+import { useAuthContext } from "@/contexts/UserUseContext";
 import {
-  Attachment,
-  MediaFile,
-  MessageBubbleContentProps,
+  type Attachment,
+  type MediaFile,
+  type MessageBubbleContentProps,
   UploadResponseResponse,
 } from "@/types/Components";
-import { useAuthContext } from "@/contexts/UserUseContext";
-import usePostComponent from "@/contexts/PostComponentPreview";
-import HLSVideoPlayer from "../../media/videoplayer";
-import Image from "next/image";
-import { HiPlay } from "react-icons/hi";
-import { LucideImage, LucideLoader, LucideVideo } from "lucide-react";
 import ProgressCircle from "../../../components/common/loaders/FileUploadProgress";
+import HLSVideoPlayer from "../../media/videoplayer";
 
 const MessageBubbleContent: React.FC<MessageBubbleContentProps> = ({
   message,
@@ -24,7 +25,7 @@ const MessageBubbleContent: React.FC<MessageBubbleContentProps> = ({
   isSender,
 }) => {
   const fullScreenPreview = usePostComponent(
-    (state) => state.fullScreenPreview
+    (state) => state.fullScreenPreview,
   );
 
   // Media preview handlers
@@ -43,7 +44,7 @@ const MessageBubbleContent: React.FC<MessageBubbleContentProps> = ({
         withOptions: true,
       });
     },
-    [attachment, fullScreenPreview]
+    [attachment, fullScreenPreview],
   );
   const handleRawPreview = useCallback(
     (file: MediaFile, index: number) => {
@@ -61,7 +62,7 @@ const MessageBubbleContent: React.FC<MessageBubbleContentProps> = ({
         withOptions: true,
       });
     },
-    [rawFiles, fullScreenPreview]
+    [rawFiles, fullScreenPreview],
   );
 
   return (

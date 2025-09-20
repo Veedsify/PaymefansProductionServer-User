@@ -1,16 +1,16 @@
 "use client";
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import { LucideArrowRight, LucidePlay, X } from "lucide-react";
 import dynamic from "next/dynamic";
 import Image from "next/image";
-import { LucideArrowRight, LucidePlay, X } from "lucide-react";
-import StoryUploadForm from "./StoryUploadForm";
-import StoryCaptionComponent from "./StoryCaptionComponent";
-import StatusMediaPanel from "@/features/story/comps/StatusMediaPanel";
-import type { SelectMoreProps } from "@/types/Components";
-import { StoryType, useStoryStore } from "../../../contexts/StoryContext";
-import HlsViewer from "@/features/media/HlsViewer";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import toast from "react-hot-toast";
 import { useAuthContext } from "@/contexts/UserUseContext";
+import HlsViewer from "@/features/media/HlsViewer";
+import StatusMediaPanel from "@/features/story/comps/StatusMediaPanel";
+import type { SelectMoreProps } from "@/types/Components";
+import { type StoryType, useStoryStore } from "../../../contexts/StoryContext";
+import StoryCaptionComponent from "./StoryCaptionComponent";
+import StoryUploadForm from "./StoryUploadForm";
 
 // Dynamically import HLSVideoPlayer to reduce initial load bundle
 const HLSVideoPlayer = dynamic(() => import("../../media/videoplayer"), {

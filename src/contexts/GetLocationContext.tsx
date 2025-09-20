@@ -1,9 +1,9 @@
 "use client";
 
-import { AuthUserProps } from "@/features/user/types/user";
+import { AnimatePresence, motion } from "framer-motion";
+import { Check, Eye, MapPin, Users, X } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { MapPin, Users, Eye, X, Check } from "lucide-react";
+import { AuthUserProps } from "@/features/user/types/user";
 import axiosInstance from "@/utils/Axios";
 import { useAuthContext } from "./UserUseContext";
 

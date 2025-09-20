@@ -1,11 +1,10 @@
 "use client";
+import { useQuery } from "@tanstack/react-query";
+import Image from "next/image";
+import Link from "next/link";
 // import CreateLiveStream from "@/components/sub_components/sub/create-live-stream";
 import LoadingSpinner from "@/components/common/loaders/LoadingSpinner";
 import getUserData from "@/utils/data/UserData";
-import { useQuery } from "@tanstack/react-query";
-
-import Image from "next/image";
-import Link from "next/link";
 
 const Live = () => {
   const {

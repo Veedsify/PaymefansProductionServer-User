@@ -1,9 +1,9 @@
 "use client";
+import { Loader2, X } from "lucide-react";
 import { useState } from "react";
-import { X, Loader2 } from "lucide-react";
+import toast from "react-hot-toast";
 import { useCartStore } from "@/contexts/StoreContext";
 import { useCheckout } from "@/hooks/useCheckout";
-import toast from "react-hot-toast";
 
 type ShippingAddress = {
   name: string;
@@ -79,12 +79,12 @@ const CheckoutModal = ({ isOpen, onClose }: CheckoutModalProps) => {
         onError: (error: any) => {
           toast.error(error?.response?.data?.message || "Checkout failed");
         },
-      }
+      },
     );
   };
 
   const handleInputChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
   ) => {
     const { name, value } = e.target;
     setShippingAddress((prev) => ({

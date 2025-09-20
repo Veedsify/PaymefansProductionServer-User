@@ -1,4 +1,4 @@
-import axios, { AxiosResponse } from "axios";
+import axios, { type AxiosResponse } from "axios";
 import axiosInstance from "../Axios";
 
 const FetchUserSubscriptions = async (url: string) => {

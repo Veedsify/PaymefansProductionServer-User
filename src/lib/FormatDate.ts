@@ -1,5 +1,3 @@
-import { useMemo } from "react";
-
 // Format date string for chat bubble
 export const formatDate = (date: string) => {
   const now = new Date();

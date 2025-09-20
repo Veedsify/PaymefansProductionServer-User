@@ -1,17 +1,17 @@
 "use client";
-import { LucideLoader, LucidePlay } from "lucide-react";
-import React, { useEffect } from "react";
-import Image from "next/image";
-import usePostComponent from "@/contexts/PostComponentPreview";
-import { getToken } from "@/utils/Cookie";
-import { MediaDataType } from "@/types/Components";
-import HLSVideoPlayer from "./videoplayer";
-import { LockedMediaOverlay } from "./LockedMediaOverlay";
-import _, { set } from "lodash";
-import { useProfileMediaContext } from "@/contexts/ProfileMediaContext";
 import { useInfiniteQuery } from "@tanstack/react-query";
+import _, { set } from "lodash";
+import { LucideLoader, LucidePlay } from "lucide-react";
+import Image from "next/image";
+import React, { useEffect } from "react";
+import usePostComponent from "@/contexts/PostComponentPreview";
+import { useProfileMediaContext } from "@/contexts/ProfileMediaContext";
 import { useAuthContext } from "@/contexts/UserUseContext";
+import type { MediaDataType } from "@/types/Components";
 import axiosInstance from "@/utils/Axios";
+import { getToken } from "@/utils/Cookie";
+import { LockedMediaOverlay } from "./LockedMediaOverlay";
+import HLSVideoPlayer from "./videoplayer";
 
 const getUniqueItems = (arr: MediaDataType[]) => {
   const uniqueMap = new Map();
@@ -21,13 +21,13 @@ const getUniqueItems = (arr: MediaDataType[]) => {
 
 const PrivateMediaImageCard = React.memo(({ sort }: { sort: string }) => {
   const fullScreenPreview = usePostComponent(
-    (state) => state.fullScreenPreview
+    (state) => state.fullScreenPreview,
   );
   const { user } = useAuthContext();
 
   const fetchMedia = async ({ pageParam = 1 }) => {
     const res = await axiosInstance.get(
-      `/post/personal/private-media?page=${pageParam}&limit=${process.env.NEXT_PUBLIC_POST_MEDIA_PER_PAGE}`
+      `/post/personal/private-media?page=${pageParam}&limit=${process.env.NEXT_PUBLIC_POST_MEDIA_PER_PAGE}`,
     );
     return res.data;
   };
@@ -48,7 +48,7 @@ const PrivateMediaImageCard = React.memo(({ sort }: { sort: string }) => {
 
   const allMedia = React.useMemo(
     () => (data ? data.pages.flatMap((page) => page.data) : []),
-    [data]
+    [data],
   );
 
   const sorted = React.useMemo(() => {
@@ -62,7 +62,7 @@ const PrivateMediaImageCard = React.memo(({ sort }: { sort: string }) => {
     type: string,
     isSubscriber: boolean,
     _: number,
-    watermarkEnabled: boolean
+    watermarkEnabled: boolean,
   ) => {
     if (!isSubscriber) return;
 
@@ -141,7 +141,7 @@ interface PrivateMediaPanelMediaCardProps {
     type: string,
     isSubscriber: boolean,
     indexId: number,
-    watermarkEnabled: boolean
+    watermarkEnabled: boolean,
   ) => void;
   isSubscriber: boolean;
   indexId: number;
@@ -182,7 +182,7 @@ const PrivateMediaPanelMediaCard = ({
                   media.media_type,
                   isSubscriber,
                   indexId,
-                  media.post.watermark_enabled
+                  media.post.watermark_enabled,
                 ),
             }}
           />
@@ -193,7 +193,7 @@ const PrivateMediaPanelMediaCard = ({
                 media.media_type,
                 isSubscriber,
                 indexId,
-                media.post.watermark_enabled
+                media.post.watermark_enabled,
               )
             }
             className="absolute inset-0 flex items-center justify-center w-full h-full cursor-pointer bg-black/20"
@@ -212,7 +212,7 @@ const PrivateMediaPanelMediaCard = ({
               media.media_type,
               isSubscriber,
               indexId,
-              media.post.watermark_enabled
+              media.post.watermark_enabled,
             )
           }
           src={isSubscriber ? media.url : media.blur}

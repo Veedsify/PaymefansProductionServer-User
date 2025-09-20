@@ -1,5 +1,5 @@
-import { useCallback } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useCallback } from "react";
 import axiosInstance from "@/utils/Axios";
 
 interface LocationData {
@@ -88,7 +88,10 @@ export const useLocationUpdate = (options?: UseLocationUpdateOptions) => {
             reliable: position.coords.accuracy <= 100,
             consentGiven: true,
           };
-          localStorage.setItem("userLocation", JSON.stringify(storedLocationData));
+          localStorage.setItem(
+            "userLocation",
+            JSON.stringify(storedLocationData),
+          );
 
           // Send to server
           locationMutation.mutate(locationData);
@@ -101,7 +104,7 @@ export const useLocationUpdate = (options?: UseLocationUpdateOptions) => {
           enableHighAccuracy: true,
           timeout: 10000,
           maximumAge: 0,
-        }
+        },
       );
     } else {
       const error = new Error("Geolocation is not supported by this browser");

@@ -1,15 +1,15 @@
 "use client";
 import { LucideSearch } from "lucide-react";
-import ModelsSubscription from "./ModelsSubscription";
-import HookupSubscription from "./HookupSubscription";
 import Link from "next/link";
-import {
-  ModelLoader,
-  HookUpLoader,
-} from "@/components/common/loaders/ModelLoader";
 import { useRouter } from "next/navigation";
-import { useModelsAndHookups } from "@/hooks/queries/useModelsAndHookups";
+import {
+  HookUpLoader,
+  ModelLoader,
+} from "@/components/common/loaders/ModelLoader";
 import { useAuthContext } from "@/contexts/UserUseContext";
+import { useModelsAndHookups } from "@/hooks/queries/useModelsAndHookups";
+import HookupSubscription from "./HookupSubscription";
+import ModelsSubscription from "./ModelsSubscription";
 
 export interface HookupProps {
   distance?: number; // Distance in km (optional)

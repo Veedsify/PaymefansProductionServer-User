@@ -1,19 +1,23 @@
 "use client";
-import React, {
+import type React from "react";
+import {
   createContext,
-  useContext,
-  useState,
+  type ReactNode,
   useCallback,
+  useContext,
   useEffect,
-  ReactNode,
+  useState,
 } from "react";
-import { v4 as uuid } from "uuid";
-import { UploadedImageProp, UploadResponseResponse } from "@/types/Components";
-import { getMaxDurationBase64 } from "@/utils/GetVideoMaxDuration";
-import UploadImageToCloudflare from "@/utils/CloudflareImageUploader";
-import UploadWithTus from "@/utils/TusUploader";
-import axiosInstance from "@/utils/Axios";
 import toast from "react-hot-toast";
+import { v4 as uuid } from "uuid";
+import type {
+  UploadedImageProp,
+  UploadResponseResponse,
+} from "@/types/Components";
+import axiosInstance from "@/utils/Axios";
+import UploadImageToCloudflare from "@/utils/CloudflareImageUploader";
+import { getMaxDurationBase64 } from "@/utils/GetVideoMaxDuration";
+import UploadWithTus from "@/utils/TusUploader";
 
 // Types
 interface MediaItem {
@@ -39,18 +43,18 @@ interface UploadProgressState {
   addMediaFiles: (
     files: File[],
     user: any,
-    submitPost: (image: UploadedImageProp) => void
+    submitPost: (image: UploadedImageProp) => void,
   ) => Promise<void>;
   removeMediaItem: (
     id: string,
-    removeThisMedia: (id: string, type: string) => void
+    removeThisMedia: (id: string, type: string) => void,
   ) => void;
   resetAll: () => void;
 }
 
 // Context
 const UploadProgressContext = createContext<UploadProgressState | undefined>(
-  undefined
+  undefined,
 );
 
 // Provider Component
@@ -65,7 +69,7 @@ export const UploadProgressProvider: React.FC<UploadProgressProviderProps> = ({
   const [media, setMedia] = useState<MediaItem[]>([]);
   const [progress, setProgress] = useState<{ [key: string]: number }>({});
   const [uploadError, setUploadError] = useState<{ [key: string]: boolean }>(
-    {}
+    {},
   );
 
   // Update individual progress
@@ -95,7 +99,7 @@ export const UploadProgressProvider: React.FC<UploadProgressProviderProps> = ({
         setUploadError: setUploadError, // Pass the state setter directly
       });
     },
-    []
+    [],
   );
 
   // Image uploader
@@ -109,7 +113,7 @@ export const UploadProgressProvider: React.FC<UploadProgressProviderProps> = ({
         uploadUrl,
       });
     },
-    []
+    [],
   );
 
   // Add media files and handle uploads
@@ -117,7 +121,7 @@ export const UploadProgressProvider: React.FC<UploadProgressProviderProps> = ({
     async (
       files: File[],
       user: any,
-      submitPost: (image: UploadedImageProp) => void
+      submitPost: (image: UploadedImageProp) => void,
     ) => {
       if (!files?.length) return;
 
@@ -130,7 +134,7 @@ export const UploadProgressProvider: React.FC<UploadProgressProviderProps> = ({
           console.log(
             "Processing media item:",
             mediaItem.file.name,
-            mediaItem.file.type
+            mediaItem.file.type,
           );
           const isVideo = mediaItem.file.type.startsWith("video/");
           const maxVideoDuration = isVideo
@@ -149,11 +153,11 @@ export const UploadProgressProvider: React.FC<UploadProgressProviderProps> = ({
           console.log("Requesting signed URL for:", payload.type);
           const { data } = await axiosInstance.post<UploadResponseResponse>(
             `/post/media/signed-url`,
-            payload
+            payload,
           );
           if (!data || data.error) {
             throw new Error(
-              data?.message || "Failed to get upload URL from server"
+              data?.message || "Failed to get upload URL from server",
             );
           }
           const { uploadUrl, type, id } = data;
@@ -164,7 +168,7 @@ export const UploadProgressProvider: React.FC<UploadProgressProviderProps> = ({
             const uploadVideo = await tusUploader(
               mediaItem.file,
               uploadUrl,
-              mediaItem.id
+              mediaItem.id,
             );
             console.log("Video upload completed:", uploadVideo);
             submitPost({
@@ -178,7 +182,7 @@ export const UploadProgressProvider: React.FC<UploadProgressProviderProps> = ({
             const uploadImage = await imageUploader(
               mediaItem.file,
               uploadUrl,
-              mediaItem.id
+              mediaItem.id,
             );
             console.log("Image upload completed:", uploadImage);
             const variants = uploadImage.result.variants ?? [];
@@ -204,7 +208,7 @@ export const UploadProgressProvider: React.FC<UploadProgressProviderProps> = ({
         toast.error("Some uploads failed.");
       }
     },
-    [tusUploader, imageUploader]
+    [tusUploader, imageUploader],
   );
 
   // Remove media item
@@ -223,7 +227,7 @@ export const UploadProgressProvider: React.FC<UploadProgressProviderProps> = ({
       });
       removeThisMedia(id, "media");
     },
-    []
+    [],
   );
 
   // Reset all state
@@ -244,7 +248,7 @@ export const UploadProgressProvider: React.FC<UploadProgressProviderProps> = ({
     progressKeys.length === media.length;
 
   const isAnyUploading = progressValues.some(
-    (value) => value > 0 && value < 100
+    (value) => value > 0 && value < 100,
   );
 
   // Context value
@@ -271,7 +275,7 @@ export const useUploadProgress = (): UploadProgressState => {
   const context = useContext(UploadProgressContext);
   if (context === undefined) {
     throw new Error(
-      "useUploadProgress must be used within an UploadProgressProvider"
+      "useUploadProgress must be used within an UploadProgressProvider",
     );
   }
   return context;

@@ -1,32 +1,33 @@
 "use client";
-import { useSideBarContext } from "@/lib/PageContext";
+import { motion } from "framer-motion";
 import {
-  LucideSettings,
-  LucideLogOut,
-  LucideHelpCircle,
+  LogOutIcon,
+  LucideGroup,
   LucideHeart,
+  LucideHelpCircle,
+  LucideLightbulb,
+  LucideLoader,
+  LucideLogOut,
+  LucideMoon,
+  LucideSettings,
+  LucideShieldCheck,
   LucideStore,
   LucideUserPlus,
   MessageCircle,
   User,
-  LucideShieldCheck,
-  LucideGroup,
-  LucideLightbulb,
-  LucideMoon,
-  LogOutIcon,
-  LucideLoader,
 } from "lucide-react";
-import React, { useEffect, useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import Image from "next/image";
-import { useAuthContext } from "@/contexts/UserUseContext";
-import PointsCount from "../../../features/points/PointCount";
-import NotificationSideBarLink from "../../../features/notifications/NotificationSideBarLink";
-import useThemeToggle from "../toggles/ThemeToggle";
-import axiosInstance from "@/utils/Axios";
+import React, { useEffect, useState } from "react";
 import { useMessagesConversation } from "@/contexts/MessageConversationContext";
-import { motion } from "framer-motion";
+import { useAuthContext } from "@/contexts/UserUseContext";
+import { useSideBarContext } from "@/lib/PageContext";
+import axiosInstance from "@/utils/Axios";
+import NotificationSideBarLink from "../../../features/notifications/NotificationSideBarLink";
+import PointsCount from "../../../features/points/PointCount";
+import useThemeToggle from "../toggles/ThemeToggle";
+import FormatName from "@/lib/FormatName";
 
 const SideBar = React.memo(() => {
   const router = useRouter();
@@ -73,7 +74,7 @@ const SideBar = React.memo(() => {
             <div className="overflow-hidden">
               <h2 className="mb-0 text-sm font-bold leading-none">
                 {user?.name ? (
-                  user.name
+                  FormatName(user.name)
                 ) : (
                   <p className="w-32 h-5 mb-1 bg-gray-300 rounded-sm animate-pulse"></p>
                 )}
@@ -91,7 +92,7 @@ const SideBar = React.memo(() => {
                     </Link>
                     &nbsp;{" /"} &nbsp;
                     <Link
-                      href="/login"
+                      href="/register"
                       className="text-primary-dark-pink font-semibold hover:underline"
                     >
                       Signup

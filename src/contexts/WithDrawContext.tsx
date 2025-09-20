@@ -1,4 +1,5 @@
 import { create } from "zustand";
+
 interface UserBank {
   id: number;
   bank_name: string;

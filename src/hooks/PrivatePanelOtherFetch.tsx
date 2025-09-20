@@ -1,13 +1,14 @@
 "use client";
-import { useEffect, useState } from "react";
 import axios from "axios";
-import { getToken } from "@/utils/Cookie";
+import { useEffect, useState } from "react";
+import { useOtherPrivatePostsStore } from "@/contexts/PersonalPrivateContext";
 import {
   PostData,
-  UserPostProps,
+  type UserPostProps,
   UserPostPropsOther,
 } from "@/types/Components";
-import { useOtherPrivatePostsStore } from "@/contexts/PersonalPrivateContext";
+import { getToken } from "@/utils/Cookie";
+
 const getUniqueItems = (arr: UserPostProps[]) => {
   const uniqueMap = new Map();
   arr.forEach((item) => uniqueMap.set(item.id, item)); // Replace 'id' with the unique property

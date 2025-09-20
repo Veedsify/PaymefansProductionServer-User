@@ -1,10 +1,10 @@
 "use client";
-import CartComponent from "@/components/modals/CartComponent";
+import { Heart, ShoppingBag } from "lucide-react";
 import Link from "next/link";
-import { ShoppingBag, Heart } from "lucide-react";
-import { useCartStore } from "@/contexts/StoreContext";
-import CheckoutModal from "@/components/modals/CheckoutModal";
 import { useState } from "react";
+import CartComponent from "@/components/modals/CartComponent";
+import CheckoutModal from "@/components/modals/CheckoutModal";
+import { useCartStore } from "@/contexts/StoreContext";
 
 const CartPage = () => {
   const { cart, calculateTotalPrice } = useCartStore();

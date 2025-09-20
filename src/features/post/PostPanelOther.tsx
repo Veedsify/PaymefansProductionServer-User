@@ -1,14 +1,14 @@
 "use client";
-import PostComponent from "./PostComponent";
-import { formatDate } from "@/utils/FormatDate";
-import { useEffect } from "react";
-import { ProfileUserProps } from "@/features/user/types/user";
-import { useInView } from "react-intersection-observer";
-import { LucideLoader } from "lucide-react";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import axios from "axios";
-import { getToken } from "@/utils/Cookie";
+import { LucideLoader } from "lucide-react";
+import { useEffect } from "react";
+import { useInView } from "react-intersection-observer";
+import type { ProfileUserProps } from "@/features/user/types/user";
 import axiosInstance from "@/utils/Axios";
+import { getToken } from "@/utils/Cookie";
+import { formatDate } from "@/utils/FormatDate";
+import PostComponent from "./PostComponent";
 
 const PostPanelOther = ({ userdata }: { userdata: ProfileUserProps }) => {
   const postPerPage = Number(process.env.NEXT_PUBLIC_POST_PER_PAGE);

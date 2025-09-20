@@ -1,6 +1,6 @@
-import React from "react";
 import Image from "next/image";
-import { MentionUser } from "@/types/Components";
+import React from "react";
+import type { MentionUser } from "@/types/Components";
 
 interface MentionListProps {
   mentions: MentionUser[];

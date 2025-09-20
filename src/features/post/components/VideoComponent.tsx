@@ -1,9 +1,9 @@
-import { memo, useState, useEffect, MouseEvent } from "react";
+import { type MouseEvent, memo, useEffect, useState } from "react";
 import toast from "react-hot-toast";
-import swal from "sweetalert";
 import { HiPlay } from "react-icons/hi";
+import swal from "sweetalert";
+import type { VideoComponentProps } from "@/types/Components";
 import HLSVideoPlayer from "../../media/videoplayer";
-import { VideoComponentProps } from "@/types/Components";
 
 const VideoComponent = memo<VideoComponentProps>(
   ({ media, data, clickImageEvent, isSubscriber }) => {
@@ -18,7 +18,7 @@ const VideoComponent = memo<VideoComponentProps>(
       }
 
       const videoElement = document.getElementById(
-        "video_player_post"
+        "video_player_post",
       ) as HTMLVideoElement | null;
 
       if (videoElement) {
@@ -42,7 +42,7 @@ const VideoComponent = memo<VideoComponentProps>(
 
     useEffect(() => {
       const videoElement = document.getElementById(
-        "video_player_post"
+        "video_player_post",
       ) as HTMLVideoElement | null;
 
       if (!videoElement) return;
@@ -107,7 +107,7 @@ const VideoComponent = memo<VideoComponentProps>(
         )}
       </>
     );
-  }
+  },
 );
 
 VideoComponent.displayName = "VideoComponent";

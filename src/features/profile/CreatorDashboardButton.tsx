@@ -1,10 +1,10 @@
 "use client";
 
-import LoadingSpinner from "@/components/common/loaders/LoadingSpinner";
-import axiosInstance from "@/utils/Axios";
 import { useQuery } from "@tanstack/react-query";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import LoadingSpinner from "@/components/common/loaders/LoadingSpinner";
+import axiosInstance from "@/utils/Axios";
 
 const CreatorDashboardButton = () => {
   const router = useRouter();

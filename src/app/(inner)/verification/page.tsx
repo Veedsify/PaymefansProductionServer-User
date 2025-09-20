@@ -1,11 +1,12 @@
-"use client";;
-import LoadingSpinner from "@/components/common/loaders/LoadingSpinner";
-import VerificationPageButton from "@/features/verification/VerificationButton";
-import getUserData from "@/utils/data/UserData";
+"use client";
+
 import { useQuery } from "@tanstack/react-query";
 import { LucideInfo } from "lucide-react";
 import Image from "next/image";
 import { redirect } from "next/navigation";
+import LoadingSpinner from "@/components/common/loaders/LoadingSpinner";
+import VerificationPageButton from "@/features/verification/VerificationButton";
+import getUserData from "@/utils/data/UserData";
 
 const Verification = () => {
   const {

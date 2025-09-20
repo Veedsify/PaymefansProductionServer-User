@@ -1,8 +1,8 @@
 "use client";
 
-import { Story } from "@/features/story/types/story";
-import StoryPreviewComponent from "./StatusPreviewComponent";
 import { X } from "lucide-react";
+import type { Story } from "@/features/story/types/story";
+import StoryPreviewComponent from "./StatusPreviewComponent";
 
 const StatusModal = ({
   open,
@@ -19,7 +19,7 @@ const StatusModal = ({
       media_url: media.media_url,
       story_id: story.story_id,
       user: story.user,
-    }))
+    })),
   );
 
   const closeStoryModal = async () => {

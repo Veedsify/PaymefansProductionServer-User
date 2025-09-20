@@ -1,9 +1,9 @@
 "use client";
-import HookupSubscription from "@/features/models/comps/HookupSubscription";
 import { LucideArrowDown, LucideLoader, LucideSearch } from "lucide-react";
 import { useEffect, useState } from "react";
-import { useHookups } from "@/hooks/queries/useHookups";
 import { HookUpLoader } from "@/components/common/loaders/ModelLoader";
+import HookupSubscription from "@/features/models/comps/HookupSubscription";
+import { useHookups } from "@/hooks/queries/useHookups";
 
 export interface HookupProps {
   distance?: number; // Distance in km (optional)
@@ -47,7 +47,7 @@ const HookupPage = () => {
             ?.toLowerCase()
             .includes(searchQuery.toLowerCase()) ||
           hookup.location?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          hookup.state?.toLowerCase().includes(searchQuery.toLowerCase())
+          hookup.state?.toLowerCase().includes(searchQuery.toLowerCase()),
       );
       setFilteredHookups(filtered);
     }
@@ -107,8 +107,8 @@ const HookupPage = () => {
               {error
                 ? "Failed to load hookups"
                 : searchQuery
-                ? `No hookups found matching "${searchQuery}"`
-                : "No hookups available"}
+                  ? `No hookups found matching "${searchQuery}"`
+                  : "No hookups available"}
             </div>
             {error && (
               <button

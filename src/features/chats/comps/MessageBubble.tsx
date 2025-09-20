@@ -1,13 +1,14 @@
 "use client";
-import React, { useCallback, useMemo, useRef, useEffect } from "react";
+import { motion } from "framer-motion";
+import type React from "react";
+import { useCallback, useEffect, useMemo, useRef } from "react";
+import { useInView } from "react-intersection-observer";
 import { useAuthContext } from "@/contexts/UserUseContext";
-import { Attachment, MessageBubbleProps } from "@/types/Components";
+import { formatDate } from "@/lib/FormatDate";
+import { Attachment, type MessageBubbleProps } from "@/types/Components";
 import { getSocket } from "../../../components/common/Socket";
 import MessageBubbleContent from "./MessageBubbleContent";
 import StoryReplyPreview from "./StoryReplyPreview";
-import { motion } from "framer-motion";
-import { useInView } from "react-intersection-observer";
-import { formatDate } from "@/lib/FormatDate";
 
 const MessageBubble: React.FC<MessageBubbleProps> = ({
   receiver,

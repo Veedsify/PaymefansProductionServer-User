@@ -12,7 +12,7 @@ const ROUTE = {
    */
   BANNER_IMAGE_UPLOAD: fmt(
     `%s/profile/banner/change`,
-    NEXT_PUBLIC_TS_EXPRESS_URL
+    NEXT_PUBLIC_TS_EXPRESS_URL,
   ),
 
   /**
@@ -45,7 +45,8 @@ const ROUTE = {
    * @param {number} post_id - The ID of the post.
    * @returns {string} The URL to fetch comments for the specified post.
    */
-  GET_COMMENTS: (post_id: string) => fmt(`%s/post/%s/comments`, NEXT_PUBLIC_TS_EXPRESS_URL, post_id),
+  GET_COMMENTS: (post_id: string) =>
+    fmt(`%s/post/%s/comments`, NEXT_PUBLIC_TS_EXPRESS_URL, post_id),
 
   /**
    * Endpoint for fetching replies for a specific comment.
@@ -80,18 +81,27 @@ const ROUTE = {
      * @type {string}
 
      */
-  UPLOAD_POST_MEDIA_ENDPOINT: fmt(`%s/post/upload-post-media`, NEXT_PUBLIC_TS_EXPRESS_URL),
+  UPLOAD_POST_MEDIA_ENDPOINT: fmt(
+    `%s/post/upload-post-media`,
+    NEXT_PUBLIC_TS_EXPRESS_URL,
+  ),
   /**
    *
    * Endpoint for fetching exchange rate
    */
-  GET_PLATFROM_EXCHANGE_RATE: fmt(`%s/rates/platfrom-rate`, NEXT_PUBLIC_TS_EXPRESS_URL),
+  GET_PLATFROM_EXCHANGE_RATE: fmt(
+    `%s/rates/platfrom-rate`,
+    NEXT_PUBLIC_TS_EXPRESS_URL,
+  ),
 
   /**
    * Endpoint for account suspended ticket.
    */
 
-  ACCOUNT_SUSPENDED_TICKET: fmt(`%s/support/ticket`, NEXT_PUBLIC_TS_EXPRESS_URL),
+  ACCOUNT_SUSPENDED_TICKET: fmt(
+    `%s/support/ticket`,
+    NEXT_PUBLIC_TS_EXPRESS_URL,
+  ),
 
   /**
    * Endpoint for fetching system configs
@@ -110,7 +120,8 @@ const ROUTE = {
    * @param {string} reference - The payment reference
    * @returns {string} The URL to verify payment
    */
-  VERIFY_PAYMENT: (reference: string) => fmt(`%s/store/verify-payment/%s`, NEXT_PUBLIC_TS_EXPRESS_URL, reference),
+  VERIFY_PAYMENT: (reference: string) =>
+    fmt(`%s/store/verify-payment/%s`, NEXT_PUBLIC_TS_EXPRESS_URL, reference),
 
   /**
    * Endpoint for fetching user orders

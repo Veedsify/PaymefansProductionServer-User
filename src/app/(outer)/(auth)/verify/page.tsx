@@ -1,16 +1,16 @@
 "use client";
-import { getUser } from "@/lib/User";
+import axios from "axios";
+import _ from "lodash";
+import { LucideLoader } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { ChangeEvent, FormEvent, useEffect, useState } from "react";
+import { type ChangeEvent, type FormEvent, useEffect, useState } from "react";
 import toast from "react-hot-toast";
-import axios from "axios";
-import { getToken } from "@/utils/Cookie";
 import { LOGIN_CONFIG } from "@/config/config";
-import { LucideLoader } from "lucide-react";
-import _ from "lodash";
+import { getUser } from "@/lib/User";
 import axiosInstance from "@/utils/Axios";
+import { getToken } from "@/utils/Cookie";
 
 const Login = () => {
   const { setUser } = getUser();
@@ -62,7 +62,7 @@ const Login = () => {
       setLoading(false);
       console.log(error);
       setError(
-        error?.response?.data?.message || error?.message || "An error occurred"
+        error?.response?.data?.message || error?.message || "An error occurred",
       );
     }
   };

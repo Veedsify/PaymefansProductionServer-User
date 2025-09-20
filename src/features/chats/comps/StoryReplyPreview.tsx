@@ -1,7 +1,7 @@
 "use client";
-import React from "react";
-import Image from "next/image";
 import { LucidePlay } from "lucide-react";
+import Image from "next/image";
+import type React from "react";
 import { useAuthContext } from "@/contexts/UserUseContext";
 
 type StoryReplyPreviewProps = {

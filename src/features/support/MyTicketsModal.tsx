@@ -1,20 +1,20 @@
 "use client";
-import { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import {
-  MessageCircle,
-  Clock,
-  CheckCircle,
   AlertCircle,
+  CheckCircle,
+  Clock,
+  Eye,
+  LucideLoader,
+  MessageCircle,
+  MessageSquare,
   Send,
   X,
-  Eye,
-  MessageSquare,
-  LucideLoader,
 } from "lucide-react";
+import { useEffect, useState } from "react";
+import toast from "react-hot-toast";
 import { useAuthContext } from "@/contexts/UserUseContext";
 import axiosInstance from "@/utils/Axios";
-import toast from "react-hot-toast";
 
 type SupportTicket = {
   id: number;
@@ -65,7 +65,7 @@ const MyTicketsModal = ({
   const { user } = useAuthContext();
   const [tickets, setTickets] = useState<SupportTicket[]>([]);
   const [selectedTicket, setSelectedTicket] = useState<SupportTicket | null>(
-    null
+    null,
   );
   const [loading, setLoading] = useState(false);
   const [pagination, setPagination] = useState<PaginationInfo | null>(null);
@@ -79,12 +79,12 @@ const MyTicketsModal = ({
         setLoading(true);
         try {
           const response = await axiosInstance.get(
-            `/support/tickets?page=${currentPage}&limit=10`
+            `/support/tickets?page=${currentPage}&limit=10`,
           );
 
           if (response.data.error) {
             toast.error(
-              response.data.message || "Failed to fetch support tickets"
+              response.data.message || "Failed to fetch support tickets",
             );
             return;
           }
@@ -127,7 +127,7 @@ const MyTicketsModal = ({
     try {
       const response = await axiosInstance.post(
         `/support/tickets/${selectedTicket.ticket_id}/reply`,
-        { message: replyMessage }
+        { message: replyMessage },
       );
 
       if (response.data.error) {
@@ -264,7 +264,7 @@ const MyTicketsModal = ({
                           {getStatusIcon(ticket.status)}
                           <span
                             className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(
-                              ticket.status
+                              ticket.status,
                             )}`}
                           >
                             {ticket.status.toUpperCase()}
@@ -337,7 +337,7 @@ const MyTicketsModal = ({
                     </div>
                     <span
                       className={`px-3 py-1 rounded-full text-sm font-medium ${getStatusColor(
-                        selectedTicket.status
+                        selectedTicket.status,
                       )}`}
                     >
                       {selectedTicket.status.toUpperCase()}

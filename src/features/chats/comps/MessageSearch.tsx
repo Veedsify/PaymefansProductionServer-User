@@ -1,16 +1,16 @@
 "use client";
 
-import { LucideSearch, X } from "lucide-react";
-import React, { useEffect, useState, useRef, useCallback } from "react";
-import { LucideLoader } from "lucide-react";
 import axios from "axios";
 import { debounce } from "lodash";
-import { getToken } from "@/utils/Cookie";
-import { MessageResult } from "@/types/Components";
+import { LucideLoader, LucideSearch, X } from "lucide-react";
 import Image from "next/image";
-import { useAuthContext } from "@/contexts/UserUseContext";
 import Link from "next/link";
+import type React from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { useAuthContext } from "@/contexts/UserUseContext";
+import type { MessageResult } from "@/types/Components";
 import axiosInstance from "@/utils/Axios";
+import { getToken } from "@/utils/Cookie";
 
 const MessageSearch = () => {
   const [openSearch, setOpenSearch] = useState(false);

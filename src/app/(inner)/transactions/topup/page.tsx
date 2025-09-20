@@ -1,6 +1,7 @@
-import { getTransactionsData } from "@/utils/data/Transactions";
 import { cookies } from "next/headers";
 import Image from "next/image";
+import { getTransactionsData } from "@/utils/data/Transactions";
+
 const Transactions = async () => {
   const token = (await cookies()).get("token")?.value;
   const { data: transactions } = await getTransactionsData(token as string);
@@ -50,7 +51,7 @@ const Transactions = async () => {
                           month: "short",
                           day: "numeric",
                           year: "numeric",
-                        }
+                        },
                       )}
                     </small>
                   </div>

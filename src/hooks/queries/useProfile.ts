@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
-import { ProfileUserProps } from "@/features/user/types/user";
-import getUserProfile from "@/utils/data/ProfileData";
+import type { ProfileUserProps } from "@/features/user/types/user";
 import { checkIfBlockedBy } from "@/utils/data/BlockUser";
+import getUserProfile from "@/utils/data/ProfileData";
 
 type UseProfileOptions = {
   userId: string;

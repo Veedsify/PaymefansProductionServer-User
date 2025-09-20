@@ -1,8 +1,8 @@
-import { RespotPanelFetchProps, UserPostProps } from "@/types/Components";
-import { getToken } from "@/utils/Cookie";
-import axios, { AxiosResponse } from "axios";
-import { useEffect, useState } from "react";
+import axios, { type AxiosResponse } from "axios";
 import _ from "lodash";
+import { useEffect, useState } from "react";
+import type { RespotPanelFetchProps, UserPostProps } from "@/types/Components";
+import { getToken } from "@/utils/Cookie";
 
 const RepostPanelFetch = ({
   isForViewer,

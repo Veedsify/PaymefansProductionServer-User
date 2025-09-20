@@ -1,4 +1,4 @@
-import { MentionUser } from "@/types/Components";
+import type { MentionUser } from "@/types/Components";
 import axiosInstance from "../Axios";
 
 export default async function FetchMentions(

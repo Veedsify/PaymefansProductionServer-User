@@ -1,23 +1,21 @@
-import { useState, useCallback } from 'react';
-import { PostAudienceDataProps } from '@/types/Components';
+import { useCallback, useState } from "react";
+import type { PostAudienceDataProps } from "@/types/Components";
 
 export const usePostAudience = () => {
-    const [dropdown, setDropdown] = useState(false);
-    const [postAudience, setPostAudience] = useState<PostAudienceDataProps | null>(null);
+  const [dropdown, setDropdown] = useState(false);
+  const [postAudience, setPostAudience] =
+    useState<PostAudienceDataProps | null>(null);
 
-    const updatePostAudience = useCallback(
-        (audience: PostAudienceDataProps) => {
-            setPostAudience(audience);
-            setDropdown(false);
-        },
-        [],
-    );
+  const updatePostAudience = useCallback((audience: PostAudienceDataProps) => {
+    setPostAudience(audience);
+    setDropdown(false);
+  }, []);
 
-    return {
-        postAudience,
-        dropdown,
-        setDropdown,
-        updatePostAudience,
-        setPostAudience,
-    };
+  return {
+    postAudience,
+    dropdown,
+    setDropdown,
+    updatePostAudience,
+    setPostAudience,
+  };
 };

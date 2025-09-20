@@ -1,15 +1,15 @@
 "use client";
+import { LucideLoader } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { type ChangeEvent, useEffect, useState } from "react";
+import toast from "react-hot-toast";
 import { POINTS_CONFIG } from "@/config/config";
 import ROUTE from "@/config/routes";
-import { useAuthContext } from "@/contexts/UserUseContext";
-import { ExchangeRate } from "@/types/Components";
-import { currencyRates as defaultRates } from "@/features/points/AddPoints";
-import { LucideLoader } from "lucide-react";
-import { ChangeEvent, useEffect, useState } from "react";
-import toast from "react-hot-toast";
-import { useWithdrawStore } from "@/contexts/WithDrawContext";
-import { useRouter } from "next/navigation";
 import { useConfigContext } from "@/contexts/ConfigContext";
+import { useAuthContext } from "@/contexts/UserUseContext";
+import { useWithdrawStore } from "@/contexts/WithDrawContext";
+import { currencyRates as defaultRates } from "@/features/points/AddPoints";
+import type { ExchangeRate } from "@/types/Components";
 import axiosInstance from "@/utils/Axios";
 
 // You can adjust or import this from a common place
@@ -91,7 +91,7 @@ const WithdrawalInput = ({ points }: { points: number }) => {
 
   // Handle input change
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    let inputValue = e.target.value.replace(/\D/g, "");
+    const inputValue = e.target.value.replace(/\D/g, "");
     setValue(formatNumber(inputValue));
   };
 
@@ -140,25 +140,25 @@ const WithdrawalInput = ({ points }: { points: number }) => {
 
   // Calculate platform fee (20% of input)
   function calculateFee(value: string) {
-    let num = value.replace(/\D/g, "");
+    const num = value.replace(/\D/g, "");
     return (parseInt(num) * FEE_PERCENTAGE).toLocaleString();
   }
 
   // Calculate amount to withdraw after fee
   function balanceToSettle(value: string) {
-    let num = value.replace(/\D/g, "");
+    const num = value.replace(/\D/g, "");
     return (parseInt(num) * (1 - FEE_PERCENTAGE)).toLocaleString();
   }
 
   // Calculate platform fee as number
   function calculateFeeAmount(value: string) {
-    let num = value.replace(/\D/g, "");
+    const num = value.replace(/\D/g, "");
     return Math.floor(parseInt(num) * FEE_PERCENTAGE);
   }
 
   // Calculate amount to withdraw after fee as number
   function balanceToSettleAmount(value: string) {
-    let num = value.replace(/\D/g, "");
+    const num = value.replace(/\D/g, "");
     return Math.floor(parseInt(num) * (1 - FEE_PERCENTAGE));
   }
 

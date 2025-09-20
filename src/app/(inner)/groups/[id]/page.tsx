@@ -1,29 +1,29 @@
 "use client";
 
-import { useEffect, useState, useRef, useCallback } from "react";
-import { useParams } from "next/navigation";
+import { motion } from "framer-motion";
+import { useParams, useRouter } from "next/navigation";
+import { useCallback, useEffect, useRef, useState } from "react";
+import toast from "react-hot-toast";
+import LoadingSpinner from "@/components/common/loaders/LoadingSpinner";
+import { getSocket } from "@/components/common/Socket";
+import {
+  type GroupMember,
+  type GroupMessage,
+  type TypingUser,
+  useGroupChatStore,
+} from "@/contexts/GroupChatContext";
+import { useAuthContext } from "@/contexts/UserUseContext";
 import GroupChatHeader from "@/features/group/comps/GroupChatHeader";
 import GroupChatInput from "@/features/group/comps/GroupChatInput";
 import GroupMessageBubble from "@/features/group/comps/GroupMessageBubble";
-import { motion } from "framer-motion";
 import {
-  GroupMessage,
-  GroupMember,
-  useGroupChatStore,
-  TypingUser,
-} from "@/contexts/GroupChatContext";
-import {
-  fetchGroupMessages,
-  fetchGroupData,
-  GroupData,
-  extractUserMembershipFromGroup,
   checkUserBlockedStatus,
+  extractUserMembershipFromGroup,
+  fetchGroupData,
+  fetchGroupMessages,
+  type GroupData,
 } from "@/utils/data/GroupAPI";
-import { useAuthContext } from "@/contexts/UserUseContext";
-import toast from "react-hot-toast";
-import { getSocket } from "@/components/common/Socket";
-import LoadingSpinner from "@/components/common/loaders/LoadingSpinner";
-import { useRouter } from "next/navigation";
+
 const GroupChatPage = () => {
   const params = useParams();
   const groupId = Number(params.id) as number;

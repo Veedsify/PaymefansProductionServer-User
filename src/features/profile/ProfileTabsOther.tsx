@@ -1,21 +1,22 @@
 "use client";
-import { useCallback, useState } from "react";
-import { Tab, Tabs, TabList, TabPanel } from "react-tabs";
 import {
   LucideImage,
   LucideLock,
   LucidePodcast,
   LucideRepeat2,
 } from "lucide-react";
-import PostPanelOther from "@/features/post/PostPanelOther";
-import MediaPanelOther from "@/features/media/MediaPanelOther";
-import { ProfileUserProps } from "@/features/user/types/user";
-import RepostPanel from "./RepostPanel";
-import PostPanel from "@/features/post/PostPanel";
-import MediaPanel from "@/features/media/MediaPanel";
-import PrivatePanelOther from "./PrivatePanelOther";
-import { useAuthContext } from "@/contexts/UserUseContext";
+import { useCallback, useState } from "react";
+import { Tab, TabList, TabPanel, Tabs } from "react-tabs";
 import { useGuestModal } from "@/contexts/GuestModalContext";
+import { useAuthContext } from "@/contexts/UserUseContext";
+import MediaPanel from "@/features/media/MediaPanel";
+import MediaPanelOther from "@/features/media/MediaPanelOther";
+import PostPanel from "@/features/post/PostPanel";
+import PostPanelOther from "@/features/post/PostPanelOther";
+import type { ProfileUserProps } from "@/features/user/types/user";
+import PrivatePanelOther from "./PrivatePanelOther";
+import RepostPanel from "./RepostPanel";
+
 const ProfileTabsOther = ({ userdata }: { userdata: ProfileUserProps }) => {
   const [activeTab, setActiveTab] = useState(0);
   const { isGuest } = useAuthContext();
@@ -55,7 +56,7 @@ const ProfileTabsOther = ({ userdata }: { userdata: ProfileUserProps }) => {
         return;
       }
     },
-    [isGuest, activeTab, toggleModalOpen]
+    [isGuest, activeTab, toggleModalOpen],
   );
 
   return (
@@ -71,7 +72,7 @@ const ProfileTabsOther = ({ userdata }: { userdata: ProfileUserProps }) => {
                   ? "text-primary-dark-pink"
                   : "text-black hover:text-gray-700 dark:hover:text-gray-300"
               }`}
-              onClick={() => setActiveTab(index)}
+              onClick={() => handleTabClick(index)}
             >
               <span className="inline-flex flex-col items-center justify-center gap-1">
                 <span className="flex items-center gap-2">

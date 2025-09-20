@@ -1,6 +1,7 @@
+import type { Metadata } from "next";
 import HomePostComponent from "@/features/post/HomePostComponent";
 import StatusComponent from "@/features/story/comps/Status";
-import { Metadata } from "next";
+import HomeProvider from "@/providers/HomeProvider";
 
 export const metadata: Metadata = {
   title: "Paymefans",
@@ -10,9 +11,9 @@ export const metadata: Metadata = {
 
 export default function Home() {
   return (
-    <>
+    <HomeProvider>
       <StatusComponent />
       <HomePostComponent />
-    </>
+    </HomeProvider>
   );
 }

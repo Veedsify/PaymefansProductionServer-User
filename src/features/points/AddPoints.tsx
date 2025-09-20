@@ -1,15 +1,15 @@
 "use client";
+import { LucideLoader } from "lucide-react";
+import Image from "next/image";
+import { type ChangeEvent, useEffect, useState } from "react";
+import toast from "react-hot-toast";
 import { POINTS_CONFIG } from "@/config/config";
 import ROUTE from "@/config/routes";
 import { useConfigContext } from "@/contexts/ConfigContext";
 import { useAuthContext } from "@/contexts/UserUseContext";
-import { ExchangeRate } from "@/types/Components";
+import type { ExchangeRate } from "@/types/Components";
 import axiosInstance from "@/utils/Axios";
 import { getToken } from "@/utils/Cookie";
-import { LucideLoader } from "lucide-react";
-import Image from "next/image";
-import { ChangeEvent, useEffect, useState } from "react";
-import toast from "react-hot-toast";
 export const currencyRates = [
   { rate: 1, name: "USD", buyValue: 1, sellValue: 1, symbol: "$" },
   { rate: 1, name: "NGN", buyValue: 1503, sellValue: 1632, symbol: "₦" },
@@ -27,7 +27,7 @@ const AddPoints = () => {
   const { config } = useConfigContext();
 
   const PLATFORM_DEPOSITE_FEE = 0.1; // 10% fee
-  let POINTS_PER_NAIRA = 100; // Default value
+  const POINTS_PER_NAIRA = 100; // Default value
 
   useEffect(() => {
     const fetchRates = async () => {
@@ -56,7 +56,7 @@ const AddPoints = () => {
   const formatNumber = (num: string) => {
     if (!num) return "";
     // Only one decimal separation
-    let parts = num.split(".");
+    const parts = num.split(".");
     // Clean leading zeros
     parts[0] = parts[0].replace(/^0+(\d)/, "$1") || "0";
     parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
@@ -67,7 +67,7 @@ const AddPoints = () => {
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     let inputValue = e.target.value.replace(/[^0-9.]/g, "");
     // Prevent multiple decimals
-    let parts = inputValue.split(".");
+    const parts = inputValue.split(".");
     if (parts.length > 2) inputValue = parts[0] + "." + parts.slice(1).join("");
     setValue(formatNumber(inputValue));
   };
@@ -75,7 +75,7 @@ const AddPoints = () => {
   // Convert the formatted string value ("1,234.56") to float safely
   function getCleanAmount(val: string): number {
     if (!val) return 0;
-    let num = val.replace(/,/g, "");
+    const num = val.replace(/,/g, "");
     return parseFloat(num) || 0;
   }
   // Calculate platform fee (10% of input), supports decimals

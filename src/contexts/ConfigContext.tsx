@@ -1,14 +1,14 @@
 "use client";
+import { useRouter } from "next/navigation";
 import {
   createContext,
-  ReactNode,
+  type ReactNode,
   useCallback,
   useContext,
   useEffect,
   useState,
 } from "react";
 import ROUTE from "@/config/routes";
-import { useRouter } from "next/navigation";
 
 type Configs = {
   id: number;
@@ -109,7 +109,7 @@ export default function ConfigProvider({ children }: { children: ReactNode }) {
     (config: Configs) => {
       setConfig(config);
     },
-    [setConfig]
+    [setConfig],
   );
 
   const value = {

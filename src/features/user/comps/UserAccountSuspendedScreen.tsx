@@ -1,16 +1,17 @@
 "use client";
 import {
   AlertCircle,
-  Mail,
   ArrowLeft,
   HelpCircle,
-  Phone,
   Loader2,
+  Mail,
+  Phone,
 } from "lucide-react";
-import LogoutButton from "@/components/common/global/LogOut";
 import Link from "next/link";
-import AccountSuspendedSupportTicket from "../../support/AccountSuspendedSupportTicket";
 import React, { useEffect } from "react";
+import LogoutButton from "@/components/common/global/LogOut";
+import AccountSuspendedSupportTicket from "../../support/AccountSuspendedSupportTicket";
+
 const UserAccountSupendedScreen = ({ user }: { user: any }) => {
   const [open, setOpen] = React.useState(false);
   const [loading, setLoading] = React.useState(true);
@@ -120,7 +121,11 @@ const UserAccountSupendedScreen = ({ user }: { user: any }) => {
           </div>
         </div>
       </div>
-      <AccountSuspendedSupportTicket open={open} close={handleClose} user={user} />
+      <AccountSuspendedSupportTicket
+        open={open}
+        close={handleClose}
+        user={user}
+      />
     </>
   );
 };

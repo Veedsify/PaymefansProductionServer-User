@@ -1,10 +1,10 @@
-import React, { memo, Suspense } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import Loader from "../../components/common/loaders/LoadingAnimation";
-import Image from "next/image";
-import { MEDIA_CONSTANTS, UserProfile } from "../../providers";
+import { AnimatePresence, motion } from "framer-motion";
 import { LucideUser, LucideUser2 } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
+import React, { memo, Suspense } from "react";
+import Loader from "../../components/common/loaders/LoadingAnimation";
+import { MEDIA_CONSTANTS, type UserProfile } from "../../providers";
 import UserProfileOverlay from "./UserProfileOverlay";
 
 type ImagePreviewProps = {
@@ -75,6 +75,6 @@ export const ImagePreview = memo(
         </Suspense>
       </motion.div>
     );
-  }
+  },
 );
 ImagePreview.displayName = "ImagePreview";

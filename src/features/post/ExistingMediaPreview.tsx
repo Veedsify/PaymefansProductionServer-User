@@ -1,8 +1,8 @@
 "use client";
-import React from "react";
 import { X } from "lucide-react";
 import Image from "next/image";
-import { UserMediaProps } from "@/types/Components";
+import React from "react";
+import type { UserMediaProps } from "@/types/Components";
 
 type ExistingMediaPreviewProps = {
   media: UserMediaProps[];

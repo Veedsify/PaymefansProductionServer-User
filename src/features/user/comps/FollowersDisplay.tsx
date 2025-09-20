@@ -1,12 +1,12 @@
 "use client";
 
-import { useRef, useEffect } from "react";
-import UserFollowComp from "./UserFollowComp";
-import { Followers } from "@/types/Components";
-import axiosInstance from "@/utils/Axios";
 import { useInfiniteQuery } from "@tanstack/react-query";
-import { useInView } from "react-intersection-observer";
 import { LucideLoader } from "lucide-react";
+import { useEffect, useRef } from "react";
+import { useInView } from "react-intersection-observer";
+import type { Followers } from "@/types/Components";
+import axiosInstance from "@/utils/Axios";
+import UserFollowComp from "./UserFollowComp";
 
 interface FollowersResponse {
   error: boolean;
@@ -24,7 +24,7 @@ const fetchFollowers = async ({
     const max = pageParam * 30;
     const response = await axiosInstance.post(
       `/follower/all?min=${min}&max=${max}`,
-      {}
+      {},
     );
     const data = response.data;
     return {

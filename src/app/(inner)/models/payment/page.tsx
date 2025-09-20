@@ -1,8 +1,8 @@
 "use client";
-import { useAuthContext } from "@/contexts/UserUseContext";
 import { LucideInfo } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { useAuthContext } from "@/contexts/UserUseContext";
 
 const PaymentPage = () => {
   const { user } = useAuthContext();

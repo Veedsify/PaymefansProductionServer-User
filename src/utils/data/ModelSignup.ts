@@ -1,6 +1,6 @@
-import axios, { AxiosResponse } from "axios";
-import { getToken } from "../Cookie";
+import axios, { type AxiosResponse } from "axios";
 import axiosInstance from "../Axios";
+import { getToken } from "../Cookie";
 
 // Define proper interfaces for our data
 interface ModelSignUpProps {

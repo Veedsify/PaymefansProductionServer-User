@@ -1,6 +1,6 @@
-
-import { AuthUserProps } from "@/features/user/types/user";
+import type { AuthUserProps } from "@/features/user/types/user";
 import axiosInstance from "../Axios";
+
 const getUserData = async (): Promise<Partial<AuthUserProps>> => {
   try {
     const res = await axiosInstance.get(`/auth/retrieve`);

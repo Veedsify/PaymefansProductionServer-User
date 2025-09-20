@@ -1,8 +1,8 @@
 "use client";
-import { useAuthContext } from "@/contexts/UserUseContext";
-import { updateHookupData } from "@/utils/data/UpdateHookupData";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
+import { useAuthContext } from "@/contexts/UserUseContext";
+import { updateHookupData } from "@/utils/data/UpdateHookupData";
 
 const SettingsHookupCheck = () => {
   const router = useRouter();

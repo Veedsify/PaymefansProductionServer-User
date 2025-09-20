@@ -1,19 +1,19 @@
 "use client";
 import Hls from "hls.js";
 import {
+  LucideLoader,
+  LucideLoaderCircle,
   LucideMaximize,
   LucidePause,
   LucidePlay,
   LucideSettings,
-  LucideLoader,
-  LucideLoaderCircle,
   LucideVolume2,
   LucideVolumeX,
 } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useInView } from "react-intersection-observer";
-import CustomSeekBar from "./CustomSeekBar";
 import UserProfileOverlay from "@/features/post/UserProfileOverlay";
+import CustomSeekBar from "./CustomSeekBar";
 
 interface UserProfile {
   name: string;
@@ -51,7 +51,7 @@ const VideoPlayer = ({
   const [showResolutionMenu, setShowResolutionMenu] = useState(false);
   const [manualPlayPause, setManualPlayPause] = useState(false);
   const [selectedQuality, setSelectedQuality] = useState<number | "auto">(
-    "auto"
+    "auto",
   );
   const [volume, setVolume] = useState(1);
   const [isMuted, setIsMuted] = useState(false);
@@ -125,7 +125,7 @@ const VideoPlayer = ({
 
         const quality = localStorage.getItem("selectedQuality");
         setSelectedQuality(
-          quality ? parseInt(quality) : levels[0]?.index ?? -1
+          quality ? parseInt(quality) : (levels[0]?.index ?? -1),
         );
         setQualityLevels([...levels, { index: -1, label: "Auto" }]);
 

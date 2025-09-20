@@ -1,5 +1,5 @@
-import { PostProviderWrapper } from "@/providers/PostProviderWrapper";
 import { UploadProgressProvider } from "@/contexts/UploadProgressContext";
+import { PostProviderWrapper } from "@/providers/PostProviderWrapper";
 
 const PostLayout = ({ children }: { children: React.ReactNode }) => {
   return (

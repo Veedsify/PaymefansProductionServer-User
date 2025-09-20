@@ -1,6 +1,6 @@
-import React, { memo } from "react";
 import { motion } from "framer-motion";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import React, { memo } from "react";
 
 interface NavigationButtonProps {
   direction: "prev" | "next";
@@ -35,7 +35,7 @@ const NavigationButton = memo(
         <ChevronRight className="w-4 h-4 md:w-5 md:h-5" />
       )}
     </motion.button>
-  )
+  ),
 );
 
 NavigationButton.displayName = "NavigationButton";

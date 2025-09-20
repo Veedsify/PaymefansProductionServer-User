@@ -1,6 +1,6 @@
+import { fmt } from "@/constants/path";
 import { ProfileUserProps } from "@/features/user/types/user";
 import axiosInstance from "../Axios";
-import { fmt } from "@/constants/path";
 
 type getUserProfileProps = {
   user_id: string;

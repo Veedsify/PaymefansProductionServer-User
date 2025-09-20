@@ -1,6 +1,6 @@
+import { Copy, Facebook, Link2, MessageCircle, Twitter, X } from "lucide-react";
 import React, { useState } from "react";
-import { Copy, Facebook, Twitter, MessageCircle, Link2, X } from "lucide-react";
-import { PostShareModalProps } from "@/types/Components";
+import type { PostShareModalProps } from "@/types/Components";
 
 const PostShareModal = ({
   isOpen,
@@ -29,9 +29,9 @@ const PostShareModal = ({
       onClick: () =>
         window.open(
           `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(
-            url
+            url,
           )}`,
-          "_blank"
+          "_blank",
         ),
       color: "bg-blue-600 hover:bg-blue-700",
     },
@@ -41,9 +41,9 @@ const PostShareModal = ({
       onClick: () =>
         window.open(
           `https://twitter.com/intent/tweet?url=${encodeURIComponent(
-            url
+            url,
           )}&text=${encodeURIComponent(title)}`,
-          "_blank"
+          "_blank",
         ),
       color: "bg-sky-500 hover:bg-sky-600",
     },
@@ -53,7 +53,7 @@ const PostShareModal = ({
       onClick: () =>
         window.open(
           `https://wa.me/?text=${encodeURIComponent(`${title} ${url}`)}`,
-          "_blank"
+          "_blank",
         ),
       color: "bg-green-600 hover:bg-green-700",
     },

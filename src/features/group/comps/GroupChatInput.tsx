@@ -1,36 +1,36 @@
 "use client";
 
 import {
-  ChangeEvent,
-  KeyboardEvent,
-  MouseEvent,
-  useState,
+  File,
+  FileText,
+  Image as ImageIcon,
+  SendHorizonal as LucideSendHorizonal,
+  Paperclip,
+  Video,
+  X,
+} from "lucide-react";
+import Image from "next/image";
+import {
+  type ChangeEvent,
+  type KeyboardEvent,
+  type MouseEvent,
   useCallback,
   useEffect,
   useRef,
+  useState,
 } from "react";
-import {
-  SendHorizonal as LucideSendHorizonal,
-  Paperclip,
-  X,
-  File,
-  Image as ImageIcon,
-  Video,
-  FileText,
-} from "lucide-react";
-import { useGroupChatStore } from "@/contexts/GroupChatContext";
-import Image from "next/image";
-import {
-  validateFile,
-  formatFileSize,
-  isImage,
-  createFilePreview,
-  getFileInputAccept,
-  truncateFilename,
-  getFileCategory,
-} from "@/utils/fileUtils";
-import axiosInstance from "@/utils/Axios";
 import toast from "react-hot-toast";
+import { useGroupChatStore } from "@/contexts/GroupChatContext";
+import axiosInstance from "@/utils/Axios";
+import {
+  createFilePreview,
+  formatFileSize,
+  getFileCategory,
+  getFileInputAccept,
+  isImage,
+  truncateFilename,
+  validateFile,
+} from "@/utils/fileUtils";
 
 // Utility Functions
 const escapeHtml = (str: string): string => {

@@ -1,7 +1,7 @@
-import { StoryPreviewControlProps } from "@/types/Components";
+import { motion } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 import { useInView } from "react-intersection-observer";
-import { motion } from "framer-motion";
+import type { StoryPreviewControlProps } from "@/types/Components";
 
 const StoryPreviewControlls = ({
   moveToNextSlide,

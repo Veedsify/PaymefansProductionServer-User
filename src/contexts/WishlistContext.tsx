@@ -43,7 +43,7 @@ export const useWishlistStore = create<WishlistContext>()(
       addToWishlist: (product) =>
         set((state) => {
           const existingProduct = state.wishlist.find(
-            (p) => p.product_id === product.product_id
+            (p) => p.product_id === product.product_id,
           );
           if (existingProduct) {
             return state; // Product already in wishlist
@@ -72,6 +72,6 @@ export const useWishlistStore = create<WishlistContext>()(
     {
       name: "wishlist-storage",
       storage: createJSONStorage(() => localStorage),
-    }
-  )
+    },
+  ),
 );

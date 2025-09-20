@@ -1,9 +1,9 @@
 "use client";
 
-import React, { useEffect, useRef, useState, memo, useCallback } from "react";
 import { motion } from "framer-motion";
+import React, { memo, useCallback, useEffect, useRef, useState } from "react";
+import { MEDIA_CONSTANTS, type UserProfile } from "./mediaPreviewTypes";
 import HLSVideoPlayer from "./videoplayer";
-import { MEDIA_CONSTANTS, UserProfile } from "./mediaPreviewTypes";
 
 interface VideoPreviewProps {
   url: string;
@@ -17,7 +17,7 @@ const VideoPreview = memo(
   ({ url, isBlob, playAction, index, userProfile }: VideoPreviewProps) => {
     const videoRef = useRef<HTMLVideoElement | null>(null);
     const [status, setStatus] = useState<"loading" | "ready" | "error">(
-      "loading"
+      "loading",
     );
     const [retryCount, setRetryCount] = useState(0);
 
@@ -172,7 +172,7 @@ const VideoPreview = memo(
         )}
       </motion.div>
     );
-  }
+  },
 );
 VideoPreview.displayName = "VideoPreview";
 

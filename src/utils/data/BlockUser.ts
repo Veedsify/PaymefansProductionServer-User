@@ -1,6 +1,6 @@
 import { AxiosError } from "axios";
-import { getToken } from "../Cookie";
 import axiosInstance from "@/utils/Axios";
+import { getToken } from "../Cookie";
 
 const API_URL = process.env.NEXT_PUBLIC_TS_EXPRESS_URL;
 

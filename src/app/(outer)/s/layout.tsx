@@ -1,7 +1,5 @@
-import { ReactNode } from "react";
-import { GeistSans } from "geist/font/sans";
+import type { ReactNode } from "react";
 import "@fontsource-variable/geist";
-
 import "./style.css";
 
 export default function OuterPagesLayout({

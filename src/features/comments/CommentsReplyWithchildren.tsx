@@ -1,10 +1,10 @@
-import { PostCommentAttachments } from "@/types/Components";
-import { Comment } from "./Comments";
-import { getCommentReplies } from "@/utils/data/GetCommentReplies";
 import { LucideChevronDown, LucideLoader } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import type { PostCommentAttachments } from "@/types/Components";
+import { getCommentReplies } from "@/utils/data/GetCommentReplies";
+import type { Comment } from "./Comments";
 import ReplyInteractions from "./ReplyInteraction";
 
 const CommentReplyChildren = ({
@@ -63,7 +63,7 @@ const CommentReplyChildren = ({
               (reply: Comment) => ({
                 ...reply,
                 likedByme: Boolean(reply.likedByme), // Explicitly convert to boolean
-              })
+              }),
             );
             setLoadedChildren(repliesWithLikedStatus);
             setHasMoreRepliesLocal(response.hasMore);
@@ -170,7 +170,7 @@ const CommentReplyChildren = ({
                     const nextPage = replyPage + 1;
                     const response = await getCommentReplies(
                       commentId,
-                      nextPage
+                      nextPage,
                     );
                     if (response && !response.error && response.data) {
                       // Ensure likedByme property is preserved for new replies
@@ -178,7 +178,7 @@ const CommentReplyChildren = ({
                         (reply: Comment) => ({
                           ...reply,
                           likedByme: Boolean(reply.likedByme), // Explicitly convert to boolean
-                        })
+                        }),
                       );
                       setLoadedChildren((prev) => [
                         ...prev,

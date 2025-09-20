@@ -1,5 +1,3 @@
-import { useAuthContext } from "@/contexts/UserUseContext";
-import { StreamStatsProp } from "@/types/Components";
 import {
   LucideChevronLeft,
   LucideChevronRight,
@@ -13,9 +11,11 @@ import {
   MessageCircle,
 } from "lucide-react";
 import Image from "next/image";
-import { useState } from "react";
-import LiveStreamSocket from "@/hooks/LiveStreamSocket";
 import numeral from "numeral";
+import { useState } from "react";
+import { useAuthContext } from "@/contexts/UserUseContext";
+import LiveStreamSocket from "@/hooks/LiveStreamSocket";
+import type { StreamStatsProp } from "@/types/Components";
 
 const StreamStats = ({
   streamData,

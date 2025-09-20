@@ -1,36 +1,37 @@
 // Optimized PostEditor with separated concerns
 "use client";
-import React, { useCallback, useMemo, useState } from "react";
-import { useAuthContext } from "@/contexts/UserUseContext";
+import { useQueryClient } from "@tanstack/react-query";
 import {
+  DollarSign,
   LucideChevronDown,
   LucideChevronUp,
   LucideUsers,
-  DollarSign,
 } from "lucide-react";
-import { HiOutlineEye } from "react-icons/hi";
 import Image from "next/image";
-import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
-import { SavePost } from "@/utils/SavePost";
+import React, { useCallback, useMemo, useState } from "react";
+import toast from "react-hot-toast";
+import { HiOutlineEye } from "react-icons/hi";
 import { POST_CONFIG } from "@/config/config";
-import PostMediaPreview from "./PostMediaPreview";
-import { PostEditorProps, PostAudienceDataProps } from "@/types/Components";
-import { PostCancel } from "@/features/post/PostCancel";
-import ExistingMediaPreview from "./ExistingMediaPreview";
-
-// Custom hooks
-import { usePostEditor } from "@/hooks/usePostEditor";
-import { useMentions } from "@/hooks/useMentions";
-import { usePostAudience } from "@/hooks/usePostAudience";
 import { usePostContext } from "@/contexts/PostContext";
 import { useUploadProgress } from "@/contexts/UploadProgressContext";
+import { useAuthContext } from "@/contexts/UserUseContext";
+import { PostCancel } from "@/features/post/PostCancel";
+import { useMentions } from "@/hooks/useMentions";
+import { usePostAudience } from "@/hooks/usePostAudience";
+// Custom hooks
+import { usePostEditor } from "@/hooks/usePostEditor";
 import { usePostInitialization } from "@/hooks/usePostInitialization";
-
+import type {
+  PostAudienceDataProps,
+  PostEditorProps,
+} from "@/types/Components";
+import { SavePost } from "@/utils/SavePost";
 // Components
 import MentionDropdown from "./components/MentionDropdown";
 import MentionList from "./components/MentionList";
-import { useQueryClient } from "@tanstack/react-query";
+import ExistingMediaPreview from "./ExistingMediaPreview";
+import PostMediaPreview from "./PostMediaPreview";
 
 const PostEditor = React.memo(({ posts }: PostEditorProps) => {
   const router = useRouter();
@@ -116,7 +117,7 @@ const PostEditor = React.memo(({ posts }: PostEditorProps) => {
             ]
           : []),
       ] as PostAudienceDataProps[],
-    [user]
+    [user],
   );
 
   // Initialize post data
@@ -139,7 +140,7 @@ const PostEditor = React.memo(({ posts }: PostEditorProps) => {
       updatePostAudience(audience);
       setVisibility(audience.name as "Public" | "Subscribers" | "Price");
     },
-    [updatePostAudience, setVisibility]
+    [updatePostAudience, setVisibility],
   );
 
   // Textarea change handler
@@ -159,7 +160,7 @@ const PostEditor = React.memo(({ posts }: PostEditorProps) => {
       handleContentChange(text);
       processMentions(text, cursorPos);
     },
-    [handleContentChange, processMentions]
+    [handleContentChange, processMentions],
   );
 
   // Mention selection handler
@@ -170,7 +171,7 @@ const PostEditor = React.memo(({ posts }: PostEditorProps) => {
         handleContentChange(newText);
       }
     },
-    [selectMention, handleContentChange]
+    [selectMention, handleContentChange],
   );
 
   // Keydown handler
@@ -181,7 +182,7 @@ const PostEditor = React.memo(({ posts }: PostEditorProps) => {
         handleContentChange(newText);
       }
     },
-    [handleKeyDown, handleContentChange]
+    [handleKeyDown, handleContentChange],
   );
 
   // Submit handler
@@ -224,7 +225,7 @@ const PostEditor = React.memo(({ posts }: PostEditorProps) => {
       isEditing ? "Saving your changes..." : "Creating your post...",
       {
         id: "post-upload",
-      }
+      },
     );
 
     const savePostOptions = {
@@ -251,7 +252,7 @@ const PostEditor = React.memo(({ posts }: PostEditorProps) => {
         ? "Post updated successfully!"
         : POST_CONFIG.POST_CREATED_SUCCESS_MSG;
       toast.success(successMessage, { id: "post-upload" });
-      queryClient.invalidateQueries({ queryKey: ["personal-posts"] });  
+      queryClient.invalidateQueries({ queryKey: ["personal-posts"] });
       if (isEditing) {
         router.push("/profile");
       } else {
@@ -293,8 +294,8 @@ const PostEditor = React.memo(({ posts }: PostEditorProps) => {
                 ? "Saving..."
                 : "Processing..."
               : posts?.post_id
-              ? "Save"
-              : "Post"}
+                ? "Save"
+                : "Post"}
           </button>
         </div>
 
@@ -468,7 +469,7 @@ const AudienceDropdown = React.memo(
         )}
       </div>
     );
-  }
+  },
 );
 
 AudienceDropdown.displayName = "AudienceDropdown";

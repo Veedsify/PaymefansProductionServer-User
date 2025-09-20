@@ -1,10 +1,10 @@
 "use client";
-import { useEffect, useState } from "react";
-import { useSearchParams, useRouter } from "next/navigation";
-import { CheckCircle, XCircle, Loader2 } from "lucide-react";
-import { useVerifyPayment } from "@/hooks/useCheckout";
+import { CheckCircle, Loader2, XCircle } from "lucide-react";
 import Link from "next/link";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
+import { useVerifyPayment } from "@/hooks/useCheckout";
 
 const PaymentCallback = () => {
   const searchParams = useSearchParams();

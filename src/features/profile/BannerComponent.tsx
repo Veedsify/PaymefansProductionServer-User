@@ -1,14 +1,18 @@
 "use client";
-import ROUTE from "@/config/routes";
-import axiosInstance from "@/utils/Axios";
-import { getToken } from "@/utils/Cookie";
 import axios from "axios";
 import { LucideUpload } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { useState, useRef, useCallback } from "react";
+import { useCallback, useRef, useState } from "react";
 import toast from "react-hot-toast";
-import ReactCrop, { centerCrop, makeAspectCrop, Crop } from "react-image-crop";
+import ReactCrop, {
+  type Crop,
+  centerCrop,
+  makeAspectCrop,
+} from "react-image-crop";
+import ROUTE from "@/config/routes";
+import axiosInstance from "@/utils/Axios";
+import { getToken } from "@/utils/Cookie";
 import "react-image-crop/dist/ReactCrop.css";
 
 interface BannerComponentProps {

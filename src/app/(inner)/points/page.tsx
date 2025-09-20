@@ -1,12 +1,12 @@
+import AddPoints from "@/features/points/AddPoints";
 import PointsBuy from "@/features/points/Points";
 import getAllPoints from "@/utils/data/GetPoints";
-import AddPoints from "@/features/points/AddPoints";
 
 type Points = {
-    points: number;
-    amount: number;
-    points_buy_id: string;
-}
+  points: number;
+  amount: number;
+  points_buy_id: string;
+};
 
 // const Points = async () => {
 //     const points: Points[] = await getAllPoints()
@@ -27,18 +27,16 @@ type Points = {
 // }
 
 const Points = () => {
-    return (
-        <>
-            <div>
-                <div className="p-4 md:p-8 dark:text-white">
-                    <h1 className="pt-4 mb-10 text-2xl font-bold">
-                        Add Points
-                    </h1>
-                    <AddPoints/>
-                </div>
-            </div>
-        </>
-    )
-}
+  return (
+    <>
+      <div>
+        <div className="p-4 md:p-8 dark:text-white">
+          <h1 className="pt-4 mb-10 text-2xl font-bold">Add Points</h1>
+          <AddPoints />
+        </div>
+      </div>
+    </>
+  );
+};
 
 export default Points;

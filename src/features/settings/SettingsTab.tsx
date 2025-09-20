@@ -1,15 +1,15 @@
 "use client";
 
-import { Tab, TabList, TabPanel, Tabs } from "react-tabs";
-import ProfileSettings from "../profile/ProfileSettings";
-import Settingsbilling from "./SettingsBilling";
-import SettingsSecurity from "./SettingsSecurity";
-import { AuthUserProps } from "@/features/user/types/user";
-import { MouseEvent, useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
+import { type MouseEvent, useEffect, useState } from "react";
+import { Tab, TabList, TabPanel, Tabs } from "react-tabs";
 import { SettingsBillingProvider } from "@/contexts/SettingsBillingContext";
 import { useAuthContext } from "@/contexts/UserUseContext";
+import type { AuthUserProps } from "@/features/user/types/user";
+import ProfileSettings from "../profile/ProfileSettings";
 import SettingsAutomatedMessage from "./SettingsAutomatedMessage";
+import Settingsbilling from "./SettingsBilling";
+import SettingsSecurity from "./SettingsSecurity";
 
 const SettingsTab = ({ user }: { user: Partial<AuthUserProps> | null }) => {
   const searchParams = useSearchParams();

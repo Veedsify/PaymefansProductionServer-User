@@ -1,7 +1,7 @@
-import { StoryType } from "@/contexts/StoryContext";
 import axios from "axios";
-import { getToken } from "../Cookie";
+import type { StoryType } from "@/contexts/StoryContext";
 import axiosInstance from "../Axios";
+import { getToken } from "../Cookie";
 
 async function SubmitUserStory(stories: StoryType[]) {
   const sendData = await axiosInstance.post(`/stories/save`, {

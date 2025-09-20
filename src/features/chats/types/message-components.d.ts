@@ -54,10 +54,9 @@ export const imageTypes = [
   "image/ico",
 ];
 
-
 export type MessageMediaPreViewProps = {
   index: number;
   file: MediaFile;
-}
+};
 
 export const videoTypes = ["video/mp4", "video/webm", "video/ogg"];

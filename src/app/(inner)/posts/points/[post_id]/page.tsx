@@ -1,20 +1,20 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
-import getAllPoints from "@/utils/data/GetPoints";
-import PointsBuy from "@/features/points/Points";
+import { useQuery } from "@tanstack/react-query";
+import { LucideEye, LucideLock, LucideUsers } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { formatDate } from "@/utils/FormatDate";
-import { LucideEye, LucideLock, LucideUsers } from "lucide-react";
-import QuickPostActions from "@/features/post/QuickPostActions";
-import PostPageImage from "@/features/post/PostPageImage";
 import { useParams, useRouter } from "next/navigation";
-import { getPost } from "@/utils/data/GetPost";
-import { useAuthContext } from "@/contexts/UserUseContext";
-import { useQuery } from "@tanstack/react-query";
+import React, { useEffect, useState } from "react";
 import LoadingSpinner from "@/components/common/loaders/LoadingSpinner";
-import { PostData } from "@/types/Components";
+import { useAuthContext } from "@/contexts/UserUseContext";
+import PointsBuy from "@/features/points/Points";
+import PostPageImage from "@/features/post/PostPageImage";
+import QuickPostActions from "@/features/post/QuickPostActions";
+import type { PostData } from "@/types/Components";
+import getAllPoints from "@/utils/data/GetPoints";
+import { getPost } from "@/utils/data/GetPost";
+import { formatDate } from "@/utils/FormatDate";
 
 type Points = {
   points: number;

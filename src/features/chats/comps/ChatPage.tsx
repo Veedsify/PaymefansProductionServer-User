@@ -1,5 +1,5 @@
-import Link from "next/link";
-import ActiveProfileTag from "../../profile/ActiveProfileTag";
+import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
+import { reverse } from "lodash";
 import {
   LucideArrowLeft,
   LucideBan,
@@ -9,24 +9,24 @@ import {
   LucideVerified,
 } from "lucide-react";
 import Image from "next/image";
-import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
+import Link from "next/link";
+import { useRouter, useSearchParams } from "next/navigation";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
+import toast from "react-hot-toast";
+import { useChatStore } from "@/contexts/ChatContext";
+import { useAuthContext } from "@/contexts/UserUseContext";
+import type { Message } from "@/types/Components";
+import axiosInstance from "@/utils/Axios";
+import { getToken } from "@/utils/Cookie";
+import { checkIfBlockedBy } from "@/utils/data/BlockUser";
 import {
   fetchConversationReceiver,
   GetConversationMessages,
 } from "@/utils/data/GetConversationMessages";
-import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
-import MessageBubble from "./MessageBubble";
-import { Message } from "@/types/Components";
-import { useChatStore } from "@/contexts/ChatContext";
-import MessageInputComponent from "./MessageInputComponent";
 import { getSocket } from "../../../components/common/Socket";
-import { useAuthContext } from "@/contexts/UserUseContext";
-import { reverse } from "lodash";
-import { getToken } from "@/utils/Cookie";
-import toast from "react-hot-toast";
-import { checkIfBlockedBy } from "@/utils/data/BlockUser";
-import axiosInstance from "@/utils/Axios";
+import ActiveProfileTag from "../../profile/ActiveProfileTag";
+import MessageBubble from "./MessageBubble";
+import MessageInputComponent from "./MessageInputComponent";
 
 const ChatPage = ({ conversationId }: { conversationId: string }) => {
   const router = useRouter();
@@ -65,7 +65,7 @@ const ChatPage = ({ conversationId }: { conversationId: string }) => {
   const receiver = receiverData?.receiver;
   const profilePicture = useMemo(
     () => receiver?.profile_image || "/site/avatar.png",
-    [receiver]
+    [receiver],
   );
   if (!receiver && isError) {
     router.push("/messages");
@@ -322,20 +322,20 @@ const ChatPage = ({ conversationId }: { conversationId: string }) => {
       try {
         const response = await axiosInstance.post(
           `/conversations/search/messages/${conversationId}`,
-          { q: messageId }
+          { q: messageId },
         );
 
         const searchResult = await response.data;
         return searchResult.messages?.find(
           (msg: Message) =>
-            msg.message_id === messageId || String(msg.id) === messageId
+            msg.message_id === messageId || String(msg.id) === messageId,
         );
       } catch (error) {
         console.error("Error searching for specific message:", error);
       }
       return null;
     },
-    [conversationId]
+    [conversationId],
   );
 
   // Handle searched message from URL

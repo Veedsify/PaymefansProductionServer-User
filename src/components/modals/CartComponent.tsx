@@ -1,9 +1,9 @@
 "use client";
-import { useCartStore } from "@/contexts/StoreContext";
 import { LucideTrash, X } from "lucide-react";
 import Image from "next/image";
+import { type ChangeEvent, useEffect, useState } from "react";
+import { useCartStore } from "@/contexts/StoreContext";
 import CustomCartPageHooks from "../../hooks/CustomCartHooks";
-import { ChangeEvent, useEffect, useState } from "react";
 
 const CartComponent = () => {
   const { calculateTotalPrice, addProduct, cart } = useCartStore();
@@ -20,10 +20,10 @@ const CartComponent = () => {
   const handleSizeChange = (
     e: ChangeEvent<HTMLSelectElement>,
     id: number,
-    currentSizeName?: string
+    currentSizeName?: string,
   ) => {
     const product = cart.find(
-      (p) => p.id === id && p.size?.name === currentSizeName
+      (p) => p.id === id && p.size?.name === currentSizeName,
     );
     const size = sizes.find((s) => s.name === e.target.value);
     if (product && size) {

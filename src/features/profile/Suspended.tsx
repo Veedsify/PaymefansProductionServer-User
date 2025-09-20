@@ -1,15 +1,15 @@
-import React from "react";
 import {
-  MapPin,
   Calendar,
   Image as ImageIcon,
+  Lock,
+  MapPin,
   MessageCircle,
   Repeat,
-  Lock,
 } from "lucide-react";
 import Image from "next/image";
-import { ProfileUserProps } from "@/features/user/types/user";
+import React from "react";
 import AccountSuspendedSupportTicket from "@/features/support/AccountSuspendedSupportTicket";
+import type { ProfileUserProps } from "@/features/user/types/user";
 
 const SuspendedUserPage = ({ userdata }: { userdata: ProfileUserProps }) => {
   return (

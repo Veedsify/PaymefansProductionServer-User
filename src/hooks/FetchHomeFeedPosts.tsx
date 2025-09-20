@@ -1,8 +1,8 @@
 "use client";
+import { useEffect, useState } from "react";
 import ROUTE from "@/config/routes";
 import { useHomeFeedStore } from "@/contexts/HomeFeedContext";
 import { fetchHomePosts } from "@/utils/data/FetchHomePost";
-import { useEffect, useState } from "react";
 
 const FetchHomeFeedPosts = () => {
   const [page, setPage] = useState(1);

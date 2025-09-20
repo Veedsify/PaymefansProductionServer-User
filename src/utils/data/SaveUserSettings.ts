@@ -3,11 +3,7 @@ import axiosInstance from "../Axios";
 import { getToken } from "../Cookie";
 
 export async function saveUserSettings(userData: any) {
-  return await axiosInstance.post(
-    `/profile/update`,
-    userData,
-    {
-      withCredentials: true,
-    }
-  );
+  return await axiosInstance.post(`/profile/update`, userData, {
+    withCredentials: true,
+  });
 }

@@ -1,9 +1,9 @@
 "use client";
 
+import toast from "react-hot-toast";
+import swal from "sweetalert";
 import axiosInstance from "@/utils/Axios";
 import { getToken } from "@/utils/Cookie";
-import swal from "sweetalert";
-import toast from "react-hot-toast";
 
 const VerificationPageButton = () => {
   const handleButtonClick = () => {

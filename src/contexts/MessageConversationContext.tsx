@@ -1,16 +1,16 @@
 "use client";
 
+import { useInfiniteQuery, useQueryClient } from "@tanstack/react-query";
 import {
   createContext,
+  type ReactNode,
   useContext,
   useEffect,
   useMemo,
-  ReactNode,
 } from "react";
-import { useAuthContext } from "@/contexts/UserUseContext";
 import { getSocket } from "@/components/common/Socket";
 import { MESSAGE_CONFIG } from "@/config/config";
-import { useInfiniteQuery, useQueryClient } from "@tanstack/react-query";
+import { useAuthContext } from "@/contexts/UserUseContext";
 import axiosInstance from "@/utils/Axios";
 
 const MessageConversationContext = createContext<ReturnType<

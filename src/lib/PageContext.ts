@@ -14,7 +14,7 @@ export const useSideBarContext = create<SideBarContextType>()(
       set(() => ({
         sideBarState: value,
       })),
-  })
+  }),
   // {
   //   name: "sideBar-context",
   //   storage: createJSONStorage(() => localStorage),
@@ -54,6 +54,6 @@ const useCameraModeContext = create<CameraModeContextType>()(
     {
       name: "camera",
       storage: createJSONStorage(() => localStorage),
-    }
-  )
+    },
+  ),
 );

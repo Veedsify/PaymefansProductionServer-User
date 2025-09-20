@@ -5,9 +5,9 @@ import {
   LucideLoader,
   LucideSearch,
 } from "lucide-react";
-import { ChangeEvent, useCallback, useState, useEffect } from "react";
-import ModelsSubscription from "./ModelsSubscription";
+import { type ChangeEvent, useCallback, useEffect, useState } from "react";
 import { useModels } from "@/hooks/queries/useModels";
+import ModelsSubscription from "./ModelsSubscription";
 
 const useDebounce = (callback: (value: string) => void, delay: number) => {
   const [typingTimer, setTypingTimer] = useState<NodeJS.Timeout | null>(null);

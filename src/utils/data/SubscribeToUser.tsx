@@ -1,7 +1,7 @@
 import axios from "axios";
-import { getToken } from "../Cookie";
 import toast from "react-hot-toast";
 import axiosInstance from "../Axios";
+import { getToken } from "../Cookie";
 
 export const SubscribeToUser = async (profileId: string, id: number) => {
   try {

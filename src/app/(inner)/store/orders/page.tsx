@@ -1,15 +1,15 @@
 "use client";
-import { useUserOrders } from "@/hooks/useCheckout";
 import {
+  CheckCircle,
+  Clock,
   Loader2,
   Package,
-  Clock,
   Truck,
-  CheckCircle,
   XCircle,
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { useUserOrders } from "@/hooks/useCheckout";
 
 type OrderStatus =
   | "pending"

@@ -1,6 +1,4 @@
-import axios from "axios";
-import { NextResponse, type NextRequest } from "next/server";
-import { postRegex, profileRegex } from "./constants/regex";
+import { type NextRequest, NextResponse } from "next/server";
 
 const predefinedInnerRoutes = [
   "/analytics",
@@ -23,26 +21,41 @@ const predefinedInnerRoutes = [
   "/transactions",
   "/verification",
   "/wallet",
-]
+  "/new",
+];
 
 // middleware is applied to all routes, use conditionals to select
 export function middleware(req: NextRequest) {
   const cookies = req.cookies;
   const token = cookies.get("token")?.value;
-  req.headers.set("Authorization", `Bearer ${token}`);
   const location = req.nextUrl.clone();
-  const isPostPage = postRegex.test(location.pathname);
-  const isProfilePage = !isPostPage && profileRegex.test(location.pathname);
 
-  const isProtectedRoute = predefinedInnerRoutes.some(route =>
-    location.pathname === route || location.pathname.startsWith(route + "/")
+  const isProtectedRoute = predefinedInnerRoutes.some(
+    (route) =>
+      location.pathname === route || location.pathname.startsWith(route + "/"),
   );
 
+  // Simple token-based protection for protected routes
   if (!token && isProtectedRoute) {
     return NextResponse.redirect(new URL("/login", req.url));
   }
 
-  return NextResponse.next();
+  // If user has token but tries to access login/signup, redirect to home
+  // Let the UserContext handle the actual token validation
+  if (
+    token &&
+    (location.pathname === "/login" || location.pathname === "/signup")
+  ) {
+    return NextResponse.redirect(new URL("/", req.url));
+  }
+
+  // Set the authorization header for downstream requests
+  const response = NextResponse.next();
+  if (token) {
+    response.headers.set("Authorization", `Bearer ${token}`);
+  }
+
+  return response;
 }
 
 export const config = {
@@ -72,5 +85,6 @@ export const config = {
     "/transactions/:path*",
     "/store/:path*",
     "/groups/:path*",
+    "/new/:path*",
   ],
 };

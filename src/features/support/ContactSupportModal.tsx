@@ -1,10 +1,10 @@
 "use client";
-import { Send, X, MessageCircle, Headphones } from "lucide-react";
+import { AnimatePresence, motion } from "framer-motion";
+import { Headphones, MessageCircle, Send, X } from "lucide-react";
 import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import toast from "react-hot-toast";
 import { useAuthContext } from "@/contexts/UserUseContext";
 import axiosInstance from "@/utils/Axios";
-import toast from "react-hot-toast";
 
 // Helper types
 type Message = {

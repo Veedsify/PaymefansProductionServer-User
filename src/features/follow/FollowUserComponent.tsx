@@ -1,10 +1,13 @@
 "use client";
-import { useGuestModal } from "@/contexts/GuestModalContext";
-import { useAuthContext } from "@/contexts/UserUseContext";
-import { AuthUserProps, ProfileUserProps } from "@/features/user/types/user";
-import followUser from "@/utils/data/update/Follow";
 import React, { useEffect } from "react";
 import toast from "react-hot-toast";
+import { useGuestModal } from "@/contexts/GuestModalContext";
+import { useAuthContext } from "@/contexts/UserUseContext";
+import {
+  AuthUserProps,
+  type ProfileUserProps,
+} from "@/features/user/types/user";
+import followUser from "@/utils/data/update/Follow";
 
 type FollowUserProps = {
   profileuser: ProfileUserProps;

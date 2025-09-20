@@ -1,12 +1,13 @@
 "use client";
-import React, { useState, useEffect } from "react";
 import { Ban, Shield } from "lucide-react";
+import type React from "react";
+import { useEffect, useState } from "react";
+import toast from "react-hot-toast";
 import {
   blockUser,
-  unblockUser,
   checkBlockStatus,
+  unblockUser,
 } from "@/utils/data/BlockUser";
-import toast from "react-hot-toast";
 
 interface BlockUserButtonProps {
   userId: number;

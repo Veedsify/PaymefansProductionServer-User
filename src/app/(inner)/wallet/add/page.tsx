@@ -1,16 +1,16 @@
 "use client";
-import { getToken } from "@/utils/Cookie";
+import axios from "axios";
 import { LucideLoader, LucideTrash2 } from "lucide-react";
+import Image from "next/image";
 import React, { useEffect, useState } from "react";
 import swal from "sweetalert";
+import { BANK_CONFIG } from "@/config/config";
+import axiosInstance from "@/utils/Axios";
+import { getToken } from "@/utils/Cookie";
 import {
   acceptedBankCountries,
   acceptedBankTypes,
 } from "@/utils/data/AcceptedBankCountries";
-import Image from "next/image";
-import { BANK_CONFIG } from "@/config/config";
-import axios from "axios";
-import axiosInstance from "@/utils/Axios";
 
 interface BankData {
   slug: string;
@@ -19,14 +19,14 @@ interface BankData {
 }
 
 const WalletAddBank = () => {
-  let [walletType, setWalletType] = useState<"bank" | "crypto" | null>();
-  let [banks, setBanks] = useState<BankData[]>([]);
-  let [loading, setLoading] = useState<boolean>(false);
-  let [name, setName] = useState<string>("");
-  let [accountNumber, setAccountNumber] = useState<string>("");
-  let [selectedBank, setSelectedBank] = useState<string>("");
-  let [bankType, setBankType] = useState<string>("nuban");
-  let [selectCountry, setSelectCountry] =
+  const [walletType, setWalletType] = useState<"bank" | "crypto" | null>();
+  const [banks, setBanks] = useState<BankData[]>([]);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [name, setName] = useState<string>("");
+  const [accountNumber, setAccountNumber] = useState<string>("");
+  const [selectedBank, setSelectedBank] = useState<string>("");
+  const [bankType, setBankType] = useState<string>("nuban");
+  const [selectCountry, setSelectCountry] =
     useState<keyof typeof acceptedBankTypes>("ng");
 
   useEffect(() => {
@@ -42,7 +42,7 @@ const WalletAddBank = () => {
                 "Content-Type": "application/json",
                 Authorization: `Bearer ${process.env.NEXT_PUBLIC_PAYSTACK_SECRET_KEY}`,
               },
-            }
+            },
           );
           const data = await res.json();
           if (data.status === false) {
@@ -66,7 +66,7 @@ const WalletAddBank = () => {
   useEffect(() => {
     const getBanks = async () => {
       const country = acceptedBankCountries.find(
-        (country) => country.countryIso === selectCountry
+        (country) => country.countryIso === selectCountry,
       )?.name;
       const res = await fetch(
         `https://api.paystack.co/bank?country=${encodeURI(country as string)}`,
@@ -75,7 +75,7 @@ const WalletAddBank = () => {
             "Content-Type": "application/json",
             Authorization: `Bearer ${process.env.NEXT_PUBLIC_PAYSTACK_SECRET_KEY}`,
           },
-        }
+        },
       );
       const data = await res.json();
       setBanks(data.data);
@@ -94,7 +94,7 @@ const WalletAddBank = () => {
       return;
     }
     const country = acceptedBankCountries.find(
-      (country) => country.countryIso === selectCountry
+      (country) => country.countryIso === selectCountry,
     )?.name;
 
     try {
@@ -110,7 +110,7 @@ const WalletAddBank = () => {
         },
         {
           withCredentials: true,
-        }
+        },
       );
 
       const data = response.data;
@@ -191,7 +191,7 @@ const WalletAddBank = () => {
                     </span>
                   </button>
                 );
-              }
+              },
             )}
           </div>
         </div>
@@ -211,7 +211,7 @@ const WalletAddBank = () => {
         <span className="text-sm text-gray-500">
           {
             acceptedBankCountries.find(
-              (country) => country.countryIso === selectCountry
+              (country) => country.countryIso === selectCountry,
             )?.name
           }
         </span>
@@ -279,9 +279,7 @@ const SavedBanks = () => {
   const [banks, setBanks] = useState<MyBanks[]>([]);
   useEffect(() => {
     const getBanks = async () => {
-      const res = await axiosInstance.get(
-        `/wallet/banks`
-      );
+      const res = await axiosInstance.get(`/wallet/banks`);
       setBanks(res.data.data);
     };
     getBanks();
@@ -289,12 +287,9 @@ const SavedBanks = () => {
 
   const deleteAccount = (accountId: number) => async () => {
     async function deleteBank() {
-      return await axiosInstance.delete(
-        `/wallet/banks/delete`,
-        {
-          data: { accountId },
-        }
-      );
+      return await axiosInstance.delete(`/wallet/banks/delete`, {
+        data: { accountId },
+      });
     }
 
     swal({

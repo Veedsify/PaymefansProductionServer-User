@@ -1,11 +1,11 @@
 "use client";
 
-import axiosInstance from "@/utils/Axios";
-import { getToken } from "@/utils/Cookie";
 import axios from "axios";
-import { ChangeEvent, useState } from "react";
+import { type ChangeEvent, useState } from "react";
 import toast from "react-hot-toast";
 import swal from "sweetalert";
+import axiosInstance from "@/utils/Axios";
+import { getToken } from "@/utils/Cookie";
 
 const UpdatePasswords = () => {
   const [passwords, setPasswords] = useState({

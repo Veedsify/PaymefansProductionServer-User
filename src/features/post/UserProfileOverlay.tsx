@@ -1,8 +1,8 @@
-import usePostComponent from "@/contexts/PostComponentPreview";
 import { LucideUser2 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import React, { useEffect } from "react";
+import usePostComponent from "@/contexts/PostComponentPreview";
 
 const UserProfileOverlay = ({
   userProfile,

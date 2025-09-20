@@ -1,19 +1,19 @@
 "use client";
 import React, {
-  useMemo,
-  useEffect,
-  Dispatch,
-  SetStateAction,
+  type Dispatch,
+  type SetStateAction,
   useCallback,
+  useEffect,
+  useMemo,
 } from "react";
-import { useAuthContext } from "@/contexts/UserUseContext";
-import { POST_CONFIG } from "@/config/config";
-import { UploadedImageProp } from "@/types/Components";
 import toast from "react-hot-toast";
-import AddNewPostMedia from "./AddNewPostMedia";
-import Media from "@/features/media/MediaPreviewPost";
+import { POST_CONFIG } from "@/config/config";
 import { usePostContext } from "@/contexts/PostContext";
 import { useUploadProgress } from "@/contexts/UploadProgressContext";
+import { useAuthContext } from "@/contexts/UserUseContext";
+import Media from "@/features/media/MediaPreviewPost";
+import type { UploadedImageProp } from "@/types/Components";
+import AddNewPostMedia from "./AddNewPostMedia";
 
 type PostMediaPreviewProps = {
   setIsSubmitting: Dispatch<SetStateAction<boolean>>;
@@ -41,14 +41,14 @@ function PostMediaPreview({
     (id: string, type: string) => {
       removeMediaItem(id, removeThisMedia);
     },
-    [removeMediaItem, removeThisMedia]
+    [removeMediaItem, removeThisMedia],
   );
 
   const handleFileSelect = useCallback(
     async (files: File[]) => {
       console.log(
         "PostMediaPreview: handleFileSelect called with files:",
-        files.length
+        files.length,
       );
       if (!files?.length) return;
       const fileLimit = user?.is_model
@@ -58,7 +58,7 @@ function PostMediaPreview({
         toast.error(
           user?.is_model
             ? POST_CONFIG.MODEL_POST_LIMIT_ERROR_MSG
-            : POST_CONFIG.USER_POST_LIMIT_ERROR_MSG
+            : POST_CONFIG.USER_POST_LIMIT_ERROR_MSG,
         );
         return;
       }
@@ -71,7 +71,7 @@ function PostMediaPreview({
       // Handle upload via context
       await addMediaFiles(files, user, submitPost);
     },
-    [user, media.length, addMediaFiles, submitPost, setMediaUploadComplete]
+    [user, media.length, addMediaFiles, submitPost, setMediaUploadComplete],
   );
 
   const mediaMap = useMemo(
@@ -82,7 +82,7 @@ function PostMediaPreview({
         removeThisMedia: handleMediaRemove,
         url: URL.createObjectURL(m.file),
       })),
-    [media, handleMediaRemove]
+    [media, handleMediaRemove],
   );
 
   useEffect(() => {

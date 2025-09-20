@@ -1,12 +1,12 @@
 "use client";
-import { StoryPreviewProps } from "@/types/Components";
-import { Swiper, SwiperClass, SwiperSlide } from "swiper/react";
+import { Swiper, type SwiperClass, SwiperSlide } from "swiper/react";
+import type { StoryPreviewProps } from "@/types/Components";
 import "swiper/css/bundle";
-import StoryPreviewControlls from "./StatusPreviewControls";
-import { useCallback, useEffect, useRef, useState } from "react";
-import StoriesHeader from "./StatusHeader";
-import { useAuthContext } from "@/contexts/UserUseContext";
 import { Eye } from "lucide-react";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { useAuthContext } from "@/contexts/UserUseContext";
+import StoriesHeader from "./StatusHeader";
+import StoryPreviewControlls from "./StatusPreviewControls";
 import StatusPreviewSlide from "./StatusPreviewSlide";
 
 // Caption Element Component

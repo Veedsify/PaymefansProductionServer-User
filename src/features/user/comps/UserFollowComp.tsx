@@ -1,10 +1,10 @@
-import { UserFollowCompProps } from "@/types/Components";
-import followUser from "@/utils/data/update/Follow";
 import Image from "next/image";
 import Link from "next/link";
 import { use, useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { HiOutlineDotsVertical } from "react-icons/hi";
+import type { UserFollowCompProps } from "@/types/Components";
+import followUser from "@/utils/data/update/Follow";
 
 const UserFollowComp: React.FC<UserFollowCompProps> = ({ follower }) => {
   const [isFollowing, setIsFollowing] = useState(follower.iAmFollowing);

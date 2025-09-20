@@ -1,8 +1,8 @@
 import axios from "axios";
-import StreamDeck from "@/features/stream/StreamDeck";
 // import { streamDataProps } from "@/types/components";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
+import StreamDeck from "@/features/stream/StreamDeck";
 import axiosInstance from "@/utils/Axios";
 
 const Stream = async ({

@@ -1,9 +1,12 @@
-import axios, { AxiosProgressEvent } from "axios";
-import { getToken } from "./Cookie";
-import ROUTE from "@/config/routes";
+import axios, { type AxiosProgressEvent } from "axios";
 import toast from "react-hot-toast";
-import { RemovedMediaIdProps, UploadedImageProp } from "@/types/Components";
+import ROUTE from "@/config/routes";
+import type {
+  RemovedMediaIdProps,
+  UploadedImageProp,
+} from "@/types/Components";
 import axiosInstance from "./Axios";
+import { getToken } from "./Cookie";
 
 type SavePostType = {
   data: {

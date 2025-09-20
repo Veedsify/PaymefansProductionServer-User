@@ -1,6 +1,6 @@
-import { StoryHeaderProps } from "@/types/Components";
 import Image from "next/image";
 import Link from "next/link";
+import type { StoryHeaderProps } from "@/types/Components";
 
 const StoriesHeader = ({
   profileImage,

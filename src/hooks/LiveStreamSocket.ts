@@ -1,10 +1,10 @@
 "use client";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
-import { getToken } from "@/utils/Cookie";
-import { LiveStreamSocketProps } from "@/types/Components";
 import { getSocket } from "@/components/common/Socket";
 import { useAuthContext } from "@/contexts/UserUseContext";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import type { LiveStreamSocketProps } from "@/types/Components";
+import { getToken } from "@/utils/Cookie";
 
 type LiveStreamJoinProps = {
   count: number;

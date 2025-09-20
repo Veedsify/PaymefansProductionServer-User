@@ -1,6 +1,6 @@
-import React from "react";
 import Image from "next/image";
-import { MentionUser } from "@/types/Components";
+import React from "react";
+import type { MentionUser } from "@/types/Components";
 
 interface MentionSuggestion extends MentionUser {
   highlighted?: boolean;
@@ -86,7 +86,7 @@ const MentionDropdown = React.memo(
         )}
       </div>
     );
-  }
+  },
 );
 
 MentionDropdown.displayName = "MentionDropdown";

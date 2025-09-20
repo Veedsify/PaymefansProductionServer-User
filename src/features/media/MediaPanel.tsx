@@ -1,17 +1,20 @@
-"use client"
+"use client";
 import { useCallback, useState } from "react";
 import MediaPanelImageCard from "./MediaPanelImageCard";
 
 const MediaPanel = () => {
-    const [arraySort, setArraySort] = useState<string>("all")
+  const [arraySort, setArraySort] = useState<string>("all");
 
-    const toggleThisSort = useCallback((sort: string) => {
-        setArraySort(sort)
-    }, [setArraySort])
+  const toggleThisSort = useCallback(
+    (sort: string) => {
+      setArraySort(sort);
+    },
+    [setArraySort],
+  );
 
-    return (
-        <div className="py-4">
-            {/* <div className="flex items-center py-3 mb-2 gap-4">
+  return (
+    <div className="py-2">
+      {/* <div className="flex items-center py-3 mb-2 gap-4">
                 <button
                     onClick={() => toggleThisSort("all")}
                     className={`${arraySort === "all" ? "bg-messages-unread text-primary-dark-pink" : "bg-gray-200"}
@@ -29,9 +32,9 @@ const MediaPanel = () => {
                     Videos
                 </button>
             </div> */}
-            <MediaPanelImageCard sort={arraySort} />
-        </div>
-    );
-}
+      <MediaPanelImageCard sort={arraySort} />
+    </div>
+  );
+};
 
 export default MediaPanel;

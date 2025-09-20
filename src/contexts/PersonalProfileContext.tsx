@@ -1,6 +1,6 @@
-import { UserMediaProps, UserPostPropsOther } from "@/types/Components";
-import { create } from "zustand";
 import _ from "lodash";
+import { create } from "zustand";
+import type { UserMediaProps, UserPostPropsOther } from "@/types/Components";
 
 type Post = {
   id: number;
@@ -44,7 +44,7 @@ export const usePersonalProfileStore = create<PersonalProfileContext>(
       set((state) => ({
         posts: _.uniqBy(
           [...state.posts, ...post],
-          (item) => `${item.id}-${item.post_likes}`
+          (item) => `${item.id}-${item.post_likes}`,
         ),
       })),
     likePost: (postId) =>
@@ -52,11 +52,11 @@ export const usePersonalProfileStore = create<PersonalProfileContext>(
         posts: state.posts.map((post) =>
           post.post_id === postId
             ? {
-              ...post,
-              post_likes: post.post_likes + 1,
-              likedByme: true,
-            }
-            : post
+                ...post,
+                post_likes: post.post_likes + 1,
+                likedByme: true,
+              }
+            : post,
         ),
       })),
     unlikePost: (postId, _) =>
@@ -64,11 +64,11 @@ export const usePersonalProfileStore = create<PersonalProfileContext>(
         posts: state.posts.map((post) =>
           post.post_id === postId
             ? {
-              ...post,
-              post_likes: Math.max(0, post.post_likes - 1),
-              likedByme: false,
-            }
-            : post
+                ...post,
+                post_likes: Math.max(0, post.post_likes - 1),
+                likedByme: false,
+              }
+            : post,
         ),
       })),
     repostPost: (postId) =>
@@ -76,13 +76,13 @@ export const usePersonalProfileStore = create<PersonalProfileContext>(
         posts: state.posts.map((post) =>
           post.post_id === postId
             ? {
-              ...post,
-              post_reposts: post.post_reposts + 1,
-            }
-            : post
+                ...post,
+                post_reposts: post.post_reposts + 1,
+              }
+            : post,
         ),
       })),
-  })
+  }),
 );
 
 type OtherProfileContext = {
@@ -102,11 +102,11 @@ const useOtherProfilePostsStore = create<OtherProfileContext>((set) => ({
       posts: state.posts.map((post) =>
         post.post_id === postId
           ? {
-            ...post,
-            post_likes: post.post_likes + 1,
-            likedByme: true,
-          }
-          : post
+              ...post,
+              post_likes: post.post_likes + 1,
+              likedByme: true,
+            }
+          : post,
       ),
     })),
   unlikePost: (postId, _) =>
@@ -114,11 +114,11 @@ const useOtherProfilePostsStore = create<OtherProfileContext>((set) => ({
       posts: state.posts.map((post) =>
         post.post_id === postId
           ? {
-            ...post,
-            post_likes: Math.max(0, post.post_likes - 1),
-            likedByme: false,
-          }
-          : post
+              ...post,
+              post_likes: Math.max(0, post.post_likes - 1),
+              likedByme: false,
+            }
+          : post,
       ),
     })),
   repostPost: (postId) =>
@@ -126,10 +126,10 @@ const useOtherProfilePostsStore = create<OtherProfileContext>((set) => ({
       posts: state.posts.map((post) =>
         post.post_id === postId
           ? {
-            ...post,
-            post_reposts: post.post_reposts + 1,
-          }
-          : post
+              ...post,
+              post_reposts: post.post_reposts + 1,
+            }
+          : post,
       ),
     })),
 }));

@@ -2,14 +2,19 @@
 
 import { LucideAlertCircle } from "lucide-react";
 import Image from "next/image";
-import { useAuthContext } from "@/contexts/UserUseContext";
-import React, { MouseEvent, useCallback, useEffect, useState } from "react";
+import React, {
+  type MouseEvent,
+  useCallback,
+  useEffect,
+  useState,
+} from "react";
 import toast from "react-hot-toast";
 import AddSubscriptionTiers from "@/actions/AddSubscriptionTiers";
-import { SubscriptionTiersProps } from "@/types/Components";
+import { useConfigContext } from "@/contexts/ConfigContext";
+import { useAuthContext } from "@/contexts/UserUseContext";
+import type { SubscriptionTiersProps } from "@/types/Components";
 import { getToken } from "@/utils/Cookie";
 import FetchUserSubscriptions from "@/utils/data/FetchUserSubscriptions";
-import { useConfigContext } from "@/contexts/ConfigContext";
 
 const initialTier = {
   tier_name: "",

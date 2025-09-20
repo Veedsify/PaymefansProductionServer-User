@@ -57,4 +57,3 @@ export const useModels = (options?: UseModelsOptions) => {
     refetch: query.refetch,
   };
 };
-

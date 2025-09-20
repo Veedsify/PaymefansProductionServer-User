@@ -1,17 +1,15 @@
-import {Metadata} from "next";
+import type { Metadata } from "next";
 
 type RootLayoutProps = {
-    children?: React.ReactNode;
-}
+  children?: React.ReactNode;
+};
 
 export const metadata: Metadata = {
-    title: "Help & Supports",
-    description: "Help & Support From Paymefans"
-}
-const RootLayout = ({children}: RootLayoutProps) => {
-    return <>
-        {children}
-    </>
-}
+  title: "Help & Supports",
+  description: "Help & Support From Paymefans",
+};
+const RootLayout = ({ children }: RootLayoutProps) => {
+  return <>{children}</>;
+};
 
-export default RootLayout
+export default RootLayout;
