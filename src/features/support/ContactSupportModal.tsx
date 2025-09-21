@@ -198,7 +198,7 @@ const ContactSupportModal = ({
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: 30 }}
                 transition={{ duration: 0.2 }}
-                className="flex-1 p-8 overflow-auto bg-white dark:from-gray-900 dark:to-gray-800"
+                className="flex-1 p-8 overflow-auto bg-white dark:bg-black pb-24"
               >
                 <div className="max-w-2xl mx-auto">
                   <div className="mb-8">

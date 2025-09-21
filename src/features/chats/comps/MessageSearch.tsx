@@ -85,7 +85,7 @@ const MessageSearch = () => {
           onFocus={handleOpenSearch}
           type="text"
           placeholder="Search Messages"
-          className="w-full text-sm border-none outline-none dark:bg-black"
+          className="w-full text-sm border-none outline-none dark:bg-black dark:text-white"
         />
         <LucideSearch className="block text-center" />
       </div>

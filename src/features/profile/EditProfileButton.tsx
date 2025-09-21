@@ -24,6 +24,7 @@ import { getToken } from "@/utils/Cookie";
 import useCheckUsername from "../../hooks/CheckUsername";
 import BannerComponent from "./BannerComponent";
 import LoadingSpinner from "@/components/common/loaders/LoadingSpinner";
+import { useQueryClient } from "@tanstack/react-query";
 
 const EditProfileButton = ({ user }: { user: any }) => {
   const [open, setOpen] = useState(false);
@@ -51,6 +52,7 @@ function BannerModal({ user, open = false, setOpen }: BannerModalProps) {
     user,
     usernameCheck
   );
+  const queryClient = useQueryClient();
 
   const usernameTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -145,6 +147,7 @@ function BannerModal({ user, open = false, setOpen }: BannerModalProps) {
           id: "profile-update-toast",
         }
       );
+      queryClient.invalidateQueries({ queryKey: ["userProfileData"] });
     } catch (error) {
       console.error(error);
     }

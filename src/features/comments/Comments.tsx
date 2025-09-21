@@ -22,6 +22,7 @@ import CommentReplyChildren from "./CommentsReplyWithchildren";
 import ReplyInteractions from "./ReplyInteraction";
 import ReplyPostComponent from "./ReplyTextarea";
 import LoadingSpinner from "@/components/common/loaders/LoadingSpinner";
+import FormatName from "@/lib/FormatName";
 
 export interface Comment {
   comment_id: string;
@@ -76,7 +77,7 @@ const CommentsHolder = ({ post, postComments }: CommentsHolderProps) => {
     isLoading,
     isError,
   } = useInfiniteQuery({
-    queryKey: ["comments", post.id, user?.id],
+    queryKey: ["comments", post.post_id, user?.id],
     queryFn: async ({ pageParam = 1 }) => {
       const result = await getUserComments(post, pageParam, user?.id);
       return result;
@@ -184,7 +185,7 @@ const CommentsHolder = ({ post, postComments }: CommentsHolderProps) => {
       <div className="relative overflow-hidden" ref={commentsRef}>
         {uniqueComments.length > 1 && (
           <div
-            className="absolute top-4 left-[14px] lg:left-9 w-[1px] h-full bg-black/20 dark:bg-slate-700"
+            className="absolute top-4 left-[14px] lg:left-[26px] w-[1px] h-full bg-black/20 dark:bg-slate-700"
             style={{
               width: "1px",
               height: `${calculateHeight()}px`,
@@ -211,12 +212,12 @@ const CommentsHolder = ({ post, postComments }: CommentsHolderProps) => {
                   href={`/${comment.username}`}
                   className="text-sm font-bold md:text-base"
                 >
-                  {comment.name}
+                  {FormatName(comment.name)}
                 </Link>
                 &nbsp;
                 <Link
                   href={`/${comment.username}`}
-                  className="text-sm md:text-base  hidden md:inline-block"
+                  className="text-sm md:text-base hidden md:inline-block"
                 >
                   {comment.username}
                 </Link>

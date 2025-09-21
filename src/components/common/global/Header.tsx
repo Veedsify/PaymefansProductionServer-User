@@ -56,7 +56,7 @@ const Header = () => {
         </button>
         <ul className="flex items-center ml-auto gap-6 lg:hidden">
           <Link href="/notifications">
-            <LucideBellRing stroke="#fff" />
+            <LucideBellRing stroke="#fff" size={20} />
           </Link>
           <HeaderImgClick />
         </ul>

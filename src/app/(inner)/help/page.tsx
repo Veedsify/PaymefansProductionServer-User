@@ -60,7 +60,7 @@ const HelpPage = () => {
             type="text"
             id="searchInput"
             placeholder="Search for help..."
-            className="w-full p-3 text-lg border border-gray-300 rounded-lg md:p-4 focus:ring-2 focus:text-primary-text-dark-pink focus:outline-none"
+            className="w-full p-3 text-lg border border-gray-300 rounded-lg md:p-4 focus:ring-2 focus:text-black dark:focus:text-white focus:outline-none"
           />
         </div>
         {loading ? (
@@ -89,12 +89,12 @@ const HelpPage = () => {
           </section>
         )}
         <section className="mt-12">
-          <h2 className="mb-6 text-2xl font-bold text-gray-800">
+          <h2 className="mb-6 text-2xl font-bold text-gray-800 dark:text-white">
             Frequently Asked Questions
           </h2>
           <div className="space-y-4">
-            <div className="p-6 bg-white rounded-lg shadow">
-              <h3 className="text-lg font-semibold text-gray-800">
+            <div className="p-6 bg-white dark:bg-gray-900 rounded-lg shadow">
+              <h3 className="text-lg font-semibold">
                 How do I reset my password?
               </h3>
               <p className="mt-2 text-gray-600">
@@ -102,8 +102,8 @@ const HelpPage = () => {
                 the login page and follow the instructions.
               </p>
             </div>
-            <div className="p-6 bg-white rounded-lg shadow">
-              <h3 className="text-lg font-semibold text-gray-800">
+            <div className="p-6 bg-white dark:bg-gray-900 rounded-lg shadow">
+              <h3 className="text-lg font-semibold ">
                 Can I upgrade my plan later?
               </h3>
               <p className="mt-2 text-gray-600">

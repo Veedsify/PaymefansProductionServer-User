@@ -14,6 +14,7 @@ import ROUTE from "@/config/routes";
 import axiosInstance from "@/utils/Axios";
 import { getToken } from "@/utils/Cookie";
 import "react-image-crop/dist/ReactCrop.css";
+import { useQueryClient } from "@tanstack/react-query";
 
 interface BannerComponentProps {
   profile_banner?: string;
@@ -26,7 +27,7 @@ const BannerComponent = ({ profile_banner }: BannerComponentProps) => {
   const [crop, setCrop] = useState<Crop>();
   const [completedCrop, setCompletedCrop] = useState<Crop>();
   const imageRef = useRef<HTMLImageElement>(null);
-
+  const queryClient = useQueryClient();
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       const selectedFile = e.target.files[0];
@@ -62,10 +63,10 @@ const BannerComponent = ({ profile_banner }: BannerComponentProps) => {
         },
         1980 / 650, // 1980x650 aspect ratio
         naturalWidth,
-        naturalHeight,
+        naturalHeight
       ),
       naturalWidth,
-      naturalHeight,
+      naturalHeight
     );
 
     setCrop(initialCrop);
@@ -90,7 +91,7 @@ const BannerComponent = ({ profile_banner }: BannerComponentProps) => {
       0,
       0,
       crop.width * scaleX,
-      crop.height * scaleY,
+      crop.height * scaleY
     );
 
     return new Promise<Blob>((resolve) => {
@@ -110,7 +111,7 @@ const BannerComponent = ({ profile_banner }: BannerComponentProps) => {
       });
       const croppedImageBlob = await getCroppedImg(
         imageRef.current,
-        completedCrop,
+        completedCrop
       );
       if (!croppedImageBlob) {
         toast.error("Failed to crop image", {
@@ -121,11 +122,11 @@ const BannerComponent = ({ profile_banner }: BannerComponentProps) => {
       const formData = new FormData();
       formData.append(
         "banner",
-        new File([croppedImageBlob], file.name, { type: file.type }),
+        new File([croppedImageBlob], file.name, { type: file.type })
       );
       const response = await axiosInstance.post(
         ROUTE.BANNER_IMAGE_UPLOAD,
-        formData,
+        formData
       );
       const data = response.data;
       if (!data.status) {
@@ -138,7 +139,7 @@ const BannerComponent = ({ profile_banner }: BannerComponentProps) => {
         toast.success("Banner image uploaded successfully", {
           id: "banner_upload",
         });
-        router.refresh();
+        queryClient.invalidateQueries({ queryKey: ["userProfileData"] });
         // Reset state
         setFile(null);
         setImageUrl(null);
