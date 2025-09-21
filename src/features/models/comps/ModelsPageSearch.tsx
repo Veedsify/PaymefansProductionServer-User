@@ -8,6 +8,7 @@ import {
 import { type ChangeEvent, useCallback, useEffect, useState } from "react";
 import { useModels } from "@/hooks/queries/useModels";
 import ModelsSubscription from "./ModelsSubscription";
+import LoadingSpinner from "@/components/common/loaders/LoadingSpinner";
 
 const useDebounce = (callback: (value: string) => void, delay: number) => {
   const [typingTimer, setTypingTimer] = useState<NodeJS.Timeout | null>(null);
@@ -22,7 +23,7 @@ const useDebounce = (callback: (value: string) => void, delay: number) => {
       }, delay);
       setTypingTimer(newTimer);
     },
-    [callback, delay, typingTimer],
+    [callback, delay, typingTimer]
   );
 
   return debouncedCallback;
@@ -78,17 +79,15 @@ export default function ModelsPageSearch() {
 
       <div className={`${models.length > 0 && "py-6"}`}>
         {isLoading ? (
-          <div className="flex justify-center py-12">
-            <LucideLoader className="self-center animate-spin" size={24} />
-          </div>
+          <LoadingSpinner />
         ) : models.length === 0 ? (
           <div className="py-12 text-center text-gray-700 dark:text-gray-300">
             <div className="mb-4">
               {error
                 ? "Failed to load models"
                 : debouncedSearch
-                  ? `No models found matching "${debouncedSearch}"`
-                  : "No models found"}
+                ? `No models found matching "${debouncedSearch}"`
+                : "No models found"}
             </div>
             {error && (
               <button

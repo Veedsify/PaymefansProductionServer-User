@@ -18,6 +18,7 @@ import { formatDate } from "@/utils/FormatDate";
 import { getSocket } from "../../../components/common/Socket";
 import VideoPlayer from "../../media/videoplayer";
 import CaptionElement from "./CaptionElement";
+import LoadingSpinner from "@/components/common/loaders/LoadingSpinner";
 
 type StatusPreviewSlideProps = {
   story: Story;
@@ -41,7 +42,7 @@ const fetchStatusViews = async ({
     `/story/views/${media_id}${pageParam === 0 ? "" : `?cursor=${pageParam}`}`,
     {
       withCredentials: true,
-    },
+    }
   );
   if (response.status === 200) {
     const data = response.data;
@@ -164,11 +165,7 @@ const StatusViewBlock = ({ story }: { story: Story }) => {
                         </span>
                       </div>
                     ))}
-                  {isLoading && (
-                    <div className="flex justify-center">
-                      <LucideLoader className="h-8 animate-spin text-primary-dark-pink" />
-                    </div>
-                  )}
+                  {isLoading && <LoadingSpinner />}
                   {viewsCount === 0 && (
                     <div className="flex justify-center">
                       <p>No Views Yet</p>
@@ -207,7 +204,7 @@ const StoryReplyInput = ({ story }: { story: Story }) => {
         {
           headers: { Authorization: `Bearer ${getToken()}` },
           withCredentials: true,
-        },
+        }
       );
       const receiverUserId = profileResponse.data.user?.user_id;
       if (!receiverUserId) {
@@ -219,7 +216,7 @@ const StoryReplyInput = ({ story }: { story: Story }) => {
         {
           headers: { Authorization: `Bearer ${getToken()}` },
           withCredentials: true,
-        },
+        }
       );
       const pricePerMessage = data.price_per_message || 0;
       const currentPoints = points || 0;
@@ -347,7 +344,7 @@ const StoryReplyInput = ({ story }: { story: Story }) => {
                 className="p-2 text-white rounded-lg bg-primary-dark-pink disabled:opacity-50 disabled:cursor-not-allowed hover:bg-primary-text-dark-pink transition-colors"
               >
                 {isReplying ? (
-                  <LucideLoader className="w-5 h-5 animate-spin" />
+                  <LoadingSpinner />
                 ) : (
                   <LucideSend className="w-5 h-5" />
                 )}
@@ -394,7 +391,7 @@ const StatusPreviewSlide = ({
         { storyMediaId: story.media_id },
         {
           withCredentials: true,
-        },
+        }
       );
       refCounter.current++;
     }

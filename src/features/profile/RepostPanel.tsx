@@ -10,6 +10,7 @@ import axiosInstance from "@/utils/Axios";
 import { getToken } from "@/utils/Cookie";
 import { formatDate } from "@/utils/FormatDate";
 import RepostPanelFetch from "../../hooks/RepostPanelFetch";
+import LoadingSpinner from "@/components/common/loaders/LoadingSpinner";
 
 const RepostPanel = ({ userdata }: RespostPanelProps) => {
   async function fetchPost(pageNumber: number) {
@@ -20,7 +21,7 @@ const RepostPanel = ({ userdata }: RespostPanelProps) => {
         : `/post/personal/reposts`;
     const postPerPage = parseInt(
       process.env.NEXT_PUBLIC_POST_PER_PAGE || "5",
-      10,
+      10
     );
     const response = await axiosInstance<any, AxiosResponse>(api, {
       method: "GET",
@@ -97,11 +98,7 @@ const RepostPanel = ({ userdata }: RespostPanelProps) => {
         </div>
       ))}
       <div ref={ref}></div>
-      {loading && (
-        <div className="flex justify-center">
-          <LucideLoader size={30} className="animate-spin" stroke="purple" />
-        </div>
-      )}
+      {loading && <LoadingSpinner />}
       {!hasMore && !loading && <EndMessage />}
     </div>
   );

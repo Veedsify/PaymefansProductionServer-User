@@ -28,6 +28,7 @@ import NotificationSideBarLink from "../../../features/notifications/Notificatio
 import PointsCount from "../../../features/points/PointCount";
 import useThemeToggle from "../toggles/ThemeToggle";
 import FormatName from "@/lib/FormatName";
+import LoadingSpinner from "../loaders/LoadingSpinner";
 
 const SideBar = React.memo(() => {
   const router = useRouter();
@@ -338,7 +339,7 @@ const LogOutModal: React.FC<{ onClose: () => void }> = ({ onClose }) => {
             className="inline-flex items-center px-4 py-2 font-medium text-white bg-red-600 rounded-lg cursor-pointer hover:bg-red-700 gap-2"
           >
             Yes Logout
-            {loggingOut && <LucideLoader className="text-white animate-spin" />}
+            {loggingOut && <LoadingSpinner className="text-white" />}
           </button>
         </div>
       </motion.div>

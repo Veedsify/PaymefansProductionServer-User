@@ -7,6 +7,7 @@ import Link from "next/link";
 import { useEffect, useRef } from "react";
 import { useInView } from "react-intersection-observer";
 import FetchActiveSubscribers from "@/utils/data/FetchActiveSubscribers";
+import LoadingSpinner from "@/components/common/loaders/LoadingSpinner";
 
 function Page() {
   const {
@@ -72,7 +73,7 @@ function Page() {
           ))}
           <div className="flex items-center justify-center mt-4">
             {isFetchingNextPage && (
-              <LucideLoader className="w-5 h-5 text-gray-500 animate-spin" />
+              <LoadingSpinner className=" text-gray-500 " />
             )}
           </div>
           {!hasNextPage && (

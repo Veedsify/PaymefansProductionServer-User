@@ -50,7 +50,7 @@ const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({
         </span>
         {text && (
           <p className="text-sm text-gray-600 dark:text-gray-400 animate-pulse">
-            {text}
+            {text.trim()}
           </p>
         )}
       </div>

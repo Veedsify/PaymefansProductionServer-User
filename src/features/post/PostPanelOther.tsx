@@ -9,6 +9,7 @@ import axiosInstance from "@/utils/Axios";
 import { getToken } from "@/utils/Cookie";
 import { formatDate } from "@/utils/FormatDate";
 import PostComponent from "./PostComponent";
+import LoadingSpinner from "@/components/common/loaders/LoadingSpinner";
 
 const PostPanelOther = ({ userdata }: { userdata: ProfileUserProps }) => {
   const postPerPage = Number(process.env.NEXT_PUBLIC_POST_PER_PAGE);
@@ -81,11 +82,7 @@ const PostPanelOther = ({ userdata }: { userdata: ProfileUserProps }) => {
         </div>
       ))}
       <div ref={ref} />
-      {loading && (
-        <div className="flex justify-center">
-          <LucideLoader size={30} className="animate-spin" stroke="purple" />
-        </div>
-      )}
+      {loading && <LoadingSpinner />}
       {!hasMore && !loading && <EndMessage />}
     </div>
   );

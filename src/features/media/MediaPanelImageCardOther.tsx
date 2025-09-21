@@ -12,6 +12,7 @@ import axiosInstance from "@/utils/Axios";
 import { getToken } from "@/utils/Cookie";
 import { LockedMediaOverlay } from "./LockedMediaOverlay";
 import HLSVideoPlayer from "./videoplayer";
+import LoadingSpinner from "@/components/common/loaders/LoadingSpinner";
 
 const getUniqueItems = (arr: MediaDataTypeOtherProps[]) => {
   const uniqueMap = new Map();
@@ -24,18 +25,18 @@ interface MediaPanelMediaCardProps {
     media: MediaDataTypeOtherProps,
     type: string,
     isSubscriber: boolean,
-    indexId: number,
+    indexId: number
   ) => void;
   indexId: number;
 }
 const MediaPanelImageCardOther = React.memo(
   ({ sort, userdata }: { sort: string; userdata: ProfileUserProps }) => {
     const fullScreenPreview = usePostComponent(
-      (state) => state.fullScreenPreview,
+      (state) => state.fullScreenPreview
     );
     const fetchMedia = async ({ pageParam = 1 }) => {
       const res = await axiosInstance.get(
-        `/post/other/media/${userdata.id}?page=${pageParam}&limit=${process.env.NEXT_PUBLIC_POST_MEDIA_PER_PAGE}`,
+        `/post/other/media/${userdata.id}?page=${pageParam}&limit=${process.env.NEXT_PUBLIC_POST_MEDIA_PER_PAGE}`
       );
       return res.data;
     };
@@ -53,7 +54,7 @@ const MediaPanelImageCardOther = React.memo(
       });
     const allMedia = React.useMemo(
       () => (data ? data.pages.flatMap((page) => page.data) : []),
-      [data],
+      [data]
     );
 
     const sorted = React.useMemo(() => {
@@ -68,7 +69,7 @@ const MediaPanelImageCardOther = React.memo(
       media: MediaDataTypeOtherProps,
       type: string,
       isSubscriber: boolean,
-      indexId: number,
+      indexId: number
     ) => {
       if (media.accessible_to === "subscribers" && !isSubscriber) return;
       const filteredMedias = sorted
@@ -81,11 +82,11 @@ const MediaPanelImageCardOther = React.memo(
           return true;
         })
         .filter(
-          (media) => !(media.accessible_to === "subscribers" && !isSubscriber),
+          (media) => !(media.accessible_to === "subscribers" && !isSubscriber)
         );
       // Get the new index after filtering
       const newIndexId = filteredMedias.findIndex(
-        (item) => item.id === media.id,
+        (item) => item.id === media.id
       );
       const medias = filteredMedias.map((media) => ({
         url: media.url,
@@ -119,15 +120,7 @@ const MediaPanelImageCardOther = React.memo(
           ))}
         </div>
         <div className="flex flex-col items-center justify-center py-2 mb-20 col-span-3">
-          {loading && (
-            <div className="flex justify-center col-span-3">
-              <LucideLoader
-                size={30}
-                className="animate-spin"
-                stroke="purple"
-              />
-            </div>
-          )}
+          {loading && <LoadingSpinner />}
           {hasMore && !loading && (
             <button
               className="px-4 py-2 text-sm font-bold bg-gray-200 rounded-lg col-span-3"
@@ -144,7 +137,7 @@ const MediaPanelImageCardOther = React.memo(
         </div>
       </>
     );
-  },
+  }
 );
 export const MediaPanelMediaCard = ({
   media,
@@ -182,7 +175,7 @@ export const MediaPanelMediaCard = ({
                       media,
                       media.media_type,
                       isSubscribed as boolean,
-                      indexId,
+                      indexId
                     ),
                 }}
               />
@@ -192,7 +185,7 @@ export const MediaPanelMediaCard = ({
                     media,
                     media.media_type,
                     isSubscribed as boolean,
-                    indexId,
+                    indexId
                   )
                 }
                 className="absolute inset-0 flex items-center justify-center w-full h-full cursor-pointer bg-black/20"
@@ -232,7 +225,7 @@ export const MediaPanelMediaCard = ({
                   media,
                   media.media_type,
                   isSubscribed as boolean,
-                  indexId,
+                  indexId
                 )
               }
               src={media.url}

@@ -6,6 +6,7 @@ import { useInView } from "react-intersection-observer";
 import { useStoryStore } from "@/contexts/StoryContext";
 import StoryMediaFetch from "@/hooks/StoryMediaFetch";
 import VideoPlayer from "../../media/videoplayer";
+import LoadingSpinner from "@/components/common/loaders/LoadingSpinner";
 
 const StatusMediaPanel = () => {
   const [page, setPage] = useState(1);
@@ -55,10 +56,7 @@ const StatusMediaPanel = () => {
       </div>
       {loading && (
         <div className="flex items-center justify-center py-4">
-          <div className="flex items-center gap-2 text-primary-dark-pink">
-            <LucideLoader size={20} className="animate-spin" />
-            <span className="text-sm font-medium">Loading media...</span>
-          </div>
+          <LoadingSpinner text="Loading media..." />
         </div>
       )}
       {media.length === 0 && !loading && (
@@ -95,7 +93,7 @@ const StoryMediaItem = React.memo(({ data }: { data: any }) => {
   // Memoize selected state instead of using useState
   const selected = useMemo(
     () => story.some((item) => item.id === data.id),
-    [story, data.id],
+    [story, data.id]
   );
 
   const mediaUrl = useMemo(() => {

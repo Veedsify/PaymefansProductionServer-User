@@ -6,6 +6,7 @@ import ContactSupportModal from "@/features/support/ContactSupportModal";
 import MyTicketsModal from "@/features/support/MyTicketsModal";
 import type { HelpCategoryProp } from "@/types/Components";
 import { getHelpCategories } from "@/utils/data/GetHelpCategories";
+import LoadingSpinner from "@/components/common/loaders/LoadingSpinner";
 
 const HelpPage = () => {
   const [helpCategories, setHelpCategories] = useState<HelpCategoryProp[]>([]);
@@ -63,9 +64,7 @@ const HelpPage = () => {
           />
         </div>
         {loading ? (
-          <div className="flex items-center justify-center py-12">
-            <LucideLoader className="animate-spin h-12 w-12  border-primary-dark-pink" />
-          </div>
+          <LoadingSpinner />
         ) : (
           <section className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-2 2xl:grid-cols-3 gap-8">
             {helpCategories.map((category: HelpCategoryProp) => (

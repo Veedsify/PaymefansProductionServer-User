@@ -11,6 +11,7 @@ import {
   acceptedBankCountries,
   acceptedBankTypes,
 } from "@/utils/data/AcceptedBankCountries";
+import LoadingSpinner from "@/components/common/loaders/LoadingSpinner";
 
 interface BankData {
   slug: string;
@@ -42,7 +43,7 @@ const WalletAddBank = () => {
                 "Content-Type": "application/json",
                 Authorization: `Bearer ${process.env.NEXT_PUBLIC_PAYSTACK_SECRET_KEY}`,
               },
-            },
+            }
           );
           const data = await res.json();
           if (data.status === false) {
@@ -66,7 +67,7 @@ const WalletAddBank = () => {
   useEffect(() => {
     const getBanks = async () => {
       const country = acceptedBankCountries.find(
-        (country) => country.countryIso === selectCountry,
+        (country) => country.countryIso === selectCountry
       )?.name;
       const res = await fetch(
         `https://api.paystack.co/bank?country=${encodeURI(country as string)}`,
@@ -75,7 +76,7 @@ const WalletAddBank = () => {
             "Content-Type": "application/json",
             Authorization: `Bearer ${process.env.NEXT_PUBLIC_PAYSTACK_SECRET_KEY}`,
           },
-        },
+        }
       );
       const data = await res.json();
       setBanks(data.data);
@@ -94,7 +95,7 @@ const WalletAddBank = () => {
       return;
     }
     const country = acceptedBankCountries.find(
-      (country) => country.countryIso === selectCountry,
+      (country) => country.countryIso === selectCountry
     )?.name;
 
     try {
@@ -110,7 +111,7 @@ const WalletAddBank = () => {
         },
         {
           withCredentials: true,
-        },
+        }
       );
 
       const data = response.data;
@@ -191,7 +192,7 @@ const WalletAddBank = () => {
                     </span>
                   </button>
                 );
-              },
+              }
             )}
           </div>
         </div>
@@ -211,7 +212,7 @@ const WalletAddBank = () => {
         <span className="text-sm text-gray-500">
           {
             acceptedBankCountries.find(
-              (country) => country.countryIso === selectCountry,
+              (country) => country.countryIso === selectCountry
             )?.name
           }
         </span>
@@ -239,7 +240,7 @@ const WalletAddBank = () => {
           })}
         </select>
         <div className="flex items-center mt-3 gap-2">
-          {loading && <LucideLoader className="animate-spin" />}
+          {loading && <LoadingSpinner />}
           {name && !loading && <span className="pl-3 font-bold">{name}</span>}
         </div>
 

@@ -6,6 +6,7 @@ import type { PostCommentAttachments } from "@/types/Components";
 import { getCommentReplies } from "@/utils/data/GetCommentReplies";
 import type { Comment } from "./Comments";
 import ReplyInteractions from "./ReplyInteraction";
+import LoadingSpinner from "@/components/common/loaders/LoadingSpinner";
 
 const CommentReplyChildren = ({
   replies,
@@ -63,7 +64,7 @@ const CommentReplyChildren = ({
               (reply: Comment) => ({
                 ...reply,
                 likedByme: Boolean(reply.likedByme), // Explicitly convert to boolean
-              }),
+              })
             );
             setLoadedChildren(repliesWithLikedStatus);
             setHasMoreRepliesLocal(response.hasMore);
@@ -94,7 +95,7 @@ const CommentReplyChildren = ({
           {!loading && (
             <LucideChevronDown className={showReplies ? "rotate-180" : ""} />
           )}
-          {loading && <LucideLoader size={16} className="animate-spin" />}
+          {loading && <LoadingSpinner />}
         </button>
 
         {/* Render child comments */}
@@ -170,7 +171,7 @@ const CommentReplyChildren = ({
                     const nextPage = replyPage + 1;
                     const response = await getCommentReplies(
                       commentId,
-                      nextPage,
+                      nextPage
                     );
                     if (response && !response.error && response.data) {
                       // Ensure likedByme property is preserved for new replies
@@ -178,7 +179,7 @@ const CommentReplyChildren = ({
                         (reply: Comment) => ({
                           ...reply,
                           likedByme: Boolean(reply.likedByme), // Explicitly convert to boolean
-                        }),
+                        })
                       );
                       setLoadedChildren((prev) => [
                         ...prev,
@@ -197,11 +198,7 @@ const CommentReplyChildren = ({
                 disabled={loading}
               >
                 {loading ? "Loading..." : "Load more replies"}
-                {loading ? (
-                  <LucideLoader size={16} className="animate-spin" />
-                ) : (
-                  <LucideChevronDown size={16} />
-                )}
+                {loading ? <LoadingSpinner /> : <LucideChevronDown size={16} />}
               </button>
             )}
           </div>

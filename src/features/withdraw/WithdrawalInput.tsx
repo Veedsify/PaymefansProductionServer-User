@@ -11,6 +11,7 @@ import { useWithdrawStore } from "@/contexts/WithDrawContext";
 import { currencyRates as defaultRates } from "@/features/points/AddPoints";
 import type { ExchangeRate } from "@/types/Components";
 import axiosInstance from "@/utils/Axios";
+import LoadingSpinner from "@/components/common/loaders/LoadingSpinner";
 
 // You can adjust or import this from a common place
 const FEE_PERCENTAGE = 0.25; // 20% fee
@@ -30,7 +31,7 @@ const WithdrawalInput = ({ points }: { points: number }) => {
       setLoading(true);
       try {
         const response = await axiosInstance.get(
-          ROUTE.GET_PLATFROM_EXCHANGE_RATE,
+          ROUTE.GET_PLATFROM_EXCHANGE_RATE
         );
         const data = response.data;
         if (data.data.length) setRates(data.data);
@@ -59,7 +60,7 @@ const WithdrawalInput = ({ points }: { points: number }) => {
       const maxAmount = Number(maxWithdrawalAmount).toLocaleString();
       toast.error(
         `You can only withdraw a maximum of ${defalutCurrency}${maxAmount}`,
-        { id: "withdraw" },
+        { id: "withdraw" }
       );
       return;
     }
@@ -68,7 +69,7 @@ const WithdrawalInput = ({ points }: { points: number }) => {
       const minAmount = Number(minAmountInNgn).toLocaleString();
       toast.error(
         `Minimum withdrawal amount is ${defalutCurrency}${minAmount}`,
-        { id: "withdraw" },
+        { id: "withdraw" }
       );
       return;
     }
@@ -99,7 +100,7 @@ const WithdrawalInput = ({ points }: { points: number }) => {
   function convertCurrency(
     amount: number,
     fromCurrency: string,
-    toCurrency: string,
+    toCurrency: string
   ): number {
     if (fromCurrency === toCurrency) return amount;
 
@@ -165,7 +166,7 @@ const WithdrawalInput = ({ points }: { points: number }) => {
   if (loading) {
     return (
       <div className="flex items-center justify-center w-full h-full p-6">
-        <LucideLoader className="w-10 h-10 animate-spin text-primary-dark-pink" />
+        <LoadingSpinner />
       </div>
     );
   }

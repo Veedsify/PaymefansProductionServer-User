@@ -7,6 +7,7 @@ import { useInView } from "react-intersection-observer";
 import type { Followers } from "@/types/Components";
 import axiosInstance from "@/utils/Axios";
 import UserFollowComp from "./UserFollowComp";
+import LoadingSpinner from "@/components/common/loaders/LoadingSpinner";
 
 interface FollowersResponse {
   error: boolean;
@@ -24,7 +25,7 @@ const fetchFollowers = async ({
     const max = pageParam * 30;
     const response = await axiosInstance.post(
       `/follower/all?min=${min}&max=${max}`,
-      {},
+      {}
     );
     const data = response.data;
     return {
@@ -84,8 +85,7 @@ const FollowersDisplay = () => {
     return (
       <div className="p-2 md:p-4 overflow-y-auto max-h-[92vh]">
         <div className="flex items-center justify-center py-8">
-          <LucideLoader className="w-6 h-6 animate-spin text-gray-500" />
-          <span className="ml-2 text-gray-500">Loading followers...</span>
+          <LoadingSpinner text="Loading followers..." />
         </div>
       </div>
     );
@@ -124,8 +124,10 @@ const FollowersDisplay = () => {
       {/* Loading indicator for next page */}
       {isFetchingNextPage && (
         <div className="flex items-center justify-center py-4">
-          <LucideLoader className="w-5 h-5 animate-spin text-gray-500" />
-          <span className="ml-2 text-gray-500">Loading more followers...</span>
+          <LoadingSpinner
+            className=" text-gray-500"
+            text="Loading more followers..."
+          />
         </div>
       )}
 

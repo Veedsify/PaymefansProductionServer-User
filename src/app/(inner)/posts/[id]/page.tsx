@@ -11,6 +11,8 @@ import PostPageImage from "@/features/post/PostPageImage";
 import QuickPostActions from "@/features/post/QuickPostActions";
 import { usePost } from "@/hooks/queries/usePost";
 import { formatDate } from "@/utils/FormatDate";
+import FormatName from "@/lib/FormatName";
+import LoadingSpinner from "@/components/common/loaders/LoadingSpinner";
 
 const Post = React.memo(() => {
   const params = useParams();
@@ -65,7 +67,7 @@ const Post = React.memo(() => {
     () => ({
       __html: `${post?.content.replace(/(?:\r\n|\r|\n)/g, "<br>")}`,
     }),
-    [post?.content],
+    [post?.content]
   );
 
   // Loading state
@@ -73,8 +75,7 @@ const Post = React.memo(() => {
     return (
       <div className="flex items-center justify-center p-4 mt-8">
         <div className="flex flex-col items-center gap-4">
-          <LucideLoader className="w-8 h-8 animate-spin" />
-          <p className="text-gray-500">Loading post...</p>
+          <LoadingSpinner text="Loading Post..." />
         </div>
       </div>
     );
@@ -112,7 +113,7 @@ const Post = React.memo(() => {
               className="flex items-center gap-1"
             >
               <p className="font-bold text-gray-800 dark:text-white ">
-                {post?.user.name}
+                {FormatName(post?.user.name)}
               </p>
               <p className="text-gray-500 dark:text-gray-400 font-bold  hidden md:inline-block">
                 {post?.user.username}

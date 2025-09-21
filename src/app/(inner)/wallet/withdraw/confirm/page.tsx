@@ -11,6 +11,7 @@ import { useWithdrawStore } from "@/contexts/WithDrawContext";
 import VerifyWithdrawalPin from "@/features/withdraw/VerifyWithdrawalPin";
 import axiosInstance from "@/utils/Axios";
 import { getToken } from "@/utils/Cookie";
+import LoadingSpinner from "@/components/common/loaders/LoadingSpinner";
 
 const WithdrawConfigPage = () => {
   const [loading, setLoading] = React.useState(true);
@@ -20,7 +21,7 @@ const WithdrawConfigPage = () => {
   const [error, setError] = React.useState<string>("");
   const [processing, setProcessing] = React.useState(false);
   const [step, setStep] = React.useState<"create" | "verify">(
-    user?.hasPin ? "verify" : "create",
+    user?.hasPin ? "verify" : "create"
   );
   const { config } = useConfigContext();
   const router = useRouter();
@@ -47,7 +48,7 @@ const WithdrawConfigPage = () => {
 
   const amountInNgn = Number(withdrawValues?.amountInNgn).toLocaleString();
   const amountToSettle = Number(
-    withdrawValues?.amountToSettle,
+    withdrawValues?.amountToSettle
   ).toLocaleString();
   // Fixed typo: platformFee instead of platfromFee
   const platformFee = Number(withdrawValues?.platformFee).toLocaleString();
@@ -169,7 +170,7 @@ const WithdrawConfigPage = () => {
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-dvh bg-primary-50">
-        <LucideLoader className="w-16 h-16 text-primary-dark-pink animate-spin" />
+        <LoadingSpinner size="lg" />
       </div>
     );
   }
@@ -241,7 +242,7 @@ const WithdrawConfigPage = () => {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.3 }}
               >
-                <LucideLoader className="w-5 h-5 animate-spin" />
+                <LoadingSpinner />
               </motion.div>
             ) : (
               "Confirm Withdrawal"

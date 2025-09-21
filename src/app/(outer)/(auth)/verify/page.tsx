@@ -11,6 +11,7 @@ import { LOGIN_CONFIG } from "@/config/config";
 import { getUser } from "@/lib/User";
 import axiosInstance from "@/utils/Axios";
 import { getToken } from "@/utils/Cookie";
+import LoadingSpinner from "@/components/common/loaders/LoadingSpinner";
 
 const Login = () => {
   const { setUser } = getUser();
@@ -62,7 +63,7 @@ const Login = () => {
       setLoading(false);
       console.log(error);
       setError(
-        error?.response?.data?.message || error?.message || "An error occurred",
+        error?.response?.data?.message || error?.message || "An error occurred"
       );
     }
   };
@@ -149,12 +150,7 @@ const Login = () => {
                     {error}
                   </p>
                 )}
-                {loading && (
-                  <div className="flex items-center gap-2 text-primary-dark-pink">
-                    <LucideLoader className="w-4 h-4 animate-spin" />
-                    <span className="text-sm font-medium">Verifying...</span>
-                  </div>
-                )}
+                {loading && <LoadingSpinner text="Verifying..." />}
               </div>
             )}
 

@@ -34,6 +34,7 @@ import axiosInstance from "@/utils/Axios";
 import followUser from "@/utils/data/update/Follow";
 import { formatDate } from "@/utils/FormatDate";
 import FormatName from "@/lib/FormatName";
+import LoadingSpinner from "@/components/common/loaders/LoadingSpinner";
 
 const searchFunction = async (query: string) => {
   try {
@@ -43,7 +44,7 @@ const searchFunction = async (query: string) => {
           `/search/platform?query=${query}&category=users`,
           {
             withCredentials: true,
-          },
+          }
         );
         return response.data.results;
       },
@@ -53,7 +54,7 @@ const searchFunction = async (query: string) => {
           `/search/platform?query=${query}&category=posts`,
           {
             withCredentials: true,
-          },
+          }
         );
         return response.data.results;
       },
@@ -63,7 +64,7 @@ const searchFunction = async (query: string) => {
           `/search/platform?query=${query}&category=media`,
           {
             withCredentials: true,
-          },
+          }
         );
         return response.data.results;
       },
@@ -124,7 +125,7 @@ const ReportModal = ({
         },
         {
           withCredentials: true,
-        },
+        }
       );
 
       if (response.data.success) {
@@ -209,11 +210,7 @@ const ReportModal = ({
               disabled={isSubmitting}
               className="flex items-center justify-center flex-1 px-4 py-3 text-white bg-red-600 rounded-lg hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {isSubmitting ? (
-                <LucideLoader className="w-4 h-4 animate-spin" />
-              ) : (
-                "Submit Report"
-              )}
+              {isSubmitting ? <LoadingSpinner /> : "Submit Report"}
             </button>
           </div>
         </form>
@@ -285,20 +282,20 @@ const SearchPage = () => {
     username: "",
   });
   const fullScreenPreview = usePostComponent(
-    (state) => state.fullScreenPreview,
+    (state) => state.fullScreenPreview
   );
   const previewImageHandler = (
     m: MediaDataTypeOtherProps,
     type: string,
     isSubscriber: boolean,
-    indexId: number,
+    indexId: number
   ) => {
     if (m.accessible_to === "subscribers" && !isSubscriber) return;
     const filteredMedias = media
       .filter((item) => item.media_state !== "processing")
       .filter((media) => media.accessible_to !== "price")
       .filter(
-        (media) => !(media.accessible_to === "subscribers" && !isSubscriber),
+        (media) => !(media.accessible_to === "subscribers" && !isSubscriber)
       );
     // Get the new index after filtering
     const newIndexId = filteredMedias.findIndex((item) => item.id === m.id);
@@ -455,7 +452,7 @@ const SearchPage = () => {
           {loading && searchQuery && (
             <div className="py-32 text-center">
               <div className="inline-flex items-center justify-center w-16 h-16 mb-6 rounded-full bg-primary-dark-pink/10">
-                <LucideLoader className="w-8 h-8 animate-spin text-primary-dark-pink" />
+                <LoadingSpinner />
               </div>
               <h3 className="mb-2 text-xl font-medium text-gray-700 dark:text-gray-300">
                 Searching...
@@ -594,7 +591,7 @@ const SearchPage = () => {
                                     {
                                       year: "numeric",
                                       month: "long",
-                                    },
+                                    }
                                   )}
                                 </span>
                               </div>

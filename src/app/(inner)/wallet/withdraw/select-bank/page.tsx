@@ -6,6 +6,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { useWithdrawStore } from "@/contexts/WithDrawContext";
 import axiosInstance from "@/utils/Axios";
 import { getToken } from "@/utils/Cookie";
+import LoadingSpinner from "@/components/common/loaders/LoadingSpinner";
 
 // Define interfaces for better type safety
 interface MyBank {
@@ -90,7 +91,7 @@ export default function ConfirmWithdrawPage() {
       });
       router.push("/wallet/withdraw/confirm");
     },
-    [router, setWithDrawStore, withdrawValues, banks],
+    [router, setWithDrawStore, withdrawValues, banks]
   );
 
   // Early return if bank is already selected
@@ -101,9 +102,7 @@ export default function ConfirmWithdrawPage() {
   return (
     <div className="flex flex-col items-center justify-center min-h-[20vh] px-4">
       {loading ? (
-        <div className="flex items-center justify-center py-8">
-          <LucideLoader className="w-10 h-10 animate-spin text-primary-dark-pink" />
-        </div>
+        <LoadingSpinner />
       ) : error ? (
         <div className="flex flex-col items-center justify-center py-8">
           <p className="text-lg font-medium text-red-500">{error}</p>

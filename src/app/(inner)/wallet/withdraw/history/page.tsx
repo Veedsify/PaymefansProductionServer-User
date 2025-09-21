@@ -19,6 +19,7 @@ import {
 } from "lucide-react";
 import React, { useState } from "react";
 import axiosInstance from "@/utils/Axios";
+import LoadingSpinner from "@/components/common/loaders/LoadingSpinner";
 
 const fetchWithdrawalHostory = async ({ cursor }: { cursor: number }) => {
   try {
@@ -78,8 +79,7 @@ const WithdrawalHistory = () => {
     return (
       <div className="flex items-center justify-center min-h-64">
         <div className="flex items-center text-gray-500 gap-3">
-          <LucideLoader className="animate-spin" size={20} />
-          <span className="text-sm font-medium">Loading your history...</span>
+          <LoadingSpinner text="Loading your history..." />
         </div>
       </div>
     );
@@ -170,7 +170,7 @@ const WithdrawalHistory = () => {
                   {formatCurrency(
                     withdrawalHistory
                       .filter((w) => w.status === "completed")
-                      .reduce((sum, w) => sum + w.amount * 0.75, 0),
+                      .reduce((sum, w) => sum + w.amount * 0.75, 0)
                   )}
                 </p>
               </div>
@@ -184,8 +184,7 @@ const WithdrawalHistory = () => {
                 <p className="text-lg font-bold text-gray-900">
                   {
                     withdrawalHistory.filter(
-                      (w) =>
-                        w.status === "pending" || w.status === "processing",
+                      (w) => w.status === "pending" || w.status === "processing"
                     ).length
                   }
                 </p>
@@ -310,8 +309,7 @@ const WithdrawalHistory = () => {
           >
             {isFetchingNextPage ? (
               <>
-                <LucideLoader className="animate-spin" size={16} />
-                Loading more...
+                <LoadingSpinner text="Loading more..." size={"lg"} />
               </>
             ) : (
               "Load more"

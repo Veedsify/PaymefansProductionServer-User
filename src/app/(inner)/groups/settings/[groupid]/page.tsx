@@ -25,6 +25,7 @@ import {
 } from "@/features/group/types/group";
 import axiosInstance from "@/utils/Axios";
 import { fetchGroupMembers } from "@/utils/data/GroupAPI";
+import LoadingSpinner from "@/components/common/loaders/LoadingSpinner";
 
 const GroupSettingsPage = () => {
   const params = useParams();
@@ -555,8 +556,7 @@ const MembersTab: React.FC<{ groupId: string; adminId: number }> = ({
           </h3>
         </div>
         <div className="px-6 py-12 text-center">
-          <LucideLoader className="w-8 h-8 mx-auto mb-4 animate-spin text-primary-dark-pink" />
-          <p className="text-gray-500 dark:text-gray-400">Loading members...</p>
+          <LoadingSpinner text="Loading members..." size="md" />
         </div>
       </div>
     );
@@ -637,8 +637,8 @@ const MembersTab: React.FC<{ groupId: string; adminId: number }> = ({
                     member.userId === adminId
                       ? "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200"
                       : member.role === "MODERATOR"
-                        ? "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200"
-                        : "bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200"
+                      ? "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200"
+                      : "bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200"
                   }`}
                 >
                   {member.userId === adminId ? "Admin" : member.role}
@@ -657,10 +657,10 @@ const MembersTab: React.FC<{ groupId: string; adminId: number }> = ({
             className="flex items-center justify-center w-full px-4 py-2 text-sm font-medium rounded-lg gap-2 text-primary-dark-pink hover:bg-primary-dark-pink/5 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {isFetchingNextPage ? (
-              <>
-                <LucideLoader className="w-4 h-4 animate-spin" />
-                Loading more...
-              </>
+              <LoadingSpinner
+                className="w-4 h-4 animate-spin"
+                text="Loading more..."
+              />
             ) : (
               <>
                 <LucideUsers className="w-4 h-4" />

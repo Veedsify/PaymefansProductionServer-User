@@ -17,12 +17,13 @@ import toast from "react-hot-toast";
 import axiosInstance from "@/utils/Axios";
 import { getToken } from "@/utils/Cookie";
 import followUser from "@/utils/data/update/Follow";
+import LoadingSpinner from "@/components/common/loaders/LoadingSpinner";
 
 const fetchStats = async (
   userId: string | undefined,
   page: number,
   type: string,
-  query: string,
+  query: string
 ) => {
   try {
     const response = await axiosInstance.get(
@@ -33,12 +34,12 @@ const fetchStats = async (
           limit: 25,
           query: query,
         },
-      },
+      }
     );
     return response.data;
   } catch (error: any) {
     throw new Error(
-      error.response?.data?.message || "Network response was not ok",
+      error.response?.data?.message || "Network response was not ok"
     );
   }
 };
@@ -181,7 +182,7 @@ export const ProfileStatsComponent = ({
 
   const stats = useMemo(
     () => data?.pages.flatMap((page) => page.data) || [],
-    [data],
+    [data]
   );
 
   const total =
@@ -189,14 +190,14 @@ export const ProfileStatsComponent = ({
 
   const debouncedSearch = useMemo(
     () => debounce((value) => setQuery(value), 400),
-    [],
+    []
   );
 
   const handleInputChange = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => {
       debouncedSearch(e.target.value);
     },
-    [debouncedSearch],
+    [debouncedSearch]
   );
 
   useEffect(() => {
@@ -222,7 +223,7 @@ export const ProfileStatsComponent = ({
           fetchNextPage();
         }
       },
-      { threshold: 1.0 },
+      { threshold: 1.0 }
     );
 
     if (observerRef.current) observer.observe(observerRef.current);
@@ -279,10 +280,7 @@ export const ProfileStatsComponent = ({
           ))}
           {isLoading && (
             <div className="flex justify-center py-6 text-center">
-              <LucideLoader
-                className="animate-spin text-primary-dark-pink"
-                size={24}
-              />
+              <LoadingSpinner />
             </div>
           )}
           {hasNextPage && (
@@ -290,10 +288,7 @@ export const ProfileStatsComponent = ({
               ref={observerRef}
               className="flex justify-center py-6 text-center"
             >
-              <LucideLoader
-                className="animate-spin text-primary-dark-pink"
-                size={24}
-              />
+              <LoadingSpinner />
             </div>
           )}
         </div>

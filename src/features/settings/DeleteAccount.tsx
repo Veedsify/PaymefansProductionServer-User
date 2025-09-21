@@ -6,6 +6,7 @@ import toast from "react-hot-toast";
 import { useAuthContext } from "@/contexts/UserUseContext";
 import axiosInstance from "@/utils/Axios";
 import { getToken } from "@/utils/Cookie";
+import LoadingSpinner from "@/components/common/loaders/LoadingSpinner";
 
 const DeleteAccount = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -47,7 +48,7 @@ const DeleteAccount = () => {
       }
     } catch (error) {
       toast.error(
-        "An error occurred while trying to delete your account. Please try again later.",
+        "An error occurred while trying to delete your account. Please try again later."
       );
     } finally {
       // Reset state after deletion attempt
@@ -125,7 +126,7 @@ const DeleteAccount = () => {
                   Confirm Delete{" "}
                   {isDeleting && (
                     <span className="ml-2">
-                      <LucideLoader className="w-4 h-4 animate-spin" />
+                      <LoadingSpinner />
                     </span>
                   )}
                 </button>

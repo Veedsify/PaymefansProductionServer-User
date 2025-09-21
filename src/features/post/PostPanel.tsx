@@ -8,6 +8,7 @@ import { useAuthContext } from "@/contexts/UserUseContext";
 import axiosInstance from "@/utils/Axios";
 import { formatDate } from "@/utils/FormatDate";
 import PostComponent from "./PostComponent";
+import LoadingSpinner from "@/components/common/loaders/LoadingSpinner";
 
 async function fetchPost(pageNumber: number) {
   const api = `/post/personal/posts`;
@@ -100,12 +101,7 @@ const PostPanel = () => {
         </div>
       ))}
       <div ref={ref}></div>
-      {loading && (
-        <div className="flex justify-center">
-          {" "}
-          <LucideLoader size={30} className="animate-spin" stroke="purple" />
-        </div>
-      )}
+      {loading && <LoadingSpinner />}
       {!hasMore && !loading && <EndMessage />}
     </div>
   );

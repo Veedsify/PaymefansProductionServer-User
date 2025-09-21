@@ -12,6 +12,7 @@ import axiosInstance from "@/utils/Axios";
 import { getToken } from "@/utils/Cookie";
 import { LockedMediaOverlay } from "./LockedMediaOverlay";
 import HLSVideoPlayer from "./videoplayer";
+import LoadingSpinner from "@/components/common/loaders/LoadingSpinner";
 
 const getUniqueItems = (arr: MediaDataTypeOtherProps[]) => {
   const uniqueMap = new Map();
@@ -119,15 +120,7 @@ const PrivateMediaImageCardOther = React.memo(
           ))}
         </div>
         <div className="flex flex-col items-center justify-center py-2 mb-20 col-span-3">
-          {loading && (
-            <div className="flex justify-center col-span-3">
-              <LucideLoader
-                size={30}
-                className="animate-spin"
-                stroke="purple"
-              />
-            </div>
-          )}
+          {loading && <LoadingSpinner />}
           {hasMore && !loading && (
             <button
               className="px-4 py-2 text-sm font-bold bg-gray-200 rounded-lg col-span-3"

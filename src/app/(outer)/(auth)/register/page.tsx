@@ -16,6 +16,7 @@ import { countries } from "@/lib/Locations";
 import { useUser } from "@/lib/UserContext";
 import axiosInstance from "@/utils/Axios";
 import { getToken } from "@/utils/Cookie";
+import LoadingSpinner from "@/components/common/loaders/LoadingSpinner";
 
 const Register = () => {
   const [country, setCountry] = useState<string>(" -- Select a country -- ");
@@ -25,7 +26,7 @@ const Register = () => {
   const { setUser, user } = useUser();
   const router = useRouter();
   const UserInputCaptured = (
-    e: ChangeEvent<HTMLInputElement | HTMLSelectElement>,
+    e: ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
     const { name, value } = e.target;
     // Update userData state using spread operator to ensure immutability:
@@ -93,7 +94,7 @@ const Register = () => {
           {
             email: user.email,
             phone: user.phone,
-          },
+          }
         );
         const data = res.data;
 
@@ -208,7 +209,7 @@ const Register = () => {
                   defaultValue={userData?.countryCode || ""}
                   onChange={(e) => {
                     const selected = countries.find(
-                      (c) => c.code === e.target.value,
+                      (c) => c.code === e.target.value
                     );
                     if (selected) {
                       setUserData({
@@ -325,10 +326,7 @@ const Register = () => {
                 }`}
               >
                 {loading ? (
-                  <div className="flex items-center justify-center gap-2">
-                    <LucideLoader className="w-4 h-4 animate-spin" />
-                    Creating Account...
-                  </div>
+                  <LoadingSpinner text="Creating Account..." />
                 ) : (
                   "Create Account"
                 )}

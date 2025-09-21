@@ -18,6 +18,8 @@ import ProfileTabs from "@/features/profile/ProfileTabs";
 import type { AuthUserProps } from "@/features/user/types/user";
 import getUserData from "@/utils/data/UserData";
 import FormatName from "@/lib/FormatName";
+import LoadingSpinner from "@/components/common/loaders/LoadingSpinner";
+import ErrorComponent from "@/components/common/loaders/ErrorComponent";
 
 const ProfilePage = () => {
   const {
@@ -29,9 +31,9 @@ const ProfilePage = () => {
     queryFn: getUserData,
   });
 
-  if (isLoading) return <div>Loading...</div>;
-  if (error) return <div>Error loading user data</div>;
-  if (!user) return <div>No user data found</div>;
+  if (isLoading) return <LoadingSpinner />;
+  if (error) return <ErrorComponent text="Error loading user data" />;
+  if (!user) return <ErrorComponent text="No UserData Found" />;
 
   return (
     <>

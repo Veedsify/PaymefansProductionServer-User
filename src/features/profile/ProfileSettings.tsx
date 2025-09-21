@@ -12,6 +12,7 @@ import type {
 import { countries } from "@/lib/Locations";
 import { saveUserSettings } from "@/utils/data/SaveUserSettings";
 import useCheckUsername from "../../hooks/CheckUsername";
+import LoadingSpinner from "@/components/common/loaders/LoadingSpinner";
 
 type ProfileSettingsProps = {
   user: Partial<AuthUserProps> | null;
@@ -37,7 +38,7 @@ const ProfileSettings = ({ user }: ProfileSettingsProps) => {
   const [usernameCheck, setUsernameCheck] = useState(user?.username || "");
   const { message, canSave, error, isLoading } = useCheckUsername(
     user!,
-    usernameCheck,
+    usernameCheck
   );
 
   const usernameTimeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -45,7 +46,7 @@ const ProfileSettings = ({ user }: ProfileSettingsProps) => {
   const handleInputChange = (
     e: React.ChangeEvent<
       HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
-    >,
+    >
   ) => {
     const { name, value } = e.target;
     setUserData((prev) => ({ ...prev, [name]: value }));
@@ -163,10 +164,7 @@ const ProfileSettings = ({ user }: ProfileSettingsProps) => {
           />
           {isLoading && (
             <div className={"py-2"}>
-              <LucideLoader
-                size={10}
-                className={"animate-spin text-primary-dark-pink"}
-              />
+              <LoadingSpinner />
             </div>
           )}
           {error && (

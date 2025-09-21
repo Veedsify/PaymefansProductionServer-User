@@ -6,6 +6,7 @@ import toast from "react-hot-toast";
 import { useGuestModal } from "@/contexts/GuestModalContext";
 import { useAuthContext } from "@/contexts/UserUseContext";
 import { createNewConversation } from "@/utils/data/CreateConversation";
+import LoadingSpinner from "@/components/common/loaders/LoadingSpinner";
 
 export default function CreateConversationButton({
   profileId,
@@ -43,7 +44,7 @@ export default function CreateConversationButton({
       className="flex items-center p-1 text-white rounded cursor-pointer bg-primary-dark-pink"
     >
       <LucideMail className="w-5 h-5" />
-      {loading && <LucideLoader className="animate-spin" />}
+      {loading && <LoadingSpinner />}
     </button>
   );
 }
