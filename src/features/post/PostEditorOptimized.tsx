@@ -13,7 +13,6 @@ import React, { useCallback, useMemo, useState } from "react";
 import toast from "react-hot-toast";
 import { HiOutlineEye } from "react-icons/hi";
 import { POST_CONFIG } from "@/config/config";
-import { usePostContext } from "@/contexts/PostContext";
 import { useUploadProgress } from "@/contexts/UploadProgressContext";
 import { useAuthContext } from "@/contexts/UserUseContext";
 import { PostCancel } from "@/features/post/PostCancel";
@@ -61,7 +60,6 @@ const PostEditor = React.memo(({ posts }: PostEditorProps) => {
     setVisibility,
     postText,
     setPostText,
-    mediaUploadComplete,
     isWaterMarkEnabled,
     setContent,
     setEditedMedia,
@@ -81,17 +79,6 @@ const PostEditor = React.memo(({ posts }: PostEditorProps) => {
     removeMention,
     handleKeyDown,
   } = useMentions();
-
-  const {
-    postAudience,
-    dropdown,
-    setDropdown,
-    updatePostAudience,
-    setPostAudience,
-  } = usePostAudience();
-
-  // Word limit state
-  const [wordLimit, setWordLimit] = useState(1000);
 
   // Audience data
   const postAudienceData: PostAudienceDataProps[] = useMemo(
@@ -119,6 +106,17 @@ const PostEditor = React.memo(({ posts }: PostEditorProps) => {
       ] as PostAudienceDataProps[],
     [user],
   );
+
+  const {
+    postAudience,
+    dropdown,
+    setDropdown,
+    updatePostAudience,
+    setPostAudience,
+  } = usePostAudience(postAudienceData);
+
+  // Word limit state
+  const [wordLimit, setWordLimit] = useState(1000);
 
   // Initialize post data
   usePostInitialization({

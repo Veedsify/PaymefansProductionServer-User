@@ -2,6 +2,7 @@ import { useCallback } from "react";
 import { HiCamera } from "react-icons/hi";
 import { v4 as uuid } from "uuid";
 import { useStoryStore } from "@/contexts/StoryContext";
+import toast from "react-hot-toast";
 
 const StoryUploadForm = () => {
   const { addToStory } = useStoryStore();
@@ -15,6 +16,16 @@ const StoryUploadForm = () => {
           const media_id = uuid();
           const fileUrl = URL.createObjectURL(file);
           const isVideo = file.type.startsWith("video/");
+
+          if (!isVideo && file.size > 2 * 1024 * 1024) {
+            toast.error("Image size should be less than 2MB");
+            return;
+          }
+
+          if (isVideo && file.size > 5 * 1024 * 1024) {
+            toast.error("Video size should be less than 5GB");
+            return;
+          }
 
           // Add media_id to file object for server sync
           (file as any).media_id = media_id;

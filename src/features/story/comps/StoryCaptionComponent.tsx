@@ -510,8 +510,9 @@ const EnhancedSlideComponent = ({
 }) => {
   const { updateStorySlide, story: mystory, clearStory } = useStoryStore();
   const [fontIndex, setFontIndex] = useState(0);
-  // Remove local captionElements state - use store directly
-  const captionElements = story.captionElements || [];
+  // Get current story data from store to ensure reactivity
+  const currentStory = mystory[index] || story;
+  const captionElements = currentStory.captionElements || [];
   const [selectedElement, setSelectedElement] = useState<string | null>(null);
   const [showLinkDialog, setShowLinkDialog] = useState(false);
   const [showColorPicker, setShowColorPicker] = useState(false);
@@ -520,7 +521,7 @@ const EnhancedSlideComponent = ({
 
   // Helper function to update caption elements in store
   const updateCaptionElements = (newElements: CaptionElement[]) => {
-    updateStorySlide(index, { captionElements: newElements });
+    updateStorySlide(currentStory.media_id, { captionElements: newElements });
   };
 
   const changeFont = () => {
@@ -848,19 +849,19 @@ const EnhancedSlideComponent = ({
         className="relative w-full h-full"
         onClick={handleContainerClick}
       >
-        {story?.media_type === "video" && (
+        {currentStory?.media_type === "video" && (
           <HlsViewer
-            streamUrl={story?.media_url}
+            streamUrl={currentStory?.media_url}
             isOpen={true}
             showControls={true}
             muted={true}
             className="w-full h-full object-contain bg-black rounded-xl"
           />
         )}
-        {story?.media_type === "image" && (
+        {currentStory?.media_type === "image" && (
           <Image
-            src={story?.media_url}
-            alt={story?.caption ? story.caption : "status"}
+            src={currentStory?.media_url}
+            alt={currentStory?.caption ? currentStory.caption : "status"}
             width={800}
             height={800}
             className="object-contain w-full h-full bg-black rounded-xl"

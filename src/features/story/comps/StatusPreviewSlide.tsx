@@ -412,7 +412,6 @@ const StatusPreviewSlide = ({
             alt={story?.caption || "Story image"}
             fill
             style={{ objectFit: "contain" }}
-            quality={100}
             priority={index === activeIndex}
             loading={index === activeIndex ? "eager" : "lazy"}
             className="z-30 bg-black rounded-lg shadow-lg"

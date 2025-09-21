@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useAuthContext } from "@/contexts/UserUseContext";
 
-async function Models() {
+function Models() {
   const { user } = useAuthContext();
 
   if (user?.is_model) {

@@ -34,6 +34,7 @@ function StatusComponent() {
   const [openStoryCaption, setStoryCaption] = useState(false);
   const [canContinue, setCanContinue] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
+  const toastId = useMemo(() => "story-upload-toast", []);
   const {
     story: media,
     removeFromStory,

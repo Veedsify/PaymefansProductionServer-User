@@ -1,6 +1,6 @@
 import ModelsPageSearch from "@/features/models/comps/ModelsPageSearch";
 
-const ModelsPage = async () => {
+const ModelsPage = () => {
   return (
     <>
       <div className="block p-4 md:p-8">
