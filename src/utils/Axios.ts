@@ -85,27 +85,27 @@ axiosInstance.interceptors.response.use(
 
         // Token refresh failed - handle logout
         console.error("Token refresh failed:", refreshError);
-        if (typeof window !== "undefined") {
-          // Clear any stored auth data
-          document.cookie =
-            "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+      //   if (typeof window !== "undefined") {
+      //     // Clear any stored auth data
+      //     document.cookie =
+      //       "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
 
-          // Only redirect if we're not already on login/signup pages
-          const currentPath = window.location.pathname;
-          if (
-            !currentPath.includes("/login") &&
-            !currentPath.includes("/signup")
-          ) {
-            // Don't redirect immediately - let UserContext handle guest state first
-            setTimeout(() => {
-              window.location.href = "/login";
-            }, 100);
-          }
-        }
+      //     // Only redirect if we're not already on login/signup pages
+      //     const currentPath = window.location.pathname;
+      //     if (
+      //       !currentPath.includes("/login") &&
+      //       !currentPath.includes("/signup")
+      //     ) {
+      //       // Don't redirect immediately - let UserContext handle guest state first
+      //       setTimeout(() => {
+      //         window.location.href = "/login";
+      //       }, 100);
+      //     }
+      //   }
 
-        // Return the custom error so UserContext can catch it and set guest state
-        return Promise.reject(authFailure);
-      }
+      //   // Return the custom error so UserContext can catch it and set guest state
+      //   return Promise.reject(authFailure);
+      // }
     }
 
     return Promise.reject(error);
