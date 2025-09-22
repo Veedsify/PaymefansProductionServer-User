@@ -55,6 +55,12 @@ const nextConfig: NextConfig = {
         hostname: "flagcdn.com",
         pathname: "/**",
       },
+      {
+        protocol: "https",
+        hostname: "api.paymefans.shop",
+        port: "",
+        pathname: "/**",
+      },
     ],
   },
 };
