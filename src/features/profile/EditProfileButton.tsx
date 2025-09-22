@@ -45,7 +45,6 @@ const EditProfileButton = ({ user }: { user: any }) => {
 
 function BannerModal({ user, open = false, setOpen }: BannerModalProps) {
   const [file, setFile] = useState<File | null>(null);
-  const { fetchUser } = useAuthContext();
   const [userData, setUserData] = useState<UserUpdateProfileType>(
     {} as UserUpdateProfileType
   );
@@ -132,7 +131,6 @@ function BannerModal({ user, open = false, setOpen }: BannerModalProps) {
         );
         setOpen(false);
         queryClient.invalidateQueries({ queryKey: ["userProfileData"] });
-        await fetchUser();
         return response;
       };
 

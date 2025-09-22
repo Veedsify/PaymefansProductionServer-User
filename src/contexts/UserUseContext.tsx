@@ -23,7 +23,6 @@ interface AuthContextType {
   isGuest: boolean;
   isLoading: boolean;
   setGuestUser: () => void; // Add method to manually set guest state
-  fetchUser: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -178,6 +177,6 @@ export const AuthContextProvider = ({
     };
   }, [user?.username, fetchUser]);
 
-  const value = { user, setUser, isGuest, isLoading, setGuestUser, fetchUser };
+  const value = { user, setUser, isGuest, isLoading, setGuestUser };
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
