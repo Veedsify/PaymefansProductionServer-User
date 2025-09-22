@@ -31,6 +31,7 @@ export type StoryType = {
   caption?: string;
   duration?: number;
   captionElements?: CaptionElement[];
+  mentions?: { id: number; username: string; name: string }[];
   uploadProgress?: number;
   file?: File;
 };
@@ -64,7 +65,7 @@ export const useStoryStore = create<StoryState>()(
           story: state.story.map((slide) =>
             slide.media_id === media_id
               ? { ...slide, media_state: media_state }
-              : slide,
+              : slide
           ),
         })),
       updateUploadProgress: (media_id, progress) =>
@@ -76,13 +77,13 @@ export const useStoryStore = create<StoryState>()(
                   uploadProgress: progress,
                   media_state: progress === 100 ? "completed" : "uploading",
                 }
-              : slide,
+              : slide
           ),
         })),
       updateStorySlide: (media_id: string, data: Partial<StoryType>) =>
         set((state) => ({
           story: state.story.map((slide) =>
-            slide.media_id === media_id ? { ...slide, ...data } : slide,
+            slide.media_id === media_id ? { ...slide, ...data } : slide
           ),
         })),
       addCaptionToStory: (id, caption) => {
@@ -116,6 +117,6 @@ export const useStoryStore = create<StoryState>()(
     {
       name: "story-storage",
       storage: createJSONStorage(() => localStorage),
-    },
-  ),
+    }
+  )
 );

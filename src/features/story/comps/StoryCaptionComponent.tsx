@@ -2,6 +2,7 @@ import {
   AlignCenter,
   AlignLeft,
   AlignRight,
+  AtSign,
   Bold,
   ChevronLeft,
   ChevronRight,
@@ -25,6 +26,9 @@ import HlsViewer from "@/features/media/HlsViewer";
 import { fontFamilies } from "@/lib/FontFamilies";
 import type { StoryCaptionComponentProps } from "@/types/Components";
 import SubmitUserStory from "@/utils/story/submit-user-story";
+import FetchMentions from "@/utils/data/FetchMentions";
+import { addStoryMentions } from "@/utils/data/FetchStoryMentions";
+import FormatName from "@/lib/FormatName";
 
 // Enhanced types for captions and links
 interface CaptionElement {
@@ -517,6 +521,13 @@ const EnhancedSlideComponent = ({
   const [showLinkDialog, setShowLinkDialog] = useState(false);
   const [showColorPicker, setShowColorPicker] = useState(false);
   const [tempLinkUrl, setTempLinkUrl] = useState("");
+  const [showMentionDialog, setShowMentionDialog] = useState(false);
+  const [mentionQuery, setMentionQuery] = useState("");
+  const [searchedUsers, setSearchedUsers] = useState<any[]>([]);
+  const [selectedMentions, setSelectedMentions] = useState<
+    { id: number; username: string; name: string }[]
+  >(currentStory.mentions || []);
+  const [isSearchingUsers, setIsSearchingUsers] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
 
   // Helper function to update caption elements in store
@@ -577,6 +588,56 @@ const EnhancedSlideComponent = ({
     setShowLinkDialog(false);
     setTempLinkUrl("");
   };
+
+  // Mention functionality
+  const searchUsers = async (query: string) => {
+    if (query.trim().length < 2) {
+      setSearchedUsers([]);
+      return;
+    }
+
+    setIsSearchingUsers(true);
+    try {
+      const users = await FetchMentions(query);
+      setSearchedUsers(users);
+    } catch (error) {
+      console.error("Error searching users:", error);
+      setSearchedUsers([]);
+    } finally {
+      setIsSearchingUsers(false);
+    }
+  };
+
+  const addMention = (user: { id: number; username: string; name: string }) => {
+    if (!selectedMentions.find((m) => m.id === user.id)) {
+      const newMentions = [...selectedMentions, user];
+      setSelectedMentions(newMentions);
+      updateStorySlide(currentStory.media_id, { mentions: newMentions });
+    }
+    setMentionQuery("");
+    setSearchedUsers([]);
+  };
+
+  const removeMention = (userId: number) => {
+    const newMentions = selectedMentions.filter((m) => m.id !== userId);
+    setSelectedMentions(newMentions);
+    updateStorySlide(currentStory.media_id, { mentions: newMentions });
+  };
+
+  const openMentionDialog = () => {
+    setShowMentionDialog(true);
+  };
+
+  // Handle mention search
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      if (mentionQuery) {
+        searchUsers(mentionQuery);
+      }
+    }, 300);
+
+    return () => clearTimeout(timeoutId);
+  }, [mentionQuery]);
 
   const updateElementContent = (id: string, content: string) => {
     const newElements = captionElements.map((el) =>
@@ -664,6 +725,25 @@ const EnhancedSlideComponent = ({
     const storiesWithDurations = await getStoriesWithDurations();
     const submit = await SubmitUserStory(storiesWithDurations);
     if (submit.success) {
+      // Send mentions for each story that has them
+      try {
+        const mentionPromises = mystory
+          .filter((story) => story.mentions && story.mentions.length > 0)
+          .map(async (story) => {
+            if (story.media_id && story.mentions) {
+              await addStoryMentions(
+                story.media_id,
+                story.mentions.map((m) => m.id)
+              );
+            }
+          });
+
+        await Promise.all(mentionPromises);
+      } catch (error) {
+        console.error("Error sending story mentions:", error);
+        // Don't fail the whole story upload if mentions fail
+      }
+
       toast.success("Story uploaded successfully");
       close();
       clearStory();
@@ -705,6 +785,13 @@ const EnhancedSlideComponent = ({
             title="Add Link"
           >
             <Link stroke="#fff" size={18} />
+          </button>
+          <button
+            onClick={openMentionDialog}
+            className="p-2.5 rounded-xl bg-gradient-to-r from-orange-500 to-red-500 cursor-pointer hover:from-orange-600 hover:to-red-600 transition-all duration-200 transform hover:scale-105"
+            title="Tag Users"
+          >
+            <AtSign stroke="#fff" size={18} />
           </button>
         </div>
         <button
@@ -909,6 +996,119 @@ const EnhancedSlideComponent = ({
                 className="flex-1 py-3 font-medium text-black shadow-lg bg-gradient-to-r from-gray-400 to-gray-500 rounded-xl hover:from-gray-500 hover:to-gray-600 transition-all duration-200 transform hover:scale-105"
               >
                 Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Mention Dialog */}
+      {showMentionDialog && (
+        <div className="absolute inset-0 flex items-center justify-center bg-black/60 backdrop-blur-sm z-60">
+          <div className="w-full max-w-md p-6 mx-4 border shadow-2xl bg-white/95 backdrop-blur-md rounded-2xl border-white/20">
+            <h3 className="mb-4 text-xl font-bold text-gray-800">Tag Users</h3>
+
+            {/* Selected Mentions */}
+            {selectedMentions.length > 0 && (
+              <div className="mb-4">
+                <p className="mb-2 text-sm font-medium text-gray-600">
+                  Tagged Users:
+                </p>
+                <div className="flex flex-wrap gap-2">
+                  {selectedMentions.map((mention) => (
+                    <div
+                      key={mention.id}
+                      className="flex items-center gap-2 px-3 py-1 bg-blue-100 rounded-full"
+                    >
+                      <span className="text-sm text-blue-800">
+                        {mention.username}
+                      </span>
+                      <button
+                        onClick={() => removeMention(mention.id)}
+                        className="text-blue-600 hover:text-blue-800"
+                      >
+                        <X size={14} />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Search Input */}
+            <input
+              type="text"
+              placeholder="Search users to tag..."
+              value={mentionQuery}
+              onChange={(e) => setMentionQuery(e.target.value)}
+              className="w-full p-3 mb-4 text-gray-800 border-2 border-gray-200 outline-none rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200"
+              autoFocus
+            />
+
+            {/* Search Results */}
+            {mentionQuery && (
+              <div className="mb-4">
+                {isSearchingUsers ? (
+                  <div className="p-4 text-center text-gray-500">
+                    Searching...
+                  </div>
+                ) : searchedUsers.length > 0 ? (
+                  <div className="max-h-40 overflow-y-auto border border-gray-200 rounded-lg">
+                    {searchedUsers.map((user) => (
+                      <button
+                        key={user.id}
+                        onClick={() => addMention(user)}
+                        disabled={selectedMentions.some(
+                          (m) => m.id === user.id
+                        )}
+                        className="flex items-center w-full gap-3 p-3 text-left transition-all duration-200 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
+                      >
+                        <div className="w-8 h-8 bg-gray-300 rounded-full overflow-hidden">
+                          {user.profile_image ? (
+                            <Image
+                              src={user.profile_image}
+                              alt={user.username}
+                              width={32}
+                              height={32}
+                              className="object-cover w-full h-full"
+                            />
+                          ) : (
+                            <div className="w-full h-full flex items-center justify-center">
+                              <span className="text-xs font-bold text-gray-600">
+                                {user.username.charAt(0).toUpperCase()}
+                              </span>
+                            </div>
+                          )}
+                        </div>
+                        <div className="flex-1">
+                          <div className=" text-gray-800">
+                            {FormatName(user.name)}
+                          </div>
+                          <div className="font-medium text-sm text-gray-500">
+                            {user.username}
+                          </div>
+                        </div>
+                      </button>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="p-4 text-center text-gray-500">
+                    No users found
+                  </div>
+                )}
+              </div>
+            )}
+
+            <div className="flex gap-3">
+              <button
+                onClick={() => {
+                  setShowMentionDialog(false);
+                  setMentionQuery("");
+                  setSearchedUsers([]);
+                }}
+                className="flex-1 py-3 font-medium text-white shadow-lg bg-gradient-to-r from-orange-500 to-red-500 rounded-xl hover:from-orange-600 hover:to-red-600 transition-all duration-200 transform hover:scale-105"
+              >
+                Done
               </button>
             </div>
           </div>
