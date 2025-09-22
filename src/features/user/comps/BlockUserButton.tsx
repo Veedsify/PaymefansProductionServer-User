@@ -10,8 +10,8 @@ import {
 } from "@/utils/data/BlockUser";
 
 interface BlockUserButtonProps {
-  userId: number;
-  userName: string;
+  userId: number | undefined;
+  userName: string | undefined;
   className?: string;
 }
 
@@ -23,6 +23,10 @@ const BlockUserButton: React.FC<BlockUserButtonProps> = ({
   const [isBlocked, setIsBlocked] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isChecking, setIsChecking] = useState(true);
+
+  if (!userId) {
+    return null;
+  }
 
   useEffect(() => {
     const checkUserBlockStatus = async () => {

@@ -9,7 +9,7 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { useParams, useRouter } from "next/navigation";
+import { notFound, useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { PiCurrencyDollarSimple } from "react-icons/pi";
 import { useGuestModal } from "@/contexts/GuestModalContext";
@@ -27,6 +27,7 @@ import CreateSubscriptionButton from "@/features/subscriptions/CreateSubscriptio
 import UserNotFound from "@/features/user/comps/UserNotFound";
 import { useProfile } from "@/hooks/queries/useProfile";
 import FormatName from "@/lib/FormatName";
+import LoadingSpinner from "@/components/common/loaders/LoadingSpinner";
 
 // Utility to format numbers
 const formatNumber = (num: number = 0): string => {
@@ -86,57 +87,81 @@ const ProfilePage = () => {
   const {
     data: profileData,
     isLoading,
-    isError,
+    error,
   } = useProfile({
     userId: params.id || "",
     viewerId: user?.id || null,
     enabled: !!params.id,
   });
-  // Handle errors if a particular user is not found and the authenticated user is not a guest
-  useEffect(() => {
-    if (isError && !isGuest) {
-      router.replace("/404");
-      return;
-    } else if (isError && isGuest) {
-      router.replace("/login");
-      return;
-    }
-  }, [isError, router]);
+
   const userdata = profileData?.user;
   const isBlockedByUser = profileData?.isBlockedByUser;
   const isVerified = userdata?.is_verified;
   const canTip = user?.id !== userdata?.id && !userdata?.is_model;
-  // Redirect to profile if viewing own profile
+
+  // Handle redirects and navigation in a single useEffect
   useEffect(() => {
-    if (userdata && userdata.id && user?.id === userdata.id) {
-      router.push("/profile");
+    // Don't do anything while loading
+    if (isLoading) return;
+
+    // Handle errors
+    if (error) {
+      if (isGuest) {
+        router.push("/login");
+      } else {
+        notFound();
+      }
+      return;
     }
-    if (
-      userdata &&
-      userdata.username !== params.id &&
-      user?.id !== userdata.id
-    ) {
-      router.replace(`/${userdata.username}`);
+
+    // Handle successful data load
+    if (userdata) {
+      // Redirect to own profile page if viewing own profile
+      if (userdata.id && user?.id === userdata.id && !isGuest) {
+        router.push("/profile");
+        return;
+      }
+
+      // Redirect to correct username URL if needed
+      if (userdata.username !== params.id && user?.id !== userdata.id) {
+        router.replace(`/${userdata.username}`);
+        return;
+      }
     }
-  }, [userdata, user, router]);
-  // Early returns for various states
-  if (userdata && user?.id === userdata.id) {
-    return null;
+  }, [error, isLoading, userdata, user, isGuest, router, params.id]);
+
+  // Show loading state
+  if (isLoading) {
+    return (
+      <div className="py-8">
+        <LoadingSpinner text="Loading Profile" />
+      </div>
+    );
   }
-  // If error or user not found, and NOT a guest, show UserNotFound
-  if ((isError || (!userdata && !isLoading)) && !isGuest) {
+
+  // Handle error states
+  if (error) {
     return <UserNotFound userid={params.id || "unknown"} />;
   }
+
+  // Handle no user data
+  if (!userdata && !isLoading) {
+    return <UserNotFound userid={params.id || "unknown"} />;
+  }
+
+  // Don't render if viewing own profile (will redirect)
+  if (user?.id === userdata?.id) {
+    return null;
+  }
+
+  // Handle suspended user
   if (userdata && !userdata?.active_status) {
     return <SuspendedUserPage userdata={userdata} />;
   }
-  // If current user is blocked by this profile user, show user not found
+
+  // Handle blocked user
   if (isBlockedByUser) {
     return <UserNotFound userid={params.id || "unknown"} />;
-  }
-  // Prevent rendering until userdata is loaded
-  if (!userdata) {
-    return null;
   }
   const toggleTip = () => {
     if (!isGuest) {
@@ -144,9 +169,14 @@ const ProfilePage = () => {
       return;
     }
     toggleModalOpen(
-      "You need to login to tip " + (userdata?.name || "this user") + ".",
+      "You need to login to tip " + (userdata?.name || "this user") + "."
     );
   };
+  // Additional safety check
+  if (!userdata) {
+    return <UserNotFound userid={params.id || "unknown"} />;
+  }
+
   return (
     <div className="overflow-hidden">
       {/* Profile Banner */}
@@ -196,9 +226,7 @@ const ProfilePage = () => {
             {FormatName(userdata.name)}
             {isVerified && <VerifiedBadge />}
             {userdata.is_model && <VerifiedBadge type="model" />}
-            {userdata && !isGuest && (
-              <ActiveProfileTag userid={userdata.username} />
-            )}
+            {!isGuest && <ActiveProfileTag userid={userdata.username} />}
           </h1>
           <small className="text-gray-500">{userdata.username}</small>
         </div>
@@ -255,7 +283,7 @@ const ProfilePage = () => {
             />
             <span>
               Joined{" "}
-              {userdata?.created_at &&
+              {userdata.created_at &&
               !isNaN(new Date(userdata.created_at).getTime())
                 ? new Date(userdata.created_at).toLocaleString("en-US", {
                     month: "long",
@@ -278,7 +306,7 @@ const ProfilePage = () => {
       {userdata.id && openTip && (
         <TipModel userdata={userdata} close={toggleTip} />
       )}
-      {userdata && <ProfileTabsOther userdata={userdata} />}
+      <ProfileTabsOther userdata={userdata} />
     </div>
   );
 };
