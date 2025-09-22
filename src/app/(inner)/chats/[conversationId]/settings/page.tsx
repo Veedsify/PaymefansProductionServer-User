@@ -1,15 +1,10 @@
 "use client";
-import axios from "axios";
 import { motion } from "framer-motion";
 import {
   AlertTriangle,
   Ban,
-  BellOff,
   ChevronRight,
-  Images,
   Loader2,
-  Search,
-  Star,
   Trash2,
 } from "lucide-react";
 import Image from "next/image";

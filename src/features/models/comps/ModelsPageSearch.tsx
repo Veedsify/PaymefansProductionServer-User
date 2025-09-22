@@ -23,7 +23,7 @@ const useDebounce = (callback: (value: string) => void, delay: number) => {
       }, delay);
       setTypingTimer(newTimer);
     },
-    [callback, delay, typingTimer]
+    [callback, delay, typingTimer],
   );
 
   return debouncedCallback;
@@ -86,8 +86,8 @@ export default function ModelsPageSearch() {
               {error
                 ? "Failed to load models"
                 : debouncedSearch
-                ? `No models found matching "${debouncedSearch}"`
-                : "No models found"}
+                  ? `No models found matching "${debouncedSearch}"`
+                  : "No models found"}
             </div>
             {error && (
               <button

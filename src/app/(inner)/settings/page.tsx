@@ -1,10 +1,7 @@
 "use client";
-import { useQuery } from "@tanstack/react-query";
-
 import Image from "next/image";
 import { useAuthContext } from "@/contexts/UserUseContext";
 import SettingsTab from "@/features/settings/SettingsTab";
-import getUserData from "@/utils/data/UserData";
 
 const Settings = () => {
   const { user } = useAuthContext();

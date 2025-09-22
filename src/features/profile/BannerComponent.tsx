@@ -62,10 +62,10 @@ const BannerComponent = ({ profile_banner }: BannerComponentProps) => {
         },
         1980 / 650, // 1980x650 aspect ratio
         naturalWidth,
-        naturalHeight
+        naturalHeight,
       ),
       naturalWidth,
-      naturalHeight
+      naturalHeight,
     );
 
     setCrop(initialCrop);
@@ -90,7 +90,7 @@ const BannerComponent = ({ profile_banner }: BannerComponentProps) => {
       0,
       0,
       crop.width * scaleX,
-      crop.height * scaleY
+      crop.height * scaleY,
     );
 
     return new Promise<Blob>((resolve) => {
@@ -110,7 +110,7 @@ const BannerComponent = ({ profile_banner }: BannerComponentProps) => {
       });
       const croppedImageBlob = await getCroppedImg(
         imageRef.current,
-        completedCrop
+        completedCrop,
       );
       if (!croppedImageBlob) {
         toast.error("Failed to crop image", {
@@ -121,11 +121,11 @@ const BannerComponent = ({ profile_banner }: BannerComponentProps) => {
       const formData = new FormData();
       formData.append(
         "banner",
-        new File([croppedImageBlob], file.name, { type: file.type })
+        new File([croppedImageBlob], file.name, { type: file.type }),
       );
       const response = await axiosInstance.post(
         ROUTE.BANNER_IMAGE_UPLOAD,
-        formData
+        formData,
       );
       const data = response.data;
       if (!data.status) {

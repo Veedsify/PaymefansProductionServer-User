@@ -12,7 +12,7 @@ export const usePost = (postId: string) => {
     queryKey: ["post", postId],
     queryFn: () => fetchPost(postId),
     enabled: !!postId,
-    staleTime: 0, 
+    staleTime: 0,
     retry: 1,
   });
 };

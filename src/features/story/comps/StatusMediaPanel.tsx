@@ -93,7 +93,7 @@ const StoryMediaItem = React.memo(({ data }: { data: any }) => {
   // Memoize selected state instead of using useState
   const selected = useMemo(
     () => story.some((item) => item.id === data.id),
-    [story, data.id]
+    [story, data.id],
   );
 
   const mediaUrl = useMemo(() => {

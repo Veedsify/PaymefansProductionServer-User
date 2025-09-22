@@ -44,7 +44,9 @@ const UserProfileOverlay = ({
       </Link>
       <div className="">
         <p className="text-white font-semibold text-base md:text-lg">
-          <Link href={`/${userProfile?.username}`}>{FormatName(userProfile?.name)}</Link>
+          <Link href={`/${userProfile?.username}`}>
+            {FormatName(userProfile?.name)}
+          </Link>
         </p>
         <p className="text-gray-300 text-xs md:text-sm">
           <Link href={`/${userProfile?.username}`}>

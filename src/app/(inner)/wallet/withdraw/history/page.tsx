@@ -170,7 +170,7 @@ const WithdrawalHistory = () => {
                   {formatCurrency(
                     withdrawalHistory
                       .filter((w) => w.status === "completed")
-                      .reduce((sum, w) => sum + w.amount * 0.75, 0)
+                      .reduce((sum, w) => sum + w.amount * 0.75, 0),
                   )}
                 </p>
               </div>
@@ -184,7 +184,8 @@ const WithdrawalHistory = () => {
                 <p className="text-lg font-bold text-gray-900">
                   {
                     withdrawalHistory.filter(
-                      (w) => w.status === "pending" || w.status === "processing"
+                      (w) =>
+                        w.status === "pending" || w.status === "processing",
                     ).length
                   }
                 </p>

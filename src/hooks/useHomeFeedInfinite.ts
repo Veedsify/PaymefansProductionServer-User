@@ -33,7 +33,7 @@ export const useHomeFeedInfinite = () => {
       return lastPage.hasMore ? lastPage.nextCursor : undefined;
     },
     initialPageParam: undefined as string | undefined,
-    staleTime: 0, 
+    staleTime: 0,
     refetchOnWindowFocus: true, // Refetch when user returns to tab
     refetchOnReconnect: true, // Refetch when connection is restored
     refetchOnMount: true,

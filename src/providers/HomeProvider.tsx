@@ -1,7 +1,7 @@
 "use client";
 import { useAuthContext } from "@/contexts/UserUseContext";
 import { useRouter } from "next/navigation";
-import { ReactNode, useEffect } from "react";
+import { type ReactNode, useEffect } from "react";
 
 const HomeProvider = ({ children }: { children: ReactNode }) => {
   const router = useRouter();

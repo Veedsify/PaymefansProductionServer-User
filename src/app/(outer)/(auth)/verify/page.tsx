@@ -63,7 +63,7 @@ const Login = () => {
       setLoading(false);
       console.log(error);
       setError(
-        error?.response?.data?.message || error?.message || "An error occurred"
+        error?.response?.data?.message || error?.message || "An error occurred",
       );
     }
   };

@@ -1,7 +1,5 @@
-import axios from "axios";
 import type { StoryType } from "@/contexts/StoryContext";
 import axiosInstance from "../Axios";
-import { getToken } from "../Cookie";
 
 interface SubmitUserStoryResponse {
   success: boolean;
@@ -29,7 +27,9 @@ interface SubmitUserStoryResponse {
   } | null;
 }
 
-async function SubmitUserStory(stories: StoryType[]): Promise<SubmitUserStoryResponse> {
+async function SubmitUserStory(
+  stories: StoryType[],
+): Promise<SubmitUserStoryResponse> {
   try {
     const sendData = await axiosInstance.post(`/stories/save`, {
       stories,

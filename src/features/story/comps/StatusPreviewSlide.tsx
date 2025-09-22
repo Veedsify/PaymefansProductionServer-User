@@ -1,6 +1,13 @@
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { AnimatePresence, motion } from "framer-motion";
-import { AtSign, LucideEye, LucideLoader, LucideSend, User, X } from "lucide-react";
+import {
+  AtSign,
+  LucideEye,
+  LucideLoader,
+  LucideSend,
+  User,
+  X,
+} from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
@@ -48,7 +55,7 @@ const fetchStatusViews = async ({
     `/story/views/${media_id}${pageParam === 0 ? "" : `?cursor=${pageParam}`}`,
     {
       withCredentials: true,
-    }
+    },
   );
   if (response.status === 200) {
     const data = response.data;
@@ -297,9 +304,7 @@ const TaggedUsersButton = ({ story }: { story: Story }) => {
                       href={`/${mention.mentioned_user.username}`}
                       className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg"
                     >
-                      <span
-                        className="w-10 h-10 bg-gray-300 rounded-full overflow-hidden"
-                      >
+                      <span className="w-10 h-10 bg-gray-300 rounded-full overflow-hidden">
                         {mention.mentioned_user.profile_image ? (
                           <Image
                             src={mention.mentioned_user.profile_image}
@@ -361,7 +366,7 @@ const StoryReplyInput = ({ story }: { story: Story }) => {
         {
           headers: { Authorization: `Bearer ${getToken()}` },
           withCredentials: true,
-        }
+        },
       );
       const receiverUserId = profileResponse.data.user?.user_id;
       if (!receiverUserId) {
@@ -373,7 +378,7 @@ const StoryReplyInput = ({ story }: { story: Story }) => {
         {
           headers: { Authorization: `Bearer ${getToken()}` },
           withCredentials: true,
-        }
+        },
       );
       const pricePerMessage = data.price_per_message || 0;
       const currentPoints = points || 0;
@@ -548,7 +553,7 @@ const StatusPreviewSlide = ({
         { storyMediaId: story.media_id },
         {
           withCredentials: true,
-        }
+        },
       );
       refCounter.current++;
     }

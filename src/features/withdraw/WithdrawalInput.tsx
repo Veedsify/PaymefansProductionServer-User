@@ -31,7 +31,7 @@ const WithdrawalInput = ({ points }: { points: number }) => {
       setLoading(true);
       try {
         const response = await axiosInstance.get(
-          ROUTE.GET_PLATFROM_EXCHANGE_RATE
+          ROUTE.GET_PLATFROM_EXCHANGE_RATE,
         );
         const data = response.data;
         if (data.data.length) setRates(data.data);
@@ -60,7 +60,7 @@ const WithdrawalInput = ({ points }: { points: number }) => {
       const maxAmount = Number(maxWithdrawalAmount).toLocaleString();
       toast.error(
         `You can only withdraw a maximum of ${defalutCurrency}${maxAmount}`,
-        { id: "withdraw" }
+        { id: "withdraw" },
       );
       return;
     }
@@ -69,7 +69,7 @@ const WithdrawalInput = ({ points }: { points: number }) => {
       const minAmount = Number(minAmountInNgn).toLocaleString();
       toast.error(
         `Minimum withdrawal amount is ${defalutCurrency}${minAmount}`,
-        { id: "withdraw" }
+        { id: "withdraw" },
       );
       return;
     }
@@ -100,7 +100,7 @@ const WithdrawalInput = ({ points }: { points: number }) => {
   function convertCurrency(
     amount: number,
     fromCurrency: string,
-    toCurrency: string
+    toCurrency: string,
   ): number {
     if (fromCurrency === toCurrency) return amount;
 

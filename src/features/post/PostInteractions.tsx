@@ -162,7 +162,7 @@ export const PostCompInteractions = ({ data }: PostCompInteractionsProps) => {
     try {
       const repost = await axiosInstance.post(
         `/post/repost/${data?.post_id}`,
-        {}
+        {},
       );
       if (repost.status === 200 && repost.data.error === false) {
         toast.success(repost.data.message, {

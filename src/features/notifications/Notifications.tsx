@@ -25,7 +25,7 @@ export function NotificationHeader({
   const { unreadCount } = useNotificationCount();
   const displayCount = useMemo(
     () => (unreadCount > 100 ? "99+" : unreadCount.toString()),
-    [unreadCount]
+    [unreadCount],
   );
 
   return (
@@ -49,7 +49,7 @@ interface NotificationItemProps {
     url: string,
     notification_id: string,
     id: number,
-    read: boolean
+    read: boolean,
   ) => void;
   isMarkingAsRead: boolean;
   types: any[];
@@ -63,7 +63,7 @@ const NotificationItem = React.memo(function NotificationItem({
 }: NotificationItemProps) {
   const notificationType = useMemo(
     () => types.find((type) => type.type === notification.action),
-    [types, notification.action]
+    [types, notification.action],
   );
 
   const formattedDate = useMemo(
@@ -75,7 +75,7 @@ const NotificationItem = React.memo(function NotificationItem({
         hour: "numeric",
         minute: "numeric",
       }),
-    [notification.created_at]
+    [notification.created_at],
   );
 
   const handleClick = useCallback(() => {
@@ -83,7 +83,7 @@ const NotificationItem = React.memo(function NotificationItem({
       notification.url,
       notification.notification_id,
       notification.id,
-      notification.read
+      notification.read,
     );
   }, [notification, onNotificationClick]);
 
@@ -145,7 +145,7 @@ export function NotificationBody() {
       updateNotification(id);
       markAsRead(id);
     },
-    [router, updateNotification, markAsRead]
+    [router, updateNotification, markAsRead],
   );
 
   if (error) {

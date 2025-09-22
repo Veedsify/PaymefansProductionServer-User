@@ -25,7 +25,7 @@ const fetchFollowers = async ({
     const max = pageParam * 30;
     const response = await axiosInstance.post(
       `/follower/all?min=${min}&max=${max}`,
-      {}
+      {},
     );
     const data = response.data;
     return {

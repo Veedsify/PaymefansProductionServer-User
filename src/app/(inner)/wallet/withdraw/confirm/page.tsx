@@ -21,7 +21,7 @@ const WithdrawConfigPage = () => {
   const [error, setError] = React.useState<string>("");
   const [processing, setProcessing] = React.useState(false);
   const [step, setStep] = React.useState<"create" | "verify">(
-    user?.hasPin ? "verify" : "create"
+    user?.hasPin ? "verify" : "create",
   );
   const { config } = useConfigContext();
   const router = useRouter();
@@ -48,7 +48,7 @@ const WithdrawConfigPage = () => {
 
   const amountInNgn = Number(withdrawValues?.amountInNgn).toLocaleString();
   const amountToSettle = Number(
-    withdrawValues?.amountToSettle
+    withdrawValues?.amountToSettle,
   ).toLocaleString();
   // Fixed typo: platformFee instead of platfromFee
   const platformFee = Number(withdrawValues?.platformFee).toLocaleString();

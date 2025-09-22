@@ -46,12 +46,12 @@ const EditProfileButton = ({ user }: { user: any }) => {
 function BannerModal({ user, open = false, setOpen }: BannerModalProps) {
   const [file, setFile] = useState<File | null>(null);
   const [userData, setUserData] = useState<UserUpdateProfileType>(
-    {} as UserUpdateProfileType
+    {} as UserUpdateProfileType,
   );
   const [usernameCheck, setUsernameCheck] = useState("");
   const { message, canSave, error, isLoading } = useCheckUsername(
     user,
-    usernameCheck
+    usernameCheck,
   );
   const queryClient = useQueryClient();
   const usernameTimeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -59,7 +59,7 @@ function BannerModal({ user, open = false, setOpen }: BannerModalProps) {
   const handleInputChange = (
     e: React.ChangeEvent<
       HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
-    >
+    >,
   ) => {
     if (e.target.name === "bio") {
       if (e.target.value.length > 1000) {
@@ -127,7 +127,7 @@ function BannerModal({ user, open = false, setOpen }: BannerModalProps) {
       const updateProfile = async (formData: FormData) => {
         const response = await axiosInstance.post(
           ROUTE.PROFILE_UPDATE,
-          formData
+          formData,
         );
         setOpen(false);
         queryClient.invalidateQueries({ queryKey: ["userProfileData"] });
@@ -143,7 +143,7 @@ function BannerModal({ user, open = false, setOpen }: BannerModalProps) {
         },
         {
           id: "profile-update-toast",
-        }
+        },
       );
     } catch (error) {
       console.error(error);

@@ -22,13 +22,13 @@ const getUniqueItems = (arr: MediaDataType[]) => {
 
 const PrivateMediaImageCard = React.memo(({ sort }: { sort: string }) => {
   const fullScreenPreview = usePostComponent(
-    (state) => state.fullScreenPreview
+    (state) => state.fullScreenPreview,
   );
   const { user } = useAuthContext();
 
   const fetchMedia = async ({ pageParam = 1 }) => {
     const res = await axiosInstance.get(
-      `/post/personal/private-media?page=${pageParam}&limit=${process.env.NEXT_PUBLIC_POST_MEDIA_PER_PAGE}`
+      `/post/personal/private-media?page=${pageParam}&limit=${process.env.NEXT_PUBLIC_POST_MEDIA_PER_PAGE}`,
     );
     return res.data;
   };
@@ -49,7 +49,7 @@ const PrivateMediaImageCard = React.memo(({ sort }: { sort: string }) => {
 
   const allMedia = React.useMemo(
     () => (data ? data.pages.flatMap((page) => page.data) : []),
-    [data]
+    [data],
   );
 
   const sorted = React.useMemo(() => {
@@ -63,7 +63,7 @@ const PrivateMediaImageCard = React.memo(({ sort }: { sort: string }) => {
     type: string,
     isSubscriber: boolean,
     _: number,
-    watermarkEnabled: boolean
+    watermarkEnabled: boolean,
   ) => {
     if (!isSubscriber) return;
 
@@ -138,7 +138,7 @@ interface PrivateMediaPanelMediaCardProps {
     type: string,
     isSubscriber: boolean,
     indexId: number,
-    watermarkEnabled: boolean
+    watermarkEnabled: boolean,
   ) => void;
   isSubscriber: boolean;
   indexId: number;
@@ -179,7 +179,7 @@ const PrivateMediaPanelMediaCard = ({
                   media.media_type,
                   isSubscriber,
                   indexId,
-                  media.post.watermark_enabled
+                  media.post.watermark_enabled,
                 ),
             }}
           />
@@ -190,7 +190,7 @@ const PrivateMediaPanelMediaCard = ({
                 media.media_type,
                 isSubscriber,
                 indexId,
-                media.post.watermark_enabled
+                media.post.watermark_enabled,
               )
             }
             className="absolute inset-0 flex items-center justify-center w-full h-full cursor-pointer bg-black/20"
@@ -209,7 +209,7 @@ const PrivateMediaPanelMediaCard = ({
               media.media_type,
               isSubscriber,
               indexId,
-              media.post.watermark_enabled
+              media.post.watermark_enabled,
             )
           }
           src={isSubscriber ? media.url : media.blur}

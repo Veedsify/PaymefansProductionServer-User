@@ -38,7 +38,8 @@ body {
   color: #000000;
 }
 
-@media (prefers-color-scheme: light) {}
+@media (prefers-color-scheme: light) {
+}
 
 img {
   max-width: 100%;
@@ -346,7 +347,7 @@ img {
 }
 
 /* 1 child: full size of the container */
-.str-video__livestream-layout__wrapper>div:only-child {
+.str-video__livestream-layout__wrapper > div:only-child {
   grid-template-columns: 1fr !important;
   grid-template-rows: 1fr !important;
   width: 100%;
@@ -366,13 +367,13 @@ img {
   grid-template-columns: 1fr;
 }
 
-.str-video__livestream-layout__wrapper>div:nth-child(1) {
+.str-video__livestream-layout__wrapper > div:nth-child(1) {
   grid-column: 1 / -1 !important;
   /* Span across all columns */
 }
 
-.str-video__livestream-layout__wrapper>div:nth-child(2),
-.str-video__livestream-layout__wrapper>div:nth-child(3) {
+.str-video__livestream-layout__wrapper > div:nth-child(2),
+.str-video__livestream-layout__wrapper > div:nth-child(3) {
   grid-template-rows: 1fr !important;
   /* Adjust for 3 children */
 }
@@ -494,11 +495,11 @@ img {
   width: fit-content !important;
 }
 
-.livestream-view>div>div {
+.livestream-view > div > div {
   min-height: 100vh;
 }
 
-.livestream-view>div>div video {
+.livestream-view > div > div video {
   object-fit: cover;
 }
 

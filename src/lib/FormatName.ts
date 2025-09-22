@@ -1,7 +1,7 @@
 const FormatName = (name: string | undefined) => {
   if (!name) return "";
   const nameArray = name.split(" ");
-  let formattedName: string[] = [];
+  const formattedName: string[] = [];
   if (nameArray.length === 1) {
     return (
       nameArray[0].charAt(0).toUpperCase() + nameArray[0].slice(1).toLowerCase()

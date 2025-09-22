@@ -67,7 +67,7 @@ const Post = React.memo(() => {
     () => ({
       __html: `${post?.content.replace(/(?:\r\n|\r|\n)/g, "<br>")}`,
     }),
-    [post?.content]
+    [post?.content],
   );
 
   // Loading state

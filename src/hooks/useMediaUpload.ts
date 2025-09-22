@@ -74,8 +74,8 @@ export const useMediaUpload = () => {
           errorObj:
             | { [key: string]: boolean }
             | ((prev: { [key: string]: boolean }) => {
-              [key: string]: boolean;
-            }),
+                [key: string]: boolean;
+              }),
         ) => {
           const hasError =
             typeof errorObj === "function"

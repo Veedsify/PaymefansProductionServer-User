@@ -43,7 +43,7 @@ export const AuthContextProvider = ({
   user: Partial<AuthUserProps> | undefined;
 }) => {
   const [user, setUser] = useState<Partial<AuthUserProps | null>>(
-    initialUser || null
+    initialUser || null,
   );
   const [isGuest, setIsGuest] = useState(true);
   const [isLoading, setIsLoading] = useState(true);

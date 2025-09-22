@@ -76,7 +76,7 @@ const MessageInputComponent = React.memo(
 
     // Socket connection monitoring
     const [isSocketConnected, setIsSocketConnected] = useState(
-      socket?.connected || false
+      socket?.connected || false,
     );
 
     // Memoized values
@@ -86,7 +86,7 @@ const MessageInputComponent = React.memo(
         mediaFiles.length === 0 ||
         mediaFiles.every((f) => f.uploadStatus === "completed");
       const noUploadErrors = mediaFiles.every(
-        (f) => f.uploadStatus !== "error"
+        (f) => f.uploadStatus !== "error",
       );
       const socketReady = isSocketConnected && socket;
       return (
@@ -111,7 +111,7 @@ const MessageInputComponent = React.memo(
         return { completed: 0, total: 0, percentage: 0 };
 
       const completed = mediaFiles.filter(
-        (f) => f.uploadStatus === "completed"
+        (f) => f.uploadStatus === "completed",
       ).length;
       const total = mediaFiles.length;
       const percentage = total > 0 ? Math.round((completed / total) * 100) : 0;
@@ -153,7 +153,7 @@ const MessageInputComponent = React.memo(
       if (missingVars.length > 0) {
         console.error(
           "❌ Missing required environment variables:",
-          missingVars
+          missingVars,
         );
         console.warn("⚠️ Video uploads may fail due to missing configuration");
       }
@@ -180,7 +180,7 @@ const MessageInputComponent = React.memo(
 
     const typingHandler = useMemo(
       () => debouncedSendTyping(),
-      [debouncedSendTyping]
+      [debouncedSendTyping],
     );
 
     // Helper function to ensure socket connection
@@ -223,7 +223,7 @@ const MessageInputComponent = React.memo(
         if (mediaFiles.length > 0) {
           if (!areAllUploadsComplete()) {
             toast.error(
-              "Please wait for all uploads to complete before sending."
+              "Please wait for all uploads to complete before sending.",
             );
             return;
           }
@@ -282,11 +282,11 @@ const MessageInputComponent = React.memo(
         }
 
         const invalidAttachments = attachments.filter(
-          (att) => !att.url || !att.id || !att.type
+          (att) => !att.url || !att.id || !att.type,
         );
         if (invalidAttachments.length > 0) {
           toast.error(
-            "Some files failed to upload properly. Please try again."
+            "Some files failed to upload properly. Please try again.",
           );
           return;
         }
@@ -347,11 +347,11 @@ const MessageInputComponent = React.memo(
         } catch (socketError: any) {
           if (socketError.message === "Message send timeout") {
             toast.error(
-              "Message is taking longer than expected. It may still be sent. Please wait before trying again."
+              "Message is taking longer than expected. It may still be sent. Please wait before trying again.",
             );
           } else {
             toast.error(
-              "Failed to send message. Please check your connection and try again."
+              "Failed to send message. Please check your connection and try again.",
             );
           }
         }
@@ -402,7 +402,7 @@ const MessageInputComponent = React.memo(
           handleSendMessage();
         }
       },
-      [typingHandler, message, handleSendMessage, setIsTyping]
+      [typingHandler, message, handleSendMessage, setIsTyping],
     );
 
     useEffect(() => {
@@ -432,7 +432,7 @@ const MessageInputComponent = React.memo(
     // Media Handling
     const triggerFileSelect = useCallback(() => {
       const fileInput = document.getElementById(
-        "file-input"
+        "file-input",
       ) as HTMLInputElement;
       if (fileInput) {
         fileInput.click();
@@ -441,7 +441,7 @@ const MessageInputComponent = React.memo(
 
     useEffect(() => {
       const fileInput = document.getElementById(
-        "file-input"
+        "file-input",
       ) as HTMLInputElement;
       if (!fileInput) return;
 
@@ -453,12 +453,12 @@ const MessageInputComponent = React.memo(
         const selectedFiles = Array.from(files);
         const validFiles = selectedFiles.filter(
           (file) =>
-            imageTypes.includes(file.type) || file.type.startsWith("video/")
+            imageTypes.includes(file.type) || file.type.startsWith("video/"),
         );
 
         if (validFiles.length !== selectedFiles.length) {
           toast.error(
-            "Invalid file type, please select an image or video file"
+            "Invalid file type, please select an image or video file",
           );
           return;
         }
@@ -528,7 +528,7 @@ const MessageInputComponent = React.memo(
                 {mediaFiles.some(
                   (f) =>
                     f.uploadProgress === 99 ||
-                    (f.uploadProgress === 100 && !f.attachment)
+                    (f.uploadProgress === 100 && !f.attachment),
                 )
                   ? `Processing files... ${uploadProgress.completed}/${uploadProgress.total}`
                   : `Uploading files... ${uploadProgress.completed}/${uploadProgress.total}`}
@@ -537,7 +537,7 @@ const MessageInputComponent = React.memo(
                 {mediaFiles.some(
                   (f) =>
                     f.uploadProgress === 99 ||
-                    (f.uploadProgress === 100 && !f.attachment)
+                    (f.uploadProgress === 100 && !f.attachment),
                 )
                   ? "Processing..."
                   : `${uploadProgress.percentage}%`}
@@ -549,7 +549,7 @@ const MessageInputComponent = React.memo(
                   mediaFiles.some(
                     (f) =>
                       f.uploadProgress === 99 ||
-                      (f.uploadProgress === 100 && !f.attachment)
+                      (f.uploadProgress === 100 && !f.attachment),
                   )
                     ? "bg-yellow-500 animate-pulse"
                     : "bg-purple-600 dark:bg-purple-400"
@@ -640,12 +640,12 @@ const MessageInputComponent = React.memo(
                       ? !isSocketConnected
                         ? "Connection lost - please refresh the page"
                         : isSending
-                        ? "Sending message..."
-                        : mediaFiles.length > 0 && !areAllUploadsComplete()
-                        ? "Waiting for uploads to complete..."
-                        : hasUploadErrors()
-                        ? "Some uploads failed. Please try again."
-                        : "Please enter a message or add media"
+                          ? "Sending message..."
+                          : mediaFiles.length > 0 && !areAllUploadsComplete()
+                            ? "Waiting for uploads to complete..."
+                            : hasUploadErrors()
+                              ? "Some uploads failed. Please try again."
+                              : "Please enter a message or add media"
                       : "Send message"
                   }
                 >
@@ -664,7 +664,7 @@ const MessageInputComponent = React.memo(
         )}
       </div>
     );
-  }
+  },
 );
 
 MessageInputComponent.displayName = "MessageInputComponent";

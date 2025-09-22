@@ -21,7 +21,7 @@ const RepostPanel = ({ userdata }: RespostPanelProps) => {
         : `/post/personal/reposts`;
     const postPerPage = parseInt(
       process.env.NEXT_PUBLIC_POST_PER_PAGE || "5",
-      10
+      10,
     );
     const response = await axiosInstance<any, AxiosResponse>(api, {
       method: "GET",

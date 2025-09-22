@@ -91,7 +91,7 @@ export default function ConfirmWithdrawPage() {
       });
       router.push("/wallet/withdraw/confirm");
     },
-    [router, setWithDrawStore, withdrawValues, banks]
+    [router, setWithDrawStore, withdrawValues, banks],
   );
 
   // Early return if bank is already selected

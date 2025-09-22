@@ -73,7 +73,7 @@ const ReplyPostComponent = ({ options, isReply }: ReplyPostProps) => {
   const [showMentions, setShowMentions] = useState(false);
   const [mentionQuery, setMentionQuery] = useState("");
   const [mentionSuggestions, setMentionSuggestions] = useState<MentionUser[]>(
-    []
+    [],
   );
   const [selectedMentionIndex, setSelectedMentionIndex] = useState(0);
   const [mentions, setMentions] = useState<MentionUser[]>([]);
@@ -93,7 +93,7 @@ const ReplyPostComponent = ({ options, isReply }: ReplyPostProps) => {
         }, 300);
       });
     },
-    []
+    [],
   );
 
   // On mention query update
@@ -174,7 +174,7 @@ const ReplyPostComponent = ({ options, isReply }: ReplyPostProps) => {
         setCursorPosition(newCursorPos);
       }, 0);
     },
-    [mentionStartPos, cursorPosition, typedComment, mentions]
+    [mentionStartPos, cursorPosition, typedComment, mentions],
   );
   // Keydown for mention navigation
   const handleKeyDown = useCallback(
@@ -184,13 +184,13 @@ const ReplyPostComponent = ({ options, isReply }: ReplyPostProps) => {
           case "ArrowDown":
             e.preventDefault();
             setSelectedMentionIndex((prev) =>
-              prev < mentionSuggestions.length - 1 ? prev + 1 : 0
+              prev < mentionSuggestions.length - 1 ? prev + 1 : 0,
             );
             break;
           case "ArrowUp":
             e.preventDefault();
             setSelectedMentionIndex((prev) =>
-              prev > 0 ? prev - 1 : mentionSuggestions.length - 1
+              prev > 0 ? prev - 1 : mentionSuggestions.length - 1,
             );
             break;
           case "Enter":
@@ -205,7 +205,7 @@ const ReplyPostComponent = ({ options, isReply }: ReplyPostProps) => {
         }
       }
     },
-    [showMentions, mentionSuggestions, selectedMentionIndex, selectMention]
+    [showMentions, mentionSuggestions, selectedMentionIndex, selectMention],
   );
 
   // File handling
@@ -228,7 +228,7 @@ const ReplyPostComponent = ({ options, isReply }: ReplyPostProps) => {
         });
       }
     },
-    [files]
+    [files],
   );
 
   const removeFile = useCallback((file: File) => {
@@ -262,7 +262,7 @@ const ReplyPostComponent = ({ options, isReply }: ReplyPostProps) => {
         onUploadProgress: (progressEvent) => {
           if (progressEvent?.total) {
             setProgress(
-              Math.round((progressEvent.loaded / progressEvent.total) * 100)
+              Math.round((progressEvent.loaded / progressEvent.total) * 100),
             );
           }
         },

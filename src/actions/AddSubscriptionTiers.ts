@@ -20,8 +20,8 @@ export default async function AddSubscriptionTiers({
     return {
       error: false,
     };
-  } catch (e: any) {
-    console.log(e);
+  } catch (error) {
+    console.log(error);
     return {
       error: true,
     };

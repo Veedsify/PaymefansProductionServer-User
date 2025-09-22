@@ -64,7 +64,7 @@ const CommentReplyChildren = ({
               (reply: Comment) => ({
                 ...reply,
                 likedByme: Boolean(reply.likedByme), // Explicitly convert to boolean
-              })
+              }),
             );
             setLoadedChildren(repliesWithLikedStatus);
             setHasMoreRepliesLocal(response.hasMore);
@@ -171,7 +171,7 @@ const CommentReplyChildren = ({
                     const nextPage = replyPage + 1;
                     const response = await getCommentReplies(
                       commentId,
-                      nextPage
+                      nextPage,
                     );
                     if (response && !response.error && response.data) {
                       // Ensure likedByme property is preserved for new replies
@@ -179,7 +179,7 @@ const CommentReplyChildren = ({
                         (reply: Comment) => ({
                           ...reply,
                           likedByme: Boolean(reply.likedByme), // Explicitly convert to boolean
-                        })
+                        }),
                       );
                       setLoadedChildren((prev) => [
                         ...prev,

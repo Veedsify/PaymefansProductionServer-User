@@ -121,7 +121,7 @@ const ConversationCard = React.memo(
       ? (() => {
           const cleanMessage = String(conversation.lastMessage.message).replace(
             /<br\s*\/?>/gi,
-            ""
+            "",
           );
           return (
             cleanMessage.substring(0, 60) +
@@ -132,7 +132,7 @@ const ConversationCard = React.memo(
 
     const verifiedUsernames = ["@paymefans", "@paymefans1", "@paymefans2"];
     const isVerified = verifiedUsernames.includes(
-      conversation.receiver.username
+      conversation.receiver.username,
     );
     const isPayMeFans = conversation.receiver.username === "@paymefans";
 
@@ -149,7 +149,7 @@ const ConversationCard = React.memo(
           !isLast && "border-b",
           isUnread
             ? "bg-indigo-50 dark:bg-indigo-900/30 font-medium"
-            : "bg-white dark:bg-gray-950"
+            : "bg-white dark:bg-gray-950",
         )}
       >
         {/* Profile Image with Active Status */}
@@ -265,7 +265,7 @@ const ConversationCard = React.memo(
         </div>
       </div>
     );
-  }
+  },
 );
 
 ConversationCard.displayName = "ConversationCard";

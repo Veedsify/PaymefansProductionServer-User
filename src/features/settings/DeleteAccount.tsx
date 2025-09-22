@@ -48,7 +48,7 @@ const DeleteAccount = () => {
       }
     } catch (error) {
       toast.error(
-        "An error occurred while trying to delete your account. Please try again later."
+        "An error occurred while trying to delete your account. Please try again later.",
       );
     } finally {
       // Reset state after deletion attempt

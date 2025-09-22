@@ -54,7 +54,7 @@ interface CommentsHolderProps {
 const CommentsHolder = ({ post, postComments }: CommentsHolderProps) => {
   const { isGuest, user } = useAuthContext();
   const fullScreenPreview = usePostComponent(
-    (state) => state.fullScreenPreview
+    (state) => state.fullScreenPreview,
   );
   const commentsRef = useRef<HTMLDivElement>(null);
   const [openReply, setOpenReply] = useState<{
@@ -96,7 +96,7 @@ const CommentsHolder = ({ post, postComments }: CommentsHolderProps) => {
   // Remove duplicates based on comment_id
   const uniqueComments = allComments.filter(
     (comment, index, self) =>
-      index === self.findIndex((c) => c.comment_id === comment.comment_id)
+      index === self.findIndex((c) => c.comment_id === comment.comment_id),
   );
 
   // Infinite scroll: load next page when inView and hasNextPage
@@ -125,7 +125,7 @@ const CommentsHolder = ({ post, postComments }: CommentsHolderProps) => {
         console.error("Failed to track comment view:", error);
       }
     },
-    [viewedComments]
+    [viewedComments],
   );
 
   // Format date for comments
@@ -149,7 +149,7 @@ const CommentsHolder = ({ post, postComments }: CommentsHolderProps) => {
         type: "image",
       }));
       const currentIndex = comment?.attachment?.findIndex(
-        (item: any) => item.name === media.name
+        (item: any) => item.name === media.name,
       );
       fullScreenPreview({
         url: media.path,
@@ -160,7 +160,7 @@ const CommentsHolder = ({ post, postComments }: CommentsHolderProps) => {
         ref: currentIndex as number,
       });
     },
-    [fullScreenPreview]
+    [fullScreenPreview],
   );
 
   // Calculate height for vertical line (optional visual improvement)

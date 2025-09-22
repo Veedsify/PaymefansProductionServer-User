@@ -104,7 +104,7 @@ const PostEditor = React.memo(({ posts }: PostEditorProps) => {
             ]
           : []),
       ] as PostAudienceDataProps[],
-    [user]
+    [user],
   );
 
   const {
@@ -138,7 +138,7 @@ const PostEditor = React.memo(({ posts }: PostEditorProps) => {
       updatePostAudience(audience);
       setVisibility(audience.name as "Public" | "Subscribers" | "Price");
     },
-    [updatePostAudience, setVisibility]
+    [updatePostAudience, setVisibility],
   );
 
   // Textarea change handler
@@ -158,7 +158,7 @@ const PostEditor = React.memo(({ posts }: PostEditorProps) => {
       handleContentChange(text);
       processMentions(text, cursorPos);
     },
-    [handleContentChange, processMentions]
+    [handleContentChange, processMentions],
   );
 
   // Mention selection handler
@@ -169,7 +169,7 @@ const PostEditor = React.memo(({ posts }: PostEditorProps) => {
         handleContentChange(newText);
       }
     },
-    [selectMention, handleContentChange]
+    [selectMention, handleContentChange],
   );
 
   // Keydown handler
@@ -180,7 +180,7 @@ const PostEditor = React.memo(({ posts }: PostEditorProps) => {
         handleContentChange(newText);
       }
     },
-    [handleKeyDown, handleContentChange]
+    [handleKeyDown, handleContentChange],
   );
 
   // Submit handler
@@ -231,7 +231,7 @@ const PostEditor = React.memo(({ posts }: PostEditorProps) => {
       isEditing ? "Saving your changes..." : "Creating your post...",
       {
         id: "post-upload",
-      }
+      },
     );
 
     const savePostOptions = {
@@ -321,8 +321,8 @@ const PostEditor = React.memo(({ posts }: PostEditorProps) => {
                 ? "Saving..."
                 : "Processing..."
               : posts?.post_id
-              ? "Save"
-              : "Post"}
+                ? "Save"
+                : "Post"}
           </button>
         </div>
 
@@ -496,7 +496,7 @@ const AudienceDropdown = React.memo(
         )}
       </div>
     );
-  }
+  },
 );
 
 AudienceDropdown.displayName = "AudienceDropdown";

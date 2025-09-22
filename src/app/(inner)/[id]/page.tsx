@@ -169,7 +169,7 @@ const ProfilePage = () => {
       return;
     }
     toggleModalOpen(
-      "You need to login to tip " + (userdata?.name || "this user") + "."
+      `You need to login to tip ${userdata?.name || "this user"}.`,
     );
   };
   // Additional safety check
@@ -284,7 +284,7 @@ const ProfilePage = () => {
             <span>
               Joined{" "}
               {userdata.created_at &&
-              !isNaN(new Date(userdata.created_at).getTime())
+              !Number.isNaN(new Date(userdata.created_at).getTime())
                 ? new Date(userdata.created_at).toLocaleString("en-US", {
                     month: "long",
                     year: "numeric",

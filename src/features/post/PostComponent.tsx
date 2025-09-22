@@ -40,7 +40,7 @@ const PostComponent = memo<PostComponentProps>(
   ({ user, data, was_repost, repost_username, repost_id }) => {
     const { ref, inView } = useInView({ threshold: 0.5, triggerOnce: true });
     const fullScreenPreview = usePostComponent(
-      (state) => state.fullScreenPreview
+      (state) => state.fullScreenPreview,
     );
     const { user: authUser } = useAuthContext();
     const socket = getSocket();
@@ -52,7 +52,7 @@ const PostComponent = memo<PostComponentProps>(
     // Memoized user image with fallback
     const userImage = useMemo(
       () => user?.image?.trim() || "/site/avatar.svg",
-      [user?.image]
+      [user?.image],
     );
 
     // Memoized user profile for media preview
@@ -62,7 +62,7 @@ const PostComponent = memo<PostComponentProps>(
         username: user.username,
         avatar: user.image,
       }),
-      [user.name, user.username, user.image]
+      [user.name, user.username, user.image],
     );
 
     // Memoized formatted text with permission checks
@@ -112,7 +112,7 @@ const PostComponent = memo<PostComponentProps>(
         data.watermark_enabled,
         data.user?.username,
         data.media,
-      ]
+      ],
     );
 
     // Memoized grid configuration
@@ -215,7 +215,7 @@ const PostComponent = memo<PostComponentProps>(
         <PostCompInteractions data={data} />
       </div>
     );
-  }
+  },
 );
 
 PostComponent.displayName = "PostComponent";

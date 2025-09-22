@@ -7,7 +7,7 @@ interface StoryPauseContextType {
 }
 
 const StoryPauseContext = createContext<StoryPauseContextType | undefined>(
-  undefined
+  undefined,
 );
 
 export const useStoryPause = () => {
