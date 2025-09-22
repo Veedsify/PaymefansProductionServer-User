@@ -102,7 +102,6 @@ axiosInstance.interceptors.response.use(
             }, 100);
           }
         }
-
         // Return the custom error so UserContext can catch it and set guest state
         return Promise.reject(authFailure);
       }
