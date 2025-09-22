@@ -25,7 +25,7 @@ const MessageBubbleContent: React.FC<MessageBubbleContentProps> = ({
   isSender,
 }) => {
   const fullScreenPreview = usePostComponent(
-    (state) => state.fullScreenPreview,
+    (state) => state.fullScreenPreview
   );
 
   // Media preview handlers
@@ -44,7 +44,7 @@ const MessageBubbleContent: React.FC<MessageBubbleContentProps> = ({
         withOptions: true,
       });
     },
-    [attachment, fullScreenPreview],
+    [attachment, fullScreenPreview]
   );
   const handleRawPreview = useCallback(
     (file: MediaFile, index: number) => {
@@ -62,7 +62,7 @@ const MessageBubbleContent: React.FC<MessageBubbleContentProps> = ({
         withOptions: true,
       });
     },
-    [rawFiles, fullScreenPreview],
+    [rawFiles, fullScreenPreview]
   );
 
   return (
@@ -225,7 +225,7 @@ const MessageBubbleContent: React.FC<MessageBubbleContentProps> = ({
           }`}
         >
           <div
-            className={`leading-relaxed w-full text-wrap ${
+            className={`leading-relaxed w-full text-wrap text-sm ${
               isSender ? "sender-link-style" : "receiver-link-style"
             }`}
             dangerouslySetInnerHTML={{

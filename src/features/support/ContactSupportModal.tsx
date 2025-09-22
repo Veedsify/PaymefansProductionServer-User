@@ -148,7 +148,7 @@ const ContactSupportModal = ({
       </button>
       {show && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 transition-all"
+          className="fixed inset-0 z-[200] flex items-center justify-center bg-black/60 transition-all"
           aria-modal="true"
           role="dialog"
           tabIndex={-1}

@@ -74,8 +74,8 @@ export const useMediaUpload = () => {
           errorObj:
             | { [key: string]: boolean }
             | ((prev: { [key: string]: boolean }) => {
-                [key: string]: boolean;
-              }),
+              [key: string]: boolean;
+            }),
         ) => {
           const hasError =
             typeof errorObj === "function"
@@ -86,7 +86,6 @@ export const useMediaUpload = () => {
             hasError &&
             !abortController.signal.aborted
           ) {
-            console.error(`❌ Upload error detected for ${file.id}`);
             updateMediaFileStatus(file.id, "error");
           }
         };
@@ -128,9 +127,6 @@ export const useMediaUpload = () => {
               return;
             }
             if (mediaId) {
-              console.log(
-                `✅ Video upload completed for ${file.id}, mediaId: ${mediaId}`,
-              );
               // Validate environment variable
               const customerSubdomain =
                 process.env.NEXT_PUBLIC_CLOUDFLARE_CUSTOMER_SUBDOMAIN;
@@ -143,13 +139,6 @@ export const useMediaUpload = () => {
                 return;
               }
               const videoUrl = `${customerSubdomain}${mediaId}/manifest/video.m3u8`;
-              console.log(`🎬 Creating video attachment for ${file.id}:`, {
-                url: videoUrl,
-                mediaId,
-                posterUrl: file.posterUrl || "",
-                fileSize: file.file.size,
-                extension: path.extname(file.file.name),
-              });
               attachment = {
                 url: videoUrl,
                 type: "video",
@@ -169,7 +158,6 @@ export const useMediaUpload = () => {
                 uploadTracker.delete(file.id);
                 return;
               }
-              console.log(`✅ Video attachment validated for ${file.id}`);
             } else {
               console.error(
                 `❌ Video upload failed - no mediaId returned for ${file.id}`,
@@ -200,7 +188,6 @@ export const useMediaUpload = () => {
           uploadTracker.delete(file.id);
         }
       } catch (error: any) {
-        console.error(`❌ Upload error for ${file.id}:`, error);
         if (!abortController.signal.aborted) {
           updateMediaFileStatus(file.id, "error");
           uploadTracker.delete(file.id);
@@ -294,16 +281,6 @@ export const useMediaUpload = () => {
       .filter((file) => {
         const isCompleted =
           file.uploadStatus === "completed" && file.attachment;
-        if (!isCompleted && file.uploadStatus !== "error") {
-          console.log(
-            `⚠️ File ${file.id} not included in completed attachments:`,
-            {
-              status: file.uploadStatus,
-              hasAttachment: !!file.attachment,
-              type: file.type,
-            },
-          );
-        }
         return isCompleted;
       })
       .map((file) => file.attachment!)
@@ -316,9 +293,6 @@ export const useMediaUpload = () => {
         }
         return isValid;
       });
-    console.log(
-      `📎 Retrieved ${completedAttachments.length} completed attachments from ${mediaFiles.length} files`,
-    );
     return completedAttachments;
   }, [mediaFiles]);
   // Get upload progress statistics

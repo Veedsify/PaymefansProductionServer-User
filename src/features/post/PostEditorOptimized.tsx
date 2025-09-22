@@ -104,7 +104,7 @@ const PostEditor = React.memo(({ posts }: PostEditorProps) => {
             ]
           : []),
       ] as PostAudienceDataProps[],
-    [user],
+    [user]
   );
 
   const {
@@ -138,7 +138,7 @@ const PostEditor = React.memo(({ posts }: PostEditorProps) => {
       updatePostAudience(audience);
       setVisibility(audience.name as "Public" | "Subscribers" | "Price");
     },
-    [updatePostAudience, setVisibility],
+    [updatePostAudience, setVisibility]
   );
 
   // Textarea change handler
@@ -158,7 +158,7 @@ const PostEditor = React.memo(({ posts }: PostEditorProps) => {
       handleContentChange(text);
       processMentions(text, cursorPos);
     },
-    [handleContentChange, processMentions],
+    [handleContentChange, processMentions]
   );
 
   // Mention selection handler
@@ -169,7 +169,7 @@ const PostEditor = React.memo(({ posts }: PostEditorProps) => {
         handleContentChange(newText);
       }
     },
-    [selectMention, handleContentChange],
+    [selectMention, handleContentChange]
   );
 
   // Keydown handler
@@ -180,18 +180,26 @@ const PostEditor = React.memo(({ posts }: PostEditorProps) => {
         handleContentChange(newText);
       }
     },
-    [handleKeyDown, handleContentChange],
+    [handleKeyDown, handleContentChange]
   );
 
   // Submit handler
-  const handlePostSubmit = async () => {
+  const handlePostSubmit = useCallback(async () => {
     if (isSubmitting) return;
 
     // Check if post has content OR media
-    const hasContent = content && content.trim() !== "";
-    const hasNewMedia = media && media.length > 0;
-    const hasExistingMedia = editedMedia && editedMedia.length > 0;
+    const hasContent = postText && postText.trim() !== "" ? true : false;
+    const hasNewMedia = media && media.length > 0 ? true : false;
+    const hasExistingMedia =
+      editedMedia && editedMedia.length > 0 ? true : false;
     const hasAnyMedia = hasNewMedia || hasExistingMedia;
+
+    console.log({
+      hasContent,
+      hasNewMedia,
+      hasExistingMedia,
+      HasAnyMedia: hasAnyMedia,
+    });
 
     // For new posts, require either content or media
     if (!hasContent && !hasAnyMedia && !posts) {
@@ -223,7 +231,7 @@ const PostEditor = React.memo(({ posts }: PostEditorProps) => {
       isEditing ? "Saving your changes..." : "Creating your post...",
       {
         id: "post-upload",
-      },
+      }
     );
 
     const savePostOptions = {
@@ -241,26 +249,46 @@ const PostEditor = React.memo(({ posts }: PostEditorProps) => {
     };
 
     const res = await SavePost(savePostOptions);
-    setIsSubmitting(false);
-
-    if (res.error) {
-      toast.error(res.message, { id: "post-upload" });
-    } else {
+    
+    if (!res.error) {
       const successMessage = isEditing
-        ? "Post updated successfully!"
-        : POST_CONFIG.POST_CREATED_SUCCESS_MSG;
-      toast.success(successMessage, { id: "post-upload" });
-      queryClient.invalidateQueries({ queryKey: ["personal-posts"] });
-      if (isEditing) {
-        router.push("/profile");
-      } else {
+      ? "Post updated successfully!"
+      : POST_CONFIG.POST_CREATED_SUCCESS_MSG;
+      if (!isEditing) {
         setPostText("");
         setVisibility("Public");
         setMediaUploadComplete(false);
         router.push("/profile");
+      } else {
+        router.push("/profile");
       }
+      toast.success(successMessage, { id: "post-upload" });
+      queryClient.invalidateQueries({ queryKey: ["personal-posts"] });
+      return;
     }
-  };
+    setIsSubmitting(false);
+    toast.error(res.message, { id: "post-upload" });
+  }, [
+    posts,
+    router,
+    queryClient,
+    toast,
+    postText,
+    media,
+    editedMedia,
+    removedIds,
+    isSubmitting,
+    isUploadComplete,
+    isAnyUploading,
+    visibility,
+    price,
+    mentions,
+    isWaterMarkEnabled,
+    setIsSubmitting,
+    setPostText,
+    setVisibility,
+    setMediaUploadComplete,
+  ]);
 
   const checkDateDiff = () => {
     if (!posts?.created_at) return false;
@@ -292,8 +320,8 @@ const PostEditor = React.memo(({ posts }: PostEditorProps) => {
                 ? "Saving..."
                 : "Processing..."
               : posts?.post_id
-                ? "Save"
-                : "Post"}
+              ? "Save"
+              : "Post"}
           </button>
         </div>
 
@@ -329,7 +357,7 @@ const PostEditor = React.memo(({ posts }: PostEditorProps) => {
             onChange={handleTextareaChange}
             onKeyDown={handleTextareaKeyDown}
             rows={6}
-          />
+          ></textarea>
 
           <MentionDropdown
             showMentions={showMentions}
@@ -467,7 +495,7 @@ const AudienceDropdown = React.memo(
         )}
       </div>
     );
-  },
+  }
 );
 
 AudienceDropdown.displayName = "AudienceDropdown";

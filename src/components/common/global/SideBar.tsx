@@ -339,7 +339,9 @@ const LogOutModal: React.FC<{ onClose: () => void }> = ({ onClose }) => {
             className="inline-flex items-center px-4 py-2 font-medium text-white bg-red-600 rounded-lg cursor-pointer hover:bg-red-700 gap-2"
           >
             Yes Logout
-            {loggingOut && <LoadingSpinner className="text-white" />}
+            {loggingOut && (
+              <LoadingSpinner color="white" className="text-white" />
+            )}
           </button>
         </div>
       </motion.div>

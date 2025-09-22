@@ -33,10 +33,10 @@ export const useHomeFeedInfinite = () => {
       return lastPage.hasMore ? lastPage.nextCursor : undefined;
     },
     initialPageParam: undefined as string | undefined,
-    staleTime: 30 * 1000, // Consider data fresh for 30 seconds
-    gcTime: 5 * 60 * 1000, // Keep in cache for 5 minutes
+    staleTime: 0, 
     refetchOnWindowFocus: true, // Refetch when user returns to tab
     refetchOnReconnect: true, // Refetch when connection is restored
+    refetchOnMount: true,
     retry: (failureCount, error) => {
       // Don't retry on 401/403 errors (auth issues)
       if (

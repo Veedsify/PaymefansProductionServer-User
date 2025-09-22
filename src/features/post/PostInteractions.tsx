@@ -6,9 +6,9 @@ import {
   LucideMessageSquare,
   LucideRepeat2,
 } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import numeral from "numeral";
-import { useCallback, useEffect, useState } from "react";
+import { use, useCallback, useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { PiCurrencyDollarSimple } from "react-icons/pi";
 import { useGuestModal } from "@/contexts/GuestModalContext";
@@ -37,7 +37,6 @@ const PostRepost = ({
   const toggleModalOpen = useGuestModal((state) => state.toggleModalOpen);
   const [wasReposted, setWasReposted] = useState(isReposted);
   const [postReposts, setPostReposts] = useState(repostCount);
-
   const handleRepost = useCallback(() => {
     if (isGuest) {
       toggleModalOpen("You need to login to like this post.");
@@ -116,9 +115,16 @@ export const PostCompInteractions = ({ data }: PostCompInteractionsProps) => {
         await queryClient.invalidateQueries({
           queryKey: ["posts", data.post_id],
         });
-        await queryClient.invalidateQueries({
-          queryKey: ["homeFeed"],
-        });
+        if (location.pathname !== "/") {
+          await queryClient.invalidateQueries({
+            queryKey: ["homeFeed"],
+          });
+        }
+        if (location.pathname !== "/") {
+          await queryClient.invalidateQueries({
+            queryKey: ["homeFeed"],
+          });
+        }
         await queryClient.invalidateQueries({
           queryKey: ["post", data.post_id],
         });
@@ -156,7 +162,7 @@ export const PostCompInteractions = ({ data }: PostCompInteractionsProps) => {
     try {
       const repost = await axiosInstance.post(
         `/post/repost/${data?.post_id}`,
-        {},
+        {}
       );
       if (repost.status === 200 && repost.data.error === false) {
         toast.success(repost.data.message, {

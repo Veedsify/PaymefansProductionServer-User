@@ -3,6 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import React, { useEffect } from "react";
 import usePostComponent from "@/contexts/PostComponentPreview";
+import FormatName from "@/lib/FormatName";
 
 const UserProfileOverlay = ({
   userProfile,
@@ -43,7 +44,7 @@ const UserProfileOverlay = ({
       </Link>
       <div className="">
         <p className="text-white font-semibold text-base md:text-lg">
-          <Link href={`/${userProfile?.username}`}>{userProfile?.name}</Link>
+          <Link href={`/${userProfile?.username}`}>{FormatName(userProfile?.name)}</Link>
         </p>
         <p className="text-gray-300 text-xs md:text-sm">
           <Link href={`/${userProfile?.username}`}>

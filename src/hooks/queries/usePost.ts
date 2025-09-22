@@ -11,7 +11,8 @@ export const usePost = (postId: string) => {
   return useQuery({
     queryKey: ["post", postId],
     queryFn: () => fetchPost(postId),
-    staleTime: 2 * 60 * 1000, // 2 minutes
+    enabled: !!postId,
+    staleTime: 0, 
     retry: 1,
   });
 };
