@@ -28,6 +28,7 @@ import ActiveProfileTag from "../../profile/ActiveProfileTag";
 import MessageBubble from "./MessageBubble";
 import MessageInputComponent from "./MessageInputComponent";
 import LoadingSpinner from "@/components/common/loaders/LoadingSpinner";
+import FormatName from "@/lib/FormatName";
 
 const ChatPage = ({ conversationId }: { conversationId: string }) => {
   const router = useRouter();
@@ -495,7 +496,7 @@ const ChatPage = ({ conversationId }: { conversationId: string }) => {
               />
               <div>
                 <h2 className="font-semibold text-gray-900 dark:text-white">
-                  {receiver.name}
+                  {FormatName(receiver.name)}
                 </h2>
               </div>
             </div>
@@ -548,7 +549,7 @@ const ChatPage = ({ conversationId }: { conversationId: string }) => {
               }
               className="flex items-center text-sm font-semibold text-gray-900 gap-1 dark:text-white"
             >
-              {receiver?.name}
+              {FormatName(receiver?.name)}
               {receiver?.is_verified && (
                 <LucideVerified className="ml-1 text-emerald-600" size={16} />
               )}

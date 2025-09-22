@@ -14,6 +14,7 @@ import type { LastMessage } from "@/types/Conversations";
 import { getSocket } from "../../../components/common/Socket";
 import ActiveProfileTag from "../../profile/ActiveProfileTag";
 import LoadingSpinner from "@/components/common/loaders/LoadingSpinner";
+import FormatName from "@/lib/FormatName";
 
 const ConversationComponent = () => {
   const [loading, setLoading] = useState(true);
@@ -194,7 +195,7 @@ const ConversationCard = React.memo(
               className="font-semibold text-gray-900 truncate dark:text-gray-100"
             >
               <span className="flex items-center truncate gap-1">
-                {conversation.receiver.name}
+                {FormatName(conversation.receiver.name)}
                 {isVerified && (
                   <LucideVerified size={16} className="text-yellow-500" />
                 )}

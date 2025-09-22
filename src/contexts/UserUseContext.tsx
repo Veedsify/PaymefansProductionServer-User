@@ -23,6 +23,7 @@ interface AuthContextType {
   isGuest: boolean;
   isLoading: boolean;
   setGuestUser: () => void; // Add method to manually set guest state
+  fetchUser: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -43,7 +44,7 @@ export const AuthContextProvider = ({
   user: Partial<AuthUserProps> | undefined;
 }) => {
   const [user, setUser] = useState<Partial<AuthUserProps | null>>(
-    initialUser || null,
+    initialUser || null
   );
   const [isGuest, setIsGuest] = useState(true);
   const [isLoading, setIsLoading] = useState(true);
@@ -177,6 +178,6 @@ export const AuthContextProvider = ({
     };
   }, [user?.username, fetchUser]);
 
-  const value = { user, setUser, isGuest, isLoading, setGuestUser };
+  const value = { user, setUser, isGuest, isLoading, setGuestUser, fetchUser };
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };

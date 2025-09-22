@@ -249,11 +249,11 @@ const PostEditor = React.memo(({ posts }: PostEditorProps) => {
     };
 
     const res = await SavePost(savePostOptions);
-    
+
     if (!res.error) {
       const successMessage = isEditing
-      ? "Post updated successfully!"
-      : POST_CONFIG.POST_CREATED_SUCCESS_MSG;
+        ? "Post updated successfully!"
+        : POST_CONFIG.POST_CREATED_SUCCESS_MSG;
       if (!isEditing) {
         setPostText("");
         setVisibility("Public");
@@ -264,6 +264,7 @@ const PostEditor = React.memo(({ posts }: PostEditorProps) => {
       }
       toast.success(successMessage, { id: "post-upload" });
       queryClient.invalidateQueries({ queryKey: ["personal-posts"] });
+      queryClient.invalidateQueries({ queryKey: ["media"] });
       return;
     }
     setIsSubmitting(false);

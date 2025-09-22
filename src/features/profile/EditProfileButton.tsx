@@ -25,6 +25,7 @@ import useCheckUsername from "../../hooks/CheckUsername";
 import BannerComponent from "./BannerComponent";
 import LoadingSpinner from "@/components/common/loaders/LoadingSpinner";
 import { useQueryClient } from "@tanstack/react-query";
+import { useAuthContext } from "@/contexts/UserUseContext";
 
 const EditProfileButton = ({ user }: { user: any }) => {
   const [open, setOpen] = useState(false);
@@ -44,6 +45,7 @@ const EditProfileButton = ({ user }: { user: any }) => {
 
 function BannerModal({ user, open = false, setOpen }: BannerModalProps) {
   const [file, setFile] = useState<File | null>(null);
+  const { fetchUser } = useAuthContext();
   const [userData, setUserData] = useState<UserUpdateProfileType>(
     {} as UserUpdateProfileType
   );
@@ -53,10 +55,7 @@ function BannerModal({ user, open = false, setOpen }: BannerModalProps) {
     usernameCheck
   );
   const queryClient = useQueryClient();
-
   const usernameTimeoutRef = useRef<NodeJS.Timeout | null>(null);
-
-  const router = useRouter();
 
   const handleInputChange = (
     e: React.ChangeEvent<
@@ -132,7 +131,8 @@ function BannerModal({ user, open = false, setOpen }: BannerModalProps) {
           formData
         );
         setOpen(false);
-        router.refresh();
+        queryClient.invalidateQueries({ queryKey: ["userProfileData"] });
+        await fetchUser();
         return response;
       };
 
@@ -147,7 +147,6 @@ function BannerModal({ user, open = false, setOpen }: BannerModalProps) {
           id: "profile-update-toast",
         }
       );
-      queryClient.invalidateQueries({ queryKey: ["userProfileData"] });
     } catch (error) {
       console.error(error);
     }

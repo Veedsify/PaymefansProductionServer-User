@@ -21,7 +21,6 @@ interface BannerComponentProps {
 }
 
 const BannerComponent = ({ profile_banner }: BannerComponentProps) => {
-  const router = useRouter();
   const [file, setFile] = useState<File | null>(null);
   const [imageUrl, setImageUrl] = useState<string | null>(null);
   const [crop, setCrop] = useState<Crop>();

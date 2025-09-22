@@ -5,6 +5,7 @@ import "swiper/css/bundle";
 import { Eye } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useAuthContext } from "@/contexts/UserUseContext";
+import { StoryPauseProvider } from "@/contexts/StoryPauseContext";
 import StoriesHeader from "./StatusHeader";
 import StoryPreviewControlls from "./StatusPreviewControls";
 import StatusPreviewSlide from "./StatusPreviewSlide";
@@ -78,7 +79,7 @@ const StoryPreviewComponent = ({
     (canPlay: boolean) => {
       if (canPlay) PlayVideo(true);
     },
-    [PlayVideo],
+    [PlayVideo]
   );
 
   // Handle slide change to update video references
@@ -116,7 +117,7 @@ const StoryPreviewComponent = ({
         viewedStories.current.add(currentStory.media_id);
       }
     },
-    [PlayVideo, stories],
+    [PlayVideo, stories]
   );
 
   // Preload adjacent slides for smoother transitions
@@ -168,86 +169,88 @@ const StoryPreviewComponent = ({
   }
 
   return (
-    <div
-      className={`relative flex flex-col items-center justify-center min-h-dvh bg-black ${className}`}
-    >
-      {/* Header */}
-      <div className="absolute top-0 z-20 w-full mx-auto -translate-x-1/2 lg:max-w-3xl left-1/2">
-        <StoriesHeader
-          username={stories[activeIndex]?.user?.username || ""}
-          timestamp={stories[activeIndex]?.created_at || ""}
-          profileImage={
-            stories[activeIndex]?.user?.profile_image?.trimEnd() || ""
-          }
-        />
-      </div>
-
-      {/* Main Content Area */}
-      <div className="relative flex items-center justify-center w-full lg:max-w-3xl h-dvh">
-        {/* Controls */}
-        <div className="absolute w-full z-2 mx-auto left-1/2 -translate-x-1/2 top-2 h-full pointer-events-none">
-          <StoryPreviewControlls
-            type={stories[activeIndex]?.media_type || "image"}
-            moveToNextSlide={moveToNextSlide}
-            playVideoOnLoad={PlayIfVideo}
-            clickToPlay={() =>
-              PlayVideo(stories[activeIndex]?.media_type === "video")
+    <StoryPauseProvider>
+      <div
+        className={`relative flex flex-col items-center justify-center min-h-dvh bg-black ${className}`}
+      >
+        {/* Header */}
+        <div className="absolute top-0 z-20 w-full mx-auto -translate-x-1/2 lg:max-w-3xl left-1/2">
+          <StoriesHeader
+            username={stories[activeIndex]?.user?.username || ""}
+            timestamp={stories[activeIndex]?.created_at || ""}
+            profileImage={
+              stories[activeIndex]?.user?.profile_image?.trimEnd() || ""
             }
-            stories={stories}
-            index={activeIndex}
-            moveToPrevSlide={moveToPrevSlide}
           />
         </div>
 
-        {/* Swiper Container */}
-        <div className="w-full h-full">
-          <Swiper
-            key={swiperKey}
-            spaceBetween={0}
-            slidesPerView={1}
-            allowTouchMove={true}
-            onSwiper={(swiper) => {
-              swiperRef.current = swiper;
-            }}
-            className="w-full h-full"
-            onSlideChange={handleSlideChange}
-            speed={300}
-            loop={false}
-            initialSlide={activeIndex}
-            watchSlidesProgress={true}
-          >
-            {stories.map((story, index) => (
-              <SwiperSlide
-                className="relative flex items-center justify-center bg-black"
-                key={`${story.media_url}-${index}-${swiperKey}`}
-              >
-                <StatusPreviewSlide
-                  index={index}
-                  activeIndex={activeIndex}
-                  moveToNextSlide={moveToNextSlide}
-                  story={story}
-                />
-              </SwiperSlide>
-            ))}
-          </Swiper>
-        </div>
-      </div>
+        {/* Main Content Area */}
+        <div className="relative flex items-center justify-center w-full lg:max-w-3xl h-dvh">
+          {/* Controls */}
+          <div className="absolute w-full z-2 mx-auto left-1/2 -translate-x-1/2 top-2 h-full pointer-events-none">
+            <StoryPreviewControlls
+              type={stories[activeIndex]?.media_type || "image"}
+              moveToNextSlide={moveToNextSlide}
+              playVideoOnLoad={PlayIfVideo}
+              clickToPlay={() =>
+                PlayVideo(stories[activeIndex]?.media_type === "video")
+              }
+              stories={stories}
+              index={activeIndex}
+              moveToPrevSlide={moveToPrevSlide}
+            />
+          </div>
 
-      {/* Bottom View Count (for story owner) */}
-      {stories[activeIndex]?.user?.id === user?.id && viewCount > 0 && (
-        <div className="absolute z-20 transform -translate-x-1/2 bottom-4 left-1/2">
-          <button
-            onClick={() => setShowViewsBottomSheet(true)}
-            className="flex items-center gap-2 px-4 py-2 text-white transition-colors rounded-full bg-black/60 backdrop-blur-sm hover:bg-black/80"
-          >
-            <Eye size={16} />
-            <span className="text-sm font-medium">
-              {viewCount} view{viewCount !== 1 ? "s" : ""}
-            </span>
-          </button>
+          {/* Swiper Container */}
+          <div className="w-full h-full">
+            <Swiper
+              key={swiperKey}
+              spaceBetween={0}
+              slidesPerView={1}
+              allowTouchMove={true}
+              onSwiper={(swiper) => {
+                swiperRef.current = swiper;
+              }}
+              className="w-full h-full"
+              onSlideChange={handleSlideChange}
+              speed={300}
+              loop={false}
+              initialSlide={activeIndex}
+              watchSlidesProgress={true}
+            >
+              {stories.map((story, index) => (
+                <SwiperSlide
+                  className="relative flex items-center justify-center bg-black"
+                  key={`${story.media_url}-${index}-${swiperKey}`}
+                >
+                  <StatusPreviewSlide
+                    index={index}
+                    activeIndex={activeIndex}
+                    moveToNextSlide={moveToNextSlide}
+                    story={story}
+                  />
+                </SwiperSlide>
+              ))}
+            </Swiper>
+          </div>
         </div>
-      )}
-    </div>
+
+        {/* Bottom View Count (for story owner) */}
+        {stories[activeIndex]?.user?.id === user?.id && viewCount > 0 && (
+          <div className="absolute z-20 transform -translate-x-1/2 bottom-4 left-1/2">
+            <button
+              onClick={() => setShowViewsBottomSheet(true)}
+              className="flex items-center gap-2 px-4 py-2 text-white transition-colors rounded-full bg-black/60 backdrop-blur-sm hover:bg-black/80"
+            >
+              <Eye size={16} />
+              <span className="text-sm font-medium">
+                {viewCount} view{viewCount !== 1 ? "s" : ""}
+              </span>
+            </button>
+          </div>
+        )}
+      </div>
+    </StoryPauseProvider>
   );
 };
 

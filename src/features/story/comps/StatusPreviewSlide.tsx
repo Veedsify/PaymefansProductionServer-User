@@ -9,6 +9,7 @@ import swal from "sweetalert";
 import { v4 as uuid } from "uuid";
 import { usePointsStore } from "@/contexts/PointsContext";
 import { useAuthContext } from "@/contexts/UserUseContext";
+import { useStoryPause } from "@/contexts/StoryPauseContext";
 import HlsViewer from "@/features/media/HlsViewer";
 import type { Story } from "@/types/Components";
 import axiosInstance from "@/utils/Axios";
@@ -85,6 +86,11 @@ const StatusViewBlock = ({ story }: { story: Story }) => {
     });
   const viewers = data?.pages.flatMap((page) => page.data) as Viewer[];
   const viewsCount = viewers?.[0]?.viewCount || 0;
+  const { setIsPaused } = useStoryPause();
+
+  useEffect(() => {
+    setIsPaused(statusViewOpen);
+  }, [statusViewOpen, setIsPaused]);
   const handleViewSection = () => {
     setStatusViewOpen(!statusViewOpen);
   };
@@ -193,6 +199,11 @@ const StoryReplyInput = ({ story }: { story: Story }) => {
   const [showReplyInput, setShowReplyInput] = useState(false);
   const { user } = useAuthContext();
   const points = usePointsStore((state) => state.points);
+  const { setIsPaused } = useStoryPause();
+
+  useEffect(() => {
+    setIsPaused(showReplyInput);
+  }, [showReplyInput, setIsPaused]);
   const handleReplySubmit = async () => {
     if (!replyText.trim() || !user) return;
     try {
@@ -315,7 +326,7 @@ const StoryReplyInput = ({ story }: { story: Story }) => {
     return null;
   }
   return (
-    <div className="absolute z-100 bottom-4 left-4 right-4 w-full">
+    <div className="absolute z-100 bottom-4 w-full">
       <AnimatePresence>
         {showReplyInput ? (
           <motion.div

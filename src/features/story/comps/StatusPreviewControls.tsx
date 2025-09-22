@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 import { useInView } from "react-intersection-observer";
+import { useStoryPause } from "@/contexts/StoryPauseContext";
 import type { StoryPreviewControlProps } from "@/types/Components";
 
 const StoryPreviewControlls = ({
@@ -99,13 +100,14 @@ const ProgressBar = ({
   const progressBarRef = useRef<HTMLDivElement>(null);
   const hasMovedToNextSlide = useRef(false);
   const animationFrameRef = useRef<number>(null);
+  const { isPaused } = useStoryPause();
 
   // Intersection Observer effect
   useEffect(() => {
     const progressRef = progressBarRef.current;
     const observer = new IntersectionObserver(
       ([entry]) => setIsIntersecting(entry.isIntersecting),
-      { threshold: 1, rootMargin: "0px 0px 0px 0px" },
+      { threshold: 1, rootMargin: "0px 0px 0px 0px" }
     );
 
     if (progressRef) {
@@ -145,6 +147,12 @@ const ProgressBar = ({
         let lastTime = performance.now();
 
         const updateProgress = () => {
+          if (isPaused) {
+            // If paused, just schedule next frame without updating
+            animationFrameRef.current = requestAnimationFrame(updateProgress);
+            return;
+          }
+
           const currentTime = performance.now();
           if (currentTime - lastTime >= updateInterval) {
             setPercent((prevPercent) => {
@@ -176,7 +184,14 @@ const ProgressBar = ({
     }
 
     return cleanupAnimation;
-  }, [slideIndex, mainIndex, isIntersecting, duration, moveToNextSlide]);
+  }, [
+    slideIndex,
+    mainIndex,
+    isIntersecting,
+    duration,
+    moveToNextSlide,
+    isPaused,
+  ]);
 
   return (
     <div

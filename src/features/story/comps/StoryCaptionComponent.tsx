@@ -71,7 +71,7 @@ const CustomSwiper = ({
     (newIndex: number) => {
       setEditingSlide(newIndex);
     },
-    [setEditingSlide],
+    [setEditingSlide]
   );
 
   const goToSlide = useCallback(
@@ -83,16 +83,16 @@ const CustomSwiper = ({
       slideChange(index);
       setTimeout(() => setIsTransitioning(false), 300);
     },
-    [totalSlides, isTransitioning, onSlideChange, slideChange],
+    [totalSlides, isTransitioning, onSlideChange, slideChange]
   );
 
   const nextSlide = useCallback(
     () => goToSlide(currentSlide + 1),
-    [goToSlide, currentSlide],
+    [goToSlide, currentSlide]
   );
   const prevSlide = useCallback(
     () => goToSlide(currentSlide - 1),
-    [goToSlide, currentSlide],
+    [goToSlide, currentSlide]
   );
 
   const onTouchStart = (e: React.TouchEvent) => {
@@ -231,7 +231,7 @@ const DraggableElement = ({
     clientX: number,
     clientY: number,
     isTouch = false,
-    isScaleMode = false,
+    isScaleMode = false
   ) => {
     setDragStart({ x: clientX, y: clientY });
     setInitialPosition(element.position);
@@ -265,7 +265,7 @@ const DraggableElement = ({
         const scaleFactor = scaleDistance / 100; // Adjust sensitivity
         const newSize = Math.max(
           0.75,
-          Math.min(5, initialFontSize + scaleFactor),
+          Math.min(5, initialFontSize + scaleFactor)
         );
         onStyleChange(element.id, { fontSize: `${newSize}rem` });
       } else if (isDragging) {
@@ -274,11 +274,11 @@ const DraggableElement = ({
         const deltaYPercent = (deltaY / rect.height) * 100;
         const newX = Math.max(
           5,
-          Math.min(95, initialPosition.x + deltaXPercent),
+          Math.min(95, initialPosition.x + deltaXPercent)
         );
         const newY = Math.max(
           5,
-          Math.min(95, initialPosition.y + deltaYPercent),
+          Math.min(95, initialPosition.y + deltaYPercent)
         );
         onPositionChange(element.id, { x: newX, y: newY });
       }
@@ -295,7 +295,7 @@ const DraggableElement = ({
       onPositionChange,
       onStyleChange,
       element.id,
-    ],
+    ]
   );
 
   // End drag or tap
@@ -391,7 +391,7 @@ const DraggableElement = ({
                 e.touches[0].clientX,
                 e.touches[0].clientY,
                 true,
-                true,
+                true
               );
             }}
             title="Drag up/down to scale"
@@ -580,27 +580,27 @@ const EnhancedSlideComponent = ({
 
   const updateElementContent = (id: string, content: string) => {
     const newElements = captionElements.map((el) =>
-      el.id === id ? { ...el, content } : el,
+      el.id === id ? { ...el, content } : el
     );
     updateCaptionElements(newElements);
   };
 
   const updateElementPosition = (
     id: string,
-    position: { x: number; y: number },
+    position: { x: number; y: number }
   ) => {
     const newElements = captionElements.map((el) =>
-      el.id === id ? { ...el, position } : el,
+      el.id === id ? { ...el, position } : el
     );
     updateCaptionElements(newElements);
   };
 
   const updateElementStyle = (
     id: string,
-    styleUpdate: Partial<CaptionElement["style"]>,
+    styleUpdate: Partial<CaptionElement["style"]>
   ) => {
     const newElements = captionElements.map((el) =>
-      el.id === id ? { ...el, style: { ...el.style, ...styleUpdate } } : el,
+      el.id === id ? { ...el, style: { ...el.style, ...styleUpdate } } : el
     );
     updateCaptionElements(newElements);
   };
@@ -634,7 +634,7 @@ const EnhancedSlideComponent = ({
   // Helper to get video durations and embed in mystory
   const getStoriesWithDurations = async () => {
     const videoStories = mystory.filter(
-      (s) => s.media_type === "video" && s.media_url,
+      (s) => s.media_type === "video" && s.media_url
     );
     const durations: Record<string, number> = {};
     await Promise.all(
@@ -649,14 +649,14 @@ const EnhancedSlideComponent = ({
               resolve();
             };
             videoEl.onerror = () => resolve();
-          }),
-      ),
+          })
+      )
     );
     // Embed duration in each story object
     return mystory.map((story) =>
       story.media_type === "video" && story.media_url
         ? { ...story, duration: durations[story.media_url] || 0 }
-        : { ...story, duration: 5 },
+        : { ...story, duration: 5 }
     );
   };
 
