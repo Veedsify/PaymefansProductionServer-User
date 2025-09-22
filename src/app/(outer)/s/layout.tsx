@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 import "@fontsource-variable/geist";
-import "./style.css";
+import "./globals.css";
 
 export default function OuterPagesLayout({
   children,
