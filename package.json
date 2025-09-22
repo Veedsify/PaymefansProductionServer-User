@@ -18,6 +18,7 @@
     "@types/numeral": "^2.0.5",
     "@types/sprintf-js": "^1.1.4",
     "axios": "^1.11.0",
+    "cloudflare": "^5.1.0",
     "clsx": "^2.1.1",
     "framer-motion": "^12.23.12",
     "geist": "^1.4.2",
