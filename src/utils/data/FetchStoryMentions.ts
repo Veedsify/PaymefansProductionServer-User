@@ -60,23 +60,16 @@ export const addStoryMentions = async (
     storyMediaId: string,
     mentionedUserIds: number[]
 ): Promise<AddStoryMentionsResponse> => {
+    console.log("Adding story mentions:", { storyMediaId, mentionedUserIds });
     try {
-        const response = await axiosInstance.post(
-            "/story/mentions",
-            {
-                storyMediaId,
-                mentionedUserIds,
-            },
-            {
-                headers: {
-                    Authorization: `Bearer ${getToken()}`,
-                },
-                withCredentials: true,
-            }
-        );
+        const response = await axiosInstance.post("/stories/mentions", {
+            storyMediaId,
+            mentionedUserIds,
+        });
+        console.log("Add mentions response:", response.data);
         return response.data;
-    } catch (error: any) {
+    } catch (error) {
         console.error("Error adding story mentions:", error);
-        throw error.response?.data || error;
+        throw error;
     }
 };

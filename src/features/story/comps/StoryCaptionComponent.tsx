@@ -723,16 +723,38 @@ const EnhancedSlideComponent = ({
 
   const submitStory = async () => {
     const storiesWithDurations = await getStoriesWithDurations();
+
     const submit = await SubmitUserStory(storiesWithDurations);
-    if (submit.success) {
+
+    if (submit.success && submit.data) {
       // Send mentions for each story that has them
       try {
+        // Get the saved story data from the server response
+        const savedStory = submit.data;
+        const storyMediaList = savedStory.StoryMedia || [];
+
+        // Create a map of client media_id to server media_id
+        const mediaIdMap = new Map();
+        storyMediaList.forEach((storyMedia: any) => {
+          // Find the corresponding client story by media_id
+          const clientStory = storiesWithDurations.find(
+            (story) => story.media_id === storyMedia.media_id
+          );
+          if (clientStory) {
+            // Map client media_id to server media_id (which is the same in this case)
+            // but ensure we use the database ID for mentions
+            mediaIdMap.set(clientStory.media_id, storyMedia.media_id);
+          }
+        });
+
+
         const mentionPromises = mystory
           .filter((story) => story.mentions && story.mentions.length > 0)
           .map(async (story) => {
-            if (story.media_id && story.mentions) {
+            const serverMediaId = mediaIdMap.get(story.media_id);
+            if (serverMediaId && story.mentions) {
               await addStoryMentions(
-                story.media_id,
+                serverMediaId,
                 story.mentions.map((m) => m.id)
               );
             }
@@ -747,6 +769,8 @@ const EnhancedSlideComponent = ({
       toast.success("Story uploaded successfully");
       close();
       clearStory();
+    } else {
+      toast.error(submit.message || "Failed to upload story");
     }
   };
 
