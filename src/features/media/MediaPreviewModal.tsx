@@ -285,7 +285,7 @@ const MediaPreviewModal = memo(
           {mediaItems.map((item, index) => (
             <SwiperSlide
               key={`media-${index}-${item.url.slice(-20)}`}
-              className="relative w-full h-screen bg-black"
+              className="relative h-screen bg-black"
               aria-label={`Slide ${index + 1} of ${totalSlides}`}
             >
               <MediaErrorBoundary>

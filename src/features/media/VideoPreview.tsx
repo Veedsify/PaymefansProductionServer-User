@@ -3,7 +3,11 @@
 import { motion } from "framer-motion";
 import React, { memo, useCallback, useEffect, useRef, useState } from "react";
 import { MEDIA_CONSTANTS, type UserProfile } from "./mediaPreviewTypes";
-import HLSVideoPlayer from "./videoplayer";
+import dynamic from "next/dynamic";
+
+const HLSVideoPlayer = dynamic(() => import("./videoplayer"), {
+  ssr: false,
+});
 
 interface VideoPreviewProps {
   url: string;
@@ -17,7 +21,7 @@ const VideoPreview = memo(
   ({ url, isBlob, playAction, index, userProfile }: VideoPreviewProps) => {
     const videoRef = useRef<HTMLVideoElement | null>(null);
     const [status, setStatus] = useState<"loading" | "ready" | "error">(
-      "loading",
+      "loading"
     );
     const [retryCount, setRetryCount] = useState(0);
 
@@ -106,7 +110,7 @@ const VideoPreview = memo(
     if (status === "error") {
       return (
         <motion.div
-          className="flex items-center justify-center h-full text-white"
+          className="flex items-center justify-center h-full w-fix text-white object-contain"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.3 }}
@@ -133,7 +137,7 @@ const VideoPreview = memo(
 
     return (
       <motion.div
-        className="relative flex items-center justify-center h-full"
+        className="relative object-contain h-full"
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
         exit={{ opacity: 0, scale: 0.95 }}
@@ -172,7 +176,7 @@ const VideoPreview = memo(
         )}
       </motion.div>
     );
-  },
+  }
 );
 VideoPreview.displayName = "VideoPreview";
 
