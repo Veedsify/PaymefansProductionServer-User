@@ -36,7 +36,7 @@ export const ImagePreview = memo(
           </AnimatePresence>
         }
       >
-        <div className="aboslute inset-0 left-0 select-none object-contain">
+        <div className="absolute inset-0 left-0 select-none flex items-center justify-center object-contain">
           {userProfile && (
             <div className="absolute bottom-10 left-2 z-20 flex items-center gap-3 p-2 rounded-full">
               <UserProfileOverlay userProfile={userProfile} />

@@ -293,7 +293,7 @@ const MediaPreviewModal = memo(
           {mediaItems.map((item, index) => (
             <SwiperSlide
               key={`media-${index}-${item.url.slice(-20)}`}
-              className="relative w-full h-screen flex items-center justify-center bg-black"
+              className="relative w-full h-screen bg-black"
               aria-label={`Slide ${index + 1} of ${totalSlides}`}
             >
               <MediaErrorBoundary>
@@ -304,7 +304,7 @@ const MediaPreviewModal = memo(
                       username={username}
                       alt={item.alt || `Media preview ${index + 1}`}
                       index={index}
-                      className="max-h-screen object-contain w-full"
+                      className="object-contain max-h-screen"
                       onLoad={() => handleImageLoad(index)}
                       onError={() => handleImageError(index)}
                       userProfile={userProfile}
