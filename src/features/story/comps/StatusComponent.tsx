@@ -291,7 +291,7 @@ function StatusComponent() {
                   <div className="bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-700 dark:to-gray-800 w-full aspect-square rounded-xl flex items-center justify-center relative ring-2 ring-transparent group-hover:ring-primary-dark-pink/30 transition-all duration-300 transform group-hover:scale-[1.02] shadow-md hover:shadow-lg">
                     <button
                       onClick={getRemoveHandler(data.id)}
-                      className="absolute cursor-pointer z-50 top-2 right-2 bg-red-500 hover:bg-red-600 p-1.5 rounded-full shadow-lg opacity-0 group-hover:opacity-100 transition-all duration-200 transform scale-90 hover:scale-100"
+                      className="absolute cursor-pointer z-50 top-2 right-2 bg-red-500 hover:bg-red-600 p-1.5 rounded-full shadow-lg md:opacity-0 md:group-hover:opacity-100 opacity-100 transition-all duration-200 transform scale-90 hover:scale-100"
                     >
                       <X strokeWidth={2.5} stroke="#fff" size={14} />
                     </button>

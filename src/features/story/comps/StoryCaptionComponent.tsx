@@ -29,6 +29,7 @@ import SubmitUserStory from "@/utils/story/submit-user-story";
 import FetchMentions from "@/utils/data/FetchMentions";
 import { addStoryMentions } from "@/utils/data/FetchStoryMentions";
 import FormatName from "@/lib/FormatName";
+import swal from "sweetalert";
 
 // Enhanced types for captions and links
 interface CaptionElement {
@@ -75,7 +76,7 @@ const CustomSwiper = ({
     (newIndex: number) => {
       setEditingSlide(newIndex);
     },
-    [setEditingSlide],
+    [setEditingSlide]
   );
 
   const goToSlide = useCallback(
@@ -87,16 +88,16 @@ const CustomSwiper = ({
       slideChange(index);
       setTimeout(() => setIsTransitioning(false), 300);
     },
-    [totalSlides, isTransitioning, onSlideChange, slideChange],
+    [totalSlides, isTransitioning, onSlideChange, slideChange]
   );
 
   const nextSlide = useCallback(
     () => goToSlide(currentSlide + 1),
-    [goToSlide, currentSlide],
+    [goToSlide, currentSlide]
   );
   const prevSlide = useCallback(
     () => goToSlide(currentSlide - 1),
-    [goToSlide, currentSlide],
+    [goToSlide, currentSlide]
   );
 
   const onTouchStart = (e: React.TouchEvent) => {
@@ -225,7 +226,7 @@ const DraggableElement = ({
   const [isScaling, setIsScaling] = useState(false);
   const [dragMoved, setDragMoved] = useState(false);
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
-  const [initialPosition, setInitialPosition] = useState({ x: 0, y: 0 });
+  const [initialPosition, setInitialPosition] = useState({ x: 50, y: 50 });
   const [initialFontSize, setInitialFontSize] = useState(0);
   const [isEditing, setIsEditing] = useState(false);
   const elementRef = useRef<HTMLDivElement>(null);
@@ -235,7 +236,7 @@ const DraggableElement = ({
     clientX: number,
     clientY: number,
     isTouch = false,
-    isScaleMode = false,
+    isScaleMode = false
   ) => {
     setDragStart({ x: clientX, y: clientY });
     setInitialPosition(element.position);
@@ -269,7 +270,7 @@ const DraggableElement = ({
         const scaleFactor = scaleDistance / 100; // Adjust sensitivity
         const newSize = Math.max(
           0.75,
-          Math.min(5, initialFontSize + scaleFactor),
+          Math.min(5, initialFontSize + scaleFactor)
         );
         onStyleChange(element.id, { fontSize: `${newSize}rem` });
       } else if (isDragging) {
@@ -278,11 +279,11 @@ const DraggableElement = ({
         const deltaYPercent = (deltaY / rect.height) * 100;
         const newX = Math.max(
           5,
-          Math.min(95, initialPosition.x + deltaXPercent),
+          Math.min(95, initialPosition.x + deltaXPercent)
         );
         const newY = Math.max(
           5,
-          Math.min(95, initialPosition.y + deltaYPercent),
+          Math.min(95, initialPosition.y + deltaYPercent)
         );
         onPositionChange(element.id, { x: newX, y: newY });
       }
@@ -299,7 +300,7 @@ const DraggableElement = ({
       onPositionChange,
       onStyleChange,
       element.id,
-    ],
+    ]
   );
 
   // End drag or tap
@@ -395,7 +396,7 @@ const DraggableElement = ({
                 e.touches[0].clientX,
                 e.touches[0].clientY,
                 true,
-                true,
+                true
               );
             }}
             title="Drag up/down to scale"
@@ -404,7 +405,7 @@ const DraggableElement = ({
           </div>
         </div>
       )}
-      <div className="w-full h-full">
+      <div className="w-full h-full flex items-center justify-center">
         {element.type === "text" ? (
           <textarea
             maxLength={100}
@@ -573,7 +574,7 @@ const EnhancedSlideComponent = ({
       type: "link",
       content: "Link Text",
       url: tempLinkUrl,
-      position: { x: 50, y: 30 },
+      position: { x: 50, y: 50 },
       style: {
         fontFamily: fontFamilies[fontIndex],
         fontSize: "1.5rem",
@@ -641,27 +642,27 @@ const EnhancedSlideComponent = ({
 
   const updateElementContent = (id: string, content: string) => {
     const newElements = captionElements.map((el) =>
-      el.id === id ? { ...el, content } : el,
+      el.id === id ? { ...el, content } : el
     );
     updateCaptionElements(newElements);
   };
 
   const updateElementPosition = (
     id: string,
-    position: { x: number; y: number },
+    position: { x: number; y: number }
   ) => {
     const newElements = captionElements.map((el) =>
-      el.id === id ? { ...el, position } : el,
+      el.id === id ? { ...el, position } : el
     );
     updateCaptionElements(newElements);
   };
 
   const updateElementStyle = (
     id: string,
-    styleUpdate: Partial<CaptionElement["style"]>,
+    styleUpdate: Partial<CaptionElement["style"]>
   ) => {
     const newElements = captionElements.map((el) =>
-      el.id === id ? { ...el, style: { ...el.style, ...styleUpdate } } : el,
+      el.id === id ? { ...el, style: { ...el.style, ...styleUpdate } } : el
     );
     updateCaptionElements(newElements);
   };
@@ -695,7 +696,7 @@ const EnhancedSlideComponent = ({
   // Helper to get video durations and embed in mystory
   const getStoriesWithDurations = async () => {
     const videoStories = mystory.filter(
-      (s) => s.media_type === "video" && s.media_url,
+      (s) => s.media_type === "video" && s.media_url
     );
     const durations: Record<string, number> = {};
     await Promise.all(
@@ -710,14 +711,14 @@ const EnhancedSlideComponent = ({
               resolve();
             };
             videoEl.onerror = () => resolve();
-          }),
-      ),
+          })
+      )
     );
     // Embed duration in each story object
     return mystory.map((story) =>
       story.media_type === "video" && story.media_url
         ? { ...story, duration: durations[story.media_url] || 0 }
-        : { ...story, duration: 5 },
+        : { ...story, duration: 5 }
     );
   };
 
@@ -738,7 +739,7 @@ const EnhancedSlideComponent = ({
         storyMediaList.forEach((storyMedia: any) => {
           // Find the corresponding client story by media_id
           const clientStory = storiesWithDurations.find(
-            (story) => story.media_id === storyMedia.media_id,
+            (story) => story.media_id === storyMedia.media_id
           );
           if (clientStory) {
             // Map client media_id to server media_id (which is the same in this case)
@@ -754,7 +755,7 @@ const EnhancedSlideComponent = ({
             if (serverMediaId && story.mentions) {
               await addStoryMentions(
                 serverMediaId,
-                story.mentions.map((m) => m.id),
+                story.mentions.map((m) => m.id)
               );
             }
           });
@@ -784,34 +785,49 @@ const EnhancedSlideComponent = ({
     ? captionElements.find((el) => el.id === selectedElement)
     : null;
 
+  const handleClearStory = () => {
+    swal({
+      title: "Are you sure?",
+      text: "This will clear your current story edits.",
+      icon: "warning",
+      buttons: ["Cancel", "Yes, clear it!"],
+      dangerMode: true,
+    }).then((willClear) => {
+      if (willClear) {
+        clearStory();
+        close();
+        toast.success("Story cleared");
+      }
+    });
+  };
   return (
     <div className="relative flex flex-col items-center justify-center w-full h-full">
       <div className="absolute top-0 left-0 z-50 flex items-center justify-between w-full px-4 py-3 border-b backdrop-blur-md bg-white/10 border-white/20">
         <div className="flex items-center gap-2">
           <button
-            onClick={changeFont}
-            className="p-2.5 rounded-xl bg-gradient-to-r from-purple-500 to-pink-500 cursor-pointer hover:from-purple-600 hover:to-pink-600 transition-all duration-200 transform hover:scale-105"
+            onClick={handleClearStory}
+            className="p-2.5 rounded-xl bg-gradient-to-r bg-red-500 hover:bg-red-700 transition-all duration-200 transform hover:scale-105"
             title="Change Font"
           >
-            <FileSignature stroke="#fff" size={18} />
+            <X stroke="#fff" size={18} />
           </button>
           <button
             onClick={addTextElement}
-            className="p-2.5 rounded-xl bg-gradient-to-r from-blue-500 to-cyan-500 cursor-pointer hover:from-blue-600 hover:to-cyan-600 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-105"
+            className="p-2.5 rounded-xl bg-gradient-to-r bg-white text-black transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-105"
             title="Add Text"
           >
-            <Text stroke="#fff" size={18} />
+            <Text stroke="#000" size={18} />
           </button>
           <button
             onClick={addLinkElement}
-            className="p-2.5 rounded-xl bg-gradient-to-r from-green-500 to-emerald-500 cursor-pointer hover:from-green-600 hover:to-emerald-600 transition-all duration-200 transform hover:scale-105"
+            className="p-2.5 rounded-xl bg-gradient-to-r bg-blue-500 transition-all duration-200 transform hover:scale-105"
             title="Add Link"
           >
             <Link stroke="#fff" size={18} />
           </button>
           <button
             onClick={openMentionDialog}
-            className="p-2.5 rounded-xl bg-gradient-to-r from-orange-500 to-red-500 cursor-pointer hover:from-orange-600 hover:to-red-600 transition-all duration-200 transform hover:scale-105"
+            className="p-2.5 rounded-xl bg-emerald-500 transition-all duration-200 transform hover:scale-105"
             title="Tag Users"
           >
             <AtSign stroke="#fff" size={18} />
@@ -819,7 +835,7 @@ const EnhancedSlideComponent = ({
         </div>
         <button
           onClick={submitStory}
-          className="p-3 cursor-pointer rounded-xl bg-primary-dark-pink transition-all duration-200 transform hover:scale-105"
+          className="p-2.5 cursor-pointer rounded-xl bg-primary-dark-pink transition-all duration-200 transform hover:scale-105"
           title="Submit Story"
         >
           <LucideSend stroke="#fff" size={20} />
@@ -993,7 +1009,7 @@ const EnhancedSlideComponent = ({
           ))}
       </div>
       {showLinkDialog && (
-        <div className="absolute inset-0 flex items-center justify-center bg-black/60 backdrop-blur-sm z-60">
+        <div className="absolute inset-0 flex items-center justify-center bg-black/60 backdrop-blur-sm z-60 top-1/12">
           <div className="w-full max-w-sm p-8 mx-4 border shadow-2xl bg-white/95 backdrop-blur-md rounded-2xl border-white/20">
             <h3 className="mb-6 text-xl font-bold text-gray-800">Add Link</h3>
             <input
@@ -1082,7 +1098,7 @@ const EnhancedSlideComponent = ({
                         key={user.id}
                         onClick={() => addMention(user)}
                         disabled={selectedMentions.some(
-                          (m) => m.id === user.id,
+                          (m) => m.id === user.id
                         )}
                         className="flex items-center w-full gap-3 p-3 text-left transition-all duration-200 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
                       >
@@ -1147,14 +1163,14 @@ const StoryCaptionComponent = ({ close }: StoryCaptionComponentProps) => {
   return (
     <div className="flex flex-col items-center fixed justify-center inset-0 w-full min-h-dvh bg-black/70 z-[200] select-none">
       <div
-        className="flex items-center justify-center flex-1 w-full p-4"
+        className="flex items-center justify-center flex-1 w-full md:p-4"
         onClick={(e) => {
           if (e.target === e.currentTarget) {
             close();
           }
         }}
       >
-        <div className="max-w-[520px] w-full aspect-[9/16]">
+        <div className="w-full md:max-w-[520px] h-screen md:h-auto md:aspect-[9/16]">
           <CustomSwiper>
             {story?.map((story, index) => (
               <EnhancedSlideComponent
