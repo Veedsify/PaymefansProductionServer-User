@@ -124,7 +124,7 @@ const Status = ({
         <div
           className={`flex items-center ${
             islive ? "bg-red-300" : "bg-gray-300"
-          } flex-shrink-0 justify-center rounded-full aspect-square h-18 w-18 md:h-22 md:w-22 relative mb-3.5`}
+          } flex-shrink-0 justify-center rounded-full aspect-square h-18 w-18 md:h-22 md:w-22 relative mb-2`}
         >
           {islive && (
             <div className="absolute w-2/3 border border-red-600 rounded-full h-2/3 animate-ping"></div>

@@ -31,7 +31,12 @@ const ProfilePage = () => {
     queryFn: getUserData,
   });
 
-  if (isLoading) return <LoadingSpinner />;
+  if (isLoading)
+    return (
+      <div className="py-3">
+        <LoadingSpinner />
+      </div>
+    );
   if (error) return <ErrorComponent text="Error loading user data" />;
   if (!user) return <ErrorComponent text="No UserData Found" />;
 
