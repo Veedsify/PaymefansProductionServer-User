@@ -358,7 +358,7 @@ const DraggableElement = ({
         isSelected
           ? "ring-2 ring-blue-400 ring-opacity-70 scale-105 shadow-lg"
           : "hover:shadow-md"
-      } ${isDragging || isScaling ? "z-50" : "z-30"}`}
+      } ${isDragging || isScaling ? "z-[70]" : "z-[55]"}`}
       style={{
         left: `${element.position.x}%`,
         top: `${element.position.y}%`,
@@ -801,13 +801,14 @@ const EnhancedSlideComponent = ({
     });
   };
   return (
-    <div className="relative flex flex-col items-center justify-center w-full h-full">
-      <div className="absolute top-0 left-0 z-50 flex items-center justify-between w-full px-4 py-3 border-b backdrop-blur-md bg-white/10 border-white/20">
+    <>
+      {/* Top Toolbar - Separate Layer */}
+      <div className="absolute top-0 left-0 right-0 z-[100] flex items-center justify-between w-full px-4 py-3 border-b backdrop-blur-md bg-white/10 border-white/20">
         <div className="flex items-center gap-2">
           <button
             onClick={handleClearStory}
             className="p-2.5 rounded-xl bg-gradient-to-r bg-red-500 hover:bg-red-700 transition-all duration-200 transform hover:scale-105"
-            title="Change Font"
+            title="Clear Story"
           >
             <X stroke="#fff" size={18} />
           </button>
@@ -841,8 +842,10 @@ const EnhancedSlideComponent = ({
           <LucideSend stroke="#fff" size={20} />
         </button>
       </div>
+
+      {/* Controls Toolbar - Separate Layer */}
       {selectedElement && selectedElementData && (
-        <div className="absolute z-40 p-4 border shadow-2xl top-20 left-4 right-4 backdrop-blur-md bg-white rounded-2xl border-white/20">
+        <div className="absolute top-20 left-4 right-4 z-[110] p-4 border shadow-2xl backdrop-blur-md bg-white rounded-2xl border-white/20">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div className="flex items-center gap-2">
               <div className="flex items-center p-1 rounded-lg gap-1 bg-white/10">
@@ -953,7 +956,7 @@ const EnhancedSlideComponent = ({
             </div>
           </div>
           {showColorPicker && (
-            <div className="p-3 mt-4 rounded-lg grid grid-cols-5 gap-2 bg-white/10">
+            <div className="absolute top-full left-0 right-0 z-[120] p-3 mt-2 rounded-lg grid grid-cols-5 gap-2 bg-white/95 backdrop-blur-md border border-white/20 shadow-xl">
               {colorPalette.map((color, index) => (
                 <button
                   key={index}
@@ -970,190 +973,198 @@ const EnhancedSlideComponent = ({
           )}
         </div>
       )}
-      <div
-        ref={containerRef}
-        className="relative w-full h-full flex"
-        onClick={handleContainerClick}
-      >
-        {currentStory?.media_type === "video" && (
-          <HlsViewer
-            streamUrl={currentStory?.media_url}
-            isOpen={true}
-            showControls={true}
-            muted={true}
-            className="w-full h-full object-contain bg-black rounded-xl"
-          />
-        )}
-        {currentStory?.media_type === "image" && (
-          <Image
-            src={currentStory?.media_url}
-            alt={currentStory?.caption ? currentStory.caption : "status"}
-            width={800}
-            height={800}
-            className="object-contain w-full h-full bg-black rounded-xl"
-          />
-        )}
-        {containerRef.current &&
-          captionElements.map((element) => (
-            <DraggableElement
-              key={element.id}
-              element={element}
-              onPositionChange={updateElementPosition}
-              onContentChange={updateElementContent}
-              onSelect={setSelectedElement}
-              isSelected={selectedElement === element.id}
-              onDelete={deleteElement}
-              onStyleChange={updateElementStyle}
-              containerRef={containerRef}
+
+      {/* Main Content Container */}
+      <div className="relative flex flex-col items-center justify-center w-full h-full">
+        <div
+          ref={containerRef}
+          className="relative w-full h-full flex"
+          onClick={handleContainerClick}
+        >
+          {currentStory?.media_type === "video" && (
+            <HlsViewer
+              streamUrl={currentStory?.media_url}
+              isOpen={true}
+              showControls={true}
+              muted={true}
+              className="w-full h-full object-contain bg-black rounded-xl"
             />
-          ))}
-      </div>
-      {showLinkDialog && (
-        <div className="absolute inset-0 flex items-center justify-center bg-black/60 backdrop-blur-sm z-60 top-1/12">
-          <div className="w-full max-w-sm p-8 mx-4 border shadow-2xl bg-white/95 backdrop-blur-md rounded-2xl border-white/20">
-            <h3 className="mb-6 text-xl font-bold text-gray-800">Add Link</h3>
-            <input
-              type="url"
-              placeholder="Enter URL (e.g., https://example.com)"
-              value={tempLinkUrl}
-              onChange={(e) => setTempLinkUrl(e.target.value)}
-              className="w-full p-4 mb-6 text-gray-800 border-2 border-gray-200 outline-none rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+          )}
+          {currentStory?.media_type === "image" && (
+            <Image
+              src={currentStory?.media_url}
+              alt={currentStory?.caption ? currentStory.caption : "status"}
+              width={800}
+              height={800}
+              className="object-contain w-full h-full bg-black rounded-xl"
             />
-            <div className="flex gap-3">
-              <button
-                onClick={createLink}
-                disabled={!tempLinkUrl}
-                className="flex-1 py-3 font-medium text-black shadow-lg bg-gradient-to-r from-blue-500 to-purple-500 disabled:from-gray-300 disabled:to-gray-400 rounded-xl hover:from-blue-600 hover:to-purple-600 transition-all duration-200 disabled:shadow-none transform hover:scale-105 disabled:transform-none"
-              >
-                Add Link
-              </button>
-              <button
-                onClick={() => {
-                  setShowLinkDialog(false);
-                  setTempLinkUrl("");
-                }}
-                className="flex-1 py-3 font-medium text-black shadow-lg bg-gradient-to-r from-gray-400 to-gray-500 rounded-xl hover:from-gray-500 hover:to-gray-600 transition-all duration-200 transform hover:scale-105"
-              >
-                Cancel
-              </button>
+          )}
+          {containerRef.current &&
+            captionElements.map((element) => (
+              <DraggableElement
+                key={element.id}
+                element={element}
+                onPositionChange={updateElementPosition}
+                onContentChange={updateElementContent}
+                onSelect={setSelectedElement}
+                isSelected={selectedElement === element.id}
+                onDelete={deleteElement}
+                onStyleChange={updateElementStyle}
+                containerRef={containerRef}
+              />
+            ))}
+        </div>
+
+        {/* Link Dialog */}
+        {showLinkDialog && (
+          <div className="absolute inset-0 flex items-center justify-center bg-black/60 backdrop-blur-sm z-[90] top-1/12">
+            <div className="w-full max-w-sm p-8 mx-4 border shadow-2xl bg-white/95 backdrop-blur-md rounded-2xl border-white/20">
+              <h3 className="mb-6 text-xl font-bold text-gray-800">Add Link</h3>
+              <input
+                type="url"
+                placeholder="Enter URL (e.g., https://example.com)"
+                value={tempLinkUrl}
+                onChange={(e) => setTempLinkUrl(e.target.value)}
+                className="w-full p-4 mb-6 text-gray-800 border-2 border-gray-200 outline-none rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+              />
+              <div className="flex gap-3">
+                <button
+                  onClick={createLink}
+                  disabled={!tempLinkUrl}
+                  className="flex-1 py-3 font-medium text-black shadow-lg bg-gradient-to-r from-blue-500 to-purple-500 disabled:from-gray-300 disabled:to-gray-400 rounded-xl hover:from-blue-600 hover:to-purple-600 transition-all duration-200 disabled:shadow-none transform hover:scale-105 disabled:transform-none"
+                >
+                  Add Link
+                </button>
+                <button
+                  onClick={() => {
+                    setShowLinkDialog(false);
+                    setTempLinkUrl("");
+                  }}
+                  className="flex-1 py-3 font-medium text-black shadow-lg bg-gradient-to-r from-gray-400 to-gray-500 rounded-xl hover:from-gray-500 hover:to-gray-600 transition-all duration-200 transform hover:scale-105"
+                >
+                  Cancel
+                </button>
+              </div>
             </div>
           </div>
-        </div>
-      )}
+        )}
 
-      {/* Mention Dialog */}
-      {showMentionDialog && (
-        <div className="absolute inset-0 flex items-center justify-center bg-black/60 backdrop-blur-sm z-60">
-          <div className="w-full max-w-md p-6 mx-4 border shadow-2xl bg-white/95 backdrop-blur-md rounded-2xl border-white/20">
-            <h3 className="mb-4 text-xl font-bold text-gray-800">Tag Users</h3>
+        {/* Mention Dialog */}
+        {showMentionDialog && (
+          <div className="absolute inset-0 flex items-center justify-center bg-black/60 backdrop-blur-sm z-[90]">
+            <div className="w-full max-w-md p-6 mx-4 border shadow-2xl bg-white/95 backdrop-blur-md rounded-2xl border-white/20">
+              <h3 className="mb-4 text-xl font-bold text-gray-800">
+                Tag Users
+              </h3>
 
-            {/* Selected Mentions */}
-            {selectedMentions.length > 0 && (
-              <div className="mb-4">
-                <p className="mb-2 text-sm font-medium text-gray-600">
-                  Tagged Users:
-                </p>
-                <div className="flex flex-wrap gap-2">
-                  {selectedMentions.map((mention) => (
-                    <div
-                      key={mention.id}
-                      className="flex items-center gap-2 px-3 py-1 bg-blue-100 rounded-full"
-                    >
-                      <span className="text-sm text-blue-800">
-                        {mention.username}
-                      </span>
-                      <button
-                        onClick={() => removeMention(mention.id)}
-                        className="text-blue-600 hover:text-blue-800"
+              {/* Selected Mentions */}
+              {selectedMentions.length > 0 && (
+                <div className="mb-4">
+                  <p className="mb-2 text-sm font-medium text-gray-600">
+                    Tagged Users:
+                  </p>
+                  <div className="flex flex-wrap gap-2">
+                    {selectedMentions.map((mention) => (
+                      <div
+                        key={mention.id}
+                        className="flex items-center gap-2 px-3 py-1 bg-blue-100 rounded-full"
                       >
-                        <X size={14} />
-                      </button>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {/* Search Input */}
-            <input
-              type="text"
-              placeholder="Search users to tag..."
-              value={mentionQuery}
-              onChange={(e) => setMentionQuery(e.target.value)}
-              className="w-full p-3 mb-4 text-gray-800 border-2 border-gray-200 outline-none rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200"
-              autoFocus
-            />
-
-            {/* Search Results */}
-            {mentionQuery && (
-              <div className="mb-4">
-                {isSearchingUsers ? (
-                  <div className="p-4 text-center text-gray-500">
-                    Searching...
-                  </div>
-                ) : searchedUsers.length > 0 ? (
-                  <div className="max-h-40 overflow-y-auto border border-gray-200 rounded-lg">
-                    {searchedUsers.map((user) => (
-                      <button
-                        key={user.id}
-                        onClick={() => addMention(user)}
-                        disabled={selectedMentions.some(
-                          (m) => m.id === user.id
-                        )}
-                        className="flex items-center w-full gap-3 p-3 text-left transition-all duration-200 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
-                      >
-                        <div className="w-8 h-8 bg-gray-300 rounded-full overflow-hidden">
-                          {user.profile_image ? (
-                            <Image
-                              src={user.profile_image}
-                              alt={user.username}
-                              width={32}
-                              height={32}
-                              className="object-cover w-full h-full"
-                            />
-                          ) : (
-                            <div className="w-full h-full flex items-center justify-center">
-                              <span className="text-xs font-bold text-gray-600">
-                                {user.username.charAt(0).toUpperCase()}
-                              </span>
-                            </div>
-                          )}
-                        </div>
-                        <div className="flex-1">
-                          <div className=" text-gray-800">
-                            {FormatName(user.name)}
-                          </div>
-                          <div className="font-medium text-sm text-gray-500">
-                            {user.username}
-                          </div>
-                        </div>
-                      </button>
+                        <span className="text-sm text-blue-800">
+                          {mention.username}
+                        </span>
+                        <button
+                          onClick={() => removeMention(mention.id)}
+                          className="text-blue-600 hover:text-blue-800"
+                        >
+                          <X size={14} />
+                        </button>
+                      </div>
                     ))}
                   </div>
-                ) : (
-                  <div className="p-4 text-center text-gray-500">
-                    No users found
-                  </div>
-                )}
-              </div>
-            )}
+                </div>
+              )}
 
-            <div className="flex gap-3">
-              <button
-                onClick={() => {
-                  setShowMentionDialog(false);
-                  setMentionQuery("");
-                  setSearchedUsers([]);
-                }}
-                className="flex-1 py-3 font-medium text-white shadow-lg bg-gradient-to-r from-orange-500 to-red-500 rounded-xl hover:from-orange-600 hover:to-red-600 transition-all duration-200 transform hover:scale-105"
-              >
-                Done
-              </button>
+              {/* Search Input */}
+              <input
+                type="text"
+                placeholder="Search users to tag..."
+                value={mentionQuery}
+                onChange={(e) => setMentionQuery(e.target.value)}
+                className="w-full p-3 mb-4 text-gray-800 border-2 border-gray-200 outline-none rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200"
+                autoFocus
+              />
+
+              {/* Search Results */}
+              {mentionQuery && (
+                <div className="mb-4">
+                  {isSearchingUsers ? (
+                    <div className="p-4 text-center text-gray-500">
+                      Searching...
+                    </div>
+                  ) : searchedUsers.length > 0 ? (
+                    <div className="max-h-40 overflow-y-auto border border-gray-200 rounded-lg">
+                      {searchedUsers.map((user) => (
+                        <button
+                          key={user.id}
+                          onClick={() => addMention(user)}
+                          disabled={selectedMentions.some(
+                            (m) => m.id === user.id
+                          )}
+                          className="flex items-center w-full gap-3 p-3 text-left transition-all duration-200 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
+                        >
+                          <div className="w-8 h-8 bg-gray-300 rounded-full overflow-hidden">
+                            {user.profile_image ? (
+                              <Image
+                                src={user.profile_image}
+                                alt={user.username}
+                                width={32}
+                                height={32}
+                                className="object-cover w-full h-full"
+                              />
+                            ) : (
+                              <div className="w-full h-full flex items-center justify-center">
+                                <span className="text-xs font-bold text-gray-600">
+                                  {user.username.charAt(0).toUpperCase()}
+                                </span>
+                              </div>
+                            )}
+                          </div>
+                          <div className="flex-1">
+                            <div className=" text-gray-800">
+                              {FormatName(user.name)}
+                            </div>
+                            <div className="font-medium text-sm text-gray-500">
+                              {user.username}
+                            </div>
+                          </div>
+                        </button>
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="p-4 text-center text-gray-500">
+                      No users found
+                    </div>
+                  )}
+                </div>
+              )}
+
+              <div className="flex gap-3">
+                <button
+                  onClick={() => {
+                    setShowMentionDialog(false);
+                    setMentionQuery("");
+                    setSearchedUsers([]);
+                  }}
+                  className="flex-1 py-3 font-medium text-white shadow-lg bg-gradient-to-r from-orange-500 to-red-500 rounded-xl hover:from-orange-600 hover:to-red-600 transition-all duration-200 transform hover:scale-105"
+                >
+                  Done
+                </button>
+              </div>
             </div>
           </div>
-        </div>
-      )}
-    </div>
+        )}
+      </div>
+    </>
   );
 };
 
@@ -1170,7 +1181,7 @@ const StoryCaptionComponent = ({ close }: StoryCaptionComponentProps) => {
           }
         }}
       >
-        <div className="w-full md:max-w-[520px] h-screen md:h-auto md:aspect-[9/16]">
+        <div className="w-full md:max-w-[520px] h-full md:h-auto md:aspect-[9/16]">
           <CustomSwiper>
             {story?.map((story, index) => (
               <EnhancedSlideComponent
