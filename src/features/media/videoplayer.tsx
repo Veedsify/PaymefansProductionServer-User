@@ -51,7 +51,7 @@ const VideoPlayer = ({
   const [showResolutionMenu, setShowResolutionMenu] = useState(false);
   const [manualPlayPause, setManualPlayPause] = useState(false);
   const [selectedQuality, setSelectedQuality] = useState<number | "auto">(
-    "auto",
+    "auto"
   );
   const [volume, setVolume] = useState(1);
   const [isMuted, setIsMuted] = useState(false);
@@ -125,7 +125,7 @@ const VideoPlayer = ({
 
         const quality = localStorage.getItem("selectedQuality");
         setSelectedQuality(
-          quality ? parseInt(quality) : (levels[0]?.index ?? -1),
+          quality ? parseInt(quality) : levels[0]?.index ?? -1
         );
         setQualityLevels([...levels, { index: -1, label: "Auto" }]);
 
@@ -325,7 +325,7 @@ const VideoPlayer = ({
 
             {/* User Profile Card - Top Left */}
             {userProfile && (
-              <div className="absolute bottom-48 left-4 z-20 flex items-center gap-3 p-2 rounded-full">
+              <div className="absolute bottom-24 md:bottom-10 left-4 z-20 flex items-center gap-3 p-2 rounded-full">
                 <UserProfileOverlay userProfile={userProfile} />
               </div>
             )}

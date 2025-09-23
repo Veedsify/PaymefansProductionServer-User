@@ -1,19 +1,11 @@
 "use client";
 
 import { X } from "lucide-react";
-import React, {
-  memo,
-  useCallback,
-  useEffect,
-  useMemo,
-  useReducer,
-  useRef,
-  useState,
-} from "react";
+import { memo, useCallback, useEffect, useMemo, useReducer, useRef, useState } from "react";
 import { A11y, Keyboard, Navigation, Pagination } from "swiper/modules";
 import { Swiper, type SwiperClass, SwiperSlide } from "swiper/react";
 import "swiper/css/bundle";
-import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
 import { ImagePreview } from "@/features/post/ImagePreviewWithCanvas";
 import MediaErrorBoundary from "../../providers/MediaErrorBoundary";
 import NavigationButton from "../navigation/NavigationButton";
