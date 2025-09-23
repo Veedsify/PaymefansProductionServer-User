@@ -178,7 +178,7 @@ const BecomeAModel = () => {
         setFormErrors((prev) => ({ ...prev, [name]: undefined }));
       }
     },
-    [formErrors],
+    [formErrors]
   );
 
   const handleGenderSelect = useCallback(
@@ -195,7 +195,7 @@ const BecomeAModel = () => {
         }
       }
     },
-    [formErrors.audience],
+    [formErrors.audience]
   );
 
   const handleSubmit = useCallback(
@@ -243,7 +243,7 @@ const BecomeAModel = () => {
                 lastname: formData.lastname,
               },
             }),
-          },
+          }
         );
 
         if (!response.ok) {
@@ -285,7 +285,7 @@ const BecomeAModel = () => {
         setIsSubmitting(false);
       }
     },
-    [formData, selectedGender, user, validateForm],
+    [formData, selectedGender, user, validateForm]
   );
 
   // Render loading state
@@ -421,8 +421,9 @@ const BecomeAModel = () => {
             type="date"
             name="dob"
             value={formData.dob || ""}
+            placeholder="Date of Birth"
             max={new Date(
-              Date.now() - 18 * 365 * 24 * 60 * 60 * 1000,
+              Date.now() - 18 * 365 * 24 * 60 * 60 * 1000
             ).toISOString()}
             className={`border p-4 w-full rounded-lg font-semibold outline-none focus:ring-2 focus:ring-primary-dark-pink transition ${
               formErrors.dob
