@@ -1,13 +1,13 @@
 // Centralized constants for media preview components
 export const MEDIA_CONSTANTS = {
-  ANIMATION_DURATION: 150,
-  ANIMATION_DURATION_SEC: 150 / 1000,
+  ANIMATION_DURATION: 200,
+  ANIMATION_DURATION_SEC: 200 / 1000,
   IMAGE_DIMENSIONS: { width: 1500, height: 1500 },
   SWIPER_CONFIG: {
     spaceBetween: 0,
     slidesPerView: 1,
     touchRatio: 1.5,
-    speed: 250,
+    speed: 300,
     threshold: 15,
     longSwipesRatio: 0.5,
     watchSlidesProgress: true,

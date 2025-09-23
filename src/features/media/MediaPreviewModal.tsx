@@ -248,7 +248,7 @@ const MediaPreviewModal = memo(
         role="dialog"
         aria-labelledby="media-preview-title"
         aria-modal="true"
-        className="fixed inset-0 z-[9999] flex h-full w-full items-center justify-center bg-black"
+        className="fixed inset-0 z-[9999] flex h-screen items-center justify-center bg-black"
         onClick={(e) => {
           if (e.target === e.currentTarget) handleClose();
         }}
@@ -281,7 +281,7 @@ const MediaPreviewModal = memo(
           modules={[Navigation, Pagination, Keyboard, A11y]}
           onSwiper={(swiper) => (swiperRef.current = swiper)}
           onSlideChange={handleSlideChange}
-          className="relative h-full w-full"
+          className="select-none bg-black w-full h-full"
           keyboard={{ enabled: true }}
           a11y={{
             prevSlideMessage: "Previous slide",
@@ -293,7 +293,7 @@ const MediaPreviewModal = memo(
           {mediaItems.map((item, index) => (
             <SwiperSlide
               key={`media-${index}-${item.url.slice(-20)}`}
-              className="flex items-center justify-center h-full w-full"
+              className="relative w-full h-screen"
             >
               <MediaErrorBoundary>
                 {shouldLoadSlide(index) ? (
@@ -303,6 +303,7 @@ const MediaPreviewModal = memo(
                       username={username}
                       alt={item.alt || `Media preview ${index + 1}`}
                       index={index}
+                      className="max-h-screen object-contain w-full"
                       onLoad={() => handleImageLoad(index)}
                       onError={() => handleImageError(index)}
                       userProfile={userProfile}

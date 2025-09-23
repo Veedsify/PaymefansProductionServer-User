@@ -956,7 +956,7 @@ const EnhancedSlideComponent = ({
       )}
       <div
         ref={containerRef}
-        className="relative w-full h-full"
+        className="relative w-full h-full flex"
         onClick={handleContainerClick}
       >
         {currentStory?.media_type === "video" && (

@@ -16,64 +16,51 @@ type ImagePreviewProps = {
   onError: () => void;
   userProfile?: UserProfile | null;
   shouldWatermark?: boolean;
+  className?: string;
 };
 
 export const ImagePreview = memo(
-  ({ url, alt, userProfile }: ImagePreviewProps) => {
+  ({ url, alt, userProfile, className }: ImagePreviewProps) => {
     return (
-      <motion.div
-        className="relative flex items-center justify-center w-full h-full overflow-hidden"
-        style={{
-          userSelect: "none",
-          WebkitUserSelect: "none",
-          MozUserSelect: "none",
-          msUserSelect: "none",
-        }}
+      <Suspense
+        fallback={
+          <AnimatePresence>
+            <motion.div
+              className="absolute inset-0 z-10 flex items-center justify-center bg-black/20"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0, transition: { duration: 0.2 } }}
+            >
+              <Loader />
+            </motion.div>
+          </AnimatePresence>
+        }
       >
-        <Suspense
-          fallback={
-            <AnimatePresence>
-              <motion.div
-                className="absolute inset-0 z-10 flex items-center justify-center bg-black/20"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0, transition: { duration: 0.2 } }}
-              >
-                <Loader />
-              </motion.div>
-            </AnimatePresence>
-          }
-        >
-          <motion.div className="flex items-center justify-center w-full h-full overflow-hidden relative">
-            <div className="relative w-full h-full select-none object-contain">
-              {userProfile && (
-                <div className="absolute bottom-10 left-2 z-20 flex items-center gap-3 p-2 rounded-full">
-                  <UserProfileOverlay userProfile={userProfile} />
-                </div>
-              )}
-              <Image
-                src={url.trim()}
-                alt={alt}
-                priority
-                quality={100}
-                width={1920}
-                height={1920}
-                className={`object-contain w-full h-full transition-opacity duration-200 ${
-                  status === "loading" ? "opacity-0" : "opacity-100"
-                }`}
-                onContextMenu={(e) => e.preventDefault()}
-                draggable={false}
-                style={{
-                  userSelect: "none",
-                  WebkitUserSelect: "none",
-                  MozUserSelect: "none",
-                  msUserSelect: "none",
-                }}
-              />
+        <div className="aboslute inset-0 left-0 select-none object-contain">
+          {userProfile && (
+            <div className="absolute bottom-10 left-2 z-20 flex items-center gap-3 p-2 rounded-full">
+              <UserProfileOverlay userProfile={userProfile} />
             </div>
-          </motion.div>
-        </Suspense>
-      </motion.div>
+          )}
+          <Image
+            src={url.trim()}
+            alt={alt}
+            priority
+            quality={100}
+            width={1080}
+            height={1080}
+            className={className}
+            onContextMenu={(e) => e.preventDefault()}
+            draggable={false}
+            style={{
+              userSelect: "none",
+              WebkitUserSelect: "none",
+              MozUserSelect: "none",
+              msUserSelect: "none",
+            }}
+          />
+        </div>
+      </Suspense>
     );
   },
 );
