@@ -1,4 +1,4 @@
-import _ from "lodash";
+import { uniqBy } from "lodash-es";
 import { create } from "zustand";
 import type { UserMediaProps, UserPostPropsOther } from "@/types/Components";
 
@@ -41,9 +41,9 @@ const usePersonalPrivateStore = create<PersonalPrivateContext>((set) => ({
   posts: [],
   setPosts: (post: Post[]) =>
     set((state) => ({
-      posts: _.uniqBy(
+      posts: uniqBy(
         [...state.posts, ...post],
-        (item) => `${item.id}-${item.post_likes}`,
+        (item) => `${item.id}-${item.post_likes}`
       ),
     })),
   likePost: (postId) =>
@@ -55,7 +55,7 @@ const usePersonalPrivateStore = create<PersonalPrivateContext>((set) => ({
               post_likes: post.post_likes + 1,
               likedByme: true,
             }
-          : post,
+          : post
       ),
     })),
   unlikePost: (postId, _) =>
@@ -67,7 +67,7 @@ const usePersonalPrivateStore = create<PersonalPrivateContext>((set) => ({
               post_likes: Math.max(0, post.post_likes - 1),
               likedByme: false,
             }
-          : post,
+          : post
       ),
     })),
   repostPost: (postId) =>
@@ -78,7 +78,7 @@ const usePersonalPrivateStore = create<PersonalPrivateContext>((set) => ({
               ...post,
               post_reposts: post.post_reposts + 1,
             }
-          : post,
+          : post
       ),
     })),
 }));
@@ -93,7 +93,7 @@ type OtherPrivateContext = {
 
 export const useOtherPrivatePostsStore = create<OtherPrivateContext>((set) => ({
   setPosts: (posts: UserPostPropsOther[]) =>
-    set((state) => ({ posts: _.uniqBy([...state.posts, ...posts], "id") })),
+    set((state) => ({ posts: uniqBy([...state.posts, ...posts], "id") })),
   posts: [],
   likePost: (postId) =>
     set((state) => ({
@@ -104,7 +104,7 @@ export const useOtherPrivatePostsStore = create<OtherPrivateContext>((set) => ({
               post_likes: post.post_likes + 1,
               likedByme: true,
             }
-          : post,
+          : post
       ),
     })),
   unlikePost: (postId, _) =>
@@ -116,7 +116,7 @@ export const useOtherPrivatePostsStore = create<OtherPrivateContext>((set) => ({
               post_likes: Math.max(0, post.post_likes - 1),
               likedByme: false,
             }
-          : post,
+          : post
       ),
     })),
   repostPost: (postId) =>
@@ -127,7 +127,7 @@ export const useOtherPrivatePostsStore = create<OtherPrivateContext>((set) => ({
               ...post,
               post_reposts: post.post_reposts + 1,
             }
-          : post,
+          : post
       ),
     })),
 }));

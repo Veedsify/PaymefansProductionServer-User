@@ -1,16 +1,13 @@
-"use client";
-import axios from "axios";
-import _ from "lodash";
-import { LucideLoader } from "lucide-react";
+"use client";;
+import { debounce } from "lodash-es";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { type ChangeEvent, type FormEvent, useEffect, useState } from "react";
+import { type ChangeEvent, type FormEvent, useState } from "react";
 import toast from "react-hot-toast";
 import { LOGIN_CONFIG } from "@/config/config";
 import { getUser } from "@/lib/User";
 import axiosInstance from "@/utils/Axios";
-import { getToken } from "@/utils/Cookie";
 import LoadingSpinner from "@/components/common/loaders/LoadingSpinner";
 
 const Login = () => {
@@ -63,12 +60,12 @@ const Login = () => {
       setLoading(false);
       console.log(error);
       setError(
-        error?.response?.data?.message || error?.message || "An error occurred",
+        error?.response?.data?.message || error?.message || "An error occurred"
       );
     }
   };
 
-  const debounceSubmitLoginForm = _.debounce(submitLoginForm, 300);
+  const debounceSubmitLoginForm = debounce(submitLoginForm, 300);
 
   return (
     <div className="p-5 bg-black min-h-dvh lg:p-0">

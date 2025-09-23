@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { shuffle, uniqBy } from "lodash";
+import { shuffle, uniqBy } from "lodash-es";
 import { modelsService } from "@/features/models/services/ModelsService";
 
 interface UseModelsAndHookupsOptions {

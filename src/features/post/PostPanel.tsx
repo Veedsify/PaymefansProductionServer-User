@@ -7,8 +7,9 @@ import { useInView } from "react-intersection-observer";
 import { useAuthContext } from "@/contexts/UserUseContext";
 import axiosInstance from "@/utils/Axios";
 import { formatDate } from "@/utils/FormatDate";
-import PostComponent from "./PostComponent";
+const PostComponent = dynamic(() => import("./PostComponent"), { ssr: true });
 import LoadingSpinner from "@/components/common/loaders/LoadingSpinner";
+import dynamic from "next/dynamic";
 
 async function fetchPost(pageNumber: number) {
   const api = `/post/personal/posts`;

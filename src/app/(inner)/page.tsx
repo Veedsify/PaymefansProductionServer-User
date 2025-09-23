@@ -1,7 +1,13 @@
 import type { Metadata } from "next";
 import HomePostComponent from "@/features/post/HomePostComponent";
-import StatusComponent from "@/features/story/comps/Status";
+import dynamic from "next/dynamic";
+
+const StatusComponent = dynamic(() => import("@/features/story/comps/Status"), {
+  ssr: true,
+  loading: () => <LoadingSpinner />,
+});
 import HomeProvider from "@/providers/HomeProvider";
+import LoadingSpinner from "@/components/common/loaders/LoadingSpinner";
 
 export const metadata: Metadata = {
   title: "Paymefans",

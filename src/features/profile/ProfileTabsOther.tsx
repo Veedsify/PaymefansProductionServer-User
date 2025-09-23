@@ -6,16 +6,24 @@ import {
   LucideRepeat2,
 } from "lucide-react";
 import { useCallback, useState } from "react";
-import { Tab, TabList, TabPanel, Tabs } from "react-tabs";
 import { useGuestModal } from "@/contexts/GuestModalContext";
 import { useAuthContext } from "@/contexts/UserUseContext";
-import MediaPanel from "@/features/media/MediaPanel";
-import MediaPanelOther from "@/features/media/MediaPanelOther";
-import PostPanel from "@/features/post/PostPanel";
-import PostPanelOther from "@/features/post/PostPanelOther";
 import type { ProfileUserProps } from "@/features/user/types/user";
-import PrivatePanelOther from "./PrivatePanelOther";
-import RepostPanel from "./RepostPanel";
+import dynamic from "next/dynamic";
+
+const MediaPanelOther = dynamic(
+  () => import("@/features/media/MediaPanelOther"),
+  { ssr: true }
+);
+const PostPanelOther = dynamic(() => import("@/features/post/PostPanelOther"), {
+  ssr: true,
+});
+const PrivatePanelOther = dynamic(() => import("./PrivatePanelOther"), {
+  ssr: true,
+});
+const RepostPanel = dynamic(() => import("./RepostPanel"), {
+  ssr: true,
+});
 
 const ProfileTabsOther = ({ userdata }: { userdata: ProfileUserProps }) => {
   const [activeTab, setActiveTab] = useState(0);
@@ -56,7 +64,7 @@ const ProfileTabsOther = ({ userdata }: { userdata: ProfileUserProps }) => {
         return;
       }
     },
-    [isGuest, activeTab, toggleModalOpen],
+    [isGuest, activeTab, toggleModalOpen]
   );
 
   return (

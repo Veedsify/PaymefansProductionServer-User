@@ -1,4 +1,4 @@
-import _ from "lodash";
+import { uniqBy } from "lodash-es";
 import { create } from "zustand";
 import type { UserMediaProps, UserPostPropsOther } from "@/types/Components";
 
@@ -42,9 +42,9 @@ export const usePersonalProfileStore = create<PersonalProfileContext>(
     posts: [],
     setPosts: (post: Post[]) =>
       set((state) => ({
-        posts: _.uniqBy(
+        posts: uniqBy(
           [...state.posts, ...post],
-          (item) => `${item.id}-${item.post_likes}`,
+          (item) => `${item.id}-${item.post_likes}`
         ),
       })),
     likePost: (postId) =>
@@ -56,7 +56,7 @@ export const usePersonalProfileStore = create<PersonalProfileContext>(
                 post_likes: post.post_likes + 1,
                 likedByme: true,
               }
-            : post,
+            : post
         ),
       })),
     unlikePost: (postId, _) =>
@@ -68,7 +68,7 @@ export const usePersonalProfileStore = create<PersonalProfileContext>(
                 post_likes: Math.max(0, post.post_likes - 1),
                 likedByme: false,
               }
-            : post,
+            : post
         ),
       })),
     repostPost: (postId) =>
@@ -79,10 +79,10 @@ export const usePersonalProfileStore = create<PersonalProfileContext>(
                 ...post,
                 post_reposts: post.post_reposts + 1,
               }
-            : post,
+            : post
         ),
       })),
-  }),
+  })
 );
 
 type OtherProfileContext = {
@@ -95,7 +95,7 @@ type OtherProfileContext = {
 
 const useOtherProfilePostsStore = create<OtherProfileContext>((set) => ({
   setPosts: (posts: UserPostPropsOther[]) =>
-    set((state) => ({ posts: _.uniqBy([...state.posts, ...posts], "id") })),
+    set((state) => ({ posts: uniqBy([...state.posts, ...posts], "id") })),
   posts: [],
   likePost: (postId) =>
     set((state) => ({
@@ -106,7 +106,7 @@ const useOtherProfilePostsStore = create<OtherProfileContext>((set) => ({
               post_likes: post.post_likes + 1,
               likedByme: true,
             }
-          : post,
+          : post
       ),
     })),
   unlikePost: (postId, _) =>
@@ -118,7 +118,7 @@ const useOtherProfilePostsStore = create<OtherProfileContext>((set) => ({
               post_likes: Math.max(0, post.post_likes - 1),
               likedByme: false,
             }
-          : post,
+          : post
       ),
     })),
   repostPost: (postId) =>
@@ -129,7 +129,7 @@ const useOtherProfilePostsStore = create<OtherProfileContext>((set) => ({
               ...post,
               post_reposts: post.post_reposts + 1,
             }
-          : post,
+          : post
       ),
     })),
 }));

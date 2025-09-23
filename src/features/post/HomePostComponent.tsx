@@ -4,8 +4,9 @@ import { useInView } from "react-intersection-observer";
 import { useHomeFeedInfinite } from "@/hooks/useHomeFeedInfinite";
 import { formatDate } from "@/utils/FormatDate";
 import LoadingPost from "../../components/common/loaders/LoadingPost";
-import PostComponent from "./PostComponent";
+const PostComponent = dynamic(() => import("./PostComponent"), { ssr: true });
 import { fmt } from "@/constants/path";
+import dynamic from "next/dynamic";
 
 const HomePostComponent = () => {
   const {

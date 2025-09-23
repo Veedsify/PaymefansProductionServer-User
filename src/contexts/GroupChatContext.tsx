@@ -1,6 +1,6 @@
 // groupChatStore.ts
 
-import _ from "lodash";
+import { reverse } from "lodash-es";
 import toast from "react-hot-toast";
 import { create } from "zustand";
 import { getSocket } from "@/components/common/Socket";
@@ -103,7 +103,7 @@ interface GroupChatActions {
   sendMessage: (
     content: string,
     attachments?: any[],
-    replyToId?: number,
+    replyToId?: number
   ) => void;
   setTypingStatus: (isTyping: boolean) => void;
   markMessageAsSeen: (messageId: number) => void;
@@ -209,21 +209,21 @@ export const useGroupChatStore = create<GroupChatStore>()((set, get) => ({
     }),
   setMessages: (messages) =>
     set({
-      messages: _.reverse(messages),
+      messages: reverse(messages),
     }),
   paginateMessages: (messages) =>
     set((state) => {
       // Filter out duplicates before adding
       const existingMessageIds = new Set(state.messages.map((m) => m.id));
       const uniqueNewMessages = messages.filter(
-        (message) => !existingMessageIds.has(message.id),
+        (message) => !existingMessageIds.has(message.id)
       );
 
       if (uniqueNewMessages.length === 0) {
         return state;
       }
 
-      const reversedNewMessages = _.reverse([...uniqueNewMessages]);
+      const reversedNewMessages = reverse([...uniqueNewMessages]);
 
       const combinedMessages = [...reversedNewMessages, ...state.messages];
 
@@ -245,7 +245,7 @@ export const useGroupChatStore = create<GroupChatStore>()((set, get) => ({
   memberJoined: (member) =>
     set((state) => {
       const memberExists = state.activeMembers.some(
-        (m) => m.userId === member.userId,
+        (m) => m.userId === member.userId
       );
       if (memberExists) return state;
       return {
@@ -259,7 +259,7 @@ export const useGroupChatStore = create<GroupChatStore>()((set, get) => ({
   setTyping: (user) =>
     set((state) => {
       const updatedTyping = state.typingUsers.filter(
-        (t) => t.userId !== user.userId,
+        (t) => t.userId !== user.userId
       );
       return {
         typingUsers: user.isTyping ? [...updatedTyping, user] : updatedTyping,

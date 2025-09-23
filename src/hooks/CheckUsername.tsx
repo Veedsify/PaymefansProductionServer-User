@@ -1,10 +1,6 @@
-import axios from "axios";
-import _ from "lodash";
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import type { AuthUserProps } from "@/features/user/types/user";
 import axiosInstance from "@/utils/Axios";
-import { getToken } from "@/utils/Cookie";
-import useDebounce from "./Debounce"; // Adjust the import path as necessary
 
 const useCheckUsername = (
   user: Partial<AuthUserProps>,

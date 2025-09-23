@@ -6,10 +6,20 @@ import {
   LucideRepeat2,
 } from "lucide-react";
 import { useState } from "react";
-import MediaPanel from "@/features/media/MediaPanel";
-import PostPanel from "@/features/post/PostPanel";
-import PrivatePanel from "./PrivatePanel";
-import RepostPanel from "./RepostPanel";
+import dynamic from "next/dynamic";
+
+const MediaPanel = dynamic(() => import("@/features/media/MediaPanel"), {
+  ssr: true,
+});
+const PostPanel = dynamic(() => import("@/features/post/PostPanel"), {
+  ssr: true,
+});
+const PrivatePanel = dynamic(() => import("./PrivatePanel"), {
+  ssr: true,
+});
+const RepostPanel = dynamic(() => import("./RepostPanel"), {
+  ssr: true,
+});
 
 const ProfileTabs = () => {
   const [activeTab, setActiveTab] = useState(0);

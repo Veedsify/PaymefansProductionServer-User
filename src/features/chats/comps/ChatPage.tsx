@@ -1,5 +1,5 @@
 import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
-import { reverse } from "lodash";
+import { reverse } from "lodash-es";
 import {
   LucideArrowLeft,
   LucideBan,
@@ -67,7 +67,7 @@ const ChatPage = ({ conversationId }: { conversationId: string }) => {
   const receiver = receiverData?.receiver;
   const profilePicture = useMemo(
     () => receiver?.profile_image || "/site/avatar.png",
-    [receiver],
+    [receiver]
   );
   if (!receiver && isError) {
     router.push("/messages");
@@ -324,20 +324,20 @@ const ChatPage = ({ conversationId }: { conversationId: string }) => {
       try {
         const response = await axiosInstance.post(
           `/conversations/search/messages/${conversationId}`,
-          { q: messageId },
+          { q: messageId }
         );
 
         const searchResult = await response.data;
         return searchResult.messages?.find(
           (msg: Message) =>
-            msg.message_id === messageId || String(msg.id) === messageId,
+            msg.message_id === messageId || String(msg.id) === messageId
         );
       } catch (error) {
         console.error("Error searching for specific message:", error);
       }
       return null;
     },
-    [conversationId],
+    [conversationId]
   );
 
   // Handle searched message from URL

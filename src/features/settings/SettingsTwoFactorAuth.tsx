@@ -1,13 +1,10 @@
 "use client";
-
-import axios from "axios";
-import _ from "lodash";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { useAuthContext } from "@/contexts/UserUseContext";
 import axiosInstance from "@/utils/Axios";
-import { getToken } from "@/utils/Cookie";
 import Toggle from "../../components/common/toggles/Checked";
+import { debounce } from "lodash-es";
 
 const TwoFactorAuth = () => {
   const { user } = useAuthContext();
@@ -16,7 +13,7 @@ const TwoFactorAuth = () => {
     try {
       const response = await axiosInstance.post(
         `/auth/two-factor-authentication`,
-        { two_factor_auth: !twoFactorAuth },
+        { two_factor_auth: !twoFactorAuth }
       );
       const data = response.data;
       if (data.success) {
@@ -30,9 +27,9 @@ const TwoFactorAuth = () => {
   };
 
   // Debounce the toggleTwoFactorAuthentication function
-  const debouncedToggleTwoFactorAuthentication = _.debounce(
+  const debouncedToggleTwoFactorAuthentication = debounce(
     toggleTwoFactorAuthentication,
-    300,
+    300
   );
   useEffect(() => {
     setTwoFactorAuth(user?.Settings?.two_factor_auth!);

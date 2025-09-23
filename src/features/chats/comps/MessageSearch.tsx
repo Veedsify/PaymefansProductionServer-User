@@ -1,7 +1,7 @@
 "use client";
 
 import axios from "axios";
-import { debounce } from "lodash";
+import { debounce } from "lodash-es";
 import { LucideLoader, LucideSearch, X } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -36,7 +36,7 @@ const MessageSearch = () => {
     } // Avoid empty searches
     try {
       const response = await axiosInstance.get(
-        `/conversations/search?q=${searchTerm}`,
+        `/conversations/search?q=${searchTerm}`
       );
       console.log(response.data);
       setResults(response.data.messages); // Update state with search results
@@ -185,7 +185,7 @@ const MessageSearch = () => {
                               year: "numeric",
                               month: "short",
                               day: "numeric",
-                            },
+                            }
                           )}
                         </span>
                       </div>

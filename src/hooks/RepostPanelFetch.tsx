@@ -1,8 +1,7 @@
 import axios, { type AxiosResponse } from "axios";
-import _ from "lodash";
 import { useEffect, useState } from "react";
 import type { RespotPanelFetchProps, UserPostProps } from "@/types/Components";
-import { getToken } from "@/utils/Cookie";
+import { uniqBy } from "lodash-es";
 
 const RepostPanelFetch = ({
   isForViewer,
@@ -28,7 +27,7 @@ const RepostPanelFetch = ({
 
     const postPerPage = parseInt(
       process.env.NEXT_PUBLIC_POST_PER_PAGE || "5",
-      10,
+      10
     );
 
     axios<any, AxiosResponse>(api, {
@@ -48,7 +47,7 @@ const RepostPanelFetch = ({
           return;
         }
         setHasMore(hasMore);
-        setPosts((prev) => _.uniqBy([...prev, ...data], "post_id"));
+        setPosts((prev) => uniqBy([...prev, ...data], "post_id"));
         setTotalResults(res.data.total);
         setLoading(false);
       })

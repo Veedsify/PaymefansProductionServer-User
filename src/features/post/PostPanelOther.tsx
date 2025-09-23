@@ -1,14 +1,12 @@
 "use client";
 import { useInfiniteQuery } from "@tanstack/react-query";
-import axios from "axios";
-import { LucideLoader } from "lucide-react";
 import { useEffect } from "react";
 import { useInView } from "react-intersection-observer";
 import type { ProfileUserProps } from "@/features/user/types/user";
 import axiosInstance from "@/utils/Axios";
-import { getToken } from "@/utils/Cookie";
 import { formatDate } from "@/utils/FormatDate";
-import PostComponent from "./PostComponent";
+import dynamic from "next/dynamic";
+const PostComponent = dynamic(() => import("./PostComponent"), { ssr: true });
 import LoadingSpinner from "@/components/common/loaders/LoadingSpinner";
 
 const PostPanelOther = ({ userdata }: { userdata: ProfileUserProps }) => {

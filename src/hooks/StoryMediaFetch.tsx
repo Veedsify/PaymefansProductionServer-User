@@ -1,10 +1,10 @@
 "use client";
 import axios, { CancelToken } from "axios";
-import lodash from "lodash";
 import { useEffect, useState } from "react";
 import type { StoryMediaFetchProps } from "@/types/Components";
 import axiosInstance from "@/utils/Axios";
 import { getToken } from "@/utils/Cookie";
+import { uniqBy } from "lodash-es";
 
 const StoryMediaFetch = ({ page }: StoryMediaFetchProps) => {
   const [media, setMedia] = useState<any>([]);
@@ -30,7 +30,7 @@ const StoryMediaFetch = ({ page }: StoryMediaFetchProps) => {
         setHasMore(res.data.hasMore);
         setLoading(false);
         setMedia((prev: any) => {
-          return lodash.uniqBy([...prev, ...res.data.data], "id");
+          return uniqBy([...prev, ...res.data.data], "id");
         });
       })
       .catch((error) => {

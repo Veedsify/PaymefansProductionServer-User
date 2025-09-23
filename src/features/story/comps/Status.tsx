@@ -7,7 +7,8 @@ import { useAuthContext } from "@/contexts/UserUseContext";
 import UserStatus from "@/features/story/comps/UserStatus";
 import type { Story } from "@/features/story/types/story";
 import useFetchStories from "../../../hooks/FetchStories";
-import StatusModal from "./StatusModal";
+import dynamic from "next/dynamic";
+const StatusModal = dynamic(() => import("./StatusModal"), { ssr: false });
 import FormatName from "@/lib/FormatName";
 
 const StatusComponent = () => {
@@ -41,7 +42,7 @@ const StatusComponent = () => {
 
   const prioritizedStories = stories
     ? [...stories].sort((a, b) =>
-        a.user.id === user?.id ? -1 : b.user.id === user?.id ? 1 : 0,
+        a.user.id === user?.id ? -1 : b.user.id === user?.id ? 1 : 0
       )
     : [];
   return (

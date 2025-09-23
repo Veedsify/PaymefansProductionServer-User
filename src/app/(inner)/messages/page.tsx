@@ -1,5 +1,12 @@
 import type { Metadata } from "next";
-import ConversationComponent from "@/features/chats/comps/ConversationComponent";
+import dynamic from "next/dynamic";
+
+const ConversationComponent = dynamic(
+  () => import("@/features/chats/comps/ConversationComponent"),
+  {
+    ssr: true,
+  }
+);
 import MessageCounter from "@/features/chats/comps/MessageCounter";
 import MessageSearch from "@/features/chats/comps/MessageSearch";
 

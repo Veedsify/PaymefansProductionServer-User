@@ -1,18 +1,22 @@
 "use client";
-import { LucideEye, LucideLoader, LucideLock, LucideUsers } from "lucide-react";
+import { LucideEye, LucideLock, LucideUsers } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
-import React, { type ReactNode, useEffect, useMemo } from "react";
+import React, { type ReactNode, useMemo } from "react";
 import { useAuthContext } from "@/contexts/UserUseContext";
-import CommentsAndReply from "@/features/comments/CommentsAndReply";
+import dynamic from "next/dynamic";
+const CommentsAndReply = dynamic(
+  () => import("@/features/comments/CommentsAndReply"),
+  { ssr: false, loading: () => <LoadingSpinner text="Loading comments..." /> }
+);
 import { PostCompInteractions } from "@/features/post/PostInteractions";
-import PostPageImage from "@/features/post/PostPageImage";
 import QuickPostActions from "@/features/post/QuickPostActions";
 import { usePost } from "@/hooks/queries/usePost";
 import { formatDate } from "@/utils/FormatDate";
 import FormatName from "@/lib/FormatName";
 import LoadingSpinner from "@/components/common/loaders/LoadingSpinner";
+import PostPageImage from "@/features/post/PostPageImage";
 
 const Post = React.memo(() => {
   const params = useParams();
@@ -67,7 +71,7 @@ const Post = React.memo(() => {
     () => ({
       __html: `${post?.content.replace(/(?:\r\n|\r|\n)/g, "<br>")}`,
     }),
-    [post?.content],
+    [post?.content]
   );
 
   // Loading state

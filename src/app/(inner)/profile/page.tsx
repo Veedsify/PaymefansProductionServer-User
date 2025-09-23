@@ -8,9 +8,15 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import CreatorDashboardButton from "@/features/profile/CreatorDashboardButton";
-import EditProfileButton from "@/features/profile/EditProfileButton";
+const EditProfileButton = dynamic(
+  () => import("@/features/profile/EditProfileButton"),
+  { ssr: true }
+);
 import MoreProfileOptions from "@/features/profile/MoreProfileOptions";
-import ProfileBanner from "@/features/profile/ProfileBanner";
+const ProfileBanner = dynamic(
+  () => import("@/features/profile/ProfileBanner"),
+  { ssr: true }
+);
 import { ProfileCounts } from "@/features/profile/ProfileCount";
 import ProfilePicture from "@/features/profile/ProfilePicture";
 import ProfileSocialLinks from "@/features/profile/ProfileSocialLinks";
@@ -20,6 +26,7 @@ import getUserData from "@/utils/data/UserData";
 import FormatName from "@/lib/FormatName";
 import LoadingSpinner from "@/components/common/loaders/LoadingSpinner";
 import ErrorComponent from "@/components/common/loaders/ErrorComponent";
+import dynamic from "next/dynamic";
 
 const ProfilePage = () => {
   const {

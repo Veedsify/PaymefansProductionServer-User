@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { shuffle } from "lodash";
+import { shuffle } from "lodash-es";
 import { modelsService } from "@/features/models/services/ModelsService";
 
 interface UseModelsOptions {

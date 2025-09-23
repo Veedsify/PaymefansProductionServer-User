@@ -1,15 +1,12 @@
-"use client";
+"use client";;
 import { useInfiniteQuery } from "@tanstack/react-query";
-import _, { set } from "lodash";
-import { LucideLoader, LucidePlay } from "lucide-react";
+import { LucidePlay } from "lucide-react";
 import Image from "next/image";
-import React, { useEffect } from "react";
+import React from "react";
 import usePostComponent from "@/contexts/PostComponentPreview";
-import { useProfileMediaContext } from "@/contexts/ProfileMediaContext";
 import { useAuthContext } from "@/contexts/UserUseContext";
 import type { MediaDataType } from "@/types/Components";
 import axiosInstance from "@/utils/Axios";
-import { getToken } from "@/utils/Cookie";
 import { LockedMediaOverlay } from "./LockedMediaOverlay";
 import HLSVideoPlayer from "./videoplayer";
 import LoadingSpinner from "@/components/common/loaders/LoadingSpinner";

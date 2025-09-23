@@ -1,4 +1,4 @@
-import _ from "lodash";
+import { uniqBy } from "lodash-es";
 import { create } from "zustand";
 import type {
   MediaDataType,
@@ -13,7 +13,7 @@ type ProfileMediaContext = {
 export const useProfileMediaContext = create<ProfileMediaContext>((set) => ({
   arData: [],
   setData: (media) =>
-    set((state) => ({ arData: _.uniqBy([...state.arData, ...media], "id") })),
+    set((state) => ({ arData: uniqBy([...state.arData, ...media], "id") })),
 }));
 
 type OtherMediaContext = {
@@ -25,6 +25,6 @@ const useOtherMediaContext = create<OtherMediaContext>((set) => ({
   data: [],
   setData: (media: MediaDataTypeOtherProps[]) =>
     set((state) => ({
-      data: _.uniqBy([...state.data, ...media], "id"),
+      data: uniqBy([...state.data, ...media], "id"),
     })),
 }));
