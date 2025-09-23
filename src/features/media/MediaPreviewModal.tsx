@@ -72,7 +72,7 @@ const MediaPreviewModal = memo(
           alt: item.alt || `Media preview ${index + 1}`,
         };
       },
-      [],
+      []
     );
 
     const mediaItems = useMemo(() => {
@@ -86,7 +86,7 @@ const MediaPreviewModal = memo(
         isFirstSlide: currentSlide === 0,
         isLastSlide: currentSlide === mediaItems.length - 1,
       }),
-      [mediaItems.length, currentSlide],
+      [mediaItems.length, currentSlide]
     );
 
     const shouldLoadSlide = useCallback(
@@ -98,7 +98,7 @@ const MediaPreviewModal = memo(
         // After initial load, use wider preload range
         return Math.abs(index - currentSlide) <= MEDIA_CONSTANTS.PRELOAD_RANGE;
       },
-      [currentSlide, initialLoadComplete],
+      [currentSlide, initialLoadComplete]
     );
 
     // Preload media with priority
@@ -203,7 +203,7 @@ const MediaPreviewModal = memo(
       if (swiperRef.current && typeof initialIndex === "number" && open) {
         const targetSlide = Math.max(
           0,
-          Math.min(initialIndex, totalSlides - 1),
+          Math.min(initialIndex, totalSlides - 1)
         );
         swiperRef.current.slideTo(targetSlide, 0, false);
         setCurrentSlide(targetSlide);
@@ -293,7 +293,8 @@ const MediaPreviewModal = memo(
           {mediaItems.map((item, index) => (
             <SwiperSlide
               key={`media-${index}-${item.url.slice(-20)}`}
-              className="relative w-full h-screen"
+              className="relative w-full h-screen flex items-center justify-center bg-black"
+              aria-label={`Slide ${index + 1} of ${totalSlides}`}
             >
               <MediaErrorBoundary>
                 {shouldLoadSlide(index) ? (
@@ -350,7 +351,7 @@ const MediaPreviewModal = memo(
         )}
       </motion.div>
     );
-  },
+  }
 );
 
 MediaPreviewModal.displayName = "MediaPreviewModal";
