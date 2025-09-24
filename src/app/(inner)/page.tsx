@@ -1,9 +1,16 @@
 import type { Metadata } from "next";
-import HomePostComponent from "@/features/post/HomePostComponent";
+
+const HomePostComponent = dynamic(
+  () => import("@/features/post/HomePostComponent"),
+  {
+    ssr: false,
+    loading: () => <LoadingSpinner />,
+  },
+);
 import dynamic from "next/dynamic";
 
 const StatusComponent = dynamic(() => import("@/features/story/comps/Status"), {
-  ssr: true,
+  ssr: false,
   loading: () => <LoadingSpinner />,
 });
 import HomeProvider from "@/providers/HomeProvider";

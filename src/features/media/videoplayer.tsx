@@ -345,8 +345,8 @@ const VideoPlayer = ({
                   <div className="relative flex items-center">
                     <button
                       onClick={(e) => {
-                        e.stopPropagation();
                         toggleMute();
+                        e.stopPropagation();
                       }}
                       className="bg-black hover:bg-black/90 p-3 rounded-full shadow-lg flex items-center justify-center border border-gray-700"
                       aria-label={isMuted ? "Unmute" : "Mute"}
