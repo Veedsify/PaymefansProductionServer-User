@@ -10,7 +10,7 @@ import { useAuthContext } from "@/contexts/UserUseContext";
 import dynamic from "next/dynamic";
 const OtherTransactions = dynamic(
   () => import("@/features/transactions/OtherTransactions"),
-  { ssr: true },
+  { ssr: false },
 );
 import type { ExchangeRate } from "@/types/Components";
 import axiosInstance from "@/utils/Axios";
