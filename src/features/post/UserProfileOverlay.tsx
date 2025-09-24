@@ -34,7 +34,7 @@ const UserProfileOverlay = ({
             quality={100}
             src={userProfile?.avatar}
             alt={userProfile?.name}
-            className="md:w-16 md:h-16 w-12 h-12 rounded-full object-cover border-2 border-white/20"
+            className="md:w-16 md:h-16 w-12 h-12 rounded-full object-cover border-2 border-white"
           />
         ) : (
           <div className="md:w-16 md:h-16 w-12 h-12 rounded-full bg-gradient-to-br from-purple-500 to-purple-600 flex items-center justify-center">
@@ -43,12 +43,12 @@ const UserProfileOverlay = ({
         )}
       </Link>
       <div className="">
-        <p className="text-white font-semibold text-base md:text-lg">
+        <p className="text-white font-semibold text-base md:text-lg text-shadow-2xs">
           <Link href={`/${userProfile?.username}`}>
             {FormatName(userProfile?.name)}
           </Link>
         </p>
-        <p className="text-gray-300 text-xs md:text-sm">
+        <p className="text-gray-100 text-xs md:text-sm text-shadow-2xs">
           <Link href={`/${userProfile?.username}`}>
             {userProfile?.username}
           </Link>

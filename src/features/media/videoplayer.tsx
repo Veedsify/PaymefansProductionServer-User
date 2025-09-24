@@ -314,26 +314,28 @@ const VideoPlayer = ({
 
         <div className="max-w-3xl">
           {modalOpen && (
-            <div className="opacity-0 group-hover:opacity-100 transition-opacity min-w-sm  duration-300">
+            <div className="md:opacity-0 opacity-100 md:group-hover:opacity-100 transition-opacity min-w-sm  duration-300">
               {/* Overlay gradient for better control visibility */}
               <div
                 className={`absolute inset-0 pointer-events-none transition-opacity duration-300 ${
                   controlsVisible
-                    ? "lg:bg-gradient-to-t lg:from-black/80 lg:via-black/30 lg:to-transparent"
+                    ? "bg-gradient-to-t from-black via-black/30 to-transparent"
                     : ""
                 }`}
               ></div>
 
               {/* User Profile Card - Top Left */}
               {userProfile && (
-                <div className="absolute bottom-[40%] left-4 z-20 flex items-center gap-3 p-2 rounded-full">
+                <div
+                  className={`absolute ${controlsVisible ? "bottom-[25%] md:bottom-[20%]" : "bottom-[5%]"} left-4 z-20 flex items-center gap-3 rounded-full`}
+                >
                   <UserProfileOverlay userProfile={userProfile} />
                 </div>
               )}
 
               {/* Controls overlay */}
               <div
-                className={`absolute left-0 right-0 z-20 flex items-center justify-between px-6 py-4 transition-opacity duration-300 ${
+                className={`absolute left-0 right-0 z-20 flex items-center justify-between px-4 py-4 transition-opacity duration-300 ${
                   controlsVisible ? "opacity-100" : "opacity-0"
                 } bottom-28`}
               >
@@ -346,7 +348,7 @@ const VideoPlayer = ({
                         e.stopPropagation();
                         toggleMute();
                       }}
-                      className="p-3 rounded-full outline-gray-700 bg-black/70 hover:bg-black/90"
+                      className="bg-black hover:bg-black/90 p-3 rounded-full shadow-lg flex items-center justify-center border border-gray-700"
                       aria-label={isMuted ? "Unmute" : "Mute"}
                     >
                       {isMuted || volume === 0 ? (
