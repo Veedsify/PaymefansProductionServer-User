@@ -259,7 +259,7 @@ const MediaPreviewModal = memo(
 
         {/* Close button */}
         <button
-          className="absolute z-20 p-2 text-white bg-black/60 hover:bg-black/80 rounded-full top-3 right-3 md:top-4 md:right-4 focus:outline-none focus:ring-2 focus:ring-white/50 transition-colors backdrop-blur-sm"
+          className="absolute z-20 p-2 text-white bg-black/60 hover:bg-black/80 rounded-full top-1 right-3 md:top-4 md:right-4 focus:outline-none focus:ring-2 focus:ring-white/50 transition-colors backdrop-blur-sm"
           onClick={handleClose}
           aria-label="Close preview"
         >

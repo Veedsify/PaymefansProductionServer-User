@@ -38,7 +38,7 @@ export const ImagePreview = memo(
       >
         <div className="absolute inset-0 left-0 select-none flex items-center justify-center">
           {userProfile && (
-            <div className="absolute bottom-24 md:bottom-10 left-2 z-20 flex items-center gap-3 p-2 rounded-full">
+            <div className="absolute bottom-[25%] md:bottom-[20%] left-2 z-20 flex items-center gap-3 p-2 rounded-full">
               <UserProfileOverlay userProfile={userProfile} />
             </div>
           )}
