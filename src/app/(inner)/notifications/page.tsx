@@ -1,8 +1,10 @@
 import type { Metadata } from "next";
-import {
-  NotificationBody,
-  NotificationHeader,
-} from "@/features/notifications/Notifications";
+import dynamic from "next/dynamic";
+
+const NotificationHeader = dynamic(
+  () => import("@/features/notifications/Notifications"),
+  { ssr: true },
+);
 
 export const metadata: Metadata = {
   title: "Notifications",

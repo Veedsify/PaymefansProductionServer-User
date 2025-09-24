@@ -1,7 +1,15 @@
 "use client";
 
 import { X } from "lucide-react";
-import { memo, useCallback, useEffect, useMemo, useReducer, useRef, useState } from "react";
+import {
+  memo,
+  useCallback,
+  useEffect,
+  useMemo,
+  useReducer,
+  useRef,
+  useState,
+} from "react";
 import { A11y, Keyboard, Navigation, Pagination } from "swiper/modules";
 import { Swiper, type SwiperClass, SwiperSlide } from "swiper/react";
 import "swiper/css/bundle";
@@ -64,7 +72,7 @@ const MediaPreviewModal = memo(
           alt: item.alt || `Media preview ${index + 1}`,
         };
       },
-      []
+      [],
     );
 
     const mediaItems = useMemo(() => {
@@ -78,7 +86,7 @@ const MediaPreviewModal = memo(
         isFirstSlide: currentSlide === 0,
         isLastSlide: currentSlide === mediaItems.length - 1,
       }),
-      [mediaItems.length, currentSlide]
+      [mediaItems.length, currentSlide],
     );
 
     const shouldLoadSlide = useCallback(
@@ -90,7 +98,7 @@ const MediaPreviewModal = memo(
         // After initial load, use wider preload range
         return Math.abs(index - currentSlide) <= MEDIA_CONSTANTS.PRELOAD_RANGE;
       },
-      [currentSlide, initialLoadComplete]
+      [currentSlide, initialLoadComplete],
     );
 
     // Preload media with priority
@@ -195,7 +203,7 @@ const MediaPreviewModal = memo(
       if (swiperRef.current && typeof initialIndex === "number" && open) {
         const targetSlide = Math.max(
           0,
-          Math.min(initialIndex, totalSlides - 1)
+          Math.min(initialIndex, totalSlides - 1),
         );
         swiperRef.current.slideTo(targetSlide, 0, false);
         setCurrentSlide(targetSlide);
@@ -240,7 +248,7 @@ const MediaPreviewModal = memo(
         role="dialog"
         aria-labelledby="media-preview-title"
         aria-modal="true"
-        className="fixed inset-0 z-[9999] flex h-screen items-center justify-center bg-black"
+        className="fixed inset-0 z-[9999] flex h-dvh items-center justify-center bg-black"
         onClick={(e) => {
           if (e.target === e.currentTarget) handleClose();
         }}
@@ -285,7 +293,7 @@ const MediaPreviewModal = memo(
           {mediaItems.map((item, index) => (
             <SwiperSlide
               key={`media-${index}-${item.url.slice(-20)}`}
-              className="relative h-screenbg-black"
+              className="relative h-dvh bg-black"
               aria-label={`Slide ${index + 1} of ${totalSlides}`}
             >
               <MediaErrorBoundary>
@@ -296,7 +304,7 @@ const MediaPreviewModal = memo(
                       username={username}
                       alt={item.alt || `Media preview ${index + 1}`}
                       index={index}
-                      className="object-contain max-h-screen"
+                      className="object-contain max-h-dvh"
                       onLoad={() => handleImageLoad(index)}
                       onError={() => handleImageError(index)}
                       userProfile={userProfile}
@@ -343,7 +351,7 @@ const MediaPreviewModal = memo(
         )}
       </motion.div>
     );
-  }
+  },
 );
 
 MediaPreviewModal.displayName = "MediaPreviewModal";

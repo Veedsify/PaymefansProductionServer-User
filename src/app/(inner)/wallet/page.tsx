@@ -7,7 +7,11 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import ROUTE from "@/config/routes";
 import { useConfigContext } from "@/contexts/ConfigContext";
 import { useAuthContext } from "@/contexts/UserUseContext";
-import OtherTransactions from "@/features/transactions/OtherTransactions";
+import dynamic from "next/dynamic";
+const OtherTransactions = dynamic(
+  () => import("@/features/transactions/OtherTransactions"),
+  { ssr: true },
+);
 import type { ExchangeRate } from "@/types/Components";
 import axiosInstance from "@/utils/Axios";
 import FormatName from "@/lib/FormatName";

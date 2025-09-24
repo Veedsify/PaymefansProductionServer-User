@@ -1,5 +1,4 @@
 "use client";
-import { LucideLoader } from "lucide-react";
 import { useRouter } from "next/navigation";
 import React, { useCallback, useMemo, useState } from "react";
 import { useInView } from "react-intersection-observer";
@@ -18,7 +17,7 @@ interface NotificationHeaderProps {
   className?: string;
 }
 
-export function NotificationHeader({
+export default function NotificationHeader({
   children,
   className,
 }: NotificationHeaderProps) {
