@@ -293,7 +293,7 @@ const MediaPreviewModal = memo(
           {mediaItems.map((item, index) => (
             <SwiperSlide
               key={`media-${index}-${item.url.slice(-20)}`}
-              className="relative h-dvh bg-black"
+              className="relative h-dvh bg-black group"
               aria-label={`Slide ${index + 1} of ${totalSlides}`}
             >
               <MediaErrorBoundary>

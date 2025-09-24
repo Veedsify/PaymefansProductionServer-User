@@ -327,7 +327,7 @@ const VideoPlayer = ({
               {/* User Profile Card - Top Left */}
               {userProfile && (
                 <div
-                  className={`absolute ${controlsVisible ? "bottom-[25%] md:bottom-[15%]" : "bottom-[5%]"} left-4 z-20 flex items-center gap-3 rounded-full`}
+                  className={`absolute ${controlsVisible ? "bottom-[10%] md:bottom-[15%]" : "bottom-[5%]"} left-4 z-20 flex items-center gap-3 transition-all duration-300`}
                 >
                   <UserProfileOverlay userProfile={userProfile} />
                 </div>

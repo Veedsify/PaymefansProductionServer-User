@@ -1,10 +1,8 @@
 import { AnimatePresence, motion } from "framer-motion";
-import { LucideUser, LucideUser2 } from "lucide-react";
 import Image from "next/image";
-import Link from "next/link";
 import React, { memo, Suspense } from "react";
 import Loader from "../../components/common/loaders/LoadingAnimation";
-import { MEDIA_CONSTANTS, type UserProfile } from "../../providers";
+import { type UserProfile } from "../../providers";
 import UserProfileOverlay from "./UserProfileOverlay";
 
 type ImagePreviewProps = {
@@ -21,6 +19,7 @@ type ImagePreviewProps = {
 
 export const ImagePreview = memo(
   ({ url, alt, userProfile, className }: ImagePreviewProps) => {
+    const [showProfile, setShowProfile] = React.useState(false);
     return (
       <Suspense
         fallback={
@@ -36,32 +35,38 @@ export const ImagePreview = memo(
           </AnimatePresence>
         }
       >
-        <div className="absolute group inset-0 left-0 select-none flex items-center justify-center">
-          {userProfile && (
-            <div className="absolute md:opacity-100 opacity-0 group-hover:opacity-100 bottom-[5%] md:bottom-[5%] left-2 z-20 flex items-center gap-3 p-2 rounded-full">
-              <UserProfileOverlay userProfile={userProfile} />
-            </div>
-          )}
-          <Image
-            src={url.trim()}
-            alt={alt}
-            priority
-            quality={100}
-            width={1080}
-            height={1080}
-            className={className}
-            onContextMenu={(e) => e.preventDefault()}
-            draggable={false}
-            style={{
-              userSelect: "none",
-              WebkitUserSelect: "none",
-              MozUserSelect: "none",
-              msUserSelect: "none",
-            }}
-          />
-        </div>
+        <motion.div
+          onHoverStart={() => setShowProfile(true)}
+          onHoverEnd={() => setShowProfile(false)}
+          onTouchStart={() => setShowProfile((prev) => !prev)} // Toggle on touch
+        >
+          <div className="absolute inset-0 left-0 select-none flex items-center justify-center group">
+            {userProfile && showProfile && (
+              <div className="absolute bottom-[5%] md:bottom-[5%] left-2 z-20 flex items-center gap-3 p-2 rounded-full">
+                <UserProfileOverlay userProfile={userProfile} />
+              </div>
+            )}
+            <Image
+              src={url.trim()}
+              alt={alt}
+              priority
+              quality={100}
+              width={1080}
+              height={1080}
+              className={className}
+              onContextMenu={(e) => e.preventDefault()}
+              draggable={false}
+              style={{
+                userSelect: "none",
+                WebkitUserSelect: "none",
+                MozUserSelect: "none",
+                msUserSelect: "none",
+              }}
+            />
+          </div>
+        </motion.div>
       </Suspense>
     );
-  },
+  }
 );
 ImagePreview.displayName = "ImagePreview";
