@@ -6,7 +6,7 @@ import { usePostPreviewState } from "@/hooks/usePostPreviewSelectors";
 
 // Lazy load the heavy MediaPreviewModal component
 const MediaPreviewModal = dynamic(() => import("../media/MediaPreviewModal"), {
-  ssr: true,
+  ssr: false,
 });
 
 // Optimized loading fallback
@@ -17,15 +17,6 @@ const ModalLoader = memo(() => (
     aria-modal="true"
     aria-label="Loading media preview"
   >
-    {/* <div className="flex items-center space-x-2 text-white">
-      <div
-        className="w-6 h-6 border-2 border-white border-t-transparent rounded-full animate-spin"
-        aria-hidden="true"
-      />
-      <span>
-        <LucideLoader className="w-6 h-6 animate-spin" aria-hidden="true" />
-      </span>
-    </div> */}
   </div>
 ));
 ModalLoader.displayName = "ModalLoader";

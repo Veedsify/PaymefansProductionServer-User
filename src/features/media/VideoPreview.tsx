@@ -137,7 +137,7 @@ const VideoPreview = memo(
 
     return (
       <motion.div
-        className="relative object-contain h-full"
+        className="relative h-full flex items-center justify-center w-full"
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
         exit={{ opacity: 0, scale: 0.95 }}
@@ -149,7 +149,7 @@ const VideoPreview = memo(
         {isBlob ? (
           <video
             ref={videoRef}
-            className="object-contain w-auto h-dvh"
+            className="object-contain h-full w-full"
             controls={false}
             loop
             muted
@@ -171,7 +171,7 @@ const VideoPreview = memo(
               muted: false,
               playsInline: true,
             }}
-            className="object-contain h-dvh transition-all duration-200"
+            className="object-contain h-full w-full absolute"
           />
         )}
       </motion.div>
