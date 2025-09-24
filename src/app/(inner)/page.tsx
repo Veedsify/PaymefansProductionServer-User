@@ -5,12 +5,12 @@ import LoadingSpinner from "@/components/common/loaders/LoadingSpinner";
 const HomePostComponent = dynamic(
   () => import("@/features/post/HomePostComponent"),
   {
-    ssr: false,
+    ssr: true,
     loading: () => <LoadingSpinner />,
   },
 );
 const StatusComponent = dynamic(() => import("@/features/story/comps/Status"), {
-  ssr: false,
+  ssr: true,
   loading: () => <LoadingSpinner />,
 });
 import HomeProvider from "@/providers/HomeProvider";
