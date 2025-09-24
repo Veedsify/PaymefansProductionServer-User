@@ -171,7 +171,7 @@ function BannerModal({ user, open = false, setOpen }: BannerModalProps) {
       }`}
     >
       <div
-        className="relative w-full p-6 overflow-y-auto bg-white rounded-none dark:bg-slate-950 lg:max-w-6xl md:rounded md:p-8 h-dvh lg:h-screen"
+        className="relative w-full p-6 overflow-y-auto bg-white rounded-none dark:bg-slate-950 lg:max-w-6xl md:rounded md:p-8 h-dvh lg:h-dvh"
         onClick={(e) => e.stopPropagation()}
       >
         <button

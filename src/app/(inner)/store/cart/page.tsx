@@ -13,7 +13,7 @@ const CartPage = () => {
   const totalPrice = calculateTotalPrice();
 
   return (
-    <div className="min-h-screen bg-white dark:bg-black">
+    <div className="min-h-dvh bg-white dark:bg-black">
       {/* Header Section */}
       <div className="bg-white border-b border-gray-200 dark:bg-gray-900 dark:border-gray-800">
         <div className="px-4 py-6 mx-auto max-w-screen-xl sm:px-6 lg:px-8">

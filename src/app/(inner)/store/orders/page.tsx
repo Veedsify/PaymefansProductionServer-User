@@ -57,7 +57,7 @@ const OrdersPage = () => {
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
+      <div className="flex items-center justify-center min-h-dvh">
         <Loader2 className="w-8 h-8 text-gray-500 animate-spin" />
       </div>
     );
@@ -65,7 +65,7 @@ const OrdersPage = () => {
 
   if (isError) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
+      <div className="flex items-center justify-center min-h-dvh">
         <div className="text-center">
           <XCircle className="w-16 h-16 mx-auto mb-4 text-red-500" />
           <p className="text-red-500">

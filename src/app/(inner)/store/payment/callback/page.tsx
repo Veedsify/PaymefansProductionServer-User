@@ -94,7 +94,7 @@ const PaymentCallback = () => {
   }, [status]);
 
   return (
-    <div className="flex items-center justify-center min-h-screen px-4 bg-white dark:bg-black">
+    <div className="flex items-center justify-center min-h-dvh px-4 bg-white dark:bg-black">
       <div className="w-full max-w-md p-8 text-center bg-white shadow-lg dark:bg-gray-800 rounded-2xl">
         {status === "loading" && (
           <>

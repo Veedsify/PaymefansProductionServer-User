@@ -198,7 +198,7 @@ const MyTicketsModal = ({
         animate={{ opacity: 1, scale: 1 }}
         exit={{ opacity: 0, scale: 0.9 }}
         transition={{ duration: 0.2, type: "spring", damping: 20 }}
-        className="relative h-screen w-full lg:h-[90vh] lg:w-[95vw] max-w-6xl bg-white dark:bg-gray-900 lg:rounded-2xl shadow-2xl border border-gray-200 dark:border-gray-700 flex flex-col overflow-hidden"
+        className="relative h-dvh w-full lg:h-[90vh] lg:w-[95vw] max-w-6xl bg-white dark:bg-gray-900 lg:rounded-2xl shadow-2xl border border-gray-200 dark:border-gray-700 flex flex-col overflow-hidden"
         tabIndex={0}
         aria-label="My support tickets modal"
       >

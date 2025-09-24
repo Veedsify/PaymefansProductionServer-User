@@ -387,7 +387,7 @@ const SearchPage = () => {
   ];
 
   return (
-    <div className="min-h-screen text-gray-900 bg-white dark:bg-black dark:text-gray-100">
+    <div className="min-h-dvh text-gray-900 bg-white dark:bg-black dark:text-gray-100">
       <div className="max-w-6xl px-4 py-6 mx-auto lg:px-6">
         {/* Search Bar */}
         <div className="sticky top-0 z-20 py-6 -mx-2 bg-white/95 backdrop-blur-sm dark:bg-black/95">

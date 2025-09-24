@@ -100,7 +100,7 @@ const GroupSettingsPage = () => {
 
   if (error && !group) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-screen bg-gray-50 dark:bg-gray-900">
+      <div className="flex flex-col items-center justify-center min-h-dvh bg-gray-50 dark:bg-gray-900">
         <div className="text-center">
           <h2 className="mb-2 text-xl font-semibold text-gray-900 dark:text-white">
             Error Loading Group
@@ -118,7 +118,7 @@ const GroupSettingsPage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-white dark:bg-black">
+    <div className="min-h-dvh bg-white dark:bg-black">
       {/* Header */}
       <div className="px-4 py-4 bg-white border-b border-gray-200 dark:bg-gray-800 dark:border-gray-700">
         <div className="flex items-center max-w-4xl mx-auto">

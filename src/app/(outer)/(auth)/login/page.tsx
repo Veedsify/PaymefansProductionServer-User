@@ -98,7 +98,7 @@ const Login = () => {
 
   // $SELECTION_PLACEHOLDER$ code:
   if (!hasCheckedAcceptedTerms) {
-    return <div className="min-h-screen bg-black"></div>;
+    return <div className="min-h-dvh bg-black"></div>;
   }
 
   return (

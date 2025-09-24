@@ -113,7 +113,7 @@ const BlockedUsersPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-white dark:bg-black">
+    <div className="min-h-dvh bg-white dark:bg-black">
       <div className="p-4 md:p-8">
         {/* Header */}
         <motion.div

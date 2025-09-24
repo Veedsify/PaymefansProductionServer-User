@@ -196,7 +196,7 @@ const GroupCover = ({ handleJoinGroup }: GroupCoverProps) => {
   const arrangedProfiles = arrangeProfiles();
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-dvh">
       <div className="flex items-center justify-center w-full overflow-hidden bg-white dark:bg-black h-dvh">
         {/* Main content */}
         <div className="px-8 py-8 text-center">

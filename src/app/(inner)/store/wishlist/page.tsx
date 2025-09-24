@@ -81,7 +81,7 @@ const WishlistPage = () => {
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-white dark:bg-black">
+      <div className="flex items-center justify-center min-h-dvh bg-white dark:bg-black">
         <Loader2 className="w-8 h-8 text-gray-500 animate-spin" />
       </div>
     );
@@ -89,7 +89,7 @@ const WishlistPage = () => {
 
   if (isError) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-white dark:bg-black">
+      <div className="flex items-center justify-center min-h-dvh bg-white dark:bg-black">
         <div className="text-center">
           <Heart className="w-16 h-16 mx-auto mb-4 text-red-500" />
           <p className="text-red-500">
@@ -102,7 +102,7 @@ const WishlistPage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-white dark:bg-black">
+    <div className="min-h-dvh bg-white dark:bg-black">
       {/* Header Section */}
       <div className="bg-white border-b border-gray-200 dark:bg-gray-900 dark:border-gray-800">
         <div className="px-4 py-6 mx-auto max-w-screen-xl sm:px-6 lg:px-8">
