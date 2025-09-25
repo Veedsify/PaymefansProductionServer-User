@@ -6,6 +6,7 @@ export const imageTypes = [
   "image/svg+xml",
   "image/webp",
   "image/bmp",
+  "image/apng",
   "image/tiff",
   "image/ico",
 ];
@@ -14,4 +15,14 @@ export const videoTypes = [
   "video/webm",
   "video/ogg",
   "video/quicktime",
+  "video/x-msvideo",
+  "video/x-ms-wmv",
+  "video/mpeg",
+  "video/3gpp",
+  "video/3gpp2",
+  "video/avi",
+  "video/flv",
+  "video/mov",
+  "video/ts",
+  "video/mkv",
 ];

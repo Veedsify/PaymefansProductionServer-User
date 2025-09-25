@@ -3,6 +3,7 @@ import { HiCamera } from "react-icons/hi";
 import { v4 as uuid } from "uuid";
 import { useStoryStore } from "@/contexts/StoryContext";
 import toast from "react-hot-toast";
+import { videoTypes } from "@/lib/FileTypes";
 
 const StoryUploadForm = () => {
   const { addToStory } = useStoryStore();
@@ -17,12 +18,16 @@ const StoryUploadForm = () => {
           const fileUrl = URL.createObjectURL(file);
           const isVideo = file.type.startsWith("video/");
 
-          if (!isVideo && file.size > 2 * 1024 * 1024) {
-            toast.error("Image size should be less than 2MB");
+          if (
+            !videoTypes.includes(file.type) &&
+            !isVideo &&
+            file.size > 10 * 1024 * 1024
+          ) {
+            toast.error("Image size should be less than 10MB");
             return;
           }
 
-          if (isVideo && file.size > 5 * 1024 * 1024) {
+          if (isVideo && file.size > 5 * 1024 * 1024 * 1024) {
             toast.error("Video size should be less than 5GB");
             return;
           }
@@ -46,7 +51,7 @@ const StoryUploadForm = () => {
         e.target.value = "";
       }
     },
-    [addToStory],
+    [addToStory]
   );
 
   return (
