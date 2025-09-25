@@ -1,7 +1,7 @@
 import { LucideUser2 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import React, { useEffect } from "react";
+import React, { useEffect, useMemo } from "react";
 import usePostComponent from "@/contexts/PostComponentPreview";
 import FormatName from "@/lib/FormatName";
 
@@ -24,28 +24,25 @@ const UserProfileOverlay = ({
     };
   }, [close, ref]);
 
+  const [profile] = useMemo(() => {
+    return [userProfile];
+  }, [userProfile]);
+
   return (
-    <div className="z-20 flex items-center gap-3 rounded-full" ref={ref}>
-      <Link href={`/${userProfile?.username}`}>
-        {userProfile?.avatar ? (
-          <Image
-            width={64}
-            height={64}
-            quality={100}
-            src={userProfile?.avatar}
-            alt={userProfile?.name}
-            className="md:w-16 md:h-16 w-12 h-12 rounded-full object-cover border-2 border-white"
-          />
-        ) : (
-          <div className="md:w-16 md:h-16 w-12 h-12 rounded-full bg-gradient-to-br from-purple-500 to-purple-600 flex items-center justify-center">
-            <LucideUser2 className="md:w-8 w-6 md:h-8 h-6 text-white" />
-          </div>
-        )}
+    <div className="z-20 flex items-center gap-2 rounded-full" ref={ref}>
+      <Link href={`/${profile?.username}`}>
+        <Image
+          width={64}
+          height={64}
+          src={profile?.avatar!}
+          alt={profile?.name!}
+          className="md:w-16 md:h-16 w-12 h-12 rounded-full object-cover border border-white"
+        />
       </Link>
       <div className="">
-        <p className="text-white font-semibold text-base md:text-lg text-shadow-2xs">
-          <Link href={`/${userProfile?.username}`}>
-            {FormatName(userProfile?.name)}
+        <p className="text-white text-sm font-semibold md:text-lg text-shadow-2xs">
+          <Link href={`/${profile?.username}`}>
+            {FormatName(profile?.name)}
           </Link>
         </p>
         <p className="text-gray-100 text-xs md:text-sm text-shadow-2xs">

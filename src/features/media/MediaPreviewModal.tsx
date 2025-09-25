@@ -72,7 +72,7 @@ const MediaPreviewModal = memo(
           alt: item.alt || `Media preview ${index + 1}`,
         };
       },
-      [],
+      []
     );
 
     const mediaItems = useMemo(() => {
@@ -86,7 +86,7 @@ const MediaPreviewModal = memo(
         isFirstSlide: currentSlide === 0,
         isLastSlide: currentSlide === mediaItems.length - 1,
       }),
-      [mediaItems.length, currentSlide],
+      [mediaItems.length, currentSlide]
     );
 
     const shouldLoadSlide = useCallback(
@@ -98,7 +98,7 @@ const MediaPreviewModal = memo(
         // After initial load, use wider preload range
         return Math.abs(index - currentSlide) <= MEDIA_CONSTANTS.PRELOAD_RANGE;
       },
-      [currentSlide, initialLoadComplete],
+      [currentSlide, initialLoadComplete]
     );
 
     // Preload media with priority
@@ -203,7 +203,7 @@ const MediaPreviewModal = memo(
       if (swiperRef.current && typeof initialIndex === "number" && open) {
         const targetSlide = Math.max(
           0,
-          Math.min(initialIndex, totalSlides - 1),
+          Math.min(initialIndex, totalSlides - 1)
         );
         swiperRef.current.slideTo(targetSlide, 0, false);
         setCurrentSlide(targetSlide);
@@ -259,11 +259,11 @@ const MediaPreviewModal = memo(
 
         {/* Close button */}
         <button
-          className="absolute z-20 p-2 text-white bg-black/60 hover:bg-black/80 rounded-full top-1 right-3 md:top-4 md:right-4 focus:outline-none focus:ring-2 focus:ring-white/50 transition-colors backdrop-blur-sm"
+          className="absolute z-50 p-2 text-white bg-black/30 hover:bg-black/80 rounded-full top-2 right-2 md:top-4 md:right-4"
           onClick={handleClose}
           aria-label="Close preview"
         >
-          <X className="w-4 h-4 md:w-5 md:h-5" />
+          <X className="w-5 h-5 md:w-6 md:h-6" />
         </button>
 
         {/* Slide counter */}
@@ -351,7 +351,7 @@ const MediaPreviewModal = memo(
         )}
       </motion.div>
     );
-  },
+  }
 );
 
 MediaPreviewModal.displayName = "MediaPreviewModal";

@@ -10,10 +10,18 @@ import {
   LucideVolume2,
   LucideVolumeX,
 } from "lucide-react";
-import { useCallback, useEffect, useRef, useState } from "react";
+import {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from "react";
 import { useInView } from "react-intersection-observer";
 import UserProfileOverlay from "@/features/post/UserProfileOverlay";
 import CustomSeekBar from "./CustomSeekBar";
+import CustomVolumeSeekBar from "./CustomSeekBar";
+import { cn } from "@/components/ui/cn";
 
 interface UserProfile {
   name: string;
@@ -51,7 +59,7 @@ const VideoPlayer = ({
   const [showResolutionMenu, setShowResolutionMenu] = useState(false);
   const [manualPlayPause, setManualPlayPause] = useState(false);
   const [selectedQuality, setSelectedQuality] = useState<number | "auto">(
-    "auto",
+    "auto"
   );
   const [volume, setVolume] = useState(1);
   const [isMuted, setIsMuted] = useState(false);
@@ -84,9 +92,14 @@ const VideoPlayer = ({
       if (isPlaying) {
         setControlsVisible(false);
       }
-    }, 3000);
+    }, 5000);
   }, [isPlaying]);
 
+  useLayoutEffect(() => {
+    if (controlsVisible) {
+      setControlsVisible(false);
+    }
+  }, []);
   // Handle mouse move to show controls
   const handleMouseMove = useCallback(() => {
     resetControlsTimer();
@@ -125,7 +138,7 @@ const VideoPlayer = ({
 
         const quality = localStorage.getItem("selectedQuality");
         setSelectedQuality(
-          quality ? parseInt(quality) : (levels[0]?.index ?? -1),
+          quality ? parseInt(quality) : levels[0]?.index ?? -1
         );
         setQualityLevels([...levels, { index: -1, label: "Auto" }]);
 
@@ -296,38 +309,34 @@ const VideoPlayer = ({
           </div>
         )}
 
-        {/* Play Button Overlay (when not playing) */}
-        {/* {!isPlaying && (
-          <div className="absolute inset-0 flex items-center justify-center">
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                togglePlay();
-              }}
-              className="p-4 bg-black/50 rounded-full hover:bg-black/70 transition-all"
-              aria-label="Play"
+        {modalOpen && (
+          <>
+            <div
+              className={cn(
+                "transition-all duration-300",
+                controlsVisible
+                  ? "cursor-default opacity-100 pointer-events-auto"
+                  : "cursor-none opacity-0 pointer-events-none"
+              )}
             >
-              <LucidePlay className="w-12 h-12 text-white ml-1" />
-            </button>
-          </div>
-        )} */}
-
-        <div className="max-w-3xl">
-          {modalOpen && (
-            <div className="opacity-0 group-hover:opacity-100 transition-opacity min-w-sm  duration-300">
-              {/* Overlay gradient for better control visibility */}
               <div
-                className={`absolute inset-0 pointer-events-none transition-opacity duration-300 ${
+                className={cn(
+                  `absolute inset-0 pointer-events-none `,
                   controlsVisible
-                    ? "bg-gradient-to-t from-black via-black/30 to-transparent"
-                    : ""
-                }`}
+                    ? "bg-gradient-to-t from-black via-black/60 to-transparent"
+                    : "bg-transparent"
+                )}
               ></div>
 
               {/* User Profile Card - Top Left */}
               {userProfile && (
                 <div
-                  className={`absolute ${controlsVisible ? "bottom-[10%] md:bottom-[15%]" : "bottom-[5%]"} left-4 z-20 flex items-center gap-3 transition-all duration-300`}
+                  className={cn(
+                    controlsVisible
+                      ? "bottom-[22%] md:bottom-[15%]"
+                      : "bottom-[5%]",
+                    `absolute left-4 z-20 flex items-center`
+                  )}
                 >
                   <UserProfileOverlay userProfile={userProfile} />
                 </div>
@@ -335,13 +344,12 @@ const VideoPlayer = ({
 
               {/* Controls overlay */}
               <div
-                className={`absolute left-0 right-0 z-20 flex items-center justify-between px-4 py-4 transition-opacity duration-100 ${
-                  controlsVisible ? "opacity-100" : "opacity-0"
-                } bottom-28`}
+                className={cn(
+                  "absolute left-0 right-0 z-20 flex items-center justify-between px-4 py-4 opacity-0 bottom-20",
+                  controlsVisible && "opacity-100"
+                )}
               >
-                {/* Play/Pause button */}
                 <div className="flex items-center gap-2">
-                  {/* Volume Control */}
                   <div className="relative flex items-center">
                     <button
                       onClick={(e) => {
@@ -359,11 +367,11 @@ const VideoPlayer = ({
                     </button>
 
                     <div
-                      className="ml-2 w-0 overflow-hidden transition-all duration-300"
+                      className="ml-2 w-0 overflow-hidden transition-all"
                       onMouseEnter={() => setShowVolumeSlider(true)}
                       onMouseLeave={() => setShowVolumeSlider(false)}
                     >
-                      <CustomSeekBar
+                      <CustomVolumeSeekBar
                         currentTime={isMuted ? 0 : volume * 100}
                         duration={100}
                         onSeek={(newTime) => handleVolumeChange(newTime / 100)}
@@ -376,7 +384,9 @@ const VideoPlayer = ({
                       e.stopPropagation();
                       togglePlay();
                     }}
-                    className="flex items-center justify-center p-3 rounded-full shadow-lg transform outline outline-gray-700 bg-black/70 hover:bg-black/90 hover:scale-110 aspect-square"
+                    className={cn(
+                      "flex items-center justify-center p-3 rounded-full shadow-lg transform outline outline-gray-700 bg-black/70 hover:bg-black/90 hover:scale-110 aspect-square"
+                    )}
                     aria-label={isPlaying ? "Pause" : "Play"}
                     disabled={isLoading}
                   >
@@ -440,14 +450,12 @@ const VideoPlayer = ({
                 </div>
               )}
             </div>
-          )}
 
-          {/* Controls Panel - Time and seek bar */}
-          {modalOpen && !isLoading && (
             <div
-              className={`absolute opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex  ${
-                controlsVisible ? "opacity-100" : "opacity-0"
-              } bottom-10 left-0 z-10 flex flex-col w-full px-6 py-3 text-white gap-2`}
+              className={cn(
+                "absolute flex flex-col w-full px-6 py-3 opacity-0 text-white gap-2 bottom-[2%] left-0 z-10 ",
+                controlsVisible && "opacity-100"
+              )}
             >
               {/* Seek Bar */}
               <CustomSeekBar
@@ -464,8 +472,8 @@ const VideoPlayer = ({
                 <span>{formatTime(duration)}</span>
               </div>
             </div>
-          )}
-        </div>
+          </>
+        )}
       </div>
     </div>
   );

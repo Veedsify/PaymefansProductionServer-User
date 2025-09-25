@@ -54,13 +54,13 @@ export default function GetLocationContext({
           sendLocationToServer(locationData);
         },
         (error) => {
-          console.error("Error updating background location:", error);
+          console.log("Error updating background location:", error);
         },
         {
           enableHighAccuracy: true,
           timeout: 10000,
           maximumAge: 0,
-        },
+        }
       );
     }
   }, [user, sendLocationToServer]);
@@ -154,7 +154,7 @@ export default function GetLocationContext({
           enableHighAccuracy: true,
           timeout: 10000,
           maximumAge: 0,
-        },
+        }
       );
     }
   };
