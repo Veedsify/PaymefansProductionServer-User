@@ -59,7 +59,7 @@ const SideBar = React.memo(() => {
             height={30}
             priority
             unoptimized
-            src="/site/logos/logo.png"
+            src="/site/logos/logo2.png"
             alt="Logo"
           />
         </div>

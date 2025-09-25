@@ -453,7 +453,7 @@ const VideoPlayer = ({
 
             <div
               className={cn(
-                "absolute flex flex-col w-full px-6 py-3 opacity-0 text-white gap-2 bottom-[2%] left-0 z-10 ",
+                "absolute flex flex-col w-full px-6 py-3 opacity-0 text-white gap-2 bottom-[2] left-0 z-10 ",
                 controlsVisible && "opacity-100"
               )}
             >
