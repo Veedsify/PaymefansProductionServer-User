@@ -26,9 +26,10 @@ const Loader = () => {
           width={200}
           height={200}
           priority
-          src="/site/logo.svg"
+          quality={100}
+          src="/site/logos/logo.png"
           alt="Loader"
-          className="animate-bounce w-[200px] h-auto"
+          className="animate-bounce border border-white w-32 md:w-[200px] h-auto"
         />
       </div>
     </div>

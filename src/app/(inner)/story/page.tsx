@@ -8,7 +8,7 @@ export const metadata: Metadata = {
 
 const StoryPage = () => {
   return (
-    <div className="relative p-2 md:p-5">
+    <div className="relative p-2 md:p-5 pt-12">
       <h1 className="md:text-lg max-w-[550px] mx-auto font-semibold mb-3 dark:text-white">
         Add to your story
       </h1>

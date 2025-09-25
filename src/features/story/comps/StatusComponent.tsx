@@ -11,8 +11,13 @@ import StatusMediaPanel from "@/features/story/comps/StatusMediaPanel";
 import type { SelectMoreProps } from "@/types/Components";
 import { type StoryType, useStoryStore } from "../../../contexts/StoryContext";
 import axiosServer from "@/utils/Axios";
-import StoryCaptionComponent from "./StoryCaptionComponent";
-import StoryUploadForm from "./StoryUploadForm";
+const StoryCaptionComponent = dynamic(() => import("./StoryCaptionComponent"), {
+  ssr: false,
+});
+const StoryUploadForm = dynamic(() => import("./StoryUploadForm"), {
+  ssr: false,
+});
+import { cn } from "@/components/ui/cn";
 
 interface PresignedUrlResponse {
   media_id: string;
@@ -58,7 +63,7 @@ function StatusComponent() {
         (m) =>
           m.media_state !== "processing" &&
           m.media_state !== "uploading" &&
-          m.media_state !== "pending",
+          m.media_state !== "pending"
       )
     ) {
       setCanContinue(true);
@@ -71,7 +76,7 @@ function StatusComponent() {
     if (!user?.id) return;
     const evtSource = new EventSource(
       process.env.NEXT_PUBLIC_TS_EXPRESS_URL +
-        `/events/story-media-state?userId=${user?.id}`,
+        `/events/story-media-state?userId=${user?.id}`
     );
     evtSource.addEventListener(
       "story-processing-complete",
@@ -81,7 +86,7 @@ function StatusComponent() {
           const data = JSON.parse(event.data);
           updateStoryState(data.mediaId, "completed");
         }
-      },
+      }
     );
     evtSource.onerror = (err) => {
       console.error("SSE error:", err);
@@ -93,7 +98,7 @@ function StatusComponent() {
   // S3 upload functions
   const getPresignedUrls = async (
     files: File[],
-    mediaIds: string[],
+    mediaIds: string[]
   ): Promise<PresignedUrlResponse[]> => {
     const fileData = files.map((file, index) => ({
       name: file.name,
@@ -112,7 +117,7 @@ function StatusComponent() {
   const uploadToS3 = async (
     file: File,
     presignedUrl: string,
-    media_id: string,
+    media_id: string
   ): Promise<void> => {
     await axios.put(presignedUrl, file, {
       headers: {
@@ -135,7 +140,7 @@ function StatusComponent() {
       fileType: string;
       fileSize: number;
       isVideo: boolean;
-    }>,
+    }>
   ) => {
     const response = await axiosServer.post("/stories/complete-upload", {
       uploadedFiles,
@@ -147,7 +152,7 @@ function StatusComponent() {
   // Upload pending files
   const uploadPendingFiles = async () => {
     const pendingFiles = media.filter(
-      (item) => item.media_state === "pending" && item.file,
+      (item) => item.media_state === "pending" && item.file
     );
 
     if (pendingFiles.length === 0) return;
@@ -169,7 +174,7 @@ function StatusComponent() {
 
       // Step 3: Upload files to S3
       const uploadPromises = presignedData.map((data, index) =>
-        uploadToS3(files[index], data.presignedUrl, data.media_id),
+        uploadToS3(files[index], data.presignedUrl, data.media_id)
       );
 
       await Promise.all(uploadPromises);
@@ -237,11 +242,11 @@ function StatusComponent() {
         (m) =>
           m.media_state === "processing" ||
           m.media_state === "uploading" ||
-          m.media_state === "pending",
+          m.media_state === "pending"
       )
     ) {
       toast.error(
-        "Please wait for all media to finish processing before continuing.",
+        "Please wait for all media to finish processing before continuing."
       );
       return;
     }
@@ -253,12 +258,12 @@ function StatusComponent() {
   // Memoized removal handler creator to avoid inline functions in render
   const getRemoveHandler = useCallback(
     (id: number) => () => removeFromStory(id),
-    [removeFromStory],
+    [removeFromStory]
   );
 
   return (
     <>
-      <div className="max-w-[550px] lg:mx-auto mx-2 sm:mx-4 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-lg shadow-gray-100 dark:shadow-gray-900/20 overflow-hidden py-6 rounded-2xl lg:rounded-2xl sm:rounded-xl backdrop-blur-sm min-h-[70vh] sm:min-h-0">
+      <div className="max-w-[550px] lg:mx-auto mx-2 sm:mx-4 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-lg shadow-gray-100 dark:shadow-gray-900/20 overflow-hidden py-6 rounded-2xl lg:rounded-2xl sm:rounded-xl backdrop-blur-sm min-h-[70vh] sm:min-h-0 mb-24">
         {media.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-12 gap-4 dark:text-gray-300">
             <div className="flex items-center justify-center w-16 h-16 rounded-full bg-gradient-to-br from-primary-dark-pink/20 to-purple-500/20">
@@ -402,30 +407,32 @@ const SelectMoreItems = React.memo(
     }, []);
 
     return (
-      <div className="border-t border-gray-200 dark:border-gray-700 max-w-[550px] lg:mx-auto mx-2 sm:mx-4 relative bottom-0 left-0 z-20 bg-white dark:bg-gray-800 w-full transition-all duration-300 ease-in-out rounded-b-2xl lg:rounded-b-2xl sm:rounded-b-xl">
-        <div className="flex flex-col h-[70vh] sm:h-[560px] relative dark:text-white">
-          <div className="sticky top-0 z-10 flex items-center p-1 m-2 text-center rounded-t-lg bg-gray-50 dark:bg-gray-900/50">
+      <div className="border-t border-gray-200 dark:border-gray-700 max-w-[550px] lg:mx-auto relative bottom-0 left-0 z-20 bg-white dark:bg-gray-800 w-full transition-all duration-300 ease-in-out rounded-b-2xl lg:rounded-b-2xl sm:rounded-b-xl">
+        <div className="flex flex-col h-[70vh] relative dark:text-white">
+          <div className="sticky top-0 z-10 flex  items-center p-1 m-2 text-center rounded-t-lg bg-gray-50 dark:bg-gray-900/50">
             <button
               onClick={() => handleSetTab("new")}
-              className={`flex-1 cursor-pointer duration-300 transition-all rounded-md ${
+              className={cn(
+                "flex-1 cursor-pointer duration-300 transition-all rounded-md",
                 activeTab === "new"
                   ? "bg-white dark:bg-gray-800 text-primary-dark-pink shadow-sm font-semibold"
                   : "text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200"
-              }`}
+              )}
             >
-              <span className="block px-4 py-3 text-base font-medium sm:text-sm">
+              <span className="block px-4 py-3 text-xs font-medium sm:text-sm">
                 New Upload
               </span>
             </button>
             <button
               onClick={() => handleSetTab("media")}
-              className={`flex-1 cursor-pointer duration-300 transition-all rounded-md ${
+              className={cn(
+                "flex-1 cursor-pointer duration-300 transition-all rounded-md",
                 activeTab === "media"
                   ? "bg-white dark:bg-gray-800 text-primary-dark-pink shadow-sm font-semibold"
                   : "text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200"
-              }`}
+              )}
             >
-              <span className="block px-4 py-3 text-base font-medium sm:text-sm">
+              <span className="block px-4 py-3 text-xs font-medium sm:text-sm">
                 My Media
               </span>
             </button>
@@ -437,7 +444,7 @@ const SelectMoreItems = React.memo(
         </div>
       </div>
     );
-  },
+  }
 );
 
 SelectMoreItems.displayName = "SelectMoreItems";

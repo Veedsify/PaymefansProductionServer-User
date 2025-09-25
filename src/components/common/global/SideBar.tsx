@@ -58,8 +58,9 @@ const SideBar = React.memo(() => {
             width={150}
             height={30}
             priority
-            src="/site/logo.svg"
-            alt=""
+            quality={100}
+            src="/site/logos/logo.png"
+            alt="Logo"
           />
         </div>
         <div>

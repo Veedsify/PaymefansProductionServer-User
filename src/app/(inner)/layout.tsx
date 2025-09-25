@@ -6,19 +6,14 @@ import { Toaster } from "react-hot-toast";
 import { Toaster as SonnerToast } from "sonner";
 import dynamic from "next/dynamic";
 import Header from "@/components/common/global/Header";
-const SideBar = dynamic(() => import("@/components/common/global/SideBar"), {
-  ssr: true,
-});
 import Loader from "@/components/common/loaders/Loader";
 import LayoutWithWishlist from "@/components/layout/LayoutWithWishlist";
 import MenuButtons from "@/components/modals/MenuButtons";
 import GuestLoginModal from "@/features/guest/GuestLoginModal";
-const SideModels = dynamic(() => import("@/features/models/comps/SideModels"), {
-  ssr: true,
-});
+const SideBar = dynamic(() => import("@/components/common/global/SideBar"), {});
+const SideModels = dynamic(() => import("@/features/models/comps/SideModels"));
 const PostComponentPreview = dynamic(
-  () => import("@/features/post/FullComponentPreview"),
-  { ssr: true }
+  () => import("@/features/post/FullComponentPreview")
 );
 import CombinedProviders from "@/providers/CombinedProviders";
 import QueryProvider from "@/providers/QueryProvider";

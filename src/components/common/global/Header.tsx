@@ -47,11 +47,12 @@ const Header = () => {
         <HeaderTitle />
         <button onClick={handleHomeClick} className="cursor-pointer">
           <Image
-            width={120}
-            height={40}
-            src="/site/logo3.png"
-            alt=""
-            className="block h-auto lg:hidden"
+            width={240}
+            height={80}
+            unoptimized
+            src="/site/logos/logo.png"
+            alt="Logo"
+            className="block h-auto lg:hidden w-32 border-gray-200 rounded-md border-[0.5px]"
           />
         </button>
         <ul className="flex items-center ml-auto gap-6 lg:hidden">
