@@ -9,11 +9,11 @@ const ImageComponent = memo<ImageCompProps>(
       alt={data.post}
       width={960}
       height={960}
-      quality={100}
+      priority
       onClick={() => clickImageEvent(media)}
       className="w-full rounded-lg aspect-[3/4] md:aspect-square object-cover cursor-pointer"
     />
-  ),
+  )
 );
 
 ImageComponent.displayName = "ImageComponent";

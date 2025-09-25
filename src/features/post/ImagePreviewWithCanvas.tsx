@@ -4,6 +4,7 @@ import React, { memo, Suspense } from "react";
 import Loader from "../../components/common/loaders/LoadingAnimation";
 import { type UserProfile } from "../../providers";
 import UserProfileOverlay from "./UserProfileOverlay";
+import { cn } from "@/components/ui/cn";
 
 type ImagePreviewProps = {
   url: string;
@@ -50,10 +51,9 @@ export const ImagePreview = memo(
               src={url.trim()}
               alt={alt}
               priority
-              quality={100}
               width={1080}
               height={1080}
-              className={className}
+              className={cn(className, "h-auto")}
               onContextMenu={(e) => e.preventDefault()}
               draggable={false}
               style={{
