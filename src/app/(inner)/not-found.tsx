@@ -1,20 +1,13 @@
-import { Bricolage_Grotesque } from "next/font/google";
+import "@fontsource-variable/bricolage-grotesque";
+
 import Image from "next/image";
 import "../globals.css";
 import { LucideArrowLeft } from "lucide-react";
 import Link from "next/link";
 
-const font = Bricolage_Grotesque({
-  weight: ["200", "300", "400", "500", "600", "700", "800"],
-  subsets: ["latin"],
-  display: "swap",
-});
-
 const NotFound = () => {
   return (
-    <div
-      className={`flex ${font.className} items-center justify-center flex-col h-dvh w-full`}
-    >
+    <div className={`flex items-center justify-center flex-col h-dvh w-full`}>
       <div className="flex flex-col text-center gap-1">
         <div className="mx-auto mt-8 mb-16">
           <Image

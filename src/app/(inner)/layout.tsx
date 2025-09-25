@@ -1,6 +1,6 @@
+import "@fontsource-variable/bricolage-grotesque";
 import "../globals.css";
 import type { Metadata } from "next";
-import { Bricolage_Grotesque } from "next/font/google";
 import type React from "react";
 import { Toaster } from "react-hot-toast";
 import { Toaster as SonnerToast } from "sonner";
@@ -17,11 +17,6 @@ const PostComponentPreview = dynamic(
 );
 import CombinedProviders from "@/providers/CombinedProviders";
 import QueryProvider from "@/providers/QueryProvider";
-
-const font = Bricolage_Grotesque({
-  subsets: ["latin", "latin-ext", "vietnamese"],
-  weight: ["200", "300", "400", "500", "600", "700", "800"],
-});
 
 export const metadata: Metadata = {
   title: "Paymefans",
@@ -73,7 +68,7 @@ export default async function RootLayout({
         <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
         <meta property="og:image" content="/site/logo.svg" />
       </head>
-      <body className={`${font.className} dark:bg-black min-h-dvh`}>
+      <body className={` dark:bg-black min-h-dvh`}>
         <QueryProvider>
           <CombinedProviders>
             <Loader />
