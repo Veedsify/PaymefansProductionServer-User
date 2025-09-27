@@ -17,7 +17,6 @@ const PostComponentPreview = dynamic(
 );
 import CombinedProviders from "@/providers/CombinedProviders";
 import QueryProvider from "@/providers/QueryProvider";
-import { Suspense } from "react";
 
 export const metadata: Metadata = {
   title: "Paymefans",
@@ -70,59 +69,58 @@ export default async function RootLayout({
         <meta property="og:image" content="/site/logo.svg" />
       </head>
       <body className={` dark:bg-black min-h-dvh`}>
-        <Suspense fallback={<Loader />}>
-          <QueryProvider>
-            <CombinedProviders>
-              <Toaster
-                toastOptions={{
-                  duration: 5000,
-                  style: {
-                    fontSize: "14px",
-                    fontWeight: "500",
-                    border: "1px solid #CC0DF8",
-                    borderRadius: "100vmax",
-                  },
-                  className:
-                    "dark:bg-gray-900 dark:text-white dark:border-gray-600",
-                }}
-              />
-              <SonnerToast
-                richColors
-                position="top-center"
-                toastOptions={{
-                  closeButton: true,
-                  duration: 10000,
-                  style: {
-                    fontSize: "16px",
-                    borderRadius: "100vmax",
-                  },
-                }}
-              />
-              <div className="relative select-none grid h-dvh lg:grid-cols-8">
-                <div className="col-span-2">
-                  <SideBar />
-                </div>
-                <div className="relative overflow-auto border-r h-dvh col-span-6 border-gray-300">
-                  <Header />
-                  <div className="grid lg:grid-cols-6 pt-[66px] lg:pt-[48px] h-dvh">
-                    <div className="flex flex-col h-full col-span-3">
-                      <div className="w-full h-full md:border-r border-black/20 dark:border-slate-800">
-                        {children}
-                      </div>
-                    </div>
-                    <LayoutWithWishlist>
-                      <SideModels />
-                    </LayoutWithWishlist>
-                  </div>
-                </div>
-                <MenuButtons />
-                {/* <ModalComponent /> */}
+        <QueryProvider>
+          <CombinedProviders>
+            <Loader />
+            <Toaster
+              toastOptions={{
+                duration: 5000,
+                style: {
+                  fontSize: "14px",
+                  fontWeight: "500",
+                  border: "1px solid #CC0DF8",
+                  borderRadius: "100vmax",
+                },
+                className:
+                  "dark:bg-gray-900 dark:text-white dark:border-gray-600",
+              }}
+            />
+            <SonnerToast
+              richColors
+              position="top-center"
+              toastOptions={{
+                closeButton: true,
+                duration: 10000,
+                style: {
+                  fontSize: "16px",
+                  borderRadius: "100vmax",
+                },
+              }}
+            />
+            <div className="relative select-none grid h-dvh lg:grid-cols-8">
+              <div className="col-span-2">
+                <SideBar />
               </div>
-              <PostComponentPreview />
-              <GuestLoginModal />
-            </CombinedProviders>
-          </QueryProvider>
-        </Suspense>
+              <div className="relative overflow-auto border-r h-dvh col-span-6 border-gray-300">
+                <Header />
+                <div className="grid lg:grid-cols-6 pt-[66px] lg:pt-[48px] h-dvh">
+                  <div className="flex flex-col h-full col-span-3">
+                    <div className="w-full h-full md:border-r border-black/20 dark:border-slate-800">
+                      {children}
+                    </div>
+                  </div>
+                  <LayoutWithWishlist>
+                    <SideModels />
+                  </LayoutWithWishlist>
+                </div>
+              </div>
+              <MenuButtons />
+              {/* <ModalComponent /> */}
+            </div>
+            <PostComponentPreview />
+            <GuestLoginModal />
+          </CombinedProviders>
+        </QueryProvider>
       </body>
     </html>
   );
