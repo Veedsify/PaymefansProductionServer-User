@@ -49,12 +49,6 @@ const MediaPanelImageCard = React.memo(({ sort }: { sort: string }) => {
     [data],
   );
 
-  const sorted = React.useMemo(() => {
-    return sort === "all"
-      ? allMedia
-      : allMedia.filter((media) => media.media_type === sort);
-  }, [allMedia, sort]);
-
   const PreviewImageHandler = (
     media: string,
     type: string,
@@ -64,7 +58,7 @@ const MediaPanelImageCard = React.memo(({ sort }: { sort: string }) => {
   ) => {
     if (!isSubscriber) return;
 
-    const medias = sorted
+    const medias = allMedia
       .filter((item) => item.media_state !== "processing")
       .map((media) => ({
         url: media.url,
@@ -94,7 +88,7 @@ const MediaPanelImageCard = React.memo(({ sort }: { sort: string }) => {
   return (
     <>
       <div className="overflow-hidden select-none grid lg:grid-cols-3 grid-cols-2 rounded-xl gap-1 ">
-        {sorted.map((media, index) => (
+        {allMedia.map((media, index) => (
           <div
             key={index}
             className="aspect-[4/3] lg:aspect-square object-center  overflow-hidden relative"

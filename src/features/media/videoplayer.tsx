@@ -285,7 +285,9 @@ const VideoPlayer = ({
           {...allOthers}
           ref={videoRef}
           loop={shouldLoop}
+          preload="auto"
           className={`${className} object-center`}
+          poster={allOthers?.poster}
           onTimeUpdate={handleTimeUpdate}
           onLoadedMetadata={() => setDuration(videoRef.current?.duration || 0)}
           style={{ background: "#000000" }}

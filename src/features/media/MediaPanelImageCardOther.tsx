@@ -57,11 +57,6 @@ const MediaPanelImageCardOther = React.memo(
       [data],
     );
 
-    const sorted = React.useMemo(() => {
-      return sort === "all"
-        ? allMedia
-        : allMedia.filter((media) => media.media_type === sort);
-    }, [allMedia, sort]);
     const fetchAdditionalData = () => {
       fetchNextPage();
     };
@@ -72,7 +67,7 @@ const MediaPanelImageCardOther = React.memo(
       indexId: number,
     ) => {
       if (media.accessible_to === "subscribers" && !isSubscriber) return;
-      const filteredMedias = sorted
+      const filteredMedias = allMedia
         .filter((item) => item.media_state !== "processing")
         .filter((media) => {
           // Don't filter out paid content if user has paid for it
@@ -106,7 +101,7 @@ const MediaPanelImageCardOther = React.memo(
     return (
       <>
         <div className="overflow-hidden select-none grid grid-cols-2 rounded-xl lg:grid-cols-3 gap-1">
-          {sorted.map((media, index) => (
+          {allMedia.map((media, index) => (
             <div
               key={index}
               className="aspect-[4/3] md:aspect-square overflow-hidden relative"

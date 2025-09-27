@@ -85,7 +85,18 @@ const ProfileTabs = () => {
       </div>
 
       {/* Tab Content */}
-      <div className="mt-4">{tabs[activeTab].content}</div>
+      <div className="mt-4">
+        {tabs.map((tab, index) => (
+          <div
+            key={index}
+            className={`${
+              activeTab === index ? "block" : "hidden"
+            } transition-all duration-300`}
+          >
+            {tab.content}
+          </div>
+        ))}
+      </div>
     </div>
   );
 };
