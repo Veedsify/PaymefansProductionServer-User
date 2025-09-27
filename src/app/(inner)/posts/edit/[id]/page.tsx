@@ -1,8 +1,8 @@
+import PostEditor from "@/features/post/PostEditorOptimized";
 import axios from "axios";
 import type { Metadata } from "next";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
-import PostEditor from "@/features/post/PostEditor";
 
 export const metadata: Metadata = {
   title: "Edit Post",
@@ -30,7 +30,7 @@ const EditPost = async ({ params }: EditPostProps) => {
         headers: {
           Authorization: `Bearer ${token}`,
         },
-      },
+      }
     );
 
     if (!response.data.status) {

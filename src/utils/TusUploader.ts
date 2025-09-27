@@ -106,11 +106,10 @@ async function UploadWithTus({
 
       onProgress: (bytesUploaded, bytesTotal) => {
         const percentage = Math.floor((bytesUploaded / bytesTotal) * 100);
-
         // Only update state when progress changes
         if (percentage !== lastProgress) {
           lastProgress = percentage;
-          setProgress((prev) => ({ ...prev, [id]: percentage }));
+          setProgress((prev) => ({ ...prev, [id]: percentage - 1 }));
         }
       },
 

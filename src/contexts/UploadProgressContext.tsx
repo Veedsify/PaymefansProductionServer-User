@@ -11,7 +11,8 @@ import {
 import toast from "react-hot-toast";
 import { v4 as uuid } from "uuid";
 import type {
-  UploadedImageProp,
+  RemovedMediaIdProps,
+  UploadedMediaProp,
   UploadResponseResponse,
 } from "@/types/Components";
 import axiosInstance from "@/utils/Axios";
@@ -29,6 +30,12 @@ interface UploadProgressState {
   // Media items
   media: MediaItem[];
 
+  // Uploaded media
+  uploadedMedia: UploadedMediaProp[];
+
+  // Removed IDs
+  removedIds: RemovedMediaIdProps[];
+
   // Progress tracking
   progress: { [key: string]: number };
 
@@ -40,21 +47,16 @@ interface UploadProgressState {
   isAnyUploading: boolean;
 
   // Actions
-  addMediaFiles: (
-    files: File[],
-    user: any,
-    submitPost: (image: UploadedImageProp) => void,
-  ) => Promise<void>;
-  removeMediaItem: (
-    id: string,
-    removeThisMedia: (id: string, type: string) => void,
-  ) => void;
+  addMediaFiles: (files: File[], user: any) => Promise<void>;
+
+  removeMediaItem: (id: string) => void;
+  setRemovedIds: React.Dispatch<React.SetStateAction<RemovedMediaIdProps[]>>;
   resetAll: () => void;
 }
 
 // Context
 const UploadProgressContext = createContext<UploadProgressState | undefined>(
-  undefined,
+  undefined
 );
 
 // Provider Component
@@ -67,10 +69,16 @@ export const UploadProgressProvider: React.FC<UploadProgressProviderProps> = ({
 }) => {
   // State
   const [media, setMedia] = useState<MediaItem[]>([]);
+  const [uploadedMedia, setUploadedMedia] = useState<UploadedMediaProp[]>([]);
+  const [removedIds, setRemovedIds] = useState<RemovedMediaIdProps[]>([]);
   const [progress, setProgress] = useState<{ [key: string]: number }>({});
   const [uploadError, setUploadError] = useState<{ [key: string]: boolean }>(
-    {},
+    {}
   );
+
+  useEffect(() => {
+    console.log("Media state updated in progress:", media.length);
+  }, [media]);
 
   // Update individual progress
   const updateProgress = useCallback((id: string, value: number) => {
@@ -99,7 +107,7 @@ export const UploadProgressProvider: React.FC<UploadProgressProviderProps> = ({
         setUploadError: setUploadError, // Pass the state setter directly
       });
     },
-    [],
+    []
   );
 
   // Image uploader
@@ -113,107 +121,124 @@ export const UploadProgressProvider: React.FC<UploadProgressProviderProps> = ({
         uploadUrl,
       });
     },
-    [],
+    []
   );
 
-  // Add media files and handle uploads
+  // Helper: Parse image variants
+  const parseImageVariants = (variants: string[] = []) => {
+    const publicVariant =
+      variants.find((v) => v?.includes("/public")) ?? variants[0] ?? "";
+    const blurVariant =
+      variants.find((v) => v?.includes("/blur")) ?? variants[0] ?? "";
+    return { publicVariant, blurVariant };
+  };
+
+  // Upload a single file and add to uploadedMedia
+  const uploadAndSubmitFile = async (
+    mediaItem: { file: File; id: string },
+    user: any,
+    tusUploader: any,
+    imageUploader: any,
+    axiosInstance: any
+  ) => {
+    const { file, id: fileId } = mediaItem;
+    const isVideo = file.type.startsWith("video/");
+    const maxVideoDuration = isVideo ? getMaxDurationBase64(file) : null;
+
+    const payload = {
+      type: isVideo ? "video" : "image",
+      fileName: btoa(`paymefans-${user?.username}-${Date.now()}`),
+      fileSize: file.size,
+      fileType: btoa(file.type),
+      explicitImageType: file.type,
+      shouldUseSignedUrls: true,
+      ...(isVideo && { maxDuration: maxVideoDuration }),
+    };
+
+    // console.log("Requesting signed URL for:", payload.type, file.name);
+
+    const { data } = await axiosInstance.post(
+      `/post/media/signed-url`,
+      payload
+    );
+
+    if (!data || data.error) {
+      throw new Error(data?.message || "Failed to get upload URL from server");
+    }
+
+    const { uploadUrl, type, id: mediaId } = data;
+    if (!mediaId || !uploadUrl) {
+      throw new Error("Missing upload URL or media ID");
+    }
+
+    // console.log("Uploading file:", file.name, "type:", type);
+
+    if (type === "video") {
+      const uploadVideo = await tusUploader(file, uploadUrl, fileId);
+      // console.log("Video upload completed:", uploadVideo);
+      setUploadedMedia((prev) => [
+        ...prev,
+        {
+          blur: ``,
+          public: `${process.env.NEXT_PUBLIC_CLOUDFLARE_CUSTOMER_SUBDOMAIN}${uploadVideo}/manifest/video.m3u8`,
+          id: uploadVideo,
+          type: "video",
+          fileId,
+        },
+      ]);
+      updateProgress(fileId, 100);
+    } else if (type === "image") {
+      const uploadImage = await imageUploader(file, uploadUrl, fileId);
+      // console.log("Image upload completed:", uploadImage);
+      const { publicVariant, blurVariant } = parseImageVariants(
+        uploadImage.result.variants
+      );
+      setUploadedMedia((prev) => [
+        ...prev,
+        {
+          blur: blurVariant,
+          public: publicVariant,
+          id: uploadImage.result.id,
+          type: "image",
+          fileId,
+        },
+      ]);
+      updateProgress(fileId, 100);
+    }
+  };
+
+  // Main handler: Sequential upload of media files
   const addMediaFiles = useCallback(
-    async (
-      files: File[],
-      user: any,
-      submitPost: (image: UploadedImageProp) => void,
-    ) => {
+    async (files: File[], user: any) => {
       if (!files?.length) return;
 
-      console.log("Starting upload process for files:", files.length);
+      // console.log("Starting sequential upload for", files.length, "files");
+
       const newMediaItems = files.map((file) => ({ file, id: uuid() }));
       setMedia((prev) => [...prev, ...newMediaItems]);
 
-      try {
-        for (const mediaItem of newMediaItems) {
-          console.log(
-            "Processing media item:",
-            mediaItem.file.name,
-            mediaItem.file.type,
+      for (const mediaItem of newMediaItems) {
+        try {
+          await uploadAndSubmitFile(
+            mediaItem,
+            user,
+            tusUploader,
+            imageUploader,
+            axiosInstance
           );
-          const isVideo = mediaItem.file.type.startsWith("video/");
-          const maxVideoDuration = isVideo
-            ? getMaxDurationBase64(mediaItem.file)
-            : null;
-          const payload: any = {
-            type: isVideo ? "video" : "image",
-            fileName: btoa(`paymefans-${user?.username}-${Date.now()}`),
-            fileSize: mediaItem.file.size,
-            fileType: btoa(mediaItem.file.type),
-            explicitImageType: mediaItem.file.type,
-            shouldUseSignedUrls: true,
-          };
-          if (isVideo) payload.maxDuration = maxVideoDuration;
-
-          console.log("Requesting signed URL for:", payload.type);
-          const { data } = await axiosInstance.post<UploadResponseResponse>(
-            `/post/media/signed-url`,
-            payload,
-          );
-          if (!data || data.error) {
-            throw new Error(
-              data?.message || "Failed to get upload URL from server",
-            );
-          }
-          const { uploadUrl, type, id } = data;
-          if (!id || !uploadUrl) throw new Error("Failed to get upload URL");
-
-          console.log("Got signed URL, starting upload for type:", type);
-          if (type === "video") {
-            const uploadVideo = await tusUploader(
-              mediaItem.file,
-              uploadUrl,
-              mediaItem.id,
-            );
-            console.log("Video upload completed:", uploadVideo);
-            submitPost({
-              blur: ``,
-              public: `${process.env.NEXT_PUBLIC_CLOUDFLARE_CUSTOMER_SUBDOMAIN}${uploadVideo}/manifest/video.m3u8`,
-              id: uploadVideo,
-              type: "video",
-              fileId: mediaItem.id,
-            });
-          } else if (type === "image") {
-            const uploadImage = await imageUploader(
-              mediaItem.file,
-              uploadUrl,
-              mediaItem.id,
-            );
-            console.log("Image upload completed:", uploadImage);
-            const variants = uploadImage.result.variants ?? [];
-            const publicVariant =
-              variants.find((v: string) => v?.includes("/public")) ??
-              variants[0] ??
-              "";
-            const blurVariant =
-              variants.find((v: string) => v?.includes("/blur")) ??
-              variants[0] ??
-              "";
-            submitPost({
-              blur: blurVariant,
-              public: publicVariant,
-              id: uploadImage.result.id,
-              type: "image",
-              fileId: mediaItem.id,
-            });
-          }
+        } catch (error: any) {
+          console.error("Failed to upload file:", mediaItem.file.name, error);
+          toast.error(`Upload failed: ${mediaItem.file.name}`);
         }
-      } catch (error: any) {
-        console.error("Upload error:", error);
-        toast.error("Some uploads failed.");
       }
+      // console.log("Sequential upload batch completed");
     },
-    [tusUploader, imageUploader],
+    [tusUploader, imageUploader, setMedia, toast]
   );
 
   // Remove media item
   const removeMediaItem = useCallback(
-    (id: string, removeThisMedia: (id: string, type: string) => void) => {
+    (id: string) => {
       setMedia((prev) => prev.filter((item) => item.id !== id));
       setProgress((prev) => {
         const newProgress = { ...prev };
@@ -225,14 +250,23 @@ export const UploadProgressProvider: React.FC<UploadProgressProviderProps> = ({
         delete newErrors[id];
         return newErrors;
       });
-      removeThisMedia(id, "media");
+      setUploadedMedia((prev) => prev.filter((item) => item.fileId !== id));
+      const item = uploadedMedia.find((med) => med.fileId === id);
+      if (item) {
+        setRemovedIds((prevIds) => [
+          ...prevIds,
+          { id: item.id, type: item.type },
+        ]);
+      }
     },
-    [],
+    [uploadedMedia]
   );
 
   // Reset all state
   const resetAll = useCallback(() => {
     setMedia([]);
+    setUploadedMedia([]);
+    setRemovedIds([]);
     setProgress({});
     setUploadError({});
   }, []);
@@ -248,18 +282,21 @@ export const UploadProgressProvider: React.FC<UploadProgressProviderProps> = ({
     progressKeys.length === media.length;
 
   const isAnyUploading = progressValues.some(
-    (value) => value > 0 && value < 100,
+    (value) => value > 0 && value < 100
   );
 
   // Context value
   const contextValue: UploadProgressState = {
     media,
+    uploadedMedia,
+    removedIds,
     progress,
     uploadError,
     isUploadComplete,
     isAnyUploading,
     addMediaFiles,
     removeMediaItem,
+    setRemovedIds,
     resetAll,
   };
 
@@ -275,7 +312,7 @@ export const useUploadProgress = (): UploadProgressState => {
   const context = useContext(UploadProgressContext);
   if (context === undefined) {
     throw new Error(
-      "useUploadProgress must be used within an UploadProgressProvider",
+      "useUploadProgress must be used within an UploadProgressProvider"
     );
   }
   return context;

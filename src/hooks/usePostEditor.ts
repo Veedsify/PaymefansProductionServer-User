@@ -1,11 +1,12 @@
-import { useCallback, useRef, useState, useTransition } from "react";
+import { useCallback, useEffect, useRef, useState, useTransition } from "react";
 import toast from "react-hot-toast";
 import { useConfigContext } from "@/contexts/ConfigContext";
 import { usePostContext } from "@/contexts/PostContext";
 import { useAuthContext } from "@/contexts/UserUseContext";
+import { useUploadProgress } from "@/contexts/UploadProgressContext";
 import type {
   RemovedMediaIdProps,
-  UploadedImageProp,
+  UploadedMediaProp,
   UserMediaProps,
 } from "@/types/Components";
 
@@ -21,6 +22,7 @@ export const usePostEditor = (posts?: any) => {
     setMediaUploadComplete,
     isWaterMarkEnabled,
   } = usePostContext();
+  const { uploadedMedia, removedIds, setRemovedIds, removeMediaItem } = useUploadProgress();
 
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
   const [content, setContent] = useState<string>("");
@@ -29,8 +31,7 @@ export const usePostEditor = (posts?: any) => {
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [isPending, startTransition] = useTransition();
   const [editedMedia, setEditedMedia] = useState<UserMediaProps[]>([]);
-  const [removedIds, setRemovedIds] = useState<RemovedMediaIdProps[]>([]);
-  const [media, setMedia] = useState<UploadedImageProp[] | null>(null);
+
   const handleContentChange = useCallback(
     (newContent: string) => {
       setContent(newContent);
@@ -67,27 +68,12 @@ export const usePostEditor = (posts?: any) => {
     [config],
   );
 
-  const handleMediaAttachment = useCallback((image: UploadedImageProp) => {
-    console.log("Media attachment received:", image);
-    setMedia((prevMedia) => {
-      const newMedia = [...(prevMedia || []), image];
-      console.log("Updated media state:", newMedia);
-      return newMedia;
-    });
-  }, []);
+
   const removeThisMedia = useCallback(
     (id: string, type: string) => {
-      startTransition(() => {
-        setMedia((prevMedia) =>
-          prevMedia ? prevMedia.filter((file) => file.fileId !== id) : null,
-        );
-        const removeId = media?.find((med) => med.fileId === id);
-        if (removeId) {
-          setRemovedIds((prevIds) => [...prevIds, { id: removeId.id, type }]);
-        }
-      });
+      removeMediaItem(id);
     },
-    [media],
+    [removeMediaItem],
   );
 
   const removeExistingMedia = useCallback(
@@ -115,20 +101,18 @@ export const usePostEditor = (posts?: any) => {
     isPending,
     editedMedia,
     removedIds,
-    media, // Setters
+    uploadedMedia,
+    // Setters
     setContent,
     setPrice,
     setNairaDisplayValue,
     setIsSubmitting,
     setEditedMedia,
-    setRemovedIds,
-    setMedia,
     setMediaUploadComplete,
 
     // Handlers
     handleContentChange,
     setPriceHandler,
-    handleMediaAttachment,
     removeThisMedia,
     removeExistingMedia,
 

@@ -377,7 +377,7 @@ type postAudienceDataProps2 = {
   name: string;
   icon: React.JSX.Element;
 };
-type UploadedImageProp = {
+type UploadedMediaProp = {
   public: string;
   blur: string;
   id: string;

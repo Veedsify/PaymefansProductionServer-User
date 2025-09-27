@@ -28,29 +28,33 @@ const AddNewPostMedia = ({
     if (files) {
       let validFiles: File[] = [];
 
-      Array.from(files).forEach((file) => {
-        // File size validation
-        if (
-          file.size > IMAGE_FILE_SIZE_LIMIT &&
-          file.type.startsWith("image/")
-        ) {
-          // 10MB = 10,000,000 bytes
-          toast.error(IMAGE_FILE_SIZE_LIMIT_ERROR_MSG);
-          return; // Skip further processing for this file
-        }
+      await Promise.all(
+        Array.from(files).map(async (file) => {
+          // File size validation
+          if (
+            file.type.startsWith("image/") &&
+            file.size > IMAGE_FILE_SIZE_LIMIT
+          ) {
+            // 10MB = 10,000,000 bytes
+            toast.error(IMAGE_FILE_SIZE_LIMIT_ERROR_MSG);
+            return; // Skip further processing for this file
+          }
 
-        // File type validation
-        if (
-          !imageTypes.includes(file.type) &&
-          !videoTypes.includes(file.type)
-        ) {
-          toast.error("Invalid file type");
-          return; // Skip further processing for this file
-        }
+          // File type validation
+          if (
+            !imageTypes.includes(file.type) &&
+            !videoTypes.includes(file.type)
+          ) {
+            toast.error(
+              "Invalid file type. Only images and videos are allowed."
+            );
+            return; // Skip further processing for this file
+          }
 
-        // If file passes both checks, add it to the valid files array
-        validFiles.push(file);
-      });
+          // If file passes both checks, add it to the valid files array
+          validFiles.push(file);
+        })
+      );
 
       // Check if the number of valid files exceeds the limit of 5
       if (validFiles.length > USER_POST_LIMIT && !user?.is_model) {
@@ -73,6 +77,7 @@ const AddNewPostMedia = ({
   const handleWaterMarkEnabled = (value: boolean) => {
     setWatermarkEnabled(value);
   };
+
   return (
     <>
       <div className="flex items-center w-full px-4 py-3 md:px-8 border-y border-black/30 dark:text-white md:justify-start gap-3">

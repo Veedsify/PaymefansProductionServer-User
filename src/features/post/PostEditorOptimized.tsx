@@ -24,6 +24,8 @@ import { usePostInitialization } from "@/hooks/usePostInitialization";
 import type {
   PostAudienceDataProps,
   PostEditorProps,
+  UploadedMediaProp,
+  UserMediaProps,
 } from "@/types/Components";
 import { SavePost } from "@/utils/SavePost";
 // Components
@@ -37,6 +39,51 @@ const PostMediaPreview = dynamic(() => import("./PostMediaPreview"), {
 const AudienceDropdown = dynamic(() => import("./AudienceDropDown"), {
   ssr: false,
 });
+
+// Validation helper (can be inside or outside component)
+const validatePost = ({
+  postText,
+  media,
+  editedMedia,
+  posts,
+  isUploadComplete,
+  isAnyUploading,
+  visibility,
+  price,
+}: {
+  postText: string;
+  media: UploadedMediaProp[] | null;
+  editedMedia: UserMediaProps[] | null;
+  posts: any;
+  isUploadComplete: boolean;
+  isAnyUploading: boolean;
+  visibility: string;
+  price: number;
+}) => {
+  const hasContent = !!postText?.trim();
+  const hasNewMedia = media && media.length > 0;
+  const hasExistingMedia = editedMedia && editedMedia.length > 0;
+  const hasAnyMedia = hasNewMedia || hasExistingMedia;
+
+  console.log({ hasContent, hasNewMedia, hasExistingMedia, hasAnyMedia });
+
+  // New post must have content or media
+  if (!hasContent && !hasAnyMedia && !posts) {
+    return { valid: false, error: "empty" };
+  }
+
+  // Wait for uploads
+  if (hasNewMedia && (!isUploadComplete || isAnyUploading)) {
+    return { valid: false, error: "uploading" };
+  }
+
+  // Price validation
+  if (visibility.toLowerCase() === "price" && price <= 0) {
+    return { valid: false, error: "price" };
+  }
+
+  return { valid: true };
+};
 
 const PostEditor = React.memo(({ posts }: PostEditorProps) => {
   const router = useRouter();
@@ -53,10 +100,9 @@ const PostEditor = React.memo(({ posts }: PostEditorProps) => {
     isSubmitting,
     editedMedia,
     removedIds,
-    media,
+    uploadedMedia,
     handleContentChange,
     setPriceHandler,
-    handleMediaAttachment,
     removeThisMedia,
     removeExistingMedia,
     setIsSubmitting,
@@ -193,64 +239,57 @@ const PostEditor = React.memo(({ posts }: PostEditorProps) => {
   const handlePostSubmit = useCallback(async () => {
     if (isSubmitting) return;
 
-    // Check if post has content OR media
-    const hasContent = postText && postText.trim() !== "" ? true : false;
-    const hasNewMedia = media && media.length > 0 ? true : false;
-    const hasExistingMedia =
-      editedMedia && editedMedia.length > 0 ? true : false;
-    const hasAnyMedia = hasNewMedia || hasExistingMedia;
-
-    console.log({
-      hasContent,
-      hasNewMedia,
-      hasExistingMedia,
-      HasAnyMedia: hasAnyMedia,
+    const validation = validatePost({
+      postText,
+      media: uploadedMedia,
+      editedMedia,
+      posts,
+      isUploadComplete,
+      isAnyUploading,
+      visibility,
+      price,
     });
 
-    // For new posts, require either content or media
-    if (!hasContent && !hasAnyMedia && !posts) {
-      toast.error("Post is empty, please write something or add media.", {
-        id: "post-upload",
-      });
-      return;
-    }
-
-    // Check upload completion using the shared progress context
-    if (hasNewMedia && (!isUploadComplete || isAnyUploading)) {
-      toast.error("Please wait for all media uploads to complete.", {
-        id: "post-upload",
-      });
-      return;
-    }
-
-    if (visibility.toLowerCase() === "price" && price <= 0) {
-      toast.error("Please set a price for your post.", {
-        id: "post-price-error",
-      });
+    if (!validation.valid) {
+      switch (validation.error) {
+        case "empty":
+          toast.error("Post is empty, please write something or add media.", {
+            id: "post-upload",
+          });
+          break;
+        case "uploading":
+          toast.error("Please wait for all media uploads to complete.", {
+            id: "post-upload",
+          });
+          break;
+        case "price":
+          toast.error("Please set a price for your post.", {
+            id: "post-price-error",
+          });
+          break;
+      }
       return;
     }
 
     setIsSubmitting(true);
-    const isEditing = posts?.post_id;
+    const isEditing = !!posts?.post_id;
 
     toast.loading(
       isEditing ? "Saving your changes..." : "Creating your post...",
-      {
-        id: "post-upload",
-      }
+      { id: "post-upload" }
     );
 
     const savePostOptions = {
       data: {
-        media: media || [],
+        media: uploadedMedia || [],
         content: postText,
         visibility: visibility.toLowerCase(),
         removedMedia: removedIds,
         price: price > 0 ? price : undefined,
-        mentions: mentions,
+        mentions,
         isWaterMarkEnabled,
       },
-      action: posts?.post_id ? "update" : "create",
+      action: isEditing ? "update" : "create",
       post_id: posts?.post_id || "",
     };
 
@@ -260,28 +299,27 @@ const PostEditor = React.memo(({ posts }: PostEditorProps) => {
       const successMessage = isEditing
         ? "Post updated successfully!"
         : POST_CONFIG.POST_CREATED_SUCCESS_MSG;
+
+      // Reset form if creating new post
       if (!isEditing) {
         setPostText("");
         setVisibility("Public");
         setMediaUploadComplete(false);
-        router.push("/profile");
-      } else {
-        router.push("/profile");
       }
+
       toast.success(successMessage, { id: "post-upload" });
+      router.push("/profile");
       queryClient.invalidateQueries({ queryKey: ["personal-posts"] });
       queryClient.invalidateQueries({ queryKey: ["media"] });
-      return;
+    } else {
+      toast.error(res.message, { id: "post-upload" });
     }
+
     setIsSubmitting(false);
-    toast.error(res.message, { id: "post-upload" });
   }, [
     posts,
-    router,
-    queryClient,
-    toast,
     postText,
-    media,
+    uploadedMedia,
     editedMedia,
     removedIds,
     isSubmitting,
@@ -291,6 +329,9 @@ const PostEditor = React.memo(({ posts }: PostEditorProps) => {
     price,
     mentions,
     isWaterMarkEnabled,
+    toast,
+    router,
+    queryClient,
     setIsSubmitting,
     setPostText,
     setVisibility,
@@ -396,11 +437,7 @@ const PostEditor = React.memo(({ posts }: PostEditorProps) => {
       )}
 
       {/* Media Preview */}
-      <PostMediaPreview
-        setIsSubmitting={setIsSubmitting}
-        submitPost={handleMediaAttachment}
-        removeThisMedia={removeThisMedia}
-      />
+      <PostMediaPreview setIsSubmitting={setIsSubmitting} />
     </>
   );
 });
