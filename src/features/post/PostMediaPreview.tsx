@@ -12,7 +12,6 @@ import { usePostContext } from "@/contexts/PostContext";
 import { useUploadProgress } from "@/contexts/UploadProgressContext";
 import { useAuthContext } from "@/contexts/UserUseContext";
 import Media from "@/features/media/MediaPreviewPost";
-import type { UploadedMediaProp } from "@/types/Components";
 import AddNewPostMedia from "./AddNewPostMedia";
 
 type PostMediaPreviewProps = {

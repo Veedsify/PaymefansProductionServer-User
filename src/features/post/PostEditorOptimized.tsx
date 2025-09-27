@@ -34,10 +34,10 @@ import MentionList from "./components/MentionList";
 import ExistingMediaPreview from "./ExistingMediaPreview";
 import dynamic from "next/dynamic";
 const PostMediaPreview = dynamic(() => import("./PostMediaPreview"), {
-  ssr: false,
+  ssr: true,
 });
 const AudienceDropdown = dynamic(() => import("./AudienceDropDown"), {
-  ssr: false,
+  ssr: true,
 });
 
 // Validation helper (can be inside or outside component)
