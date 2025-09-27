@@ -89,9 +89,11 @@ const ProfileTabs = () => {
         {tabs.map((tab, index) => (
           <div
             key={index}
-            className={`${
-              activeTab === index ? "block" : "hidden"
-            } transition-all duration-300`}
+            style={{
+              display: activeTab === index ? "block" : "none",
+              visibility: activeTab === index ? "visible" : "hidden",
+              opacity: activeTab === index ? 1 : 0,
+            }}
           >
             {tab.content}
           </div>
