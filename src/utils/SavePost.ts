@@ -3,14 +3,14 @@ import toast from "react-hot-toast";
 import ROUTE from "@/config/routes";
 import type {
   RemovedMediaIdProps,
-  UploadedImageProp,
+  UploadedMediaProp,
 } from "@/types/Components";
 import axiosInstance from "./Axios";
 import { getToken } from "./Cookie";
 
 type SavePostType = {
   data: {
-    media: UploadedImageProp[];
+    media: UploadedMediaProp[];
     content: string;
     visibility: string;
     removedMedia: RemovedMediaIdProps[];
