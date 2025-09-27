@@ -9,16 +9,16 @@ import { useState } from "react";
 import dynamic from "next/dynamic";
 
 const MediaPanel = dynamic(() => import("@/features/media/MediaPanel"), {
-  ssr: true,
+  ssr: false,
 });
 const PostPanel = dynamic(() => import("@/features/post/PostPanel"), {
-  ssr: true,
+  ssr: false,
 });
 const PrivatePanel = dynamic(() => import("./PrivatePanel"), {
-  ssr: true,
+  ssr: false,
 });
 const RepostPanel = dynamic(() => import("./RepostPanel"), {
-  ssr: true,
+  ssr: false,
 });
 
 const ProfileTabs = () => {

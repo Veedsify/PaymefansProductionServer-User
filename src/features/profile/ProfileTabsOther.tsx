@@ -13,16 +13,16 @@ import dynamic from "next/dynamic";
 
 const MediaPanelOther = dynamic(
   () => import("@/features/media/MediaPanelOther"),
-  { ssr: true }
+  { ssr: false }
 );
 const PostPanelOther = dynamic(() => import("@/features/post/PostPanelOther"), {
-  ssr: true,
+  ssr: false,
 });
 const PrivatePanelOther = dynamic(() => import("./PrivatePanelOther"), {
-  ssr: true,
+  ssr: false,
 });
 const RepostPanel = dynamic(() => import("./RepostPanel"), {
-  ssr: true,
+  ssr: false,
 });
 
 const ProfileTabsOther = ({ userdata }: { userdata: ProfileUserProps }) => {
