@@ -133,6 +133,7 @@ interface PostComponentProps {
 interface VideoComponentProps {
   media: UserMediaProps;
   data: PostData;
+  isSingle: boolean;
   clickImageEvent: (media: UserMediaProps) => void;
   isSubscriber: boolean;
 }
@@ -359,11 +360,11 @@ export interface MessagesConversationContextValue {
 
 type OwnerOption =
   | {
-      name: string;
-      icon: React.ReactNode;
-      func?: (e: React.MouseEvent<HTMLButtonElement>) => void;
-      link?: undefined;
-    }
+    name: string;
+    icon: React.ReactNode;
+    func?: (e: React.MouseEvent<HTMLButtonElement>) => void;
+    link?: undefined;
+  }
   | { name: string; icon: React.ReactNode; func?: undefined; link?: URL };
 
 export interface PostAudienceDataProps {

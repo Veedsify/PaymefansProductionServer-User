@@ -154,6 +154,7 @@ const HlsViewer = memo(
             muted={!isOpen || isMuted}
             loop
             playsInline
+            draggable={false}
             preload="metadata"
             style={{ background: "#000000" }}
             onPlay={handleVideoPlay}
@@ -168,6 +169,7 @@ const HlsViewer = memo(
             className={className}
             muted={!isOpen || isMuted}
             loop
+            draggable={false}
             autoPlay={isOpen && inView}
             playsInline
             preload="metadata"
@@ -208,7 +210,7 @@ const HlsViewer = memo(
         )}
       </div>
     );
-  },
+  }
 );
 
 HlsViewer.displayName = "HlsViewer";

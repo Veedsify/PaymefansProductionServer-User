@@ -14,6 +14,7 @@ import {
   Minus,
   Move,
   Palette,
+  Pen,
   Plus,
   Text,
   X,
@@ -140,7 +141,7 @@ const CustomSwiper = ({
         onTouchEnd={onTouchEnd}
       >
         {children.map((child, index) => (
-          <div key={index} className="h-full min-w-full">
+          <div key={index} className="h-full min-w-full relative">
             {child}
           </div>
         ))}
@@ -354,17 +355,16 @@ const DraggableElement = ({
   return (
     <div
       ref={elementRef}
-      className={`absolute select-none transition-all duration-100 ${
+      className={`absolute select-none  ${
         isSelected
-          ? "ring-2 ring-blue-400 ring-opacity-70 scale-105 shadow-lg"
+          ? "ring-1 ring-primary-dark-pink ring-opacity-70 scale-105 shadow-lg"
           : "hover:shadow-md"
       } ${isDragging || isScaling ? "z-[70]" : "z-[55]"}`}
       style={{
         left: `${element.position.x}%`,
         top: `${element.position.y}%`,
         transform: "translate(-50%, -50%)",
-        maxWidth: "80%",
-        minWidth: "100px",
+        maxWidth: "320px",
         cursor: isDragging ? "grabbing" : "grab",
       }}
     >
@@ -429,6 +429,8 @@ const DraggableElement = ({
               e.stopPropagation();
             }}
             style={{
+              maxWidth: "320px",
+              width: "fit-content",
               fontSize: element.style.fontSize,
               fontWeight: element.style.fontWeight,
               color: element.style.color,
@@ -439,7 +441,7 @@ const DraggableElement = ({
               textShadow: "2px 2px 4px rgba(0,0,0,0.7)",
               background: "transparent",
             }}
-            className={`bg-transparent text-wrap border-none outline-none resize-none text-center  min-h-[2em] ${
+            className={`bg-transparent placeholder:text-white/70 text-wrap border-none outline-none resize-none text-center  min-h-[2em] ${
               element.style.fontFamily
             } ${isEditing ? "cursor-text" : "cursor-pointer"}`}
             placeholder="Enter text..."
@@ -468,6 +470,8 @@ const DraggableElement = ({
                 e.stopPropagation();
               }}
               style={{
+                maxWidth: "320px",
+                width: "fit-content",
                 fontSize: element.style.fontSize,
                 fontWeight: element.style.fontWeight,
                 color: element.style.color,
@@ -478,7 +482,7 @@ const DraggableElement = ({
                 textShadow: "2px 2px 4px rgba(0,0,0,0.7)",
                 background: "transparent",
               }}
-              className={`bg-transparent border-none outline-none resize-none text-center h-fit w-[160px] ${
+              className={`bg-transparent placeholder:text-white/70 border-none outline-none resize-none text-center h-fit w-[160px] ${
                 element.style.fontFamily
               } ${isEditing ? "cursor-text" : "cursor-pointer"}`}
               placeholder="Link text"
@@ -548,7 +552,7 @@ const EnhancedSlideComponent = ({
     const newElement: CaptionElement = {
       id: Date.now().toString(),
       type: "text",
-      content: "Tap to edit",
+      content: "",
       position: { x: 50, y: 50 },
       style: {
         fontFamily: fontFamilies[fontIndex],
@@ -790,7 +794,7 @@ const EnhancedSlideComponent = ({
       title: "Are you sure?",
       text: "This will clear your current story edits.",
       icon: "warning",
-      buttons: ["Cancel", "Yes, clear it!"],
+      buttons: ["Cancel", "Yes, cancel it!"],
       dangerMode: true,
     }).then((willClear) => {
       if (willClear) {
@@ -803,7 +807,7 @@ const EnhancedSlideComponent = ({
   return (
     <>
       {/* Top Toolbar - Separate Layer */}
-      <div className="absolute top-0 left-0 right-0 z-[100] flex items-center justify-between w-full px-4 py-3 border-b backdrop-blur-md bg-white/10 border-white/20">
+      <div className="absolute top-0 left-0 right-0 z-[100] flex items-center justify-between w-full px-4 py-3 border-b  bg-white/10 border-white/20">
         <div className="flex items-center gap-2">
           <button
             onClick={handleClearStory}
@@ -817,7 +821,7 @@ const EnhancedSlideComponent = ({
             className="p-2.5 rounded-xl bg-gradient-to-r bg-white text-black transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-105"
             title="Add Text"
           >
-            <Text stroke="#000" size={18} />
+            <Pen stroke="#000" size={18} />
           </button>
           <button
             onClick={addLinkElement}
@@ -996,6 +1000,7 @@ const EnhancedSlideComponent = ({
               alt={currentStory?.caption ? currentStory.caption : "status"}
               width={800}
               height={800}
+              draggable={false}
               className="object-contain w-full h-full bg-black rounded-xl"
             />
           )}
@@ -1175,7 +1180,7 @@ const StoryCaptionComponent = ({ close }: StoryCaptionComponentProps) => {
     <div className="flex flex-col items-center fixed justify-center inset-0 w-full min-h-dvh bg-black/70 z-[200] select-none">
       <div
         className="flex items-center justify-center flex-1 w-full md:p-4"
-      onClick={(e) => {
+        onClick={(e) => {
           if (e.target === e.currentTarget) {
             close();
           }

@@ -6,7 +6,7 @@ import type { VideoComponentProps } from "@/types/Components";
 import HLSVideoPlayer from "../../media/videoplayer";
 
 const VideoComponent = memo<VideoComponentProps>(
-  ({ media, data, clickImageEvent, isSubscriber }) => {
+  ({ media, data, clickImageEvent, isSingle, isSubscriber }) => {
     const [playing, setPlaying] = useState<boolean>(false);
     const [canplay, setCanplay] = useState<boolean>(false);
 
@@ -18,7 +18,7 @@ const VideoComponent = memo<VideoComponentProps>(
       }
 
       const videoElement = document.getElementById(
-        "video_player_post",
+        "video_player_post"
       ) as HTMLVideoElement | null;
 
       if (videoElement) {
@@ -42,7 +42,7 @@ const VideoComponent = memo<VideoComponentProps>(
 
     useEffect(() => {
       const videoElement = document.getElementById(
-        "video_player_post",
+        "video_player_post"
       ) as HTMLVideoElement | null;
 
       if (!videoElement) return;
@@ -78,6 +78,7 @@ const VideoComponent = memo<VideoComponentProps>(
           streamUrl={media.url}
           autoPlay={true}
           modalOpen={false}
+          isSingle={isSingle}
           allOthers={{
             id: "video_player_post",
             playsInline: true,
@@ -107,7 +108,7 @@ const VideoComponent = memo<VideoComponentProps>(
         )}
       </>
     );
-  },
+  }
 );
 
 VideoComponent.displayName = "VideoComponent";

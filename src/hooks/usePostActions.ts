@@ -1,6 +1,6 @@
 import { useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
-import { useCallback } from "react";
+import { useCallback, useMemo } from "react";
 import toast from "react-hot-toast";
 import swal from "sweetalert";
 import { usePointsStore } from "@/contexts/PointsContext";
@@ -8,12 +8,21 @@ import payForPost from "@/utils/data/PayForPost";
 
 /**
  * Custom hook for handling post interaction actions
- * Separates complex action logic from the main component
+ * Separates complex action logic from the main component with optimized memoization
  */
 export const usePostActions = (data: any, user: any, permissions: any) => {
   const router = useRouter();
   const queryClient = useQueryClient();
   const points = usePointsStore((state) => state.points);
+
+  // Memoize stable values to prevent callback recreation
+  const stableValues = useMemo(() => ({
+    userId: user.user_id,
+    postId: data.id,
+    postPrice: Number(data.post_price),
+    postStatus: data.post_status,
+    postIdSlug: data.post_id,
+  }), [user.user_id, data.id, data.post_price, data.post_status, data.post_id]);
 
   const promptSubscription = useCallback(() => {
     return swal({
@@ -27,14 +36,14 @@ export const usePostActions = (data: any, user: any, permissions: any) => {
         },
       },
     }).then((willSubscribe) => {
-      if (willSubscribe) router.push(`/subscribe/${user.user_id}`);
+      if (willSubscribe) router.push(`/subscribe/${stableValues.userId}`);
     });
-  }, [router, user.user_id]);
+  }, [router, stableValues.userId]);
 
   const promptPayment = useCallback(async () => {
     return await swal({
       title: "This post is locked",
-      text: `You need to pay ${data.post_price} points to view this post.`,
+      text: `You need to pay ${stableValues.postPrice} points to view this post.`,
       icon: "warning",
       buttons: {
         cancel: true,
@@ -45,14 +54,13 @@ export const usePostActions = (data: any, user: any, permissions: any) => {
       },
     }).then(async (willPay) => {
       if (willPay) {
-        const price = Number(data.post_price);
-        if (price > points) {
+        if (stableValues.postPrice > points) {
           return toast.error(
             "You don't have enough points to pay for this post",
             { id: "pay-for-post" },
           );
         }
-        const pay = await payForPost({ price, postId: data.id });
+        const pay = await payForPost({ price: stableValues.postPrice, postId: stableValues.postId });
         if (pay.error) {
           return toast.error(pay.message, { id: "pay-for-post" });
         }
@@ -63,7 +71,7 @@ export const usePostActions = (data: any, user: any, permissions: any) => {
         router.refresh();
       }
     });
-  }, [data.post_price, data.id, points, queryClient, user.id, router]);
+  }, [stableValues.postPrice, stableValues.postId, points, queryClient, user.id, router]);
 
   const handlePostClick = useCallback(
     async (e: React.MouseEvent) => {
@@ -84,7 +92,7 @@ export const usePostActions = (data: any, user: any, permissions: any) => {
         return promptPayment();
       }
 
-      if (data.post_status !== "approved") {
+      if (stableValues.postStatus !== "approved") {
         await swal({
           title: "This post is still processing",
           text: "Only you can view this. Post anytime — the borders will disappear when it's fully ready.",
@@ -93,12 +101,13 @@ export const usePostActions = (data: any, user: any, permissions: any) => {
         return;
       }
 
-      router.push(`/posts/${data.post_id}`);
+      router.push(`/posts/${stableValues.postIdSlug}`);
     },
     [
-      permissions,
-      data.post_status,
-      data.post_id,
+      permissions.needsSubscription,
+      permissions.needsPayment,
+      stableValues.postStatus,
+      stableValues.postIdSlug,
       router,
       promptSubscription,
       promptPayment,
@@ -114,7 +123,7 @@ export const usePostActions = (data: any, user: any, permissions: any) => {
         return promptSubscription();
       }
 
-      if (data.post_status !== "approved") {
+      if (stableValues.postStatus !== "approved") {
         e.preventDefault();
         return swal({
           title: "This post is still processing",
@@ -128,7 +137,13 @@ export const usePostActions = (data: any, user: any, permissions: any) => {
         return promptPayment();
       }
     },
-    [permissions, data.post_status, promptSubscription, promptPayment],
+    [
+      permissions.needsSubscription,
+      permissions.needsPayment,
+      stableValues.postStatus,
+      promptSubscription,
+      promptPayment,
+    ],
   );
 
   return {

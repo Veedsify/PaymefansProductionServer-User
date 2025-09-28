@@ -154,6 +154,7 @@ const Post = React.memo(() => {
                 key={index}
                 username={post?.user.username}
                 showWaterMark={post.watermark_enabled}
+                isSingle={post.UserMedia.length === 1}
                 data={{
                   id: post?.id,
                   post_status: post?.post_status,

@@ -29,6 +29,7 @@ import PointsCount from "../../../features/points/PointCount";
 import useThemeToggle from "../toggles/ThemeToggle";
 import FormatName from "@/lib/FormatName";
 import LoadingSpinner from "../loaders/LoadingSpinner";
+import { cn } from "@/components/ui/cn";
 
 const SideBar = React.memo(() => {
   const router = useRouter();
@@ -38,6 +39,7 @@ const SideBar = React.memo(() => {
   const { user, isGuest } = useAuthContext();
   const { unreadCount } = useMessagesConversation();
   const { theme, setTheme } = useThemeToggle();
+
   useEffect(() => {
     const closeSideBar = () => {
       setSideBar(false);
@@ -53,33 +55,41 @@ const SideBar = React.memo(() => {
         }`}
       >
         <div className="mt-8 mb-16 ">
-          <Image
-            className="block h-8 w-36"
-            width={150}
-            height={30}
-            priority
-            unoptimized
-            src="/site/logos/logo2.png"
-            alt="Logo"
-          />
+          <Link href="/" className="cursor-pointer">
+            <Image
+              className="block h-8 w-36"
+              width={150}
+              height={30}
+              priority
+              unoptimized
+              src="/site/logos/logo.png"
+              alt="Logo"
+            />
+          </Link>
         </div>
         <div>
           <div className="flex items-center mb-4 gap-4">
-            <Image
-              width={50}
-              height={50}
-              priority
-              src={user && !isGuest ? user?.profile_image! : "/site/avatar.png"}
-              className="object-cover w-12 h-12 border-2 rounded-full border-primary-dark-pink"
-              alt=""
-            />
+            <Link href={"/profile"} className="cursor-pointer">
+              <Image
+                width={50}
+                height={50}
+                priority
+                src={
+                  user && !isGuest ? user?.profile_image! : "/site/avatar.png"
+                }
+                className="object-cover w-12 h-12 border-2 rounded-full border-primary-dark-pink"
+                alt=""
+              />
+            </Link>
             <div className="overflow-hidden">
               <h2 className="mb-0 text-sm font-bold leading-none">
-                {user?.name ? (
-                  FormatName(user.name)
-                ) : (
-                  <p className="w-32 h-5 mb-1 bg-gray-300 rounded-sm animate-pulse"></p>
-                )}
+                <Link href="/profile" className="cursor-pointer">
+                  {user?.name ? (
+                    FormatName(user.name)
+                  ) : (
+                    <p className="w-32 h-5 mb-1 bg-gray-300 rounded-sm animate-pulse"></p>
+                  )}
+                </Link>
               </h2>
               <span className="text-sm text-gray-600 dark:text-white text-wrap max-w-8">
                 {!isGuest && user ? (
@@ -138,41 +148,67 @@ const SideBar = React.memo(() => {
               <>
                 <Link
                   href="/profile"
-                  className="flex items-center p-2 mb-2 gap-5 transition-all duration-200 hover:bg-gray-200 dark:hover:bg-gray-900 rounded-xl active:bg-gray-200"
+                  className="flex items-center p-2 mb-2 gap-5 transition-all duration-200 hover:bg-gray-200 dark:hover:bg-gray-900 active:bg-gray-200 dark:active:bg-gray-900 rounded-xl"
                 >
-                  <User className="h-6 md:h-6" />
+                  <User
+                    className={cn("h-6 md:h-6", {
+                      "stroke-black": !pathname.startsWith("/profile"),
+                      "stroke-primary-dark-pink":
+                        pathname.startsWith("/profile"),
+                    })}
+                  />
                   <p>Profile</p>
                 </Link>
                 <Link
                   href="/messages"
-                  className="flex items-center p-2 mb-2 gap-5 transition-all duration-200 hover:bg-gray-200 dark:hover:bg-gray-900 rounded-xl active:bg-gray-200"
+                  className="flex items-center p-2 mb-2 gap-5 transition-all duration-200 hover:bg-gray-200 dark:hover:bg-gray-900 active:bg-gray-200 dark:active:bg-gray-900 rounded-xl"
                 >
-                  <MessageCircle className="h-6 md:h-6" />
+                  <MessageCircle
+                    className={cn("h-6 md:h-6", {
+                      "stroke-black": !pathname.startsWith("/messages"),
+                      "stroke-primary-dark-pink":
+                        pathname.startsWith("/messages"),
+                    })}
+                  />
                   <p>Messages</p>
-                  <span className="flex items-center justify-center w-8 h-8 p-0 ml-auto font-bold text-white rounded-full bg-primary-dark-pink">
+                  <span className="flex items-center justify-center w-6 h-6 p-0 ml-auto text-xs font-bold text-white rounded-full bg-red-600">
                     {unreadCount > 99 ? "99+" : unreadCount}
                   </span>
                 </Link>
                 <Link
                   href="/hookup"
-                  className="flex items-center p-2 mb-2 gap-5 transition-all duration-200 hover:bg-gray-200 dark:hover:bg-gray-900 rounded-xl active:bg-gray-200"
+                  className="flex items-center p-2 mb-2 gap-5 transition-all duration-200 hover:bg-gray-200 dark:hover:bg-gray-900 active:bg-gray-200 dark:active:bg-gray-900 rounded-xl"
                 >
-                  <LucideHeart className="h-6 md:h-6" />
+                  <LucideHeart
+                    className={cn("h-6 md:h-6", {
+                      "stroke-black": !pathname.startsWith("/hookup"),
+                      "stroke-primary-dark-pink":
+                        pathname.startsWith("/hookup"),
+                    })}
+                  />
                   <p>Hook Up</p>
                 </Link>
                 <Link
                   href="/store"
-                  className="flex items-center p-2 mb-2 gap-5 transition-all duration-200 hover:bg-gray-200 dark:hover:bg-gray-900 rounded-xl active:bg-gray-200"
+                  className="flex items-center text-emerald-600 p-2 mb-2 gap-5 transition-all duration-200 hover:bg-gray-200 dark:hover:bg-gray-900 active:bg-gray-200 dark:active:bg-gray-900 rounded-xl"
                 >
-                  <LucideStore className="h-6 md:h-6" />
+                  <LucideStore
+                    className={cn("h-6 md:h-6 stroke-emerald-500")}
+                  />
                   <p>Store</p>
                 </Link>
                 {(user?.is_model || user?.admin) && (
                   <Link
                     href="/groups"
-                    className="flex items-center p-2 mb-2 gap-5 transition-all duration-200 hover:bg-gray-200 dark:hover:bg-gray-900 rounded-xl active:bg-gray-200"
+                    className="flex items-center p-2 mb-2 gap-5 transition-all duration-200 hover:bg-gray-200 dark:hover:bg-gray-900 active:bg-gray-200 dark:active:bg-gray-900 rounded-xl"
                   >
-                    <LucideGroup className="h-6 md:h-6" />
+                    <LucideGroup
+                      className={cn("h-6 md:h-6", {
+                        "stroke-black": !pathname.startsWith("/groups"),
+                        "stroke-primary-dark-pink":
+                          pathname.startsWith("/groups"),
+                      })}
+                    />
                     <p>Creator&apos;s Group</p>
                   </Link>
                 )}
@@ -180,18 +216,31 @@ const SideBar = React.memo(() => {
                 {user?.is_model && user.Model?.verification_status == false && (
                   <Link
                     href="/verification"
-                    className="flex items-center p-2 mb-2 gap-5 transition-all duration-200 hover:bg-gray-200 dark:hover:bg-gray-900 rounded-xl active:bg-gray-200"
+                    className="flex items-center p-2 mb-2 gap-5 transition-all duration-200 hover:bg-gray-200 dark:hover:bg-gray-900 active:bg-gray-200 dark:active:bg-gray-900 rounded-xl"
                   >
-                    <LucideShieldCheck className="h-6 md:h-6" />
+                    <LucideShieldCheck
+                      className={cn("h-6 md:h-6", {
+                        "stroke-black": !pathname.startsWith("/verification"),
+                        "stroke-primary-dark-pink":
+                          pathname.startsWith("/verification"),
+                      })}
+                    />
                     <p>Verification</p>
                   </Link>
                 )}
                 {!user?.is_model && (
                   <Link
                     href="/models/benefits"
-                    className="flex items-center p-2 mb-2 gap-5 transition-all duration-200 hover:bg-gray-200 dark:hover:bg-gray-900 rounded-xl active:bg-gray-200"
+                    className="flex items-center p-2 mb-2 gap-5 transition-all duration-200 hover:bg-gray-200 dark:hover:bg-gray-900 active:bg-gray-200 dark:active:bg-gray-900 rounded-xl"
                   >
-                    <LucideUserPlus className="h-6 md:h-6" />
+                    <LucideUserPlus
+                      className={cn("h-6 md:h-6", {
+                        "stroke-black":
+                          !pathname.startsWith("/models/benefits"),
+                        "stroke-primary-dark-pink":
+                          pathname.startsWith("/models/benefits"),
+                      })}
+                    />
                     <p>Become A Model</p>
                   </Link>
                 )}
@@ -200,29 +249,46 @@ const SideBar = React.memo(() => {
             )}
             <Link
               href="/help"
-              className="flex items-center p-2 mb-2 gap-5 transition-all duration-200 hover:bg-gray-200 dark:hover:bg-gray-900 rounded-xl active:bg-gray-200"
+              className="flex items-center p-2 mb-2 gap-5 transition-all duration-200 hover:bg-gray-200 dark:hover:bg-gray-900 active:bg-gray-200 dark:active:bg-gray-900 rounded-xl"
             >
-              <LucideHelpCircle className="h-6 md:h-6" />
+              <LucideHelpCircle
+                className={cn("h-6 md:h-6", {
+                  "stroke-black": !pathname.startsWith("/help"),
+                  "stroke-primary-dark-pink": pathname.startsWith("/help"),
+                })}
+              />
               <p>Help</p>
             </Link>
             {!isGuest && (
               <>
                 <Link
                   href="/referral"
-                  className="flex items-center p-2 mb-2 gap-5 transition-all duration-200 hover:bg-gray-200 dark:hover:bg-gray-900 rounded-xl active:bg-gray-200"
+                  className="flex items-center p-2 mb-2 gap-5 transition-all duration-200 hover:bg-gray-200 dark:hover:bg-gray-900 active:bg-gray-200 dark:active:bg-gray-900 rounded-xl"
                 >
-                  <LucideUserPlus className="h-6 md:h-6" />
+                  <LucideUserPlus
+                    className={cn("h-6 md:h-6", {
+                      "stroke-black": !pathname.startsWith("/referral"),
+                      "stroke-primary-dark-pink":
+                        pathname.startsWith("/referral"),
+                    })}
+                  />
                   <p>Referrals</p>
                 </Link>
                 <Link
                   href="/settings"
-                  className="flex items-center p-2 mb-2 gap-5 transition-all duration-200 hover:bg-gray-200 dark:hover:bg-gray-900 rounded-xl active:bg-gray-200"
+                  className="flex items-center p-2 mb-2 gap-5 transition-all duration-200 hover:bg-gray-200 dark:hover:bg-gray-900 active:bg-gray-200 dark:active:bg-gray-900 rounded-xl"
                 >
-                  <LucideSettings className="h-6 md:h-6" />
+                  <LucideSettings
+                    className={cn("h-6 md:h-6", {
+                      "stroke-black": !pathname.startsWith("/settings"),
+                      "stroke-primary-dark-pink":
+                        pathname.startsWith("/settings"),
+                    })}
+                  />
                   <p>Settings & Privacy</p>
                 </Link>
                 <span
-                  className="flex items-center p-2 mb-2 cursor-pointer select-none gap-5 transition-all duration-200 hover:bg-gray-200 dark:hover:bg-gray-900 rounded-xl"
+                  className="flex items-center p-2 mb-2 cursor-pointer select-none gap-5 transition-all duration-200 hover:bg-gray-200 dark:hover:bg-gray-900 active:bg-gray-200 dark:active:bg-gray-900 rounded-xl"
                   onClick={() => setWillLogout(true)}
                 >
                   <LucideLogOut className="h-6 md:h-6" />

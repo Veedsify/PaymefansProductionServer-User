@@ -17,6 +17,7 @@ import formatNumber from "@/lib/FormatNumbers";
 import type { PostData } from "@/types/Components";
 import axiosInstance from "@/utils/Axios";
 import { likePost } from "@/utils/PostLikeUtils";
+import Link from "next/link";
 
 type PostCompInteractionsProps = {
   data: PostData | undefined;
@@ -162,7 +163,7 @@ export const PostCompInteractions = ({ data }: PostCompInteractionsProps) => {
     try {
       const repost = await axiosInstance.post(
         `/post/repost/${data?.post_id}`,
-        {},
+        {}
       );
       if (repost.status === 200 && repost.data.error === false) {
         toast.success(repost.data.message, {
@@ -185,10 +186,13 @@ export const PostCompInteractions = ({ data }: PostCompInteractionsProps) => {
   return (
     <>
       <div className="flex justify-around w-full py-6 mt-6 text-sm border-b dark:text-gray-300 dark:border-slate-700 border-black/20">
-        <span className="flex items-center text-sm font-medium cursor-pointer gap-1">
+        <Link
+          href={`/posts/${data?.post_id}/`}
+          className="flex items-center text-sm font-medium cursor-pointer gap-1"
+        >
           <LucideMessageSquare className="w-5 h-5 lg:w-6 lg:h-6" />
           {data?.post_comments}
-        </span>
+        </Link>
         <PostRepost
           repostThisPost={repostThisPost}
           repostCount={data?.post_reposts || 0}

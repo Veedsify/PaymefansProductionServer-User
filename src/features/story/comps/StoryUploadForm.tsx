@@ -23,12 +23,16 @@ const StoryUploadForm = () => {
             !isVideo &&
             file.size > 10 * 1024 * 1024
           ) {
-            toast.error("Image size should be less than 10MB");
+            toast.error("Image size should be less than 10MB", {
+              id: "file-too-large",
+            });
             return;
           }
 
           if (isVideo && file.size > 5 * 1024 * 1024 * 1024) {
-            toast.error("Video size should be less than 5GB");
+            toast.error("Video size should be less than 5GB", {
+              id: "file-too-large",
+            });
             return;
           }
 

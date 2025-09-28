@@ -87,7 +87,7 @@ const MediaPanelImageCard = React.memo(({ sort }: { sort: string }) => {
 
   return (
     <>
-      <div className="overflow-hidden select-none grid lg:grid-cols-3 grid-cols-2 rounded-xl gap-1 ">
+      <div className="overflow-hidden select-none grid lg:grid-cols-3 grid-cols-2 rounded-xl gap-1 mb-6 ">
         {allMedia.map((media, index) => (
           <div
             key={index}

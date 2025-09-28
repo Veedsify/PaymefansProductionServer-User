@@ -33,6 +33,7 @@ interface VideoPlayerProps {
   streamUrl: string;
   autoPlay?: boolean;
   className: string;
+  isSingle?: boolean;
   modalOpen?: boolean;
   allOthers?: React.VideoHTMLAttributes<HTMLVideoElement>;
   userProfile?: UserProfile | null; // New prop for user profile
@@ -44,6 +45,7 @@ const VideoPlayer = ({
   className,
   modalOpen = false,
   allOthers,
+  isSingle = false,
   userProfile,
 }: VideoPlayerProps) => {
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -121,7 +123,28 @@ const VideoPlayer = ({
     setIsLoading(true);
 
     if (Hls.isSupported()) {
-      const hls = new Hls();
+      const hls = new Hls({
+        // Reduce initial loading time
+        startPosition: 0,
+        enableWorker: true,
+        lowLatencyMode: true,
+
+        // Faster loading configurations
+        backBufferLength: 20, // Reduce back buffer for faster start
+        maxBufferLength: 30,
+        maxBufferSize: 40 * 1000 * 1000, // 40MB
+
+        // Prioritize faster loading over quality initially
+        capLevelToPlayerSize: true,
+
+        // Enable progressive loading
+        progressive: true,
+
+        // Reduce manifest loading time
+        manifestLoadingTimeOut: 10000,
+        manifestLoadingMaxRetry: 2,
+        manifestLoadingRetryDelay: 500,
+      });
       hls.loadSource(streamUrl);
       hls.attachMedia(video);
       hlsRef.current = hls;
@@ -152,7 +175,7 @@ const VideoPlayer = ({
       return () => hls.destroy();
     } else if (video.canPlayType("application/vnd.apple.mpegurl")) {
       video.src = streamUrl;
-
+      video.load();
       video.addEventListener("loadeddata", () => {
         setIsLoading(false);
       });
@@ -190,12 +213,16 @@ const VideoPlayer = ({
     if (inView && autoPlay && !isPlaying && !manualPlayPause) {
       video
         .play()
-        .then(() => setIsPlaying(true))
+        .then(() => {
+          setIsPlaying(true);
+        })
         .catch((err) => console.log("Playback error:", err));
+      setIsMuted(isSingle || modalOpen ? false : true);
     } else if (!inView && isPlaying) {
       video.pause();
       setIsPlaying(false);
       setManualPlayPause(false);
+      setIsMuted(true);
     }
   }, [inView, autoPlay, isPlaying, manualPlayPause]);
 
@@ -203,7 +230,6 @@ const VideoPlayer = ({
   useEffect(() => {
     const video = videoRef.current;
     if (!video) return;
-
     video.volume = isMuted ? 0 : volume;
   }, [volume, isMuted]);
 
@@ -274,6 +300,7 @@ const VideoPlayer = ({
         ref={intersectionRef}
         className="relative group h-full flex items-center justify-center w-full"
         onClick={(e) => {
+          setControlsVisible(!controlsVisible);
           if (showResolutionMenu) {
             setShowResolutionMenu(false);
             e.stopPropagation();
@@ -285,6 +312,7 @@ const VideoPlayer = ({
           {...allOthers}
           ref={videoRef}
           loop={shouldLoop}
+          muted={isMuted}
           preload="auto"
           className={`${className} object-center`}
           poster={allOthers?.poster}
@@ -292,6 +320,27 @@ const VideoPlayer = ({
           onLoadedMetadata={() => setDuration(videoRef.current?.duration || 0)}
           style={{ background: "#000000" }}
         ></video>
+
+        {!modalOpen && (
+          <div className="absolute bottom-1.5 left-1.5 right-1.5 flex items-center justify-between text-white">
+            <span className="text-xs md:text-sm font-medium p-1 bg-black/30 rounded-md">
+              {isPlaying ? formatTime(currentTime) : formatTime(duration)}{" "}
+            </span>
+            {isSingle && (
+              <button
+                onClick={toggleMute}
+                className="p-2 rounded-full bg-black/50 hover:bg-black/70"
+                aria-label={isMuted ? "Unmute" : "Mute"}
+              >
+                {isMuted || volume === 0 ? (
+                  <LucideVolumeX className="w-4 h-4" />
+                ) : (
+                  <LucideVolume2 className="w-4 h-4" />
+                )}
+              </button>
+            )}
+          </div>
+        )}
 
         {/* Loading Spinner Overlay */}
         {isLoading && modalOpen && (
@@ -325,7 +374,7 @@ const VideoPlayer = ({
                 className={cn(
                   `absolute inset-0 pointer-events-none `,
                   controlsVisible
-                    ? "bg-gradient-to-t from-black via-black/60 to-transparent"
+                    ? "bg-gradient-to-t from-black/20 via-black/10 to-transparent"
                     : "bg-transparent"
                 )}
               ></div>
@@ -335,9 +384,9 @@ const VideoPlayer = ({
                 <div
                   className={cn(
                     controlsVisible
-                      ? "bottom-[22%] md:bottom-[15%]"
+                      ? "bottom-[17%] md:bottom-[15%]"
                       : "bottom-[5%]",
-                    `absolute left-4 z-20 flex items-center`
+                    `absolute left-4 z-20 flex items-center duration-300`
                   )}
                 >
                   <UserProfileOverlay userProfile={userProfile} />

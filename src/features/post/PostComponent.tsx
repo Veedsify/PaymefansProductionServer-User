@@ -3,19 +3,27 @@
 import { LucideEye, LucideLock, LucideUsers } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import React, { memo, useCallback, useEffect, useMemo } from "react";
+import React, { memo, useCallback, useEffect, useMemo, useRef } from "react";
 import { useInView } from "react-intersection-observer";
 import usePostComponent from "@/contexts/PostComponentPreview";
 import { useAuthContext } from "@/contexts/UserUseContext";
 import { usePostActions } from "@/hooks/usePostActions";
 import { usePostPermissions } from "@/hooks/usePostPermissions";
-import { usePostPreviewState } from "@/hooks/usePostPreviewSelectors";
 import type { PostComponentProps, UserMediaProps } from "@/types/Components";
 import { getSocket } from "../../components/common/Socket";
 import MediaGridItem from "./components/MediaGridItem";
 import { PostCompInteractions } from "./PostInteractions";
 import QuickPostActions from "./QuickPostActions";
 import FormatName from "@/lib/FormatName";
+
+// Cache socket instance to prevent recreation on every render
+let socketInstance: ReturnType<typeof getSocket> | null = null;
+const getSocketInstance = () => {
+  if (!socketInstance) {
+    socketInstance = getSocket();
+  }
+  return socketInstance;
+};
 
 // Memoized audience icon component
 const AudienceIcon = memo(({ audience }: { audience: string }) => {
@@ -40,47 +48,73 @@ const PostComponent = memo<PostComponentProps>(
   ({ user, data, was_repost, repost_username, repost_id }) => {
     const { ref, inView } = useInView({ threshold: 0.5, triggerOnce: true });
     const fullScreenPreview = usePostComponent(
-      (state) => state.fullScreenPreview,
+      (state) => state.fullScreenPreview
     );
     const { user: authUser } = useAuthContext();
-    const socket = getSocket();
+
+    // Use cached socket instance
+    const socketRef = useRef(getSocketInstance());
+    const socket = socketRef.current;
 
     // Custom hooks for complex logic
     const permissions = usePostPermissions(data, user, authUser);
     const actions = usePostActions(data, user, permissions);
 
-    // Memoized user image with fallback
+    // Memoized user image with fallback - more stable reference
     const userImage = useMemo(
       () => user?.image?.trim() || "/site/avatar.svg",
-      [user?.image],
+      [user?.image]
     );
 
-    // Memoized user profile for media preview
+    // Memoized user profile for media preview - using stable keys
     const userProfile = useMemo(
       () => ({
         name: user.name,
         username: user.username,
         avatar: user.image,
       }),
-      [user.name, user.username, user.image],
+      [user.name, user.username, user.image]
     );
 
-    // Memoized formatted text with permission checks
-    const formattedText = useMemo(() => {
-      const text = data.post.replace(/\r?\n/g, "<br/>");
-
+    // Memoized post text processing - optimize string operations
+    const { formattedText, needsProcessing } = useMemo(() => {
       if (permissions.needsSubscription) {
-        return "<p class='text-sm text-emerald-500'>This post is only available to subscribers</p>";
+        return {
+          formattedText:
+            "<p class='text-sm text-emerald-500'>This post is only available to subscribers</p>",
+          needsProcessing: false,
+        };
       }
 
       if (permissions.needsPayment) {
-        return "<p class='text-sm text-emerald-500'>This post is only available to paid users</p>";
+        return {
+          formattedText:
+            "<p class='text-sm text-emerald-500'>This post is only available to paid users</p>",
+          needsProcessing: false,
+        };
       }
 
-      return text.length >= 1000 ? text.slice(0, 1000) + "..." : text;
+      const text = data.post.replace(/\r?\n/g, "<br/>");
+      return {
+        formattedText: text.length >= 1000 ? text.slice(0, 1000) + "..." : text,
+        needsProcessing: true,
+      };
     }, [data.post, permissions.needsSubscription, permissions.needsPayment]);
 
-    // Memoized media click handler
+    // Memoized filtered media for better performance
+    const filteredMediaUrls = useMemo(
+      () =>
+        data.media
+          .filter((item) => item.media_state !== "processing")
+          .map((media) => ({
+            url: media.url,
+            type: media.media_type as "video" | "image",
+            isBlob: false,
+          })),
+      [data.media]
+    );
+
+    // Optimized media click handler with reduced dependencies
     const handleMediaClick = useCallback(
       (media: { url: string; media_type: string; index: number }) => {
         if (permissions.needsSubscription) {
@@ -95,13 +129,7 @@ const PostComponent = memo<PostComponentProps>(
           userProfile,
           watermarkEnabled: !!data.watermark_enabled,
           username: data.user?.username,
-          otherUrl: data.media
-            .filter((item) => item.media_state !== "processing")
-            .map((media) => ({
-              url: media.url,
-              type: media.media_type as "video" | "image",
-              isBlob: false,
-            })),
+          otherUrl: filteredMediaUrls,
         });
       },
       [
@@ -111,22 +139,29 @@ const PostComponent = memo<PostComponentProps>(
         userProfile,
         data.watermark_enabled,
         data.user?.username,
-        data.media,
-      ],
+        filteredMediaUrls,
+      ]
     );
 
-    // Memoized grid configuration
-    const gridConfig = useMemo(() => {
+    // Memoized grid configuration with better performance
+    const { gridConfig, displayMedia } = useMemo(() => {
       const mediaCount = data.media.length;
-      if (mediaCount === 2) return "grid-cols-2";
-      if (mediaCount >= 3) return "grid-cols-3";
-      return "grid-cols-1";
-    }, [data.media.length]);
+      let config: string;
 
-    // Track post views
+      if (mediaCount === 2) config = "grid-cols-2";
+      else if (mediaCount >= 3) config = "grid-cols-3";
+      else config = "grid-cols-1";
+
+      return {
+        gridConfig: config,
+        displayMedia: data.media.slice(0, 3), // Pre-slice media array
+      };
+    }, [data.media]);
+
+    // Optimize post view tracking with stable references
     useEffect(() => {
-      if (data.post_status === "approved" && inView && authUser?.id) {
-        socket?.emit("post-viewed", {
+      if (data.post_status === "approved" && inView && authUser?.id && socket) {
+        socket.emit("post-viewed", {
           userId: authUser.id,
           postId: data.id,
         });
@@ -197,12 +232,13 @@ const PostComponent = memo<PostComponentProps>(
 
           {/* Optimized Media Grid */}
           <div className={`grid gap-3 ${gridConfig}`}>
-            {data.media.slice(0, 3).map((media: UserMediaProps, i) => (
+            {displayMedia.map((media: UserMediaProps, i) => (
               <MediaGridItem
                 key={`${media.url}-${i}`}
                 media={media}
                 index={i}
                 data={data}
+                isSingle={displayMedia.length === 1}
                 canView={permissions.canView}
                 mediaLength={data.media.length}
                 onNonSubscriberClick={actions.handleNonSubscriberClick}
@@ -215,7 +251,7 @@ const PostComponent = memo<PostComponentProps>(
         <PostCompInteractions data={data} />
       </div>
     );
-  },
+  }
 );
 
 PostComponent.displayName = "PostComponent";

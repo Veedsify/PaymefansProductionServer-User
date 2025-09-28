@@ -1,7 +1,7 @@
 import { LucideLock, LucidePlus } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { memo } from "react";
+import { memo, useMemo } from "react";
 import type { UserMediaProps } from "@/types/Components";
 import ImageComponent from "./ImageComponent";
 import VideoComponent from "./VideoComponent";
@@ -11,6 +11,7 @@ interface MediaGridItemProps {
   index: number;
   data: any;
   canView: boolean;
+  isSingle: boolean;
   mediaLength: number;
   onNonSubscriberClick: (e: React.MouseEvent) => void;
   onMediaClick: (media: {
@@ -27,12 +28,24 @@ const MediaGridItem = memo(
     index,
     data,
     canView,
+    isSingle,
     mediaLength,
     onNonSubscriberClick,
     onMediaClick,
     isSubscribed,
   }: MediaGridItemProps) => {
-    // Memoized locked overlay component
+    // Memoize expensive data computations
+    const { isProcessing, postLink, shouldShowMoreOverlay } = useMemo(
+      () => ({
+        isProcessing: data.post_status !== "approved",
+        postLink:
+          data.post_audience === "private" ? "#" : `/posts/${data.post_id}`,
+        shouldShowMoreOverlay: index === 2 && mediaLength > 3,
+      }),
+      [data.post_status, data.post_audience, data.post_id, index, mediaLength]
+    );
+
+    // Memoized locked overlay component with stable props
     const LockedOverlay = memo(
       ({ type }: { type: "price" | "subscribers" }) => (
         <div className="absolute inset-0 z-10 flex items-center justify-center overflow-hidden rounded-lg bg-black/20">
@@ -54,14 +67,14 @@ const MediaGridItem = memo(
             )}
           </span>
         </div>
-      ),
+      )
     );
     LockedOverlay.displayName = "LockedOverlay";
 
-    // Memoized show more overlay
+    // Memoized show more overlay with pre-computed values
     const ShowMoreOverlay = memo(() => (
       <Link
-        href={data.post_audience === "private" ? "#" : `/posts/${data.post_id}`}
+        href={postLink}
         className="flex flex-col absolute inset-0 items-center justify-center rounded-lg aspect-[3/4] md:aspect-square bg-white/70 cursor-pointer select-none"
       >
         <div>
@@ -82,7 +95,7 @@ const MediaGridItem = memo(
     return (
       <div
         className={`relative rounded-xl overflow-hidden ${
-          data.post_status !== "approved" ? "border-fuchsia-500 border-2" : ""
+          isProcessing ? "border-fuchsia-500 border-2" : ""
         }`}
         onClick={onNonSubscriberClick}
       >
@@ -101,6 +114,7 @@ const MediaGridItem = memo(
             <VideoComponent
               media={{ ...media, index }}
               data={data}
+              isSingle={isSingle}
               clickImageEvent={onMediaClick}
               isSubscriber={isSubscribed}
             />
@@ -124,7 +138,7 @@ const MediaGridItem = memo(
         )}
 
         {/* Show more overlay */}
-        {index === 2 && data.media.length > 3 && <ShowMoreOverlay />}
+        {shouldShowMoreOverlay && <ShowMoreOverlay />}
 
         {/* Locked overlays */}
         {!canView && data.post_audience === "subscribers" && (
@@ -136,6 +150,20 @@ const MediaGridItem = memo(
       </div>
     );
   },
+  // Custom comparison function for better memoization
+  (prevProps, nextProps) => {
+    // Only re-render if these critical props change
+    return (
+      prevProps.media.url === nextProps.media.url &&
+      prevProps.canView === nextProps.canView &&
+      prevProps.isSubscribed === nextProps.isSubscribed &&
+      prevProps.data.post_status === nextProps.data.post_status &&
+      prevProps.data.post_audience === nextProps.data.post_audience &&
+      prevProps.data.post_price === nextProps.data.post_price &&
+      prevProps.mediaLength === nextProps.mediaLength &&
+      prevProps.index === nextProps.index
+    );
+  }
 );
 
 MediaGridItem.displayName = "MediaGridItem";
