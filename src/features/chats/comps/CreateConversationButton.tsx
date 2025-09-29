@@ -20,20 +20,22 @@ export default function CreateConversationButton({
   const createConversation = async () => {
     if (!isGuest) {
       setLoading(true);
-      createNewConversation({ userId: user?.user_id as string, profileId })
-        .then((res) => {
-          if (res?.status === 200 && res.data.status === true) {
-            router.push(`/chats/${res.data.conversation_id}`);
-            setLoading(false);
-          } else {
-            toast.error("sorry you cant message this user at the moment");
-            setLoading(false);
-          }
-        })
-        .catch((err) => {
-          console.log(err);
-          setLoading(false);
+      try {
+        const res = await createNewConversation({
+          userId: user?.user_id as string,
+          profileId,
         });
+        if (res?.status === 200 && res.data.status) {
+          router.push(`/chats/${res.data.conversation_id}`);
+          setLoading(false);
+        } else {
+          toast.error("sorry you cant message this user at the moment");
+          setLoading(false);
+        }
+      } catch (err) {
+        console.log(err);
+        setLoading(false);
+      }
       return;
     }
     toggleModalOpen("You need to login continue");
