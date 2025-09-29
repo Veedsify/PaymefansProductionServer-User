@@ -1,5 +1,12 @@
 import type { Metadata } from "next";
-import StatusComponent from "@/features/story/comps/StatusComponent";
+import dynamic from "next/dynamic";
+
+const StatusComponent = dynamic(
+  () => import("@/features/story/comps/StatusComponent"),
+  {
+    ssr: true,
+  }
+);
 
 export const metadata: Metadata = {
   title: "Story",
