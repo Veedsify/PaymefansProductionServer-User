@@ -420,11 +420,7 @@ const BecomeAModel = () => {
             onChange={handleInputChange}
             type="date"
             name="dob"
-            value={formData.dob || ""}
             placeholder="Date of Birth"
-            max={new Date(
-              Date.now() - 18 * 365 * 24 * 60 * 60 * 1000
-            ).toISOString()}
             className={`border p-4 w-full rounded-lg font-semibold outline-none focus:ring-2 focus:ring-primary-dark-pink transition ${
               formErrors.dob
                 ? "border-red-500 dark:border-red-500"
