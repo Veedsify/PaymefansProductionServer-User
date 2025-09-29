@@ -10,13 +10,21 @@ const CommentsAndReply = dynamic(
   () => import("@/features/comments/CommentsAndReply"),
   { ssr: false, loading: () => <LoadingSpinner text="Loading comments..." /> }
 );
-import { PostCompInteractions } from "@/features/post/PostInteractions";
-import QuickPostActions from "@/features/post/QuickPostActions";
+const PostCompInteractions = dynamic(() =>
+  import("@/features/post/PostInteractions").then((mod) => ({
+    default: mod.PostCompInteractions,
+  }))
+);
+const QuickPostActions = dynamic(
+  () => import("@/features/post/QuickPostActions")
+);
 import { usePost } from "@/hooks/queries/usePost";
 import { formatDate } from "@/utils/FormatDate";
 import FormatName from "@/lib/FormatName";
 import LoadingSpinner from "@/components/common/loaders/LoadingSpinner";
-import PostPageImage from "@/features/post/PostPageImage";
+const PostPageImage = dynamic(() => import("@/features/post/PostPageImage"), {
+  ssr: false,
+});
 
 const Post = React.memo(() => {
   const params = useParams();
