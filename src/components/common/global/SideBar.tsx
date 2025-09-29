@@ -146,10 +146,9 @@ const SideBar = React.memo(() => {
           <div className="pt-6">
             {!isGuest && (
               <>
-                <Link
+                <a
                   href="/profile"
                   className="flex items-center p-2 mb-2 gap-5 transition-all duration-200 hover:bg-gray-200 dark:hover:bg-gray-900 active:bg-gray-200 dark:active:bg-gray-900 rounded-xl"
-                  replace
                 >
                   <User
                     className={cn("h-6 md:h-6", {
@@ -160,8 +159,8 @@ const SideBar = React.memo(() => {
                     })}
                   />
                   <p>Profile</p>
-                </Link>
-                <Link
+                </a>
+                <a
                   href="/messages"
                   className="flex items-center p-2 mb-2 gap-5 transition-all duration-200 hover:bg-gray-200 dark:hover:bg-gray-900 active:bg-gray-200 dark:active:bg-gray-900 rounded-xl"
                 >
@@ -179,8 +178,8 @@ const SideBar = React.memo(() => {
                       {unreadCount > 99 ? "99+" : unreadCount}
                     </span>
                   )}
-                </Link>
-                <Link
+                </a>
+                <a
                   href="/hookup"
                   className="flex items-center p-2 mb-2 gap-5 transition-all duration-200 hover:bg-gray-200 dark:hover:bg-gray-900 active:bg-gray-200 dark:active:bg-gray-900 rounded-xl"
                 >
@@ -193,8 +192,8 @@ const SideBar = React.memo(() => {
                     })}
                   />
                   <p>Hook Up</p>
-                </Link>
-                <Link
+                </a>
+                <a
                   href="/store"
                   className="flex items-center text-emerald-600 p-2 mb-2 gap-5 transition-all duration-200 hover:bg-gray-200 dark:hover:bg-gray-900 active:bg-gray-200 dark:active:bg-gray-900 rounded-xl"
                 >
@@ -202,9 +201,9 @@ const SideBar = React.memo(() => {
                     className={cn("h-6 md:h-6 stroke-emerald-500")}
                   />
                   <p>Store</p>
-                </Link>
+                </a>
                 {(user?.is_model || user?.admin) && (
-                  <Link
+                  <a
                     href="/groups"
                     className="flex items-center p-2 mb-2 gap-5 transition-all duration-200 hover:bg-gray-200 dark:hover:bg-gray-900 active:bg-gray-200 dark:active:bg-gray-900 rounded-xl"
                   >
@@ -217,11 +216,11 @@ const SideBar = React.memo(() => {
                       })}
                     />
                     <p>Creator&apos;s Group</p>
-                  </Link>
+                  </a>
                 )}
                 <NotificationSideBarLink />
                 {user?.is_model && user.Model?.verification_status == false && (
-                  <Link
+                  <a
                     href="/verification"
                     className="flex items-center p-2 mb-2 gap-5 transition-all duration-200 hover:bg-gray-200 dark:hover:bg-gray-900 active:bg-gray-200 dark:active:bg-gray-900 rounded-xl"
                   >
@@ -234,10 +233,10 @@ const SideBar = React.memo(() => {
                       })}
                     />
                     <p>Verification</p>
-                  </Link>
+                  </a>
                 )}
                 {!user?.is_model && (
-                  <Link
+                  <a
                     href="/models/benefits"
                     className="flex items-center p-2 mb-2 gap-5 transition-all duration-200 hover:bg-gray-200 dark:hover:bg-gray-900 active:bg-gray-200 dark:active:bg-gray-900 rounded-xl"
                   >
@@ -250,12 +249,12 @@ const SideBar = React.memo(() => {
                       })}
                     />
                     <p>Become A Model</p>
-                  </Link>
+                  </a>
                 )}
                 <hr className="mt-8 mb-8 dark:border-slate-800 border-black/20" />
               </>
             )}
-            <Link
+            <a
               href="/help"
               className="flex items-center p-2 mb-2 gap-5 transition-all duration-200 hover:bg-gray-200 dark:hover:bg-gray-900 active:bg-gray-200 dark:active:bg-gray-900 rounded-xl"
             >
@@ -267,10 +266,10 @@ const SideBar = React.memo(() => {
                 })}
               />
               <p>Help</p>
-            </Link>
+            </a>
             {!isGuest && (
               <>
-                <Link
+                <a
                   href="/referral"
                   className="flex items-center p-2 mb-2 gap-5 transition-all duration-200 hover:bg-gray-200 dark:hover:bg-gray-900 active:bg-gray-200 dark:active:bg-gray-900 rounded-xl"
                 >
@@ -283,8 +282,8 @@ const SideBar = React.memo(() => {
                     })}
                   />
                   <p>Referrals</p>
-                </Link>
-                <Link
+                </a>
+                <a
                   href="/settings"
                   className="flex items-center p-2 mb-2 gap-5 transition-all duration-200 hover:bg-gray-200 dark:hover:bg-gray-900 active:bg-gray-200 dark:active:bg-gray-900 rounded-xl"
                 >
@@ -297,7 +296,7 @@ const SideBar = React.memo(() => {
                     })}
                   />
                   <p>Settings & Privacy</p>
-                </Link>
+                </a>
                 <span
                   className="flex items-center p-2 mb-2 cursor-pointer select-none gap-5 transition-all duration-200 hover:bg-gray-200 dark:hover:bg-gray-900 active:bg-gray-200 dark:active:bg-gray-900 rounded-xl"
                   onClick={() => setWillLogout(true)}

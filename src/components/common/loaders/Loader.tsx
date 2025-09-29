@@ -7,17 +7,16 @@ const Loader = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    setTimeout(() => {
-      setLoading(false);
-    }, 1000);
-  }, [setLoading]);
+    const timer = setTimeout(() => setLoading(false), 1000); // simulate load
+    return () => clearTimeout(timer);
+  }, []);
 
   if (!loading) return null;
 
   return (
     <div
       className={cn(
-        "fixed z-[999] duration-300 ease-out bg-black min-h-dvh w-full flex items-center justify-center",
+        "fixed z-[999] duration-300 ease-out left-0 top-0 w-full bg-black min-h-dvh flex items-center justify-center",
         loading
           ? "opacity-100 pointer-events-auto"
           : "opacity-0 pointer-events-none"

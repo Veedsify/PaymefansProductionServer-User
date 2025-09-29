@@ -9,6 +9,7 @@ import { StoryPauseProvider } from "@/contexts/StoryPauseContext";
 import StoriesHeader from "./StatusHeader";
 import StoryPreviewControlls from "./StatusPreviewControls";
 import StatusPreviewSlide from "./StatusPreviewSlide";
+import { Zoom } from "swiper/modules";
 
 // Caption Element Component
 
@@ -79,7 +80,7 @@ const StoryPreviewComponent = ({
     (canPlay: boolean) => {
       if (canPlay) PlayVideo(true);
     },
-    [PlayVideo],
+    [PlayVideo]
   );
 
   // Handle slide change to update video references
@@ -117,7 +118,7 @@ const StoryPreviewComponent = ({
         viewedStories.current.add(currentStory.media_id);
       }
     },
-    [PlayVideo, stories],
+    [PlayVideo, stories]
   );
 
   // Preload adjacent slides for smoother transitions
@@ -207,6 +208,7 @@ const StoryPreviewComponent = ({
               key={swiperKey}
               spaceBetween={0}
               slidesPerView={1}
+              modules={[Zoom]}
               allowTouchMove={true}
               onSwiper={(swiper) => {
                 swiperRef.current = swiper;

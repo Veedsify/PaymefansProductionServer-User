@@ -10,7 +10,7 @@ import {
   useRef,
   useState,
 } from "react";
-import { A11y, Keyboard, Navigation, Pagination } from "swiper/modules";
+import { A11y, Keyboard, Navigation, Pagination, Zoom } from "swiper/modules";
 import { Swiper, type SwiperClass, SwiperSlide } from "swiper/react";
 import "swiper/css/bundle";
 import { motion, useReducedMotion } from "framer-motion";
@@ -278,7 +278,7 @@ const MediaPreviewModal = memo(
 
         <Swiper
           {...MEDIA_CONSTANTS.SWIPER_CONFIG}
-          modules={[Navigation, Pagination, Keyboard, A11y]}
+          modules={[Navigation, Pagination, Keyboard, A11y, Zoom]}
           onSwiper={(swiper) => (swiperRef.current = swiper)}
           onSlideChange={handleSlideChange}
           className="select-none bg-black w-full h-full"

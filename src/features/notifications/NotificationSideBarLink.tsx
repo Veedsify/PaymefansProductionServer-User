@@ -11,7 +11,7 @@ const NotificationSideBarLink = () => {
 
   return (
     <span>
-      <Link
+      <a
         href="/notifications"
         className="flex items-center p-2 mb-2 gap-5 transition-all duration-200 hover:bg-gray-200 dark:hover:bg-gray-900 rounded-xl"
       >
@@ -28,7 +28,7 @@ const NotificationSideBarLink = () => {
             {unreadCount > 99 ? "99+" : unreadCount}
           </span>
         )}
-      </Link>
+      </a>
     </span>
   );
 };

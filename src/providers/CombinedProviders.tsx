@@ -1,7 +1,7 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
-import type { ReactNode } from "react";
+import { Suspense, type ReactNode } from "react";
 import ConfigProvider from "@/contexts/ConfigContext";
 import GetLocationContext from "@/contexts/GetLocationContext";
 import { MessagesConversationProvider } from "@/contexts/MessageConversationContext";
@@ -10,6 +10,8 @@ import { AuthContextProvider } from "@/contexts/UserUseContext";
 import UserAccountSuspendedScreen from "@/features/user/comps/UserAccountSuspendedScreen";
 import getUserData from "@/utils/data/UserData";
 import QueryProvider from "./QueryProvider";
+import PreloaderProvider from "./PreloaderProvider";
+import Loader from "@/components/common/loaders/Loader";
 
 interface CombinedProvidersProps {
   children: ReactNode;
