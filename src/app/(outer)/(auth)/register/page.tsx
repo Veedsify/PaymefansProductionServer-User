@@ -26,7 +26,7 @@ const Register = () => {
   const { setUser, user } = useUser();
   const router = useRouter();
   const UserInputCaptured = (
-    e: ChangeEvent<HTMLInputElement | HTMLSelectElement>,
+    e: ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
     const { name, value } = e.target;
     // Update userData state using spread operator to ensure immutability:
@@ -94,7 +94,7 @@ const Register = () => {
           {
             email: user.email,
             phone: user.phone,
-          },
+          }
         );
         const data = res.data;
 
@@ -166,7 +166,7 @@ const Register = () => {
                 htmlFor="name"
                 className="text-sm font-medium text-gray-300"
               >
-                Full Name
+                Name
               </label>
               <input
                 type="text"
@@ -209,7 +209,7 @@ const Register = () => {
                   defaultValue={userData?.countryCode || ""}
                   onChange={(e) => {
                     const selected = countries.find(
-                      (c) => c.code === e.target.value,
+                      (c) => c.code === e.target.value
                     );
                     if (selected) {
                       setUserData({
