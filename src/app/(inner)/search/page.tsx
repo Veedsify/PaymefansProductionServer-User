@@ -1,12 +1,10 @@
 "use client";
-import { AnimatePresence, motion } from "framer-motion";
 import {
   Calendar,
   ExternalLink,
   Hash,
   LucideBot,
   Image as LucideImage,
-  LucideLoader,
   LucideSearch,
   MapPin,
   MessageCircle,
@@ -14,26 +12,18 @@ import {
   User,
   Verified,
 } from "lucide-react";
+import dynamic from "next/dynamic";
 import Image from "next/image";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import {
-  useCallback,
-  useEffect,
-  useState as useReactState,
-  useRef,
-  useState,
-} from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import toast from "react-hot-toast";
-import usePostComponent from "@/contexts/PostComponentPreview";
 import { useAuthContext } from "@/contexts/UserUseContext";
-import { MediaPanelMediaCard } from "@/features/media/MediaPanelImageCardOther";
-import PostComponent from "@/features/post/PostComponent";
 import type { MediaDataTypeOtherProps } from "@/types/Components";
 import axiosInstance from "@/utils/Axios";
-import followUser from "@/utils/data/update/Follow";
 import { formatDate } from "@/utils/FormatDate";
 import FormatName from "@/lib/FormatName";
+import usePostComponent from "@/contexts/PostComponentPreview";
 import LoadingSpinner from "@/components/common/loaders/LoadingSpinner";
 
 const searchFunction = async (query: string) => {
@@ -44,7 +34,7 @@ const searchFunction = async (query: string) => {
           `/search/platform?query=${query}&category=users`,
           {
             withCredentials: true,
-          },
+          }
         );
         return response.data.results;
       },
@@ -54,7 +44,7 @@ const searchFunction = async (query: string) => {
           `/search/platform?query=${query}&category=posts`,
           {
             withCredentials: true,
-          },
+          }
         );
         return response.data.results;
       },
@@ -64,7 +54,7 @@ const searchFunction = async (query: string) => {
           `/search/platform?query=${query}&category=media`,
           {
             withCredentials: true,
-          },
+          }
         );
         return response.data.results;
       },
@@ -83,183 +73,16 @@ const searchFunction = async (query: string) => {
   }
 };
 
-const ReportModal = ({
-  isOpen,
-  onClose,
-  userId,
-  username,
-}: {
-  isOpen: boolean;
-  onClose: () => void;
-  userId: number;
-  username: string;
-}) => {
-  const [reportType, setReportType] = useReactState("");
-  const [reportReason, setReportReason] = useReactState("");
-  const [isSubmitting, setIsSubmitting] = useReactState(false);
-
-  const reportTypes = [
-    "spam",
-    "harassment",
-    "inappropriate_content",
-    "fake_account",
-    "copyright_violation",
-    "other",
-  ];
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!reportType || !reportReason.trim()) {
-      toast.error("Please select a report type and provide a reason");
-      return;
-    }
-
-    setIsSubmitting(true);
-    try {
-      const response = await axiosInstance.post(
-        `/report/user`,
-        {
-          reported_id: userId,
-          report_type: reportType,
-          report: reportReason,
-        },
-        {
-          withCredentials: true,
-        },
-      );
-
-      if (response.data.success) {
-        toast.success("Report submitted successfully");
-        onClose();
-        setReportType("");
-        setReportReason("");
-      } else {
-        toast.error("Failed to submit report");
-      }
-    } catch (error) {
-      console.error("Error submitting report:", error);
-      toast.error("Failed to submit report");
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
-
-  if (!isOpen) return null;
-
-  return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[200]">
-      <div className="w-full max-w-md p-6 mx-4 bg-white dark:bg-gray-800 rounded-2xl">
-        <div className="flex items-center justify-between mb-4">
-          <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
-            Report {username}
-          </h3>
-          <button
-            onClick={onClose}
-            className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700"
-          >
-            <LucideSearch size={20} className="rotate-45" />
-          </button>
-        </div>
-
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label className="block mb-2 text-sm font-medium text-gray-700 dark:text-gray-300">
-              Report Type
-            </label>
-            <select
-              value={reportType}
-              onChange={(e) => setReportType(e.target.value)}
-              className="w-full p-3 text-gray-900 bg-white border border-gray-300 rounded-lg dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
-              required
-            >
-              <option value="">Select a reason</option>
-              {reportTypes.map((type) => (
-                <option key={type} value={type}>
-                  {type
-                    .replace(/_/g, " ")
-                    .replace(/\b\w/g, (l) => l.toUpperCase())}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          <div>
-            <label className="block mb-2 text-sm font-medium text-gray-700 dark:text-gray-300">
-              Additional Details
-            </label>
-            <textarea
-              value={reportReason}
-              onChange={(e) => setReportReason(e.target.value)}
-              placeholder="Please provide more details about this report..."
-              className="w-full p-3 text-gray-900 bg-white border border-gray-300 rounded-lg resize-none dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
-              rows={4}
-              required
-            />
-          </div>
-
-          <div className="flex pt-4 gap-3">
-            <button
-              type="button"
-              onClick={onClose}
-              className="flex-1 px-4 py-3 text-gray-700 border border-gray-300 rounded-lg dark:border-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700"
-            >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              disabled={isSubmitting}
-              className="flex items-center justify-center flex-1 px-4 py-3 text-white bg-red-600 rounded-lg hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              {isSubmitting ? <LoadingSpinner /> : "Submit Report"}
-            </button>
-          </div>
-        </form>
-      </div>
-    </div>
-  );
-};
-
-const FollowButton = ({
-  user,
-}: {
-  user: { id: number; following: boolean };
-}) => {
-  const [isFollowing, setIsFollowing] = useState(user.following);
-
-  useEffect(() => {
-    setIsFollowing(user.following);
-  }, [user.following]);
-
-  const handleFollow = async () => {
-    setIsFollowing(!isFollowing);
-    try {
-      const action = isFollowing ? "unfollow" : "follow";
-      const response = await followUser(user.id, action);
-      if (!response.status) {
-        setIsFollowing((prev) => !prev);
-        toast.error(response.message || "Failed to update follow status", {
-          id: "follow-unfollow-toast",
-        });
-      }
-    } catch (error: any) {
-      console.error("Error following/unfollowing user:", error);
-      setIsFollowing(!isFollowing);
-    }
-  };
-
-  return (
-    <button
-      onClick={handleFollow}
-      className={`w-full py-3.5 ${
-        isFollowing
-          ? "bg-transparent hover:bg-black hover:text-white text-black dark:text-white border"
-          : "bg-primary-dark-pink hover:bg-primary-text-dark-pink text-white"
-      } rounded-xl text-sm font-semibold cursor-pointer`}
-    >
-      {isFollowing ? "Unfollow" : "Follow"}
-    </button>
-  );
-};
+const ReportModal = dynamic(() => import("@/components/ReportModal"), {
+  ssr: false,
+});
+const FollowButton = dynamic(() => import("@/components/FollowButton"));
+const PostComponent = dynamic(() => import("@/features/post/PostComponent"));
+const MediaPanelMediaCard = dynamic(() =>
+  import("@/features/media/MediaPanelImageCardOther").then(
+    (mod) => mod.MediaPanelMediaCard
+  )
+);
 
 const SearchPage = () => {
   const params = useSearchParams();
@@ -282,20 +105,20 @@ const SearchPage = () => {
     username: "",
   });
   const fullScreenPreview = usePostComponent(
-    (state) => state.fullScreenPreview,
+    (state) => state.fullScreenPreview
   );
   const previewImageHandler = (
     m: MediaDataTypeOtherProps,
     type: string,
     isSubscriber: boolean,
-    indexId: number,
+    indexId: number
   ) => {
     if (m.accessible_to === "subscribers" && !isSubscriber) return;
     const filteredMedias = media
       .filter((item) => item.media_state !== "processing")
       .filter((media) => media.accessible_to !== "price")
       .filter(
-        (media) => !(media.accessible_to === "subscribers" && !isSubscriber),
+        (media) => !(media.accessible_to === "subscribers" && !isSubscriber)
       );
     // Get the new index after filtering
     const newIndexId = filteredMedias.findIndex((item) => item.id === m.id);
@@ -591,7 +414,7 @@ const SearchPage = () => {
                                     {
                                       year: "numeric",
                                       month: "long",
-                                    },
+                                    }
                                   )}
                                 </span>
                               </div>
