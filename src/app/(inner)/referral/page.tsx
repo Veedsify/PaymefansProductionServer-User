@@ -137,7 +137,7 @@ const ReferralPage = () => {
   const referralLink = fmt(
     `%s/refer?code=%s`,
     NEXT_PUBLIC_SERVER_URL as string,
-    referralCode,
+    referralCode
   );
   const totalEarnings = statsData?.totalEarnings || 0;
   const totalUsers = statsData?.totalReferrals || 0;
@@ -307,7 +307,8 @@ const ReferralPage = () => {
           <p className="text-sm text-gray-600 dark:text-gray-400">
             <strong>How it works:</strong> Share your referral code{" "}
             <strong>{referralCode}</strong> or link with friends! When they sign
-            up as a model using your code you'll earn referral points.
+            up as a model using your code you'll earn 100 paymefans points, and
+            they will get 100 points as a welcome bonus.
           </p>
         </div>
       </div>
@@ -405,7 +406,7 @@ const ReferralPage = () => {
                               month: "short",
                               day: "numeric",
                               year: "numeric",
-                            },
+                            }
                           )}
                         </p>
                       </div>
@@ -555,7 +556,7 @@ const ReferralPage = () => {
                                 month: "short",
                                 day: "numeric",
                                 year: "numeric",
-                              },
+                              }
                             )}
                           </p>
                         </div>

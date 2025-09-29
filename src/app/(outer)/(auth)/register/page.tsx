@@ -174,7 +174,7 @@ const Register = () => {
                 name="name"
                 id="name"
                 className="block w-full px-4 py-3 text-sm font-medium text-white bg-white/5 border border-white/10 rounded-xl outline-none focus:border-primary-dark-pink/50 focus:ring-2 focus:ring-primary-dark-pink/20 transition-all duration-200 backdrop-blur-sm"
-                placeholder="Enter your full name"
+                placeholder="Enter your name"
               />
             </div>
 
