@@ -208,8 +208,8 @@ const StoryPreviewComponent = ({
               key={swiperKey}
               spaceBetween={0}
               slidesPerView={1}
-              modules={[Zoom]}
               allowTouchMove={true}
+              modules={[Zoom]}
               onSwiper={(swiper) => {
                 swiperRef.current = swiper;
               }}

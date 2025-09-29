@@ -283,6 +283,7 @@ const MediaPreviewModal = memo(
           onSlideChange={handleSlideChange}
           className="select-none bg-black w-full h-full"
           keyboard={{ enabled: true }}
+          allowTouchMove={true}
           a11y={{
             prevSlideMessage: "Previous slide",
             nextSlideMessage: "Next slide",
