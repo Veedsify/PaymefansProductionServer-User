@@ -206,7 +206,7 @@ const Register = () => {
                 <select
                   className="px-3 py-3 text-sm font-medium text-white bg-white/5 border border-white/10 border-r-0 rounded-l-xl outline-none focus:border-primary-dark-pink/50 focus:ring-2 focus:ring-primary-dark-pink/20 backdrop-blur-sm"
                   style={{ maxWidth: 120 }}
-                  defaultValue={userData?.countryCode || ""}
+                  defaultValue="NG"
                   onChange={(e) => {
                     const selected = countries.find(
                       (c) => c.code === e.target.value
