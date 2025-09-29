@@ -62,7 +62,7 @@ const Header = () => {
             <Link href="/notifications" className="relative inline-block">
               <LucideBellRing stroke="#fff" size={20} />
             </Link>
-            {unreadCount >= 0 && !isLoading && (
+            {unreadCount > 0 && !isLoading && (
               <span className="absolute flex items-center justify-center -top-3 -right-3 w-5 h-5  text-xs font-bold text-white rounded-full bg-red-500 ">
                 {unreadCount > 99 ? "99+" : unreadCount}
               </span>
