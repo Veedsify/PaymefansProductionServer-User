@@ -6,7 +6,6 @@ import {
   LucideHeart,
   LucideHelpCircle,
   LucideLightbulb,
-  LucideLoader,
   LucideLogOut,
   LucideMoon,
   LucideSettings,
@@ -17,7 +16,6 @@ import {
   User,
 } from "lucide-react";
 import Image from "next/image";
-import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { useMessagesConversation } from "@/contexts/MessageConversationContext";
@@ -55,7 +53,7 @@ const SideBar = React.memo(() => {
         }`}
       >
         <div className="mt-8 mb-16 ">
-          <Link href="/" className="cursor-pointer">
+          <a href="/" className="cursor-pointer">
             <Image
               className="block h-8 w-36"
               width={150}
@@ -65,11 +63,11 @@ const SideBar = React.memo(() => {
               src="/site/logos/logo.png"
               alt="Logo"
             />
-          </Link>
+          </a>
         </div>
         <div>
           <div className="flex items-center mb-4 gap-4">
-            <Link href={"/profile"} className="cursor-pointer">
+            <a href={"/profile"} className="cursor-pointer">
               <Image
                 width={50}
                 height={50}
@@ -80,35 +78,35 @@ const SideBar = React.memo(() => {
                 className="object-cover w-12 h-12 border-2 rounded-full border-primary-dark-pink"
                 alt=""
               />
-            </Link>
+            </a>
             <div className="overflow-hidden">
               <h2 className="mb-0 text-sm font-bold leading-none">
-                <Link href="/profile" className="cursor-pointer">
+                <a href="/profile" className="cursor-pointer">
                   {user?.name ? (
                     FormatName(user.name)
                   ) : (
                     <p className="w-32 h-5 mb-1 bg-gray-300 rounded-sm animate-pulse"></p>
                   )}
-                </Link>
+                </a>
               </h2>
               <span className="text-sm text-gray-600 dark:text-white text-wrap max-w-8">
                 {!isGuest && user ? (
                   user?.username
                 ) : (
                   <span className="flex items-center mt-2">
-                    <Link
+                    <a
                       href="/login"
                       className="text-primary-dark-pink font-semibold hover:underline"
                     >
                       Login
-                    </Link>
+                    </a>
                     &nbsp;{" /"} &nbsp;
-                    <Link
+                    <a
                       href="/register"
                       className="text-primary-dark-pink font-semibold hover:underline"
                     >
                       Signup
-                    </Link>
+                    </a>
                   </span>
                 )}
               </span>
@@ -127,18 +125,18 @@ const SideBar = React.memo(() => {
                 </span>
               </div>
               <div className="flex pt-4 mb-5 gap-3 text-nowrap">
-                <Link
+                <a
                   href="/points"
                   className="p-2 px-8 text-xs font-semibold text-white bg-black rounded dark:bg-primary-dark-pink"
                 >
                   Add Funds
-                </Link>
-                <Link
+                </a>
+                <a
                   href="/wallet"
                   className="p-2 px-8 text-xs font-semibold text-black bg-white border border-gray-600 rounded dark:text-white dark:bg-gray-800 dark:border-gray-500"
                 >
                   Wallet
-                </Link>
+                </a>
               </div>
             </>
           )}
