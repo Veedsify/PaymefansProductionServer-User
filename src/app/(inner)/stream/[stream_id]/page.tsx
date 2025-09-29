@@ -18,10 +18,6 @@ const Stream = async ({
       const response = await axiosInstance({
         method: "GET",
         url: `/live/host/${stream_id}`,
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
       });
 
       if (response.status === 200) {

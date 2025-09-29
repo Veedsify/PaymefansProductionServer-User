@@ -38,12 +38,6 @@ export const automatedMessagesAPI = {
     const token = getToken();
     const response = await axiosInstance.delete(
       `/automated-messages/${messageType}`,
-      {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      },
     );
 
     return response.data;

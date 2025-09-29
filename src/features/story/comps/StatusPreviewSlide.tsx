@@ -1,13 +1,6 @@
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { AnimatePresence, motion } from "framer-motion";
-import {
-  AtSign,
-  LucideEye,
-  LucideLoader,
-  LucideSend,
-  User,
-  X,
-} from "lucide-react";
+import { LucideEye, LucideLoader, LucideSend, User, X } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
@@ -28,7 +21,6 @@ import {
 } from "@/utils/data/FetchStoryMentions";
 import { formatDate } from "@/utils/FormatDate";
 import { getSocket } from "../../../components/common/Socket";
-import VideoPlayer from "../../media/videoplayer";
 import CaptionElement from "./CaptionElement";
 import LoadingSpinner from "@/components/common/loaders/LoadingSpinner";
 import FormatName from "@/lib/FormatName";
@@ -55,7 +47,7 @@ const fetchStatusViews = async ({
     `/story/views/${media_id}${pageParam === 0 ? "" : `?cursor=${pageParam}`}`,
     {
       withCredentials: true,
-    },
+    }
   );
   if (response.status === 200) {
     const data = response.data;
@@ -364,22 +356,16 @@ const StoryReplyInput = ({ story }: { story: Story }) => {
         "/profile/user",
         { username: story.user.username },
         {
-          headers: { Authorization: `Bearer ${getToken()}` },
           withCredentials: true,
-        },
+        }
       );
       const receiverUserId = profileResponse.data.user?.user_id;
       if (!receiverUserId) {
         throw new Error("Could not find receiver user ID");
       }
-      const { data } = await axiosInstance.post(
-        "/points/price-per-message",
-        { user_id: receiverUserId },
-        {
-          headers: { Authorization: `Bearer ${getToken()}` },
-          withCredentials: true,
-        },
-      );
+      const { data } = await axiosInstance.post("/points/price-per-message", {
+        user_id: receiverUserId,
+      });
       const pricePerMessage = data.price_per_message || 0;
       const currentPoints = points || 0;
       // Check if user has enough points and show confirmation
@@ -553,7 +539,7 @@ const StatusPreviewSlide = ({
         { storyMediaId: story.media_id },
         {
           withCredentials: true,
-        },
+        }
       );
       refCounter.current++;
     }

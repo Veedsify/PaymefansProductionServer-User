@@ -16,7 +16,6 @@ export const useUser = () => {
       const response = await axiosInstance.get("/auth/retrieve", {
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
         },
       });
 

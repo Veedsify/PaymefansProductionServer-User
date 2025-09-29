@@ -42,12 +42,6 @@ export const fetchStoryMentions = async (
   try {
     const response = await axiosInstance.get(
       `/story/mentions/${storyMediaId}`,
-      {
-        headers: {
-          Authorization: `Bearer ${getToken()}`,
-        },
-        withCredentials: true,
-      },
     );
     return response.data;
   } catch (error: any) {
