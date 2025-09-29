@@ -308,9 +308,11 @@ const ReferralPage = () => {
           <p className="text-sm text-gray-600 dark:text-gray-400">
             <strong>How it works:</strong> Share your referral code{" "}
             <strong>{referralCode}</strong> or link with friends! When they sign
-            up as a model using your code you'll earn
+            up as a model using your code you'll earn{" "}
             {user?.is_model && config
-              ? config?.point_conversion_rate_ngn * 10
+              ? `${(
+                  config?.point_conversion_rate_ngn * 10
+                ).toLocaleString()} Naira`
               : "10 paymefans points"}
           </p>
         </div>
