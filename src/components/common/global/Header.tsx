@@ -6,10 +6,12 @@ import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import HeaderImgClick from "../image/HeaderImageClick";
 import HeaderTitle from "./HeaderTitle";
+import { useNotificationCount } from "@/hooks/useNotifications";
 
 const Header = () => {
   const pathname = usePathname();
   const [notification, setNotification] = useState(false);
+  const { unreadCount, isLoading } = useNotificationCount();
   const ref = useRef<HTMLUListElement>(null);
   const router = useRouter();
 
@@ -56,9 +58,16 @@ const Header = () => {
           />
         </button>
         <ul className="flex items-center ml-auto gap-6 lg:hidden">
-          <Link href="/notifications">
-            <LucideBellRing stroke="#fff" size={20} />
-          </Link>
+          <li className="relative">
+            <Link href="/notifications" className="relative inline-block">
+              <LucideBellRing stroke="#fff" size={20} />
+            </Link>
+            {unreadCount >= 0 && !isLoading && (
+              <span className="absolute flex items-center justify-center -top-3 -right-3 w-5 h-5  text-xs font-bold text-white rounded-full bg-red-500 ">
+                {unreadCount > 99 ? "99+" : unreadCount}
+              </span>
+            )}
+          </li>
           <HeaderImgClick />
         </ul>
       </div>

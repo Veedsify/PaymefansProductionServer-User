@@ -149,11 +149,14 @@ export const useNotificationCount = () => {
     queryKey: ["notifications", "unread-count"],
     queryFn: () => notificationService.getUnreadCount(),
     staleTime: 10000, // 10 seconds
+    refetchOnMount: true,
     refetchInterval: 30000, // Refetch every 30 seconds
   });
 
+  const unreadCount = unreadCountQuery.data?.count ?? 0;
+
   return {
-    unreadCount: unreadCountQuery.data?.count || 0,
+    unreadCount,
     isLoading: unreadCountQuery.isLoading,
     error: unreadCountQuery.error,
     refetch: unreadCountQuery.refetch,
