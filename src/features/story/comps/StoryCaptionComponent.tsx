@@ -805,9 +805,9 @@ const EnhancedSlideComponent = ({
     });
   };
   return (
-    <>
+    <div className="relative w-full max-h-dvh h-full flex items-center justify-center bg-black">
       {/* Top Toolbar - Separate Layer */}
-      <div className="absolute top-0 left-0 right-0 z-[100] flex items-center justify-between w-full px-4 py-3 border-b  bg-white/10 border-white/20">
+      <div className="absolute top-0 left-0 right-0 z-[100] flex items-center justify-between w-full px-4 py-3 border-b  bg-black/80 border-white/20">
         <div className="flex items-center gap-2">
           <button
             onClick={handleClearStory}
@@ -1169,7 +1169,7 @@ const EnhancedSlideComponent = ({
           </div>
         )}
       </div>
-    </>
+    </div>
   );
 };
 
