@@ -14,12 +14,6 @@ export const createNewConversation = async ({
       userId,
       profileId,
     },
-    {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${document.cookie.split("token=")[1].split(";")[0]}`,
-      },
-    },
   );
   if (response) {
     return response;
