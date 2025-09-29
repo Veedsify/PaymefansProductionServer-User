@@ -407,7 +407,7 @@ const VideoPlayer = ({
                         toggleMute();
                         e.stopPropagation();
                       }}
-                      className="bg-black hover:bg-black/90 p-3 rounded-full shadow-lg flex items-center justify-center border border-gray-700"
+                      className="bg-transparent hover:bg-black/90 p-3 rounded-full shadow-lg flex items-center justify-center "
                       aria-label={isMuted ? "Unmute" : "Mute"}
                     >
                       {isMuted || volume === 0 ? (
@@ -436,7 +436,7 @@ const VideoPlayer = ({
                       togglePlay();
                     }}
                     className={cn(
-                      "flex items-center justify-center p-3 rounded-full shadow-lg transform outline outline-gray-700 bg-black/30 hover:bg-black/90 hover:scale-110 aspect-square"
+                      "flex items-center justify-center p-3 rounded-full shadow-lg transform  bg-transparent hover:bg-black/90 hover:scale-110 aspect-square"
                     )}
                     aria-label={isPlaying ? "Pause" : "Play"}
                     disabled={isLoading}
@@ -457,7 +457,7 @@ const VideoPlayer = ({
                       setShowResolutionMenu(!showResolutionMenu);
                       e.stopPropagation();
                     }}
-                    className="bg-black/30 hover:bg-black/90 p-3 rounded-full shadow-lg flex items-center justify-center border border-gray-700"
+                    className="bg-transparent hover:bg-black/90 p-3 rounded-full shadow-lg flex items-center justify-center "
                     aria-label="Video quality"
                     disabled={isLoading}
                   >
@@ -467,7 +467,7 @@ const VideoPlayer = ({
                   {/* Fullscreen button */}
                   <button
                     onClick={toggleFullscreen}
-                    className="bg-black/30 hover:bg-black/90 p-3 rounded-full shadow-lg flex items-center justify-center border border-gray-700"
+                    className="bg-transparent hover:bg-black/90 p-3 rounded-full shadow-lg flex items-center justify-center "
                     aria-label="Toggle fullscreen"
                     disabled={isLoading}
                   >
@@ -478,7 +478,7 @@ const VideoPlayer = ({
 
               {/* Resolution menu popup */}
               {showResolutionMenu && (
-                <div className="absolute right-16 bottom-28 bg-black border border-gray-700 rounded-lg py-2 px-2 shadow-2xl z-30 min-w-[120px] animate-fade-in">
+                <div className="absolute right-16 bottom-28 bg-black  rounded-lg py-2 px-2 shadow-2xl z-30 min-w-[120px] animate-fade-in">
                   <div className="px-2 pb-1 mb-1 text-xs font-semibold tracking-wide text-gray-300 border-b border-gray-700">
                     Resolution
                   </div>
