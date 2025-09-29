@@ -29,7 +29,7 @@ export default function CreateConversationButton({
           router.push(`/chats/${res.data.conversation_id}`);
           setLoading(false);
         } else {
-          toast.error("sorry you cant message this user at the moment");
+          toast.error("Sorry you cant message this user at the moment");
           setLoading(false);
         }
       } catch (err) {
