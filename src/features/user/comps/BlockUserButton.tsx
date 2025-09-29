@@ -8,6 +8,7 @@ import {
   checkBlockStatus,
   unblockUser,
 } from "@/utils/data/BlockUser";
+import { cn } from "@/components/ui/cn";
 
 interface BlockUserButtonProps {
   userId: number | undefined;
@@ -104,11 +105,13 @@ const BlockUserButton: React.FC<BlockUserButtonProps> = ({
     <button
       onClick={handleBlockToggle}
       disabled={isLoading}
-      className={`flex items-center justify-center cursor-pointer px-3 py-1 rounded-md border text-sm font-medium transition-colors w-full ${
+      className={cn(
+        "flex items-center justify-center cursor-pointer px-3 py-1 rounded-md border text-sm font-medium transition-colors w-full text-nowrap disabled:opacity-50 disabled:cursor-not-allowed",
         isBlocked
           ? "border-green-300 text-green-700 bg-green-50 hover:bg-green-100 dark:border-green-600 dark:text-green-400 dark:bg-green-900/20 dark:hover:bg-green-900/30"
-          : "border-red-300 text-red-700 bg-red-50 hover:bg-red-100 dark:border-red-600 dark:text-red-400 dark:bg-red-900/20 dark:hover:bg-red-900/30"
-      } disabled:opacity-50 disabled:cursor-not-allowed ${className}`}
+          : "border-red-300 text-red-700 bg-red-50 hover:bg-red-100 dark:border-red-600 dark:text-red-400 dark:bg-red-900/20 dark:hover:bg-red-900/30",
+        className
+      )}
       title={isBlocked ? `Unblock ${userName}` : `Block ${userName}`}
     >
       {isLoading ? (

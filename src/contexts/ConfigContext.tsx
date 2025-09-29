@@ -9,6 +9,7 @@ import {
   useState,
 } from "react";
 import ROUTE from "@/config/routes";
+import axiosInstance from "@/utils/Axios";
 
 type Configs = {
   id: number;
@@ -93,12 +94,10 @@ export default function ConfigProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     async function fetchConfigs() {
       try {
-        const response = await fetch(ROUTE.GET_SYSTEM_CONFIGS);
-        const data = await response.json();
-        setConfig(data.data);
+        const response = await axiosInstance(ROUTE.GET_SYSTEM_CONFIGS);
+        setConfig(response.data.data);
       } catch (error: any) {
-        router.push("/error?error=fetch_configs");
-        throw new Error("Error fetching configs: " + error.message);
+        console.error("Error fetching configs:", error);
       }
     }
 
@@ -109,7 +108,7 @@ export default function ConfigProvider({ children }: { children: ReactNode }) {
     (config: Configs) => {
       setConfig(config);
     },
-    [setConfig],
+    [setConfig]
   );
 
   const value = {

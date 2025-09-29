@@ -23,7 +23,7 @@ const MoreProfileOptions = ({
   const copyProfileLink = () => {
     const link = `${process.env.NEXT_PUBLIC_SERVER_URL}/${user.username.replace(
       "@",
-      "",
+      ""
     )}`;
     navigator.clipboard.writeText(link);
     toast.success("Link copied to clipboard");
@@ -61,7 +61,7 @@ const MoreProfileOptions = ({
       {/* More options button */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className={` cursor-pointer
+        className={` cursor-pointer text-nowrap
           flex items-center justify-center w-5 h-5 rounded-full
           transition-all duration-200 ease-in-out
           hover:bg-gray-100 dark:hover:bg-gray-800
@@ -124,9 +124,7 @@ const MoreProfileOptions = ({
               <div className="w-full">
                 <button
                   onClick={copyProfileLink}
-                  className="flex items-center justify-center px-3 py-1 text-sm text-white bg-black  dark:text-gray-300 dark:hover:bg-gray-800
-                  rounded-md transition-colors duration-150 cursor-pointer
-                  gap-3 text-center text-nowrap
+                  className="flex items-center justify-center px-3 py-1 text-sm text-white bg-black  dark:text-gray-300 dark:hover:bg-gray-800 rounded-md transition-colors duration-150 cursor-pointer gap-3 text-center text-nowrap 
                   "
                 >
                   <ProfileLink size={14} /> Copy Profile Link
@@ -135,14 +133,10 @@ const MoreProfileOptions = ({
               {/* Add more menu items here if needed */}
               {authUserId !== user.id && (
                 <>
-                  <div className="w-full mx-3 my-1 bg-gray-200  dark:bg-gray-700" />
+                  <div className="w-full mx-3 my-1  bg-gray-200  dark:bg-gray-700" />
                   <Link
                     href=""
-                    className="flex items-center justify-center w-full px-3 py-1 text-sm bg-red-500 
-  dark:text-gray-300 dark:hover:bg-red-500
- rounded-md transition-colors duration-150 text-white
- gap-3 text-center
-"
+                    className="flex items-center justify-center w-full px-3 py-1 text-sm bg-red-500 dark:text-gray-300 dark:hover:bg-red-500 text-nowrap rounded-md transition-colors duration-150 text-white gap-3 text-center"
                   >
                     <Ban size={14} />
                     Report User

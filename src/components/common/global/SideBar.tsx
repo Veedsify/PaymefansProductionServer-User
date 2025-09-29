@@ -149,10 +149,12 @@ const SideBar = React.memo(() => {
                 <Link
                   href="/profile"
                   className="flex items-center p-2 mb-2 gap-5 transition-all duration-200 hover:bg-gray-200 dark:hover:bg-gray-900 active:bg-gray-200 dark:active:bg-gray-900 rounded-xl"
+                  replace
                 >
                   <User
                     className={cn("h-6 md:h-6", {
-                      "stroke-black": !pathname.startsWith("/profile"),
+                      "stroke-black dark:stroke-white":
+                        !pathname.startsWith("/profile"),
                       "stroke-primary-dark-pink":
                         pathname.startsWith("/profile"),
                     })}
@@ -165,15 +167,18 @@ const SideBar = React.memo(() => {
                 >
                   <MessageCircle
                     className={cn("h-6 md:h-6", {
-                      "stroke-black": !pathname.startsWith("/messages"),
+                      "stroke-black dark:stroke-white":
+                        !pathname.startsWith("/messages"),
                       "stroke-primary-dark-pink":
                         pathname.startsWith("/messages"),
                     })}
                   />
                   <p>Messages</p>
-                  <span className="flex items-center justify-center w-6 h-6 p-0 ml-auto text-xs font-bold text-white rounded-full bg-red-600">
-                    {unreadCount > 99 ? "99+" : unreadCount}
-                  </span>
+                  {unreadCount !== undefined && unreadCount > 0 && (
+                    <span className="flex items-center justify-center w-6 h-6 p-0 ml-auto text-xs font-bold text-white rounded-full bg-red-600">
+                      {unreadCount > 99 ? "99+" : unreadCount}
+                    </span>
+                  )}
                 </Link>
                 <Link
                   href="/hookup"
@@ -181,7 +186,8 @@ const SideBar = React.memo(() => {
                 >
                   <LucideHeart
                     className={cn("h-6 md:h-6", {
-                      "stroke-black": !pathname.startsWith("/hookup"),
+                      "stroke-black dark:stroke-white":
+                        !pathname.startsWith("/hookup"),
                       "stroke-primary-dark-pink":
                         pathname.startsWith("/hookup"),
                     })}
@@ -204,7 +210,8 @@ const SideBar = React.memo(() => {
                   >
                     <LucideGroup
                       className={cn("h-6 md:h-6", {
-                        "stroke-black": !pathname.startsWith("/groups"),
+                        "stroke-black dark:stroke-white":
+                          !pathname.startsWith("/groups"),
                         "stroke-primary-dark-pink":
                           pathname.startsWith("/groups"),
                       })}
@@ -220,7 +227,8 @@ const SideBar = React.memo(() => {
                   >
                     <LucideShieldCheck
                       className={cn("h-6 md:h-6", {
-                        "stroke-black": !pathname.startsWith("/verification"),
+                        "stroke-black dark:stroke-white":
+                          !pathname.startsWith("/verification"),
                         "stroke-primary-dark-pink":
                           pathname.startsWith("/verification"),
                       })}
@@ -235,7 +243,7 @@ const SideBar = React.memo(() => {
                   >
                     <LucideUserPlus
                       className={cn("h-6 md:h-6", {
-                        "stroke-black":
+                        "stroke-black dark:stroke-white":
                           !pathname.startsWith("/models/benefits"),
                         "stroke-primary-dark-pink":
                           pathname.startsWith("/models/benefits"),
@@ -253,7 +261,8 @@ const SideBar = React.memo(() => {
             >
               <LucideHelpCircle
                 className={cn("h-6 md:h-6", {
-                  "stroke-black": !pathname.startsWith("/help"),
+                  "stroke-black dark:stroke-white":
+                    !pathname.startsWith("/help"),
                   "stroke-primary-dark-pink": pathname.startsWith("/help"),
                 })}
               />
@@ -267,7 +276,8 @@ const SideBar = React.memo(() => {
                 >
                   <LucideUserPlus
                     className={cn("h-6 md:h-6", {
-                      "stroke-black": !pathname.startsWith("/referral"),
+                      "stroke-black dark:stroke-white":
+                        !pathname.startsWith("/referral"),
                       "stroke-primary-dark-pink":
                         pathname.startsWith("/referral"),
                     })}
@@ -280,7 +290,8 @@ const SideBar = React.memo(() => {
                 >
                   <LucideSettings
                     className={cn("h-6 md:h-6", {
-                      "stroke-black": !pathname.startsWith("/settings"),
+                      "stroke-black dark:stroke-white":
+                        !pathname.startsWith("/settings"),
                       "stroke-primary-dark-pink":
                         pathname.startsWith("/settings"),
                     })}

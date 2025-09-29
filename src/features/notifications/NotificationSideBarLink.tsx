@@ -17,12 +17,13 @@ const NotificationSideBarLink = () => {
       >
         <LucideBell
           className={cn("h-6 md:h-6", {
-            "stroke-black": !pathname.startsWith("/notifications"),
+            "stroke-black dark:stroke-white":
+              !pathname.startsWith("/notifications"),
             "stroke-primary-dark-pink": pathname.startsWith("/notifications"),
           })}
         />
         <p>Notifications</p>
-        {!isLoading && (
+        {!isLoading && unreadCount > 0 && (
           <span className="flex items-center justify-center w-6 h-6 p-0 ml-auto text-xs font-bold text-white rounded-full bg-red-600">
             {unreadCount > 99 ? "99+" : unreadCount}
           </span>
