@@ -91,10 +91,10 @@ const CustomSeekBar: React.FC<SeekBarProps> = ({
       aria-valuemax={duration}
     >
       {/* Track background */}
-      <div className="absolute w-full h-1.5 bg-gray-700 rounded-full overflow-hidden">
+      <div className="absolute w-full h-[2px] bg-gray-700 rounded-full overflow-hidden">
         {/* Progress Fill */}
         <div
-          className={`absolute top-0 left-0 h-full rounded-full bg-gradient-to-r from-purple-500 to-indigo-600 ${
+          className={`absolute top-0 left-0 h-full rounded-full bg-white ${
             isBuffering ? "opacity-70 animate-pulse" : "opacity-100"
           }`}
           style={{
@@ -102,6 +102,7 @@ const CustomSeekBar: React.FC<SeekBarProps> = ({
             transition: isDragging
               ? "none"
               : "width 0.18s cubic-bezier(0.4,0,0.2,1)",
+            willChange: "width",
           }}
         ></div>
       </div>

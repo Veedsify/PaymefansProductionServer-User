@@ -1,3 +1,4 @@
+import { cn } from "@/components/ui/cn";
 import { motion } from "framer-motion";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import React, { memo } from "react";
@@ -19,9 +20,12 @@ const NavigationButton = memo(
     disabled,
   }: NavigationButtonProps) => (
     <motion.button
-      className={`${className} absolute z-10 -translate-y-1/2 rounded-full bg-black/70 backdrop-blur-sm p-2 md:p-3 text-white transition-colors duration-200 hover:bg-black/90 focus:outline-none focus:ring-2 focus:ring-white/50 ${
-        disabled ? "opacity-30 cursor-not-allowed" : "hover:scale-110"
-      }`}
+      className={cn(
+        className,
+        "absolute z-10 -translate-y-1/2 rounded-full text-white transition-colors duration-200",
+        disabled && "md:opacity-30 cursor-not-allowed",
+        "p-24 opacity-0 md:opacity-100 md:p-4 md:bg-black/70",
+      )}
       aria-label={ariaLabel}
       onClick={onClick}
       disabled={disabled}
@@ -35,7 +39,7 @@ const NavigationButton = memo(
         <ChevronRight className="w-4 h-4 md:w-5 md:h-5" />
       )}
     </motion.button>
-  ),
+  )
 );
 
 NavigationButton.displayName = "NavigationButton";
