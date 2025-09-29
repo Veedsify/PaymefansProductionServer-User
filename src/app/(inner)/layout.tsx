@@ -51,10 +51,7 @@ export default async function RootLayout({
         <link rel="manifest" href="/webmanifest.json" />
         <meta name="theme-color" content="#000000" />
         <meta charSet="utf-8" />
-        <meta
-          name="viewport"
-          content="width=device-width, initial-scale=1, user-scalable=no, viewport-fit=cover"
-        />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
         <meta name="mobile-web-app-capable" content="yes" />
         <meta
           name="apple-mobile-web-app-status-bar-style"
