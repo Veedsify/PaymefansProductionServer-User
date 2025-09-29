@@ -329,7 +329,7 @@ const VideoPlayer = ({
             {isSingle && (
               <button
                 onClick={toggleMute}
-                className="p-2 rounded-full bg-black/50 hover:bg-black/70"
+                className="p-2 rounded-full bg-black/50 hover:bg-black/30"
                 aria-label={isMuted ? "Unmute" : "Mute"}
               >
                 {isMuted || volume === 0 ? (
@@ -384,7 +384,7 @@ const VideoPlayer = ({
                 <div
                   className={cn(
                     controlsVisible
-                      ? "bottom-[17%] md:bottom-[15%]"
+                      ? "bottom-[20%] md:bottom-[15%]"
                       : "bottom-[5%]",
                     `absolute left-4 z-20 flex items-center duration-300`
                   )}
@@ -436,7 +436,7 @@ const VideoPlayer = ({
                       togglePlay();
                     }}
                     className={cn(
-                      "flex items-center justify-center p-3 rounded-full shadow-lg transform outline outline-gray-700 bg-black/70 hover:bg-black/90 hover:scale-110 aspect-square"
+                      "flex items-center justify-center p-3 rounded-full shadow-lg transform outline outline-gray-700 bg-black/30 hover:bg-black/90 hover:scale-110 aspect-square"
                     )}
                     aria-label={isPlaying ? "Pause" : "Play"}
                     disabled={isLoading}
@@ -457,7 +457,7 @@ const VideoPlayer = ({
                       setShowResolutionMenu(!showResolutionMenu);
                       e.stopPropagation();
                     }}
-                    className="bg-black hover:bg-black/90 p-3 rounded-full shadow-lg flex items-center justify-center border border-gray-700"
+                    className="bg-black/30 hover:bg-black/90 p-3 rounded-full shadow-lg flex items-center justify-center border border-gray-700"
                     aria-label="Video quality"
                     disabled={isLoading}
                   >
@@ -467,7 +467,7 @@ const VideoPlayer = ({
                   {/* Fullscreen button */}
                   <button
                     onClick={toggleFullscreen}
-                    className="bg-black/70 hover:bg-black/90 p-3 rounded-full shadow-lg flex items-center justify-center border border-gray-700"
+                    className="bg-black/30 hover:bg-black/90 p-3 rounded-full shadow-lg flex items-center justify-center border border-gray-700"
                     aria-label="Toggle fullscreen"
                     disabled={isLoading}
                   >
