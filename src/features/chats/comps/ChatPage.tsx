@@ -17,17 +17,21 @@ import { useChatStore } from "@/contexts/ChatContext";
 import { useAuthContext } from "@/contexts/UserUseContext";
 import type { Message } from "@/types/Components";
 import axiosInstance from "@/utils/Axios";
-import { getToken } from "@/utils/Cookie";
 import { checkIfBlockedBy } from "@/utils/data/BlockUser";
 import {
   fetchConversationReceiver,
   GetConversationMessages,
 } from "@/utils/data/GetConversationMessages";
 import { getSocket } from "../../../components/common/Socket";
-import ActiveProfileTag from "../../profile/ActiveProfileTag";
-import MessageBubble from "./MessageBubble";
-import MessageInputComponent from "./MessageInputComponent";
-import LoadingSpinner from "@/components/common/loaders/LoadingSpinner";
+import dynamic from "next/dynamic";
+const ActiveProfileTag = dynamic(
+  () => import("../../profile/ActiveProfileTag")
+);
+const MessageBubble = dynamic(() => import("./MessageBubble"));
+const MessageInputComponent = dynamic(() => import("./MessageInputComponent"));
+const LoadingSpinner = dynamic(
+  () => import("@/components/common/loaders/LoadingSpinner")
+);
 import FormatName from "@/lib/FormatName";
 
 const ChatPage = ({ conversationId }: { conversationId: string }) => {
