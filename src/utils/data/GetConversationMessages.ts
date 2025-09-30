@@ -13,9 +13,6 @@ export const fetchConversationReceiver = async ({
   try {
     const response = await axiosInstance(
       `/conversations/receiver/${conversationId}`,
-      {
-        withCredentials: true,
-      },
     );
 
     if (response.data.error) {
@@ -44,9 +41,6 @@ export const GetConversationMessages = async ({
     }
     const response = await axiosInstance(
       `/conversations/messages/${conversationId}?${pageQuery.toString()}`,
-      {
-        withCredentials: true,
-      },
     );
 
     if (response.data.error) {

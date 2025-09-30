@@ -61,9 +61,6 @@ const ConversationSettingsPage = () => {
       try {
         const response = await axiosInstance.get(
           `/conversations/receiver/${conversationId}`,
-          {
-            withCredentials: true,
-          },
         );
 
         const data = response.data;
@@ -102,9 +99,6 @@ const ConversationSettingsPage = () => {
     try {
       const response = await axiosInstance.get(
         `/conversations/free-message-status/${conversationId}`,
-        {
-          withCredentials: true,
-        },
       );
 
       const data = response.data;
@@ -129,9 +123,6 @@ const ConversationSettingsPage = () => {
         {
           conversationId,
           enable: !freeMessageStatus.userEnabled,
-        },
-        {
-          withCredentials: true,
         },
       );
 

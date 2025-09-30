@@ -39,17 +39,11 @@ const ReportModal = ({
 
     setIsSubmitting(true);
     try {
-      const response = await axiosInstance.post(
-        `/report/user`,
-        {
-          reported_id: userId,
-          report_type: reportType,
-          report: reportReason,
-        },
-        {
-          withCredentials: true,
-        }
-      );
+      const response = await axiosInstance.post(`/report/user`, {
+        reported_id: userId,
+        report_type: reportType,
+        report: reportReason,
+      });
 
       if (response.data.success) {
         toast.success("Report submitted successfully");

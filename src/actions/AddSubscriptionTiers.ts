@@ -9,9 +9,6 @@ export default async function AddSubscriptionTiers({
     const saveSubscriptions = await axiosInstance.post(
       `/subscribers/create/subscription-tiers`,
       { tiers },
-      {
-        withCredentials: true,
-      },
     );
     if (saveSubscriptions.status !== 200)
       return {

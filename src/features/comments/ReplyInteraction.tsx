@@ -42,15 +42,9 @@ const ReplyInteractions = ({
       if (viewTracked) return;
 
       try {
-        const response = await axiosInstance.post(
-          `/comments/view`,
-          {
-            commentId,
-          },
-          {
-            withCredentials: true,
-          },
-        );
+        const response = await axiosInstance.post(`/comments/view`, {
+          commentId,
+        });
 
         const data = response.data;
         if (data.status) {
@@ -91,15 +85,9 @@ const ReplyInteractions = ({
     setIsLoading(true);
 
     try {
-      const response = await axiosInstance.post(
-        `/comments/like`,
-        {
-          commentId,
-        },
-        {
-          withCredentials: true,
-        },
-      );
+      const response = await axiosInstance.post(`/comments/like`, {
+        commentId,
+      });
 
       const data = response.data;
       if (!data.status) {

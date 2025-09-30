@@ -89,7 +89,6 @@ const WithdrawConfigPage = () => {
       const response = await axiosInstance({
         url: `/withdraw/confirm`,
         method: "POST",
-        withCredentials: true,
         data: {
           userId: user?.id,
           pin,

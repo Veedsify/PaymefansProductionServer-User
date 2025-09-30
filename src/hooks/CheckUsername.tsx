@@ -24,13 +24,7 @@ const useCheckUsername = (
         setCanSave(true);
         setMessage("");
         const api = `/settings/check-username?username=${usernameCheck}`;
-        const response = await axiosInstance.post(
-          api,
-          {},
-          {
-            withCredentials: true,
-          },
-        );
+        const response = await axiosInstance.post(api, {});
         if (!response.data.error) {
           setError(false);
           setMessage(response.data.message);

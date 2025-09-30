@@ -25,13 +25,7 @@ const WalletPage = () => {
   const { data: points } = useQuery({
     queryKey: ["points"],
     queryFn: async () => {
-      const response = await axiosInstance.post(
-        `/auth/points`,
-        {},
-        {
-          withCredentials: true,
-        },
-      );
+      const response = await axiosInstance.post(`/auth/points`, {});
       return response.data.points;
     },
     enabled: true,

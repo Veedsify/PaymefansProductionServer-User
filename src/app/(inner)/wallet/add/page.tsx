@@ -99,20 +99,14 @@ const WalletAddBank = () => {
     )?.name;
 
     try {
-      const response = await axiosInstance.put(
-        `/wallet/banks/add`,
-        {
-          accountNumber,
-          bankCode: selectedBank,
-          accountName: name,
-          country,
-          bankType,
-          otherDetails: banks.find((bank) => bank.code === selectedBank),
-        },
-        {
-          withCredentials: true,
-        },
-      );
+      const response = await axiosInstance.put(`/wallet/banks/add`, {
+        accountNumber,
+        bankCode: selectedBank,
+        accountName: name,
+        country,
+        bankType,
+        otherDetails: banks.find((bank) => bank.code === selectedBank),
+      });
 
       const data = response.data;
       if (data.status === true) {

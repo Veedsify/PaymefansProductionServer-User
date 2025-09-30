@@ -97,9 +97,7 @@ export const AuthContextProvider = ({
     setIsLoading(true);
 
     try {
-      const res = await axiosInstance.get(`/auth/retrieve`, {
-        withCredentials: true,
-      });
+      const res = await axiosInstance.get(`/auth/retrieve`);
 
       const user = res.data && (res.data.user as AuthUserProps);
       if (user) {

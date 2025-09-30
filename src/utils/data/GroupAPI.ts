@@ -140,18 +140,14 @@ interface GroupMembersResponse {
 }
 
 export const getMainGroup = async (): Promise<{ groups: Group }> => {
-  const response = await axiosInstance.get(`/groups/main-group`, {
-    withCredentials: true,
-  });
+  const response = await axiosInstance.get(`/groups/main-group`);
   return response.data.data;
 };
 
 // Fetch group data by ID
 export const fetchGroupData = async (groupId: number): Promise<GroupData> => {
   try {
-    const response = await axiosInstance.get(`/groups/${groupId}`, {
-      withCredentials: true,
-    });
+    const response = await axiosInstance.get(`/groups/${groupId}`);
     return response.data.data;
   } catch (error: any) {
     // Check if the error indicates the user is blocked
@@ -172,9 +168,7 @@ export const fetchGroupData = async (groupId: number): Promise<GroupData> => {
 // Fetch user's groups
 export const fetchUserGroups = async (): Promise<GroupsResponse> => {
   try {
-    const response = await axiosInstance.get("/groups/my-groups", {
-      withCredentials: true,
-    });
+    const response = await axiosInstance.get("/groups/my-groups");
 
     if (!response.data) {
       throw new Error("No data received from server");
@@ -221,7 +215,6 @@ export const fetchGroupMessages = async (
 
   const response = await axiosInstance.get(`/groups/${groupId}/messages`, {
     params,
-    withCredentials: true,
   });
   return response.data;
 };
@@ -251,9 +244,7 @@ export const checkUserBlockedStatus = async (
   groupId: number,
 ): Promise<{ success: boolean; data: { isBlocked: boolean } }> => {
   try {
-    const response = await axiosInstance.get(`/groups/${groupId}/is-blocked`, {
-      withCredentials: true,
-    });
+    const response = await axiosInstance.get(`/groups/${groupId}/is-blocked`);
     return response.data;
   } catch (error: any) {
     // If the endpoint doesn't exist or returns 404, assume not blocked
@@ -310,13 +301,7 @@ export const joinGroup = async (groupId: number): Promise<any> => {
 
 // Leave a group
 const leaveGroup = async (groupId: string): Promise<any> => {
-  const response = await axiosInstance.post(
-    `/groups/${groupId}/leave`,
-    {},
-    {
-      withCredentials: true,
-    },
-  );
+  const response = await axiosInstance.post(`/groups/${groupId}/leave`, {});
   return response.data;
 };
 
@@ -331,9 +316,6 @@ const uploadGroupAttachment = async (files: File[]): Promise<any> => {
   const response = await axiosInstance.post(
     "/groups/upload-attachment",
     formData,
-    {
-      withCredentials: true,
-    },
   );
 
   return response.data;

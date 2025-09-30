@@ -58,9 +58,6 @@ const Subscribe = () => {
         const response = await axiosInstance.post(
           `/subscribers/subscription-data/${params.user_id}`,
           {},
-          {
-            withCredentials: true,
-          },
         );
         console.log(response.data);
         if (response.data.status === false) {

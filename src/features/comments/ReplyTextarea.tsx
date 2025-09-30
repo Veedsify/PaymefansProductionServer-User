@@ -266,7 +266,6 @@ const ReplyPostComponent = ({ options, isReply }: ReplyPostProps) => {
             );
           }
         },
-        withCredentials: true,
       });
       const { status, error, data } = res.data;
 

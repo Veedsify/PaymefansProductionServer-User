@@ -32,9 +32,6 @@ const searchFunction = async (query: string) => {
       async () => {
         const response = await axiosInstance.get(
           `/search/platform?query=${query}&category=users`,
-          {
-            withCredentials: true,
-          }
         );
         return response.data.results;
       },
@@ -42,9 +39,6 @@ const searchFunction = async (query: string) => {
       async () => {
         const response = await axiosInstance.get(
           `/search/platform?query=${query}&category=posts`,
-          {
-            withCredentials: true,
-          }
         );
         return response.data.results;
       },
@@ -52,9 +46,6 @@ const searchFunction = async (query: string) => {
       async () => {
         const response = await axiosInstance.get(
           `/search/platform?query=${query}&category=media`,
-          {
-            withCredentials: true,
-          }
         );
         return response.data.results;
       },
@@ -80,8 +71,8 @@ const FollowButton = dynamic(() => import("@/components/FollowButton"));
 const PostComponent = dynamic(() => import("@/features/post/PostComponent"));
 const MediaPanelMediaCard = dynamic(() =>
   import("@/features/media/MediaPanelImageCardOther").then(
-    (mod) => mod.MediaPanelMediaCard
-  )
+    (mod) => mod.MediaPanelMediaCard,
+  ),
 );
 
 const SearchPage = () => {
@@ -105,20 +96,20 @@ const SearchPage = () => {
     username: "",
   });
   const fullScreenPreview = usePostComponent(
-    (state) => state.fullScreenPreview
+    (state) => state.fullScreenPreview,
   );
   const previewImageHandler = (
     m: MediaDataTypeOtherProps,
     type: string,
     isSubscriber: boolean,
-    indexId: number
+    indexId: number,
   ) => {
     if (m.accessible_to === "subscribers" && !isSubscriber) return;
     const filteredMedias = media
       .filter((item) => item.media_state !== "processing")
       .filter((media) => media.accessible_to !== "price")
       .filter(
-        (media) => !(media.accessible_to === "subscribers" && !isSubscriber)
+        (media) => !(media.accessible_to === "subscribers" && !isSubscriber),
       );
     // Get the new index after filtering
     const newIndexId = filteredMedias.findIndex((item) => item.id === m.id);
@@ -215,7 +206,7 @@ const SearchPage = () => {
         {/* Search Bar */}
         <div className="sticky top-0 z-20 py-6 -mx-2 bg-white/95 backdrop-blur-sm dark:bg-black/95">
           <div className="relative mx-auto max-w-2xl">
-            <div className="relative overflow-hidden bg-white border rounded-xl shadow-sm dark:bg-black dark:border-gray-700  transition-all duration-300 border-black/20">
+            <div className="relative overflow-hidden bg-white border rounded-md shadow-sm dark:bg-black dark:border-gray-700  transition-all duration-300 border-black/20">
               <input
                 ref={ref}
                 type="text"
@@ -235,7 +226,7 @@ const SearchPage = () => {
                 onClick={HandleSearch}
                 className="absolute p-3 text-gray-400 rounded-lg right-4 top-1/2 transform -translate-y-1/2 hover:text-primary-dark-pink hover:bg-primary-dark-pink/10 dark:hover:bg-primary-dark-pink/20 transition-all duration-200"
               >
-                <LucideSearch size={18} />
+                <LucideSearch size={24} />
               </button>
             </div>
           </div>
@@ -255,7 +246,7 @@ const SearchPage = () => {
                       className={`flex items-center px-6 py-3 rounded-lg text-sm font-medium shadow-sm transition-all duration-200 cursor-pointer
                         ${
                           activeTab === tab.id
-                            ? "bg-primary-dark-pink text-white shadow-lg shadow-primary-dark-pink/25"
+                            ? "bg-primary-dark-pink text-white border"
                             : "bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 hover:shadow-md"
                         }`}
                     >
@@ -313,15 +304,15 @@ const SearchPage = () => {
                         {users.map((user, index) => (
                           <div
                             key={user.id}
-                            className="overflow-hidden bg-white border border-gray-100 dark:bg-gray-800 rounded-2xl shadow-sm hover:shadow-xl transition-all duration-300 dark:border-gray-700"
+                            className="overflow-hidden bg-white border border-gray-300 dark:bg-gray-800 rounded-lg  transition-all duration-300 dark:border-gray-700"
                           >
                             <div className="relative h-36">
                               <Image
                                 width={800}
-                                height={300}
+                                height={144}
                                 src={user.profile_banner}
                                 alt="Cover"
-                                className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-300"
+                                className="object-cover w-full max-h-36 inline-block transition-transform duration-300"
                               />
                               <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent"></div>
                               <div className="absolute -bottom-10 left-6">
@@ -414,7 +405,7 @@ const SearchPage = () => {
                                     {
                                       year: "numeric",
                                       month: "long",
-                                    }
+                                    },
                                   )}
                                 </span>
                               </div>
@@ -617,13 +608,13 @@ const SearchPage = () => {
                 creators and discover amazing content.
               </p>
               <div className="flex flex-wrap justify-center text-sm gap-2">
-                <span className="px-4 py-2 font-medium rounded-full bg-primary-dark-pink/10 text-primary-dark-pink">
+                <span className="px-4 py-2 font-medium rounded-xl bg-primary-dark-pink/10 text-primary-dark-pink">
                   People
                 </span>
-                <span className="px-4 py-2 font-medium rounded-full bg-primary-dark-pink/10 text-primary-dark-pink">
+                <span className="px-4 py-2 font-medium rounded-xl bg-primary-dark-pink/10 text-primary-dark-pink">
                   Posts
                 </span>
-                <span className="px-4 py-2 font-medium rounded-full bg-primary-dark-pink/10 text-primary-dark-pink">
+                <span className="px-4 py-2 font-medium rounded-xl bg-primary-dark-pink/10 text-primary-dark-pink">
                   Media
                 </span>
               </div>

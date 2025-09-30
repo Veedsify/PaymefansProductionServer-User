@@ -70,9 +70,6 @@ class ModelsService {
 
       const response = await axiosInstance.get(
         `/hookup/nearby?${queryParams.toString()}`,
-        {
-          withCredentials: true,
-        },
       );
 
       if (response.data?.error) {
@@ -129,15 +126,9 @@ class ModelsService {
   // Get all models for models page
   async fetchAllModels(): Promise<any[]> {
     try {
-      const response = await axiosInstance.post(
-        "/models/all",
-        {
-          limit: 50, // Get more models for the full page
-        },
-        {
-          withCredentials: true,
-        },
-      );
+      const response = await axiosInstance.post("/models/all", {
+        limit: 50, // Get more models for the full page
+      });
 
       if (response.data?.error) {
         throw new Error(response.data.message || "Failed to fetch all models");

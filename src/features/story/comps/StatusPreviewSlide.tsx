@@ -45,9 +45,6 @@ const fetchStatusViews = async ({
 }) => {
   const response = await axiosInstance.get(
     `/story/views/${media_id}${pageParam === 0 ? "" : `?cursor=${pageParam}`}`,
-    {
-      withCredentials: true,
-    }
   );
   if (response.status === 200) {
     const data = response.data;
@@ -352,13 +349,9 @@ const StoryReplyInput = ({ story }: { story: Story }) => {
     try {
       setIsReplying(true);
       // Get receiver's user_id and price per message
-      const profileResponse = await axiosInstance.post(
-        "/profile/user",
-        { username: story.user.username },
-        {
-          withCredentials: true,
-        }
-      );
+      const profileResponse = await axiosInstance.post("/profile/user", {
+        username: story.user.username,
+      });
       const receiverUserId = profileResponse.data.user?.user_id;
       if (!receiverUserId) {
         throw new Error("Could not find receiver user ID");
@@ -534,13 +527,7 @@ const StatusPreviewSlide = ({
       if (refCounter.current > 1) {
         return;
       }
-      await axiosInstance.post(
-        "/story/view",
-        { storyMediaId: story.media_id },
-        {
-          withCredentials: true,
-        }
-      );
+      await axiosInstance.post("/story/view", { storyMediaId: story.media_id });
       refCounter.current++;
     }
     storyViewed();

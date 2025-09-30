@@ -16,7 +16,7 @@ import { Zoom } from "swiper/modules";
 const StoryPreviewComponent = ({
   className,
   onAllStoriesEnd,
-  stories,
+  stories: initialStories,
 }: StoryPreviewProps) => {
   const swiperRef = useRef<SwiperClass | null>(null);
   const videoRef = useRef<HTMLVideoElement | null>(null);
@@ -24,8 +24,28 @@ const StoryPreviewComponent = ({
   const [swiperKey, setSwiperKey] = useState(0);
   const [showViewsBottomSheet, setShowViewsBottomSheet] = useState(false);
   const [viewCount, setViewCount] = useState(0);
+  const [stories, setStories] = useState(initialStories);
   const { user } = useAuthContext();
   const viewedStories = useRef<Set<string>>(new Set());
+
+  useEffect(() => {
+    setStories(initialStories);
+  }, [initialStories]);
+
+  const handleDelete = useCallback(
+    (mediaId: string) => {
+      setStories((prev) => {
+        const newStories = prev.filter((story) => story.media_id !== mediaId);
+        if (newStories.length === 0) {
+          onAllStoriesEnd();
+        } else if (activeIndex >= newStories.length) {
+          setActiveIndex(newStories.length - 1);
+        }
+        return newStories;
+      });
+    },
+    [activeIndex, onAllStoriesEnd],
+  );
 
   // Memoize the function to prevent unnecessary rerenders
   const moveToNextSlide = useCallback(() => {
@@ -80,7 +100,7 @@ const StoryPreviewComponent = ({
     (canPlay: boolean) => {
       if (canPlay) PlayVideo(true);
     },
-    [PlayVideo]
+    [PlayVideo],
   );
 
   // Handle slide change to update video references
@@ -118,7 +138,7 @@ const StoryPreviewComponent = ({
         viewedStories.current.add(currentStory.media_id);
       }
     },
-    [PlayVideo, stories]
+    [PlayVideo, stories],
   );
 
   // Preload adjacent slides for smoother transitions
@@ -182,6 +202,9 @@ const StoryPreviewComponent = ({
             profileImage={
               stories[activeIndex]?.user?.profile_image?.trimEnd() || ""
             }
+            mediaId={stories[activeIndex]?.media_id || ""}
+            userId={stories[activeIndex]?.user?.id || 0}
+            onDelete={handleDelete}
           />
         </div>
 

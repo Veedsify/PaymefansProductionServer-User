@@ -360,11 +360,11 @@ export interface MessagesConversationContextValue {
 
 type OwnerOption =
   | {
-    name: string;
-    icon: React.ReactNode;
-    func?: (e: React.MouseEvent<HTMLButtonElement>) => void;
-    link?: undefined;
-  }
+      name: string;
+      icon: React.ReactNode;
+      func?: (e: React.MouseEvent<HTMLButtonElement>) => void;
+      link?: undefined;
+    }
   | { name: string; icon: React.ReactNode; func?: undefined; link?: URL };
 
 export interface PostAudienceDataProps {
@@ -511,6 +511,9 @@ interface StoryHeaderProps {
   timestamp: string;
   storyId?: string;
   storyOwnerId?: number;
+  mediaId: string;
+  userId: number;
+  onDelete?: (mediaId: string) => void;
 }
 
 interface SelectMoreProps {

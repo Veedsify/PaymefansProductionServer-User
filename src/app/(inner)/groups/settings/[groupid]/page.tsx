@@ -72,9 +72,7 @@ const GroupSettingsPage = () => {
       setLoading(true);
       setError(null);
 
-      const response = await axiosInstance.get(`/groups/${groupId}`, {
-        withCredentials: true,
-      });
+      const response = await axiosInstance.get(`/groups/${groupId}`);
 
       const result: ApiResponse<Group> = response.data;
 

@@ -10,9 +10,7 @@ const useFetchStories = () => {
   const [loading, setLoading] = useState(true);
   useEffect(() => {
     const fetchStories = async () => {
-      const fetchStory = await axiosInstance.get(`/story/all`, {
-        withCredentials: true,
-      });
+      const fetchStory = await axiosInstance.get(`/story/all`);
       const response = fetchStory.data;
       setStories(response.data);
       setLoading(false);
