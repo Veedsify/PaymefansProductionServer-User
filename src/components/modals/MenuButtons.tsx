@@ -45,7 +45,7 @@ const NavigationBar = () => {
           <Link
             key={link.name}
             href={link.href}
-            className="cursor-pointer relative flex-1 w-full text-center  py-4 md:py-8 px-8 md:px-16 "
+            className="cursor-pointer relative flex-1 w-full text-center py-4 md:py-8 "
           >
             <span className="relative inline-block">
               <link.icon

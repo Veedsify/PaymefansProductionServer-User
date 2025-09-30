@@ -15,8 +15,5 @@ export const createNewConversation = async ({
       profileId,
     },
   );
-  if (response) {
     return response;
-  }
-  return null;
 };

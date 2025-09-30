@@ -44,7 +44,7 @@ const fetchStatusViews = async ({
   media_id: string;
 }) => {
   const response = await axiosInstance.get(
-    `/story/views/${media_id}${pageParam === 0 ? "" : `?cursor=${pageParam}`}`,
+    `/story/views/${media_id}${pageParam === 0 ? "" : `?cursor=${pageParam}`}`
   );
   if (response.status === 200) {
     const data = response.data;
@@ -391,10 +391,9 @@ const StoryReplyInput = ({ story }: { story: Story }) => {
         userId: user?.user_id as string,
         profileId: receiverUserId,
       });
-      const conversation = conversationResponse;
-      const conversationId = conversation?.data?.conversation_id;
-      if (!conversationId) {
-        throw new Error("Failed to create conversation");
+      const conversationId = conversationResponse?.data?.conversation_id;
+      if (!conversationId || conversationId.length === 0) {
+        console.error("No conversation ID returned");
       }
       // Create message object for socket with story reply data
       const storyReplyData = {
@@ -456,14 +455,14 @@ const StoryReplyInput = ({ story }: { story: Story }) => {
     return null;
   }
   return (
-    <div className="absolute z-100 bottom-4 w-full">
+    <div className="absolute z-100 bottom-0 w-full">
       <AnimatePresence>
         {showReplyInput ? (
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 20 }}
-            className="p-3 rounded-lg bg-black/80 backdrop-blur-sm w-full"
+            className="p-3  bg-black w-full"
           >
             <div className="flex items-center gap-2">
               <input
@@ -471,7 +470,7 @@ const StoryReplyInput = ({ story }: { story: Story }) => {
                 value={replyText}
                 onChange={(e) => setReplyText(e.target.value)}
                 placeholder={`Send Message`}
-                className="flex-1 px-3 py-3 text-white border bg-white/10 placeholder-white/70 border-white/20 rounded-xl focus:outline-none focus:border-white/40"
+                className="flex-1 px-3 py-3 text-white border bg-white/10 placeholder-white/70 border-white/20 rounded-md focus:outline-none focus:border-white/40"
                 onKeyDown={(e) => {
                   if (e.key === "Enter" && !isReplying) {
                     handleReplySubmit();
@@ -485,9 +484,9 @@ const StoryReplyInput = ({ story }: { story: Story }) => {
                 className="p-2 text-white rounded-lg bg-primary-dark-pink disabled:opacity-50 disabled:cursor-not-allowed hover:bg-primary-text-dark-pink transition-colors"
               >
                 {isReplying ? (
-                  <LoadingSpinner />
+                  <LoadingSpinner className="text-white" />
                 ) : (
-                  <LucideSend className="w-5 h-5" />
+                  <LucideSend className="w-5 h-5 text-white" />
                 )}
               </button>
               <button
