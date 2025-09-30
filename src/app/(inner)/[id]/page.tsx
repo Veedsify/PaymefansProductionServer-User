@@ -113,7 +113,7 @@ const ProfilePage = () => {
       }
       return;
     }
-
+    
     // Handle successful data load
     if (userdata) {
       // Redirect to own profile page if viewing own profile

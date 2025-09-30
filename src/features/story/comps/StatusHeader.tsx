@@ -6,6 +6,7 @@ import { useAuthContext } from "@/contexts/UserUseContext";
 import axiosInstance from "@/utils/Axios";
 import swal from "sweetalert";
 import type { StoryHeaderProps } from "@/types/Components";
+import StoryDeleteButton from "./StoryDeleteButton";
 
 const StoriesHeader = ({
   profileImage,
@@ -58,7 +59,7 @@ const StoriesHeader = ({
   };
   return (
     <div className="absolute left-0 z-50 w-full top-3">
-      <div className="w-full bg-gradient-to-b from-[rgba(0,0,0,1)] to-[rgba(0,0,0,1)]">
+      <div className="w-full relative bg-gradient-to-b from-[rgba(0,0,0,1)] to-[rgba(0,0,0,1)]">
         <div className="flex items-center justify-between px-4 py-3 bg-transparent md:py-5">
           {/* Left side - Profile info */}
           <div className="flex items-center space-x-3">
@@ -109,13 +110,7 @@ const StoriesHeader = ({
 
           {/* Right side - Delete button */}
           {userId === user?.id && (
-            <button
-              onClick={handleDelete}
-              disabled={isDeleting}
-              className="p-2 text-red-500 bg-white rounded-full mr-7 hover:bg-black/50 disabled:opacity-50"
-            >
-              <Trash size={20} />
-            </button>
+            <StoryDeleteButton authUserId={userId} user={user} />
           )}
         </div>
       </div>

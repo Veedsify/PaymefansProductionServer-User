@@ -1,8 +1,8 @@
 "use client";
-
 import { X } from "lucide-react";
 import type { Story } from "@/features/story/types/story";
-import StoryPreviewComponent from "./StatusPreviewComponent";
+import dynamic from "next/dynamic";
+const StoryPreviewComponent = dynamic(() => import("./StatusPreviewComponent"));
 
 const StatusModal = ({
   open,
@@ -19,7 +19,7 @@ const StatusModal = ({
       media_url: media.media_url,
       story_id: story.story_id,
       user: story.user,
-    }))
+    })),
   );
 
   const closeStoryModal = async () => {
@@ -39,7 +39,7 @@ const StatusModal = ({
         onClick={(e) => e.stopPropagation()}
       >
         <button
-          className="absolute z-[9999] p-2 text-white rounded-full cursor-pointer top-4 right-4 bg-black/60 hover:bg-black/80 focus:outline-none focus:ring-2 focus:ring-white/50 transition-colors"
+          className="absolute z-[9999] p-2 text-white rounded-full cursor-pointer top-3 right-3 bg-black/60 hover:bg-black/80 focus:outline-none focus:ring-2 focus:ring-white/50 transition-colors"
           onClick={closeStoryModal}
           aria-label="Close preview"
         >
