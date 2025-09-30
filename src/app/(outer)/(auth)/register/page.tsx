@@ -26,7 +26,7 @@ const Register = () => {
   const { setUser, user } = useUser();
   const router = useRouter();
   const UserInputCaptured = (
-    e: ChangeEvent<HTMLInputElement | HTMLSelectElement>
+    e: ChangeEvent<HTMLInputElement | HTMLSelectElement>,
   ) => {
     const { name, value } = e.target;
     // Update userData state using spread operator to ensure immutability:
@@ -94,7 +94,7 @@ const Register = () => {
           {
             email: user.email,
             phone: user.phone,
-          }
+          },
         );
         const data = res.data;
 
@@ -162,12 +162,12 @@ const Register = () => {
             onSubmit={CreateNewUserFunction}
           >
             <div className="flex flex-col max-w-lg mb-6 gap-2">
-              <label
+              {/*<label
                 htmlFor="name"
                 className="text-sm font-medium text-gray-300"
               >
                 Name
-              </label>
+              </label>*/}
               <input
                 type="text"
                 onChange={UserInputCaptured}
@@ -179,12 +179,12 @@ const Register = () => {
             </div>
 
             <div className="flex flex-col max-w-lg mb-6 gap-2">
-              <label
+              {/*<label
                 htmlFor="email"
                 className="text-sm font-medium text-gray-300"
               >
                 Email Address
-              </label>
+              </label>*/}
               <input
                 type="email"
                 onChange={UserInputCaptured}
@@ -196,12 +196,12 @@ const Register = () => {
             </div>
 
             <div className="flex flex-col max-w-lg mb-6 gap-2">
-              <label
+              {/*<label
                 htmlFor="phone"
                 className="text-sm font-medium text-gray-300"
               >
                 Phone Number
-              </label>
+              </label>*/}
               <div className="flex">
                 <select
                   className="px-3 py-3 text-sm font-medium text-white bg-white/5 border border-white/10 border-r-0 rounded-l-xl outline-none focus:border-primary-dark-pink/50 focus:ring-2 focus:ring-primary-dark-pink/20 backdrop-blur-sm"
@@ -209,7 +209,7 @@ const Register = () => {
                   defaultValue="NG"
                   onChange={(e) => {
                     const selected = countries.find(
-                      (c) => c.code === e.target.value
+                      (c) => c.code === e.target.value,
                     );
                     if (selected) {
                       setUserData({
@@ -240,12 +240,12 @@ const Register = () => {
               </div>
             </div>
             <div className="flex flex-col max-w-lg mb-6 gap-2 relative">
-              <label
+              {/*<label
                 htmlFor="location"
                 className="text-sm font-medium text-gray-300"
               >
                 Country/Location
-              </label>
+              </label>*/}
               <input
                 onFocus={() => setCountryList(true)}
                 onChange={UserInputCaptured}
@@ -274,12 +274,12 @@ const Register = () => {
             </div>
 
             <div className="flex flex-col max-w-lg mb-6 gap-2">
-              <label
+              {/*<label
                 htmlFor="password"
                 className="text-sm font-medium text-gray-300"
               >
                 Password
-              </label>
+              </label>*/}
               <input
                 type="password"
                 onChange={UserInputCaptured}

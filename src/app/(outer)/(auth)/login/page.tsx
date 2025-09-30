@@ -157,12 +157,12 @@ const Login = () => {
               onSubmit={submitLoginForm}
             >
               <div className="flex flex-col mb-6 gap-2">
-                <label
+                {/*<label
                   htmlFor="email"
                   className="text-sm font-medium text-gray-300"
                 >
                   Email address
-                </label>
+                </label>*/}
                 <input
                   type="email"
                   name="email"
@@ -172,14 +172,13 @@ const Login = () => {
                   placeholder="Enter your email"
                 />
               </div>
-              const [showPassword, setShowPassword] = useState(false);
               <div className="flex flex-col mb-6 gap-2 relative">
-                <label
+                {/*<label
                   htmlFor="password"
                   className="text-sm font-medium text-gray-300"
                 >
                   Password
-                </label>
+                </label>*/}
                 <div className="relative md:max-w-lg">
                   <input
                     type={showPassword ? "text" : "password"}
