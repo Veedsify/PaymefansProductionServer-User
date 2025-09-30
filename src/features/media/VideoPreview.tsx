@@ -136,7 +136,7 @@ const VideoPreview = memo(
     }
 
     return (
-      <div className="relative h-full flex items-center justify-center w-full">
+      <>
         {isBlob ? (
           <video
             ref={videoRef}
@@ -165,7 +165,7 @@ const VideoPreview = memo(
             className="object-contain h-full w-full absolute"
           />
         )}
-      </div>
+      </>
     );
   }
 );
