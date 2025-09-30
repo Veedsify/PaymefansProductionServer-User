@@ -6,9 +6,9 @@ import {
   LucideMessageSquare,
   LucideRepeat2,
 } from "lucide-react";
-import { usePathname, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import numeral from "numeral";
-import { use, useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { PiCurrencyDollarSimple } from "react-icons/pi";
 import { useGuestModal } from "@/contexts/GuestModalContext";
@@ -185,7 +185,7 @@ export const PostCompInteractions = ({ data }: PostCompInteractionsProps) => {
 
   return (
     <>
-      <div className="flex justify-around w-full py-6 mt-6 text-sm border-b dark:text-gray-300 dark:border-slate-700 border-black/20">
+      <div className="flex justify-between w-full py-6 mt-6 text-sm border-b dark:text-gray-300 dark:border-slate-700 border-black/20">
         <Link
           href={`/posts/${data?.post_id}/`}
           className="flex items-center text-sm font-medium cursor-pointer gap-1"
