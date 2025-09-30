@@ -136,16 +136,7 @@ const VideoPreview = memo(
     }
 
     return (
-      <motion.div
-        className="relative h-full flex items-center justify-center w-full"
-        initial={{ opacity: 0, scale: 0.95 }}
-        animate={{ opacity: 1, scale: 1 }}
-        exit={{ opacity: 0, scale: 0.95 }}
-        transition={{
-          duration: MEDIA_CONSTANTS.ANIMATION_DURATION_SEC,
-          type: "spring",
-        }}
-      >
+      <div className="relative h-full flex items-center justify-center w-full">
         {isBlob ? (
           <video
             ref={videoRef}
@@ -174,7 +165,7 @@ const VideoPreview = memo(
             className="object-contain h-full w-full absolute"
           />
         )}
-      </motion.div>
+      </div>
     );
   }
 );

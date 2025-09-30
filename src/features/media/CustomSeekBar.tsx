@@ -73,7 +73,7 @@ const CustomSeekBar: React.FC<SeekBarProps> = ({
   return (
     <div
       ref={progressRef}
-      className="relative w-full h-6 flex items-center cursor-pointer md:touch-none group"
+      className="relative w-full flex items-center cursor-pointer md:touch-none group"
       onMouseDown={handleMouseDown}
       onMouseMove={handleMouseMove}
       onMouseUp={handleMouseUp}

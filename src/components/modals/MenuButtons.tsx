@@ -50,7 +50,7 @@ const NavigationBar = () => {
             <span className="relative inline-block">
               <link.icon
                 className={cn("h-5 md:h-8", {
-                  "stroke-black": pathname !== link.href,
+                  "stroke-black dark:stroke-white": pathname !== link.href,
                   "stroke-primary-dark-pink": pathname === link.href,
                 })}
               />

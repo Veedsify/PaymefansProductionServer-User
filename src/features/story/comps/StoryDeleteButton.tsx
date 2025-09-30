@@ -1,19 +1,21 @@
 "use client";
 import { useStoryPause } from "@/contexts/StoryPauseContext";
 import { AnimatePresence, motion } from "framer-motion";
-import { Ban, MoreVertical, Link as ProfileLink } from "lucide-react";
+import { Ban, MoreVertical, Link as ProfileLink, Trash, Trash2 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import toast from "react-hot-toast";
 
 const StoryDeleteButton = ({
   user,
   authUserId,
+  handleDelete,
 }: {
   user: Partial<{
     id: number;
     name: string;
     username: string;
   }>;
+  handleDelete: () => Promise<void>;
   authUserId: number;
 }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -42,36 +44,23 @@ const StoryDeleteButton = ({
   }, []);
 
   return (
-    <div className="relative mr-12" ref={ref}>
-      {/* Backdrop overlay */}
-      <AnimatePresence>
-        {isOpen && (
-          <motion.div
-            className="fixed inset-0 z-10"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            onClick={() => setIsOpen(false)}
-          />
-        )}
-      </AnimatePresence>
-
+    <div className="relative inline-block ml-auto " ref={ref}>
       {/* More options button */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className={` cursor-pointer text-nowrap
+        className={`mr-12 ml-auto cursor-pointer text-nowrap
           flex items-center justify-center w-5 h-5 rounded-full
           transition-all duration-200 ease-in-out
-          hover:bg-gray-100 dark:hover:bg-gray-800
-          focus:outline-none focus:ring-2
-          ${isOpen ? "bg-gray-100 dark:bg-gray-800" : ""}
+       dark:hover:bg-gray-800
+          focus:outline-none focus:ring-2 text-white
+          ${isOpen ? " dark:bg-gray-800" : ""}
         `}
         aria-label="More options"
       >
         <MoreVertical
           size={16}
           className={`
-            w-5 h-5 text-gray-600 dark:text-gray-400
+            w-5 h-5 text-white
             transition-transform duration-200
             ${isOpen ? "rotate-90" : ""}
           `}
@@ -83,11 +72,10 @@ const StoryDeleteButton = ({
         {isOpen && (
           <motion.div
             className="
-              absolute top-12 right-0 z-20 py-2
+              absolute top-8 -translate-x-1/2 -left-1/2 z-20
               bg-white dark:bg-gray-900
               border border-gray-200 dark:border-gray-700
-              rounded-lg shadow-lg
-              backdrop-blur-sm
+              rounded-md shadow-lg
             "
             initial={{
               opacity: 0,
@@ -114,9 +102,13 @@ const StoryDeleteButton = ({
               {/* Add more menu items here if needed */}
               {authUserId === user.id && (
                 <>
-                  <div className="w-full mx-3 my-1  bg-gray-200  dark:bg-gray-700" />
-                  <button className="flex items-center justify-center w-full px-3 py-1 text-sm bg-red-500 dark:text-gray-300 dark:hover:bg-red-500 text-nowrap rounded-md transition-colors duration-150 text-white gap-3 text-center">
-                    <Ban size={14} />
+                  <button
+                    onClick={async () => {
+                      setIsOpen(false);
+                      await handleDelete();
+                    }}
+                  className="flex cursor-pointer items-center justify-center w-full px-3 py-1 text-sm bg-red-500 dark:text-gray-300 dark:hover:bg-red-500 text-nowrap rounded-md transition-colors duration-150 text-white gap-3 text-center">
+                    <Trash2 size={14} />
                     Delete Story
                   </button>
                 </>

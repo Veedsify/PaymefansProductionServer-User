@@ -8,14 +8,14 @@ const UserStatus = () => {
   return (
     <div className="relative block">
       <div className="relative flex items-center justify-center flex-shrink-0 w-18 h-18 mb-2 bg-gray-300  dark:bg-primary-dark-pink rounded-full cursor-pointer aspect-square md:h-22 md:w-22">
-        <div className="flex p-[3px] bg-blue-500 items-center justify-center rounded-full">
+        <div className="flex p-[2px] bg-gray-300 dark:bg-white items-center justify-center rounded-full">
           <Link href={"/story"}>
             <Image
-              width={78}
-              height={78}
+              width={79}
+              height={79}
               priority
               src={user ? user.profile_image! : "/site/avatar.png"}
-              className="object-cover w-auto h-16 border-4 border-gray-300 rounded-full aspect-square"
+              className="object-cover w-auto h-16 border-4 dark:border-white rounded-full aspect-square"
               alt=""
             />
           </Link>

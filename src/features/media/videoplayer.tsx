@@ -383,60 +383,44 @@ const VideoPlayer = ({
               {userProfile && (
                 <div
                   className={cn(
-                    controlsVisible
-                      ? "bottom-[20%] md:bottom-[15%]"
-                      : "bottom-[5%]",
+                    controlsVisible && "bottom-[80px]",
                     `absolute left-4 z-20 flex items-center duration-300`
                   )}
                 >
                   <UserProfileOverlay userProfile={userProfile} />
                 </div>
               )}
+            </div>
+
+            <div
+              className={cn(
+                "absolute flex flex-col w-full px-4 py-2 opacity-0 text-white gap-2 bottom-0 left-0 z-10 ",
+                controlsVisible && "opacity-100"
+              )}
+            >
+              {/* Seek Bar */}
+              <CustomSeekBar
+                currentTime={currentTime}
+                duration={duration}
+                onSeek={(newTime) => handleSeek(newTime)}
+                isBuffering={isBuffering}
+              />
 
               {/* Controls overlay */}
               <div
                 className={cn(
-                  "absolute left-0 right-0 z-20 flex items-center justify-between px-4 py-4 opacity-0 bottom-20",
+                  "z-[99] flex items-center justify-between opacity-0",
                   controlsVisible && "opacity-100"
                 )}
               >
                 <div className="flex items-center gap-2">
-                  <div className="relative flex items-center">
-                    <button
-                      onClick={(e) => {
-                        toggleMute();
-                        e.stopPropagation();
-                      }}
-                      className="bg-transparent hover:bg-black/90 p-3 rounded-full shadow-lg flex items-center justify-center "
-                      aria-label={isMuted ? "Unmute" : "Mute"}
-                    >
-                      {isMuted || volume === 0 ? (
-                        <LucideVolumeX className="w-5 h-5 text-white" />
-                      ) : (
-                        <LucideVolume2 className="w-5 h-5 text-white" />
-                      )}
-                    </button>
-
-                    <div
-                      className="ml-2 w-0 overflow-hidden transition-all"
-                      onMouseEnter={() => setShowVolumeSlider(true)}
-                      onMouseLeave={() => setShowVolumeSlider(false)}
-                    >
-                      <CustomVolumeSeekBar
-                        currentTime={isMuted ? 0 : volume * 100}
-                        duration={100}
-                        onSeek={(newTime) => handleVolumeChange(newTime / 100)}
-                        isBuffering={false}
-                      />
-                    </div>
-                  </div>
                   <button
                     onClick={(e) => {
                       e.stopPropagation();
                       togglePlay();
                     }}
                     className={cn(
-                      "flex items-center justify-center p-3 rounded-full shadow-lg transform  bg-transparent hover:bg-black/90 hover:scale-110 aspect-square"
+                      "flex items-center justify-center rounded-full shadow-lg transform  bg-transparent hover:bg-black/90  aspect-square"
                     )}
                     aria-label={isPlaying ? "Pause" : "Play"}
                     disabled={isLoading}
@@ -444,20 +428,39 @@ const VideoPlayer = ({
                     {isPlaying ? (
                       <LucidePause className="w-5 h-5 text-white" />
                     ) : (
-                      <LucidePlay className="w-5 h-5 text-white ml-0.5" />
+                      <LucidePlay className="w-5 h-5 text-white" />
                     )}
                   </button>
+                  <button
+                    onClick={(e) => {
+                      toggleMute();
+                      e.stopPropagation();
+                    }}
+                    className="bg-transparent hover:bg-black/90 rounded-full shadow-lg flex items-center justify-center "
+                    aria-label={isMuted ? "Unmute" : "Mute"}
+                  >
+                    {isMuted || volume === 0 ? (
+                      <LucideVolumeX className="w-5 h-5 text-white" />
+                    ) : (
+                      <LucideVolume2 className="w-5 h-5 text-white" />
+                    )}
+                  </button>
+                  <div className="flex justify-end text-xs font-semibold tracking-wide text-gray-200">
+                    <span>{formatTime(currentTime)}</span>
+                    <span className="mx-1 opacity-70">/</span>
+                    <span>{formatTime(duration)}</span>
+                  </div>
                 </div>
 
                 {/* Right-side controls */}
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-4 py-2">
                   {/* Resolution toggle button */}
                   <button
                     onClick={(e) => {
                       setShowResolutionMenu(!showResolutionMenu);
                       e.stopPropagation();
                     }}
-                    className="bg-transparent hover:bg-black/90 p-3 rounded-full shadow-lg flex items-center justify-center "
+                    className="bg-transparent hover:bg-black/90 rounded-full shadow-lg flex items-center justify-center "
                     aria-label="Video quality"
                     disabled={isLoading}
                   >
@@ -467,7 +470,7 @@ const VideoPlayer = ({
                   {/* Fullscreen button */}
                   <button
                     onClick={toggleFullscreen}
-                    className="bg-transparent hover:bg-black/90 p-3 rounded-full shadow-lg flex items-center justify-center "
+                    className="bg-transparent hover:bg-black/90 rounded-full shadow-lg flex items-center justify-center "
                     aria-label="Toggle fullscreen"
                     disabled={isLoading}
                   >
@@ -500,28 +503,6 @@ const VideoPlayer = ({
                   ))}
                 </div>
               )}
-            </div>
-
-            <div
-              className={cn(
-                "absolute flex flex-col w-full px-6 py-3 opacity-0 text-white gap-2 bottom-[2] left-0 z-10 ",
-                controlsVisible && "opacity-100"
-              )}
-            >
-              {/* Seek Bar */}
-              <CustomSeekBar
-                currentTime={currentTime}
-                duration={duration}
-                onSeek={(newTime) => handleSeek(newTime)}
-                isBuffering={isBuffering}
-              />
-
-              {/* Time display */}
-              <div className="flex justify-end text-xs font-semibold tracking-wide text-gray-200">
-                <span>{formatTime(currentTime)}</span>
-                <span className="mx-1 opacity-70">/</span>
-                <span>{formatTime(duration)}</span>
-              </div>
             </div>
           </>
         )}
