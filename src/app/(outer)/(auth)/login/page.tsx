@@ -11,12 +11,14 @@ import { LOGIN_CONFIG } from "@/config/config";
 import { getUser } from "@/lib/User";
 import axiosInstance from "@/utils/Axios";
 import Footer from "@/components/common/global/Footer";
+import { LucideEye, LucideEyeClosed } from "lucide-react";
 
 const Login = () => {
   const { setUser } = getUser();
   const [acceptedTerms, setAcceptedTerms] = useState(false);
   // Add a new state to track when acceptedTerms has been read:
   const [hasCheckedAcceptedTerms, setHasCheckedAcceptedTerms] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
 
   const handleAcceptTerms = async () => {
@@ -170,21 +172,35 @@ const Login = () => {
                   placeholder="Enter your email"
                 />
               </div>
-              <div className="flex flex-col mb-6 gap-2">
+              const [showPassword, setShowPassword] = useState(false);
+              <div className="flex flex-col mb-6 gap-2 relative">
                 <label
                   htmlFor="password"
                   className="text-sm font-medium text-gray-300"
                 >
                   Password
                 </label>
-                <input
-                  type="password"
-                  name="password"
-                  id="password"
-                  onChange={handleLoginInput}
-                  className="block w-full px-4 py-3 text-sm font-medium text-white bg-white/5 border border-white/10 rounded-xl outline-none focus:border-primary-dark-pink/50 focus:ring-2 focus:ring-primary-dark-pink/20 transition-all duration-200 md:max-w-lg backdrop-blur-sm"
-                  placeholder="Enter your password"
-                />
+                <div className="relative md:max-w-lg">
+                  <input
+                    type={showPassword ? "text" : "password"}
+                    name="password"
+                    id="password"
+                    onChange={handleLoginInput}
+                    className="block w-full px-4 py-3 text-sm font-medium text-white bg-white/5 border border-white/10 rounded-xl outline-none focus:border-primary-dark-pink/50 focus:ring-2 focus:ring-primary-dark-pink/20 transition-all duration-200 md:max-w-lg backdrop-blur-sm"
+                    placeholder="Enter your password"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-3 top-1/2 transform cursor-pointer -translate-y-1/2 text-gray-300 hover:text-white focus:outline-none"
+                  >
+                    {showPassword ? (
+                      <LucideEye className="w-5 h-5" />
+                    ) : (
+                      <LucideEyeClosed className="w-5 h-5" />
+                    )}
+                  </button>
+                </div>
               </div>
               <button
                 type="submit"
