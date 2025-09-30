@@ -1,4 +1,4 @@
-"use client";;
+"use client";
 import dynamic from "next/dynamic";
 import { memo, Suspense, useCallback, useMemo } from "react";
 import MediaPreviewErrorBoundary from "@/components/error-boundaries/MediaPreviewErrorBoundary";
@@ -16,8 +16,7 @@ const ModalLoader = memo(() => (
     role="dialog"
     aria-modal="true"
     aria-label="Loading media preview"
-  >
-  </div>
+  ></div>
 ));
 ModalLoader.displayName = "ModalLoader";
 

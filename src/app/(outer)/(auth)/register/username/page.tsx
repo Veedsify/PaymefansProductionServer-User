@@ -1,5 +1,4 @@
 "use client";
-import axios from "axios";
 import { LucideArrowLeft, LucideArrowRight, X } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -9,7 +8,6 @@ import toast from "react-hot-toast";
 import swal from "sweetalert";
 import { REGISTER_CONFIG } from "@/config/config";
 import { useUser } from "@/lib/UserContext";
-import axiosServer from "@/utils/Axios";
 import axiosInstance from "@/utils/Axios";
 
 const ChooseUserName = () => {
