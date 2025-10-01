@@ -87,6 +87,7 @@ const HomePostComponent = () => {
       {allPosts.map((post, index) => (
         <PostComponent
           key={`${post.id}-${index}`}
+          isLast={index === allPosts.length - 1}
           data={{
             ...post,
             post: post.content,
@@ -107,7 +108,7 @@ const HomePostComponent = () => {
       {/* Infinite scroll trigger and loading states */}
       <div
         ref={loadMoreRef}
-        className="flex items-center justify-center w-full h-10 mt-4"
+        className="flex items-center justify-center w-full h-10 mt-4 mb-12"
       >
         {isFetchingNextPage && (
           <div className="space-y-4">

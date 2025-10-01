@@ -15,6 +15,7 @@ import MediaGridItem from "./components/MediaGridItem";
 import { PostCompInteractions } from "./PostInteractions";
 import QuickPostActions from "./QuickPostActions";
 import FormatName from "@/lib/FormatName";
+import { cn } from "@/components/ui/cn";
 
 // Cache socket instance to prevent recreation on every render
 let socketInstance: ReturnType<typeof getSocket> | null = null;
@@ -45,7 +46,7 @@ const AudienceIcon = memo(({ audience }: { audience: string }) => {
 AudienceIcon.displayName = "AudienceIcon";
 
 const PostComponent = memo<PostComponentProps>(
-  ({ user, data, was_repost, repost_username, repost_id }) => {
+  ({ user, data, was_repost, repost_username, isLast = false, repost_id }) => {
     const { ref, inView } = useInView({ threshold: 0.5, triggerOnce: true });
     const fullScreenPreview = usePostComponent(
       (state) => state.fullScreenPreview
@@ -169,13 +170,19 @@ const PostComponent = memo<PostComponentProps>(
     }, [data.post_status, inView, authUser?.id, data.id, socket]);
 
     return (
-      <div className="px-2 py-6 duration-300 md:px-5">
+      <div
+        className={cn(
+          "px-2 pt-9 pb-3 duration-300 md:px-5 cursor-pointer",
+          isLast ? "" : "border-b border-gray-300 dark:border-gray-700"
+        )}
+        onClick={actions.handlePostClick}
+        role="link"
+        data-href={`/posts/${data.post_id}`}
+        key={data.post_id}
+        ref={ref}
+      >
         <div
           className="cursor-pointer"
-          ref={ref}
-          onClick={actions.handlePostClick}
-          role="link"
-          data-href={`/posts/${data.post_id}`}
         >
           {was_repost && (
             <div className="mb-3">

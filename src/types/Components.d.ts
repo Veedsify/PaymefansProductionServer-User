@@ -119,6 +119,7 @@ interface PostComponentProps {
   was_repost?: boolean;
   repost_username?: string;
   repost_id?: string;
+  isLast?: boolean;
   user: {
     id: number;
     user_id: string;
