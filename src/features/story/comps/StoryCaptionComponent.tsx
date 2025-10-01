@@ -31,7 +31,7 @@ import FetchMentions from "@/utils/data/FetchMentions";
 import { addStoryMentions } from "@/utils/data/FetchStoryMentions";
 import FormatName from "@/lib/FormatName";
 import swal from "sweetalert";
-
+import { useQueryClient } from "@tanstack/react-query";
 // Enhanced types for captions and links
 interface CaptionElement {
   id: string;
@@ -49,11 +49,9 @@ interface CaptionElement {
     fontStyle?: string;
   };
 }
-
 interface EnhancedStoryType extends StoryType {
   captionElements?: CaptionElement[];
 }
-
 // Custom Swiper Component
 const CustomSwiper = ({
   children,
@@ -72,14 +70,12 @@ const CustomSwiper = ({
   const { setEditingSlide } = useStoryStore();
   const totalSlides = children.length;
   const minSwipeDistance = 50;
-
   const slideChange = useCallback(
     (newIndex: number) => {
       setEditingSlide(newIndex);
     },
     [setEditingSlide]
   );
-
   const goToSlide = useCallback(
     (index: number) => {
       if (index < 0 || index >= totalSlides || isTransitioning) return;
@@ -91,7 +87,6 @@ const CustomSwiper = ({
     },
     [totalSlides, isTransitioning, onSlideChange, slideChange]
   );
-
   const nextSlide = useCallback(
     () => goToSlide(currentSlide + 1),
     [goToSlide, currentSlide]
@@ -100,16 +95,13 @@ const CustomSwiper = ({
     () => goToSlide(currentSlide - 1),
     [goToSlide, currentSlide]
   );
-
   const onTouchStart = (e: React.TouchEvent) => {
     setTouchEnd(null);
     setTouchStart(e.targetTouches[0].clientX);
   };
-
   const onTouchMove = (e: React.TouchEvent) => {
     setTouchEnd(e.targetTouches[0].clientX);
   };
-
   const onTouchEnd = () => {
     if (!touchStart || !touchEnd) return;
     const distance = touchStart - touchEnd;
@@ -118,7 +110,6 @@ const CustomSwiper = ({
     if (isLeftSwipe) nextSlide();
     if (isRightSwipe) prevSlide();
   };
-
   // Keyboard navigation
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -128,7 +119,6 @@ const CustomSwiper = ({
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [currentSlide, nextSlide, prevSlide]);
-
   return (
     <div className="relative w-full h-full overflow-hidden bg-black shadow-2xl rounded-xl">
       {/* Slides Container */}
@@ -185,7 +175,6 @@ const CustomSwiper = ({
     </div>
   );
 };
-
 const colorPalette = [
   "#ffffff",
   "#000000",
@@ -203,7 +192,6 @@ const colorPalette = [
   "#ffd700",
   "#ff69b4",
 ];
-
 const DraggableElement = ({
   element,
   onPositionChange,
@@ -231,7 +219,6 @@ const DraggableElement = ({
   const [initialFontSize, setInitialFontSize] = useState(0);
   const [isEditing, setIsEditing] = useState(false);
   const elementRef = useRef<HTMLDivElement>(null);
-
   // Start drag or tap
   const handleStart = (
     clientX: number,
@@ -243,7 +230,6 @@ const DraggableElement = ({
     setInitialPosition(element.position);
     setDragMoved(false);
     onSelect(element.id);
-
     if (isScaleMode) {
       setIsScaling(true);
       const currentSize = parseFloat(element.style.fontSize);
@@ -252,19 +238,16 @@ const DraggableElement = ({
       setIsDragging(true);
     }
   };
-
   // Move drag or scale
   const handleMove = useCallback(
     (clientX: number, clientY: number) => {
       if ((!isDragging && !isScaling) || !containerRef.current) return;
-
       const rect = containerRef.current.getBoundingClientRect();
       const deltaX = clientX - dragStart.x;
       const deltaY = clientY - dragStart.y;
       const moved = Math.abs(deltaX) > 2 || Math.abs(deltaY) > 2;
       setDragMoved(moved);
       if (!moved) return;
-
       if (isScaling) {
         // Scale based on vertical drag distance
         const scaleDistance = -deltaY; // Negative because dragging up should increase size
@@ -303,7 +286,6 @@ const DraggableElement = ({
       element.id,
     ]
   );
-
   // End drag or tap
   const handleEnd = useCallback(() => {
     setIsDragging(false);
@@ -314,7 +296,6 @@ const DraggableElement = ({
     }
     setDragMoved(false);
   }, [dragMoved, onSelect, element.id]);
-
   // Mouse/touch handlers
   useEffect(() => {
     if (!isDragging && !isScaling) return;
@@ -329,7 +310,6 @@ const DraggableElement = ({
     };
     const handleMouseUp = () => handleEnd();
     const handleTouchEnd = () => handleEnd();
-
     document.addEventListener("mousemove", handleMouseMove, { passive: false });
     document.addEventListener("mouseup", handleMouseUp);
     document.addEventListener("touchmove", handleTouchMove, { passive: false });
@@ -350,7 +330,6 @@ const DraggableElement = ({
     handleEnd,
     handleMove,
   ]);
-
   // Main render
   return (
     <div
@@ -507,7 +486,6 @@ const DraggableElement = ({
     </div>
   );
 };
-
 const EnhancedSlideComponent = ({
   story,
   close,
@@ -519,7 +497,7 @@ const EnhancedSlideComponent = ({
 }) => {
   const { updateStorySlide, story: mystory, clearStory } = useStoryStore();
   const [fontIndex, setFontIndex] = useState(0);
-  // Get current story data from store to ensure reactivity
+  const queryClient = useQueryClient();
   const currentStory = mystory[index] || story;
   const captionElements = currentStory.captionElements || [];
   const [selectedElement, setSelectedElement] = useState<string | null>(null);
@@ -534,12 +512,10 @@ const EnhancedSlideComponent = ({
   >(currentStory.mentions || []);
   const [isSearchingUsers, setIsSearchingUsers] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
-
   // Helper function to update caption elements in store
   const updateCaptionElements = (newElements: CaptionElement[]) => {
     updateStorySlide(currentStory.media_id, { captionElements: newElements });
   };
-
   const changeFont = () => {
     const nextFont = fontFamilies[fontIndex];
     setFontIndex((fontIndex + 1) % fontFamilies.length);
@@ -547,7 +523,6 @@ const EnhancedSlideComponent = ({
       updateElementStyle(selectedElement, { fontFamily: nextFont });
     }
   };
-
   const addTextElement = () => {
     const newElement: CaptionElement = {
       id: Date.now().toString(),
@@ -566,11 +541,9 @@ const EnhancedSlideComponent = ({
     updateCaptionElements(newElements);
     setSelectedElement(newElement.id);
   };
-
   const addLinkElement = () => {
     setShowLinkDialog(true);
   };
-
   const createLink = () => {
     if (!tempLinkUrl) return;
     const newElement: CaptionElement = {
@@ -593,14 +566,12 @@ const EnhancedSlideComponent = ({
     setShowLinkDialog(false);
     setTempLinkUrl("");
   };
-
   // Mention functionality
   const searchUsers = async (query: string) => {
     if (query.trim().length < 2) {
       setSearchedUsers([]);
       return;
     }
-
     setIsSearchingUsers(true);
     try {
       const users = await FetchMentions(query);
@@ -612,7 +583,6 @@ const EnhancedSlideComponent = ({
       setIsSearchingUsers(false);
     }
   };
-
   const addMention = (user: { id: number; username: string; name: string }) => {
     if (!selectedMentions.find((m) => m.id === user.id)) {
       const newMentions = [...selectedMentions, user];
@@ -622,17 +592,14 @@ const EnhancedSlideComponent = ({
     setMentionQuery("");
     setSearchedUsers([]);
   };
-
   const removeMention = (userId: number) => {
     const newMentions = selectedMentions.filter((m) => m.id !== userId);
     setSelectedMentions(newMentions);
     updateStorySlide(currentStory.media_id, { mentions: newMentions });
   };
-
   const openMentionDialog = () => {
     setShowMentionDialog(true);
   };
-
   // Handle mention search
   useEffect(() => {
     const timeoutId = setTimeout(() => {
@@ -640,17 +607,14 @@ const EnhancedSlideComponent = ({
         searchUsers(mentionQuery);
       }
     }, 300);
-
     return () => clearTimeout(timeoutId);
   }, [mentionQuery]);
-
   const updateElementContent = (id: string, content: string) => {
     const newElements = captionElements.map((el) =>
       el.id === id ? { ...el, content } : el
     );
     updateCaptionElements(newElements);
   };
-
   const updateElementPosition = (
     id: string,
     position: { x: number; y: number }
@@ -660,7 +624,6 @@ const EnhancedSlideComponent = ({
     );
     updateCaptionElements(newElements);
   };
-
   const updateElementStyle = (
     id: string,
     styleUpdate: Partial<CaptionElement["style"]>
@@ -670,33 +633,27 @@ const EnhancedSlideComponent = ({
     );
     updateCaptionElements(newElements);
   };
-
   const increaseFontSize = () => {
     if (!selectedElement) return;
     const element = captionElements.find((el) => el.id === selectedElement);
     if (!element) return;
-
     const currentSize = parseFloat(element.style.fontSize);
     const newSize = Math.min(currentSize + 0.25, 5); // Max 5rem
     updateElementStyle(selectedElement, { fontSize: `${newSize}rem` });
   };
-
   const decreaseFontSize = () => {
     if (!selectedElement) return;
     const element = captionElements.find((el) => el.id === selectedElement);
     if (!element) return;
-
     const currentSize = parseFloat(element.style.fontSize);
     const newSize = Math.max(currentSize - 0.25, 0.75); // Min 0.75rem
     updateElementStyle(selectedElement, { fontSize: `${newSize}rem` });
   };
-
   const deleteElement = (id: string) => {
     const newElements = captionElements.filter((el) => el.id !== id);
     updateCaptionElements(newElements);
     setSelectedElement(null);
   };
-
   // Helper to get video durations and embed in mystory
   const getStoriesWithDurations = async () => {
     const videoStories = mystory.filter(
@@ -725,33 +682,23 @@ const EnhancedSlideComponent = ({
         : { ...story, duration: 5 }
     );
   };
-
   const submitStory = async () => {
     const storiesWithDurations = await getStoriesWithDurations();
-
     const submit = await SubmitUserStory(storiesWithDurations);
-
     if (submit.success && submit.data) {
-      // Send mentions for each story that has them
       try {
-        // Get the saved story data from the server response
         const savedStory = submit.data;
         const storyMediaList = savedStory.StoryMedia || [];
-
         // Create a map of client media_id to server media_id
         const mediaIdMap = new Map();
         storyMediaList.forEach((storyMedia: any) => {
-          // Find the corresponding client story by media_id
           const clientStory = storiesWithDurations.find(
             (story) => story.media_id === storyMedia.media_id
           );
           if (clientStory) {
-            // Map client media_id to server media_id (which is the same in this case)
-            // but ensure we use the database ID for mentions
             mediaIdMap.set(clientStory.media_id, storyMedia.media_id);
           }
         });
-
         const mentionPromises = mystory
           .filter((story) => story.mentions && story.mentions.length > 0)
           .map(async (story) => {
@@ -763,13 +710,12 @@ const EnhancedSlideComponent = ({
               );
             }
           });
-
         await Promise.all(mentionPromises);
       } catch (error) {
         console.error("Error sending story mentions:", error);
         // Don't fail the whole story upload if mentions fail
       }
-
+      queryClient.invalidateQueries({ queryKey: ["personal-stories"] });
       toast.success("Story uploaded successfully");
       close();
       clearStory();
@@ -777,18 +723,15 @@ const EnhancedSlideComponent = ({
       toast.error(submit.message || "Failed to upload story");
     }
   };
-
   const handleContainerClick = (e: React.MouseEvent) => {
     if (e.target === e.currentTarget) {
       setSelectedElement(null);
       setShowColorPicker(false);
     }
   };
-
   const selectedElementData = selectedElement
     ? captionElements.find((el) => el.id === selectedElement)
     : null;
-
   const handleClearStory = () => {
     swal({
       title: "Are you sure?",
@@ -846,7 +789,6 @@ const EnhancedSlideComponent = ({
           <LucideSend stroke="#fff" size={20} />
         </button>
       </div>
-
       {/* Controls Toolbar - Separate Layer */}
       {selectedElement && selectedElementData && (
         <div className="absolute top-20 left-4 right-4 z-[110] p-4 border shadow-2xl backdrop-blur-md bg-white rounded-2xl border-white/20">
@@ -977,7 +919,6 @@ const EnhancedSlideComponent = ({
           )}
         </div>
       )}
-
       {/* Main Content Container */}
       <div className="relative flex flex-col items-center justify-center w-full h-full">
         <div
@@ -1019,7 +960,6 @@ const EnhancedSlideComponent = ({
               />
             ))}
         </div>
-
         {/* Link Dialog */}
         {showLinkDialog && (
           <div className="absolute inset-0 flex items-center justify-center bg-black/60 backdrop-blur-sm z-[90] top-1/12">
@@ -1053,7 +993,6 @@ const EnhancedSlideComponent = ({
             </div>
           </div>
         )}
-
         {/* Mention Dialog */}
         {showMentionDialog && (
           <div className="absolute inset-0 flex items-center justify-center bg-black/60 backdrop-blur-sm z-[90]">
@@ -1061,7 +1000,6 @@ const EnhancedSlideComponent = ({
               <h3 className="mb-4 text-xl font-bold text-gray-800">
                 Tag Users
               </h3>
-
               {/* Selected Mentions */}
               {selectedMentions.length > 0 && (
                 <div className="mb-4">
@@ -1088,7 +1026,6 @@ const EnhancedSlideComponent = ({
                   </div>
                 </div>
               )}
-
               {/* Search Input */}
               <input
                 type="text"
@@ -1098,7 +1035,6 @@ const EnhancedSlideComponent = ({
                 className="w-full p-3 mb-4 text-gray-800 border-2 border-gray-200 outline-none rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200"
                 autoFocus
               />
-
               {/* Search Results */}
               {mentionQuery && (
                 <div className="mb-4">
@@ -1152,7 +1088,6 @@ const EnhancedSlideComponent = ({
                   )}
                 </div>
               )}
-
               <div className="flex gap-3">
                 <button
                   onClick={() => {
@@ -1172,10 +1107,8 @@ const EnhancedSlideComponent = ({
     </div>
   );
 };
-
 const StoryCaptionComponent = ({ close }: StoryCaptionComponentProps) => {
   const { story } = useStoryStore();
-
   return (
     <div className="flex flex-col items-center fixed justify-center inset-0 w-full min-h-dvh bg-black/70 z-[200] select-none">
       <div
@@ -1202,5 +1135,4 @@ const StoryCaptionComponent = ({ close }: StoryCaptionComponentProps) => {
     </div>
   );
 };
-
 export default StoryCaptionComponent;
