@@ -23,7 +23,6 @@ const CaptionElement = ({ element }: { element: any }) => {
     textShadow: "0px 0px 10px rgba(0,0,0,0.5)", // Better readability on images/videos
     zIndex: 200,
     maxWidth: "300px",
-    width: "100%",
   };
 
   return (
