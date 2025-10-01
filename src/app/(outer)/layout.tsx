@@ -1,4 +1,4 @@
-import "@fontsource-variable/bricolage-grotesque";
+import "@fontsource-variable/geist";
 import QueryProvider from "@/providers/QueryProvider";
 import "../globals.css";
 const OuterLayout = ({ children }: { children: React.ReactNode }) => {

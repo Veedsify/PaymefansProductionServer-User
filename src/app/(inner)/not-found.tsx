@@ -1,5 +1,4 @@
-import "@fontsource-variable/bricolage-grotesque";
-
+import "@fontsource-variable/geist";
 import Image from "next/image";
 import "../globals.css";
 import { LucideArrowLeft } from "lucide-react";

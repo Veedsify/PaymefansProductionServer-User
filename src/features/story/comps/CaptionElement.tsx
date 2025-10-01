@@ -11,7 +11,7 @@ const CaptionElement = ({ element }: { element: any }) => {
     position: "absolute" as const,
     left: `${element.position.x}%`,
     top: `${element.position.y}%`,
-    fontFamily: "Bricolage Grotesque Variable",
+    fontFamily: "Geist Variable', sans-serif",
     fontSize: element.style.fontSize,
     fontWeight: element.style.fontWeight,
     color: element.style.color,
@@ -23,7 +23,7 @@ const CaptionElement = ({ element }: { element: any }) => {
     cursor: element.type === "link" ? "pointer" : "default",
     userSelect: "none" as any,
     pointerEvents: (element.type === "link" ? "auto" : "none") as any,
-    textShadow: "1px 1px 2px rgba(0,0,0,0.8)", // Better readability on images/videos
+    textShadow: "0px 0px 10px rgba(0,0,0,0.5)", // Better readability on images/videos
     zIndex: 200,
     maxWidth: "300px",
     width: "100%",
@@ -34,7 +34,7 @@ const CaptionElement = ({ element }: { element: any }) => {
       style={elementStyle}
       onClick={handleClick}
       className={`
-        text-wrap break-words
+        text-wrap break-words leading-tight
         ${element.type === "link" ? "hover:opacity-80 transition-opacity" : ""}
         ${element.type === "link" ? "underline" : ""}
       `}
