@@ -8,25 +8,43 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import dynamic from 'next/dynamic';
+import dynamic from "next/dynamic";
 import { notFound, useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { PiCurrencyDollarSimple } from "react-icons/pi";
 import { useGuestModal } from "@/contexts/GuestModalContext";
 import { useAuthContext } from "@/contexts/UserUseContext";
-const CreateConversationButton = dynamic(() => import("@/features/chats/comps/CreateConversationButton"));
-const FollowUserComponent = dynamic(() => import("@/features/follow/FollowUserComponent"));
+const CreateConversationButton = dynamic(
+  () => import("@/features/chats/comps/CreateConversationButton")
+);
+const FollowUserComponent = dynamic(
+  () => import("@/features/follow/FollowUserComponent")
+);
 const TipModel = dynamic(() => import("@/features/models/comps/TipModel"));
-const ActiveProfileTag = dynamic(() => import("@/features/profile/ActiveProfileTag"));
-const MoreProfileOptions = dynamic(() => import("@/features/profile/MoreProfileOptions"));
-const ProfileSocialLinks = dynamic(() => import("@/features/profile/ProfileSocialLinks"));
-const ProfileTabsOther = dynamic(() => import("@/features/profile/ProfileTabsOther"));
+const ActiveProfileTag = dynamic(
+  () => import("@/features/profile/ActiveProfileTag")
+);
+const MoreProfileOptions = dynamic(
+  () => import("@/features/profile/MoreProfileOptions")
+);
+const ProfileSocialLinks = dynamic(
+  () => import("@/features/profile/ProfileSocialLinks")
+);
+const ProfileTabsOther = dynamic(
+  () => import("@/features/profile/ProfileTabsOther")
+);
 const SuspendedUserPage = dynamic(() => import("@/features/profile/Suspended"));
-const CreateSubscriptionButton = dynamic(() => import("@/features/subscriptions/CreateSubscriptionButton"));
-const UserNotFound = dynamic(() => import("@/features/user/comps/UserNotFound"));
+const CreateSubscriptionButton = dynamic(
+  () => import("@/features/subscriptions/CreateSubscriptionButton")
+);
+const UserNotFound = dynamic(
+  () => import("@/features/user/comps/UserNotFound")
+);
 import { useProfile } from "@/hooks/queries/useProfile";
 import FormatName from "@/lib/FormatName";
-const LoadingSpinner = dynamic(() => import("@/components/common/loaders/LoadingSpinner"));
+const LoadingSpinner = dynamic(
+  () => import("@/components/common/loaders/LoadingSpinner")
+);
 
 // Utility to format numbers
 const formatNumber = (num: number = 0): string => {
@@ -96,7 +114,7 @@ const ProfilePage = () => {
   const userdata = profileData?.user;
   const isBlockedByUser = profileData?.isBlockedByUser;
   const isVerified = userdata?.is_verified;
-  const canTip = user?.id !== userdata?.id && !userdata?.is_model;
+  const canTip = user?.id !== userdata?.id && userdata?.is_model;
 
   // Handle redirects and navigation in a single useEffect
   useEffect(() => {
@@ -112,7 +130,7 @@ const ProfilePage = () => {
       }
       return;
     }
-    
+
     // Handle successful data load
     if (userdata) {
       // Redirect to own profile page if viewing own profile
@@ -168,7 +186,7 @@ const ProfilePage = () => {
       return;
     }
     toggleModalOpen(
-      `You need to login to tip ${userdata?.name || "this user"}.`,
+      `You need to login to tip ${userdata?.name || "this user"}.`
     );
   };
   // Additional safety check
