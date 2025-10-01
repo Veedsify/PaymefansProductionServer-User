@@ -214,7 +214,7 @@ const ContactSupportModal = ({
                           htmlFor="name"
                           className="block mb-3 text-sm font-semibold text-gray-900 dark:text-gray-200"
                         >
-                          Full Name
+                        Name
                         </label>
                         <input
                           type="text"

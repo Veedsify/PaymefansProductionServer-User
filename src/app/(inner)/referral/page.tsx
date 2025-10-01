@@ -313,7 +313,15 @@ const ReferralPage = () => {
               ? `${(
                   config?.point_conversion_rate_ngn * 10
                 ).toLocaleString()} Naira`
-              : "10 paymefans points"}
+              : (
+                  <Image
+                    width={20}
+                    height={20}
+                    className="w-5 h-5"
+                    src="/site/coin.svg"
+                    alt="Points"
+                  />
+                ) + "10 points"}
           </p>
         </div>
       </div>

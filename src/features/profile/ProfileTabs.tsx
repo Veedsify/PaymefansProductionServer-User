@@ -7,18 +7,23 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 import dynamic from "next/dynamic";
+import LoadingSpinner from "@/components/common/loaders/LoadingSpinner";
 
 const MediaPanel = dynamic(() => import("@/features/media/MediaPanel"), {
   ssr: false,
+  loading: () => <LoadingSpinner />,
 });
 const PostPanel = dynamic(() => import("@/features/post/PostPanel"), {
   ssr: false,
+  loading: () => <LoadingSpinner />,
 });
 const PrivatePanel = dynamic(() => import("./PrivatePanel"), {
   ssr: false,
+  loading: () => <LoadingSpinner />,
 });
 const RepostPanel = dynamic(() => import("./RepostPanel"), {
   ssr: false,
+  loading: () => <LoadingSpinner />,
 });
 
 const ProfileTabs = () => {
