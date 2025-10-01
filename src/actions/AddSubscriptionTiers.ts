@@ -1,5 +1,6 @@
 import type { SubscriptionTiersProps } from "@/types/Components";
 import axiosInstance from "@/utils/Axios";
+import { AxiosError } from "axios";
 export default async function AddSubscriptionTiers({
   tiers,
 }: {
@@ -13,14 +14,19 @@ export default async function AddSubscriptionTiers({
     if (saveSubscriptions.status !== 200)
       return {
         error: true,
+        message: saveSubscriptions.data.message || "Save failed.",
       };
     return {
       error: false,
+      message: saveSubscriptions.data.message || "Save failed.",
     };
   } catch (error) {
     console.log(error);
-    return {
-      error: true,
+    if (error instanceof AxiosError){
+      return {
+        error: true,
+        message: error?.response?.data.message || "Save failed.",
+      }
     };
   }
 }

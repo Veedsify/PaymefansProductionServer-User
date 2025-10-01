@@ -58,7 +58,9 @@ const SetSubscription = () => {
     e.preventDefault();
 
     if (tiers.length >= 3) {
-      return toast.error("You can only add up to 3 tiers at a time");
+      return toast.error("You can only add up to 3 tiers at a time", {
+        id: "settings-saved",
+      });
     }
 
     setTiers([...tiers, initialTier]);
@@ -70,7 +72,9 @@ const SetSubscription = () => {
       e.preventDefault();
 
       if (tiers.length === 1) {
-        return toast.error("You must have at least one tier");
+        return toast.error("You must have at least one tier", {
+          id: "settings-saved",
+        });
       }
 
       setTiers(tiers.filter((_, i) => i !== index)); // Remove the tier at the specific index
@@ -95,10 +99,10 @@ const SetSubscription = () => {
     try {
       const saveSubscriptions = (await AddSubscriptionTiers({ tiers })) as {
         error: boolean;
+        message: string;
       };
-
       if (saveSubscriptions?.error) {
-        toast.error("Subscription could not be saved. Please try again later");
+        toast.error(saveSubscriptions.message || "Save failed.");
       } else {
         toast.success("Subscription saved successfully");
         GetSubscriptions();
