@@ -21,6 +21,9 @@ const CaptionElement = ({ element }: { element: any }) => {
     userSelect: "none" as any,
     pointerEvents: (element.type === "link" ? "auto" : "none") as any,
     textShadow: "0px 0px 10px rgba(0,0,0,0.5)", // Better readability on images/videos
+    overflowWrap: "break-word" as const,
+    wordBreak: "break-word" as const,
+    maxWidth: "300px",
     zIndex: 200,
     width: "100%",
   };
