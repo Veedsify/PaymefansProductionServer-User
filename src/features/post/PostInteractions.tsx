@@ -185,7 +185,7 @@ export const PostCompInteractions = ({ data }: PostCompInteractionsProps) => {
 
   return (
     <>
-      <div className="flex justify-between w-full py-6 mt-6 text-sm border-b dark:text-gray-300 dark:border-slate-700 border-black/20">
+      <div className="flex justify-around w-full py-6 mt-6 text-sm border-b dark:text-gray-300 dark:border-slate-700 border-black/20">
         <Link
           href={`/posts/${data?.post_id}/`}
           className="flex items-center text-sm font-medium cursor-pointer gap-1"
