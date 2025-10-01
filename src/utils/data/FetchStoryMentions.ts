@@ -60,7 +60,6 @@ export const addStoryMentions = async (
       storyMediaId,
       mentionedUserIds,
     });
-    console.log("Add mentions response:", response.data);
     return response.data;
   } catch (error) {
     console.error("Error adding story mentions:", error);

@@ -1,9 +1,9 @@
-import { useInfiniteQuery } from "@tanstack/react-query";
+import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
 import { AnimatePresence, motion } from "framer-motion";
 import { LucideEye, LucideLoader, LucideSend, User, X } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useInView } from "react-intersection-observer";
 import swal from "sweetalert";
 import { v4 as uuid } from "uuid";
@@ -158,7 +158,7 @@ const StatusViewBlock = ({ story }: { story: Story }) => {
                         <div className="font-medium">
                           <h3>
                             <Link href={`/${view.viewer.username}`}>
-                              {view.viewer.name}
+                              {FormatName(view.viewer.name)}
                             </Link>
                           </h3>
                           <span>
@@ -197,36 +197,25 @@ const StatusViewBlock = ({ story }: { story: Story }) => {
 // Tagged Users Button Component
 const TaggedUsersButton = ({ story }: { story: Story }) => {
   const [showTaggedUsers, setShowTaggedUsers] = useState(false);
-  const [mentions, setMentions] = useState<StoryMention[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
   const { user } = useAuthContext();
   const { setIsPaused } = useStoryPause();
+
+  const { data, isLoading, isError } = useQuery({
+    queryKey: ["storyMentions", story.media_id],
+    queryFn: async () => await fetchStoryMentions(story.media_id),
+    enabled: showTaggedUsers,
+    staleTime: 1000 * 60,
+  });
+
+  const mentions: StoryMention[] = data?.data?.mentions || [];
 
   useEffect(() => {
     setIsPaused(showTaggedUsers);
   }, [showTaggedUsers, setIsPaused]);
 
-  const fetchMentions = async () => {
-    if (mentions.length > 0) {
-      setShowTaggedUsers(true);
-      return;
-    }
-
-    setIsLoading(true);
-    try {
-      const response = await fetchStoryMentions(story.media_id);
-      setMentions(response.data.mentions);
-      setShowTaggedUsers(true);
-    } catch (error: any) {
-      console.error("Error fetching story mentions:", error);
-      // If user doesn't own the story, they can't see mentions
-      if (error.message?.includes("permission")) {
-        return;
-      }
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  const fetchMentions = useCallback(async () => {
+    setShowTaggedUsers(true);
+  }, [mentions.length]);
 
   // Only show for story owner
   if (story.user.id !== user?.id) {
@@ -241,7 +230,7 @@ const TaggedUsersButton = ({ story }: { story: Story }) => {
           animate={{ opacity: 1, scale: 1 }}
           onClick={fetchMentions}
           disabled={isLoading}
-          className="flex items-center px-3 py-2 text-white rounded-full bg-black/50 backdrop-blur-sm gap-2 hover:bg-black/70 transition-colors disabled:opacity-50"
+          className="flex cursor-pointer items-center px-3 py-2 text-white rounded-full bg-black/50 backdrop-blur-sm gap-2 hover:bg-black/70 transition-colors disabled:opacity-50"
         >
           {isLoading ? (
             <LucideLoader className="w-4 h-4 animate-spin" />

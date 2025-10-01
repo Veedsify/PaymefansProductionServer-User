@@ -10,6 +10,7 @@ import StoriesHeader from "./StatusHeader";
 import StoryPreviewControlls from "./StatusPreviewControls";
 import StatusPreviewSlide from "./StatusPreviewSlide";
 import { Zoom } from "swiper/modules";
+import { QueryClient, useQueryClient } from "@tanstack/react-query";
 
 // Caption Element Component
 
@@ -27,7 +28,7 @@ const StoryPreviewComponent = ({
   const [stories, setStories] = useState(initialStories);
   const { user } = useAuthContext();
   const viewedStories = useRef<Set<string>>(new Set());
-
+  const queryClient = useQueryClient();
   useEffect(() => {
     setStories(initialStories);
   }, [initialStories]);
@@ -43,8 +44,9 @@ const StoryPreviewComponent = ({
         }
         return newStories;
       });
+      queryClient.invalidateQueries({ queryKey: ["personal-stories"] });
     },
-    [activeIndex, onAllStoriesEnd],
+    [activeIndex, onAllStoriesEnd]
   );
 
   // Memoize the function to prevent unnecessary rerenders
@@ -100,7 +102,7 @@ const StoryPreviewComponent = ({
     (canPlay: boolean) => {
       if (canPlay) PlayVideo(true);
     },
-    [PlayVideo],
+    [PlayVideo]
   );
 
   // Handle slide change to update video references
@@ -138,7 +140,7 @@ const StoryPreviewComponent = ({
         viewedStories.current.add(currentStory.media_id);
       }
     },
-    [PlayVideo, stories],
+    [PlayVideo, stories]
   );
 
   // Preload adjacent slides for smoother transitions

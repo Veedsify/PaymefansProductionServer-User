@@ -1,9 +1,8 @@
 "use client";
 import { useStoryPause } from "@/contexts/StoryPauseContext";
 import { AnimatePresence, motion } from "framer-motion";
-import { Ban, MoreVertical, Link as ProfileLink, Trash, Trash2 } from "lucide-react";
+import { MoreVertical, Trash2 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
-import toast from "react-hot-toast";
 
 const StoryDeleteButton = ({
   user,
@@ -107,7 +106,8 @@ const StoryDeleteButton = ({
                       setIsOpen(false);
                       await handleDelete();
                     }}
-                  className="flex cursor-pointer items-center justify-center w-full px-3 py-1 text-sm bg-red-500 dark:text-gray-300 dark:hover:bg-red-500 text-nowrap rounded-md transition-colors duration-150 text-white gap-3 text-center">
+                    className="flex cursor-pointer items-center justify-center w-full px-3 py-1 text-sm bg-red-500 dark:text-gray-300 dark:hover:bg-red-500 text-nowrap rounded-md transition-colors duration-150 text-white gap-3 text-center"
+                  >
                     <Trash2 size={14} />
                     Delete Story
                   </button>
