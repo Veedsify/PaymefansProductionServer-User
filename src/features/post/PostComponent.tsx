@@ -79,21 +79,21 @@ const PostComponent = memo<PostComponentProps>(
 
     // Memoized post text processing - optimize string operations
     const { formattedText, needsProcessing } = useMemo(() => {
-      if (permissions.needsSubscription) {
-        return {
-          formattedText:
-            "<p class='text-sm text-emerald-500'>This post is only available to subscribers</p>",
-          needsProcessing: false,
-        };
-      }
+      // if (permissions.needsSubscription) {
+      //   return {
+      //     formattedText:
+      //       "<p class='text-sm text-emerald-500'>This post is only available to subscribers</p>",
+      //     needsProcessing: false,
+      //   };
+      // }
 
-      if (permissions.needsPayment) {
-        return {
-          formattedText:
-            "<p class='text-sm text-emerald-500'>This post is only available to paid users</p>",
-          needsProcessing: false,
-        };
-      }
+      // if (permissions.needsPayment) {
+      //   return {
+      //     formattedText:
+      //       "<p class='text-sm text-emerald-500'>This post is only available to paid users</p>",
+      //     needsProcessing: false,
+      //   };
+      // }
 
       const text = data.post.replace(/\r?\n/g, "<br/>");
       return {
