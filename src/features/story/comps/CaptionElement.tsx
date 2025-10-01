@@ -1,5 +1,3 @@
-import { transform } from "lodash";
-
 const CaptionElement = ({ element }: { element: any }) => {
   const handleClick = () => {
     if (element.type === "link" && element.url) {
