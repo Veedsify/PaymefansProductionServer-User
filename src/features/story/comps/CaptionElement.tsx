@@ -23,7 +23,7 @@ const CaptionElement = ({ element }: { element: any }) => {
     textShadow: "0px 0px 10px rgba(0,0,0,0.5)", // Better readability on images/videos
     overflowWrap: "break-word" as const,
     wordBreak: "break-word" as const,
-    maxWidth: "300px",
+    maxWidth: "320px",
     zIndex: 200,
     width: "100%",
   };
@@ -33,7 +33,7 @@ const CaptionElement = ({ element }: { element: any }) => {
       style={elementStyle}
       onClick={handleClick}
       className={`
-        text-wrap break-words leading-tight max-w-xs
+        text-wrap wrap-break-word leading-tight max-w-xs
         ${element.type === "link" ? "hover:opacity-80 transition-opacity" : ""}
         ${element.type === "link" ? "underline" : ""}
       `}

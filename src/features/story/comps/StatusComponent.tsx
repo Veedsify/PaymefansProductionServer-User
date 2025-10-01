@@ -1,6 +1,6 @@
 "use client";
 import axios from "axios";
-import { LucideArrowRight, LucidePlay, X } from "lucide-react";
+import { LucideArrowRight, LucideImage, LucideImages, LucidePlay, X } from "lucide-react";
 import dynamic from "next/dynamic";
 import Image from "next/image";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
@@ -267,19 +267,7 @@ function StatusComponent() {
         {media.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-12 gap-4 dark:text-gray-300">
             <div className="flex items-center justify-center w-16 h-16 rounded-full bg-gradient-to-br from-primary-dark-pink/20 to-purple-500/20">
-              <svg
-                className="w-8 h-8 text-primary-dark-pink"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={1.5}
-                  d="M12 4v16m8-8H4"
-                />
-              </svg>
+              <LucideImages className="text-primary-dark-pink"/>
             </div>
             <p className="font-medium text-gray-500 dark:text-gray-400">
               No media selected

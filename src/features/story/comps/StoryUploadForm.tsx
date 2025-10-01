@@ -4,6 +4,7 @@ import { v4 as uuid } from "uuid";
 import { useStoryStore } from "@/contexts/StoryContext";
 import toast from "react-hot-toast";
 import { videoTypes } from "@/lib/FileTypes";
+import { LucidePlus } from "lucide-react";
 
 const StoryUploadForm = () => {
   const { addToStory } = useStoryStore();
@@ -65,7 +66,7 @@ const StoryUploadForm = () => {
         className="group cursor-pointer w-full h-full flex flex-1 gap-6 sm:gap-4 flex-col items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-900 hover:from-primary-dark-pink/5 hover:to-purple-500/5 dark:hover:from-primary-dark-pink/10 dark:hover:to-purple-500/10 border-2 border-dashed border-gray-300 dark:border-gray-600 hover:border-primary-dark-pink/50 dark:hover:border-primary-dark-pink/50 rounded-lg sm:rounded-xl transition-all duration-300 ease-in-out transform p-8 sm:p-8 py-12"
       >
         <div className="flex items-center justify-center w-20 h-20 rounded-full shadow-lg sm:w-16 sm:h-16 bg-gradient-to-br from-primary-dark-pink/20 to-purple-500/20 group-hover:from-primary-dark-pink/30 group-hover:to-purple-500/30 transition-all duration-300">
-          <HiCamera
+          <LucidePlus
             size={40}
             className="text-primary-dark-pink group-hover:scale-110 transition-transform duration-300 sm:w-8 sm:h-8"
           />

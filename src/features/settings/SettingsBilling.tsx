@@ -6,16 +6,18 @@ import { useSettingsBillingContext } from "@/contexts/SettingsBillingContext";
 import { useAuthContext } from "@/contexts/UserUseContext";
 import Toggle from "../../components/common/toggles/Checked";
 import SubscriptionState from "../subscriptions/SubscriptionState";
+import { useConfigContext } from "@/contexts/ConfigContext";
 
 const Settingsbilling = () => {
   const { user } = useAuthContext();
   const [price, setPrice] = useState<number>(0);
-
+  const { config } = useConfigContext();
   const { settings, setSubscription, saveSettings } =
     useSettingsBillingContext();
 
   const handlePriceSet = (e: any) => {
-    const newprice = Number(e.target.value);
+    if (!config) return;
+    const newprice = Number(e.target.value * config?.point_conversion_rate_ngn);
     setSubscription({
       ...settings,
       price_per_message: newprice,
