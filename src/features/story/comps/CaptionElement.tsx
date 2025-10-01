@@ -17,7 +17,6 @@ const CaptionElement = ({ element }: { element: any }) => {
     color: element.style.color,
     textAlign: element.style.textAlign,
     fontStyle: element.style.fontStyle || "normal",
-    maxwidth: "100vw",
     transform: `translate(-${element.position.x}%, -50%) rotate(${360}deg)`,
     textDecoration: element.style.textDecoration || "none",
     cursor: element.type === "link" ? "pointer" : "default",
