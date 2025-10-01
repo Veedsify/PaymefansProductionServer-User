@@ -97,19 +97,26 @@ const SetSubscription = () => {
   // Handle form submission
   const handleFormSubmit = async () => {
     try {
+
       const saveSubscriptions = (await AddSubscriptionTiers({ tiers })) as {
         error: boolean;
         message: string;
       };
       if (saveSubscriptions?.error) {
-        toast.error(saveSubscriptions.message || "Save failed.");
+        toast.error(saveSubscriptions.message || "Save failed.", {
+          id: "settings-saved",
+        });
       } else {
-        toast.success("Subscription saved successfully");
+        toast.success("Subscription saved successfully", {
+          id: "settings-saved",
+        });
         GetSubscriptions();
       }
     } catch (error) {
       console.error("Save failed.", error);
-      toast.error("An error occurred while saving!");
+      toast.error("An error occurred while saving!", {
+        id: "settings-saved",
+      });
     }
   };
 
