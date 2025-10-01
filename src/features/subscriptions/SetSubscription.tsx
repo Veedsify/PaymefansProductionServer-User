@@ -33,7 +33,6 @@ const SetSubscription = () => {
     try {
       const url = `/subscribers/subscriptions/${user?.user_id}`;
       const subscriptions = await FetchUserSubscriptions(url);
-
       if (subscriptions.data.data.length === 0) {
         setTiers([initialTier]); // Reset to a single empty tier
       } else {
@@ -43,6 +42,9 @@ const SetSubscription = () => {
       console.log(e);
       toast.error(
         "Subscription could not be retrieved. Please try again later",
+        {
+          id: "settings-saved",
+        }
       );
     }
   }, [user?.user_id]);
@@ -78,7 +80,7 @@ const SetSubscription = () => {
   const updateTierField = (
     index: number,
     field: keyof SubscriptionTiersProps,
-    value: string,
+    value: string
   ) => {
     const updatedTiers = [...tiers];
     updatedTiers[index] = {

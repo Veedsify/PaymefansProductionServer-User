@@ -29,7 +29,7 @@ export const useSettingsBillingContext = () => {
   const context = useContext(settingsBillingContext);
   if (context === undefined) {
     throw new Error(
-      "useSettingsBillingContext must be used within a SettingsBillingProvider",
+      "useSettingsBillingContext must be used within a SettingsBillingProvider"
     );
   }
   return context;
@@ -50,22 +50,26 @@ export const SettingsBillingProvider: React.FC<SettingsBillingProps> = ({
       try {
         const res = await axiosInstance.post(
           `/settings/billings/message-price`,
-          settings,
+          settings
         );
 
         const data = res.data;
         if (data.status) {
-          toast.success("Settings saved successfully");
+          toast.success("Settings saved successfully", {
+            id: "settings-saved",
+          });
           router.refresh();
           return;
         }
-        toast.error("Error saving settings");
+        toast.error("Error saving settings", {
+          id: "settings-saved",
+        });
       } catch (error: any) {
         if (error.response) {
           console.log(
             "Error: ",
             error.response.status,
-            error.response.statusText,
+            error.response.statusText
           );
         } else {
           console.log("Error: ", error.message);
