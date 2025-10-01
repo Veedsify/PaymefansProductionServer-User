@@ -67,7 +67,7 @@ const Login = () => {
         if (loginToken && !loginTfa) {
           toast.success(LOGIN_CONFIG.LOGIN_SUCCESSFUL_MSG, { id: "login" });
           const redirect = new URLSearchParams(window.location.search).get(
-            "redirect",
+            "redirect"
           );
           if (!redirect) {
             setUser(loginUser);
@@ -89,7 +89,7 @@ const Login = () => {
         error.response?.data?.message ||
           error.response?.data?.error ||
           "An error occurred while logging in",
-        { id: "login" },
+        { id: "login" }
       );
     },
   });
@@ -127,7 +127,7 @@ const Login = () => {
           <div className="h-full lg:p-14 2xl:p-28">
             <div className="pt-12 mx-auto mb-16 max-w-screen-xl md:mt-16">
               <Link
-                href="/"
+                href="/login"
                 className="inline-block transition-transform hover:scale-105"
               >
                 <Image

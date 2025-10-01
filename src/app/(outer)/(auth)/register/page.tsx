@@ -26,7 +26,7 @@ const Register = () => {
   const { setUser, user } = useUser();
   const router = useRouter();
   const UserInputCaptured = (
-    e: ChangeEvent<HTMLInputElement | HTMLSelectElement>,
+    e: ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
     const { name, value } = e.target;
     // Update userData state using spread operator to ensure immutability:
@@ -94,7 +94,7 @@ const Register = () => {
           {
             email: user.email,
             phone: user.phone,
-          },
+          }
         );
         const data = res.data;
 
@@ -133,7 +133,7 @@ const Register = () => {
         <div className="h-full lg:p-14 2xl:p-28">
           <div className="pt-12 mx-auto mb-16 max-w-screen-xl md:mt-16">
             <Link
-              href="/"
+              href="/register"
               className="inline-block transition-transform hover:scale-105"
             >
               <Image
@@ -209,7 +209,7 @@ const Register = () => {
                   defaultValue="NG"
                   onChange={(e) => {
                     const selected = countries.find(
-                      (c) => c.code === e.target.value,
+                      (c) => c.code === e.target.value
                     );
                     if (selected) {
                       setUserData({
