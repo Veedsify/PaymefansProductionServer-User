@@ -97,7 +97,6 @@ const SetSubscription = () => {
   // Handle form submission
   const handleFormSubmit = async () => {
     try {
-
       const saveSubscriptions = (await AddSubscriptionTiers({ tiers })) as {
         error: boolean;
         message: string;

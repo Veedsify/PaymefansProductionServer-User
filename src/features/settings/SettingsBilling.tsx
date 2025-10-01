@@ -44,7 +44,6 @@ const Settingsbilling = () => {
           <input
             type="number"
             onChange={handlePriceSet}
-            defaultValue={settings?.price_per_message}
             placeholder="Price"
             className="w-full font-bold text-gray-700 outline-none"
           />
