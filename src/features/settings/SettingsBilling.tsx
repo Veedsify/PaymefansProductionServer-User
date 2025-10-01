@@ -10,7 +10,7 @@ import { useConfigContext } from "@/contexts/ConfigContext";
 
 const Settingsbilling = () => {
   const { user } = useAuthContext();
-  const [price, setPrice] = useState<number>(0);
+  const [price, setPrice] = useState<number>();
   const { config } = useConfigContext();
   const { settings, setSubscription, saveSettings } =
     useSettingsBillingContext();
