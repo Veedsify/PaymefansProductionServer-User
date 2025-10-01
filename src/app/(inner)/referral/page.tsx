@@ -305,11 +305,11 @@ const ReferralPage = () => {
         </div>
 
         <div className="mt-4 p-4 bg-primary-text-dark-pink/5 dark:bg-primary-dark-pink/10 border border-primary-text-dark-pink/20 rounded-md">
-          <p className="text-sm text-gray-600 dark:text-gray-400">
+          <p className="text-sm text-gray-600 dark:text-gray-400 inline">
             <strong>How it works:</strong> Share your referral code{" "}
             <strong>{referralCode}</strong> or link with friends! When they sign
             up as a model using your code you'll earn{" "}
-            {user?.is_model && config ? (
+            {!user?.is_model && config ? (
               `${(
                 config?.point_conversion_rate_ngn * 10
               ).toLocaleString()} Naira`
@@ -318,7 +318,7 @@ const ReferralPage = () => {
                 <Image
                   width={20}
                   height={20}
-                  className="w-5 h-5"
+                  className="w-5 h-5 inline"
                   src="/site/coin.svg"
                   alt="Points"
                 />{" "}
