@@ -22,7 +22,6 @@ const CaptionElement = ({ element }: { element: any }) => {
     pointerEvents: (element.type === "link" ? "auto" : "none") as any,
     textShadow: "0px 0px 10px rgba(0,0,0,0.5)", // Better readability on images/videos
     zIndex: 200,
-    maxWidth: "300px",
     width: "100%",
   };
 
@@ -31,7 +30,7 @@ const CaptionElement = ({ element }: { element: any }) => {
       style={elementStyle}
       onClick={handleClick}
       className={`
-        text-wrap break-words leading-tight
+        text-wrap break-words leading-tight max-w-xs
         ${element.type === "link" ? "hover:opacity-80 transition-opacity" : ""}
         ${element.type === "link" ? "underline" : ""}
       `}
