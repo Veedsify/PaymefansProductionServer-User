@@ -63,7 +63,7 @@ const ContactSupportModal = ({
   };
 
   const handleInputChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
@@ -91,7 +91,7 @@ const ContactSupportModal = ({
       }
 
       toast.success(
-        "Support ticket submitted successfully! We'll get back to you soon.",
+        "Support ticket submitted successfully! We'll get back to you soon."
       );
       handleClose();
 
@@ -214,7 +214,7 @@ const ContactSupportModal = ({
                           htmlFor="name"
                           className="block mb-3 text-sm font-semibold text-gray-900 dark:text-gray-200"
                         >
-                        Name
+                          Name
                         </label>
                         <input
                           type="text"

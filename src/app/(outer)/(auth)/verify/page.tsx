@@ -1,4 +1,4 @@
-"use client";;
+"use client";
 import { debounce } from "lodash-es";
 import Image from "next/image";
 import Link from "next/link";
@@ -87,7 +87,7 @@ const Login = () => {
         <div className="h-full lg:p-14 2xl:p-28">
           <div className="pt-12 mx-auto mb-16 max-w-screen-xl md:mt-16">
             <Link
-              href="/client/public"
+              href="/login"
               className="inline-block transition-transform hover:scale-105"
             >
               <Image

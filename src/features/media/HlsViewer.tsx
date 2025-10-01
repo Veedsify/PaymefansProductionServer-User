@@ -184,7 +184,7 @@ const HlsViewer = memo(
           <div className="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 z-10">
             <button
               onClick={togglePlayPause}
-              className="bg-black bg-opacity-50 text-white p-4 rounded-full cursor-pointer hover:bg-opacity-70 transition-all duration-200"
+              className="text-white rounded-full cursor-pointer hover:bg-opacity-70 transition-all duration-200"
               aria-label={isPlaying ? "Pause video" : "Play video"}
             >
               {isPlaying ? <LucidePause size={32} /> : <LucidePlay size={32} />}
@@ -197,7 +197,7 @@ const HlsViewer = memo(
           <div className="absolute bottom-4 left-4">
             <button
               onClick={toggleMute}
-              className="bg-black bg-opacity-50 text-white p-2 rounded-full cursor-pointer hover:bg-opacity-70 transition-all duration-200"
+              className="text-white rounded-full cursor-pointer hover:bg-opacity-70 transition-all duration-200"
               aria-label={isMuted ? "Unmute video" : "Mute video"}
             >
               {isMuted ? (

@@ -147,7 +147,7 @@ const ChooseUserName = () => {
         <div className="h-full lg:p-14 2xl:p-28">
           <div className="pt-12 mx-auto mb-16 max-w-screen-xl md:mt-16">
             <Link
-              href="/"
+              href="/login"
               className="inline-block transition-transform hover:scale-105"
             >
               <Image
