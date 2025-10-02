@@ -44,7 +44,7 @@ const SetSubscription = () => {
         "Subscription could not be retrieved. Please try again later",
         {
           id: "settings-saved",
-        }
+        },
       );
     }
   }, [user?.user_id]);
@@ -84,7 +84,7 @@ const SetSubscription = () => {
   const updateTierField = (
     index: number,
     field: keyof SubscriptionTiersProps,
-    value: string
+    value: string | number,
   ) => {
     const updatedTiers = [...tiers];
     updatedTiers[index] = {
@@ -134,7 +134,7 @@ const SetSubscription = () => {
             <form onSubmit={handleFormSubmit}>
               {tiers.map((tier, index) => (
                 <div className="tierNode" key={index}>
-                  <div className="flex justify-between mb-3 gap-5">
+                  <div className="md:flex justify-between flex-wrap w-full mb-3 space-y-5 md:space-y-0 gap-3">
                     <input
                       type="text"
                       name={`name-${index}`}
@@ -144,37 +144,44 @@ const SetSubscription = () => {
                         updateTierField(index, "tier_name", e.target.value)
                       }
                       placeholder="Tier Name (e.g. Basic)"
-                      className="flex-1 p-2 font-medium border rounded-lg outline-none border-black/30 bg-gray-50 dark:bg-gray-800"
+                      className="flex-1 p-2 w-full font-medium border rounded-lg outline-none border-black/30 bg-gray-50 dark:bg-gray-800"
                     />
                     <div className="flex flex-col gap-1">
-                      <div className="flex items-center gap-2">
-                        <Image
-                          width={20}
-                          height={20}
-                          priority
-                          src="/site/coin.svg"
-                          alt=""
-                        />
+                      <div className="flex items-center w-full gap-2">
+                        <span>₦</span>
                         <input
-                          type="text"
+                          type="number"
                           placeholder="Price"
-                          required
-                          value={tier.tier_price}
-                          onChange={(e) =>
-                            updateTierField(index, "tier_price", e.target.value)
+                          id={`price-${index}`}
+                          defaultValue={
+                            tier.tier_price *
+                            (config?.point_conversion_rate_ngn || 1)
                           }
-                          name={`price-${index}`}
-                          className="w-32 p-2 border rounded-lg outline-none border-black/30 bg-gray-50 dark:bg-gray-800"
+                          onChange={(e) => {
+                            if (e.target.value === "") {
+                              console.log("empty");
+                              return (e.currentTarget.value = "");
+                            }
+                            const naira = parseFloat(e.target.value) || 0;
+                            const points =
+                              naira / (config?.point_conversion_rate_ngn || 1);
+                            updateTierField(index, "tier_price", points);
+                          }}
+                          name={`price`}
+                          className="min-w-xs w-full p-2 border rounded-lg outline-none border-black/30 bg-gray-50 dark:bg-gray-800"
                         />
                       </div>
                       {tier.tier_price > 0 &&
                         config?.point_conversion_rate_ngn && (
-                          <p className="text-sm text-right text-primary-dark-pink">
-                            ≈ ₦
-                            {(
-                              Number(tier.tier_price) *
-                              config.point_conversion_rate_ngn
-                            ).toLocaleString()}
+                          <p className="text-sm text-right text-primary-dark-pink inline-flex items-center justify-end gap-2">
+                            <Image
+                              width={16}
+                              height={16}
+                              priority
+                              src="/site/coin.svg"
+                              alt=""
+                            />
+                            <span>{Math.round(tier.tier_price)}</span>
                           </p>
                         )}
                     </div>
@@ -196,16 +203,15 @@ const SetSubscription = () => {
                     <option value="84">3 Months</option>
                     <option value="168">6 Months</option>
                   </select>
-                  <textarea
+                  {/*<textarea
                     name={`perks-${index}`}
-                    required
                     value={tier.tier_description}
                     onChange={(e) =>
                       updateTierField(index, "tier_description", e.target.value)
                     }
                     placeholder="Add special perks for this tier..."
                     className="w-full h-20 p-2 border rounded-lg resize-none  border-black/30 bg-gray-50 dark:bg-gray-800"
-                  />
+                  />*/}
                   <div className="pb-6">
                     <div className="mb-4 text-right">
                       <button

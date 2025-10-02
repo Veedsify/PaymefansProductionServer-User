@@ -74,7 +74,7 @@ type Configs = {
 };
 
 type ConfigContextProps = {
-  config: Configs | undefined;
+  config: Configs | null;
   updateConfig: (config: Configs) => void;
 };
 
@@ -89,7 +89,7 @@ export const useConfigContext = (): ConfigContextProps => {
 };
 
 export default function ConfigProvider({ children }: { children: ReactNode }) {
-  const [config, setConfig] = useState<Configs | undefined>(undefined);
+  const [config, setConfig] = useState<Configs | null>(null);
   const router = useRouter();
   useEffect(() => {
     async function fetchConfigs() {
@@ -108,7 +108,7 @@ export default function ConfigProvider({ children }: { children: ReactNode }) {
     (config: Configs) => {
       setConfig(config);
     },
-    [setConfig]
+    [setConfig],
   );
 
   const value = {

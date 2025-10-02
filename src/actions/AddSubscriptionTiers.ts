@@ -22,11 +22,11 @@ export default async function AddSubscriptionTiers({
     };
   } catch (error) {
     console.log(error);
-    if (error instanceof AxiosError){
+    if (error instanceof AxiosError) {
       return {
         error: true,
         message: error?.response?.data.message || "Save failed.",
-      }
-    };
+      };
+    }
   }
 }
