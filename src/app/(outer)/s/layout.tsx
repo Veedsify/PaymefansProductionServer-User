@@ -1,6 +1,6 @@
 "use client";
 import type { ReactNode } from "react";
-import "@fontsource-variable/geist";
+import "@fontsource-variable/bricolage-grotesque";
 export default function OuterPagesLayout({
   children,
 }: {

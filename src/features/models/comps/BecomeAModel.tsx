@@ -421,6 +421,7 @@ const BecomeAModel = () => {
             type="date"
             name="dob"
             placeholder="Date of Birth"
+            defaultValue="1900-01-01"
             className={`border p-4 w-full rounded-lg font-semibold outline-none focus:ring-2 focus:ring-primary-dark-pink transition ${
               formErrors.dob
                 ? "border-red-500 dark:border-red-500"

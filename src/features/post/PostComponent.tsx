@@ -172,17 +172,23 @@ const PostComponent = memo<PostComponentProps>(
     return (
       <div
         className={cn(
-          "px-2 pt-9 pb-3 duration-300 md:px-5 cursor-pointer",
+          "px-2 pb-3 duration-300 md:px-5 relative",
           isLast ? "" : "border-b border-gray-300 dark:border-gray-700"
         )}
-        onClick={actions.handlePostClick}
-        role="link"
-        data-href={`/posts/${data.post_id}`}
         key={data.post_id}
         ref={ref}
       >
         <div
-          className="cursor-pointer"
+          className="absolute inset-0 -z-10 cursor-pointer w-full h-full"
+          onClick={actions.handlePostClick}
+          role="link"
+          data-href={`/posts/${data.post_id}`}
+        ></div>
+        <div
+          className="cursor-pointer pt-12"
+          onClick={actions.handlePostClick}
+          role="link"
+          data-href={`/posts/${data.post_id}`}
         >
           {was_repost && (
             <div className="mb-3">

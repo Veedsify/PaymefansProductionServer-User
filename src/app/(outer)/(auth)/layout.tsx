@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import "@fontsource-variable/geist";
+import "@fontsource-variable/bricolage-grotesque";
 import "../../globals.css";
 import { Toaster } from "react-hot-toast";
 import Footer from "@/components/common/global/Footer";

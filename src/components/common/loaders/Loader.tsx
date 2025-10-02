@@ -31,7 +31,7 @@ const Loader = () => {
             unoptimized
             src="/site/logos/logo2.png"
             alt="Loader"
-            className=" w-32 md:w-[200px] h-auto"
+            className=" w-32 md:w-[150px] h-[48px]"
           />
         </span>
       </div>

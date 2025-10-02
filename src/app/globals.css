@@ -23,14 +23,14 @@
 
 @media only screen and (max-width: 768px) {
   html {
-    font-size: 92.2%;
+    font-size: 92%;
   }
 }
 
 body {
   -webkit-font-smoothing: antialiased;
   /* for Chrome, Safari */
-  font-family: 'Geist Variable', sans-serif;
+  font-family: 'Bricolage Grotesque Variable', sans-serif;
   -moz-osx-font-smoothing: grayscale;
 }
 

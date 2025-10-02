@@ -5,6 +5,7 @@ import type { HookupProps } from "@/features/models/comps/SideModels";
 import { AuthUserProps } from "@/features/user/types/user";
 import { cn } from "../../../components/ui/cn";
 import ActiveProfileTag from "../../profile/ActiveProfileTag";
+import FormatName from "@/lib/FormatName";
 
 const HookupSubscription = ({ hookup }: { hookup: HookupProps }) => {
   const area = hookup?.user_city || hookup?.state;
@@ -32,10 +33,12 @@ const HookupSubscription = ({ hookup }: { hookup: HookupProps }) => {
       <p
         className={cn(
           `text-sm font-bold text-center inline-flex items-center`,
-          hookup?.gender === "male" ? "text-blue-500" : "text-pink-500",
+          hookup?.gender === "male" ? "text-blue-500" : "text-pink-500"
         )}
       >
-        {hookup?.name || hookup?.username}
+        {hookup && hookup?.name
+          ? FormatName(hookup?.name)
+          : FormatName(hookup?.username)}
         {hookup?.gender && (
           <span className="ml-1 text-xs text-gray-600">
             {hookup?.gender === "male" ? (
