@@ -1,5 +1,6 @@
 import { useMemo } from "react";
 import { PostComponentProps } from "@/types/Components";
+import { useAuthContext } from "@/contexts/UserUseContext";
 
 /**
  * Custom hook to handle all permission logic for posts
@@ -9,6 +10,7 @@ export const usePostPermissions = (data: any, user: any, authUser: any) => {
   return useMemo(() => {
     // Extract values once to avoid repeated property access
     const { isSubscribed, hasPaid, post_audience } = data;
+    const { isGuest } = useAuthContext();
     const userId = user?.id;
     const authUserId = authUser?.id;
     const isCreator = userId === authUserId;
@@ -40,8 +42,8 @@ export const usePostPermissions = (data: any, user: any, authUser: any) => {
     const needsSubscription = post_audience === "subscribers" && !isSubscribed;
     const needsPayment = post_audience === "price" && !hasPaid;
     const canView =
-      (post_audience === "subscribers" && isSubscribed) ||
-      (post_audience === "price" && hasPaid);
+      (post_audience === "subscribers" && isSubscribed && !isGuest) ||
+      (post_audience === "price" && hasPaid && !isGuest);
 
     return {
       isSubscribed,
