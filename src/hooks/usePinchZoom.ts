@@ -64,6 +64,7 @@ export const usePinchZoom = ({
       if (!enabled || !isPinching.current || e.touches.length !== 2) return;
 
       e.preventDefault();
+      e.stopPropagation();
 
       const touch1 = e.touches[0];
       const touch2 = e.touches[1];
@@ -78,21 +79,17 @@ export const usePinchZoom = ({
           Math.min(maxZoom, transform.scale * scaleDelta)
         );
 
-        // Calculate new position to zoom towards the pinch center
-        const deltaX = center.x - lastCenter.current.x;
-        const deltaY = center.y - lastCenter.current.y;
-
         setTransform({
           scale: newScale,
-          posX: transform.posX + deltaX,
-          posY: transform.posY + deltaY,
+          posX: 0,
+          posY: 0,
         });
       }
 
       lastDistance.current = distance;
       lastCenter.current = center;
     },
-    [enabled, getDistance, getCenter, transform, minZoom, maxZoom]
+    [enabled, getDistance, getCenter, transform.scale, minZoom, maxZoom]
   );
 
   const handleTouchEnd = useCallback(() => {
@@ -103,7 +100,7 @@ export const usePinchZoom = ({
     lastCenter.current = null;
 
     // Reset zoom if it's close to minimum
-    if (transform.scale < minZoom + 0.1) {
+    if (transform.scale <= minZoom + 0.2) {
       setTransform({ scale: 1, posX: 0, posY: 0 });
     }
   }, [enabled, transform.scale, minZoom]);
@@ -115,18 +112,17 @@ export const usePinchZoom = ({
   const handleDoubleClick = useCallback(
     (e: React.MouseEvent) => {
       if (!enabled) return;
+      
+      e.preventDefault();
+      e.stopPropagation();
 
       if (transform.scale > 1) {
         resetZoom();
       } else {
-        const rect = e.currentTarget.getBoundingClientRect();
-        const x = e.clientX - rect.left - rect.width / 2;
-        const y = e.clientY - rect.top - rect.height / 2;
-
         setTransform({
-          scale: 2,
-          posX: -x,
-          posY: -y,
+          scale: 2.5,
+          posX: 0,
+          posY: 0,
         });
       }
     },

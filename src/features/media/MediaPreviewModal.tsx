@@ -325,29 +325,34 @@ const MediaPreviewModal = memo(
                 key={`media-${index}-${item.url.slice(-20)}`}
                 className="relative min-w-full h-full flex items-center justify-center"
                 aria-label={`Slide ${index + 1} of ${totalSlides}`}
-                style={{
-                  transform:
-                    isZoomed && index === currentSlide
-                      ? `scale(${transform.scale}) translate(${transform.posX}px, ${transform.posY}px)`
-                      : "none",
-                  transition: isZoomed ? "none" : "transform 0.3s ease-out",
-                }}
-                {...(item.type === "image" ? zoomHandlers : {})}
               >
                 <MediaErrorBoundary>
                   {shouldLoadSlide(index) ? (
                     item.type === "image" ? (
-                      <ImagePreview
-                        url={item.url}
-                        username={username}
-                        alt={item.alt || `Media preview ${index + 1}`}
-                        index={index}
-                        className="object-contain max-h-dvh"
-                        onLoad={() => handleImageLoad(index)}
-                        onError={() => handleImageError(index)}
-                        userProfile={userProfile}
-                        shouldWatermark={watermarkEnabled}
-                      />
+                      <div
+                        className="w-full h-full flex items-center justify-center"
+                        style={{
+                          transform:
+                            isZoomed && index === currentSlide
+                              ? `scale(${transform.scale}) translate(${transform.posX}px, ${transform.posY}px)`
+                              : "none",
+                          transition: "transform 0.2s ease-out",
+                          transformOrigin: "center center",
+                        }}
+                        {...zoomHandlers}
+                      >
+                        <ImagePreview
+                          url={item.url}
+                          username={username}
+                          alt={item.alt || `Media preview ${index + 1}`}
+                          index={index}
+                          className="object-contain max-h-dvh pointer-events-none"
+                          onLoad={() => handleImageLoad(index)}
+                          onError={() => handleImageError(index)}
+                          userProfile={userProfile}
+                          shouldWatermark={watermarkEnabled}
+                        />
+                      </div>
                     ) : (
                       <VideoPreview
                         url={item.url}
@@ -377,14 +382,14 @@ const MediaPreviewModal = memo(
               className="left-2 md:left-4 top-1/2"
               ariaLabel="Previous slide"
               onClick={handlePrevSlide}
-              disabled={isFirstSlide}
+              disabled={isFirstSlide || isZoomed}
             />
             <NavigationButton
               direction="next"
               className="right-2 md:right-4 top-1/2"
               ariaLabel="Next slide"
               onClick={handleNextSlide}
-              disabled={isLastSlide}
+              disabled={isLastSlide || isZoomed}
             />
           </>
         )}
