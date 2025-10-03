@@ -1,11 +1,17 @@
 "use client";
+import dynamic from "next/dynamic";
 import Image from "next/image";
 import { useEffect, useMemo, useState } from "react";
 import toast from "react-hot-toast";
 import { useSettingsBillingContext } from "@/contexts/SettingsBillingContext";
 import { useAuthContext } from "@/contexts/UserUseContext";
 import Toggle from "../../components/common/toggles/Checked";
-import SubscriptionState from "../subscriptions/SubscriptionState";
+const SubscriptionState = dynamic(
+  () => import("../subscriptions/SubscriptionState"),
+  {
+    ssr: false,
+  }
+);
 import { useConfigContext } from "@/contexts/ConfigContext";
 import { SUBSCRIPTIONS_CONFIG } from "@/config/config";
 
