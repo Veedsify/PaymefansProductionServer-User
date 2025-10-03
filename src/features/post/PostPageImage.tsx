@@ -60,7 +60,7 @@ const PostPageImage: React.FC<PostPageImageProps> = memo(
     const fullScreenPreview = usePostComponent(
       (state) => state.fullScreenPreview
     );
-    const { user: authUser } = useAuthContext();
+    const { user: authUser, isGuest } = useAuthContext();
     const [canplay, setCanplay] = useState(false);
     const points = usePointsStore((state) => state.points);
     const queryClient = useQueryClient();

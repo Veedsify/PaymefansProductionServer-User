@@ -55,8 +55,8 @@ const Post = React.memo(() => {
     const canView =
       isCreator || // Creator sees their own posts
       post?.post_audience === "public" || // Public posts are visible to all
-      (post?.post_audience === "subscribers" && isSubscribed) || // Subscriber-only post for subscribed users
-      (post?.post_audience === "price" && hasPaid); // Paid posts if the user has paid
+      (post?.post_audience === "subscribers" && !isGuest && isSubscribed) || // Subscriber-only post for subscribed users
+      (post?.post_audience === "price" && !isGuest && hasPaid); // Paid posts if the user has paid
     return { isCreator, isSubscribed, hasPaid, canView };
   }, [post, user]);
 

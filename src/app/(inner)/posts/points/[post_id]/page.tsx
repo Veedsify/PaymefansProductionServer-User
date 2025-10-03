@@ -25,7 +25,7 @@ type Points = {
 export default function Page() {
   const params = useParams();
   const postId = params?.post_id as string;
-  const { user } = useAuthContext();
+  const { user, isGuest } = useAuthContext();
   const {
     data: post,
     isLoading,
@@ -62,8 +62,8 @@ export default function Page() {
     // isAdmin || // Admin sees all
     isCreator ||
     post.post_audience === "public" ||
-    (post.post_audience === "subscribers" && isSubscribed) ||
-    (post.post_audience === "price" && hasPaid);
+    (post.post_audience === "subscribers" && !isGuest && isSubscribed) ||
+    (post.post_audience === "price" && !isGuest && hasPaid);
 
   const content = {
     __html: `${post?.content?.replace(/\r\n|\r|\n/g, "<br>")}`,
