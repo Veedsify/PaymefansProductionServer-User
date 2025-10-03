@@ -13,6 +13,7 @@ import {
 import { A11y, Keyboard, Navigation, Pagination, Zoom } from "swiper/modules";
 import { Swiper, type SwiperClass, SwiperSlide } from "swiper/react";
 import "swiper/css/bundle";
+import "swiper/css/zoom";
 import { motion, useReducedMotion } from "framer-motion";
 import { ImagePreview } from "@/features/post/ImagePreviewWithCanvas";
 import MediaErrorBoundary from "../../providers/MediaErrorBoundary";
@@ -156,6 +157,10 @@ const MediaPreviewModal = memo(
 
     const handleSlideChange = useCallback((swiper: SwiperClass) => {
       setCurrentSlide(swiper.activeIndex);
+      // Reset zoom when changing slides
+      if (swiper.zoom) {
+        swiper.zoom.out();
+      }
     }, []);
 
     const handlePrevSlide = useCallback(() => {
@@ -283,7 +288,8 @@ const MediaPreviewModal = memo(
           onSlideChange={handleSlideChange}
           className="select-none bg-black w-full h-full"
           keyboard={{ enabled: true }}
-          allowTouchMove={false}
+          allowTouchMove={true}
+          zoom={true}
           a11y={{
             prevSlideMessage: "Previous slide",
             nextSlideMessage: "Next slide",
@@ -299,27 +305,29 @@ const MediaPreviewModal = memo(
             >
               <MediaErrorBoundary>
                 {shouldLoadSlide(index) ? (
-                  item.type === "image" ? (
-                    <ImagePreview
-                      url={item.url}
-                      username={username}
-                      alt={item.alt || `Media preview ${index + 1}`}
-                      index={index}
-                      className="object-contain max-h-dvh"
-                      onLoad={() => handleImageLoad(index)}
-                      onError={() => handleImageError(index)}
-                      userProfile={userProfile}
-                      shouldWatermark={watermarkEnabled}
-                    />
-                  ) : (
-                    <VideoPreview
-                      url={item.url}
-                      isBlob={!!item.isBlob}
-                      playAction={currentSlide === index}
-                      index={index}
-                      userProfile={userProfile}
-                    />
-                  )
+                  <div className="swiper-zoom-container">
+                    {item.type === "image" ? (
+                      <ImagePreview
+                        url={item.url}
+                        username={username}
+                        alt={item.alt || `Media preview ${index + 1}`}
+                        index={index}
+                        className="object-contain max-h-dvh"
+                        onLoad={() => handleImageLoad(index)}
+                        onError={() => handleImageError(index)}
+                        userProfile={userProfile}
+                        shouldWatermark={watermarkEnabled}
+                      />
+                    ) : (
+                      <VideoPreview
+                        url={item.url}
+                        isBlob={!!item.isBlob}
+                        playAction={currentSlide === index}
+                        index={index}
+                        userProfile={userProfile}
+                      />
+                    )}
+                  </div>
                 ) : (
                   // Placeholder for unloaded slides
                   <div className="flex items-center justify-center w-full h-full">

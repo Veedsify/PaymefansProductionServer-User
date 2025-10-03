@@ -11,6 +11,13 @@ export const MEDIA_CONSTANTS = {
     threshold: 15,
     longSwipesRatio: 0.5,
     watchSlidesProgress: true,
+    zoom: {
+      maxRatio: 5,
+      minRatio: 1,
+      toggle: true,
+      containerClass: 'swiper-zoom-container',
+    },
+    touchStartPreventDefault: false,
   },
   PRELOAD_RANGE: 3,
   IMAGE_QUALITY: {

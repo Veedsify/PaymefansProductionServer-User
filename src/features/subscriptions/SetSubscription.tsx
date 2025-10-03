@@ -61,11 +61,15 @@ const SubscriptionTierCard: React.FC<SubscriptionTierCardProps> = ({
     setLocalTier(updated);
     onChange(index, updated);
   };
+
   useEffect(() => {
     if (price === "") {
       return;
     }
-    const naira = parseInt(price);
+    const naira = Number(price.replace(/,/g, ""));
+    if (isNaN(naira) || naira < 0) {
+      return;
+    }
     const points = conversionRate ? naira / conversionRate : 0;
     updateLocalTier("tier_price", points);
   }, [price, conversionRate]);
@@ -86,10 +90,14 @@ const SubscriptionTierCard: React.FC<SubscriptionTierCardProps> = ({
           <div className="flex items-center w-full gap-2">
             <span>₦</span>
             <input
-              type="number"
+              type="text"
               placeholder="Price"
               key={`price-${index}`}
-              value={price}
+              value={
+                price !== ""
+                  ? Number(price.replace(/,/g, "")).toLocaleString()
+                  : ""
+              }
               min={0}
               step={1000}
               disabled={!conversionRate}
