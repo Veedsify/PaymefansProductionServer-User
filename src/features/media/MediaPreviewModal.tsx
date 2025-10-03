@@ -10,10 +10,6 @@ import {
   useRef,
   useState,
 } from "react";
-import { A11y, Keyboard, Navigation, Pagination, Zoom } from "swiper/modules";
-import { Swiper, type SwiperClass, SwiperSlide } from "swiper/react";
-import "swiper/css/bundle";
-import "swiper/css/zoom";
 import { motion, useReducedMotion } from "framer-motion";
 import { ImagePreview } from "@/features/post/ImagePreviewWithCanvas";
 import MediaErrorBoundary from "../../providers/MediaErrorBoundary";
@@ -26,6 +22,8 @@ import {
   type UserProfile,
 } from "./mediaPreviewTypes";
 import VideoPreview from "./VideoPreview";
+import { useSwipeGesture } from "@/hooks/useSwipeGesture";
+import { usePinchZoom } from "@/hooks/usePinchZoom";
 
 interface MediaPreviewModalProps {
   open: boolean;
@@ -47,14 +45,15 @@ const MediaPreviewModal = memo(
     userProfile,
     watermarkEnabled = false,
   }: MediaPreviewModalProps) => {
-    const swiperRef = useRef<SwiperClass | null>(null);
-    const [currentSlide, setCurrentSlide] = useState(0);
+    const containerRef = useRef<HTMLDivElement | null>(null);
+    const [currentSlide, setCurrentSlide] = useState(initialIndex);
     const [mediaState, dispatchMedia] = useReducer(mediaReducer, {
       loaded: new Set<number>(),
       errors: new Set<number>(),
     });
     const shouldReduceMotion = useReducedMotion();
     const [initialLoadComplete, setInitialLoadComplete] = useState(false);
+    const [slideTransition, setSlideTransition] = useState(true);
 
     // Validate media items
     const validateMediaItem = useCallback(
@@ -136,16 +135,58 @@ const MediaPreviewModal = memo(
       initialLoadComplete,
     ]);
 
+    // Pinch zoom for images
+    const {
+      transform,
+      handlers: zoomHandlers,
+      resetZoom,
+      isZoomed,
+    } = usePinchZoom({
+      minZoom: 1,
+      maxZoom: 4,
+      enabled: open && mediaItems[currentSlide]?.type === "image",
+    });
+
+    // Navigate to next/prev slide
+    const goToSlide = useCallback(
+      (index: number) => {
+        if (index >= 0 && index < mediaItems.length) {
+          setSlideTransition(true);
+          setCurrentSlide(index);
+          resetZoom();
+        }
+      },
+      [mediaItems.length, resetZoom]
+    );
+
+    const handlePrevSlide = useCallback(() => {
+      if (!isFirstSlide && !isZoomed) {
+        goToSlide(currentSlide - 1);
+      }
+    }, [isFirstSlide, isZoomed, goToSlide, currentSlide]);
+
+    const handleNextSlide = useCallback(() => {
+      if (!isLastSlide && !isZoomed) {
+        goToSlide(currentSlide + 1);
+      }
+    }, [isLastSlide, isZoomed, goToSlide, currentSlide]);
+
+    // Swipe gesture for navigation
+    const swipeGesture = useSwipeGesture({
+      onSwipeLeft: handleNextSlide,
+      onSwipeRight: handlePrevSlide,
+      threshold: 50,
+      enabled: open && !isZoomed,
+    });
+
     // Handlers
     const handleClose = useCallback(() => {
       onClose();
       setCurrentSlide(0);
       dispatchMedia({ type: "RESET" });
       setInitialLoadComplete(false);
-      setTimeout(() => {
-        if (swiperRef.current) swiperRef.current.slideTo(0, 0, false);
-      }, MEDIA_CONSTANTS.ANIMATION_DURATION);
-    }, [onClose]);
+      resetZoom();
+    }, [onClose, resetZoom]);
 
     const handleImageLoad = useCallback((index: number) => {
       dispatchMedia({ type: "LOAD_SUCCESS", index });
@@ -154,22 +195,6 @@ const MediaPreviewModal = memo(
     const handleImageError = useCallback((index: number) => {
       dispatchMedia({ type: "LOAD_ERROR", index });
     }, []);
-
-    const handleSlideChange = useCallback((swiper: SwiperClass) => {
-      setCurrentSlide(swiper.activeIndex);
-      // Reset zoom when changing slides
-      if (swiper.zoom) {
-        swiper.zoom.out();
-      }
-    }, []);
-
-    const handlePrevSlide = useCallback(() => {
-      if (!isFirstSlide && swiperRef.current) swiperRef.current.slidePrev();
-    }, [isFirstSlide]);
-
-    const handleNextSlide = useCallback(() => {
-      if (!isLastSlide && swiperRef.current) swiperRef.current.slideNext();
-    }, [isLastSlide]);
 
     // Keyboard navigation
     useEffect(() => {
@@ -205,13 +230,14 @@ const MediaPreviewModal = memo(
 
     // Initialize slide position
     useEffect(() => {
-      if (swiperRef.current && typeof initialIndex === "number" && open) {
+      if (typeof initialIndex === "number" && open) {
         const targetSlide = Math.max(
           0,
           Math.min(initialIndex, totalSlides - 1)
         );
-        swiperRef.current.slideTo(targetSlide, 0, false);
+        setSlideTransition(false);
         setCurrentSlide(targetSlide);
+        setTimeout(() => setSlideTransition(true), 100);
       }
     }, [initialIndex, totalSlides, open]);
 
@@ -281,32 +307,36 @@ const MediaPreviewModal = memo(
           </div>
         )}
 
-        <Swiper
-          {...MEDIA_CONSTANTS.SWIPER_CONFIG}
-          modules={[Navigation, Pagination, Keyboard, A11y, Zoom]}
-          onSwiper={(swiper) => (swiperRef.current = swiper)}
-          onSlideChange={handleSlideChange}
-          className="select-none bg-black w-full h-full"
-          keyboard={{ enabled: true }}
-          allowTouchMove={true}
-          zoom={true}
-          a11y={{
-            prevSlideMessage: "Previous slide",
-            nextSlideMessage: "Next slide",
-            firstSlideMessage: "This is the first slide",
-            lastSlideMessage: "This is the last slide",
-          }}
+        {/* Custom Slider Container */}
+        <div
+          ref={containerRef}
+          className="relative w-full h-full overflow-hidden bg-black"
+          {...swipeGesture}
         >
-          {mediaItems.map((item, index) => (
-            <SwiperSlide
-              key={`media-${index}-${item.url.slice(-20)}`}
-              className="relative h-dvh bg-black group"
-              aria-label={`Slide ${index + 1} of ${totalSlides}`}
-            >
-              <MediaErrorBoundary>
-                {shouldLoadSlide(index) ? (
-                  <div className="swiper-zoom-container">
-                    {item.type === "image" ? (
+          <div
+            className="flex h-full"
+            style={{
+              transform: `translateX(-${currentSlide * 100}%)`,
+              transition: slideTransition ? "transform 0.3s ease-out" : "none",
+            }}
+          >
+            {mediaItems.map((item, index) => (
+              <div
+                key={`media-${index}-${item.url.slice(-20)}`}
+                className="relative min-w-full h-full flex items-center justify-center"
+                aria-label={`Slide ${index + 1} of ${totalSlides}`}
+                style={{
+                  transform:
+                    isZoomed && index === currentSlide
+                      ? `scale(${transform.scale}) translate(${transform.posX}px, ${transform.posY}px)`
+                      : "none",
+                  transition: isZoomed ? "none" : "transform 0.3s ease-out",
+                }}
+                {...(item.type === "image" ? zoomHandlers : {})}
+              >
+                <MediaErrorBoundary>
+                  {shouldLoadSlide(index) ? (
+                    item.type === "image" ? (
                       <ImagePreview
                         url={item.url}
                         username={username}
@@ -326,18 +356,18 @@ const MediaPreviewModal = memo(
                         index={index}
                         userProfile={userProfile}
                       />
-                    )}
-                  </div>
-                ) : (
-                  // Placeholder for unloaded slides
-                  <div className="flex items-center justify-center w-full h-full">
-                    <div className="w-8 h-8 border-4 border-white/30 border-t-white rounded-full animate-spin"></div>
-                  </div>
-                )}
-              </MediaErrorBoundary>
-            </SwiperSlide>
-          ))}
-        </Swiper>
+                    )
+                  ) : (
+                    // Placeholder for unloaded slides
+                    <div className="flex items-center justify-center w-full h-full">
+                      <div className="w-8 h-8 border-4 border-white/30 border-t-white rounded-full animate-spin"></div>
+                    </div>
+                  )}
+                </MediaErrorBoundary>
+              </div>
+            ))}
+          </div>
+        </div>
 
         {/* Navigation buttons */}
         {totalSlides > 1 && (

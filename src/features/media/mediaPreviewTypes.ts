@@ -3,27 +3,16 @@ export const MEDIA_CONSTANTS = {
   ANIMATION_DURATION: 200,
   ANIMATION_DURATION_SEC: 200 / 1000,
   IMAGE_DIMENSIONS: { width: 1500, height: 1500 },
-  SWIPER_CONFIG: {
-    spaceBetween: 0,
-    slidesPerView: 1,
-    touchRatio: 1.5,
-    speed: 300,
-    threshold: 15,
-    longSwipesRatio: 0.5,
-    watchSlidesProgress: true,
-    zoom: {
-      maxRatio: 5,
-      minRatio: 1,
-      toggle: true,
-      containerClass: 'swiper-zoom-container',
-    },
-    touchStartPreventDefault: false,
-  },
   PRELOAD_RANGE: 3,
   IMAGE_QUALITY: {
     HIGH: 90,
     MEDIUM: 75,
     LOW: 50,
+  },
+  SWIPE_THRESHOLD: 50,
+  ZOOM_LIMITS: {
+    MIN: 1,
+    MAX: 4,
   },
 };
 
