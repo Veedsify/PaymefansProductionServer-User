@@ -56,13 +56,13 @@ const Settingsbilling = () => {
 
   const handleSave = async () => {
     if (!config || !settings) return;
-    if (
-      Number(settings?.price_per_message * config?.point_conversion_rate_ngn!) <
-        SUBSCRIPTIONS_CONFIG.MINIMUM_SUBSCRIPTION_PRICE_NGN &&
-      settings?.price_per_message !== 0
-    ) {
-      return toast.error("Price must be at least ₦10,000", { id: "price" });
-    }
+    // if (
+    //   Number(settings?.price_per_message * config?.point_conversion_rate_ngn!) <
+    //     SUBSCRIPTIONS_CONFIG.MINIMUM_SUBSCRIPTION_PRICE_NGN &&
+    //   settings?.price_per_message !== 0
+    // ) {
+    //   return toast.error("Price must be at least ₦10,000", { id: "price" });
+    // }
     saveSettings();
   };
 
