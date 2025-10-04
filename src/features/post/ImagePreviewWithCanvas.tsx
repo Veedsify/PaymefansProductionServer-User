@@ -41,29 +41,27 @@ export const ImagePreview = memo(
           onHoverEnd={() => setShowProfile(false)}
           onTouchStart={() => setShowProfile((prev) => !prev)} // Toggle on touch
         >
-          <div className="absolute inset-0 left-0 select-none flex items-center justify-center group">
-            {userProfile && showProfile && (
-              <div className="absolute bottom-[5%] md:bottom-[5%] left-2 z-20 flex items-center gap-3 p-2 rounded-full">
-                <UserProfileOverlay userProfile={userProfile} />
-              </div>
-            )}
-            <Image
-              src={url.trim()}
-              alt={alt}
-              priority
-              width={1080}
-              height={1080}
-              className={cn(className, "h-auto")}
-              onContextMenu={(e) => e.preventDefault()}
-              draggable={false}
-              style={{
-                userSelect: "none",
-                WebkitUserSelect: "none",
-                MozUserSelect: "none",
-                msUserSelect: "none",
-              }}
-            />
-          </div>
+          {userProfile && showProfile && (
+            <div className="absolute bottom-[5%] md:bottom-[5%] left-2 z-20 flex items-center gap-3 p-2 rounded-full">
+              <UserProfileOverlay userProfile={userProfile} />
+            </div>
+          )}
+          <Image
+            src={url.trim()}
+            alt={alt}
+            priority
+            width={1080}
+            height={1080}
+            className={cn(className, "h-auto")}
+            onContextMenu={(e) => e.preventDefault()}
+            draggable={false}
+            style={{
+              userSelect: "none",
+              WebkitUserSelect: "none",
+              MozUserSelect: "none",
+              msUserSelect: "none",
+            }}
+          />
         </motion.div>
       </Suspense>
     );
