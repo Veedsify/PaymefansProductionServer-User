@@ -83,7 +83,7 @@ export default function Analytics() {
       queryKey: ["analytics", "account-growth", timeRange],
       queryFn: () => fetchAccountGrowthData(timeRange),
       staleTime: 5 * 60 * 1000, // 5 minutes
-    },
+    }
   );
 
   const { data: engagementData = [], isLoading: isLoadingEngagement } =
@@ -155,8 +155,8 @@ export default function Analytics() {
             trend > 0
               ? "text-green-500 dark:text-green-400"
               : trend < 0
-                ? "text-red-500 dark:text-red-400"
-                : "text-gray-500 dark:text-gray-400"
+              ? "text-red-500 dark:text-red-400"
+              : "text-gray-500 dark:text-gray-400"
           }`}
         >
           {trend > 0 ? "+" : ""}
@@ -269,7 +269,7 @@ export default function Analytics() {
                 <>
                   {new Date(user?.created_at as Date).toLocaleDateString(
                     "en-US",
-                    { day: "numeric", month: "short", year: "numeric" },
+                    { day: "numeric", month: "short", year: "numeric" }
                   )}{" "}
                   - Now
                 </>
@@ -361,18 +361,18 @@ export default function Analytics() {
                 {timeRange === "24hrs"
                   ? "24 Hours"
                   : timeRange === "48hrs"
-                    ? "48 Hours"
-                    : timeRange === "3days"
-                      ? "3 Days"
-                      : timeRange === "7days"
-                        ? "7 Days"
-                        : timeRange === "1month"
-                          ? "Month"
-                          : timeRange === "3months"
-                            ? "3 Months"
-                            : timeRange === "6months"
-                              ? "6 Months"
-                              : "All Time"}
+                  ? "48 Hours"
+                  : timeRange === "3days"
+                  ? "3 Days"
+                  : timeRange === "7days"
+                  ? "7 Days"
+                  : timeRange === "1month"
+                  ? "Month"
+                  : timeRange === "3months"
+                  ? "3 Months"
+                  : timeRange === "6months"
+                  ? "6 Months"
+                  : "All Time"}
               </span>
             </div>
           </div>
@@ -427,6 +427,9 @@ export default function Analytics() {
                       Post
                     </th>
                     <th className="px-4 py-3 text-sm font-medium text-left text-gray-500 dark:text-gray-400">
+                      Content
+                    </th>
+                    <th className="px-4 py-3 text-sm font-medium text-left text-gray-500 dark:text-gray-400">
                       Date
                     </th>
                     <th className="px-4 py-3 text-sm font-medium text-left text-gray-500 dark:text-gray-400">
@@ -466,20 +469,32 @@ export default function Analytics() {
                     >
                       <td className="px-4 py-4">
                         <div className="flex items-center">
-                          <div className="flex items-center justify-center w-12 h-12 bg-gray-200 dark:bg-gray-700 rounded">
+                          <div className="flex items-center relative justify-center w-12 h-12 bg-gray-200 dark:bg-gray-700 rounded">
                             <Image
                               src={post.thumbnail}
                               alt="Post thumbnail"
                               width={48}
                               height={48}
-                              className="object-cover w-full h-full rounded"
+                              className=" w-full h-full aspect-square object-cover rounded"
                               onError={(e: any) => {
                                 e.target.onerror = null;
                                 e.target.src = "/site/banner.png";
                               }}
                             />
+                            {post.hasMoreMedia && (
+                              <div className="absolute bottom-1 z-10 right-1 bg-black/50 text-white text-xs px-1 rounded">
+                                +{post.hasMoreMedia ? "..." : ""}
+                              </div>
+                            )}
                           </div>
                         </div>
+                      </td>
+                      <td className="px-4 py-4 text-sm text-gray-500 dark:text-gray-400">
+                        {post.content
+                          ? post.content.length > 50
+                            ? post.content.slice(0, 50) + "..."
+                            : post.content
+                          : (<span className="text-xs text-nowrap italic">No content</span>)}
                       </td>
                       <td className="px-4 py-4 text-sm text-gray-500 dark:text-gray-400">
                         {post.date}
