@@ -72,7 +72,7 @@ const MediaPreviewModal = memo(
           alt: item.alt || `Media preview ${index + 1}`,
         };
       },
-      []
+      [],
     );
 
     const mediaItems = useMemo(() => {
@@ -86,7 +86,7 @@ const MediaPreviewModal = memo(
         isFirstSlide: currentSlide === 0,
         isLastSlide: currentSlide === mediaItems.length - 1,
       }),
-      [mediaItems.length, currentSlide]
+      [mediaItems.length, currentSlide],
     );
 
     const shouldLoadSlide = useCallback(
@@ -98,7 +98,7 @@ const MediaPreviewModal = memo(
         // After initial load, use wider preload range
         return Math.abs(index - currentSlide) <= MEDIA_CONSTANTS.PRELOAD_RANGE;
       },
-      [currentSlide, initialLoadComplete]
+      [currentSlide, initialLoadComplete],
     );
 
     // Preload media with priority
@@ -156,7 +156,7 @@ const MediaPreviewModal = memo(
           resetZoom();
         }
       },
-      [mediaItems.length, resetZoom]
+      [mediaItems.length, resetZoom],
     );
 
     const handlePrevSlide = useCallback(() => {
@@ -233,7 +233,7 @@ const MediaPreviewModal = memo(
       if (typeof initialIndex === "number" && open) {
         const targetSlide = Math.max(
           0,
-          Math.min(initialIndex, totalSlides - 1)
+          Math.min(initialIndex, totalSlides - 1),
         );
         setSlideTransition(false);
         setCurrentSlide(targetSlide);
@@ -354,7 +354,7 @@ const MediaPreviewModal = memo(
                         />
                       </div>
                     ) : (
-                      <VideoPreview
+                      <VideoPreviewx
                         url={item.url}
                         isBlob={!!item.isBlob}
                         playAction={currentSlide === index}
@@ -395,7 +395,7 @@ const MediaPreviewModal = memo(
         )}
       </motion.div>
     );
-  }
+  },
 );
 
 MediaPreviewModal.displayName = "MediaPreviewModal";
