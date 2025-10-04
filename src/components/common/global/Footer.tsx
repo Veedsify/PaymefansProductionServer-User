@@ -7,7 +7,7 @@ const Footer = () => {
       <div className="max-w-screen-xl mx-auto px-5 lg:px-14 2xl:px-28">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           <div className="md:col-span-2">
-            <Link href="/" className="inline-block mb-4">
+            <Link href="/login" className="inline-block mb-4">
               <Image
                 width={150}
                 height={25}
@@ -50,7 +50,7 @@ const Footer = () => {
               </li>
               <li>
                 <Link
-                  href="/privacy"
+                  href="/s/privacy-policy"
                   className="text-gray-300 hover:text-primary-dark-pink transition-colors duration-200"
                 >
                   Privacy Policy
@@ -58,7 +58,7 @@ const Footer = () => {
               </li>
               <li>
                 <Link
-                  href="/terms"
+                  href="/s/terms-of-service"
                   className="text-gray-300 hover:text-primary-dark-pink transition-colors duration-200"
                 >
                   Terms of Service

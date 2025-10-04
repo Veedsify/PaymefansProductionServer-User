@@ -53,14 +53,18 @@ interface ProfileStatsProps {
 const FollowAndUnfollowButton = ({
   isFollowing,
   userId,
+  followsMe,
 }: {
   isFollowing: boolean;
   userId: number;
+  followsMe?: boolean;
 }) => {
   const [isFollowingState, setIsFollowingState] = useState(isFollowing);
+  const [followsMeState, setFollowsMeState] = useState(followsMe || false);
 
   useEffect(() => {
     setIsFollowingState(isFollowing);
+    setFollowsMeState(followsMe || false);
   }, [isFollowing]);
 
   const handleClick = async () => {
@@ -81,6 +85,16 @@ const FollowAndUnfollowButton = ({
     }
   };
 
+  const buttonLabel = useMemo(() => {
+    if (isFollowingState) {
+      return "Unfollow";
+    } else if (followsMeState) {
+      return "Follow Back";
+    } else {
+      return "Follow";
+    }
+  }, [isFollowingState, followsMeState]);
+
   return (
     <button
       onClick={handleClick}
@@ -90,7 +104,7 @@ const FollowAndUnfollowButton = ({
           : "bg-black text-white hover:bg-pink-700"
       }`}
     >
-      {isFollowingState ? "Unfollow" : "Follow"}
+      {buttonLabel}
     </button>
   );
 };
@@ -100,6 +114,7 @@ const Profile = ({
   type,
   toggleOpen,
   isFollowing,
+  followsMe,
 }: {
   user: {
     id: number;
@@ -112,6 +127,7 @@ const Profile = ({
   type: "followers" | "following" | "subscribers";
   toggleOpen: (type: string) => void;
   isFollowing: boolean;
+  followsMe?: boolean;
 }) => {
   return (
     <div
@@ -142,7 +158,11 @@ const Profile = ({
       </div>
       {(type === "followers" || type === "following") && (
         <>
-          <FollowAndUnfollowButton userId={user.id} isFollowing={isFollowing} />
+          <FollowAndUnfollowButton
+            userId={user.id}
+            isFollowing={isFollowing}
+            followsMe={followsMe}
+          />
         </>
       )}
     </div>
@@ -231,6 +251,8 @@ export const ProfileStatsComponent = ({
     return () => observer.disconnect();
   }, [fetchNextPage, hasNextPage, isFetchingNextPage]);
 
+  console.log(stats);
+
   return (
     <motion.div
       initial={{ opacity: 0, scale: 1 }}
@@ -276,6 +298,7 @@ export const ProfileStatsComponent = ({
               type={type}
               toggleOpen={toggleOpen}
               isFollowing={user.is_following}
+              followsMe={user.followsMe}
             />
           ))}
           {isLoading && (

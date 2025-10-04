@@ -119,7 +119,7 @@ const Status = ({
   return (
     <div>
       <div
-        className="relative flex flex-col items-center cursor-pointer"
+        className="relative flex flex-col items-center cursor-pointer z-50"
         onClick={OpenThisStory}
       >
         <div
