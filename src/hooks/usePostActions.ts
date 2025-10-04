@@ -5,6 +5,8 @@ import toast from "react-hot-toast";
 import swal from "sweetalert";
 import { usePointsStore } from "@/contexts/PointsContext";
 import payForPost from "@/utils/data/PayForPost";
+import { useGuestModal } from "@/contexts/GuestModalContext";
+import { useAuthContext } from "@/contexts/UserUseContext";
 
 /**
  * Custom hook for handling post interaction actions
@@ -14,7 +16,8 @@ export const usePostActions = (data: any, user: any, permissions: any) => {
   const router = useRouter();
   const queryClient = useQueryClient();
   const points = usePointsStore((state) => state.points);
-
+  const {isGuest} = useAuthContext();
+  const{toggleModalOpen} = useGuestModal()
   // Memoize stable values to prevent callback recreation
   const stableValues = useMemo(() => ({
     userId: user.user_id,
@@ -24,7 +27,7 @@ export const usePostActions = (data: any, user: any, permissions: any) => {
     postIdSlug: data.post_id,
   }), [user.user_id, data.id, data.post_price, data.post_status, data.post_id]);
 
-  const promptSubscription = useCallback(() => {
+  const promptSubscription = useCallback(async () => {
     return swal({
       title: "You need to be a subscriber to view this post",
       icon: "warning",
@@ -54,6 +57,9 @@ export const usePostActions = (data: any, user: any, permissions: any) => {
       },
     }).then(async (willPay) => {
       if (willPay) {
+        if (isGuest){
+          return toggleModalOpen("You need to be logged in to pay for this post");
+        }
         if (stableValues.postPrice > points) {
           return toast.error(
             "You don't have enough points to pay for this post",
