@@ -47,7 +47,7 @@ AudienceIcon.displayName = "AudienceIcon";
 
 const PostComponent = memo<PostComponentProps>(
   ({ user, data, was_repost, repost_username, isLast = false, repost_id }) => {
-    const { user: authUser } = useAuthContext();
+    const { user: authUser, isGuest } = useAuthContext();
     const { ref, inView } = useInView({ threshold: 0.5, triggerOnce: true });
     const fullScreenPreview = usePostComponent(
       (state) => state.fullScreenPreview
@@ -200,7 +200,6 @@ const PostComponent = memo<PostComponentProps>(
               </Link>
             </div>
           )}
-
           <div className="flex items-center justify-between mb-2 text-sm text-gray-500">
             <div className="flex items-center gap-1 md:gap-3 dark:text-white">
               <Image
@@ -237,12 +236,10 @@ const PostComponent = memo<PostComponentProps>(
               }}
             />
           </div>
-
           <div
             className="py-2 leading-loose text-gray-700 dark:text-white"
             dangerouslySetInnerHTML={{ __html: formattedText as TrustedHTML }}
           />
-
           {/* Optimized Media Grid */}
           <div className={`grid gap-3 ${gridConfig}`}>
             {displayMedia.map((media: UserMediaProps, i) => (
@@ -254,7 +251,11 @@ const PostComponent = memo<PostComponentProps>(
                 isSingle={displayMedia.length === 1}
                 canView={permissions.canView}
                 mediaLength={data.media.length}
-                onNonSubscriberClick={actions.handleNonSubscriberClick}
+                onNonSubscriberClick={
+                  isGuest
+                    ? actions.handlePostClick
+                    : actions.handleNonSubscriberClick
+                }
                 onMediaClick={handleMediaClick}
                 isSubscribed={permissions.isSubscribed}
               />
