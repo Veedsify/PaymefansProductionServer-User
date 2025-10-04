@@ -17,19 +17,21 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <Toaster
-          position="top-center"
-          toastOptions={{
-            duration: 10000,
-            style: {
-              fontSize: "16px",
-              borderRadius: "10px",
-              fontFamily: "system-ui",
-            },
-          }}
-        />
-        {children}
-        <Footer />
+        <div className="scrollable-content">
+          <Toaster
+            position="top-center"
+            toastOptions={{
+              duration: 10000,
+              style: {
+                fontSize: "16px",
+                borderRadius: "10px",
+                fontFamily: "system-ui",
+              },
+            }}
+          />
+          {children}
+          <Footer />
+        </div>
       </body>
     </html>
   );
