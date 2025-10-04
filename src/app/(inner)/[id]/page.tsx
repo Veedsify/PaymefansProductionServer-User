@@ -114,7 +114,7 @@ const ProfilePage = () => {
   const userdata = profileData?.user;
   const isBlockedByUser = profileData?.isBlockedByUser;
   const isVerified = userdata?.is_verified;
-  const canTip = user?.id !== userdata?.id && userdata?.is_model;
+  const canTip = user?.id !== userdata?.id &&   userdata?.is_model;
 
   // Handle redirects and navigation in a single useEffect
   useEffect(() => {
