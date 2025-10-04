@@ -354,7 +354,7 @@ const MediaPreviewModal = memo(
                         />
                       </div>
                     ) : (
-                      <VideoPreviewx
+                      <VideoPreview
                         url={item.url}
                         isBlob={!!item.isBlob}
                         playAction={currentSlide === index}

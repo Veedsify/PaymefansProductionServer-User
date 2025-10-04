@@ -7,10 +7,12 @@ import { useAuthContext } from "@/contexts/UserUseContext";
  * Memoizes expensive permission calculations with optimized dependency tracking
  */
 export const usePostPermissions = (data: any, user: any, authUser: any) => {
+  // Call useAuthContext at the top level of the custom hook
+  const { isGuest } = useAuthContext();
+  
   return useMemo(() => {
     // Extract values once to avoid repeated property access
     const { isSubscribed, hasPaid, post_audience } = data;
-    const { isGuest } = useAuthContext();
     const userId = user?.id;
     const authUserId = authUser?.id;
     const isCreator = userId === authUserId;
@@ -59,5 +61,6 @@ export const usePostPermissions = (data: any, user: any, authUser: any) => {
     data.post_audience,
     user?.id,
     authUser?.id,
+    isGuest,
   ]);
 };

@@ -47,11 +47,11 @@ AudienceIcon.displayName = "AudienceIcon";
 
 const PostComponent = memo<PostComponentProps>(
   ({ user, data, was_repost, repost_username, isLast = false, repost_id }) => {
+    const { user: authUser } = useAuthContext();
     const { ref, inView } = useInView({ threshold: 0.5, triggerOnce: true });
     const fullScreenPreview = usePostComponent(
       (state) => state.fullScreenPreview
     );
-    const { user: authUser } = useAuthContext();
 
     // Use cached socket instance
     const socketRef = useRef(getSocketInstance());
