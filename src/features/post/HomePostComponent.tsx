@@ -83,7 +83,7 @@ const HomePostComponent = () => {
   }
 
   return (
-    <div className="relative p-2 md:p-5">
+    <div className="relative p-2 md:p-5 z-40">
       {allPosts.map((post, index) => (
         <PostComponent
           key={`${post.id}-${index}`}
