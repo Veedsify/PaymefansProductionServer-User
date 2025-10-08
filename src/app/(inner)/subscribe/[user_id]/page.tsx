@@ -57,7 +57,7 @@ const Subscribe = () => {
       try {
         const response = await axiosInstance.post(
           `/subscribers/subscription-data/${params.user_id}`,
-          {},
+          {}
         );
         console.log(response.data);
         if (response.data.status === false) {
@@ -92,7 +92,7 @@ const Subscribe = () => {
           swal(
             "Success",
             `You have successfully subscribed to ${profileUser.name}`,
-            "success",
+            "success"
           );
           socket?.emit("subscription_added", { user_id: profileUser.user_id });
           router.push(`/${profileUser.username}`);
@@ -164,7 +164,7 @@ const Subscribe = () => {
         {profileUser &&
           profileUser.ModelSubscriptionPack &&
           Array.isArray(
-            profileUser.ModelSubscriptionPack.ModelSubscriptionTier,
+            profileUser.ModelSubscriptionPack.ModelSubscriptionTier
           ) &&
           profileUser.ModelSubscriptionPack.ModelSubscriptionTier.length >
             0 && (
@@ -214,9 +214,19 @@ const Subscribe = () => {
                       </div>
 
                       {/* Description */}
-                      <p className="text-gray-700 leading-relaxed text-center mb-8 min-h-[60px]">
+                      <p className="text-gray-700 leading-relaxed text-center">
                         {tier.tier_description}
                       </p>
+
+                      <div className="relative flex items-center justify-center my-4">
+                        <Image
+                          src="/site/trophy.svg"
+                          alt="Trophy"
+                          width={60}
+                          height={60}
+                          className="block w-15 h-15 md:w-20 md:h-20 aspect-square"
+                        />
+                      </div>
                     </div>
 
                     {/* Subscribe button */}
@@ -229,7 +239,7 @@ const Subscribe = () => {
                       Subscribe Now
                     </button>
                   </div>
-                ),
+                )
               )}
             </div>
           )}

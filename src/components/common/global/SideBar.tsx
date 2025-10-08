@@ -68,16 +68,23 @@ const SideBar = React.memo(() => {
         <div>
           <div className="flex items-center mb-4 gap-4">
             <a href={"/profile"} className="cursor-pointer">
-              <Image
-                width={50}
-                height={50}
-                priority
-                src={
-                  user && !isGuest ? user?.profile_image! : "/site/avatar.png"
-                }
-                className="object-cover w-12 h-12 border-2 rounded-full border-primary-dark-pink"
-                alt=""
-              />
+              {user?.profile_image && user?.profile_image !== "" ? (
+                <Image
+                  width={50}
+                  height={50}
+                  src={user?.profile_image!}
+                  className="object-cover w-12 h-12 border-2 rounded-full border-primary-dark-pink"
+                  alt=""
+                />
+              ) : (
+                <Image
+                  width={50}
+                  height={50}
+                  src="/site/avatar.png"
+                  className="object-cover w-12 h-12 border-2 rounded-full border-primary-dark-pink"
+                  alt=""
+                />
+              )}
             </a>
             <div className="overflow-hidden">
               <h2 className="mb-0 text-sm font-bold leading-none">

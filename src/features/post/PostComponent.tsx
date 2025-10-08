@@ -16,6 +16,7 @@ import { PostCompInteractions } from "./PostInteractions";
 import QuickPostActions from "./QuickPostActions";
 import FormatName from "@/lib/FormatName";
 import { cn } from "@/components/ui/cn";
+import { useGuestModal } from "@/contexts/GuestModalContext";
 
 // Cache socket instance to prevent recreation on every render
 let socketInstance: ReturnType<typeof getSocket> | null = null;
@@ -49,6 +50,7 @@ const PostComponent = memo<PostComponentProps>(
   ({ user, data, was_repost, repost_username, isLast = false, repost_id }) => {
     const { user: authUser, isGuest } = useAuthContext();
     const { ref, inView } = useInView({ threshold: 0.5, triggerOnce: true });
+    const { toggleModalOpen } = useGuestModal();
     const fullScreenPreview = usePostComponent(
       (state) => state.fullScreenPreview
     );
@@ -118,6 +120,10 @@ const PostComponent = memo<PostComponentProps>(
     // Optimized media click handler with reduced dependencies
     const handleMediaClick = useCallback(
       (media: { url: string; media_type: string; index: number }) => {
+        if (isGuest) {
+          return toggleModalOpen("Please login to view this content");
+        }
+
         if (permissions.needsSubscription) {
           return actions.promptSubscription();
         }
@@ -173,7 +179,7 @@ const PostComponent = memo<PostComponentProps>(
       <div
         className={cn(
           "px-2 pb-3 duration-300 md:px-5 relative",
-          isLast ? "" : "border-b border-gray-300 dark:border-gray-700"
+          isLast && "border-b border-gray-300 dark:border-gray-700"
         )}
         key={data.post_id}
         ref={ref}

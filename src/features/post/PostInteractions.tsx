@@ -183,16 +183,29 @@ export const PostCompInteractions = ({ data }: PostCompInteractionsProps) => {
     }
   }, [router, data?.post_id]);
 
+  const handleCommentClick = useCallback(() => {
+    if (isGuest) {
+      toggleModalOpen("You need to login to view comments.");
+      return;
+    }
+    router.push(`/posts/${data?.post_id}/`);
+  }, [isGuest, toggleModalOpen, router, data?.post_id]);
+
+  if (!data) {
+    return null; // or a loading indicator
+  }
+
   return (
     <>
       <div className="flex justify-around w-full py-3 mt-6 text-sm dark:text-gray-300 dark:border-slate-700 border-black/20">
-        <Link
-          href={`/posts/${data?.post_id}/`}
+        <button
+          onClick={handleCommentClick}
+          data-href={`/posts/${data.post_id}/`}
           className="flex items-center text-sm font-medium cursor-pointer gap-1"
         >
           <LucideMessageSquare className="w-5 h-5 lg:w-6 lg:h-6" />
           {data?.post_comments}
-        </Link>
+        </button>
         <PostRepost
           repostThisPost={repostThisPost}
           repostCount={data?.post_reposts || 0}

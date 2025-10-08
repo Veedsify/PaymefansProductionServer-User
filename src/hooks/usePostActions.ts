@@ -16,16 +16,19 @@ export const usePostActions = (data: any, user: any, permissions: any) => {
   const router = useRouter();
   const queryClient = useQueryClient();
   const points = usePointsStore((state) => state.points);
-  const {isGuest} = useAuthContext();
-  const{toggleModalOpen} = useGuestModal()
+  const { isGuest } = useAuthContext();
+  const { toggleModalOpen } = useGuestModal();
   // Memoize stable values to prevent callback recreation
-  const stableValues = useMemo(() => ({
-    userId: user.user_id,
-    postId: data.id,
-    postPrice: Number(data.post_price),
-    postStatus: data.post_status,
-    postIdSlug: data.post_id,
-  }), [user.user_id, data.id, data.post_price, data.post_status, data.post_id]);
+  const stableValues = useMemo(
+    () => ({
+      userId: user.user_id,
+      postId: data.id,
+      postPrice: Number(data.post_price),
+      postStatus: data.post_status,
+      postIdSlug: data.post_id,
+    }),
+    [user.user_id, data.id, data.post_price, data.post_status, data.post_id]
+  );
 
   const promptSubscription = useCallback(async () => {
     return swal({
@@ -57,16 +60,21 @@ export const usePostActions = (data: any, user: any, permissions: any) => {
       },
     }).then(async (willPay) => {
       if (willPay) {
-        if (isGuest){
-          return toggleModalOpen("You need to be logged in to pay for this post");
+        if (isGuest) {
+          return toggleModalOpen(
+            "You need to be logged in to pay for this post"
+          );
         }
         if (stableValues.postPrice > points) {
           return toast.error(
             "You don't have enough points to pay for this post",
-            { id: "pay-for-post" },
+            { id: "pay-for-post" }
           );
         }
-        const pay = await payForPost({ price: stableValues.postPrice, postId: stableValues.postId });
+        const pay = await payForPost({
+          price: stableValues.postPrice,
+          postId: stableValues.postId,
+        });
         if (pay.error) {
           return toast.error(pay.message, { id: "pay-for-post" });
         }
@@ -77,7 +85,14 @@ export const usePostActions = (data: any, user: any, permissions: any) => {
         router.refresh();
       }
     });
-  }, [stableValues.postPrice, stableValues.postId, points, queryClient, user.id, router]);
+  }, [
+    stableValues.postPrice,
+    stableValues.postId,
+    points,
+    queryClient,
+    user.id,
+    router,
+  ]);
 
   const handlePostClick = useCallback(
     async (e: React.MouseEvent) => {
@@ -87,8 +102,11 @@ export const usePostActions = (data: any, user: any, permissions: any) => {
         target instanceof HTMLButtonElement
       )
         return;
-
       e.preventDefault();
+
+      if (isGuest) {
+        return toggleModalOpen("You need to be logged in to view this post");
+      }
 
       if (permissions.needsSubscription) {
         return promptSubscription();
@@ -117,7 +135,7 @@ export const usePostActions = (data: any, user: any, permissions: any) => {
       router,
       promptSubscription,
       promptPayment,
-    ],
+    ]
   );
 
   const handleNonSubscriberClick = useCallback(
@@ -149,7 +167,7 @@ export const usePostActions = (data: any, user: any, permissions: any) => {
       stableValues.postStatus,
       promptSubscription,
       promptPayment,
-    ],
+    ]
   );
 
   return {

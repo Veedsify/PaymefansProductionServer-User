@@ -43,7 +43,7 @@ export const AuthContextProvider = ({
   user: Partial<AuthUserProps> | undefined;
 }) => {
   const [user, setUser] = useState<Partial<AuthUserProps | null>>(
-    initialUser || null,
+    initialUser || null
   );
   const [isGuest, setIsGuest] = useState(true);
   const [isLoading, setIsLoading] = useState(true);
@@ -63,6 +63,7 @@ export const AuthContextProvider = ({
     email: "",
     active_status: true,
     is_model: false,
+    profile_image: "/site/avatar.png",
   });
 
   // Method to set guest user state
