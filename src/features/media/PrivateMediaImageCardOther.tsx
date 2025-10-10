@@ -13,6 +13,7 @@ import { getToken } from "@/utils/Cookie";
 import { LockedMediaOverlay } from "./LockedMediaOverlay";
 import HLSVideoPlayer from "./videoplayer";
 import LoadingSpinner from "@/components/common/loaders/LoadingSpinner";
+import { useMediaActions } from "@/hooks/useMediaActions";
 
 const getUniqueItems = (arr: MediaDataTypeOtherProps[]) => {
   const uniqueMap = new Map();
@@ -25,18 +26,19 @@ interface PrivateMediaPanelMediaCardProps {
     media: MediaDataTypeOtherProps,
     type: string,
     isSubscriber: boolean,
-    indexId: number,
+    indexId: number
   ) => void;
   indexId: number;
+  profileUserId: number;
 }
 const PrivateMediaImageCardOther = React.memo(
   ({ sort, userdata }: { sort: string; userdata: ProfileUserProps }) => {
     const fullScreenPreview = usePostComponent(
-      (state) => state.fullScreenPreview,
+      (state) => state.fullScreenPreview
     );
     const fetchMedia = async ({ pageParam = 1 }) => {
       const res = await axiosInstance.get(
-        `/post/other/private-media/${userdata.id}?page=${pageParam}&limit=${process.env.NEXT_PUBLIC_POST_MEDIA_PER_PAGE}`,
+        `/post/other/private-media/${userdata.id}?page=${pageParam}&limit=${process.env.NEXT_PUBLIC_POST_MEDIA_PER_PAGE}`
       );
       return res.data;
     };
@@ -54,7 +56,7 @@ const PrivateMediaImageCardOther = React.memo(
       });
     const allMedia = React.useMemo(
       () => (data ? data.pages.flatMap((page) => page.data) : []),
-      [data],
+      [data]
     );
 
     const sorted = React.useMemo(() => {
@@ -69,7 +71,7 @@ const PrivateMediaImageCardOther = React.memo(
       media: MediaDataTypeOtherProps,
       type: string,
       isSubscriber: boolean,
-      indexId: number,
+      indexId: number
     ) => {
       if (media.accessible_to === "subscribers" && !isSubscriber) return;
       const filteredMedias = sorted
@@ -82,11 +84,11 @@ const PrivateMediaImageCardOther = React.memo(
           return true;
         })
         .filter(
-          (media) => !(media.accessible_to === "subscribers" && !isSubscriber),
+          (media) => !(media.accessible_to === "subscribers" && !isSubscriber)
         );
       // Get the new index after filtering
       const newIndexId = filteredMedias.findIndex(
-        (item) => item.id === media.id,
+        (item) => item.id === media.id
       );
       const medias = filteredMedias.map((media) => ({
         url: media.url,
@@ -115,6 +117,7 @@ const PrivateMediaImageCardOther = React.memo(
                 media={media}
                 PreviewImageHandler={PreviewImageHandler}
                 indexId={index}
+                profileUserId={userdata.id}
               />
             </div>
           ))}
@@ -137,18 +140,23 @@ const PrivateMediaImageCardOther = React.memo(
         </div>
       </>
     );
-  },
+  }
 );
 const PrivateMediaPanelMediaCard = ({
   media,
   PreviewImageHandler,
   indexId,
+  profileUserId,
 }: PrivateMediaPanelMediaCardProps) => {
   const { user: authUser } = useAuthContext();
   const isCreator = media.post.user.id === authUser?.id;
   // const isAdmin = user.role === "admin";
   const isSubscribed = media.isSubscribed;
   const hasPaid = media.hasPaid;
+
+  // Use the media actions hook
+  const { handleLockedMediaClick } = useMediaActions(media, profileUserId);
+
   // Determine visibility
   const canView =
     // isAdmin || // Admin sees all
@@ -175,7 +183,7 @@ const PrivateMediaPanelMediaCard = ({
                       media,
                       media.media_type,
                       isSubscribed as boolean,
-                      indexId,
+                      indexId
                     ),
                 }}
               />
@@ -185,7 +193,7 @@ const PrivateMediaPanelMediaCard = ({
                     media,
                     media.media_type,
                     isSubscribed as boolean,
-                    indexId,
+                    indexId
                   )
                 }
                 className="absolute inset-0 flex items-center justify-center w-full h-full cursor-pointer bg-black/20"
@@ -225,7 +233,7 @@ const PrivateMediaPanelMediaCard = ({
                   media,
                   media.media_type,
                   isSubscribed as boolean,
-                  indexId,
+                  indexId
                 )
               }
               src={media.url}
@@ -240,6 +248,8 @@ const PrivateMediaPanelMediaCard = ({
           type={media.accessible_to === "price" ? "price" : "subscribers"}
           mediaIsVideo={media.media_type === "video"}
           duration={media.duration}
+          onClick={handleLockedMediaClick}
+          price={media.post.post_price}
         />
       )}
     </>

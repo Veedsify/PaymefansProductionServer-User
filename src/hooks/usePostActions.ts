@@ -82,6 +82,12 @@ export const usePostActions = (data: any, user: any, permissions: any) => {
         await queryClient.invalidateQueries({
           queryKey: ["user-points", user.id],
         });
+        await queryClient.invalidateQueries({
+          queryKey: ["mediaOther"],
+        });
+        await queryClient.invalidateQueries({
+          queryKey: ["homeFeed"],
+        });
         router.refresh();
       }
     });

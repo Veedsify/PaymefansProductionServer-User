@@ -66,72 +66,72 @@ const GuestLoginModal = () => {
             if (typeof window !== "undefined") {
               document.cookie = `token=${loginToken}; path=/`;
               setUser(loginUser);
-                toggleModalClose();
-                window.location.reload();
-                return;
-              }
-              }
-            } else if (
-              loginThisUser?.data?.tfa &&
-              loginThisUser?.data?.token === null
-            ) {
               toggleModalClose();
-              router.push("/verify");
+              window.location.reload();
               return;
             }
-            return;
-            } else {
-            toast.error(loginThisUser?.data?.message, {
-              id: "login",
-            });
-            }
-          } catch (error: any) {
-            console.error("Error while logging in:", error);
-            toast.error(
-            error.response?.data.message || "An error occurred while logging in",
-            {
-              id: "login",
-            }
-            );
           }
-          };
+        } else if (
+          loginThisUser?.data?.tfa &&
+          loginThisUser?.data?.token === null
+        ) {
+          toggleModalClose();
+          router.push("/verify");
+          return;
+        }
+        return;
+      } else {
+        toast.error(loginThisUser?.data?.message, {
+          id: "login",
+        });
+      }
+    } catch (error: any) {
+      console.error("Error while logging in:", error);
+      toast.error(
+        error.response?.data.message || "An error occurred while logging in",
+        {
+          id: "login",
+        }
+      );
+    }
+  };
 
-          return (
-          <AnimatePresence>
-            {open && (
-            <motion.div
-              onClick={toggleModalClose}
-              className="fixed flex items-center justify-center bg-black/70 backdrop-blur-md inset-0 z-[999] px-3"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.25 }}
-            >
-              <motion.div
-              onClick={(e) => e.stopPropagation()}
-              className="bg-white dark:bg-gray-900 p-5 sm:p-6 rounded-2xl shadow-3xl max-w-md sm:max-w-lg w-full border border-gray-200 dark:border-gray-800 transition-all duration-300"
-              initial={{ scale: 0.95, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.95, opacity: 0 }}
-              >
-              <div className="mb-5 sm:mb-8">
-                <Image
+  return (
+    <AnimatePresence>
+      {open && (
+        <motion.div
+          onClick={toggleModalClose}
+          className="fixed flex items-center justify-center bg-black/70 backdrop-blur-md inset-0 z-[999] px-3"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+        >
+          <motion.div
+            onClick={(e) => e.stopPropagation()}
+            className="bg-white dark:bg-gray-900 p-5 sm:p-6 rounded-2xl shadow-3xl max-w-md sm:max-w-lg w-full border border-gray-200 dark:border-gray-800 transition-all duration-300"
+            initial={{ scale: 0.95, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+          >
+            <div className="mb-5 sm:mb-8">
+              <Image
                 className="block h-7 sm:h-8 w-auto"
                 width={150}
                 height={30}
                 priority
                 src="/site/logo.svg"
                 alt=""
-                />
-              </div>
-              <h2 className="text-2xl sm:text-3xl font-extrabold mb-3 sm:mb-6 text-gray-900 dark:text-white tracking-tight">
-                Login Required
-              </h2>
-              <p className="mb-5 sm:mb-10 text-gray-700 dark:text-gray-300 text-base sm:text-base leading-relaxed">
-                {message || "Please log in to continue."}
-              </p>
-              <form className="flex flex-col gap-4 sm:gap-6" onSubmit={submitLoginForm}>
-                <div>
+              />
+            </div>
+            <h2 className="text-2xl sm:text-3xl font-extrabold mb-3 sm:mb-6 text-gray-900 dark:text-white tracking-tight">
+              Login Required
+            </h2>
+            <p className="mb-5 sm:mb-10 text-gray-700 dark:text-gray-300 text-base sm:text-base leading-relaxed">
+              {message || "Please log in to continue."}
+            </p>
+            <form
+              className="flex flex-col gap-4 sm:gap-6"
+              onSubmit={submitLoginForm}
+            >
+              <div>
                 <label
                   className="block text-gray-800 dark:text-gray-200 mb-2 font-semibold text-base"
                   htmlFor="email"
@@ -149,8 +149,8 @@ const GuestLoginModal = () => {
                   autoComplete="email"
                   required
                 />
-                </div>
-                <div>
+              </div>
+              <div>
                 <label
                   className="block text-gray-800 dark:text-gray-200 mb-2 font-semibold text-base"
                   htmlFor="password"
@@ -168,35 +168,35 @@ const GuestLoginModal = () => {
                   autoComplete="current-password"
                   required
                 />
-                </div>
-                <button
+              </div>
+              <button
                 type="submit"
                 className="cursor-pointer w-full px-4 py-3.5 bg-primary-dark-pink text-white rounded-xl font-semibold hover:bg-primary-dark-pink/70 transition-all duration-200 text-base"
-                >
+              >
                 Login
-                </button>
-              </form>
-              <Link
-                href={"/reset"}
-                className="text-primary-dark-pink flex justify-end my-2 text-sm font-medium hover:underline"
-              >
-                Forgot Password?
-              </Link>
-              <button
-                onClick={toggleModalClose}
-                className="mt-2 block cursor-pointer w-full px-4 py-3.5 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-200 rounded-xl font-medium hover:bg-gray-200 dark:hover:bg-gray-700 transition-all duration-200 text-base"
-              >
-                Cancel
               </button>
-              <div className="mt-4 text-center text-sm text-gray-600 dark:text-gray-400">
-                <div className="flex justify-center items-center flex-col gap-2">
+            </form>
+            <Link
+              href={"/reset"}
+              className="text-primary-dark-pink flex justify-end my-2 text-sm font-medium hover:underline"
+            >
+              Forgot Password?
+            </Link>
+            <button
+              onClick={toggleModalClose}
+              className="mt-2 block cursor-pointer w-full px-4 py-3.5 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-200 rounded-xl font-medium hover:bg-gray-200 dark:hover:bg-gray-700 transition-all duration-200 text-base"
+            >
+              Cancel
+            </button>
+            <div className="mt-4 text-center text-sm text-gray-600 dark:text-gray-400">
+              <div className="flex justify-center items-center flex-col gap-2">
                 <p>
                   Don't have an account?{" "}
                   <Link
-                  href={"/register"}
-                  className="text-primary-dark-pink font-semibold hover:underline"
+                    href={"/register"}
+                    className="text-primary-dark-pink font-semibold hover:underline"
                   >
-                  Sign up
+                    Sign up
                   </Link>
                 </p>
                 <Link
@@ -206,13 +206,13 @@ const GuestLoginModal = () => {
                   <LucideHelpCircle size={16} />
                   <span>Help</span>
                 </Link>
-                </div>
               </div>
-              </motion.div>
-            </motion.div>
-            )}
-          </AnimatePresence>
-          );
-        };
+            </div>
+          </motion.div>
+        </motion.div>
+      )}
+    </AnimatePresence>
+  );
+};
 
-        export default GuestLoginModal;
+export default GuestLoginModal;

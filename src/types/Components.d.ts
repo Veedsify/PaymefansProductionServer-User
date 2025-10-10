@@ -471,6 +471,9 @@ type MediaDataTypeOtherProps = {
   hasPaid: boolean;
   post: {
     id: number;
+    post_price: number | null;
+    post_audience: string;
+    watermark_enabled: boolean;
     user: {
       id: number;
     };
