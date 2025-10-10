@@ -31,21 +31,21 @@ const searchFunction = async (query: string) => {
     const search = [
       async () => {
         const response = await axiosInstance.get(
-          `/search/platform?query=${query}&category=users`,
+          `/search/platform?query=${query}&category=users`
         );
         return response.data.results;
       },
 
       async () => {
         const response = await axiosInstance.get(
-          `/search/platform?query=${query}&category=posts`,
+          `/search/platform?query=${query}&category=posts`
         );
         return response.data.results;
       },
 
       async () => {
         const response = await axiosInstance.get(
-          `/search/platform?query=${query}&category=media`,
+          `/search/platform?query=${query}&category=media`
         );
         return response.data.results;
       },
@@ -71,8 +71,8 @@ const FollowButton = dynamic(() => import("@/components/FollowButton"));
 const PostComponent = dynamic(() => import("@/features/post/PostComponent"));
 const MediaPanelMediaCard = dynamic(() =>
   import("@/features/media/MediaPanelImageCardOther").then(
-    (mod) => mod.MediaPanelMediaCard,
-  ),
+    (mod) => mod.MediaPanelMediaCard
+  )
 );
 
 const SearchPage = () => {
@@ -96,20 +96,20 @@ const SearchPage = () => {
     username: "",
   });
   const fullScreenPreview = usePostComponent(
-    (state) => state.fullScreenPreview,
+    (state) => state.fullScreenPreview
   );
   const previewImageHandler = (
     m: MediaDataTypeOtherProps,
     type: string,
     isSubscriber: boolean,
-    indexId: number,
+    indexId: number
   ) => {
     if (m.accessible_to === "subscribers" && !isSubscriber) return;
     const filteredMedias = media
       .filter((item) => item.media_state !== "processing")
       .filter((media) => media.accessible_to !== "price")
       .filter(
-        (media) => !(media.accessible_to === "subscribers" && !isSubscriber),
+        (media) => !(media.accessible_to === "subscribers" && !isSubscriber)
       );
     // Get the new index after filtering
     const newIndexId = filteredMedias.findIndex((item) => item.id === m.id);
@@ -405,7 +405,7 @@ const SearchPage = () => {
                                     {
                                       year: "numeric",
                                       month: "long",
-                                    },
+                                    }
                                   )}
                                 </span>
                               </div>
@@ -521,10 +521,10 @@ const SearchPage = () => {
                               <MediaPanelMediaCard
                                 media={{
                                   ...m,
-                                  isSubscribed: true,
                                 }}
                                 PreviewImageHandler={previewImageHandler}
                                 indexId={index}
+                                profileUserId={m.post.user.id}
                               />
                             </div>
                             <div className="p-4 space-y-3">
