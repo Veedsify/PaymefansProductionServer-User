@@ -1,6 +1,11 @@
 "use client";
 
-import { LucideEye, LucideLock, LucideUsers } from "lucide-react";
+import {
+  LucideEye,
+  LucideLock,
+  LucideRepeat2,
+  LucideUsers,
+} from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import React, { memo, useCallback, useEffect, useMemo, useRef } from "react";
@@ -175,6 +180,14 @@ const PostComponent = memo<PostComponentProps>(
       }
     }, [data.post_status, inView, authUser?.id, data.id, socket]);
 
+    const repostMessage = useMemo(() => {
+      if (was_repost && repost_username === authUser?.username) {
+        return "You reposted";
+      } else {
+        return `${repost_username} reposted`;
+      }
+    }, [was_repost, repost_username]);
+
     return (
       <div
         className={cn(
@@ -197,12 +210,13 @@ const PostComponent = memo<PostComponentProps>(
           data-href={`/posts/${data.post_id}`}
         >
           {was_repost && (
-            <div className="mb-3">
+            <div className="mb-3 flex items-center gap-2 text-gray-600 dark:text-gray-400">
+              <LucideRepeat2 size={18} className="text-primary-dark-pink" />
               <Link
-                href={`/posts/${repost_id}`}
-                className="inline-block px-2 py-1 text-xs font-bold text-purple-700 bg-purple-200 rounded-md"
+                href={`/posts/${repost_username}`}
+                className="text-sm font-medium hover:text-emerald-500 transition-colors"
               >
-                Reposted from {repost_username}
+                {repostMessage}
               </Link>
             </div>
           )}
