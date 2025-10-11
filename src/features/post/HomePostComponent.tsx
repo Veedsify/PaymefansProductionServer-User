@@ -88,6 +88,9 @@ const HomePostComponent = () => {
         <PostComponent
           key={`${post.id}-${index}`}
           isLast={index === allPosts.length - 1}
+          was_repost={post.was_repost}
+          repost_id={post.repost_id}
+          repost_username={post.repost_username}
           data={{
             ...post,
             post: post.content,

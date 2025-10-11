@@ -77,6 +77,10 @@ const Login = () => {
           window.location.href = redirect;
           return;
         } else if (loginTfa && loginToken === null) {
+          // Store user email for resend functionality
+          if (loginUser?.email) {
+            sessionStorage.setItem("verifyEmail", loginUser.email);
+          }
           router.push("/verify");
           return;
         }

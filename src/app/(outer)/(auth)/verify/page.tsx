@@ -3,7 +3,7 @@ import { debounce } from "lodash-es";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { type ChangeEvent, type FormEvent, useState } from "react";
+import { type ChangeEvent, type FormEvent, useState, useEffect } from "react";
 import toast from "react-hot-toast";
 import { LOGIN_CONFIG } from "@/config/config";
 import { getUser } from "@/lib/User";
@@ -16,6 +16,16 @@ const Login = () => {
   const [code, setCode] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [resending, setResending] = useState(false);
+  const [email, setEmail] = useState("");
+
+  useEffect(() => {
+    // Get email from sessionStorage
+    const storedEmail = sessionStorage.getItem("verifyEmail");
+    if (storedEmail) {
+      setEmail(storedEmail);
+    }
+  }, []);
 
   const handleCodeInput = (e: ChangeEvent<HTMLInputElement>) => {
     const codeRegex = /^[0-9]*$/;
@@ -54,6 +64,8 @@ const Login = () => {
       setLoading(false);
       toast.success(LOGIN_CONFIG.LOGIN_SUCCESSFUL_MSG);
       setUser(response.data.user);
+      // Clear the stored email after successful verification
+      sessionStorage.removeItem("verifyEmail");
       router.push("/");
       return;
     } catch (error: any) {
@@ -61,6 +73,40 @@ const Login = () => {
       console.log(error);
       setError(
         error?.response?.data?.message || error?.message || "An error occurred"
+      );
+    }
+  };
+
+  const handleResendCode = async () => {
+    if (!email) {
+      toast.error("Email not found. Please login again.");
+      router.push("/login");
+      return;
+    }
+
+    try {
+      setResending(true);
+      setError("");
+
+      const response = await axiosInstance.post(`/auth/verify/resend`, {
+        email: email,
+      });
+
+      if (response.data.error) {
+        setResending(false);
+        toast.error(response.data.message);
+        return;
+      }
+
+      setResending(false);
+      toast.success("Verification code resent successfully!");
+    } catch (error: any) {
+      setResending(false);
+      console.log(error);
+      toast.error(
+        error?.response?.data?.message ||
+          error?.message ||
+          "Failed to resend code"
       );
     }
   };
@@ -161,12 +207,14 @@ const Login = () => {
           </form>
 
           <div className="flex items-center w-full mt-6 md:max-w-lg">
-            <Link
-              href="/client/public"
-              className="ml-auto text-sm font-medium text-primary-dark-pink hover:text-primary-dark-pink/80 transition-colors duration-200"
+            <button
+              type="button"
+              onClick={handleResendCode}
+              disabled={resending}
+              className="ml-auto text-sm font-medium text-primary-dark-pink hover:text-primary-dark-pink/80 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              Resend Code
-            </Link>
+              {resending ? "Resending..." : "Resend Code"}
+            </button>
           </div>
 
           <div className="mt-12">
