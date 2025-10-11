@@ -280,63 +280,69 @@ const MessageInputComponent = React.memo(
           )
         );
 
-        // Step 3: Upload files to S3
-        console.log("⬆️ Uploading files to S3...");
-        const uploadPromises = presignedData.map((data: any, index: number) =>
-          uploadToS3(files[index], data.presignedUrl, data.media_id)
-        );
+        // Step 3: Upload files to S3 sequentially and save each one immediately
+        console.log("⬆️ Uploading files to S3 sequentially...");
+        let uploadCount = 0;
+        for (const data of presignedData) {
+          uploadCount++;
+          const fileIndex = presignedData.indexOf(data);
+          console.log(
+            `⬆️ Uploading file ${uploadCount}/${presignedData.length}: ${data.media_id}`
+          );
 
-        await Promise.all(uploadPromises);
-        console.log("✅ All files uploaded to S3");
+          // Upload to S3
+          await uploadToS3(files[fileIndex], data.presignedUrl, data.media_id);
+          console.log(
+            `✅ File ${uploadCount}/${presignedData.length} uploaded: ${data.media_id}`
+          );
 
-        // Step 4: Complete upload and save to database
-        console.log("💾 Saving to database...");
-        const uploadedFiles = presignedData.map((data: any) => ({
-          media_id: data.media_id,
-          key: data.key,
-          fileName: data.fileName,
-          fileType: data.fileType,
-          fileSize: data.fileSize,
-          isVideo: data.isVideo,
-        }));
+          // Immediately save to database so processing can start
+          console.log(`💾 Saving ${data.media_id} to database...`);
+          const uploadedFile = [
+            {
+              media_id: data.media_id,
+              key: data.key,
+              fileName: data.fileName,
+              fileType: data.fileType,
+              fileSize: data.fileSize,
+              isVideo: data.isVideo,
+            },
+          ];
 
-        const completedFiles = await completeUpload(uploadedFiles);
-        console.log("✅ Database save complete:", completedFiles);
+          const [completedFile] = await completeUpload(uploadedFile);
+          console.log(`✅ Database save complete for ${data.media_id}`);
 
-        // Step 5: Update media files with final URLs and states
-        setMessageMediaFiles((prev) =>
-          prev.map((item) => {
-            const completedFile = completedFiles.find(
-              (cf: any) => cf.media_id === item.media_id
-            );
-            if (completedFile) {
-              // Clean up blob URL
-              if (item.media_url.startsWith("blob:")) {
-                URL.revokeObjectURL(item.media_url);
+          // Update this specific file's state immediately
+          setMessageMediaFiles((prev) =>
+            prev.map((item) => {
+              if (item.media_id === data.media_id) {
+                // Clean up blob URL
+                if (item.media_url.startsWith("blob:")) {
+                  URL.revokeObjectURL(item.media_url);
+                }
+
+                const finalState: MessageMediaFile["media_state"] =
+                  completedFile.mimetype.startsWith("video/")
+                    ? "processing"
+                    : "completed";
+
+                console.log(
+                  `📝 Updated ${item.media_id} to state: ${finalState}`
+                );
+
+                return {
+                  ...item,
+                  media_url: completedFile.url,
+                  media_state: finalState,
+                  file: undefined,
+                  uploadProgress: undefined,
+                };
               }
-
-              const finalState: MessageMediaFile["media_state"] =
-                completedFile.mimetype.startsWith("video/")
-                  ? "processing"
-                  : "completed";
-
-              console.log(
-                `📝 Updated ${item.media_id} to state: ${finalState}`
-              );
-
-              return {
-                ...item,
-                media_url: completedFile.url,
-                media_state: finalState,
-                file: undefined,
-                uploadProgress: undefined,
-              };
-            }
-            return item;
-          })
-        );
-
-        toast.success("Upload completed!");
+              return item;
+            })
+          );
+        }
+        console.log("✅ All files uploaded and saved to database");
       } catch (error: any) {
         console.error("❌ Upload failed:", error);
         toast.error(`Upload failed: ${error.message || "Please try again."}`);
@@ -410,7 +416,9 @@ const MessageInputComponent = React.memo(
                 // Schedule toast for next tick to avoid setState during render
                 if (mediaFile.media_state === "processing") {
                   setTimeout(() => {
-                    toast.success("Video processing completed!");
+                    toast.success("Video processing completed!", {
+                      id: "processing-complete",
+                    });
                   }, 0);
                 }
 
@@ -764,37 +772,48 @@ const MessageInputComponent = React.memo(
           return;
         }
 
-        const newMediaFiles: MessageMediaFile[] = [];
-        for (const file of validFiles) {
-          const media_id = uuid();
-          const previewUrl = URL.createObjectURL(file);
-          const type: "image" | "video" = file.type.startsWith("video/")
-            ? "video"
-            : "image";
+        // Immediately add files with preview URLs (synchronous part)
+        const immediateMediaFiles: MessageMediaFile[] = validFiles.map(
+          (file) => {
+            const media_id = uuid();
+            const previewUrl = URL.createObjectURL(file);
+            const type: "image" | "video" = file.type.startsWith("video/")
+              ? "video"
+              : "image";
 
-          let posterUrl: string | undefined;
-          if (type === "video") {
+            return {
+              id: uuid(),
+              media_id,
+              file,
+              media_type: type,
+              media_url: previewUrl,
+              posterUrl: undefined, // Will be generated for videos after
+              media_state: "pending",
+              uploadProgress: 0,
+            };
+          }
+        );
+
+        // Add all files immediately to show previews
+        setMessageMediaFiles((prev) => [...prev, ...immediateMediaFiles]);
+        target.value = "";
+
+        // Generate video posters asynchronously without blocking
+        for (const mediaFile of immediateMediaFiles) {
+          if (mediaFile.media_type === "video" && mediaFile.file) {
             try {
-              posterUrl = await GenerateVideoPoster(file);
+              const posterUrl = await GenerateVideoPoster(mediaFile.file);
+              // Update the specific media file with poster
+              setMessageMediaFiles((prev) =>
+                prev.map((m) =>
+                  m.media_id === mediaFile.media_id ? { ...m, posterUrl } : m
+                )
+              );
             } catch (error) {
               console.warn("Failed to generate video poster:", error);
             }
           }
-
-          newMediaFiles.push({
-            id: uuid(),
-            media_id,
-            file,
-            media_type: type,
-            media_url: previewUrl,
-            posterUrl,
-            media_state: "pending",
-            uploadProgress: 0,
-          });
         }
-
-        setMessageMediaFiles((prev) => [...prev, ...newMediaFiles]);
-        target.value = "";
       };
 
       fileInput.addEventListener("change", handleFileChange);
@@ -910,6 +929,16 @@ const MessageInputComponent = React.memo(
                           ? "uploading"
                           : "idle",
                       uploadProgress: file.uploadProgress || 0,
+                    }}
+                    onRemove={(id) => {
+                      setMessageMediaFiles((prev) => {
+                        const fileToRemove = prev.find((f) => f.id === id);
+                        // Clean up blob URL
+                        if (fileToRemove?.media_url.startsWith("blob:")) {
+                          URL.revokeObjectURL(fileToRemove.media_url);
+                        }
+                        return prev.filter((f) => f.id !== id);
+                      });
                     }}
                   />
                 ))}

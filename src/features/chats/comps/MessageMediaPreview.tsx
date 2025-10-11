@@ -12,7 +12,11 @@ interface MessageMediaPreviewProps {
 }
 
 const MessageMediaPreview = React.memo(
-  ({ file: item, index }: MessageMediaPreviewProps) => {
+  ({
+    file: item,
+    index,
+    onRemove,
+  }: MessageMediaPreviewProps & { onRemove?: (id: string) => void }) => {
     const removeMediaFile = useChatStore((state) => state.removeMediaFile);
 
     // Get upload status from the media file itself
@@ -20,7 +24,12 @@ const MessageMediaPreview = React.memo(
     const progress = item.uploadProgress || 0;
 
     const handleRemove = () => {
-      removeMediaFile(item.id);
+      // Use custom onRemove if provided (for local state), otherwise use global store
+      if (onRemove) {
+        onRemove(item.id);
+      } else {
+        removeMediaFile(item.id);
+      }
     };
 
     if (!item.id) {
