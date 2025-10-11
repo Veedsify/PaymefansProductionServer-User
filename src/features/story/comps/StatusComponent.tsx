@@ -267,7 +267,7 @@ function StatusComponent() {
         {media.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-12 gap-4 dark:text-gray-300">
             <div className="flex items-center justify-center w-16 h-16 rounded-full bg-gradient-to-br from-primary-dark-pink/20 to-purple-500/20">
-              <LucideImages className="text-primary-dark-pink"/>
+              <LucideImages className="text-primary-dark-pink" />
             </div>
             <p className="font-medium text-gray-500 dark:text-gray-400">
               No media selected
@@ -281,7 +281,7 @@ function StatusComponent() {
             <div className="grid grid-cols-3 gap-4 mb-6 scrollbar-thin scrollbar-thumb-gray-300 dark:scrollbar-thumb-gray-600 scrollbar-track-transparent">
               {media.map((data: StoryType) => (
                 <div key={data.id} className="group">
-                  <div className="bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-700 dark:to-gray-800 w-full aspect-square rounded-xl flex items-center justify-center relative ring-2 ring-transparent group-hover:ring-primary-dark-pink/30 transition-all duration-300 transform group-hover:scale-[1.02] shadow-md hover:shadow-lg">
+                  <div className="bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-700 dark:to-gray-800 w-full aspect-square rounded-xl flex items-center justify-center relative ring-2 ring-transparent group-hover:ring-primary-dark-pink/30 transition-all duration-300 transform group-hover:scale-[1.02] shadow-md hover:shadow-lg overflow-hidden">
                     <button
                       onClick={getRemoveHandler(data.id)}
                       className="absolute cursor-pointer z-50 top-2 right-2 bg-red-500 hover:bg-red-600 p-1.5 rounded-full shadow-lg md:opacity-0 md:group-hover:opacity-100 opacity-100 transition-all duration-200 transform scale-90 hover:scale-100"
@@ -289,8 +289,9 @@ function StatusComponent() {
                       <X strokeWidth={2.5} stroke="#fff" size={14} />
                     </button>
                     {data.media_type === "video" ? (
-                      <div className="relative">
+                      <div className="relative w-full h-full">
                         {data.media_state === "pending" ||
+                        data.media_state === "processing" ||
                         data.media_state === "uploading" ? (
                           <video
                             src={data.media_url}
@@ -302,31 +303,112 @@ function StatusComponent() {
                             key={`${data.id}-${data.media_state}`}
                             streamUrl={data.media_url}
                             muted={true}
-                            className="inset-0 object-cover aspect-square w-full h-full cursor-pointer duration-300 ease-in-out"
+                            className="inset-0 object-cover aspect-square w-full h-full cursor-pointer duration-300 ease-in-out rounded-xl"
                           />
                         )}
-                        <span className="absolute top-2 left-2 bg-gradient-to-r from-primary-dark-pink to-purple-600 p-1.5 rounded-full shadow-lg backdrop-blur-sm">
+                        <span className="absolute top-2 left-2 bg-gradient-to-r from-primary-dark-pink to-purple-600 p-1.5 rounded-full shadow-lg backdrop-blur-sm z-10">
                           <LucidePlay fill="#fff" strokeWidth={0} size={12} />
                         </span>
-                        {data.media_state === "processing" && (
-                          <span className="absolute bottom-2 left-2 bg-black/60 text-white text-xs px-2 py-1 rounded-lg">
-                            Processing...
-                          </span>
-                        )}
+
+                        {/* Uploading State Overlay */}
                         {data.media_state === "uploading" && (
-                          <span className="absolute bottom-2 left-2 bg-blue-500/80 text-white text-xs px-2 py-1 rounded-lg">
-                            Uploading... {data.uploadProgress || 0}%
-                          </span>
+                          <div className="absolute inset-0 bg-black/70 backdrop-blur-sm rounded-xl">
+                            <div className="absolute inset-0 flex items-center justify-center">
+                              <div className="relative">
+                                {/* Background Circle */}
+                                <svg className="w-16 h-16 transform -rotate-90">
+                                  <circle
+                                    cx="32"
+                                    cy="32"
+                                    r="28"
+                                    stroke="currentColor"
+                                    strokeWidth="3"
+                                    fill="none"
+                                    className="text-white/20"
+                                  />
+                                  <circle
+                                    cx="32"
+                                    cy="32"
+                                    r="28"
+                                    stroke="currentColor"
+                                    strokeWidth="3"
+                                    fill="none"
+                                    strokeDasharray={`${2 * Math.PI * 28}`}
+                                    strokeDashoffset={`${
+                                      2 *
+                                      Math.PI *
+                                      28 *
+                                      (1 - (data.uploadProgress || 0) / 100)
+                                    }`}
+                                    className="text-purple-400 transition-all duration-300 ease-out"
+                                    strokeLinecap="round"
+                                  />
+                                </svg>
+                                {/* Centered Progress Text */}
+                                <div className="absolute inset-0 flex items-center justify-center">
+                                  <span className="text-lg font-bold text-white drop-shadow-lg">
+                                    {Math.round(data.uploadProgress || 0)}%
+                                  </span>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
                         )}
-                        {data.media_state === "pending" && (
-                          <span className="absolute bottom-2 left-2 bg-yellow-500/80 text-white text-xs px-2 py-1 rounded-lg">
-                            Pending...
-                          </span>
+
+                        {/* Processing State Overlay */}
+                        {data.media_state === "processing" && (
+                          <div className="absolute inset-0 bg-gradient-to-br from-yellow-500/90 to-amber-600/90 backdrop-blur-sm rounded-xl">
+                            <div className="absolute inset-0 flex items-center justify-center">
+                              <div className="relative">
+                                {/* Spinning Ring */}
+                                <div className="w-16 h-16 border-4 border-white/30 border-t-white rounded-full animate-spin" />
+                                {/* Inner Pulse */}
+                                <div className="absolute inset-0 flex items-center justify-center">
+                                  <div className="w-8 h-8 bg-white/40 rounded-full animate-pulse" />
+                                </div>
+                              </div>
+                            </div>
+                            {/* Animated Dots Indicator */}
+                            <div className="absolute bottom-3 left-0 right-0 flex justify-center gap-1.5">
+                              <div className="w-1.5 h-1.5 bg-white rounded-full animate-bounce [animation-delay:-0.3s]" />
+                              <div className="w-1.5 h-1.5 bg-white rounded-full animate-bounce [animation-delay:-0.15s]" />
+                              <div className="w-1.5 h-1.5 bg-white rounded-full animate-bounce" />
+                            </div>
+                          </div>
                         )}
+
+                        {/* Completed State Overlay */}
+                        {data.media_state === "completed" && (
+                          <div className="absolute inset-0 bg-gradient-to-br from-green-500/20 to-emerald-600/20 backdrop-blur-[1px] rounded-xl pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                            <div className="absolute top-3 right-3">
+                              {/* Checkmark SVG */}
+                              <svg
+                                className="w-6 h-6 text-white drop-shadow-lg"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                              >
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  strokeWidth={3}
+                                  d="M5 13l4 4L19 7"
+                                />
+                              </svg>
+                            </div>
+                          </div>
+                        )}
+
+                        {/* Failed State Overlay */}
                         {data.media_state === "failed" && (
-                          <span className="absolute bottom-2 left-2 bg-red-500/80 text-white text-xs px-2 py-1 rounded-lg">
-                            Failed
-                          </span>
+                          <div className="absolute inset-0 bg-gradient-to-br from-red-500/90 to-red-600/90 backdrop-blur-sm rounded-xl">
+                            <div className="absolute inset-0 flex items-center justify-center">
+                              <div className="text-center text-white">
+                                <X className="w-12 h-12 mx-auto mb-2 stroke-[3]" />
+                                <p className="text-sm font-semibold">Failed</p>
+                              </div>
+                            </div>
+                          </div>
                         )}
                       </div>
                     ) : (
@@ -338,20 +420,84 @@ function StatusComponent() {
                           sizes="(max-width: 640px) 100vw, 640px"
                           className="object-cover cursor-pointer duration-300 ease-in-out rounded-xl group-hover:brightness-110"
                         />
+
+                        {/* Uploading State Overlay */}
                         {data.media_state === "uploading" && (
-                          <span className="absolute bottom-2 left-2 bg-blue-500/80 text-white text-xs px-2 py-1 rounded-lg">
-                            Uploading... {data.uploadProgress || 0}%
-                          </span>
+                          <div className="absolute inset-0 bg-black/70 backdrop-blur-sm rounded-xl">
+                            <div className="absolute inset-0 flex items-center justify-center">
+                              <div className="relative">
+                                {/* Background Circle */}
+                                <svg className="w-16 h-16 transform -rotate-90">
+                                  <circle
+                                    cx="32"
+                                    cy="32"
+                                    r="28"
+                                    stroke="currentColor"
+                                    strokeWidth="3"
+                                    fill="none"
+                                    className="text-white/20"
+                                  />
+                                  <circle
+                                    cx="32"
+                                    cy="32"
+                                    r="28"
+                                    stroke="currentColor"
+                                    strokeWidth="3"
+                                    fill="none"
+                                    strokeDasharray={`${2 * Math.PI * 28}`}
+                                    strokeDashoffset={`${
+                                      2 *
+                                      Math.PI *
+                                      28 *
+                                      (1 - (data.uploadProgress || 0) / 100)
+                                    }`}
+                                    className="text-purple-400 transition-all duration-300 ease-out"
+                                    strokeLinecap="round"
+                                  />
+                                </svg>
+                                {/* Centered Progress Text */}
+                                <div className="absolute inset-0 flex items-center justify-center">
+                                  <span className="text-lg font-bold text-white drop-shadow-lg">
+                                    {Math.round(data.uploadProgress || 0)}%
+                                  </span>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
                         )}
-                        {data.media_state === "pending" && (
-                          <span className="absolute bottom-2 left-2 bg-yellow-500/80 text-white text-xs px-2 py-1 rounded-lg">
-                            Pending...
-                          </span>
+
+                        {/* Completed State Overlay */}
+                        {data.media_state === "completed" && (
+                          <div className="absolute inset-0 bg-gradient-to-br from-green-500/20 to-emerald-600/20 backdrop-blur-[1px] rounded-xl pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                            <div className="absolute top-3 right-3">
+                              {/* Checkmark SVG */}
+                              <svg
+                                className="w-6 h-6 text-white drop-shadow-lg"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                              >
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  strokeWidth={3}
+                                  d="M5 13l4 4L19 7"
+                                />
+                              </svg>
+                            </div>
+                          </div>
                         )}
+
+                        {/* Failed State Overlay */}
                         {data.media_state === "failed" && (
-                          <span className="absolute bottom-2 left-2 bg-red-500/80 text-white text-xs px-2 py-1 rounded-lg">
-                            Failed
-                          </span>
+                          <div className="absolute inset-0 bg-gradient-to-br from-red-500/90 to-red-600/90 backdrop-blur-sm rounded-xl">
+                            <div className="absolute inset-0 flex items-center justify-center">
+                              <div className="text-center text-white">
+                                <X className="w-12 h-12 mx-auto mb-2 stroke-[3]" />
+                                <p className="text-sm font-semibold">Failed</p>
+                              </div>
+                            </div>
+                          </div>
                         )}
                       </div>
                     )}

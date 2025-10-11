@@ -299,7 +299,7 @@ export interface MediaFile {
   type: "image" | "video";
   previewUrl: string;
   posterUrl?: string; // For videos
-  uploadStatus?: "idle" | "uploading" | "completed" | "error";
+  uploadStatus?: "idle" | "uploading" | "processing" | "completed" | "error";
   uploadProgress?: number;
   attachment?: Attachment; // Result after successful upload
 }

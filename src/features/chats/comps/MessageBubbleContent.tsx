@@ -185,17 +185,11 @@ const MessageBubbleContent: React.FC<MessageBubbleContentProps> = ({
                   className="relative"
                   onClick={() => handlePreview(file, idx)}
                 >
-                  <HLSVideoPlayer
-                    streamUrl={file.url}
-                    autoPlay={false}
-                    modalOpen={false}
-                    allOthers={{
-                      poster: file.poster,
-                      controls: false,
-                      playsInline: true,
-                      id: "video_player_full",
-                      muted: false,
-                    }}
+                  <video
+                    src={file.url}
+                    controls={false}
+                    playsInline={true}
+                    muted={true}
                     className="object-cover w-full aspect-square"
                   />
                   <div className="absolute inset-0 flex items-center justify-center w-full h-full bg-black/40 group-hover:bg-black/60 transition">

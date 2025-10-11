@@ -17,18 +17,29 @@ import React, {
 import toast from "react-hot-toast";
 import swal from "sweetalert";
 import { v4 as uuid } from "uuid";
+import axios from "axios";
 import { useChatStore } from "@/contexts/ChatContext";
 import { useMessagesConversation } from "@/contexts/MessageConversationContext";
 import { usePointsStore } from "@/contexts/PointsContext";
 import { useAuthContext } from "@/contexts/UserUseContext";
-import { useMediaUpload } from "@/hooks/useMediaUpload";
-import { imageTypes } from "@/lib/FileTypes";
+import { imageTypes, videoTypes } from "@/lib/FileTypes";
 import type { MediaFile, Message, MessageInputProps } from "@/types/Components";
 import axiosInstance from "@/utils/Axios";
 import GenerateVideoPoster from "@/utils/GenerateVideoPoster";
 import { getSocket } from "../../../components/common/Socket";
 import MessageMediaPreview from "./MessageMediaPreview";
 import LoadingSpinner from "@/components/common/loaders/LoadingSpinner";
+
+interface MessageMediaFile {
+  id: string;
+  media_id: string;
+  media_type: "image" | "video";
+  media_state: "pending" | "uploading" | "processing" | "completed" | "failed";
+  media_url: string;
+  uploadProgress?: number;
+  file?: File;
+  posterUrl?: string;
+}
 
 // Utility Functions (memoized)
 const escapeHtml = (str: string) => {
@@ -70,24 +81,50 @@ const MessageInputComponent = React.memo(
     const setIsTyping = useChatStore((state) => state.setIsTyping);
     const socket = getSocket();
     const addNewMessage = useChatStore((state) => state.addNewMessage);
-    const mediaFiles = useChatStore((state) => state.mediaFiles);
-    const setMediaFiles = useChatStore((state) => state.setMediaFiles);
-    const resetAllMedia = useChatStore((state) => state.resetAllMedia);
+
+    // Use local state for message media files instead of global mediaFiles
+    const [messageMediaFiles, setMessageMediaFiles] = useState<
+      MessageMediaFile[]
+    >([]);
+    const [isUploadingMedia, setIsUploadingMedia] = useState(false);
 
     // Socket connection monitoring
     const [isSocketConnected, setIsSocketConnected] = useState(
-      socket?.connected || false,
+      socket?.connected || false
     );
+
+    // Calculate upload progress
+    const uploadProgress = useMemo(() => {
+      if (messageMediaFiles.length === 0)
+        return { completed: 0, total: 0, percentage: 0 };
+
+      const completed = messageMediaFiles.filter(
+        (f) => f.media_state === "completed"
+      ).length;
+      const total = messageMediaFiles.length;
+      const percentage = total > 0 ? Math.round((completed / total) * 100) : 0;
+
+      return { completed, total, percentage };
+    }, [messageMediaFiles]);
+
+    // Check if uploads are complete
+    const areUploadsComplete = useMemo(() => {
+      if (messageMediaFiles.length === 0) return true;
+      return messageMediaFiles.every((f) => f.media_state === "completed");
+    }, [messageMediaFiles]);
+
+    // Check if any uploads have errors
+    const hasUploadErrors = useMemo(() => {
+      return messageMediaFiles.some((f) => f.media_state === "failed");
+    }, [messageMediaFiles]);
 
     // Memoized values
     const canSendMessageMemo = useMemo(() => {
-      const hasContent = message.trim().length > 0 || mediaFiles.length > 0;
+      const hasContent =
+        message.trim().length > 0 || messageMediaFiles.length > 0;
       const uploadsComplete =
-        mediaFiles.length === 0 ||
-        mediaFiles.every((f) => f.uploadStatus === "completed");
-      const noUploadErrors = mediaFiles.every(
-        (f) => f.uploadStatus !== "error",
-      );
+        messageMediaFiles.length === 0 || areUploadsComplete;
+      const noUploadErrors = !hasUploadErrors;
       const socketReady = isSocketConnected && socket;
       return (
         hasContent &&
@@ -95,29 +132,20 @@ const MessageInputComponent = React.memo(
         noUploadErrors &&
         socketReady &&
         !isSending &&
-        !isBlockedByReceiver
+        !isBlockedByReceiver &&
+        !isUploadingMedia
       );
     }, [
       message,
-      mediaFiles,
+      messageMediaFiles,
+      areUploadsComplete,
+      hasUploadErrors,
       isSocketConnected,
       socket,
       isSending,
       isBlockedByReceiver,
+      isUploadingMedia,
     ]);
-
-    const uploadProgress = useMemo(() => {
-      if (mediaFiles.length === 0)
-        return { completed: 0, total: 0, percentage: 0 };
-
-      const completed = mediaFiles.filter(
-        (f) => f.uploadStatus === "completed",
-      ).length;
-      const total = mediaFiles.length;
-      const percentage = total > 0 ? Math.round((completed / total) * 100) : 0;
-
-      return { completed, total, percentage };
-    }, [mediaFiles]);
 
     useEffect(() => {
       if (!socket) return;
@@ -137,9 +165,284 @@ const MessageInputComponent = React.memo(
       };
     }, [socket]);
 
-    // Media upload hook
-    const { areAllUploadsComplete, hasUploadErrors, getCompletedAttachments } =
-      useMediaUpload();
+    // S3 Upload Functions
+    const getPresignedUrls = async (files: File[], mediaIds: string[]) => {
+      const fileData = files.map((file, index) => ({
+        name: file.name,
+        type: file.type,
+        size: file.size,
+        media_id: mediaIds[index],
+      }));
+
+      const response = await axiosInstance.post(
+        "/conversations/presigned-urls",
+        {
+          files: fileData,
+        }
+      );
+
+      return response.data.data;
+    };
+
+    const uploadToS3 = async (
+      file: File,
+      presignedUrl: string,
+      media_id: string
+    ) => {
+      try {
+        console.log(`🚀 Starting S3 upload for ${media_id}`, {
+          fileName: file.name,
+          fileSize: file.size,
+          fileType: file.type,
+        });
+
+        const response = await axios.put(presignedUrl, file, {
+          headers: {
+            "Content-Type": file.type,
+          },
+          onUploadProgress: (progressEvent: any) => {
+            if (progressEvent.total) {
+              const progress =
+                (progressEvent.loaded / progressEvent.total) * 100;
+              console.log(
+                `📊 Upload progress for ${media_id}: ${Math.round(progress)}%`
+              );
+              setMessageMediaFiles((prev) =>
+                prev.map((m) =>
+                  m.media_id === media_id
+                    ? { ...m, uploadProgress: Math.round(progress) }
+                    : m
+                )
+              );
+            }
+          },
+        });
+
+        console.log(`✅ S3 upload completed for ${media_id}`, response.status);
+        return response;
+      } catch (error: any) {
+        console.error(`❌ S3 upload failed for ${media_id}:`, {
+          error: error.message,
+          response: error.response?.data,
+          status: error.response?.status,
+        });
+        throw error;
+      }
+    };
+
+    const completeUpload = async (
+      uploadedFiles: Array<{
+        media_id: string;
+        key: string;
+        fileName: string;
+        fileType: string;
+        fileSize: number;
+        isVideo: boolean;
+      }>
+    ) => {
+      const response = await axiosInstance.post(
+        "/conversations/complete-upload",
+        {
+          uploadedFiles,
+        }
+      );
+
+      return response.data.data;
+    };
+
+    // Upload pending files
+    const uploadPendingFiles = async () => {
+      const pendingFiles = messageMediaFiles.filter(
+        (item) => item.media_state === "pending" && item.file
+      );
+
+      if (pendingFiles.length === 0) return;
+
+      setIsUploadingMedia(true);
+
+      try {
+        console.log(`📤 Starting upload for ${pendingFiles.length} files`);
+
+        // Step 1: Get presigned URLs
+        const files = pendingFiles.map((item) => item.file!);
+        const mediaIds = pendingFiles.map((item) => item.media_id);
+
+        console.log("🔗 Requesting presigned URLs...", mediaIds);
+        const presignedData = await getPresignedUrls(files, mediaIds);
+        console.log("✅ Received presigned URLs:", presignedData.length);
+
+        // Step 2: Mark files as uploading
+        setMessageMediaFiles((prev) =>
+          prev.map((item) =>
+            pendingFiles.find((p) => p.media_id === item.media_id)
+              ? { ...item, media_state: "uploading" }
+              : item
+          )
+        );
+
+        // Step 3: Upload files to S3
+        console.log("⬆️ Uploading files to S3...");
+        const uploadPromises = presignedData.map((data: any, index: number) =>
+          uploadToS3(files[index], data.presignedUrl, data.media_id)
+        );
+
+        await Promise.all(uploadPromises);
+        console.log("✅ All files uploaded to S3");
+
+        // Step 4: Complete upload and save to database
+        console.log("💾 Saving to database...");
+        const uploadedFiles = presignedData.map((data: any) => ({
+          media_id: data.media_id,
+          key: data.key,
+          fileName: data.fileName,
+          fileType: data.fileType,
+          fileSize: data.fileSize,
+          isVideo: data.isVideo,
+        }));
+
+        const completedFiles = await completeUpload(uploadedFiles);
+        console.log("✅ Database save complete:", completedFiles);
+
+        // Step 5: Update media files with final URLs and states
+        setMessageMediaFiles((prev) =>
+          prev.map((item) => {
+            const completedFile = completedFiles.find(
+              (cf: any) => cf.media_id === item.media_id
+            );
+            if (completedFile) {
+              // Clean up blob URL
+              if (item.media_url.startsWith("blob:")) {
+                URL.revokeObjectURL(item.media_url);
+              }
+
+              const finalState: MessageMediaFile["media_state"] =
+                completedFile.mimetype.startsWith("video/")
+                  ? "processing"
+                  : "completed";
+
+              console.log(
+                `📝 Updated ${item.media_id} to state: ${finalState}`
+              );
+
+              return {
+                ...item,
+                media_url: completedFile.url,
+                media_state: finalState,
+                file: undefined,
+                uploadProgress: undefined,
+              };
+            }
+            return item;
+          })
+        );
+
+        toast.success("Upload completed!");
+      } catch (error: any) {
+        console.error("❌ Upload failed:", error);
+        toast.error(`Upload failed: ${error.message || "Please try again."}`);
+
+        // Mark failed uploads
+        setMessageMediaFiles((prev) =>
+          prev.map((item) =>
+            pendingFiles.find((p) => p.media_id === item.media_id)
+              ? { ...item, media_state: "failed" }
+              : item
+          )
+        );
+      } finally {
+        setIsUploadingMedia(false);
+      }
+    };
+
+    // Start upload when pending files are added
+    useEffect(() => {
+      const pendingFiles = messageMediaFiles.filter(
+        (item) => item.media_state === "pending"
+      );
+      if (pendingFiles.length > 0 && !isUploadingMedia) {
+        uploadPendingFiles();
+      }
+    }, [messageMediaFiles.length]);
+
+    // SSE connection for video processing status
+    useEffect(() => {
+      if (!user?.id) return;
+
+      console.log("🔌 Connecting to message media SSE...", user.id);
+
+      const evtSource = new EventSource(
+        process.env.NEXT_PUBLIC_TS_EXPRESS_URL +
+          `/events/message-media-state?userId=${user?.id}`
+      );
+
+      evtSource.onopen = () => {
+        console.log("✅ SSE connection established");
+      };
+
+      evtSource.addEventListener("ping", (event: MessageEvent) => {
+        console.log("🏓 SSE ping received:", event.data);
+      });
+
+      evtSource.addEventListener(
+        "message-processing-complete",
+        (event: MessageEvent) => {
+          console.log(
+            "📥 SSE message-processing-complete received:",
+            event.data
+          );
+          try {
+            if (event.data) {
+              const data = JSON.parse(event.data);
+              console.log("✅ Updating media state for:", data.mediaId);
+
+              // Check if media file exists and show toast outside setState
+              setMessageMediaFiles((prev) => {
+                const mediaFile = prev.find((m) => m.media_id === data.mediaId);
+
+                // Only update if the media file exists in current state
+                if (!mediaFile) {
+                  console.log(
+                    "⚠️ Media file not found in current state, ignoring event"
+                  );
+                  return prev;
+                }
+
+                // Schedule toast for next tick to avoid setState during render
+                if (mediaFile.media_state === "processing") {
+                  setTimeout(() => {
+                    toast.success("Video processing completed!");
+                  }, 0);
+                }
+
+                const updated = prev.map((m) =>
+                  m.media_id === data.mediaId
+                    ? {
+                        ...m,
+                        media_state:
+                          "completed" as MessageMediaFile["media_state"],
+                      }
+                    : m
+                );
+                console.log("📝 Media files after update:", updated);
+                return updated;
+              });
+            }
+          } catch (error) {
+            console.error("❌ Error parsing SSE data:", error);
+          }
+        }
+      );
+
+      evtSource.onerror = (err) => {
+        console.error("❌ SSE error:", err);
+        console.log("🔄 SSE will attempt to reconnect automatically");
+      };
+
+      return () => {
+        console.log("🔌 Closing SSE connection");
+        evtSource.close();
+      };
+    }, [user?.id]);
 
     // Validate environment variables on mount
     useEffect(() => {
@@ -153,7 +456,7 @@ const MessageInputComponent = React.memo(
       if (missingVars.length > 0) {
         console.error(
           "❌ Missing required environment variables:",
-          missingVars,
+          missingVars
         );
         console.warn("⚠️ Video uploads may fail due to missing configuration");
       }
@@ -180,7 +483,7 @@ const MessageInputComponent = React.memo(
 
     const typingHandler = useMemo(
       () => debouncedSendTyping(),
-      [debouncedSendTyping],
+      [debouncedSendTyping]
     );
 
     // Helper function to ensure socket connection
@@ -220,15 +523,15 @@ const MessageInputComponent = React.memo(
 
       try {
         // Check uploads before proceeding
-        if (mediaFiles.length > 0) {
-          if (!areAllUploadsComplete()) {
+        if (messageMediaFiles.length > 0) {
+          if (!areUploadsComplete) {
             toast.error(
-              "Please wait for all uploads to complete before sending.",
+              "Please wait for all uploads to complete before sending."
             );
             return;
           }
 
-          if (hasUploadErrors()) {
+          if (hasUploadErrors) {
             toast.error("Some files failed to upload. Please try again.");
             return;
           }
@@ -274,20 +577,21 @@ const MessageInputComponent = React.memo(
           if (!isToSend) return;
         }
 
-        // Validate attachments
-        const attachments = getCompletedAttachments();
-        if (mediaFiles.length > 0 && attachments.length === 0) {
-          toast.error("Upload failed. Please try uploading your files again.");
-          return;
-        }
+        // Get completed attachments
+        const completedMedia = messageMediaFiles
+          .filter((m) => m.media_state === "completed")
+          .map((m) => ({
+            url: m.media_url,
+            type: m.media_type,
+            id: m.media_id,
+            name: m.media_id,
+            poster: m.posterUrl || "",
+            extension: m.file?.name.split(".").pop() || "",
+            size: m.file?.size || 0,
+          }));
 
-        const invalidAttachments = attachments.filter(
-          (att) => !att.url || !att.id || !att.type,
-        );
-        if (invalidAttachments.length > 0) {
-          toast.error(
-            "Some files failed to upload properly. Please try again.",
-          );
+        if (messageMediaFiles.length > 0 && completedMedia.length === 0) {
+          toast.error("Upload failed. Please try uploading your files again.");
           return;
         }
 
@@ -300,8 +604,7 @@ const MessageInputComponent = React.memo(
           receiver_id: receiver.user_id,
           conversationId: conversationId,
           message: messageText,
-          attachment: attachments,
-          rawFiles: mediaFiles,
+          attachment: completedMedia,
           triggerSend: true,
           created_at: new Date().toISOString(),
           seen: false,
@@ -310,7 +613,7 @@ const MessageInputComponent = React.memo(
         // Optimistic update
         addNewMessage(newMessage);
         resetMessageInput();
-        resetAllMedia();
+        setMessageMediaFiles([]); // Clear message media files
 
         // Ensure socket connection
         if (!socket?.connected) {
@@ -347,11 +650,11 @@ const MessageInputComponent = React.memo(
         } catch (socketError: any) {
           if (socketError.message === "Message send timeout") {
             toast.error(
-              "Message is taking longer than expected. It may still be sent. Please wait before trying again.",
+              "Message is taking longer than expected. It may still be sent. Please wait before trying again."
             );
           } else {
             toast.error(
-              "Failed to send message. Please check your connection and try again.",
+              "Failed to send message. Please check your connection and try again."
             );
           }
         }
@@ -377,10 +680,9 @@ const MessageInputComponent = React.memo(
       isSending,
       isBlockedByReceiver,
       canSendMessageMemo,
-      mediaFiles,
-      areAllUploadsComplete,
+      messageMediaFiles,
+      areUploadsComplete,
       hasUploadErrors,
-      getCompletedAttachments,
       points,
       isFirstMessage,
       conversations,
@@ -388,7 +690,6 @@ const MessageInputComponent = React.memo(
       conversationId,
       addNewMessage,
       resetMessageInput,
-      resetAllMedia,
       socket,
     ]);
 
@@ -402,7 +703,7 @@ const MessageInputComponent = React.memo(
           handleSendMessage();
         }
       },
-      [typingHandler, message, handleSendMessage, setIsTyping],
+      [typingHandler, message, handleSendMessage, setIsTyping]
     );
 
     useEffect(() => {
@@ -432,7 +733,7 @@ const MessageInputComponent = React.memo(
     // Media Handling
     const triggerFileSelect = useCallback(() => {
       const fileInput = document.getElementById(
-        "file-input",
+        "file-input"
       ) as HTMLInputElement;
       if (fileInput) {
         fileInput.click();
@@ -441,7 +742,7 @@ const MessageInputComponent = React.memo(
 
     useEffect(() => {
       const fileInput = document.getElementById(
-        "file-input",
+        "file-input"
       ) as HTMLInputElement;
       if (!fileInput) return;
 
@@ -453,18 +754,19 @@ const MessageInputComponent = React.memo(
         const selectedFiles = Array.from(files);
         const validFiles = selectedFiles.filter(
           (file) =>
-            imageTypes.includes(file.type) || file.type.startsWith("video/"),
+            imageTypes.includes(file.type) || file.type.startsWith("video/")
         );
 
         if (validFiles.length !== selectedFiles.length) {
           toast.error(
-            "Invalid file type, please select an image or video file",
+            "Invalid file type, please select an image or video file"
           );
           return;
         }
 
-        const newMediaFiles: MediaFile[] = [];
+        const newMediaFiles: MessageMediaFile[] = [];
         for (const file of validFiles) {
+          const media_id = uuid();
           const previewUrl = URL.createObjectURL(file);
           const type: "image" | "video" = file.type.startsWith("video/")
             ? "video"
@@ -481,22 +783,23 @@ const MessageInputComponent = React.memo(
 
           newMediaFiles.push({
             id: uuid(),
+            media_id,
             file,
-            type,
-            previewUrl,
+            media_type: type,
+            media_url: previewUrl,
             posterUrl,
-            uploadStatus: "idle",
+            media_state: "pending",
             uploadProgress: 0,
           });
         }
 
-        setMediaFiles && setMediaFiles(newMediaFiles);
+        setMessageMediaFiles((prev) => [...prev, ...newMediaFiles]);
         target.value = "";
       };
 
       fileInput.addEventListener("change", handleFileChange);
       return () => fileInput.removeEventListener("change", handleFileChange);
-    }, [setMediaFiles]);
+    }, []);
 
     // Early returns
     if (receiver?.is_profile_hidden) {
@@ -521,23 +824,23 @@ const MessageInputComponent = React.memo(
 
     return (
       <div className="relative bottom-0 lg:ml-4 lg:mr-2 max-h-max">
-        {mediaFiles.length > 0 && !areAllUploadsComplete() && (
+        {messageMediaFiles.length > 0 && !areUploadsComplete && (
           <div className="p-2 mb-2 border border-purple-200 rounded-lg bg-purple-50 dark:bg-purple-900/30 dark:border-purple-700">
             <div className="flex items-center justify-between text-sm">
               <span className="text-purple-700 dark:text-purple-300">
-                {mediaFiles.some(
+                {messageMediaFiles.some(
                   (f) =>
-                    f.uploadProgress === 99 ||
-                    (f.uploadProgress === 100 && !f.attachment),
+                    f.media_state === "processing" ||
+                    (f.uploadProgress === 100 && f.media_state === "uploading")
                 )
                   ? `Processing files... ${uploadProgress.completed}/${uploadProgress.total}`
                   : `Uploading files... ${uploadProgress.completed}/${uploadProgress.total}`}
               </span>
               <span className="font-medium text-purple-600 dark:text-purple-400">
-                {mediaFiles.some(
+                {messageMediaFiles.some(
                   (f) =>
-                    f.uploadProgress === 99 ||
-                    (f.uploadProgress === 100 && !f.attachment),
+                    f.media_state === "processing" ||
+                    (f.uploadProgress === 100 && f.media_state === "uploading")
                 )
                   ? "Processing..."
                   : `${uploadProgress.percentage}%`}
@@ -546,10 +849,11 @@ const MessageInputComponent = React.memo(
             <div className="mt-1 w-full bg-purple-200 dark:bg-purple-800 rounded-full h-1.5">
               <div
                 className={`h-1.5 rounded-full transition-all duration-300 ${
-                  mediaFiles.some(
+                  messageMediaFiles.some(
                     (f) =>
-                      f.uploadProgress === 99 ||
-                      (f.uploadProgress === 100 && !f.attachment),
+                      f.media_state === "processing" ||
+                      (f.uploadProgress === 100 &&
+                        f.media_state === "uploading")
                   )
                     ? "bg-yellow-500 animate-pulse"
                     : "bg-purple-600 dark:bg-purple-400"
@@ -583,13 +887,30 @@ const MessageInputComponent = React.memo(
           </div>
         ) : (
           <div className="flex flex-col w-full px-2 py-2 border gap-2 border-black/20 rounded-2xl dark:bg-gray-900 lg:rounded-xl">
-            {mediaFiles.length > 0 && (
-              <div className="p-0 text-white rounded-full grid grid-cols-6 gap-2">
-                {mediaFiles.map((file: MediaFile, index: number) => (
+            {messageMediaFiles.length > 0 && (
+              <div className="p-0 text-white rounded-full grid grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-2">
+                {messageMediaFiles.map((file, index: number) => (
                   <MessageMediaPreview
                     key={file.id}
                     index={index}
-                    file={file}
+                    file={{
+                      id: file.id,
+                      file: file.file!,
+                      type: file.media_type,
+                      previewUrl: file.media_url,
+                      posterUrl: file.posterUrl,
+                      uploadStatus:
+                        file.media_state === "completed"
+                          ? "completed"
+                          : file.media_state === "failed"
+                          ? "error"
+                          : file.media_state === "processing"
+                          ? "processing"
+                          : file.media_state === "uploading"
+                          ? "uploading"
+                          : "idle",
+                      uploadProgress: file.uploadProgress || 0,
+                    }}
                   />
                 ))}
               </div>
@@ -640,12 +961,12 @@ const MessageInputComponent = React.memo(
                       ? !isSocketConnected
                         ? "Connection lost - please refresh the page"
                         : isSending
-                          ? "Sending message..."
-                          : mediaFiles.length > 0 && !areAllUploadsComplete()
-                            ? "Waiting for uploads to complete..."
-                            : hasUploadErrors()
-                              ? "Some uploads failed. Please try again."
-                              : "Please enter a message or add media"
+                        ? "Sending message..."
+                        : messageMediaFiles.length > 0 && !areUploadsComplete
+                        ? "Waiting for uploads to complete..."
+                        : hasUploadErrors
+                        ? "Some uploads failed. Please try again."
+                        : "Please enter a message or add media"
                       : "Send message"
                   }
                 >
@@ -664,7 +985,7 @@ const MessageInputComponent = React.memo(
         )}
       </div>
     );
-  },
+  }
 );
 
 MessageInputComponent.displayName = "MessageInputComponent";

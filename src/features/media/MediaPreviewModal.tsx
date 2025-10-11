@@ -356,7 +356,11 @@ const MediaPreviewModal = memo(
                     ) : (
                       <VideoPreview
                         url={item.url}
-                        isBlob={!!item.isBlob}
+                        isBlob={
+                          item.isBlob ||
+                          item.url.startsWith("blob:") ||
+                          !item.url.includes(".m3u8")
+                        }
                         playAction={currentSlide === index}
                         index={index}
                         userProfile={userProfile}

@@ -76,6 +76,6 @@ export const useSwipeGesture = ({
     onTouchMove,
     onTouchEnd,
     isdragging: isDragging.toString(),
-    dragOffset,
+    dragoffset: dragOffset,
   };
 };

@@ -5,6 +5,11 @@ const withBundleAnalyzer = require('@next/bundle-analyzer')({
 });
 
 const nextConfig: NextConfig = {
+  compiler: {
+    removeConsole: {
+      exclude: ["error", "warn"],
+    },
+  },
   images: {
     remotePatterns: [
       {
