@@ -20,6 +20,22 @@ type ProfileSettingsProps = {
 
 const ProfileSettings = ({ user }: ProfileSettingsProps) => {
   const router = useRouter();
+  
+  // Helper function to remove https:// or http:// prefix for display
+  const removeHttpPrefix = (url: string): string => {
+    if (!url) return "";
+    return url.replace(/^https?:\/\//, "");
+  };
+
+  // Helper function to ensure https:// prefix for backend
+  const ensureHttpPrefix = (url: string): string => {
+    if (!url) return "";
+    if (url.startsWith("http://") || url.startsWith("https://")) {
+      return url;
+    }
+    return `https://${url}`;
+  };
+
   const [userData, setUserData] = useState<UserUpdateProfileType>({
     name: user?.name || "",
     username: user?.username || "",
@@ -27,13 +43,13 @@ const ProfileSettings = ({ user }: ProfileSettingsProps) => {
     bio: user?.bio || "",
     state: user?.state || "",
     website: user?.website || "",
-    instagram: user?.Settings?.instagram_url || "",
-    twitter: user?.Settings?.twitter_url || "",
-    facebook: user?.Settings?.facebook_url || "",
-    snapchat: user?.Settings?.snapchat_url || "",
-    tiktok: user?.Settings?.tiktok_url || "",
-    telegram: user?.Settings?.telegram_url || "",
-    youtube: user?.Settings?.youtube_url || "",
+    instagram: removeHttpPrefix(user?.Settings?.instagram_url || ""),
+    twitter: removeHttpPrefix(user?.Settings?.twitter_url || ""),
+    facebook: removeHttpPrefix(user?.Settings?.facebook_url || ""),
+    snapchat: removeHttpPrefix(user?.Settings?.snapchat_url || ""),
+    tiktok: removeHttpPrefix(user?.Settings?.tiktok_url || ""),
+    telegram: removeHttpPrefix(user?.Settings?.telegram_url || ""),
+    youtube: removeHttpPrefix(user?.Settings?.youtube_url || ""),
   });
   const [usernameCheck, setUsernameCheck] = useState(user?.username || "");
   const { message, canSave, error, isLoading } = useCheckUsername(
@@ -49,7 +65,15 @@ const ProfileSettings = ({ user }: ProfileSettingsProps) => {
     >,
   ) => {
     const { name, value } = e.target;
-    setUserData((prev) => ({ ...prev, [name]: value }));
+    
+    // Social media fields - remove https:// prefix if pasted
+    const socialFields = ['instagram', 'twitter', 'facebook', 'snapchat', 'tiktok', 'telegram', 'youtube'];
+    if (socialFields.includes(name)) {
+      const cleanValue = removeHttpPrefix(value);
+      setUserData((prev) => ({ ...prev, [name]: cleanValue }));
+    } else {
+      setUserData((prev) => ({ ...prev, [name]: value }));
+    }
 
     if (name === "username") {
       if (usernameTimeoutRef.current) {
@@ -63,11 +87,19 @@ const ProfileSettings = ({ user }: ProfileSettingsProps) => {
 
   const handleSaveClick = async () => {
     try {
-      // const regex = /^[a-zA-Z0-9._:$!%-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-      // if (!regex.test(userData.email)) {
-      //   return toast.error("Invalid email address");
-      // }
-      const response = await saveUserSettings(userData);
+      // Prepare data with https:// prefix for social links
+      const dataToSend = {
+        ...userData,
+        instagram: userData.instagram ? ensureHttpPrefix(userData.instagram) : "",
+        twitter: userData.twitter ? ensureHttpPrefix(userData.twitter) : "",
+        facebook: userData.facebook ? ensureHttpPrefix(userData.facebook) : "",
+        snapchat: userData.snapchat ? ensureHttpPrefix(userData.snapchat) : "",
+        tiktok: userData.tiktok ? ensureHttpPrefix(userData.tiktok) : "",
+        telegram: userData.telegram ? ensureHttpPrefix(userData.telegram) : "",
+        youtube: userData.youtube ? ensureHttpPrefix(userData.youtube) : "",
+      };
+
+      const response = await saveUserSettings(dataToSend);
       if (response.status === 200) {
         toast.success("Profile updated successfully");
         router.refresh();
@@ -232,14 +264,17 @@ const ProfileSettings = ({ user }: ProfileSettingsProps) => {
             <div className="flex items-center justify-center h-full py-3 col-span-2 bg-primary-dark-pink/10 dark:bg-primary-dark-pink/20 transition group-focus-within:bg-primary-dark-pink/20">
               <Instagram className="w-6 h-6 text-primary-dark-pink dark:text-white" />
             </div>
-            <input
-              type="text"
-              onChange={handleInputChange}
-              name="instagram"
-              value={userData.instagram}
-              className="p-3 text-sm text-black bg-transparent border-none outline-none col-span-10 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 transition"
-              placeholder="https://instagram.com/@paymefans"
-            />
+            <div className="flex items-center col-span-10">
+              <span className="pl-3 text-sm text-gray-800 dark:text-white">https://</span>
+              <input
+                type="text"
+                onChange={handleInputChange}
+                name="instagram"
+                value={userData.instagram}
+                className="flex-1 p-3 pl-0 text-sm text-black bg-transparent border-none outline-none dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 transition"
+                placeholder="instagram.com/paymefans"
+              />
+            </div>
           </div>
 
           {/* Twitter */}
@@ -247,14 +282,17 @@ const ProfileSettings = ({ user }: ProfileSettingsProps) => {
             <div className="flex items-center justify-center h-full py-3 col-span-2 bg-primary-dark-pink/10 dark:bg-primary-dark-pink/20 transition group-focus-within:bg-primary-dark-pink/20">
               <Twitter className="w-6 h-6 text-primary-dark-pink dark:text-white" />
             </div>
-            <input
-              type="text"
-              onChange={handleInputChange}
-              name="twitter"
-              value={userData.twitter}
-              className="p-3 text-sm text-black bg-transparent border-none outline-none col-span-10 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 transition"
-              placeholder="https://twitter.com/@paymefans"
-            />
+            <div className="flex items-center col-span-10">
+              <span className="pl-3 text-sm text-gray-800 dark:text-white">https://</span>
+              <input
+                type="text"
+                onChange={handleInputChange}
+                name="twitter"
+                value={userData.twitter}
+                className="flex-1 p-3 pl-0 text-sm text-black bg-transparent border-none outline-none dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 transition"
+                placeholder="twitter.com/paymefans"
+              />
+            </div>
           </div>
 
           {/* Facebook */}
@@ -262,14 +300,17 @@ const ProfileSettings = ({ user }: ProfileSettingsProps) => {
             <div className="flex items-center justify-center h-full py-3 col-span-2 bg-primary-dark-pink/10 dark:bg-primary-dark-pink/20 transition group-focus-within:bg-primary-dark-pink/20">
               <Facebook className="w-6 h-6 text-primary-dark-pink dark:text-white" />
             </div>
-            <input
-              type="text"
-              onChange={handleInputChange}
-              name="facebook"
-              value={userData.facebook}
-              className="p-3 text-sm text-black bg-transparent border-none outline-none col-span-10 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 transition"
-              placeholder="https://facebook.com/@paymefans"
-            />
+            <div className="flex items-center col-span-10">
+              <span className="pl-3 text-sm text-gray-800 dark:text-white">https://</span>
+              <input
+                type="text"
+                onChange={handleInputChange}
+                name="facebook"
+                value={userData.facebook}
+                className="flex-1 p-3 pl-0 text-sm text-black bg-transparent border-none outline-none dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 transition"
+                placeholder="facebook.com/paymefans"
+              />
+            </div>
           </div>
 
           {/* Snapchat */}
@@ -280,14 +321,17 @@ const ProfileSettings = ({ user }: ProfileSettingsProps) => {
                 size={20}
               />
             </div>
-            <input
-              type="text"
-              onChange={handleInputChange}
-              name="snapchat"
-              value={userData.snapchat}
-              className="p-3 text-sm text-black bg-transparent border-none outline-none col-span-10 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 transition"
-              placeholder="https://snapchat.com/@paymefans"
-            />
+            <div className="flex items-center col-span-10">
+              <span className="pl-3 text-sm text-gray-800 dark:text-white">https://</span>
+              <input
+                type="text"
+                onChange={handleInputChange}
+                name="snapchat"
+                value={userData.snapchat}
+                className="flex-1 p-3 pl-0 text-sm text-black bg-transparent border-none outline-none dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 transition"
+                placeholder="snapchat.com/paymefans"
+              />
+            </div>
           </div>
 
           {/* TikTok */}
@@ -303,14 +347,17 @@ const ProfileSettings = ({ user }: ProfileSettingsProps) => {
                 <path d="M12.75 2h2.25a.75.75 0 0 1 .75.75v1.5a3.75 3.75 0 0 0 3.75 3.75h1.5a.75.75 0 0 1 .75.75v2.25a.75.75 0 0 1-.75.75h-1.5A6.75 6.75 0 0 1 13.5 5.25V2.75A.75.75 0 0 1 12.75 2zm-2.25 5.25A6.75 6.75 0 1 0 17.25 14v-2.25a.75.75 0 0 0-.75-.75h-2.25a.75.75 0 0 0-.75.75v2.25a3.75 3.75 0 1 1-3.75-3.75h.75a.75.75 0 0 0 .75-.75V7.25a.75.75 0 0 0-.75-.75h-.75z" />
               </svg>
             </div>
-            <input
-              type="text"
-              onChange={handleInputChange}
-              name="tiktok"
-              value={userData.tiktok}
-              className="p-3 text-sm text-black bg-transparent border-none outline-none col-span-10 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 transition"
-              placeholder="https://tiktok.com/@paymefans"
-            />
+            <div className="flex items-center col-span-10">
+              <span className="pl-3 text-sm text-gray-800 dark:text-white">https://</span>
+              <input
+                type="text"
+                onChange={handleInputChange}
+                name="tiktok"
+                value={userData.tiktok}
+                className="flex-1 p-3 pl-0 text-sm text-black bg-transparent border-none outline-none dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 transition"
+                placeholder="tiktok.com/paymefans"
+              />
+            </div>
           </div>
 
           {/* Telegram */}
@@ -326,14 +373,17 @@ const ProfileSettings = ({ user }: ProfileSettingsProps) => {
                 <path d="M21.944 4.667a1.5 1.5 0 0 0-1.6-.217L3.6 11.25a1.5 1.5 0 0 0 .1 2.8l3.7 1.3 1.4 4.2a1.5 1.5 0 0 0 2.7.2l2-3.3 3.8 2.8a1.5 1.5 0 0 0 2.4-1l2-12a1.5 1.5 0 0 0-.756-1.583zM9.8 17.1l-1.1-3.3 7.2-6.5-6.1 7.7zm2.7 1.2l-1.1-3.3 2.7 2zm6.2-1.2-3.8-2.8 4.6-7.2z" />
               </svg>
             </div>
-            <input
-              type="text"
-              onChange={handleInputChange}
-              name="telegram"
-              value={userData.telegram}
-              className="p-3 text-sm text-black bg-transparent border-none outline-none col-span-10 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 transition"
-              placeholder="https://t.me/paymefans"
-            />
+            <div className="flex items-center col-span-10">
+              <span className="pl-3 text-sm text-gray-800 dark:text-white">https://</span>
+              <input
+                type="text"
+                onChange={handleInputChange}
+                name="telegram"
+                value={userData.telegram}
+                className="flex-1 p-3 pl-0 text-sm text-black bg-transparent border-none outline-none dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 transition"
+                placeholder="t.me/paymefans"
+              />
+            </div>
           </div>
 
           {/* YouTube */}
@@ -349,14 +399,17 @@ const ProfileSettings = ({ user }: ProfileSettingsProps) => {
                 <path d="M21.8 8.001a2.75 2.75 0 0 0-1.94-1.94C18.1 6 12 6 12 6s-6.1 0-7.86.06a2.75 2.75 0 0 0-1.94 1.94A28.2 28.2 0 0 0 2 12a28.2 28.2 0 0 0 .2 3.999 2.75 2.75 0 0 0 1.94 1.94C5.9 18 12 18 12 18s6.1 0 7.86-.06a2.75 2.75 0 0 0 1.94-1.94A28.2 28.2 0 0 0 22 12a28.2 28.2 0 0 0-.2-3.999zM10 15.5v-7l6 3.5-6 3.5z" />
               </svg>
             </div>
-            <input
-              type="text"
-              onChange={handleInputChange}
-              name="youtube"
-              value={userData.youtube}
-              className="p-3 text-sm text-black bg-transparent border-none outline-none col-span-10 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 transition"
-              placeholder="https://youtube.com/@paymefans"
-            />
+            <div className="flex items-center col-span-10">
+              <span className="pl-3 text-sm text-gray-800 dark:text-white">https://</span>
+              <input
+                type="text"
+                onChange={handleInputChange}
+                name="youtube"
+                value={userData.youtube}
+                className="flex-1 p-3 pl-0 text-sm text-black bg-transparent border-none outline-none dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 transition"
+                placeholder="youtube.com/paymefans"
+              />
+            </div>
           </div>
         </div>
         <div>

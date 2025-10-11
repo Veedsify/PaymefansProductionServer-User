@@ -97,7 +97,7 @@ const GroupChatHeader = ({ groupData }: GroupChatHeaderProps) => {
   }, [socket, groupData?.id]);
   return (
     <div className="flex items-center justify-between p-4 border-b border-gray-300 md:p-6 dark:bg-gray-800 dark:border-gray-700">
-      <Link href={`/client/public`} className="mr-4">
+      <Link href={`/profile`} className="mr-4">
         <LucideChevronLeft
           size={24}
           className="text-gray-600 cursor-pointer dark:text-gray-400 hover:text-primary-dark-pink transition-colors"

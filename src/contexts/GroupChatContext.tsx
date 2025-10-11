@@ -72,8 +72,8 @@ interface GroupChatState {
 // Define the Zustand store actions type
 interface GroupChatActions {
   setConnected: (connected: boolean) => void;
-  joinGroupRoom: (groupId: number) => void;
-  leaveGroupRoom: () => void;
+  joinGroupRoom: (groupId: number, userId: number) => void;
+  leaveGroupRoom: (userId: number) => void;
   setCurrentGroup: (groupId: number | null) => void;
   addMessage: (message: GroupMessage) => void;
   setMessages: (messages: GroupMessage[]) => void;
@@ -102,12 +102,13 @@ interface GroupChatActions {
   // Socket action helpers
   sendMessage: (
     content: string,
+    userId: number,
     attachments?: any[],
     replyToId?: number
   ) => void;
-  setTypingStatus: (isTyping: boolean) => void;
-  markMessageAsSeen: (messageId: number) => void;
-  restoreGroupRoom: () => void;
+  setTypingStatus: (isTyping: boolean, userId: number) => void;
+  markMessageAsSeen: (messageId: number, userId: number) => void;
+  restoreGroupRoom: (userId: number) => void;
 
   // Selector helpers
   getMessages: () => GroupMessage[];
@@ -143,9 +144,8 @@ export const useGroupChatStore = create<GroupChatStore>()((set, get) => ({
 
   // Actions
   setConnected: (payload) => set({ isConnected: payload }),
-  joinGroupRoom: (groupId) => {
+  joinGroupRoom: (groupId, userId) => {
     const socket = getSocket();
-    const { user } = useAuthContext();
     const { isConnected, currentGroupId, isJoined } = get();
 
     // Don't emit if already joined to this group
@@ -159,23 +159,22 @@ export const useGroupChatStore = create<GroupChatStore>()((set, get) => ({
     });
 
     // Emit socket event to actually join the room
-    if (socket && user?.id && isConnected) {
+    if (socket && userId && isConnected) {
       socket.emit("join-group-room", {
         groupId: groupId.toString(),
-        userId: user?.id.toString(),
+        userId: userId.toString(),
       });
     }
   },
-  leaveGroupRoom: () => {
+  leaveGroupRoom: (userId: number) => {
     const socket = getSocket();
-    const { user } = useAuthContext();
     const { isConnected, currentGroupId } = get();
 
     // Emit socket event to leave the room
-    if (socket && user && isConnected && currentGroupId) {
+    if (socket && userId && isConnected && currentGroupId) {
       socket.emit("leave-group-room", {
         groupId: currentGroupId.toString(),
-        userId: user?.id?.toString(),
+        userId: userId?.toString(),
       });
     }
 
@@ -335,12 +334,11 @@ export const useGroupChatStore = create<GroupChatStore>()((set, get) => ({
   },
 
   // Socket action helpers
-  sendMessage: (content, attachments = [], replyToId) => {
+  sendMessage: (content, userId, attachments = [], replyToId) => {
     const socket = getSocket();
-    const { user } = useAuthContext();
     const { isConnected, currentGroupId } = get();
 
-    if (socket && user && isConnected && currentGroupId) {
+    if (socket && userId && isConnected && currentGroupId) {
       socket?.emit("send-group-message", {
         groupId: currentGroupId.toString(),
         content,
@@ -353,34 +351,31 @@ export const useGroupChatStore = create<GroupChatStore>()((set, get) => ({
       // This prevents duplicate messages when server broadcasts back
     }
   },
-  setTypingStatus: (isTyping) => {
+  setTypingStatus: (isTyping, userId) => {
     const socket = getSocket();
-    const { user } = useAuthContext();
     const { isConnected, currentGroupId } = get();
 
-    if (socket && user && isConnected && currentGroupId) {
+    if (socket && userId && isConnected && currentGroupId) {
       socket?.emit("group-typing", { groupId: currentGroupId, isTyping });
     }
   },
-  markMessageAsSeen: (messageId) => {
+  markMessageAsSeen: (messageId, userId) => {
     const socket = getSocket();
-    const { user } = useAuthContext();
     const { isConnected, currentGroupId } = get();
 
-    if (socket && user && isConnected && currentGroupId) {
+    if (socket && userId && isConnected && currentGroupId) {
       socket?.emit("group-message-seen", {
         groupId: currentGroupId,
         messageId,
       });
     }
   },
-  restoreGroupRoom: () => {
+  restoreGroupRoom: (userId: number) => {
     const socket = getSocket();
-    const { user } = useAuthContext();
     const { isConnected } = get();
 
-    if (socket && user && isConnected) {
-      socket?.emit("restore-group-rooms", { userId: user?.id?.toString() });
+    if (socket && userId && isConnected) {
+      socket?.emit("restore-group-rooms", { userId: userId?.toString() });
     }
   },
 

@@ -1,5 +1,4 @@
 "use client";
-
 import { motion } from "framer-motion";
 import { useParams, useRouter } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -281,7 +280,7 @@ const GroupChatPage = () => {
 
     // If switching to a different group, clear previous group data
     if (currentGroupId && currentGroupId !== groupId) {
-      leaveGroupRoom();
+      leaveGroupRoom(user.id as number);
     }
 
     setLoading(true);
@@ -326,7 +325,7 @@ const GroupChatPage = () => {
         const membership = extractUserMembershipFromGroup(
           group,
           user?.id as number,
-          isUserBlocked,
+          isUserBlocked
         );
 
         if (membership) {
@@ -353,7 +352,7 @@ const GroupChatPage = () => {
         const messagesResponse = await fetchGroupMessages(
           groupId,
           undefined,
-          100,
+          100
         );
         if (messagesResponse.success && messagesResponse.data.messages) {
           setMessages(messagesResponse.data.messages);
@@ -399,7 +398,7 @@ const GroupChatPage = () => {
   // Join group room when socket connects and we have set the current group
   useEffect(() => {
     if (isConnected && currentGroupId === groupId && user && !loading) {
-      joinGroupRoom(groupId);
+      joinGroupRoom(groupId, user.id as number);
     }
   }, [isConnected, currentGroupId, groupId, user, joinGroupRoom, loading]);
 
@@ -407,7 +406,7 @@ const GroupChatPage = () => {
   useEffect(() => {
     return () => {
       if (currentGroupId === groupId) {
-        leaveGroupRoom();
+        leaveGroupRoom(user?.id as number);
       }
     };
   }, [groupId, currentGroupId, leaveGroupRoom]);

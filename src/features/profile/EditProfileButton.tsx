@@ -45,13 +45,29 @@ const EditProfileButton = ({ user }: { user: any }) => {
 
 function BannerModal({ user, open = false, setOpen }: BannerModalProps) {
   const [file, setFile] = useState<File | null>(null);
+
+  // Helper function to remove https:// or http:// prefix for display
+  const removeHttpPrefix = (url: string): string => {
+    if (!url) return "";
+    return url.replace(/^https?:\/\//, "");
+  };
+
+  // Helper function to ensure https:// prefix for backend
+  const ensureHttpPrefix = (url: string): string => {
+    if (!url) return "";
+    if (url.startsWith("http://") || url.startsWith("https://")) {
+      return url;
+    }
+    return `https://${url}`;
+  };
+
   const [userData, setUserData] = useState<UserUpdateProfileType>(
-    {} as UserUpdateProfileType,
+    {} as UserUpdateProfileType
   );
   const [usernameCheck, setUsernameCheck] = useState("");
   const { message, canSave, error, isLoading } = useCheckUsername(
     user,
-    usernameCheck,
+    usernameCheck
   );
   const queryClient = useQueryClient();
   const usernameTimeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -59,7 +75,7 @@ function BannerModal({ user, open = false, setOpen }: BannerModalProps) {
   const handleInputChange = (
     e: React.ChangeEvent<
       HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
-    >,
+    >
   ) => {
     if (e.target.name === "bio") {
       if (e.target.value.length > 1000) {
@@ -74,20 +90,46 @@ function BannerModal({ user, open = false, setOpen }: BannerModalProps) {
       }
     }
     const { name, value } = e.target;
-    if (name === "username") {
-      if (usernameTimeoutRef.current) {
-        clearTimeout(usernameTimeoutRef.current);
+
+    // Social media fields - remove https:// prefix if pasted
+    const socialFields = [
+      "instagram",
+      "twitter",
+      "facebook",
+      "snapchat",
+      "tiktok",
+      "telegram",
+      "youtube",
+    ];
+    if (socialFields.includes(name)) {
+      const cleanValue = removeHttpPrefix(value);
+      setUserData({ ...userData, [name]: cleanValue });
+    } else {
+      if (name === "username") {
+        if (usernameTimeoutRef.current) {
+          clearTimeout(usernameTimeoutRef.current);
+        }
+        usernameTimeoutRef.current = setTimeout(() => {
+          setUsernameCheck(value);
+        }, 300);
       }
-      usernameTimeoutRef.current = setTimeout(() => {
-        setUsernameCheck(value);
-      }, 300);
+      setUserData({ ...userData, [name]: value });
     }
-    setUserData({ ...userData, [e.target.name]: e.target.value });
   };
 
   useEffect(() => {
     setUserData((prev) => {
-      return { ...prev, email: user?.email };
+      return {
+        ...prev,
+        email: user?.email,
+        instagram: removeHttpPrefix(user?.Settings?.instagram_url || ""),
+        twitter: removeHttpPrefix(user?.Settings?.twitter_url || ""),
+        facebook: removeHttpPrefix(user?.Settings?.facebook_url || ""),
+        snapchat: removeHttpPrefix(user?.Settings?.snapchat_url || ""),
+        tiktok: removeHttpPrefix(user?.Settings?.tiktok_url || ""),
+        telegram: removeHttpPrefix(user?.Settings?.telegram_url || ""),
+        youtube: removeHttpPrefix(user?.Settings?.youtube_url || ""),
+      };
     });
   }, [user]);
 
@@ -115,9 +157,22 @@ function BannerModal({ user, open = false, setOpen }: BannerModalProps) {
     }
 
     const formData = new FormData();
-    for (const key in userData) {
-      if (Object.hasOwn(userData, key)) {
-        const value = userData[key as keyof UserUpdateProfileType] as
+
+    // Prepare userData with https:// prefix for social links before adding to formData
+    const dataToSend = {
+      ...userData,
+      instagram: userData.instagram ? ensureHttpPrefix(userData.instagram) : "",
+      twitter: userData.twitter ? ensureHttpPrefix(userData.twitter) : "",
+      facebook: userData.facebook ? ensureHttpPrefix(userData.facebook) : "",
+      snapchat: userData.snapchat ? ensureHttpPrefix(userData.snapchat) : "",
+      tiktok: userData.tiktok ? ensureHttpPrefix(userData.tiktok) : "",
+      telegram: userData.telegram ? ensureHttpPrefix(userData.telegram) : "",
+      youtube: userData.youtube ? ensureHttpPrefix(userData.youtube) : "",
+    };
+
+    for (const key in dataToSend) {
+      if (Object.hasOwn(dataToSend, key)) {
+        const value = dataToSend[key as keyof UserUpdateProfileType] as
           | string
           | File;
         formData.append(key, value);
@@ -127,7 +182,7 @@ function BannerModal({ user, open = false, setOpen }: BannerModalProps) {
       const updateProfile = async (formData: FormData) => {
         const response = await axiosInstance.post(
           ROUTE.PROFILE_UPDATE,
-          formData,
+          formData
         );
         setOpen(false);
         queryClient.invalidateQueries({ queryKey: ["userProfileData"] });
@@ -143,7 +198,7 @@ function BannerModal({ user, open = false, setOpen }: BannerModalProps) {
         },
         {
           id: "profile-update-toast",
-        },
+        }
       );
     } catch (error) {
       console.error(error);
@@ -319,14 +374,19 @@ function BannerModal({ user, open = false, setOpen }: BannerModalProps) {
                 <div className="flex items-center justify-center h-full py-3 col-span-2 bg-primary-dark-pink/10 dark:bg-primary-dark-pink/20 transition group-focus-within:bg-primary-dark-pink/20">
                   <Instagram className="w-6 h-6 text-primary-dark-pink dark:text-white" />
                 </div>
-                <input
-                  type="text"
-                  onChange={handleInputChange}
-                  name="instagram"
-                  defaultValue={String(user?.Settings?.instagram_url || "")}
-                  className="p-3 text-sm text-black bg-transparent border-none outline-none col-span-10 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 transition"
-                  placeholder="https://instagram.com/@paymefans"
-                />
+                <div className="flex items-center col-span-10">
+                  <span className="pl-3 text-sm text-gray-800 dark:text-white">
+                    https://
+                  </span>
+                  <input
+                    type="text"
+                    onChange={handleInputChange}
+                    name="instagram"
+                    value={userData.instagram || ""}
+                    className="flex-1 p-3 pl-0 text-sm text-black bg-transparent border-none outline-none dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 transition"
+                    placeholder="instagram.com/paymefans"
+                  />
+                </div>
               </div>
 
               {/* Twitter */}
@@ -334,14 +394,19 @@ function BannerModal({ user, open = false, setOpen }: BannerModalProps) {
                 <div className="flex items-center justify-center h-full py-3 col-span-2 bg-primary-dark-pink/10 dark:bg-primary-dark-pink/20 transition group-focus-within:bg-primary-dark-pink/20">
                   <Twitter className="w-6 h-6 text-primary-dark-pink dark:text-white" />
                 </div>
-                <input
-                  type="text"
-                  onChange={handleInputChange}
-                  name="twitter"
-                  defaultValue={String(user?.Settings?.twitter_url || "")}
-                  className="p-3 text-sm text-black bg-transparent border-none outline-none col-span-10 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 transition"
-                  placeholder="https://twitter.com/@paymefans"
-                />
+                <div className="flex items-center col-span-10">
+                  <span className="pl-3 text-sm text-gray-800 dark:text-white">
+                    https://
+                  </span>
+                  <input
+                    type="text"
+                    onChange={handleInputChange}
+                    name="twitter"
+                    value={userData.twitter || ""}
+                    className="flex-1 p-3 pl-0 text-sm text-black bg-transparent border-none outline-none dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 transition"
+                    placeholder="twitter.com/paymefans"
+                  />
+                </div>
               </div>
 
               {/* Facebook */}
@@ -349,14 +414,19 @@ function BannerModal({ user, open = false, setOpen }: BannerModalProps) {
                 <div className="flex items-center justify-center h-full py-3 col-span-2 bg-primary-dark-pink/10 dark:bg-primary-dark-pink/20 transition group-focus-within:bg-primary-dark-pink/20">
                   <Facebook className="w-6 h-6 text-primary-dark-pink dark:text-white" />
                 </div>
-                <input
-                  type="text"
-                  onChange={handleInputChange}
-                  name="facebook"
-                  defaultValue={String(user?.Settings?.facebook_url || "")}
-                  className="p-3 text-sm text-black bg-transparent border-none outline-none col-span-10 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 transition"
-                  placeholder="https://facebook.com/@paymefans"
-                />
+                <div className="flex items-center col-span-10">
+                  <span className="pl-3 text-sm text-gray-800 dark:text-white">
+                    https://
+                  </span>
+                  <input
+                    type="text"
+                    onChange={handleInputChange}
+                    name="facebook"
+                    value={userData.facebook || ""}
+                    className="flex-1 p-3 pl-0 text-sm text-black bg-transparent border-none outline-none dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 transition"
+                    placeholder="facebook.com/paymefans"
+                  />
+                </div>
               </div>
 
               {/* Snapchat */}
@@ -367,14 +437,19 @@ function BannerModal({ user, open = false, setOpen }: BannerModalProps) {
                     size={20}
                   />
                 </div>
-                <input
-                  type="text"
-                  onChange={handleInputChange}
-                  name="snapchat"
-                  defaultValue={String(user?.Settings?.snapchat_url || "")}
-                  className="p-3 text-sm text-black bg-transparent border-none outline-none col-span-10 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 transition"
-                  placeholder="https://snapchat.com/@paymefans"
-                />
+                <div className="flex items-center col-span-10">
+                  <span className="pl-3 text-sm text-gray-800 dark:text-white">
+                    https://
+                  </span>
+                  <input
+                    type="text"
+                    onChange={handleInputChange}
+                    name="snapchat"
+                    value={userData.snapchat || ""}
+                    className="flex-1 p-3 pl-0 text-sm text-black bg-transparent border-none outline-none dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 transition"
+                    placeholder="snapchat.com/paymefans"
+                  />
+                </div>
               </div>
 
               {/* TikTok */}
@@ -390,14 +465,19 @@ function BannerModal({ user, open = false, setOpen }: BannerModalProps) {
                     <path d="M12.75 2h2.25a.75.75 0 0 1 .75.75v1.5a3.75 3.75 0 0 0 3.75 3.75h1.5a.75.75 0 0 1 .75.75v2.25a.75.75 0 0 1-.75.75h-1.5A6.75 6.75 0 0 1 13.5 5.25V2.75A.75.75 0 0 1 12.75 2zm-2.25 5.25A6.75 6.75 0 1 0 17.25 14v-2.25a.75.75 0 0 0-.75-.75h-2.25a.75.75 0 0 0-.75.75v2.25a3.75 3.75 0 1 1-3.75-3.75h.75a.75.75 0 0 0 .75-.75V7.25a.75.75 0 0 0-.75-.75h-.75z" />
                   </svg>
                 </div>
-                <input
-                  type="text"
-                  onChange={handleInputChange}
-                  name="tiktok"
-                  defaultValue={String(user?.Settings?.tiktok_url || "")}
-                  className="p-3 text-sm text-black bg-transparent border-none outline-none col-span-10 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 transition"
-                  placeholder="https://tiktok.com/@paymefans"
-                />
+                <div className="flex items-center col-span-10">
+                  <span className="pl-3 text-sm text-gray-800 dark:text-white">
+                    https://
+                  </span>
+                  <input
+                    type="text"
+                    onChange={handleInputChange}
+                    name="tiktok"
+                    value={userData.tiktok || ""}
+                    className="flex-1 p-3 pl-0 text-sm text-black bg-transparent border-none outline-none dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 transition"
+                    placeholder="tiktok.com/paymefans"
+                  />
+                </div>
               </div>
 
               {/* Telegram */}
@@ -413,14 +493,19 @@ function BannerModal({ user, open = false, setOpen }: BannerModalProps) {
                     <path d="M21.944 4.667a1.5 1.5 0 0 0-1.6-.217L3.6 11.25a1.5 1.5 0 0 0 .1 2.8l3.7 1.3 1.4 4.2a1.5 1.5 0 0 0 2.7.2l2-3.3 3.8 2.8a1.5 1.5 0 0 0 2.4-1l2-12a1.5 1.5 0 0 0-.756-1.583zM9.8 17.1l-1.1-3.3 7.2-6.5-6.1 7.7zm2.7 1.2l-1.1-3.3 2.7 2zm6.2-1.2-3.8-2.8 4.6-7.2z" />
                   </svg>
                 </div>
-                <input
-                  type="text"
-                  onChange={handleInputChange}
-                  name="telegram"
-                  defaultValue={String(user?.Settings?.telegram_url || "")}
-                  className="p-3 text-sm text-black bg-transparent border-none outline-none col-span-10 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 transition"
-                  placeholder="https://t.me/paymefans"
-                />
+                <div className="flex items-center col-span-10">
+                  <span className="pl-3 text-sm text-gray-800 dark:text-white">
+                    https://
+                  </span>
+                  <input
+                    type="text"
+                    onChange={handleInputChange}
+                    name="telegram"
+                    value={userData.telegram || ""}
+                    className="flex-1 p-3 pl-0 text-sm text-black bg-transparent border-none outline-none dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 transition"
+                    placeholder="t.me/paymefans"
+                  />
+                </div>
               </div>
 
               {/* YouTube */}
@@ -436,14 +521,19 @@ function BannerModal({ user, open = false, setOpen }: BannerModalProps) {
                     <path d="M21.8 8.001a2.75 2.75 0 0 0-1.94-1.94C18.1 6 12 6 12 6s-6.1 0-7.86.06a2.75 2.75 0 0 0-1.94 1.94A28.2 28.2 0 0 0 2 12a28.2 28.2 0 0 0 .2 3.999 2.75 2.75 0 0 0 1.94 1.94C5.9 18 12 18 12 18s6.1 0 7.86-.06a2.75 2.75 0 0 0 1.94-1.94A28.2 28.2 0 0 0 22 12a28.2 28.2 0 0 0-.2-3.999zM10 15.5v-7l6 3.5-6 3.5z" />
                   </svg>
                 </div>
-                <input
-                  type="text"
-                  onChange={handleInputChange}
-                  name="youtube"
-                  defaultValue={String(user?.Settings?.youtube_url || "")}
-                  className="p-3 text-sm text-black bg-transparent border-none outline-none col-span-10 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 transition"
-                  placeholder="https://youtube.com/@paymefans"
-                />
+                <div className="flex items-center col-span-10">
+                  <span className="pl-3 text-sm text-gray-800 dark:text-white">
+                    https://
+                  </span>
+                  <input
+                    type="text"
+                    onChange={handleInputChange}
+                    name="youtube"
+                    value={userData.youtube || ""}
+                    className="flex-1 p-3 pl-0 text-sm text-black bg-transparent border-none outline-none dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 transition"
+                    placeholder="youtube.com/paymefans"
+                  />
+                </div>
               </div>
             </div>
           )}

@@ -1,7 +1,7 @@
 "use client";
 import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import toast from "react-hot-toast";
 import LoadingSpinner from "@/components/common/loaders/LoadingSpinner";
 import { useAuthContext } from "@/contexts/UserUseContext";

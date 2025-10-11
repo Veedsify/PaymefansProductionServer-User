@@ -166,7 +166,7 @@ const MessageBubbleContent: React.FC<MessageBubbleContentProps> = ({
               role="button"
             >
               {file.type.includes("image") ? (
-                <div className="relative">
+                <div className="relative rounded-xl overflow-hidden">
                   <img
                     width={300}
                     height={300}
@@ -182,7 +182,7 @@ const MessageBubbleContent: React.FC<MessageBubbleContentProps> = ({
                 </div>
               ) : (
                 <div
-                  className="relative"
+                  className="relative rounded-xl overflow-hidden"
                   onClick={() => handlePreview(file, idx)}
                 >
                   <video

@@ -22,15 +22,15 @@ const NavigationButton = memo(
     <motion.button
       className={cn(
         className,
-        "absolute z-10 -translate-y-1/2 rounded-full text-white transition-colors duration-200",
-        disabled && "md:opacity-30 cursor-not-allowed",
-        "p-24 opacity-0 md:opacity-100 md:p-4 md:bg-black/70",
+        "absolute z-10 -translate-y-1/2 md:rounded-full text-white transition-colors duration-200",
+        "p-18 h-[70vh] md:h-auto opacity-0 bg-white md:opacity-100 md:p-4 md:bg-black/70",
+        disabled && "md:opacity-30 cursor-not-allowed"
       )}
       aria-label={ariaLabel}
       onClick={onClick}
       disabled={disabled}
       type="button"
-      whileHover={!disabled ? { scale: 1.1 } : {}}
+      whileHover={!disabled ? { scale: 1 } : {}}
       whileTap={!disabled ? { scale: 0.95 } : {}}
     >
       {direction === "prev" ? (

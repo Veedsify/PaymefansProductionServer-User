@@ -26,6 +26,19 @@ const AudienceDropdown = React.memo(
     config: any;
     nairaDisplayValue: string;
   }) => {
+    // Format number with commas
+    const formatNumberWithCommas = (value: string): string => {
+      if (!value) return "";
+      const number = parseInt(value, 10);
+      if (isNaN(number)) return "";
+      return number.toLocaleString();
+    };
+
+    // Get the formatted display value
+    const formattedValue = nairaDisplayValue
+      ? formatNumberWithCommas(nairaDisplayValue)
+      : "";
+
     return (
       <div className="flex flex-wrap items-start w-full gap-4">
         <button
@@ -68,13 +81,20 @@ const AudienceDropdown = React.memo(
               <span className="text-base">₦</span>
               <input
                 type="text"
-                value={nairaDisplayValue}
+                value={formattedValue}
                 onChange={(e) => {
-                  if (e.target.value === "" || !e.target.value) {
+                  const inputValue = e.target.value;
+
+                  if (inputValue === "" || !inputValue) {
                     setPrice("");
                     return;
                   }
-                  setPrice(e.target.value);
+
+                  // Remove all non-digit characters (including commas)
+                  const numericValue = inputValue.replace(/[^0-9]/g, "");
+
+                  // Set the numeric value (without commas)
+                  setPrice(numericValue);
                 }}
                 placeholder="Enter amount in Naira"
                 className="outline-0 border-0 rounded-3xl px-1 text-base py-[6px] text-gray-800 dark:text-gray-200 bg-transparent"

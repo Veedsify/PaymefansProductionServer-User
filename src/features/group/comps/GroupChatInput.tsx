@@ -31,6 +31,7 @@ import {
   truncateFilename,
   validateFile,
 } from "@/utils/fileUtils";
+import { useAuthContext } from "@/contexts/UserUseContext";
 
 // Utility Functions
 const escapeHtml = (str: string): string => {
@@ -80,7 +81,7 @@ const GroupChatInput = ({
   const { sendMessage, setTypingStatus } = useGroupChatStore();
   const typingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
-
+  const { user } = useAuthContext();
   // Check if user is currently muted
   // User is muted if:
   // 1. isMuted is true AND mutedUntil is null (permanent mute)
@@ -93,7 +94,7 @@ const GroupChatInput = ({
   // Check if any media is currently uploading
   const isMediaUploading = attachments.some(
     (attachment) =>
-      attachment.uploadProgress !== undefined && !attachment.uploaded,
+      attachment.uploadProgress !== undefined && !attachment.uploaded
   );
 
   const handleTyping = (e: ChangeEvent<HTMLInputElement>) => {
@@ -112,21 +113,21 @@ const GroupChatInput = ({
 
     // Send typing status
     if (value.length > 0) {
-      setTypingStatus(true);
+      setTypingStatus(true, user?.id as number);
 
       // Set timeout to stop typing indicator after 2 seconds of inactivity
       typingTimeoutRef.current = setTimeout(() => {
-        setTypingStatus(false);
+        setTypingStatus(false, user?.id as number);
         typingTimeoutRef.current = null;
       }, 2000);
     } else {
-      setTypingStatus(false);
+      setTypingStatus(false, user?.id as number); // No text, not typing
     }
   };
 
   const uploadFile = async (
     file: File,
-    onProgress?: (progress: number) => void,
+    onProgress?: (progress: number) => void
   ): Promise<any> => {
     const axios = require("axios");
     const formData = new FormData();
@@ -140,12 +141,12 @@ const GroupChatInput = ({
           onUploadProgress: (progressEvent: any) => {
             if (progressEvent.lengthComputable && onProgress) {
               const progress = Math.round(
-                (progressEvent.loaded / progressEvent.total) * 100,
+                (progressEvent.loaded / progressEvent.total) * 100
               );
               onProgress(progress);
             }
           },
-        },
+        }
       );
 
       return response.data;
@@ -181,7 +182,7 @@ const GroupChatInput = ({
         createFilePreview(file)
           .then((preview) => {
             setAttachments((prev) =>
-              prev.map((att) => (att.id === id ? { ...att, preview } : att)),
+              prev.map((att) => (att.id === id ? { ...att, preview } : att))
             );
           })
           .catch((error) => {
@@ -210,8 +211,8 @@ const GroupChatInput = ({
   const updateAttachmentProgress = (id: string, progress: number) => {
     setAttachments((prev) =>
       prev.map((att) =>
-        att.id === id ? { ...att, uploadProgress: progress } : att,
-      ),
+        att.id === id ? { ...att, uploadProgress: progress } : att
+      )
     );
   };
 
@@ -220,8 +221,8 @@ const GroupChatInput = ({
       prev.map((att) =>
         att.id === id
           ? { ...att, uploaded: true, uploadedData, uploadProgress: 100 }
-          : att,
-      ),
+          : att
+      )
     );
   };
 
@@ -246,7 +247,7 @@ const GroupChatInput = ({
     for (const attachment of newAttachments) {
       try {
         const uploadResult = await uploadFile(attachment.file, (progress) =>
-          updateAttachmentProgress(attachment.id, progress),
+          updateAttachmentProgress(attachment.id, progress)
         );
         markAttachmentUploaded(attachment.id, uploadResult);
       } catch (error) {
@@ -254,8 +255,8 @@ const GroupChatInput = ({
         // Mark as failed but keep the attachment for manual retry
         setAttachments((prev) =>
           prev.map((att) =>
-            att.id === attachment.id ? { ...att, uploadProgress: 0 } : att,
-          ),
+            att.id === attachment.id ? { ...att, uploadProgress: 0 } : att
+          )
         );
       }
     }
@@ -286,7 +287,7 @@ const GroupChatInput = ({
         clearTimeout(typingTimeoutRef.current);
         typingTimeoutRef.current = null;
       }
-      setTypingStatus(false);
+      setTypingStatus(false, user?.id as number);
 
       // Upload attachments if any (only upload non-uploaded ones)
       const uploadedAttachments = [];
@@ -301,7 +302,7 @@ const GroupChatInput = ({
             } else {
               // Upload the file with progress tracking
               uploadResult = await uploadFile(attachment.file, (progress) =>
-                updateAttachmentProgress(attachment.id, progress),
+                updateAttachmentProgress(attachment.id, progress)
               );
               markAttachmentUploaded(attachment.id, uploadResult);
             }
@@ -322,7 +323,8 @@ const GroupChatInput = ({
       const processedMessage = trimmedMessage
         ? linkify(escapeHtml(trimmedMessage))
         : "";
-      await sendMessage(processedMessage, uploadedAttachments);
+
+      sendMessage(processedMessage, user?.id!, uploadedAttachments);
 
       // Clear form
       setMessageContent("");
@@ -337,7 +339,7 @@ const GroupChatInput = ({
   };
 
   const handleSendClick = (
-    e: KeyboardEvent<HTMLInputElement> | MouseEvent<HTMLButtonElement>,
+    e: KeyboardEvent<HTMLInputElement> | MouseEvent<HTMLButtonElement>
   ) => {
     if ("key" in e && e.key === "Enter" && e.shiftKey) {
       e.preventDefault();
@@ -502,8 +504,8 @@ const GroupChatInput = ({
                 isMuted
                   ? "You are muted and cannot send messages..."
                   : uploadingFiles || isMediaUploading
-                    ? "Uploading files..."
-                    : "Type a message..."
+                  ? "Uploading files..."
+                  : "Type a message..."
               }
             />
           </div>
@@ -519,8 +521,8 @@ const GroupChatInput = ({
             isMuted
               ? "Cannot send - you are muted"
               : isMediaUploading
-                ? "Cannot send - media uploading"
-                : "Send message"
+              ? "Cannot send - media uploading"
+              : "Send message"
           }
           type="button"
         >
