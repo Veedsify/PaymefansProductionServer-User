@@ -30,6 +30,7 @@ interface VideoPlayerProps {
   autoPlay?: boolean;
   className: string;
   isSingle?: boolean;
+  isBlob?: boolean;
   modalOpen?: boolean;
   allOthers?: React.VideoHTMLAttributes<HTMLVideoElement>;
   userProfile?: UserProfile | null; // New prop for user profile
@@ -39,6 +40,7 @@ const VideoPlayer = ({
   autoPlay = false,
   className,
   modalOpen = false,
+  isBlob = false,
   allOthers,
   isSingle = false,
   userProfile,
@@ -107,6 +109,14 @@ const VideoPlayer = ({
     const video = videoRef.current;
     if (!video) return;
     setIsLoading(true);
+    if (isBlob) {
+      video.src = streamUrl;
+      video.load();
+      video.addEventListener("loadeddata", () => {
+        setIsLoading(false);
+      });
+      return;
+    }
     if (Hls.isSupported()) {
       const hls = new Hls({
         // Reduce initial loading time
@@ -408,20 +418,22 @@ const VideoPlayer = ({
               {/* Right-side controls */}
               <div className="flex items-center gap-4 py-2">
                 {/* Resolution toggle button */}
-                <button
-                  onClick={(e) => {
-                    setShowResolutionMenu(!showResolutionMenu);
-                    e.stopPropagation();
-                  }}
-                  className=" flex items-center justify-center cursor-pointer"
-                  aria-label="Video quality"
-                  disabled={isLoading}
-                >
-                  <LucideSettings
-                    strokeWidth={3}
-                    className="w-5 h-5 text-white"
-                  />
-                </button>
+                {!isBlob && qualityLevels.length > 0 && (
+                  <button
+                    onClick={(e) => {
+                      setShowResolutionMenu(!showResolutionMenu);
+                      e.stopPropagation();
+                    }}
+                    className=" flex items-center justify-center cursor-pointer"
+                    aria-label="Video quality"
+                    disabled={isLoading}
+                  >
+                    <LucideSettings
+                      strokeWidth={3}
+                      className="w-5 h-5 text-white"
+                    />
+                  </button>
+                )}
                 {/* Fullscreen button */}
                 <button
                   onClick={toggleFullscreen}
@@ -437,7 +449,7 @@ const VideoPlayer = ({
               </div>
             </div>
             {/* Resolution menu popup */}
-            {showResolutionMenu && (
+            {showResolutionMenu && !isBlob && (
               <div className="fixed md:absolute md:bottom-18 md:left-auto left-0 right-4 z-[999] bottom-0  bg-black  md:rounded-lg py-2 px-2 md:max-w-[320px] w-full animate-fade-in">
                 <h1 className="px-2 mb-1 text-lg py-2 font-semibold tracking-wide text-gray-300 border-b border-gray-700">
                   Resolution

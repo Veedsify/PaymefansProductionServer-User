@@ -137,34 +137,19 @@ const VideoPreview = memo(
 
     return (
       <>
-        {isBlob ? (
-          <video
-            ref={videoRef}
-            className="object-contain h-full w-full"
-            controls={false}
-            loop
-            muted
-            playsInline
-            preload={playAction ? "metadata" : "none"}
-            aria-label={`Video ${index + 1}`}
-          >
-            <source src={url} type="video/mp4" />
-            Your browser does not support the video tag.
-          </video>
-        ) : (
-          <HLSVideoPlayer
-            streamUrl={url}
-            autoPlay={playAction}
-            modalOpen={true}
-            userProfile={userProfile}
-            allOthers={{
-              id: `video_player_full_${index}`,
-              muted: false,
-              playsInline: true,
-            }}
-            className="object-contain h-full w-full absolute"
-          />
-        )}
+        <HLSVideoPlayer
+          streamUrl={url}
+          autoPlay={playAction}
+          modalOpen={true}
+          isBlob={isBlob}
+          userProfile={userProfile}
+          allOthers={{
+            id: `video_player_full_${index}`,
+            muted: false,
+            playsInline: true,
+          }}
+          className="object-contain h-full w-full absolute"
+        />
       </>
     );
   }
