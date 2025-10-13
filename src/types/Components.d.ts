@@ -119,7 +119,7 @@ interface RemovedMediaIdProps {
 interface PostComponentProps {
   was_repost?: boolean;
   repost_username?: string;
-  repost_name?: string; // ⭐ NEW: Reposter's name
+  repost_name?: string;
   repost_id?: string;
   isLast?: boolean;
   user: {
