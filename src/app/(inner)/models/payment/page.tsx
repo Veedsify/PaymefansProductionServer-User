@@ -72,7 +72,7 @@ const PaymentPage = () => {
     );
   } else {
     return (
-      <div className="p-6 py-8 bg-white dark:bg-gray-900 rounded-2xl">
+      <div className="p-6 py-8 bg-white dark:bg-gray-950 rounded-2xl">
         <h1 className="block mb-6 text-2xl font-bold text-center text-primary-dark-pink md:hidden">
           Activate Creator Dashboard
         </h1>

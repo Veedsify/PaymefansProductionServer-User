@@ -17,6 +17,7 @@ import {
   useEffect,
   useMemo,
   useState,
+  type FocusEvent,
 } from "react";
 import toast from "react-hot-toast";
 import swal from "sweetalert";
@@ -81,6 +82,7 @@ const BecomeAModel = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isPageLoading, setIsPageLoading] = useState(true);
   const [formErrors, setFormErrors] = useState<FormErrors>({});
+  const [focusedField, setFocusedField] = useState<string | null>(null);
 
   // Memoized values
   const reference = searchParams.get("reference");
@@ -180,6 +182,14 @@ const BecomeAModel = () => {
     },
     [formErrors]
   );
+
+  const handleFocus = useCallback((fieldName: string) => {
+    setFocusedField(fieldName);
+  }, []);
+
+  const handleBlur = useCallback(() => {
+    setFocusedField(null);
+  }, []);
 
   const handleGenderSelect = useCallback(
     (e: MouseEvent<HTMLLIElement>) => {
@@ -358,30 +368,43 @@ const BecomeAModel = () => {
 
   // Main form
   return (
-    <div className="p-6 py-8 bg-white dark:bg-gray-900 rounded-2xl">
+    <div className="p-6 py-8 bg-white dark:bg-gray-950 rounded-2xl">
       <h1 className="block mb-6 text-2xl font-bold text-center text-primary-dark-pink md:hidden">
         Become a Model
       </h1>
 
       <form className="space-y-4">
         {/* First Name */}
-        <div>
-          <input
-            onChange={handleInputChange}
-            type="text"
-            placeholder="First name"
-            name="firstname"
-            value={formData.firstname || ""}
-            className={`border p-4 w-full rounded-lg font-semibold outline-none focus:ring-2 focus:ring-primary-dark-pink transition ${
-              formErrors.firstname
-                ? "border-red-500 dark:border-red-500"
+        <div className="relative">
+          <div
+            className={`relative border-1 rounded-lg transition-all duration-200 ${
+              focusedField === "firstname"
+                ? "border-primary-dark-pink shadow-lg shadow-primary-dark-pink/20"
+                : formErrors.firstname
+                ? "border-red-500"
                 : "border-gray-300 dark:border-gray-700"
             }`}
-            aria-invalid={!!formErrors.firstname}
-            aria-describedby={
-              formErrors.firstname ? "firstname-error" : undefined
-            }
-          />
+          >
+            <input
+              onChange={handleInputChange}
+              onFocus={() => handleFocus("firstname")}
+              onBlur={handleBlur}
+              type="text"
+              placeholder="First name"
+              name="firstname"
+              value={formData.firstname || ""}
+              className="w-full p-4 bg-transparent font-semibold outline-none rounded-lg"
+              aria-invalid={!!formErrors.firstname}
+              aria-describedby={
+                formErrors.firstname ? "firstname-error" : undefined
+              }
+            />
+            {focusedField === "firstname" && (
+              <span className="absolute -top-3 left-3 px-2 text-xs font-semibold bg-white dark:bg-gray-900 text-primary-dark-pink">
+                First Name
+              </span>
+            )}
+          </div>
           {formErrors.firstname && (
             <p id="firstname-error" className="mt-1 text-sm text-red-500">
               {formErrors.firstname}
@@ -390,23 +413,36 @@ const BecomeAModel = () => {
         </div>
 
         {/* Last Name */}
-        <div>
-          <input
-            onChange={handleInputChange}
-            type="text"
-            placeholder="Last name"
-            name="lastname"
-            value={formData.lastname || ""}
-            className={`border p-4 w-full rounded-lg font-semibold outline-none focus:ring-2 focus:ring-primary-dark-pink transition ${
-              formErrors.lastname
-                ? "border-red-500 dark:border-red-500"
+        <div className="relative">
+          <div
+            className={`relative border rounded-lg transition-all duration-200 ${
+              focusedField === "lastname"
+                ? "border-primary-dark-pink shadow-lg shadow-primary-dark-pink/20"
+                : formErrors.lastname
+                ? "border-red-500"
                 : "border-gray-300 dark:border-gray-700"
             }`}
-            aria-invalid={!!formErrors.lastname}
-            aria-describedby={
-              formErrors.lastname ? "lastname-error" : undefined
-            }
-          />
+          >
+            <input
+              onChange={handleInputChange}
+              onFocus={() => handleFocus("lastname")}
+              onBlur={handleBlur}
+              type="text"
+              placeholder="Last name"
+              name="lastname"
+              value={formData.lastname || ""}
+              className="w-full p-4 bg-transparent font-semibold outline-none rounded-lg"
+              aria-invalid={!!formErrors.lastname}
+              aria-describedby={
+                formErrors.lastname ? "lastname-error" : undefined
+              }
+            />
+            {focusedField === "lastname" && (
+              <span className="absolute -top-3 left-3 px-2 text-xs font-semibold bg-white dark:bg-gray-900 text-primary-dark-pink">
+                Last Name
+              </span>
+            )}
+          </div>
           {formErrors.lastname && (
             <p id="lastname-error" className="mt-1 text-sm text-red-500">
               {formErrors.lastname}
@@ -415,21 +451,34 @@ const BecomeAModel = () => {
         </div>
 
         {/* Date of Birth */}
-        <div>
-          <input
-            onChange={handleInputChange}
-            type="date"
-            name="dob"
-            placeholder="Date of Birth"
-            defaultValue="1900-01-01"
-            className={`border p-4 w-full rounded-lg font-semibold outline-none focus:ring-2 focus:ring-primary-dark-pink transition ${
-              formErrors.dob
-                ? "border-red-500 dark:border-red-500"
+        <div className="relative">
+          <div
+            className={`relative border rounded-lg transition-all duration-200 ${
+              focusedField === "dob"
+                ? "border-primary-dark-pink shadow-lg shadow-primary-dark-pink/20"
+                : formErrors.dob
+                ? "border-red-500"
                 : "border-gray-300 dark:border-gray-700"
             }`}
-            aria-invalid={!!formErrors.dob}
-            aria-describedby={formErrors.dob ? "dob-error" : undefined}
-          />
+          >
+            <input
+              onChange={handleInputChange}
+              onFocus={() => handleFocus("dob")}
+              onBlur={handleBlur}
+              type="date"
+              name="dob"
+              placeholder="Date of Birth"
+              defaultValue="2018-01-01"
+              className="w-full p-4 bg-transparent font-semibold outline-none rounded-lg"
+              aria-invalid={!!formErrors.dob}
+              aria-describedby={formErrors.dob ? "dob-error" : undefined}
+            />
+            {focusedField === "dob" && (
+              <span className="absolute -top-3 left-3 px-2 text-xs font-semibold bg-white dark:bg-gray-900 text-primary-dark-pink">
+                Date of Birth
+              </span>
+            )}
+          </div>
           {formErrors.dob && (
             <p id="dob-error" className="mt-1 text-sm text-red-500">
               {formErrors.dob}
@@ -439,24 +488,37 @@ const BecomeAModel = () => {
 
         {/* Gender Selection */}
         <div className="relative">
-          <button
-            type="button"
-            className={`border p-4 w-full rounded-lg font-semibold outline-none flex items-center justify-between bg-white dark:bg-gray-800 transition focus:ring-2 focus:ring-primary-dark-pink ${
-              formErrors.audience
-                ? "border-red-500 dark:border-red-500"
+          <div
+            className={`relative border rounded-lg transition-all duration-200 ${
+              focusedField === "gender"
+                ? "border-primary-dark-pink shadow-lg shadow-primary-dark-pink/20"
+                : formErrors.audience
+                ? "border-red-500"
                 : "border-gray-300 dark:border-gray-700"
             }`}
-            onClick={() => setIsDropdownOpen(!isDropdownOpen)}
           >
-            <span className="flex items-center text-sm font-semibold gap-2">
-              {selectedGender.icon} {selectedGender.name}
-            </span>
-            {isDropdownOpen ? (
-              <LucideChevronUp size={20} className="ml-auto" />
-            ) : (
-              <LucideChevronDown size={20} className="ml-auto" />
+            <button
+              type="button"
+              className="w-full p-4 bg-transparent font-semibold outline-none flex items-center justify-between rounded-lg"
+              onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+              onFocus={() => handleFocus("gender")}
+              onBlur={handleBlur}
+            >
+              <span className="flex items-center text-sm font-semibold gap-2">
+                {selectedGender.icon} {selectedGender.name}
+              </span>
+              {isDropdownOpen ? (
+                <LucideChevronUp size={20} className="ml-auto" />
+              ) : (
+                <LucideChevronDown size={20} className="ml-auto" />
+              )}
+            </button>
+            {focusedField === "gender" && (
+              <span className="absolute -top-3 left-3 px-2 text-xs font-semibold bg-white dark:bg-gray-900 text-primary-dark-pink">
+                Gender
+              </span>
             )}
-          </button>
+          </div>
 
           {isDropdownOpen && (
             <div className="absolute left-0 z-10 w-full mt-2 opacity-100 translate-y-0">
@@ -487,55 +549,83 @@ const BecomeAModel = () => {
         </div>
 
         {/* Country Selection */}
-        <div>
-          <select
-            onChange={handleInputChange}
-            value={formData.country || ""}
-            className={`border p-4 w-full rounded-lg font-semibold outline-none focus:ring-2 focus:ring-primary-dark-pink transition bg-white dark:bg-gray-800 ${
-              formErrors.country
-                ? "border-red-500 dark:border-red-500"
+        <div className="relative">
+          <div
+            className={`relative border rounded-lg transition-all duration-200 ${
+              focusedField === "country"
+                ? "border-primary-dark-pink shadow-lg shadow-primary-dark-pink/20"
+                : formErrors.country
+                ? "border-red-500"
                 : "border-gray-300 dark:border-gray-700"
             }`}
-            name="country"
-            aria-invalid={!!formErrors.country}
           >
-            <option value="" disabled>
-              Select Country
-            </option>
-            {countries.map((location) => (
-              <option
-                value={location.code ? location.name : ""}
-                key={location.code}
-              >
-                {location.name}
+            <select
+              onChange={handleInputChange}
+              onFocus={() => handleFocus("country")}
+              onBlur={handleBlur}
+              value={formData.country || ""}
+              className="w-full p-4 bg-transparent font-semibold outline-none rounded-lg"
+              name="country"
+              aria-invalid={!!formErrors.country}
+            >
+              <option value="" disabled>
+                Select Country
               </option>
-            ))}
-            <option value="uk">UK</option>
-          </select>
+              {countries.map((location) => (
+                <option
+                  value={location.code ? location.name : ""}
+                  key={location.code}
+                >
+                  {location.name}
+                </option>
+              ))}
+              <option value="uk">UK</option>
+            </select>
+            {focusedField === "country" && (
+              <span className="absolute -top-3 left-3 px-2 text-xs font-semibold bg-white dark:bg-gray-900 text-primary-dark-pink">
+                Country
+              </span>
+            )}
+          </div>
           {formErrors.country && (
             <p className="mt-1 text-sm text-red-500">{formErrors.country}</p>
           )}
         </div>
-        <div>
+
+        {/* Referral Code */}
+        <div className="relative">
           <p className="mb-2 font-medium text-gray-700 dark:text-gray-200">
             Do you have a referral code?
           </p>
-          <input
-            onChange={handleInputChange}
-            type="text"
-            placeholder="Referral Code : PF-000000"
-            name="referral_code"
-            value={formData.referral_code || ""}
-            className={`border p-4 w-full rounded-lg font-semibold outline-none focus:ring-2 focus:ring-primary-dark-pink transition ${
-              formErrors.referral_code
-                ? "border-red-500 dark:border-red-500"
+          <div
+            className={`relative border rounded-lg transition-all duration-200 ${
+              focusedField === "referral_code"
+                ? "border-primary-dark-pink shadow-lg shadow-primary-dark-pink/20"
+                : formErrors.referral_code
+                ? "border-red-500"
                 : "border-gray-300 dark:border-gray-700"
             }`}
-            aria-invalid={!!formErrors.lastname}
-            aria-describedby={
-              formErrors.referral_code ? "referral_code-error" : undefined
-            }
-          />
+          >
+            <input
+              onChange={handleInputChange}
+              onFocus={() => handleFocus("referral_code")}
+              onBlur={handleBlur}
+              type="text"
+              placeholder="Referral Code : PF-000000"
+              name="referral_code"
+              value={formData.referral_code || ""}
+              className="w-full p-4 bg-transparent font-semibold outline-none rounded-lg"
+              aria-invalid={!!formErrors.referral_code}
+              aria-describedby={
+                formErrors.referral_code ? "referral_code-error" : undefined
+              }
+            />
+            {focusedField === "referral_code" && (
+              <span className="absolute -top-3 left-3 px-2 text-xs font-semibold bg-white dark:bg-gray-900 text-primary-dark-pink">
+                Referral Code
+              </span>
+            )}
+          </div>
           {formErrors.referral_code && (
             <p id="referral_code-error" className="mt-1 text-sm text-red-500">
               {formErrors.referral_code}

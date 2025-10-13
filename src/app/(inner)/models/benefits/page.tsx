@@ -46,7 +46,7 @@ function Models() {
 
   return (
     <div className="pb-28">
-      <div className="relative p-8 px-12 m-3 border border-black/10 dark:border-white/10 rounded-2xl dark:bg-gray-800">
+      <div className="relative p-8 px-12 m-3 md:border border-black/10 dark:border-white/10 md:rounded-2xl dark:bg-gray-950">
         <h2 className="relative z-10 mb-8 text-3xl font-bold text-center dark:text-white">
           Exclusive Benefits of Becoming a Model
         </h2>
