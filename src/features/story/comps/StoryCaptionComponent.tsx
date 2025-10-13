@@ -20,7 +20,7 @@ const StoryCaptionComponent = ({ close }: StoryCaptionComponentProps) => {
   const { story } = useStoryStore();
 
   return (
-    <div className="flex flex-col items-center fixed justify-center inset-0 w-full min-h-dvh bg-black/70 z-[200] select-none">
+    <div className="flex flex-col items-center fixed justify-center inset-0 w-full min-h-dvh bg-black/70 z-[400] select-none">
       <div
         className="flex items-center justify-center flex-1 w-full md:p-4"
         onClick={(e) => {
