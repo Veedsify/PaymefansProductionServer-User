@@ -94,7 +94,7 @@ export default async function RootLayout({
                 },
               }}
             />
-            <div className="relative select-none grid h-dvh lg:grid-cols-8 scrollable-content">
+            <div className="relative select-none grid h-dvh lg:grid-cols-8">
               <div className="col-span-2">
                 <SideBar />
               </div>

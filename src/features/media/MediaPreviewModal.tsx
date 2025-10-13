@@ -24,6 +24,7 @@ import {
 import VideoPreview from "./VideoPreview";
 import { useSwipeGesture } from "@/hooks/useSwipeGesture";
 import { usePinchZoom } from "@/hooks/usePinchZoom";
+import { usePathname } from "next/navigation";
 
 interface MediaPreviewModalProps {
   open: boolean;
@@ -47,6 +48,7 @@ const MediaPreviewModal = memo(
   }: MediaPreviewModalProps) => {
     const containerRef = useRef<HTMLDivElement | null>(null);
     const [currentSlide, setCurrentSlide] = useState(initialIndex);
+    const pathname = usePathname();
     const [mediaState, dispatchMedia] = useReducer(mediaReducer, {
       loaded: new Set<number>(),
       errors: new Set<number>(),
@@ -54,6 +56,23 @@ const MediaPreviewModal = memo(
     const shouldReduceMotion = useReducedMotion();
     const [initialLoadComplete, setInitialLoadComplete] = useState(false);
     const [slideTransition, setSlideTransition] = useState(true);
+
+    useEffect(() => {
+      if (open) {
+        document.body.style.overflow = "hidden";
+        document.body.style.position = "fixed";
+        document.body.style.overscrollBehavior = "none";
+        document.body.style.height = "100vh";
+      } else {
+        document.body.style.overflow = "";
+        document.body.style.position = "";
+        document.body.style.overscrollBehavior = "";
+        document.body.style.height = "";
+      }
+      if (pathname && !open) {
+        onClose?.();
+      }
+    }, [pathname, open]);
 
     // Validate media items
     const validateMediaItem = useCallback(
@@ -72,7 +91,7 @@ const MediaPreviewModal = memo(
           alt: item.alt || `Media preview ${index + 1}`,
         };
       },
-      [],
+      []
     );
 
     const mediaItems = useMemo(() => {
@@ -86,7 +105,7 @@ const MediaPreviewModal = memo(
         isFirstSlide: currentSlide === 0,
         isLastSlide: currentSlide === mediaItems.length - 1,
       }),
-      [mediaItems.length, currentSlide],
+      [mediaItems.length, currentSlide]
     );
 
     const shouldLoadSlide = useCallback(
@@ -98,7 +117,7 @@ const MediaPreviewModal = memo(
         // After initial load, use wider preload range
         return Math.abs(index - currentSlide) <= MEDIA_CONSTANTS.PRELOAD_RANGE;
       },
-      [currentSlide, initialLoadComplete],
+      [currentSlide, initialLoadComplete]
     );
 
     // Preload media with priority
@@ -156,7 +175,7 @@ const MediaPreviewModal = memo(
           resetZoom();
         }
       },
-      [mediaItems.length, resetZoom],
+      [mediaItems.length, resetZoom]
     );
 
     const handlePrevSlide = useCallback(() => {
@@ -233,7 +252,7 @@ const MediaPreviewModal = memo(
       if (typeof initialIndex === "number" && open) {
         const targetSlide = Math.max(
           0,
-          Math.min(initialIndex, totalSlides - 1),
+          Math.min(initialIndex, totalSlides - 1)
         );
         setSlideTransition(false);
         setCurrentSlide(targetSlide);
@@ -279,7 +298,7 @@ const MediaPreviewModal = memo(
         role="dialog"
         aria-labelledby="media-preview-title"
         aria-modal="true"
-        className="fixed inset-0 z-[9999] flex h-dvh items-center justify-center bg-black"
+        className="fixed inset-0 z-[9999] flex h-dvh items-center justify-center bg-black "
         onClick={(e) => {
           if (e.target === e.currentTarget) handleClose();
         }}
@@ -399,7 +418,7 @@ const MediaPreviewModal = memo(
         )}
       </motion.div>
     );
-  },
+  }
 );
 
 MediaPreviewModal.displayName = "MediaPreviewModal";

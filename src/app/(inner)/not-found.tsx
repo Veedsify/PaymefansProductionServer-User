@@ -7,7 +7,7 @@ import Link from "next/link";
 const NotFound = () => {
   return (
     <div
-      className={`flex items-center text-center justify-center flex-col min-h-dvh w-full scrollable-content`}
+      className={`flex items-center text-center justify-center flex-col min-h-dvh w-full `}
     >
       <div className="mx-auto">
         <Image

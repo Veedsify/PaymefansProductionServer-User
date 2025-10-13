@@ -30,19 +30,8 @@
 
 html,
 body {
-  overscroll-behavior: none;
-  height: 100%;
-  overflow: hidden;
-  -webkit-font-smoothing: antialiased;
-  /* for Chrome, Safari */
   font-family: 'Bricolage Grotesque Variable', sans-serif;
   -moz-osx-font-smoothing: grayscale;
-}
-
-.scrollable-content {
-  overflow-y: auto;
-  -webkit-overflow-scrolling: touch;
-  height: 100%;
 }
 
 ::selection {

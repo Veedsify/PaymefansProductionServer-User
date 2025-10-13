@@ -17,7 +17,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <div className="scrollable-content">
+        <div className="">
           <Toaster
             position="top-center"
             toastOptions={{

@@ -5,7 +5,7 @@ const OuterLayout = ({ children }: { children: React.ReactNode }) => {
   return (
     <html lang="en">
       <body>
-        <div className="scrollable-content">
+        <div className="">
           <QueryProvider>{children}</QueryProvider>
         </div>
       </body>
