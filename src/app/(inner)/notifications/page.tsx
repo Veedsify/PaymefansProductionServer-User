@@ -3,7 +3,7 @@ import dynamic from "next/dynamic";
 
 const NotificationHeader = dynamic(
   () => import("@/features/notifications/Notifications"),
-  { ssr: true },
+  { ssr: false }
 );
 
 export const metadata: Metadata = {

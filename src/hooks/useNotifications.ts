@@ -12,17 +12,18 @@ export const useNotifications = (page: string = "1") => {
   const notificationsQuery = useQuery({
     queryKey: ["notifications", page],
     queryFn: () => notificationService.getNotifications(page),
-    staleTime: 30000 * 5, // 2.5 minutes
-    refetchInterval: 30000 * 5, // Refetch every 5 minutes
+    staleTime: 60_000, // 10 seconds
+    refetchInterval: 60_000, // Refetch every 5 minutes
     refetchOnWindowFocus: true,
+    refetchOnMount: true,
   });
 
   // Query for unread count
   const unreadCountQuery = useQuery({
     queryKey: ["notifications", "unread-count"],
     queryFn: () => notificationService.getUnreadCount(),
-    staleTime: 10000, // 10 seconds
-    refetchInterval: 30000, // Refetch every 30 seconds
+    staleTime: 60_000, // 10 seconds
+    refetchInterval: 60_000, // Refetch every 30 seconds
   });
 
   // Mutation for marking notification as read
