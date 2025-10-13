@@ -194,7 +194,7 @@ const PostComponent = memo<PostComponentProps>(
       } else {
         // Use repost_name if available, otherwise fall back to repost_username
         const displayName = repost_name || repost_username;
-        return `${displayName} reposted`;
+         return FormatName(`${displayName} reposted`);
       }
     }, [was_repost, repost_username, repost_name, authUser?.username]);
 
