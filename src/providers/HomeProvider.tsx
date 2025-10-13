@@ -11,6 +11,6 @@ const HomeProvider = ({ children }: { children: ReactNode }) => {
       router.push("/login");
     }
   }, [isGuest, router, isLoading]);
-  return <>{children}</>;
+  return <div className="relative">{children}</div>;
 };
 export default HomeProvider;

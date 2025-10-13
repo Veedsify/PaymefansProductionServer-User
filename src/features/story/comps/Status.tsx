@@ -46,7 +46,10 @@ const StatusComponent = () => {
       )
     : [];
   return (
-    <div ref={storyContainer} className="border-b select-none border-black/30">
+    <div
+      ref={storyContainer}
+      className="border-b select-none border-black/30 z-50"
+    >
       <div
         className="flex items-baseline p-4 py-6 gap-4 pb-9 clean-sidebar whitespace-nowrap"
         style={{
