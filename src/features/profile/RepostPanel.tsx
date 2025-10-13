@@ -80,6 +80,7 @@ const RepostPanel = ({ userdata }: RespostPanelProps) => {
             was_repost={true}
             repost_id={post.post_id}
             repost_username={post.user?.username}
+            repost_name={post.user?.name}
             user={{
               id: post.user?.id,
               user_id: post.user?.user_id,

@@ -91,6 +91,7 @@ const HomePostComponent = () => {
           was_repost={post.was_repost}
           repost_id={post.repost_id}
           repost_username={post.repost_username}
+          repost_name={post.repost_name}
           data={{
             ...post,
             post: post.content,

@@ -41,6 +41,7 @@ export interface PostData {
   post_reposts?: number;
   post_impressions?: number;
   repost_username?: string;
+  repost_name?: string; // ⭐ NEW: Reposter's name
   was_repost?: boolean;
   repost_id?: string;
   time: string;
@@ -118,6 +119,7 @@ interface RemovedMediaIdProps {
 interface PostComponentProps {
   was_repost?: boolean;
   repost_username?: string;
+  repost_name?: string; // ⭐ NEW: Reposter's name
   repost_id?: string;
   isLast?: boolean;
   user: {

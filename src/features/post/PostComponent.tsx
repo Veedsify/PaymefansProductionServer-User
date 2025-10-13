@@ -52,7 +52,15 @@ const AudienceIcon = memo(({ audience }: { audience: string }) => {
 AudienceIcon.displayName = "AudienceIcon";
 
 const PostComponent = memo<PostComponentProps>(
-  ({ user, data, was_repost, repost_username, isLast = false, repost_id }) => {
+  ({
+    user,
+    data,
+    was_repost,
+    repost_username,
+    repost_name,
+    isLast = false,
+    repost_id,
+  }) => {
     const { user: authUser, isGuest } = useAuthContext();
     const { ref, inView } = useInView({ threshold: 0.5, triggerOnce: true });
     const { toggleModalOpen } = useGuestModal();
@@ -184,9 +192,11 @@ const PostComponent = memo<PostComponentProps>(
       if (was_repost && repost_username === authUser?.username) {
         return "You reposted";
       } else {
-        return `${repost_username} reposted`;
+        // Use repost_name if available, otherwise fall back to repost_username
+        const displayName = repost_name || repost_username;
+        return `${displayName} reposted`;
       }
-    }, [was_repost, repost_username]);
+    }, [was_repost, repost_username, repost_name, authUser?.username]);
 
     return (
       <div
