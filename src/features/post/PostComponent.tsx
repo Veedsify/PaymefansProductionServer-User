@@ -220,7 +220,10 @@ const PostComponent = memo<PostComponentProps>(
           data-href={`/posts/${data.post_id}`}
         >
           {was_repost && (
-            <div className="mb-3 flex items-center gap-2 text-gray-600 dark:text-gray-400">
+            <div
+              className="mb-3 flex items-center gap-2 text-gray-600 dark:text-gray-400"
+              onClick={(e) => e.stopPropagation()}
+            >
               <LucideRepeat2 size={18} className="text-primary-dark-pink" />
               <Link
                 href={`/posts/${repost_username}`}
@@ -232,16 +235,19 @@ const PostComponent = memo<PostComponentProps>(
           )}
           <div className="flex items-center justify-between mb-2 text-sm text-gray-500">
             <div className="flex items-center gap-1 md:gap-3 dark:text-white">
-              <Image
-                width={50}
-                height={50}
-                priority
-                src={userImage}
-                alt=""
-                className="object-cover w-8 rounded-full md:w-10 aspect-square"
-              />
+              <Link href={user?.link} onClick={(e) => e.stopPropagation()}>
+                <Image
+                  width={50}
+                  height={50}
+                  priority
+                  src={userImage}
+                  alt=""
+                  className="object-cover w-8 rounded-full md:w-10 aspect-square"
+                />
+              </Link>
               <Link
                 href={user?.link}
+                onClick={(e) => e.stopPropagation()}
                 className="flex items-center text-xs gap-1 md:text-sm"
               >
                 <p className="font-bold text-gray-800 dark:text-white ">

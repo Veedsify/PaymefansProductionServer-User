@@ -105,7 +105,10 @@ const NotificationItem = React.memo(function NotificationItem({
         </div>
         <div className="flex-1 min-w-0">
           <p className="text-base font-medium leading-snug text-gray-900 break-words dark:text-white notification_message_container">
-            <span dangerouslySetInnerHTML={{ __html: notification.message }} />
+            <span
+              onClick={(e) => e.stopPropagation()}
+              dangerouslySetInnerHTML={{ __html: notification.message }}
+            />
           </p>
           <p className="pt-2 text-xs text-gray-500 dark:text-gray-400">
             {formattedDate}
