@@ -1,14 +1,10 @@
-import { useCallback, useEffect, useRef, useState, useTransition } from "react";
+import { useCallback, useRef, useState, useTransition } from "react";
 import toast from "react-hot-toast";
 import { useConfigContext } from "@/contexts/ConfigContext";
 import { usePostContext } from "@/contexts/PostContext";
 import { useAuthContext } from "@/contexts/UserUseContext";
 import { useUploadProgress } from "@/contexts/UploadProgressContext";
-import type {
-  RemovedMediaIdProps,
-  UploadedMediaProp,
-  UserMediaProps,
-} from "@/types/Components";
+import type { UserMediaProps } from "@/types/Components";
 
 export const usePostEditor = (posts?: any) => {
   const { user } = useAuthContext();

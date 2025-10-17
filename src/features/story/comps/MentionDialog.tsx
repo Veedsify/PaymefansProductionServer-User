@@ -122,7 +122,7 @@ export const MentionDialog = ({
         <div className="flex gap-3">
           <button
             onClick={onClose}
-            className="flex-1 py-3 font-medium text-white shadow-lg bg-gradient-to-r from-orange-500 to-red-500 rounded-xl hover:from-orange-600 hover:to-red-600 transition-all duration-200 transform hover:scale-105"
+            className="flex-1 py-3 font-medium text-white shadow-lg bg-orange-500 rounded-xl hover:bg-orange-600 transition-all duration-200 transform hover:scale-105"
           >
             Done
           </button>

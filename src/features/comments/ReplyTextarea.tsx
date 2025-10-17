@@ -148,7 +148,7 @@ const ReplyPostComponent = ({ options, isReply }: ReplyPostProps) => {
 
       // Avoid duplicate mentions
       if (mentions.some((m) => m.id === mentionedUser.id)) {
-        toast.error(`@${mentionedUser.username} is already mentioned.`, {
+        toast.error(`${mentionedUser.username} is already mentioned.`, {
           id: "mention-duplicate",
         });
         return;
@@ -174,7 +174,7 @@ const ReplyPostComponent = ({ options, isReply }: ReplyPostProps) => {
         setCursorPosition(newCursorPos);
       }, 0);
     },
-    [mentionStartPos, cursorPosition, typedComment, mentions],
+    [mentionStartPos, cursorPosition, typedComment, mentions]
   );
   // Keydown for mention navigation
   const handleKeyDown = useCallback(
@@ -184,13 +184,13 @@ const ReplyPostComponent = ({ options, isReply }: ReplyPostProps) => {
           case "ArrowDown":
             e.preventDefault();
             setSelectedMentionIndex((prev) =>
-              prev < mentionSuggestions.length - 1 ? prev + 1 : 0,
+              prev < mentionSuggestions.length - 1 ? prev + 1 : 0
             );
             break;
           case "ArrowUp":
             e.preventDefault();
             setSelectedMentionIndex((prev) =>
-              prev > 0 ? prev - 1 : mentionSuggestions.length - 1,
+              prev > 0 ? prev - 1 : mentionSuggestions.length - 1
             );
             break;
           case "Enter":
@@ -205,7 +205,7 @@ const ReplyPostComponent = ({ options, isReply }: ReplyPostProps) => {
         }
       }
     },
-    [showMentions, mentionSuggestions, selectedMentionIndex, selectMention],
+    [showMentions, mentionSuggestions, selectedMentionIndex, selectMention]
   );
 
   // File handling
@@ -228,7 +228,7 @@ const ReplyPostComponent = ({ options, isReply }: ReplyPostProps) => {
         });
       }
     },
-    [files],
+    [files]
   );
 
   const removeFile = useCallback((file: File) => {
@@ -251,7 +251,7 @@ const ReplyPostComponent = ({ options, isReply }: ReplyPostProps) => {
       formData.append("post_id", options?.post_id);
       formData.append("postId", String(options?.id));
       formData.append("comment", typedComment);
-      formData.append("reply_to", options?.reply_to || "");
+      formData.append("reply_to", String(options?.reply_to));
       formData.append("mentions", JSON.stringify(mentions));
       if (options.parentId) {
         formData.append("parentId", options.parentId);
@@ -262,7 +262,7 @@ const ReplyPostComponent = ({ options, isReply }: ReplyPostProps) => {
         onUploadProgress: (progressEvent) => {
           if (progressEvent?.total) {
             setProgress(
-              Math.round((progressEvent.loaded / progressEvent.total) * 100),
+              Math.round((progressEvent.loaded / progressEvent.total) * 100)
             );
           }
         },

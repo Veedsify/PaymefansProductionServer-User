@@ -93,7 +93,7 @@ export const useMentions = () => {
       if (!textareaRef.current) return;
 
       if (mentions.find((m) => m.id === mentionedUser.id)) {
-        toast.error(`@${mentionedUser.username} is already mentioned.`, {
+        toast.error(`${mentionedUser.username} is already mentioned.`, {
           id: "mention-duplicate",
         });
         return;
@@ -103,7 +103,7 @@ export const useMentions = () => {
       const currentText = textarea.value;
       const beforeMention = currentText.substring(0, mentionStartPos);
       const afterMention = currentText.substring(cursorPosition);
-      const newText = `${beforeMention}@${mentionedUser.username} ${afterMention}`;
+      const newText = `${beforeMention}${mentionedUser.username} ${afterMention}`;
       const newCursorPos = mentionStartPos + mentionedUser.username.length + 2;
 
       textarea.value = newText;

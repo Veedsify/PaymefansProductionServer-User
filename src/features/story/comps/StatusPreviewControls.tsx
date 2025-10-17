@@ -49,36 +49,24 @@ const StoryPreviewControlls = ({
           />
         ))}
       </div>
-      <div className="absolute top-1/2 w-full flex gap-2 items-center justify-between pointer-events-auto ">
-        <motion.div
-          onClick={moveToPrevSlide}
-          className="h-[80px] w-full flex-[2] cursor-pointer text-transparent bg-white/30"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: [0, 1, 0] }}
-          transition={{ duration: 1, times: [0, 0.7, 1], delay: 0 }}
-        >
-          L
-        </motion.div>
-        <motion.div
-          onClick={clickToPlay}
-          ref={ref}
-          className="h-[80px] w-full flex-[3] cursor-pointer text-transparent bg-white/30"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: [0, 1, 0] }}
-          transition={{ duration: 1, times: [0, 0.7, 1], delay: 0.2 }}
-        >
-          C
-        </motion.div>
-        <motion.div
-          onClick={moveToNextSlide}
-          className="h-[80px] w-full flex-[2] cursor-pointer text-transparent bg-white/30"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: [0, 1, 0] }}
-          transition={{ duration: 1, times: [0, 0.5, 1], delay: 0.4 }}
-        >
-          R
-        </motion.div>
-      </div>
+      <motion.div
+        onClick={moveToPrevSlide}
+        className="absolute left-0 top-1/2 -translate-y-1/2 h-[30vh] max-w-[150px] w-full flex-[3] cursor-pointer text-transparent bg-white/30 pointer-events-auto"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: [0, 1, 0] }}
+        transition={{ duration: 1, times: [0, 0.7, 1], delay: 0 }}
+      >
+        L
+      </motion.div>
+      <motion.div
+        onClick={moveToNextSlide}
+        className="absolute right-0 top-1/2 -translate-y-1/2 h-[30vh] max-w-[150px] w-full flex-[3] cursor-pointer text-transparent bg-white/30 pointer-events-auto"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: [0, 1, 0] }}
+        transition={{ duration: 1, times: [0, 0.5, 1], delay: 0.2 }}
+      >
+        R
+      </motion.div>
     </>
   );
 };

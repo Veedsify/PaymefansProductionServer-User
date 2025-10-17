@@ -159,7 +159,6 @@ export function NotificationBody() {
   } = useNotifications(page.toString());
 
   const { updateNotification } = useNotificationStore();
-  const types = NotificationIcontypes;
   const { ref, inView } = useInView();
   const router = useRouter();
 
@@ -175,7 +174,7 @@ export function NotificationBody() {
       updateNotification(id);
       markAsRead(id);
     },
-    [router, updateNotification, markAsRead],
+    [router, updateNotification, markAsRead]
   );
 
   if (error) {
@@ -202,7 +201,7 @@ export function NotificationBody() {
           notification={notification}
           onNotificationClick={handleNotificationClick}
           isMarkingAsRead={isMarkingAsRead}
-          types={types}
+          types={NotificationIcontypes}
         />
       ))}
       {isLoading && (

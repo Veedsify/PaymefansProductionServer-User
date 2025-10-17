@@ -262,7 +262,7 @@ export const DraggableElement = ({
                 e.target.style.height = `${e.target.scrollHeight}px`;
                 onContentChange(element.id, e.target.value);
               }}
-              value={element.content}
+              value={element.url}
               onFocus={() => setIsEditing(true)}
               onBlur={() => setIsEditing(false)}
               onClick={(e) => {
@@ -292,11 +292,11 @@ export const DraggableElement = ({
               className={`bg-transparent placeholder:text-white/70 border-none outline-none resize-none text-center h-fit w-[160px] ${
                 element.style.fontFamily
               } ${isEditing ? "cursor-text" : "cursor-pointer"}`}
-              placeholder="Link text"
+              placeholder="Add a link..."
             />
-            <div className="text-xs text-white/90 max-w-[200px] truncate bg-black/50 px-2 py-1 rounded-full backdrop-blur-sm border border-white/20">
+            {/* <div className="text-xs text-white/90 max-w-[200px] truncate bg-black/50 px-2 py-1 rounded-full backdrop-blur-sm border border-white/20">
               {element.url}
-            </div>
+            </div> */}
           </div>
         )}
       </div>

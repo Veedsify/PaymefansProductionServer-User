@@ -174,7 +174,7 @@ export interface ReplyPostProps {
     parentId?: string;
     post_audience: string;
     author_username: string;
-    reply_to?: string;
+    reply_to?: number;
     setNewComment?: (comment: Comment) => void;
   };
   isReply: boolean;

@@ -30,13 +30,13 @@ export const LinkDialog = ({
           <button
             onClick={onCreateLink}
             disabled={!tempLinkUrl}
-            className="flex-1 py-3 font-medium text-black shadow-lg bg-gradient-to-r from-blue-500 to-purple-500 disabled:from-gray-300 disabled:to-gray-400 rounded-xl hover:from-blue-600 hover:to-purple-600 transition-all duration-200 disabled:shadow-none transform hover:scale-105 disabled:transform-none"
+            className="flex-1 py-3 font-medium text-white shadow-lg bg-blue-500 disabled:bg-gray-300 rounded-xl hover:bg-blue-600 transition-all duration-200 disabled:shadow-none transform hover:scale-105 disabled:transform-none"
           >
             Add Link
           </button>
           <button
             onClick={onClose}
-            className="flex-1 py-3 font-medium text-black shadow-lg bg-gradient-to-r from-gray-400 to-gray-500 rounded-xl hover:from-gray-500 hover:to-gray-600 transition-all duration-200 transform hover:scale-105"
+            className="flex-1 py-3 font-medium text-white shadow-lg bg-gray-400 rounded-xl hover:bg-gray-500 transition-all duration-200 transform hover:scale-105"
           >
             Cancel
           </button>

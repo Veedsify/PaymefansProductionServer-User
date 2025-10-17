@@ -278,6 +278,7 @@ const CommentsHolder = ({ post, postComments }: CommentsHolderProps) => {
                   <ReplyPostComponent
                     isReply={true}
                     options={{
+                      reply_to: comment.userId,
                       id: post?.id,
                       parentId: comment?.comment_id,
                       post_id: post?.post_id,

@@ -6,9 +6,9 @@ import {
   Radio,
   Repeat2,
   Sparkle,
-  UserPlus,
-  UserPlus2,
 } from "lucide-react";
+import { RiUserAddFill } from "react-icons/ri";
+import { FaReply } from "react-icons/fa";
 import { create } from "zustand";
 
 type Notification = {
@@ -25,7 +25,8 @@ type Notification = {
     | "message"
     | "live"
     | "purchase"
-    | "sparkle";
+    | "sparkle"
+    | "reply";
   url: string;
   created_at: string;
 };
@@ -50,7 +51,8 @@ type NotificationType = {
     | "message"
     | "live"
     | "purchase"
-    | "sparkle";
+    | "sparkle"
+    | "reply";
   icon: React.ReactNode;
   color: string;
 };
@@ -58,17 +60,17 @@ type NotificationType = {
 export const NotificationIcontypes: NotificationType[] = [
   {
     type: "like",
-    icon: <Heart size={30} strokeWidth={1} fill="indianred" />,
+    icon: <Heart size={30} strokeWidth={0} fill="red" />,
     color: "indianred",
   },
   {
     type: "follow",
-    icon: <UserPlus2 size={30} strokeWidth={1} fill="green" />,
+    icon: <RiUserAddFill size={22} strokeWidth={0} fill="#2cc169" />,
     color: "green",
   },
   {
     type: "purchase",
-    icon: <DollarSign size={30} strokeWidth={1} />,
+    icon: <DollarSign size={30} strokeWidth={2} />,
     color: "gold",
   },
   {
@@ -78,7 +80,7 @@ export const NotificationIcontypes: NotificationType[] = [
   },
   {
     type: "repost",
-    icon: <Repeat2 size={30} strokeWidth={1} />,
+    icon: <Repeat2 size={30} strokeWidth={2} stroke="#cc0df8" />,
     color: "cadetblue",
   },
   {
@@ -95,6 +97,11 @@ export const NotificationIcontypes: NotificationType[] = [
     type: "sparkle",
     icon: <Sparkle size={30} strokeWidth={1} fill="lime" />,
     color: "lime",
+  },
+  {
+    type: "reply",
+    icon: <FaReply size={30} strokeWidth={1} fill="#0ca5f3" />,
+    color: "purple",
   },
 ];
 

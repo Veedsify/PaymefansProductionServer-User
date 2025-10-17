@@ -1,3 +1,6 @@
+import { cn } from "@/components/ui/cn";
+import { useMemo } from "react";
+
 const CaptionElement = ({ element }: { element: any }) => {
   const handleClick = () => {
     if (element.type === "link" && element.url) {
@@ -20,25 +23,42 @@ const CaptionElement = ({ element }: { element: any }) => {
     cursor: element.type === "link" ? "pointer" : "default",
     userSelect: "none" as any,
     pointerEvents: (element.type === "link" ? "auto" : "none") as any,
-    textShadow: "0px 0px 10px rgba(0,0,0,0.5)", // Better readability on images/videos
+    textShadow: "0px 0px 10px rgba(0,0,0,0.9)", // Better readability on images/videos
     overflowWrap: "break-word" as const,
     wordBreak: "break-word" as const,
-    maxWidth: "320px",
+    maxWidth: element.type !== "link" ? "320px" : "450px",
     zIndex: 200,
     width: "100%",
   };
+
+  const text = useMemo(() => {
+    if (element.type === "link") {
+      const url = element.url || "";
+      // Extract just the domain/hostname from the URL
+      try {
+        const urlObj = new URL(url);
+        return `🔗 ${urlObj.hostname}...`;
+      } catch {
+        // Fallback for invalid URLs or relative URLs
+        const match = url.match(/^https?:\/\/(?:www\.)?([^\/\?#]+)/);
+        const domain = match ? match[1] : url.split(/[\/\?#]/)[0];
+        return `🔗 ${domain}...`;
+      }
+    }
+    return element.content;
+  }, [element.url, element.content, element.type]);
 
   return (
     <p
       style={elementStyle}
       onClick={handleClick}
-      className={`
-        text-wrap wrap-break-word leading-tight max-w-xs
-        ${element.type === "link" ? "hover:opacity-80 transition-opacity" : ""}
-        ${element.type === "link" ? "underline" : ""}
-      `}
+      className={cn(
+        element.type === "link"
+          ? "hover:opacity-80 transition-opacity bg-white/40 px-2 py-1 rounded-lg text-wrap"
+          : " max-w-xs text-wrap wrap-break-word leading-tight"
+      )}
     >
-      {element.content}
+      {text}
     </p>
   );
 };
