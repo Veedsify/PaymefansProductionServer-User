@@ -86,23 +86,48 @@ const ChooseUserName = () => {
           });
 
           const data = createUser.data;
-          setUser(null);
-          toast.success(REGISTER_CONFIG.REGISTER_SUCCESSFUL_MSG, {
-            id: "register",
-          });
+          console.log("Registration response:", data); // Debug log
 
-          // Handle two-factor authentication flow
-          if (data.tfa) {
+          // Handle email verification flow for new registrations
+          if (data.requiresVerification && data.email) {
+            toast.success(
+              "Account created! Please check your email for verification code.",
+              {
+                id: "register",
+              }
+            );
+            setUser(null);
+            sessionStorage.setItem("verifyEmail", data.email);
+            sessionStorage.setItem("verificationType", "registration");
             router.push("/verify");
             return;
           }
 
-          // Handle successful registration with token
+          // Handle two-factor authentication flow (for existing flow)
+          if (data.tfa) {
+            toast.success(REGISTER_CONFIG.REGISTER_SUCCESSFUL_MSG, {
+              id: "register",
+            });
+            setUser(null);
+            sessionStorage.setItem("verifyEmail", user?.email || "");
+            sessionStorage.setItem("verificationType", "tfa");
+            router.push("/verify");
+            return;
+          }
+
+          // Handle successful registration with token (old flow - shouldn't happen now)
           if (!data.tfa && data.token && data.user) {
+            toast.success(REGISTER_CONFIG.REGISTER_SUCCESSFUL_MSG, {
+              id: "register",
+            });
+            setUser(null);
             router.push("/");
             return;
           }
 
+          // Fallback - something went wrong
+          toast.dismiss("register");
+          setUser(null);
           router.push("/login");
         }
       } catch (err) {
@@ -124,7 +149,7 @@ const ChooseUserName = () => {
         });
       }
     },
-    [user, router, setUser],
+    [user, router, setUser]
   );
 
   return (

@@ -18,12 +18,24 @@ const Login = () => {
   const [loading, setLoading] = useState(false);
   const [resending, setResending] = useState(false);
   const [email, setEmail] = useState("");
+  const [verificationType, setVerificationType] = useState<
+    "registration" | "tfa"
+  >("tfa");
 
   useEffect(() => {
-    // Get email from sessionStorage
+    // Get email and verification type from sessionStorage
     const storedEmail = sessionStorage.getItem("verifyEmail");
+    const storedType = sessionStorage.getItem("verificationType") as
+      | "registration"
+      | "tfa"
+      | null;
+
     if (storedEmail) {
       setEmail(storedEmail);
+    }
+
+    if (storedType) {
+      setVerificationType(storedType);
     }
   }, []);
 
@@ -46,7 +58,13 @@ const Login = () => {
 
   const submitLoginForm = async (e: FormEvent) => {
     try {
-      const response = await axiosInstance.post(`/auth/verify/authentication`, {
+      // Determine which endpoint to use based on verification type
+      const endpoint =
+        verificationType === "registration"
+          ? `/auth/verify/email`
+          : `/auth/verify/authentication`;
+
+      const response = await axiosInstance.post(endpoint, {
         code: Number(code),
       });
 
@@ -62,10 +80,20 @@ const Login = () => {
       }
 
       setLoading(false);
-      toast.success(LOGIN_CONFIG.LOGIN_SUCCESSFUL_MSG);
+
+      // Different success messages based on verification type
+      const successMessage =
+        verificationType === "registration"
+          ? "Email verified successfully! Welcome to PayMeFans!"
+          : LOGIN_CONFIG.LOGIN_SUCCESSFUL_MSG;
+
+      toast.success(successMessage);
       setUser(response.data.user);
-      // Clear the stored email after successful verification
+
+      // Clear the stored email and type after successful verification
       sessionStorage.removeItem("verifyEmail");
+      sessionStorage.removeItem("verificationType");
+
       router.push("/");
       return;
     } catch (error: any) {
@@ -88,7 +116,13 @@ const Login = () => {
       setResending(true);
       setError("");
 
-      const response = await axiosInstance.post(`/auth/verify/resend`, {
+      // Determine which endpoint to use based on verification type
+      const endpoint =
+        verificationType === "registration"
+          ? `/auth/verify/email/resend`
+          : `/auth/verify/resend`;
+
+      const response = await axiosInstance.post(endpoint, {
         email: email,
       });
 
@@ -149,11 +183,15 @@ const Login = () => {
 
           <div className="max-w-lg mb-8">
             <h1 className="mb-2 text-3xl font-bold text-white">
-              Verify your account
+              {verificationType === "registration"
+                ? "Verify your email"
+                : "Verify your account"}
             </h1>
             <p className="mb-6 text-gray-300 leading-relaxed">
-              We sent a verification code to your email. Enter the code below to
-              verify your account. Check your spam folder if not received.
+              {verificationType === "registration"
+                ? "We sent a verification code to your email. Enter the code below to verify your email and complete your registration."
+                : "We sent a verification code to your email. Enter the code below to verify your account."}{" "}
+              Check your spam folder if not received.
             </p>
           </div>
 
@@ -202,7 +240,9 @@ const Login = () => {
               disabled={loading}
               className="w-full px-4 py-3 text-sm font-semibold text-white rounded-xl bg-gradient-to-r from-primary-dark-pink to-primary-dark-pink/80 md:max-w-lg hover:from-primary-dark-pink/90 hover:to-primary-dark-pink/70 transition-all duration-200 shadow-lg hover:shadow-primary-dark-pink/25 hover:shadow-xl active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
             >
-              Verify Account
+              {verificationType === "registration"
+                ? "Verify Email"
+                : "Verify Account"}
             </button>
           </form>
 
