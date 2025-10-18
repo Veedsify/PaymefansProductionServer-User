@@ -5,6 +5,7 @@ import {
   memo,
   useCallback,
   useEffect,
+  useLayoutEffect,
   useMemo,
   useReducer,
   useRef,
@@ -57,22 +58,29 @@ const MediaPreviewModal = memo(
     const [initialLoadComplete, setInitialLoadComplete] = useState(false);
     const [slideTransition, setSlideTransition] = useState(true);
 
-    useEffect(() => {
-      if (open) {
-        document.body.style.overflow = "hidden";
-        document.body.style.position = "fixed";
-        document.body.style.overscrollBehavior = "none";
-        document.body.style.height = "100vh";
-      } else {
-        document.body.style.overflow = "";
-        document.body.style.position = "";
-        document.body.style.overscrollBehavior = "";
-        document.body.style.height = "";
-      }
-      if (pathname && !open) {
-        onClose?.();
-      }
-    }, [pathname, open]);
+    useLayoutEffect(() => {
+      if (!open) return;
+
+      const body = document.body;
+      const prev = {
+        overflow: body.style.overflow,
+        position: body.style.position,
+        overscrollBehavior: body.style.overscrollBehavior,
+        height: body.style.height,
+      };
+
+      body.style.overflow = "hidden";
+      body.style.position = "fixed";
+      body.style.overscrollBehavior = "none";
+      body.style.height = "100vh";
+
+      return () => {
+        body.style.overflow = prev.overflow;
+        body.style.position = prev.position;
+        body.style.overscrollBehavior = prev.overscrollBehavior;
+        body.style.height = prev.height;
+      };
+    }, [open]);
 
     // Validate media items
     const validateMediaItem = useCallback(

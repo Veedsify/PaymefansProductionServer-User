@@ -46,6 +46,17 @@ img {
   height: auto;
 }
 
+.break-text {
+  white-space: normal;
+  word-wrap: break-word;
+  /* older name */
+  overflow-wrap: anywhere;
+  /* newer standard */
+  word-break: break-all;
+  /* for long unbroken strings */
+  min-width: 0;
+  /* fix flex/grid Safari bug */
+}
 @keyframes slideDown {
   from {
     max-height: 100%;

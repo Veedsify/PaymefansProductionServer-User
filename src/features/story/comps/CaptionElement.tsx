@@ -26,7 +26,7 @@ const CaptionElement = ({ element }: { element: any }) => {
     textShadow: "0px 0px 10px rgba(0,0,0,0.9)", // Better readability on images/videos
     overflowWrap: "break-word" as const,
     wordBreak: "break-word" as const,
-    maxWidth: element.type !== "link" ? "320px" : "450px",
+    maxWidth: "320px",  
     zIndex: 200,
     width: "100%",
   };
@@ -54,8 +54,8 @@ const CaptionElement = ({ element }: { element: any }) => {
       onClick={handleClick}
       className={cn(
         element.type === "link"
-          ? "hover:opacity-80 transition-opacity bg-white/40 px-2 py-1 rounded-lg text-wrap"
-          : " max-w-xs text-wrap wrap-break-word leading-tight"
+          ? "hover:opacity-80 transition-opacity bg-white/40 px-2 py-1 rounded-lg text-wrap break-text"
+          : " max-w-xs text-wrap wrap-break-word leading-tight break-text"
       )}
     >
       {text}

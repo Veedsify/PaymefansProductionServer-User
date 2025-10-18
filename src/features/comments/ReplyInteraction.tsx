@@ -3,11 +3,13 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { useGuestModal } from "@/contexts/GuestModalContext";
 import { useAuthContext } from "@/contexts/UserUseContext";
 import axiosInstance from "@/utils/Axios";
+import { FaReply } from "react-icons/fa";
 
 const ReplyInteractions = ({
   likedByMe,
   commentId,
   parentId,
+  handleReplyClick,
   replies,
   likes,
   impressions,
@@ -15,6 +17,7 @@ const ReplyInteractions = ({
   likedByMe: boolean;
   commentId: string;
   parentId: string;
+  handleReplyClick?: () => void;
   replies: number;
   likes: number;
   impressions: number;
@@ -65,7 +68,7 @@ const ReplyInteractions = ({
           }
         });
       },
-      { threshold: 0.5 }, // Trigger when 50% visible
+      { threshold: 0.5 } // Trigger when 50% visible
     );
 
     if (trackedComponent) {
@@ -134,12 +137,20 @@ const ReplyInteractions = ({
         {likesCount > 0 ? likesCount : ""}
       </button>
       <span
+        onClick={() => handleReplyClick?.()}
         className="flex items-center text-xs font-medium text-gray-600 gap-1 dark:text-gray-400"
         title={`${replies} ${replies === 1 ? "reply" : "replies"}`}
       >
         <LucideMessageSquare size={18} />
         {replies > 0 ? replies : ""}
       </span>
+      <button
+        onClick={() => handleReplyClick?.()}
+        className="flex items-center cursor-pointer text-xs font-medium text-gray-600 gap-1 dark:text-gray-400"
+        title={`${replies} ${replies === 1 ? "reply" : "replies"}`}
+      >
+        <FaReply size={18} className="text-primary-dark-pink" />
+      </button>
       <span
         className="flex items-center text-xs font-medium text-gray-600 gap-1 dark:text-gray-400"
         title={`${impressions} ${impressions === 1 ? "view" : "views"}`}

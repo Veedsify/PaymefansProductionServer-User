@@ -257,6 +257,7 @@ const CommentsHolder = ({ post, postComments }: CommentsHolderProps) => {
                 likes={comment.likes}
                 impressions={comment.impressions || 0}
                 parentId={comment.parentId || ""}
+                handleReplyClick={() => handleOpenReply(comment.comment_id)}
                 commentId={comment.comment_id}
                 likedByMe={comment.likedByme || false}
               />
