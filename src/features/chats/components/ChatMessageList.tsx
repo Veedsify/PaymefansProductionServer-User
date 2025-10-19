@@ -1,12 +1,14 @@
 "use client";
 
 import React from "react";
-import { LucideChevronUp, LucideLoader } from "lucide-react";
+import { LucideChevronUp } from "lucide-react";
 import dynamic from "next/dynamic";
 import LoadingSpinner from "@/components/common/loaders/LoadingSpinner";
 
 // Dynamic imports for better performance
-const MessageBubble = dynamic(() => import("./MessageBubble"));
+const MessageBubble = dynamic(() => import("../comps/MessageBubble"), {
+  ssr: true,
+});
 
 interface ChatMessageListProps {
   messages: any[];
@@ -17,7 +19,7 @@ interface ChatMessageListProps {
   highlightedMessageId: string | null;
   isSearchingMessage: boolean;
   onLoadMore: () => void;
-  messagesContainerRef: React.RefObject<HTMLDivElement>;
+  messagesContainerRef: React.RefObject<HTMLDivElement | null>;
   onScroll: () => void;
 }
 

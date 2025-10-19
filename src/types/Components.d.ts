@@ -292,6 +292,7 @@ export interface MessageInputProps {
   conversationId: string;
   isFirstMessage: boolean;
   isBlockedByReceiver?: boolean;
+  addMessageOptimistically?: (message: any) => void;
 }
 
 // New types for the unified components

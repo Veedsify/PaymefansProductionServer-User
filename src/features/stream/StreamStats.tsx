@@ -14,8 +14,8 @@ import Image from "next/image";
 import numeral from "numeral";
 import { useState } from "react";
 import { useAuthContext } from "@/contexts/UserUseContext";
-import LiveStreamSocket from "@/hooks/LiveStreamSocket";
 import type { StreamStatsProp } from "@/types/Components";
+import { LiveStreamSocket } from "@/hooks";
 
 const StreamStats = ({
   streamData,

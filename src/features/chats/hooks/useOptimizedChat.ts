@@ -63,3 +63,5 @@ export const useOptimizedChat = () => {
     invalidateMessages: handleMessageUpdate,
   };
 };
+
+export default useOptimizedChat;

@@ -13,6 +13,7 @@ import type {
   UpdateProfileData,
   Conversation,
   ChatMessage,
+  ChatMessagesResponse,
   SendMessageData,
   Product,
   CheckoutData,
@@ -130,7 +131,9 @@ export const useApi = () => {
     // User/Profile API methods
     user: {
       getProfile: async (username: string) =>
-        axiosInstance.get<ApiResponse<UserData>>(ENDPOINTS.USER.USER(username)),
+        axiosInstance.post<ApiResponse<UserData>>(ENDPOINTS.USER.USER, {
+          username,
+        }),
 
       updateProfile: async (data: UpdateProfileData) =>
         axiosInstance.post<ApiResponse<UserData>>(ENDPOINTS.USER.UPDATE, data),
@@ -192,8 +195,13 @@ export const useApi = () => {
           { params: { cursor } }
         ),
 
+      getReceiver: async (conversationId: string) =>
+        axiosInstance.get<{ receiver: UserData; error: boolean }>(
+          ENDPOINTS.CHAT.RECEIVER(conversationId)
+        ),
+
       getMessages: async (conversationId: string, cursor?: number) =>
-        axiosInstance.get<ApiResponse<PaginatedResponse<ChatMessage>>>(
+        axiosInstance.get<ChatMessagesResponse>(
           ENDPOINTS.CHAT.MESSAGES(conversationId),
           { params: { cursor } }
         ),

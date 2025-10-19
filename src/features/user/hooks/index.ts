@@ -1,9 +1,9 @@
 // User hooks exports
-export { default as useUserPoints } from "./useUserPoints";
+export { useUserPoints } from "./useUserPoints";
 export { default as useLocationUpdate } from "./useLocationUpdate";
 export { default as CheckUsername } from "./CheckUsername";
-export { default as useUser } from "./useUser";
-export { default as useProfile } from "./useProfile";
-export { default as useHookups } from "./useHookups";
-export { default as useModels } from "./useModels";
-export { default as useModelsAndHookups } from "./useModelsAndHookups";
+export { useUser } from "./useUser";
+export { useProfile } from "./useProfile";
+export { useHookups } from "./useHookups";
+export { useModels } from "./useModels";
+export { useModelsAndHookups } from "./useModelsAndHookups";

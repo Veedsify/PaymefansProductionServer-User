@@ -24,6 +24,7 @@ import { useSideBarContext } from "@/lib/PageContext";
 import axiosInstance from "@/utils/Axios";
 import NotificationSideBarLink from "../../../features/notifications/NotificationSideBarLink";
 import PointsCount from "../../../features/points/PointCount";
+import PointsDisplay from "../../../features/points/PointsDisplay";
 import useThemeToggle from "../toggles/ThemeToggle";
 import FormatName from "@/lib/FormatName";
 import LoadingSpinner from "../loaders/LoadingSpinner";

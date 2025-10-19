@@ -21,7 +21,7 @@ export const useMessageValidation = ({
   conversations,
 }: MessageValidationProps) => {
   const [isValidating, setIsValidating] = useState(false);
-  const { chat } = useApi();
+  const { chat, points: pointsApi } = useApi();
   const points = usePointsStore((state) => state.points);
   const { conversations: conversationList } = useMessagesConversation();
 
@@ -38,8 +38,8 @@ export const useMessageValidation = ({
 
     try {
       setIsValidating(true);
-      const { data } = await chat.getPricePerMessage(receiver.user_id);
-      const pricePerMessage = data.price_per_message;
+      const { data } = await pointsApi.getPricePerMessage(receiver.user_id);
+      const pricePerMessage = data.data.price_per_message;
 
       // Check if user has enough points
       if (points < pricePerMessage) {
@@ -50,13 +50,7 @@ export const useMessageValidation = ({
           icon: "info",
           title: "Insufficient Points",
           text: `You have ${points} points but need ${pricePerMessage.toLocaleString()} points to send a message to ${receiverName}`,
-          buttons: {
-            cancel: "Cancel",
-            confirm: {
-              text: "Add Points",
-              className: "bg-primary-dark-pink text-white",
-            },
-          },
+          buttons: ["Cancel", "Add Points"],
         });
 
         return { canSend: false, price: pricePerMessage };

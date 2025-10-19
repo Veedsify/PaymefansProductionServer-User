@@ -1,38 +1,12 @@
 "use client";
 import { LucideTrash, X } from "lucide-react";
 import Image from "next/image";
-import { type ChangeEvent, useEffect, useState } from "react";
 import { useCartStore } from "@/contexts/StoreContext";
-import CustomCartPageHooks from "../../hooks/CustomCartHooks";
+import CustomCartPageHooks from "@/features/store/hooks/CustomCartHooks";
 
 const CartComponent = () => {
-  const { calculateTotalPrice, addProduct, cart } = useCartStore();
-  const { sizes, addToCart, removeFromCart } = CustomCartPageHooks();
-  const [totalPrice, setTotalPrice] = useState(0);
-
-  useEffect(() => {
-    if (cart.length > 0) {
-      const total = calculateTotalPrice();
-      setTotalPrice(total);
-    }
-  }, [cart, calculateTotalPrice]);
-
-  const handleSizeChange = (
-    e: ChangeEvent<HTMLSelectElement>,
-    id: number,
-    currentSizeName?: string,
-  ) => {
-    const product = cart.find(
-      (p) => p.id === id && p.size?.name === currentSizeName,
-    );
-    const size = sizes.find((s) => s.name === e.target.value);
-    if (product && size) {
-      // Remove the old product with current size
-      removeFromCart(id, currentSizeName);
-      // Add the product with new size
-      addProduct({ ...product, size: { name: size.name, id: size.id } });
-    }
-  };
+  const { cart } = useCartStore();
+  const { removeFromCart } = CustomCartPageHooks();
 
   return (
     <section className="w-full mx-auto">

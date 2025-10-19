@@ -22,16 +22,14 @@ export interface FormErrors {
   audience?: string;
 }
 
-export const GENDER_OPTIONS: postAudienceDataProps2[] = [
+export const GENDER_OPTIONS: Omit<postAudienceDataProps2, "icon">[] = [
   {
     id: 1,
     name: "Male",
-    icon: null, // Will be set in component
   },
   {
     id: 2,
     name: "Female",
-    icon: null, // Will be set in component
   },
 ];
 

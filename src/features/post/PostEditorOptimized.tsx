@@ -16,11 +16,6 @@ import { POST_CONFIG } from "@/config/config";
 import { useUploadProgress } from "@/contexts/UploadProgressContext";
 import { useAuthContext } from "@/contexts/UserUseContext";
 import { PostCancel } from "@/features/post/PostCancel";
-import { useMentions } from "@/hooks/useMentions";
-import { usePostAudience } from "@/hooks/usePostAudience";
-// Custom hooks
-import { usePostEditor } from "@/hooks/usePostEditor";
-import { usePostInitialization } from "@/hooks/usePostInitialization";
 import type {
   PostAudienceDataProps,
   PostEditorProps,
@@ -33,6 +28,7 @@ import MentionDropdown from "./components/MentionDropdown";
 import MentionList from "./components/MentionList";
 import ExistingMediaPreview from "./ExistingMediaPreview";
 import dynamic from "next/dynamic";
+import { useMentions, usePostAudience, usePostEditor, usePostInitialization } from "@/hooks";
 const PostMediaPreview = dynamic(() => import("./PostMediaPreview"), {
   ssr: true,
 });

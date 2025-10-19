@@ -9,7 +9,7 @@ import { useChatScroll } from "../hooks/useChatScroll";
 import { checkIfBlockedBy } from "@/utils/data/BlockUser";
 import ChatHeader from "./ChatHeader";
 import ChatMessageList from "./ChatMessageList";
-import MessageInputContainer from "./MessageInput/MessageInputContainer";
+import MessageInputComponent from "../comps/MessageInputComponent";
 import LoadingSpinner from "@/components/common/loaders/LoadingSpinner";
 
 interface ChatPageContainerProps {
@@ -32,14 +32,23 @@ export const ChatPageContainer: React.FC<ChatPageContainerProps> = ({
     isError,
     isLoading,
   } = useQuery({
-    queryKey: ["chatData", conversationId],
-    queryFn: () =>
-      chat.getConversations().then((res) => {
-        const conversation = res.data.data.find(
-          (conv: any) => conv.conversation_id === conversationId
-        );
-        return { receiver: conversation?.receiver };
-      }),
+    queryKey: ["chatReceiver", conversationId],
+    queryFn: async () => {
+      try {
+        console.log("Fetching receiver for conversationId:", conversationId);
+        const res = await chat.getReceiver(conversationId);
+        console.log("Receiver response:", res.data);
+
+        if (!res.data.receiver) {
+          throw new Error("Receiver not found");
+        }
+
+        return { receiver: res.data.receiver };
+      } catch (error) {
+        console.error("Error fetching receiver:", error);
+        throw error;
+      }
+    },
     refetchInterval: false,
     refetchOnMount: true,
     enabled: !!conversationId,
@@ -52,10 +61,9 @@ export const ChatPageContainer: React.FC<ChatPageContainerProps> = ({
   const {
     chatMessages,
     loading: messagesLoading,
-    error: messagesError,
     hasMore,
     fetchNextPage,
-    searchForSpecificMessage,
+    addMessageOptimistically,
   } = useChatMessages({ conversationId });
 
   // Chat scroll hook
@@ -63,7 +71,6 @@ export const ChatPageContainer: React.FC<ChatPageContainerProps> = ({
     messagesContainerRef,
     highlightedMessageId,
     isSearchingMessage,
-    scrollToBottom,
     handleScroll,
   } = useChatScroll({
     messages: chatMessages,
@@ -78,7 +85,7 @@ export const ChatPageContainer: React.FC<ChatPageContainerProps> = ({
 
       setBlockCheckLoading(true);
       try {
-        const result = await checkIfBlockedBy(receiver.id);
+        const result = await checkIfBlockedBy(Number(receiver.id));
         if (result.status && !result.error) {
           setIsBlockedByReceiver(result.isBlocked);
         }
@@ -101,10 +108,16 @@ export const ChatPageContainer: React.FC<ChatPageContainerProps> = ({
     router.push("/messages");
   }, [router]);
 
-  // Redirect if conversation not found
+  // Redirect if conversation not found (temporarily disabled for debugging)
   if (!receiver && isError) {
-    router.push("/messages");
-    return null;
+    console.log(
+      "Redirecting to /messages - receiver:",
+      receiver,
+      "isError:",
+      isError
+    );
+    // router.push("/messages"); // Temporarily disabled
+    // return null;
   }
 
   // Show loading state while checking block status
@@ -177,11 +190,12 @@ export const ChatPageContainer: React.FC<ChatPageContainerProps> = ({
       />
 
       <div className="sticky bottom-0 z-50 p-4 bg-white border-t border-black/30 dark:bg-black dark:border-gray-950 shrink-0">
-        <MessageInputContainer
+        <MessageInputComponent
           receiver={receiver}
           conversationId={conversationId}
           isFirstMessage={chatMessages.length === 0}
           isBlockedByReceiver={isBlockedByReceiver}
+          addMessageOptimistically={addMessageOptimistically}
         />
       </div>
     </div>

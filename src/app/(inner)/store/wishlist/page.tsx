@@ -11,18 +11,17 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import numeral from "numeral";
-import React, { useEffect } from "react";
 import toast from "react-hot-toast";
 import { useCartStore } from "@/contexts/StoreContext";
 import { useWishlistStore } from "@/contexts/WishlistContext";
+import { useWishlist } from "@/hooks";
 import {
   useClearWishlist,
   useToggleWishlist,
-  useWishlist,
-} from "@/hooks/useWishlist";
+} from "@/features/store/hooks/useWishlist";
 
 const WishlistPage = () => {
-  const { data, isLoading, isError, error } = useWishlist();
+  const { isLoading, isError, error } = useWishlist();
   const { wishlist, getWishlistCount } = useWishlistStore();
   const { addProduct, cart } = useCartStore();
   const clearWishlistMutation = useClearWishlist();
@@ -34,7 +33,7 @@ const WishlistPage = () => {
   const addToCart = (product: any) => {
     // Check if product already in cart
     const findProductInCart = cart.find(
-      (p) => p.product_id === product.product_id,
+      (p) => p.product_id === product.product_id
     );
 
     if (findProductInCart) {

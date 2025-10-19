@@ -1,5 +1,4 @@
 "use client";
-import { LucideLoader } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -15,7 +14,6 @@ import type { UserRegisterType } from "@/features/user/types/user";
 import { countries } from "@/lib/Locations";
 import { useUser } from "@/lib/UserContext";
 import axiosInstance from "@/utils/Axios";
-import { getToken } from "@/utils/Cookie";
 import LoadingSpinner from "@/components/common/loaders/LoadingSpinner";
 
 const Register = () => {

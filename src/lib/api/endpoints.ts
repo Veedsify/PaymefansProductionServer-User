@@ -60,19 +60,21 @@ export const ENDPOINTS = {
     TIP: "/profile/tip/model",
     DELETE_ACCOUNT: "/profile/delete-account",
     CREATOR_DASHBOARD: "/profile/creator-dashboard-data",
-    USER: (username: string) => `/profile/user/${username}`,
+    USER: "/profile/user",
   },
 
   // Chat/Conversation endpoints
   CHAT: {
-    CONVERSATIONS: "/conversations",
+    CONVERSATIONS: "/conversations/my-conversations",
+    RECEIVER: (conversationId: string) =>
+      `/conversations/receiver/${conversationId}`,
     MESSAGES: (conversationId: string) =>
-      `/conversations/${conversationId}/messages`,
+      `/conversations/messages/${conversationId}`,
     SEND_MESSAGE: (conversationId: string) =>
-      `/conversations/${conversationId}/messages`,
+      `/conversations/messages/${conversationId}`,
     SEARCH_MESSAGES: (conversationId: string) =>
       `/conversations/search/messages/${conversationId}`,
-    CREATE_CONVERSATION: "/conversations/create",
+    CREATE_CONVERSATION: "/conversations/create-new",
     BLOCK_USER: "/conversations/block",
     UNBLOCK_USER: "/conversations/unblock",
   },

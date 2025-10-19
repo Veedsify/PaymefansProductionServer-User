@@ -26,7 +26,7 @@ import { imageTypes, videoTypes } from "@/lib/FileTypes";
 import type { MediaFile, Message, MessageInputProps } from "@/types/Components";
 import axiosInstance from "@/utils/Axios";
 import GenerateVideoPoster from "@/utils/GenerateVideoPoster";
-import { getSocket } from "../../../components/common/Socket";
+import { getSocket, connectSocket } from "../../../components/common/Socket";
 import MessageMediaPreview from "./MessageMediaPreview";
 import LoadingSpinner from "@/components/common/loaders/LoadingSpinner";
 
@@ -70,6 +70,7 @@ const MessageInputComponent = React.memo(
     isFirstMessage,
     conversationId,
     isBlockedByReceiver = false,
+    addMessageOptimistically,
   }: MessageInputProps) => {
     // Contexts and Hooks
     const { user } = useAuthContext();
@@ -80,7 +81,6 @@ const MessageInputComponent = React.memo(
     const ref = useRef<HTMLDivElement>(null);
     const setIsTyping = useChatStore((state) => state.setIsTyping);
     const socket = getSocket();
-    const addNewMessage = useChatStore((state) => state.addNewMessage);
 
     // Use local state for message media files instead of global mediaFiles
     const [messageMediaFiles, setMessageMediaFiles] = useState<
@@ -92,6 +92,13 @@ const MessageInputComponent = React.memo(
     const [isSocketConnected, setIsSocketConnected] = useState(
       socket?.connected || false
     );
+
+    // Ensure socket is connected when component mounts
+    useEffect(() => {
+      if (user?.username && !socket?.connected) {
+        connectSocket(user.username);
+      }
+    }, [user?.username, socket?.connected]);
 
     // Calculate upload progress
     const uploadProgress = useMemo(() => {
@@ -618,8 +625,12 @@ const MessageInputComponent = React.memo(
           seen: false,
         };
 
-        // Optimistic update
-        addNewMessage(newMessage);
+        // Optimistic update - add message immediately for sender
+        if (addMessageOptimistically) {
+          addMessageOptimistically(newMessage);
+        }
+
+        // Clear input and media files
         resetMessageInput();
         setMessageMediaFiles([]); // Clear message media files
 
@@ -696,7 +707,6 @@ const MessageInputComponent = React.memo(
       conversations,
       message,
       conversationId,
-      addNewMessage,
       resetMessageInput,
       socket,
     ]);

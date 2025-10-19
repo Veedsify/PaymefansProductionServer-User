@@ -360,10 +360,11 @@ const ReferralPage = () => {
 
           {usersLoading ? (
             <div className="flex justify-center items-center py-12">
-              <Loader2 className="w-8 h-8 animate-spin text-primary-dark-pink" />
-              <span className="ml-2 text-gray-500">
-                Loading referred users...
-              </span>
+              <LoadingSpinner
+                text="Loading referred users..."
+                size="lg"
+                color="primary"
+              />
             </div>
           ) : usersError ? (
             <div className="text-center py-12">
@@ -512,8 +513,11 @@ const ReferralPage = () => {
 
             {earningsLoading ? (
               <div className="flex justify-center items-center py-8">
-                <Loader2 className="w-8 h-8 animate-spin text-primary-dark-pink" />
-                <span className="ml-2 text-gray-500">Loading earnings...</span>
+                <LoadingSpinner
+                  text="Loading earnings..."
+                  size="lg"
+                  color="primary"
+                />
               </div>
             ) : earningsError ? (
               <div className="text-center py-8">

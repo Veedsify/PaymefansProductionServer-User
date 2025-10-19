@@ -107,22 +107,37 @@ export const useMessageUpload = () => {
         );
 
         // Get upload URL
-        const uploadUrl = await GetUploadUrl(mediaFile.file.type);
+        const uploadUrl = await GetUploadUrl(mediaFile.file, {
+          username: "user", // TODO: Get actual username from context
+          shouldUseSignedUrls: true,
+        });
 
         // Upload file
-        const uploadResult = await UploadWithTus(
-          mediaFile.file,
-          uploadUrl,
-          (progress) => {
+        const uploadResult = await UploadWithTus({
+          file: mediaFile.file,
+          uploadUrl: uploadUrl.uploadUrl,
+          id: mediaFile.id,
+          setProgress: (progress) => {
+            // Handle progress as a number
+            const progressValue = typeof progress === "number" ? progress : 0;
             setMessageMediaFiles((prev) =>
               prev.map((f) =>
-                f.id === mediaFile.id ? { ...f, uploadProgress: progress } : f
+                f.id === mediaFile.id
+                  ? { ...f, uploadProgress: progressValue }
+                  : f
               )
             );
-          }
-        );
+          },
+          setUploadError: (error) => {
+            setMessageMediaFiles((prev) =>
+              prev.map((f) =>
+                f.id === mediaFile.id ? { ...f, media_state: "failed" } : f
+              )
+            );
+          },
+        });
 
-        if (uploadResult.success && uploadResult.url) {
+        if (uploadResult) {
           let posterUrl = "";
 
           // Generate poster for videos
@@ -141,8 +156,7 @@ export const useMessageUpload = () => {
                 ? {
                     ...f,
                     media_state: "completed",
-                    media_url: uploadResult.url!,
-                    media_id: uploadResult.media_id || "",
+                    media_id: uploadResult,
                     posterUrl: posterUrl || f.posterUrl,
                     uploadProgress: 100,
                   }
@@ -150,7 +164,7 @@ export const useMessageUpload = () => {
             )
           );
         } else {
-          throw new Error(uploadResult.error || "Upload failed");
+          throw new Error("Upload failed");
         }
       } catch (error) {
         console.error("Upload error:", error);

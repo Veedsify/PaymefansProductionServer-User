@@ -2,11 +2,12 @@ import { getPageData } from "@/features/pages/api/server";
 import DynamicPageClient from "@/features/pages/components/DynamicPageClient";
 
 interface PageProps {
-  params: { page: string };
+  params: Promise<{ page: string }>;
 }
 
 export default async function Page({ params }: PageProps) {
-  const pageData = await getPageData(params.page);
+  const { page } = await params;
+  const pageData = await getPageData(page);
 
   return <DynamicPageClient pageData={pageData} />;
 }

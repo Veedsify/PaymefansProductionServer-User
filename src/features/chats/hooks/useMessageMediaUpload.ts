@@ -39,13 +39,13 @@ interface UseMessageMediaUploadProps {
   endpoint: "conversations" | "groups";
 }
 
-export const useMessageMediaUpload = ({
+export default function useMessageMediaUpload({
   mediaFiles,
   updateMediaState,
   updateUploadProgress,
   updateMediaFile,
   endpoint,
-}: UseMessageMediaUploadProps) => {
+}: UseMessageMediaUploadProps) {
   const [isUploading, setIsUploading] = useState(false);
   const { user } = useAuthContext();
   const toastId = "message-media-upload-toast";

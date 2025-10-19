@@ -17,6 +17,7 @@ const PostComponentPreview = dynamic(
 );
 import CombinedProviders from "@/providers/CombinedProviders";
 import QueryProvider from "@/providers/QueryProvider";
+import SupportHelp from "@/features/support/SupportHelp";
 
 export const metadata: Metadata = {
   title: "Paymefans",

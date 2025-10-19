@@ -1,16 +1,16 @@
 "use client";
+import { useVerifyPayment } from "@/features/store/hooks/useCheckout";
 import { CheckCircle, Loader2, XCircle } from "lucide-react";
 import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
-import { useVerifyPayment } from "@/hooks/useCheckout";
+
 
 const PaymentCallback = () => {
   const searchParams = useSearchParams();
-  const router = useRouter();
   const [status, setStatus] = useState<"loading" | "success" | "error">(
-    "loading",
+    "loading"
   );
   const [message, setMessage] = useState("");
   const [orderId, setOrderId] = useState("");
@@ -22,11 +22,8 @@ const PaymentCallback = () => {
     localStorage.getItem("pendingOrderReference") ||
     "";
 
-  const {
-    data: verificationData,
-    isLoading: isVerifying,
-    error: verificationError,
-  } = useVerifyPayment(reference);
+  const { data: verificationData, error: verificationError } =
+    useVerifyPayment(reference);
 
   useEffect(() => {
     if (!reference) {

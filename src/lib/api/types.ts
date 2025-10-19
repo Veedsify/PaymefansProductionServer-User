@@ -13,6 +13,14 @@ export interface PaginatedResponse<T> {
   total?: number;
 }
 
+// Chat Messages Response (different structure from PaginatedResponse)
+export interface ChatMessagesResponse {
+  messages: ChatMessage[];
+  error: boolean;
+  status: boolean;
+  nextCursor?: string | number;
+}
+
 export interface UserTransaction {
   id: string;
   transaction_type: "credit" | "debit";
@@ -108,14 +116,20 @@ export interface LastMessage {
 }
 
 export interface ChatMessage {
-  id: string;
+  id: string | number;
   message_id: string;
-  content: string;
+  message: string;
+  content?: string; // Keep for backward compatibility
   created_at: string;
+  updated_at: string;
   sender_id: string;
-  conversationId: string;
+  receiver_id: string;
+  conversationsId: string;
+  groupsId?: string | null;
+  story_reply?: any;
   seen: boolean;
   attachment?: Attachment[];
+  isSystemMessage: boolean;
   rawFiles?: any[];
   triggerSend?: boolean;
 }

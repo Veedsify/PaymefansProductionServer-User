@@ -2,8 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { useApi } from "@/lib/api";
-import { useChatStore } from "@/contexts/ChatContext";
-import type { Message } from "@/types/Components";
+import { getSocket } from "@/components/common/Socket";
 import type { ChatMessage } from "@/lib/api/types";
 
 interface UseChatMessagesProps {
@@ -18,9 +17,6 @@ export const useChatMessages = ({ conversationId }: UseChatMessagesProps) => {
   const [hasMore, setHasMore] = useState(true);
 
   const { chat } = useApi();
-  const addNewMessage = useChatStore((state) => state.addNewMessage);
-  const paginateMessages = useChatStore((state) => state.paginateMessages);
-  const resetMessages = useChatStore((state) => state.resetMessages);
 
   // Fetch first page on mount or conversationId change
   useEffect(() => {
@@ -32,11 +28,14 @@ export const useChatMessages = ({ conversationId }: UseChatMessagesProps) => {
 
       try {
         const response = await chat.getMessages(conversationId);
-        const { data } = response.data;
+        console.log("Messages response:", response.data);
 
-        setChatMessages(data.data || []);
-        setNextCursor(data.nextCursor ?? undefined);
-        setHasMore(!!data.nextCursor);
+        // Handle the direct API response structure (no nested data.data)
+        // API returns messages in descending order (newest first), but we need ascending order (oldest first)
+        const messages = response.data.messages || [];
+        setChatMessages([...messages].reverse());
+        setNextCursor(response.data.nextCursor ?? undefined);
+        setHasMore(!!response.data.nextCursor);
       } catch (err: any) {
         setError(err);
         console.error("Error fetching messages:", err);
@@ -46,7 +45,7 @@ export const useChatMessages = ({ conversationId }: UseChatMessagesProps) => {
     };
 
     fetchMessages();
-  }, [conversationId, chat]);
+  }, [conversationId]); // Remove 'chat' from dependencies
 
   // Function to fetch the next page
   const fetchNextPage = useCallback(async () => {
@@ -60,18 +59,19 @@ export const useChatMessages = ({ conversationId }: UseChatMessagesProps) => {
         conversationId,
         typeof nextCursor === "string" ? parseInt(nextCursor) : nextCursor
       );
-      const { data } = response.data;
-
-      setChatMessages((prev) => [...prev, ...(data.data || [])]);
-      setNextCursor(data.nextCursor ?? undefined);
-      setHasMore(!!data.nextCursor);
+      // Handle the direct API response structure (no nested data.data)
+      // API returns messages in descending order (newest first), but we need ascending order (oldest first)
+      const newMessages = response.data.messages || [];
+      setChatMessages((prev) => [...newMessages].reverse().concat(prev));
+      setNextCursor(response.data.nextCursor ?? undefined);
+      setHasMore(!!response.data.nextCursor);
     } catch (err: any) {
       setError(err);
       console.error("Error fetching next page:", err);
     } finally {
       setLoading(false);
     }
-  }, [conversationId, nextCursor, hasMore, loading, chat]);
+  }, [conversationId, nextCursor, hasMore, loading]); // Remove 'chat' from dependencies
 
   // Search for a specific message
   const searchForSpecificMessage = useCallback(
@@ -89,21 +89,46 @@ export const useChatMessages = ({ conversationId }: UseChatMessagesProps) => {
         return null;
       }
     },
-    [conversationId, chat]
+    [conversationId] // Remove 'chat' from dependencies
   );
 
-  // Update messages in global store
+  // Socket listeners for real-time messages
   useEffect(() => {
-    // Convert ChatMessage[] to Message[] for compatibility
-    const messages = chatMessages.map((msg) => ({
-      ...msg,
-      id: parseInt(msg.id) || 0, // Convert string id to number
-      message: msg.content, // Map content to message field
-      attachment: msg.attachment || [], // Ensure attachment is always an array
-      triggerSend: msg.triggerSend || false, // Ensure triggerSend is always boolean
-    }));
-    paginateMessages(messages);
-  }, [chatMessages, paginateMessages]);
+    const socket = getSocket();
+    if (!socket) return;
+
+    const handleNewMessage = (message: ChatMessage) => {
+      console.log("Received new message via socket:", message);
+      setChatMessages((prev) => {
+        // Check if message already exists to prevent duplicates
+        const messageExists = prev.some(
+          (m) => m.message_id === message.message_id
+        );
+        if (messageExists) return prev;
+
+        // Add new message to the end of the array (most recent at bottom)
+        return [...prev, message];
+      });
+    };
+
+    const handleMessageUpdate = (updatedMessage: ChatMessage) => {
+      console.log("Received message update via socket:", updatedMessage);
+      setChatMessages((prev) =>
+        prev.map((msg) =>
+          msg.message_id === updatedMessage.message_id ? updatedMessage : msg
+        )
+      );
+    };
+
+    // Listen for new messages
+    socket.on("message", handleNewMessage);
+    socket.on("message-update", handleMessageUpdate);
+
+    return () => {
+      socket.off("message", handleNewMessage);
+      socket.off("message-update", handleMessageUpdate);
+    };
+  }, [conversationId]);
 
   // Cleanup on unmount
   useEffect(() => {
@@ -113,9 +138,22 @@ export const useChatMessages = ({ conversationId }: UseChatMessagesProps) => {
       setLoading(false);
       setError(null);
       setChatMessages([]);
-      resetMessages();
     };
-  }, [resetMessages]);
+  }, []);
+
+  // Function to add a message optimistically (for sender)
+  const addMessageOptimistically = useCallback((message: ChatMessage) => {
+    setChatMessages((prev) => {
+      // Check if message already exists to prevent duplicates
+      const messageExists = prev.some(
+        (m) => m.message_id === message.message_id
+      );
+      if (messageExists) return prev;
+
+      // Add new message to the end of the array (most recent at bottom)
+      return [...prev, message];
+    });
+  }, []);
 
   return {
     chatMessages,
@@ -125,5 +163,6 @@ export const useChatMessages = ({ conversationId }: UseChatMessagesProps) => {
     hasMore,
     fetchNextPage,
     searchForSpecificMessage,
+    addMessageOptimistically,
   };
 };

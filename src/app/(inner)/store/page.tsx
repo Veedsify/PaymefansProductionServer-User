@@ -1,12 +1,12 @@
 "use client";
-import { LucideArrowRight, ShoppingCart } from "lucide-react";
+import { Loader2, LucideArrowRight, ShoppingCart } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import numeral from "numeral";
 import { useMemo } from "react";
 import CartIcon from "@/components/common/icons/CartIcon";
 import LoadingSpinner from "@/components/common/loaders/LoadingSpinner";
-import { useStoreProducts } from "@/hooks/useStoreProducts";
+import { useStoreProducts } from "@/features/store/hooks/useStoreProducts";
 import { StoreProduct } from "@/types/Components.d";
 
 const Store = () => {
