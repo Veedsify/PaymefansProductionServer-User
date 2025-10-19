@@ -6,10 +6,10 @@ import swal from "sweetalert";
 import { useAuthContext } from "@/contexts/UserUseContext";
 import UserStatus from "@/features/story/comps/UserStatus";
 import type { Story } from "@/features/story/types/story";
-import useFetchStories from "../../../hooks/FetchStories";
 import dynamic from "next/dynamic";
 const StatusModal = dynamic(() => import("./StatusModal"), { ssr: false });
 import FormatName from "@/lib/FormatName";
+import useFetchStories from "@/features/posts/hooks/FetchStories";
 
 const StatusComponent = () => {
   const { stories, loading } = useFetchStories();

@@ -4,9 +4,9 @@ import Image from "next/image";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useInView } from "react-intersection-observer";
 import { useStoryStore } from "@/contexts/StoryContext";
-import StoryMediaFetch from "@/hooks/StoryMediaFetch";
 import VideoPlayer from "../../media/videoplayer";
 import LoadingSpinner from "@/components/common/loaders/LoadingSpinner";
+import StoryMediaFetch from "@/features/posts/hooks/StoryMediaFetch";
 
 const StatusMediaPanel = () => {
   const [page, setPage] = useState(1);

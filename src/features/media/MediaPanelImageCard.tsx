@@ -11,13 +11,7 @@ import { LockedMediaOverlay } from "./LockedMediaOverlay";
 import HLSVideoPlayer from "./videoplayer";
 import LoadingSpinner from "@/components/common/loaders/LoadingSpinner";
 
-const getUniqueItems = (arr: MediaDataType[]) => {
-  const uniqueMap = new Map();
-  arr.forEach((item) => uniqueMap.set(item.id, item)); // Assuming 'id' is the unique property
-  return Array.from(uniqueMap.values());
-};
-
-const MediaPanelImageCard = React.memo(({ sort }: { sort: string }) => {
+const MediaPanelImageCard = React.memo(() => {
   const fullScreenPreview = usePostComponent(
     (state) => state.fullScreenPreview
   );

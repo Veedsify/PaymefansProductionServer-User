@@ -23,9 +23,9 @@ import {
   type UserProfile,
 } from "./mediaPreviewTypes";
 import VideoPreview from "./VideoPreview";
-import { useSwipeGesture } from "@/hooks/useSwipeGesture";
-import { usePinchZoom } from "@/hooks/usePinchZoom";
 import { usePathname } from "next/navigation";
+import { usePinchZoom } from "@/hooks/utilities/usePinchZoom";
+import { useSwipeGesture } from "@/hooks/utilities/useSwipeGesture";
 
 interface MediaPreviewModalProps {
   open: boolean;

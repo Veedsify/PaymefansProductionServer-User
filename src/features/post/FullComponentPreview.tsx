@@ -2,7 +2,7 @@
 import dynamic from "next/dynamic";
 import { memo, Suspense, useCallback, useMemo } from "react";
 import MediaPreviewErrorBoundary from "@/components/error-boundaries/MediaPreviewErrorBoundary";
-import { usePostPreviewState } from "@/hooks/usePostPreviewSelectors";
+import usePostPreviewState from "../posts/hooks/usePostPreviewSelectors";
 
 // Lazy load the heavy MediaPreviewModal component
 const MediaPreviewModal = dynamic(() => import("../media/MediaPreviewModal"), {

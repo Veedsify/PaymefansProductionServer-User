@@ -1,16 +1,11 @@
 "use client";
-import axios from "axios";
 import {
   Facebook,
   Instagram,
-  LucideCamera,
-  LucideInstagram,
-  LucideLoader,
-  Twitter,
-  X,
+  LucideCamera, Twitter,
+  X
 } from "lucide-react";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import toast from "react-hot-toast";
 import { PiSnapchatLogoDuotone } from "react-icons/pi";
@@ -20,12 +15,10 @@ import type { UserUpdateProfileType } from "@/features/user/types/user";
 import { countries } from "@/lib/Locations";
 import type { BannerModalProps } from "@/types/Components";
 import axiosInstance from "@/utils/Axios";
-import { getToken } from "@/utils/Cookie";
-import useCheckUsername from "../../hooks/CheckUsername";
 import BannerComponent from "./BannerComponent";
 import LoadingSpinner from "@/components/common/loaders/LoadingSpinner";
 import { useQueryClient } from "@tanstack/react-query";
-import { useAuthContext } from "@/contexts/UserUseContext";
+import useCheckUsername from "../user/hooks/CheckUsername";
 
 const EditProfileButton = ({ user }: { user: any }) => {
   const [open, setOpen] = useState(false);

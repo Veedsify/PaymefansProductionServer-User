@@ -6,7 +6,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import HeaderImgClick from "../image/HeaderImageClick";
 import HeaderTitle from "./HeaderTitle";
-import { useNotificationCount } from "@/hooks/useNotifications";
+import { useNotificationCount } from "@/features/notifications/hooks/useNotifications";
 
 const Header = () => {
   const pathname = usePathname();

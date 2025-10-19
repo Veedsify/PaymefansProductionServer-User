@@ -7,9 +7,9 @@ import {
   ModelLoader,
 } from "@/components/common/loaders/ModelLoader";
 import { useAuthContext } from "@/contexts/UserUseContext";
-import { useModelsAndHookups } from "@/hooks/queries/useModelsAndHookups";
 import HookupSubscription from "./HookupSubscription";
 import ModelsSubscription from "./ModelsSubscription";
+import { useModelsAndHookups } from "@/features/user/hooks/useModelsAndHookups";
 
 export interface HookupProps {
   distance?: number; // Distance in km (optional)

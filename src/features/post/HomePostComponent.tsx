@@ -1,12 +1,12 @@
 "use client";
 import { useEffect } from "react";
 import { useInView } from "react-intersection-observer";
-import { useHomeFeedInfinite } from "@/hooks/useHomeFeedInfinite";
 import { formatDate } from "@/utils/FormatDate";
 import LoadingPost from "../../components/common/loaders/LoadingPost";
 const PostComponent = dynamic(() => import("./PostComponent"), { ssr: true });
 import { fmt } from "@/constants/path";
 import dynamic from "next/dynamic";
+import { useHomeFeedInfinite } from "@/hooks";
 
 const HomePostComponent = () => {
   const {

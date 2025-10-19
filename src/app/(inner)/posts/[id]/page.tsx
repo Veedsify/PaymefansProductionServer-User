@@ -18,10 +18,10 @@ const PostCompInteractions = dynamic(() =>
 const QuickPostActions = dynamic(
   () => import("@/features/post/QuickPostActions")
 );
-import { usePost } from "@/hooks/queries/usePost";
 import { formatDate } from "@/utils/FormatDate";
 import FormatName from "@/lib/FormatName";
 import LoadingSpinner from "@/components/common/loaders/LoadingSpinner";
+import usePost from "@/features/posts/hooks/usePost";
 const PostPageImage = dynamic(() => import("@/features/post/PostPageImage"), {
   ssr: false,
 });
