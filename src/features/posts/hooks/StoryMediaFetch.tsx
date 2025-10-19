@@ -3,7 +3,6 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import type { StoryMediaFetchProps } from "@/types/Components";
 import axiosInstance from "@/utils/Axios";
-import { uniqBy } from "lodash-es";
 
 export default function StoryMediaFetch({ page }: StoryMediaFetchProps) {
   const [media, setMedia] = useState<any>([]);
@@ -29,7 +28,13 @@ export default function StoryMediaFetch({ page }: StoryMediaFetchProps) {
         setHasMore(res.data.hasMore);
         setLoading(false);
         setMedia((prev: any) => {
-          return uniqBy([...prev, ...res.data.data], "id");
+          // Native JavaScript equivalent of uniqBy
+          const combined = [...prev, ...res.data.data];
+          const unique = combined.filter(
+            (item, index, self) =>
+              index === self.findIndex((t) => t.id === item.id)
+          );
+          return unique;
         });
       })
       .catch((error) => {

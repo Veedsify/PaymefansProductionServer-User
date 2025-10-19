@@ -31,10 +31,10 @@ export default function useHomeFeedInfinite() {
       return lastPage.hasMore ? lastPage.nextCursor : undefined;
     },
     initialPageParam: undefined as string | undefined,
-    staleTime: 0,
-    refetchOnWindowFocus: true, // Refetch when user returns to tab
-    refetchOnReconnect: true, // Refetch when connection is restored
-    refetchOnMount: true,
+    staleTime: 5 * 60 * 1000, // 5 minutes - posts don't change frequently
+    refetchOnWindowFocus: false, // Disable to reduce unnecessary requests
+    refetchOnReconnect: true, // Keep this for network recovery
+    refetchOnMount: false, // Use cached data if available
     retry: (failureCount, error) => {
       // Don't retry on 401/403 errors (auth issues)
       if (

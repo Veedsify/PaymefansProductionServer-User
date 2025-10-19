@@ -1,7 +1,6 @@
 "use client";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { LucideLoader } from "lucide-react";
-import moment from "moment";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";

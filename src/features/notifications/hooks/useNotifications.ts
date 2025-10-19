@@ -12,18 +12,18 @@ export const useNotifications = (page: string = "1") => {
   const notificationsQuery = useQuery({
     queryKey: ["notifications", page],
     queryFn: () => notificationService.getNotifications(page),
-    staleTime: 60_000, // 10 seconds
-    refetchInterval: 60_000, // Refetch every 5 minutes
-    refetchOnWindowFocus: true,
-    refetchOnMount: true,
+    staleTime: 2 * 60 * 1000, // 2 minutes - notifications don't change frequently
+    refetchInterval: 5 * 60 * 1000, // Refetch every 5 minutes
+    refetchOnWindowFocus: false, // Disable to reduce unnecessary requests
+    refetchOnMount: false, // Use cached data if available
   });
 
   // Query for unread count
   const unreadCountQuery = useQuery({
     queryKey: ["notifications", "unread-count"],
     queryFn: () => notificationService.getUnreadCount(),
-    staleTime: 60_000, // 10 seconds
-    refetchInterval: 60_000, // Refetch every 30 seconds
+    staleTime: 30 * 1000, // 30 seconds - unread count changes more frequently
+    refetchInterval: 2 * 60 * 1000, // Refetch every 2 minutes
   });
 
   // Mutation for marking notification as read
@@ -55,7 +55,7 @@ export const useNotifications = (page: string = "1") => {
             notifications: old.data.notifications.map((notification: any) =>
               notification.id.toString() === notificationId
                 ? { ...notification, read: true }
-                : notification,
+                : notification
             ),
           },
         };
@@ -70,7 +70,7 @@ export const useNotifications = (page: string = "1") => {
             ...old,
             count: Math.max(0, old.count - 1),
           };
-        },
+        }
       );
 
       // Return a context object with the snapshotted value
@@ -81,13 +81,13 @@ export const useNotifications = (page: string = "1") => {
       if (context?.previousNotifications) {
         queryClient.setQueryData(
           ["notifications", page],
-          context.previousNotifications,
+          context.previousNotifications
         );
       }
       if (context?.previousUnreadCount) {
         queryClient.setQueryData(
           ["notifications", "unread-count"],
-          context.previousUnreadCount,
+          context.previousUnreadCount
         );
       }
     },
@@ -149,9 +149,9 @@ export const useNotificationCount = () => {
   const unreadCountQuery = useQuery({
     queryKey: ["notifications", "unread-count"],
     queryFn: () => notificationService.getUnreadCount(),
-    staleTime: 10000, // 10 seconds
-    refetchOnMount: true,
-    refetchInterval: 30000, // Refetch every 30 seconds
+    staleTime: 30 * 1000, // 30 seconds
+    refetchOnMount: false, // Use cached data if available
+    refetchInterval: 2 * 60 * 1000, // Refetch every 2 minutes
   });
 
   const unreadCount = unreadCountQuery.data?.count ?? 0;
