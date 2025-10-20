@@ -60,27 +60,39 @@ const Register = () => {
   function CreateNewUserFunction(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     if (!user?.name) {
-      toast.error("Sorry your name is required");
+      toast.error("Sorry your name is required", {
+        id: "validation-error",
+      });
       return;
     }
     if (!user.email) {
-      toast.error("Sorry an email address is required");
+      toast.error("Sorry an email address is required", { 
+        id: "validation-error",
+      });
       return;
     }
     if (!user.phone) {
-      toast.error("Sorry a phone number is required");
+      toast.error("Sorry a phone number is required", {
+        id: "validation-error",
+      });
       return;
     }
     if (!user.location) {
-      toast.error("Please select your location");
+      toast.error("Please select your location", {
+        id: "validation-error",
+      });
       return;
     }
     if (!user.password || user.password.length < 5) {
-      toast.error("Password length should be more than 5 characters");
+      toast.error("Password length should be more than 5 characters", {
+        id: "validation-error",
+      });
       return;
     }
     if (!user.terms) {
-      toast.error("Please accept our terms of service");
+      toast.error("Please accept our terms of service", {
+        id: "validation-error",
+      });
       return;
     }
 
