@@ -217,11 +217,6 @@ const TaggedUsersButton = ({ story }: { story: Story }) => {
     setShowTaggedUsers(true);
   }, [mentions.length]);
 
-  // Only show for story owner
-  if (story.user.id !== user?.id) {
-    return null;
-  }
-
   return (
     <>
       <div className="absolute z-[400] bottom-4 left-4">
@@ -505,7 +500,6 @@ const StatusPreviewSlide = ({
   story,
   index,
   activeIndex,
-  moveToNextSlide,
 }: StatusPreviewSlideProps) => {
   const refCounter = useRef(0);
   const { user } = useAuthContext();

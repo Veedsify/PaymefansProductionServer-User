@@ -1,9 +1,9 @@
 "use client";
-import { LucideArrowDown, LucideLoader, LucideSearch } from "lucide-react";
+import { LucideSearch } from "lucide-react";
 import { useEffect, useState } from "react";
 import { HookUpLoader } from "@/components/common/loaders/ModelLoader";
 import HookupSubscription from "@/features/models/comps/HookupSubscription";
-import { useHookups } from "@/hooks/queries/useHookups";
+import { useHookups } from "@/hooks";
 
 export interface HookupProps {
   distance?: number; // Distance in km (optional)
@@ -39,7 +39,7 @@ const HookupPage = () => {
       setFilteredHookups(hookups);
     } else {
       const filtered = hookups.filter(
-        (hookup) =>
+        (hookup: HookupProps) =>
           hookup.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
           hookup.username.toLowerCase().includes(searchQuery.toLowerCase()) ||
           hookup.user_city?.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -47,7 +47,7 @@ const HookupPage = () => {
             ?.toLowerCase()
             .includes(searchQuery.toLowerCase()) ||
           hookup.location?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          hookup.state?.toLowerCase().includes(searchQuery.toLowerCase()),
+          hookup.state?.toLowerCase().includes(searchQuery.toLowerCase())
       );
       setFilteredHookups(filtered);
     }

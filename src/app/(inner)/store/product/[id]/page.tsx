@@ -14,12 +14,11 @@ import numeral from "numeral";
 import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import CartIcon from "@/components/common/icons/CartIcon";
-import Loader from "@/components/common/loaders/LoadingAnimation";
 import { useCartStore } from "@/contexts/StoreContext";
 import { useWishlistStore } from "@/contexts/WishlistContext";
-import { useToggleWishlist } from "@/hooks/useWishlist";
 import type { Product } from "@/types/Components";
 import fetchSingleProduct from "@/utils/data/FetchSingleProduct";
+import { useToggleWishlist } from "@/features/store/hooks/useWishlist";
 
 const ProductPreview = () => {
   const params = useParams();

@@ -1,8 +1,6 @@
 "use client";
 import { useRouter } from "next/navigation";
 import React, {
-  MouseEvent,
-  RefObject,
   useCallback,
   useEffect,
   useMemo,
@@ -14,11 +12,10 @@ import {
   NotificationIcontypes,
   useNotificationStore,
 } from "@/contexts/NotificationContext";
-import {
-  useNotificationCount,
-  useNotifications,
-} from "@/hooks/useNotifications";
+
 import LoadingSpinner from "@/components/common/loaders/LoadingSpinner";
+import { useNotificationCount } from "./hooks/useNotifications";
+import { useNotifications } from "./hooks";
 
 interface NotificationHeaderProps {
   children: string;
@@ -195,7 +192,7 @@ export function NotificationBody() {
 
   return (
     <div className="space-y-3">
-      {notifications?.map((notification, index) => (
+      {notifications?.map((notification: any) => (
         <NotificationItem
           key={notification.id}
           notification={notification}

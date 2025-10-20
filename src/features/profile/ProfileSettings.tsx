@@ -11,8 +11,8 @@ import type {
 } from "@/features/user/types/user";
 import { countries } from "@/lib/Locations";
 import { saveUserSettings } from "@/utils/data/SaveUserSettings";
-import useCheckUsername from "../../hooks/CheckUsername";
 import LoadingSpinner from "@/components/common/loaders/LoadingSpinner";
+import useCheckUsername from "../user/hooks/CheckUsername";
 
 type ProfileSettingsProps = {
   user: Partial<AuthUserProps> | null;

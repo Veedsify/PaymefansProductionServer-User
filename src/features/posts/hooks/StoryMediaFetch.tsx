@@ -1,0 +1,58 @@
+"use client";
+import axios from "axios";
+import { useEffect, useState } from "react";
+import type { StoryMediaFetchProps } from "@/types/Components";
+import axiosInstance from "@/utils/Axios";
+import { CancelToken } from "axios";
+
+export default function StoryMediaFetch({ page }: StoryMediaFetchProps) {
+  const [media, setMedia] = useState<any>([]);
+  const [hasMore, setHasMore] = useState<boolean>(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(false);
+
+  useEffect(() => {
+    setLoading(true);
+    setError(false);
+    const URL = `/stories/media`;
+    let cancel;
+    axiosInstance({
+      url: URL,
+      method: "GET",
+      params: {
+        page,
+      },
+      // @ts-expect-error
+      cancelToken: new CancelToken((c: any) => (cancel = c)),
+    })
+      .then((res) => {
+        setHasMore(res.data.hasMore);
+        setLoading(false);
+        setMedia((prev: any) => {
+          // Native JavaScript equivalent of uniqBy
+          const combined = [...prev, ...res.data.data];
+          const unique = combined.filter(
+            (item, index, self) =>
+              index === self.findIndex((t) => t.id === item.id)
+          );
+          return unique;
+        });
+      })
+      .catch((error) => {
+        if (axios.isCancel(error)) {
+          console.log("Request canceled", error.message);
+        } else {
+          console.error("Error fetching data:", error);
+        }
+        setLoading(false);
+        setError(true);
+      });
+  }, [page]);
+
+  return {
+    media,
+    loading,
+    error,
+    hasMore,
+  };
+}

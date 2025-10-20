@@ -19,6 +19,7 @@ import {
 import { useInView } from "react-intersection-observer";
 import UserProfileOverlay from "@/features/post/UserProfileOverlay";
 import CustomSeekBar from "./CustomSeekBar";
+import VideoControls from "./VideoControls";
 import { cn } from "@/components/ui/cn";
 interface UserProfile {
   name: string;

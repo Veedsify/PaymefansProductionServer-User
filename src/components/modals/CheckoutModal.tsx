@@ -3,7 +3,7 @@ import { Loader2, X } from "lucide-react";
 import { useState } from "react";
 import toast from "react-hot-toast";
 import { useCartStore } from "@/contexts/StoreContext";
-import { useCheckout } from "@/hooks/useCheckout";
+import { useCheckout } from "@/hooks";
 
 type ShippingAddress = {
   name: string;
@@ -53,7 +53,7 @@ const CheckoutModal = ({ isOpen, onClose }: CheckoutModalProps) => {
         payment_method: "paystack",
       },
       {
-        onSuccess: (data) => {
+        onSuccess: (data: Record<string, any>) => {
           if (data.error) {
             toast.error(data.message);
             return;
@@ -79,7 +79,7 @@ const CheckoutModal = ({ isOpen, onClose }: CheckoutModalProps) => {
         onError: (error: any) => {
           toast.error(error?.response?.data?.message || "Checkout failed");
         },
-      },
+      }
     );
   };
 

@@ -11,6 +11,7 @@ import StatusMediaPanel from "@/features/story/comps/StatusMediaPanel";
 import type { SelectMoreProps } from "@/types/Components";
 import { type StoryType, useStoryStore } from "../../../contexts/StoryContext";
 import axiosServer from "@/utils/Axios";
+import imageCompression from "browser-image-compression";
 const StoryCaptionComponent = dynamic(() => import("./StoryCaptionComponent"), {
   ssr: false,
 });
@@ -114,14 +115,33 @@ function StatusComponent() {
     return response.data.data;
   };
 
+  const compressImage = async (file: File) => {
+    const options = {
+      maxSizeMB: 0.45,
+      maxWidthOrHeight: 1920,
+      useWebWorker: true,
+      maxIteration: 10,
+    };
+
+    console.log("compressing file", file.size);
+
+    try {
+      const compressedFile = await imageCompression(file, options);
+      return compressedFile;
+    } catch (error) {
+      console.log(error);
+      return file;
+    }
+  };
   const uploadToS3 = async (
     file: File,
     presignedUrl: string,
     media_id: string
   ): Promise<void> => {
-    await axios.put(presignedUrl, file, {
+    const compressedFile = await compressImage(file);
+    await axios.put(presignedUrl, compressedFile, {
       headers: {
-        "Content-Type": file.type,
+        "Content-Type": compressedFile.type,
       },
       onUploadProgress: (progressEvent) => {
         if (progressEvent.total) {

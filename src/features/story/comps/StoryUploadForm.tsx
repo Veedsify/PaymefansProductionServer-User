@@ -1,5 +1,5 @@
 import { useCallback } from "react";
-import { HiCamera } from "react-icons/hi";
+import imageCompression from "browser-image-compression";
 import { v4 as uuid } from "uuid";
 import { useStoryStore } from "@/contexts/StoryContext";
 import toast from "react-hot-toast";
@@ -14,46 +14,60 @@ const StoryUploadForm = () => {
       const files = Array.from(e.target.files || []);
 
       if (files.length > 0) {
-        files.forEach((file, index) => {
-          const media_id = uuid();
-          const fileUrl = URL.createObjectURL(file);
-          const isVideo = file.type.startsWith("video/");
+        (async () => {
+          let index = 0;
+          for (const file of files) {
+            const media_id = uuid();
+            const options = {
+              maxSizeMB: 1,
+              maxWidthOrHeight: 1080,
+              useWebWorker: true,
+              fileType: "image/jpeg",
+            };
 
-          if (
-            !videoTypes.includes(file.type) &&
-            !isVideo &&
-            file.size > 10 * 1024 * 1024
-          ) {
-            toast.error("Image size should be less than 10MB", {
-              id: "file-too-large",
+            let fileUrl = URL.createObjectURL(file);
+
+            const isVideo = file.type.startsWith("video/");
+            if (
+              !videoTypes.includes(file.type) &&
+              !isVideo &&
+              file.size > 10 * 1024 * 1024
+            ) {
+              toast.error("Image size should be less than 10MB", {
+                id: "file-too-large",
+              });
+              index++;
+              continue;
+            }
+
+            if (isVideo && file.size > 5 * 1024 * 1024 * 1024) {
+              toast.error("Video size should be less than 5GB", {
+                id: "file-too-large",
+              });
+              index++;
+              continue;
+            }
+
+            // Add media_id to file object for server sync
+            (file as any).media_id = media_id;
+
+            addToStory({
+              id: Date.now() + index,
+              index,
+              media_id,
+              media_type: isVideo ? "video" : "image",
+              media_state: "pending",
+              media_url: fileUrl,
+              uploadProgress: 0,
+              file,
             });
-            return;
+
+            index++;
           }
 
-          if (isVideo && file.size > 5 * 1024 * 1024 * 1024) {
-            toast.error("Video size should be less than 5GB", {
-              id: "file-too-large",
-            });
-            return;
-          }
-
-          // Add media_id to file object for server sync
-          (file as any).media_id = media_id;
-
-          addToStory({
-            id: Date.now() + index,
-            index,
-            media_id,
-            media_type: isVideo ? "video" : "image",
-            media_state: "pending",
-            media_url: fileUrl,
-            uploadProgress: 0,
-            file,
-          });
-        });
-
-        // Clear the input
-        e.target.value = "";
+          // Clear the input
+          e.target.value = "";
+        })();
       }
     },
     [addToStory]

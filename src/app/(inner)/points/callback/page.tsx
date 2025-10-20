@@ -1,5 +1,4 @@
 "use client";
-import { FetchQueryOptions } from "@tanstack/react-query";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import CoinProcessing from "@/components/common/loaders/Processing";

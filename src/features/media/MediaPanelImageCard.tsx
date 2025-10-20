@@ -11,13 +11,7 @@ import { LockedMediaOverlay } from "./LockedMediaOverlay";
 import HLSVideoPlayer from "./videoplayer";
 import LoadingSpinner from "@/components/common/loaders/LoadingSpinner";
 
-const getUniqueItems = (arr: MediaDataType[]) => {
-  const uniqueMap = new Map();
-  arr.forEach((item) => uniqueMap.set(item.id, item)); // Assuming 'id' is the unique property
-  return Array.from(uniqueMap.values());
-};
-
-const MediaPanelImageCard = React.memo(({ sort }: { sort: string }) => {
+const MediaPanelImageCard = React.memo(() => {
   const fullScreenPreview = usePostComponent(
     (state) => state.fullScreenPreview
   );
@@ -91,7 +85,7 @@ const MediaPanelImageCard = React.memo(({ sort }: { sort: string }) => {
         {allMedia.map((media, index) => (
           <div
             key={index}
-            className="aspect-[4/3] lg:aspect-square object-center  overflow-hidden relative"
+            className="aspect-[4/3] lg:aspect-square object-center overflow-hidden relative"
           >
             <MediaPanelMediaCard
               isSubscriber={true}
@@ -205,7 +199,7 @@ const MediaPanelMediaCard = ({
           }
           src={isSubscriber ? media.url : media.blur}
           alt={media.url}
-          className="object-cover w-full h-full cursor-pointer transition-all duration-300 ease-in-out hover:scale-105"
+          className="object-cover w-full lg:aspect-square aspect-[4/3] h-full cursor-pointer transition-all duration-300 ease-in-out hover:scale-105"
         />
       )}
       {!isSubscriber && (

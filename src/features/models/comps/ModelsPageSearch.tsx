@@ -1,14 +1,9 @@
 "use client";
-import {
-  LucideArrowDown,
-  LucideArrowUp,
-  LucideLoader,
-  LucideSearch,
-} from "lucide-react";
-import { type ChangeEvent, useCallback, useEffect, useState } from "react";
-import { useModels } from "@/hooks/queries/useModels";
+import { LucideSearch } from "lucide-react";
+import { type ChangeEvent, useCallback, useState } from "react";
 import ModelsSubscription from "./ModelsSubscription";
 import LoadingSpinner from "@/components/common/loaders/LoadingSpinner";
+import { useModels } from "@/features/user/hooks/useModels";
 
 const useDebounce = (callback: (value: string) => void, delay: number) => {
   const [typingTimer, setTypingTimer] = useState<NodeJS.Timeout | null>(null);

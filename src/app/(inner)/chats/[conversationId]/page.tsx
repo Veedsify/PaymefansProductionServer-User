@@ -1,12 +1,10 @@
 "use client";
 import { useParams } from "next/navigation";
-import dynamic from "next/dynamic";
-const ChatPage = dynamic(() => import("@/features/chats/comps/ChatPage"));
+import { ChatPageContainer } from "@/features/chats/components/ChatPageContainer";
 
 const ChatsPage = () => {
   const params = useParams<{ conversationId: string }>();
-  return <ChatPage conversationId={params.conversationId} />;
-  // return <FetchChatData stringId={conversationId} />;
+  return <ChatPageContainer conversationId={params.conversationId} />;
 };
 
 export default ChatsPage;

@@ -9,7 +9,7 @@ import type { RespostPanelProps } from "@/types/Components";
 import axiosInstance from "@/utils/Axios";
 import { getToken } from "@/utils/Cookie";
 import { formatDate } from "@/utils/FormatDate";
-import RepostPanelFetch from "../../hooks/RepostPanelFetch";
+import RepostPanelFetch from "../posts/hooks/RepostPanelFetch";
 import LoadingSpinner from "@/components/common/loaders/LoadingSpinner";
 
 const RepostPanel = ({ userdata }: RespostPanelProps) => {

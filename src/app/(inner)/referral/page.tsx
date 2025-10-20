@@ -1,20 +1,13 @@
 "use client";
 
 import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
-import {
-  Check,
-  Copy,
-  Gift,
-  Loader2,
-  Share2,
-  TrendingUp,
-  Users,
-} from "lucide-react";
+import { Check, Copy, Gift, Share2, TrendingUp, Users } from "lucide-react";
 import Image from "next/image";
 import React, { useState } from "react";
 import { useInView } from "react-intersection-observer";
 import { fmt } from "@/constants/path";
 import { useAuthContext } from "@/contexts/UserUseContext";
+import LoadingSpinner from "@/components/common/loaders/LoadingSpinner";
 import {
   fetchReferralEarnings,
   fetchReferralStats,
@@ -177,10 +170,7 @@ const ReferralPage = () => {
             <div>
               <p className="text-sm opacity-90 mb-1">Total Earnings</p>
               {statsLoading ? (
-                <div className="flex items-center gap-2">
-                  <Loader2 className="w-6 h-6 animate-spin" />
-                  <span className="text-xl">Loading...</span>
-                </div>
+                <LoadingSpinner text="Loading stats..." size="lg" />
               ) : (
                 <>
                   <h3 className="text-3xl font-bold">{totalEarnings}</h3>
@@ -208,12 +198,11 @@ const ReferralPage = () => {
                 Referred Users
               </p>
               {statsLoading ? (
-                <div className="flex items-center gap-2">
-                  <Loader2 className="w-6 h-6 animate-spin text-primary-dark-pink" />
-                  <span className="text-xl text-primary-dark-pink">
-                    Loading...
-                  </span>
-                </div>
+                <LoadingSpinner
+                  text="Loading referrals..."
+                  size="lg"
+                  color="primary"
+                />
               ) : (
                 <>
                   <h3 className="text-3xl font-bold text-primary-dark-pink">
@@ -371,10 +360,11 @@ const ReferralPage = () => {
 
           {usersLoading ? (
             <div className="flex justify-center items-center py-12">
-              <Loader2 className="w-8 h-8 animate-spin text-primary-dark-pink" />
-              <span className="ml-2 text-gray-500">
-                Loading referred users...
-              </span>
+              <LoadingSpinner
+                text="Loading referred users..."
+                size="lg"
+                color="primary"
+              />
             </div>
           ) : usersError ? (
             <div className="text-center py-12">
@@ -458,10 +448,7 @@ const ReferralPage = () => {
                     className="px-6 py-3 bg-primary-dark-pink text-white rounded-md hover:bg-pink-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
                   >
                     {isFetchingNextUsers ? (
-                      <>
-                        <Loader2 className="w-4 h-4 animate-spin" />
-                        Loading...
-                      </>
+                      <LoadingSpinner text="Loading more..." size="sm" />
                     ) : (
                       "Load More"
                     )}
@@ -526,8 +513,11 @@ const ReferralPage = () => {
 
             {earningsLoading ? (
               <div className="flex justify-center items-center py-8">
-                <Loader2 className="w-8 h-8 animate-spin text-primary-dark-pink" />
-                <span className="ml-2 text-gray-500">Loading earnings...</span>
+                <LoadingSpinner
+                  text="Loading earnings..."
+                  size="lg"
+                  color="primary"
+                />
               </div>
             ) : earningsError ? (
               <div className="text-center py-8">
@@ -603,10 +593,7 @@ const ReferralPage = () => {
                       className="px-6 py-3 bg-primary-dark-pink text-white rounded-md hover:bg-pink-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
                     >
                       {isFetchingNextEarnings ? (
-                        <>
-                          <Loader2 className="w-4 h-4 animate-spin" />
-                          Loading...
-                        </>
+                        <LoadingSpinner text="Loading more..." size="sm" />
                       ) : (
                         "Load More"
                       )}

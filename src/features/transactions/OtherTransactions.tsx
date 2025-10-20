@@ -4,6 +4,7 @@ import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import axiosInstance from "@/utils/Axios";
 import { getToken } from "@/utils/Cookie";
+import { useApi } from "@/lib/api";
 
 const formatDate = (isoDateString: string) => {
   const date = new Date(isoDateString);
@@ -26,24 +27,22 @@ type Transaction = {
 
 const OtherTransactions = React.memo(() => {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
-
+  const { wallet } = useApi();
   useEffect(() => {
     const fetchTransactions = async () => {
       try {
-        const res = await axiosInstance.get(`/wallet/transactions/other`);
-        const data = res.data;
-        const transactions = Array.isArray(data?.data) ? data.data : [];
-        setTransactions(transactions.slice(0, 5));
-      } catch (error) {
-        if (error instanceof Error && error.name !== "AbortError") {
-          console.error("Transactions fetch error:", error.message);
+        const res = await wallet.getOtherTransactions();
+        if (res.status === 200) {
+          setTransactions(res.data.data?.slice(0, 5) as Transaction[]);
+        } else {
+          console.error("Other transactions fetch error:", res.data.message);
         }
+      } catch (error) {
+        console.error("Other transactions fetch error:", error);
       }
     };
-
     fetchTransactions();
-  }, []);
-
+  }, [wallet]);
   if (transactions.length === 0) return null;
 
   return (

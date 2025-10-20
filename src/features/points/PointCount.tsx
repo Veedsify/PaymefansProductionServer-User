@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { memo } from "react";
-import { useUserPoints } from "@/hooks/useUserPoints";
+import { useUserPoints } from "../user/hooks/useUserPoints";
 
 interface PointsCountProps {
   user: any;

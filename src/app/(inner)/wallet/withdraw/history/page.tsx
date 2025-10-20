@@ -20,6 +20,7 @@ import {
 import React, { useState } from "react";
 import axiosInstance from "@/utils/Axios";
 import LoadingSpinner from "@/components/common/loaders/LoadingSpinner";
+import Link from "next/link";
 
 const fetchWithdrawalHostory = async ({ cursor }: { cursor: number }) => {
   try {
@@ -170,7 +171,7 @@ const WithdrawalHistory = () => {
                   {formatCurrency(
                     withdrawalHistory
                       .filter((w) => w.status === "completed")
-                      .reduce((sum, w) => sum + w.amount * 0.75, 0),
+                      .reduce((sum, w) => sum + w.amount * 0.75, 0)
                   )}
                 </p>
               </div>
@@ -184,8 +185,7 @@ const WithdrawalHistory = () => {
                 <p className="text-lg font-bold text-gray-900">
                   {
                     withdrawalHistory.filter(
-                      (w) =>
-                        w.status === "pending" || w.status === "processing",
+                      (w) => w.status === "pending" || w.status === "processing"
                     ).length
                   }
                 </p>
@@ -331,9 +331,12 @@ const WithdrawalHistory = () => {
           <p className="max-w-md mx-auto mb-6 text-base text-gray-600">
             Your withdrawal requests will appear here.
           </p>
-          <button className="px-6 py-3 font-medium text-white bg-gray-900 hover:bg-gray-800 rounded-xl transition-colors">
+          <Link
+            href={"/wallet/withdraw"}
+            className="px-6 py-3 font-medium text-white bg-gray-900 hover:bg-gray-800 rounded-xl transition-colors"
+          >
             Make Your First Withdrawal
-          </button>
+          </Link>
         </div>
       )}
     </div>

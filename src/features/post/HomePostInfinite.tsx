@@ -1,9 +1,10 @@
 "use client";
 import { useEffect, useRef } from "react";
 import { useInView } from "react-intersection-observer";
-import { useHomeFeedInfinite } from "@/hooks/useHomeFeedInfinite";
+import useHomeFeedInfinite from "@/features/posts/hooks/useHomeFeedInfinite";
 import { formatDate } from "@/utils/FormatDate";
 import LoadingPost from "../../components/common/loaders/LoadingPost";
+import { SkeletonPost } from "../../components/common/loaders/SkeletonPost";
 import PostComponent from "./PostComponent";
 
 const HomePostInfinite = () => {
@@ -37,9 +38,9 @@ const HomePostInfinite = () => {
   if (isLoading) {
     return (
       <div className="relative p-2 md:p-5">
-        <LoadingPost />
-        <LoadingPost />
-        <LoadingPost />
+        <SkeletonPost />
+        <SkeletonPost />
+        <SkeletonPost />
       </div>
     );
   }

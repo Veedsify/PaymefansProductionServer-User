@@ -40,8 +40,8 @@ const CreateSubscriptionButton = dynamic(
 const UserNotFound = dynamic(
   () => import("@/features/user/comps/UserNotFound")
 );
-import { useProfile } from "@/hooks/queries/useProfile";
 import FormatName from "@/lib/FormatName";
+import { useProfile } from "@/features/user/hooks/useProfile";
 const LoadingSpinner = dynamic(
   () => import("@/components/common/loaders/LoadingSpinner")
 );

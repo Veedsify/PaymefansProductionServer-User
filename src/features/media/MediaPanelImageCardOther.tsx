@@ -1,25 +1,18 @@
 "use client";
 import { useInfiniteQuery } from "@tanstack/react-query";
-import { LucideLoader, LucideLock, LucidePlay } from "lucide-react";
+import { LucidePlay } from "lucide-react";
 import Image from "next/image";
-import React, { useCallback, useEffect, useState } from "react";
-import { BiSolidLock } from "react-icons/bi";
+import React from "react";
 import usePostComponent from "@/contexts/PostComponentPreview";
 import { useAuthContext } from "@/contexts/UserUseContext";
 import type { ProfileUserProps } from "@/features/user/types/user";
 import type { MediaDataTypeOtherProps } from "@/types/Components";
 import axiosInstance from "@/utils/Axios";
-import { getToken } from "@/utils/Cookie";
 import { LockedMediaOverlay } from "./LockedMediaOverlay";
 import HLSVideoPlayer from "./videoplayer";
 import LoadingSpinner from "@/components/common/loaders/LoadingSpinner";
-import { useMediaActions } from "@/hooks/useMediaActions";
+import { useMediaActions } from "@/hooks";
 
-const getUniqueItems = (arr: MediaDataTypeOtherProps[]) => {
-  const uniqueMap = new Map();
-  arr.forEach((item) => uniqueMap.set(item.id, item)); // Replace 'id' with the unique property
-  return Array.from(uniqueMap.values());
-};
 interface MediaPanelMediaCardProps {
   media: MediaDataTypeOtherProps;
   PreviewImageHandler: (
@@ -203,7 +196,7 @@ export const MediaPanelMediaCard = ({
               priority
               src={media?.blur}
               alt="Blured Video Image"
-              className="object-cover w-full h-full cursor-pointer transition-all duration-300 ease-in-out hover:scale-105"
+              className="object-cover md:aspect-square aspect-[4/3] w-full h-full cursor-pointer transition-all duration-300 ease-in-out hover:scale-105"
             />
           )}
         </>
@@ -216,7 +209,7 @@ export const MediaPanelMediaCard = ({
               priority
               src={media.blur}
               alt="Blured Image"
-              className="object-cover w-full h-full cursor-pointer transition-all duration-300 ease-in-out hover:scale-105"
+              className="object-cover lg:aspect-square aspect-[4/3] w-full h-full cursor-pointer transition-all duration-300 ease-in-out hover:scale-105"
             />
           ) : (
             <Image
@@ -233,7 +226,7 @@ export const MediaPanelMediaCard = ({
               }
               src={media.url}
               alt=""
-              className="object-cover w-full h-full cursor-pointer transition-all duration-300 ease-in-out hover:scale-105"
+              className="object-cover md:aspect-square aspect-[4/3] w-full h-full cursor-pointer transition-all duration-300 ease-in-out hover:scale-105"
             />
           )}
         </>

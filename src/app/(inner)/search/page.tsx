@@ -25,6 +25,7 @@ import { formatDate } from "@/utils/FormatDate";
 import FormatName from "@/lib/FormatName";
 import usePostComponent from "@/contexts/PostComponentPreview";
 import LoadingSpinner from "@/components/common/loaders/LoadingSpinner";
+import { SkeletonPost } from "@/components/common/loaders/SkeletonPost";
 
 const searchFunction = async (query: string) => {
   try {
@@ -264,18 +265,12 @@ const SearchPage = () => {
         <div className="mt-8">
           {/* Loading State */}
           {loading && searchQuery && (
-            <div className="py-32 text-center">
-              <div className="inline-flex items-center justify-center w-16 h-16 mb-6 rounded-full bg-primary-dark-pink/10">
-                <LoadingSpinner />
+            <div className="py-8">
+              <div className="space-y-4">
+                <SkeletonPost />
+                <SkeletonPost />
+                <SkeletonPost />
               </div>
-              <h3 className="mb-2 text-xl font-medium text-gray-700 dark:text-gray-300">
-                Searching...
-              </h3>
-              <p className="text-gray-500">
-                {searchQuery.length <= 2
-                  ? `Search Query: "${searchQuery}" is too short`
-                  : "Finding results for " + `"${searchQuery}"`}
-              </p>
             </div>
           )}
 

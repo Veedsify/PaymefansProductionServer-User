@@ -14,7 +14,7 @@ const MediaPanel = () => {
 
   return (
     <div className="py-2">
-      <MediaPanelImageCard sort={arraySort} />
+      <MediaPanelImageCard />
     </div>
   );
 };

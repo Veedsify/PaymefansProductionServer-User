@@ -6,13 +6,12 @@ import {
   type ReactNode,
   useCallback,
   useContext,
-  useLayoutEffect,
+  useEffect,
   useRef,
   useState,
 } from "react";
 import type { Socket } from "socket.io-client";
 import { connectSocket } from "@/components/common/Socket";
-import ERROR_STATUS from "@/constants/error_status";
 import { postRegex, profileRegex } from "@/constants/regex";
 import type { AuthUserProps } from "@/features/user/types/user";
 import axiosInstance, { AuthFailureError } from "@/utils/Axios";
@@ -75,7 +74,7 @@ export const AuthContextProvider = ({
   }, []);
 
   const fetchUser = useCallback(async () => {
-    if (ref.current != 0) {
+    if (ref.current !== 0) {
       return;
     }
 
@@ -100,18 +99,18 @@ export const AuthContextProvider = ({
     try {
       const res = await axiosInstance.get(`/auth/retrieve`);
 
-      const user = res.data && (res.data.user as AuthUserProps);
-      if (user) {
-        socket = connectSocket(user?.username);
+      const userData = res.data && (res.data.user as AuthUserProps);
+      if (userData) {
+        socket = connectSocket(userData?.username);
         setIsGuest(false);
-        setUser(user);
+        setUser(userData);
       } else {
         setGuestUser();
       }
 
       setIsLoading(false);
       ref.current += 1;
-      return user;
+      return userData;
     } catch (err: unknown) {
       const axiosError = err as AxiosError;
 
@@ -150,26 +149,41 @@ export const AuthContextProvider = ({
 
       return null;
     }
-  }, [router, isProfilePage, isPostPage]);
+  }, [router, isProfilePage, isPostPage, setGuestUser]);
 
-  useLayoutEffect(() => {
-    if (!user) {
-      fetchUser();
-    } else {
-      setIsGuest(user?.username === "guest");
-      setIsLoading(false);
-    }
-  }, [fetchUser, user]);
+  // Single useEffect for auth initialization and socket management
+  useEffect(() => {
+    let isMounted = true;
+    let intervalId: NodeJS.Timeout | undefined;
 
-  useLayoutEffect(() => {
-    if (ref.current != 0) {
-      return;
-    }
-    fetchUser();
-    intervalId = setInterval(() => {
-      socket?.emit("still-active", user?.username);
-    }, 10_000);
+    const initialize = async () => {
+      if (!isMounted) return;
+
+      // If user is already set, just manage socket
+      if (user && user.username !== "guest") {
+        setIsGuest(false);
+        setIsLoading(false);
+
+        // Start activity heartbeat
+        socket = connectSocket(user.username);
+        intervalId = setInterval(() => {
+          if (socket?.connected) {
+            socket.emit("still-active", user.username);
+          }
+        }, 10000);
+        return;
+      }
+
+      // If no user, try to fetch
+      if (!user) {
+        await fetchUser();
+      }
+    };
+
+    initialize();
+
     return () => {
+      isMounted = false;
       if (intervalId) {
         clearInterval(intervalId);
       }

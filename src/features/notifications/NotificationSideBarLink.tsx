@@ -1,9 +1,9 @@
 "use client";
 import { LucideBell } from "lucide-react";
 import Link from "next/link";
-import { useNotificationCount } from "@/hooks/useNotifications";
 import { usePathname } from "next/navigation";
 import { cn } from "@/components/ui/cn";
+import { useNotificationCount } from "./hooks/useNotifications";
 
 const NotificationSideBarLink = () => {
   const { unreadCount, isLoading } = useNotificationCount();

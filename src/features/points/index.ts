@@ -1,7 +1,7 @@
 // Main components
 
 // Hooks
-export { useUserPoints } from "@/hooks/useUserPoints";
+export { useUserPoints } from "@/features/user/hooks/useUserPoints";
 export { default as PointsCount } from "./PointCount";
 export { default as PointsDisplay } from "./PointsDisplay";
 

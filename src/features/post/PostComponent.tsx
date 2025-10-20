@@ -12,8 +12,6 @@ import React, { memo, useCallback, useEffect, useMemo, useRef } from "react";
 import { useInView } from "react-intersection-observer";
 import usePostComponent from "@/contexts/PostComponentPreview";
 import { useAuthContext } from "@/contexts/UserUseContext";
-import { usePostActions } from "@/hooks/usePostActions";
-import { usePostPermissions } from "@/hooks/usePostPermissions";
 import type { PostComponentProps, UserMediaProps } from "@/types/Components";
 import { getSocket } from "../../components/common/Socket";
 import MediaGridItem from "./components/MediaGridItem";
@@ -22,6 +20,7 @@ import QuickPostActions from "./QuickPostActions";
 import FormatName from "@/lib/FormatName";
 import { cn } from "@/components/ui/cn";
 import { useGuestModal } from "@/contexts/GuestModalContext";
+import { usePostActions, usePostPermissions } from "@/hooks";
 
 // Cache socket instance to prevent recreation on every render
 let socketInstance: ReturnType<typeof getSocket> | null = null;
