@@ -85,7 +85,7 @@ const MediaPanelImageCard = React.memo(() => {
         {allMedia.map((media, index) => (
           <div
             key={index}
-            className="aspect-[4/3] lg:aspect-square object-center  overflow-hidden relative"
+            className="aspect-[4/3] lg:aspect-square object-center overflow-hidden relative"
           >
             <MediaPanelMediaCard
               isSubscriber={true}
@@ -199,7 +199,7 @@ const MediaPanelMediaCard = ({
           }
           src={isSubscriber ? media.url : media.blur}
           alt={media.url}
-          className="object-cover w-full h-full cursor-pointer transition-all duration-300 ease-in-out hover:scale-105"
+          className="object-cover w-full lg:aspect-square aspect-[4/3] h-full cursor-pointer transition-all duration-300 ease-in-out hover:scale-105"
         />
       )}
       {!isSubscriber && (

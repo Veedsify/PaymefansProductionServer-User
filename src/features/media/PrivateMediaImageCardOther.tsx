@@ -201,7 +201,7 @@ const PrivateMediaPanelMediaCard = ({
               priority
               src={media?.blur}
               alt="Blured Video Image"
-              className="object-cover w-full h-full cursor-pointer transition-all duration-300 ease-in-out hover:scale-105"
+              className="object-cover md:aspect-square aspect-[4/3] w-full h-full cursor-pointer transition-all duration-300 ease-in-out hover:scale-105"
             />
           )}
         </>
@@ -214,7 +214,7 @@ const PrivateMediaPanelMediaCard = ({
               priority
               src={media.blur}
               alt="Blured Image"
-              className="object-cover w-full h-full cursor-pointer transition-all duration-300 ease-in-out hover:scale-105"
+              className="object-cover md:aspect-square aspect-[4/3] w-full h-full cursor-pointer transition-all duration-300 ease-in-out hover:scale-105"
             />
           ) : (
             <Image

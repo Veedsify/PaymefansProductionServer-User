@@ -58,27 +58,54 @@ const MediaPreviewModal = memo(
     const [initialLoadComplete, setInitialLoadComplete] = useState(false);
     const [slideTransition, setSlideTransition] = useState(true);
 
+    // Control body scroll (single place) with scrollbar compensation to prevent layout shift
     useLayoutEffect(() => {
       if (!open) return;
 
       const body = document.body;
+      const docEl = document.documentElement;
       const prev = {
         overflow: body.style.overflow,
         position: body.style.position,
+        top: body.style.top,
         overscrollBehavior: body.style.overscrollBehavior,
         height: body.style.height,
+        paddingRight: body.style.paddingRight,
+        width: body.style.width,
       };
 
+      // Calculate scrollbar width. When there is a vertical scrollbar, this will be > 0
+      const scrollbarWidth = window.innerWidth - docEl.clientWidth;
+
+      // Preserve current scroll position
+      const scrollTop = window.pageYOffset || docEl.scrollTop || 0;
+
+      // Lock scrolling and compensate for scrollbar removal
       body.style.overflow = "hidden";
       body.style.position = "fixed";
+      body.style.top = `-${scrollTop}px`;
       body.style.overscrollBehavior = "none";
       body.style.height = "100vh";
+      if (scrollbarWidth > 0) {
+        body.style.paddingRight = `${scrollbarWidth}px`;
+        body.style.width = `calc(100% - ${scrollbarWidth}px)`;
+      }
 
       return () => {
+        // Restore previous inline styles
         body.style.overflow = prev.overflow;
         body.style.position = prev.position;
+        body.style.top = prev.top;
         body.style.overscrollBehavior = prev.overscrollBehavior;
         body.style.height = prev.height;
+        body.style.paddingRight = prev.paddingRight;
+        body.style.width = prev.width;
+
+        // Restore scroll position
+        const top =
+          parseInt((prev.top || body.style.top || "0").replace("-", "")) ||
+          scrollTop;
+        window.scrollTo(0, top);
       };
     }, [open]);
 
@@ -268,28 +295,7 @@ const MediaPreviewModal = memo(
       }
     }, [initialIndex, totalSlides, open]);
 
-    // Control body scroll
-    useEffect(() => {
-      if (open) {
-        const originalOverflow = document.body.style.overflow;
-        const originalPosition = document.body.style.position;
-        const originalTop = document.body.style.top;
-
-        // Prevent body scroll while maintaining scroll position
-        const scrollTop =
-          window.pageYOffset || document.documentElement.scrollTop;
-        document.body.style.overflow = "hidden";
-        document.body.style.position = "fixed";
-        document.body.style.top = `-${scrollTop}px`;
-
-        return () => {
-          document.body.style.overflow = originalOverflow;
-          document.body.style.position = originalPosition;
-          document.body.style.top = originalTop;
-          window.scrollTo(0, parseInt(document.body.style.top || "0") * -1);
-        };
-      }
-    }, [open]);
+    // (deduped) No additional body scroll control here; handled in useLayoutEffect above
 
     // Cleanup on unmount
     useEffect(() => {

@@ -196,7 +196,7 @@ export const MediaPanelMediaCard = ({
               priority
               src={media?.blur}
               alt="Blured Video Image"
-              className="object-cover w-full h-full cursor-pointer transition-all duration-300 ease-in-out hover:scale-105"
+              className="object-cover md:aspect-square aspect-[4/3] w-full h-full cursor-pointer transition-all duration-300 ease-in-out hover:scale-105"
             />
           )}
         </>
@@ -209,7 +209,7 @@ export const MediaPanelMediaCard = ({
               priority
               src={media.blur}
               alt="Blured Image"
-              className="object-cover w-full h-full cursor-pointer transition-all duration-300 ease-in-out hover:scale-105"
+              className="object-cover lg:aspect-square aspect-[4/3] w-full h-full cursor-pointer transition-all duration-300 ease-in-out hover:scale-105"
             />
           ) : (
             <Image
@@ -226,7 +226,7 @@ export const MediaPanelMediaCard = ({
               }
               src={media.url}
               alt=""
-              className="object-cover w-full h-full cursor-pointer transition-all duration-300 ease-in-out hover:scale-105"
+              className="object-cover md:aspect-square aspect-[4/3] w-full h-full cursor-pointer transition-all duration-300 ease-in-out hover:scale-105"
             />
           )}
         </>

@@ -117,7 +117,7 @@ function StatusComponent() {
 
   const compressImage = async (file: File) => {
     const options = {
-      maxSizeMB: 0.2,
+      maxSizeMB: 0.45,
       maxWidthOrHeight: 1920,
       useWebWorker: true,
       maxIteration: 10,

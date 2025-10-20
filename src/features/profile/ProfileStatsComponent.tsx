@@ -18,6 +18,7 @@ import axiosInstance from "@/utils/Axios";
 import { getToken } from "@/utils/Cookie";
 import followUser from "@/utils/data/update/Follow";
 import LoadingSpinner from "@/components/common/loaders/LoadingSpinner";
+import { cn } from "@/components/ui/cn";
 
 const fetchStats = async (
   userId: string | undefined,
@@ -98,11 +99,13 @@ const FollowAndUnfollowButton = ({
   return (
     <button
       onClick={handleClick}
-      className={`px-4 py-1 rounded-full text-sm font-medium transition ${
-        isFollowingState
-          ? "bg-gray-500 text-white hover:bg-pink-700"
+      className={cn(
+        `px-4 py-1 rounded-full text-sm font-medium transition`,
+        isFollowingState && "bg-gray-500 text-white hover:bg-pink-700",
+        followsMeState && !isFollowingState
+          ? "bg-primary-dark-pink text-white hover:bg-pink-700"
           : "bg-black text-white hover:bg-pink-700"
-      }`}
+      )}
     >
       {buttonLabel}
     </button>

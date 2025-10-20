@@ -3,6 +3,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import type { StoryMediaFetchProps } from "@/types/Components";
 import axiosInstance from "@/utils/Axios";
+import { CancelToken } from "axios";
 
 export default function StoryMediaFetch({ page }: StoryMediaFetchProps) {
   const [media, setMedia] = useState<any>([]);

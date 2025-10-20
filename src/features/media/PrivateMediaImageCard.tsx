@@ -176,7 +176,7 @@ const PrivateMediaPanelMediaCard = ({
                   media.media_type,
                   isSubscriber,
                   indexId,
-                  media.post.watermark_enabled,
+                  media.post.watermark_enabled
                 ),
             }}
           />
@@ -187,7 +187,7 @@ const PrivateMediaPanelMediaCard = ({
                 media.media_type,
                 isSubscriber,
                 indexId,
-                media.post.watermark_enabled,
+                media.post.watermark_enabled
               )
             }
             className="absolute inset-0 flex items-center justify-center w-full h-full cursor-pointer bg-black/20"
@@ -206,12 +206,12 @@ const PrivateMediaPanelMediaCard = ({
               media.media_type,
               isSubscriber,
               indexId,
-              media.post.watermark_enabled,
+              media.post.watermark_enabled
             )
           }
           src={isSubscriber ? media.url : media.blur}
           alt=""
-          className="object-cover w-full h-full cursor-pointer transition-all duration-300 ease-in-out hover:scale-105"
+          className="object-cover w-full h-full md:aspect-square aspect-[4/3] cursor-pointer transition-all duration-300 ease-in-out hover:scale-105"
         />
       )}
       {!isSubscriber && (
