@@ -24,6 +24,7 @@ import { getSocket } from "../../../components/common/Socket";
 import CaptionElement from "./CaptionElement";
 import LoadingSpinner from "@/components/common/loaders/LoadingSpinner";
 import FormatName from "@/lib/FormatName";
+import { cn } from "@/components/ui/cn";
 
 type StatusPreviewSlideProps = {
     story: Story;
@@ -238,7 +239,7 @@ const TaggedUsersButton = ({ story }: { story: Story }) => {
 
     return (
         <>
-            <div className="absolute z-[400] bottom-4 right-4">
+            <div className="absolute z-[400] bottom-0 right-2">
                 <motion.button
                     initial={{ opacity: 0, scale: 0.8 }}
                     animate={{ opacity: 1, scale: 1 }}
@@ -476,7 +477,12 @@ const StoryReplyInput = ({ story }: { story: Story }) => {
         return null;
     }
     return (
-        <div className="absolute z-100 bottom-0 w-full">
+        <div
+            className={cn(
+                `absolute bottom-0 w-full bg-black`,
+                showReplyInput ? "z-[600]" : "z-[100]",
+            )}
+        >
             <AnimatePresence>
                 {showReplyInput ? (
                     <motion.div
@@ -486,6 +492,12 @@ const StoryReplyInput = ({ story }: { story: Story }) => {
                         className="p-3  bg-black w-full"
                     >
                         <div className="flex items-center gap-2">
+                            <button
+                                onClick={() => setShowReplyInput(false)}
+                                className="p-1 text-white/70 hover:text-white"
+                            >
+                                <X className="w-5 h-5" />
+                            </button>
                             <input
                                 type="text"
                                 value={replyText}
@@ -509,12 +521,6 @@ const StoryReplyInput = ({ story }: { story: Story }) => {
                                 ) : (
                                     <LucideSend className="w-5 h-5 text-white" />
                                 )}
-                            </button>
-                            <button
-                                onClick={() => setShowReplyInput(false)}
-                                className="p-1 text-white/70 hover:text-white"
-                            >
-                                <X className="w-5 h-5" />
                             </button>
                         </div>
                     </motion.div>
@@ -558,8 +564,8 @@ const StatusPreviewSlide = ({
     }, [story.media_id, refCounter]);
     return (
         <div className="relative flex items-center justify-center w-full h-full max-w-full max-h-full">
-            {story.media_type === "image" ? (
-                <div className="relative flex items-center justify-center w-full h-full">
+            <div className="relative flex items-center justify-center w-full h-full">
+                {story.media_type === "image" ? (
                     <Image
                         src={story.media_url}
                         alt={story?.caption || "Story image"}
@@ -575,14 +581,7 @@ const StatusPreviewSlide = ({
                             );
                         }}
                     />
-                    {/* Caption Overlay for Images */}
-                    <TaggedUsersButton story={story} />
-                    {canShowViewBlock && <StatusViewBlock story={story} />}
-                    <CaptionOverlay story={story} />
-                    <StoryReplyInput story={story} />
-                </div>
-            ) : story.media_type === "video" ? (
-                <div className="relative flex items-center justify-center w-full h-full">
+                ) : story.media_type === "video" ? (
                     <HlsViewer
                         className="w-auto h-full object-contain bg-black rounded-lg shadow-lg"
                         streamUrl={story.media_url}
@@ -590,17 +589,17 @@ const StatusPreviewSlide = ({
                         isOpen={true}
                         showControls={false}
                     />
-                    {/* Caption Overlay for Videos */}
-                    {canShowViewBlock && <StatusViewBlock story={story} />}
-                    <CaptionOverlay story={story} />
-                    <TaggedUsersButton story={story} />
-                    <StoryReplyInput story={story} />
-                </div>
-            ) : (
-                <div className="flex items-center justify-center w-full h-full text-white">
-                    <p>Unsupported media type</p>
-                </div>
-            )}
+                ) : (
+                    <div className="flex items-center justify-center w-full h-full text-white">
+                        <p>Unsupported media type</p>
+                    </div>
+                )}
+                {/* Caption Overlay for Videos */}
+                {canShowViewBlock && <StatusViewBlock story={story} />}
+                <CaptionOverlay story={story} />
+                <TaggedUsersButton story={story} />
+                <StoryReplyInput story={story} />
+            </div>
         </div>
     );
 };

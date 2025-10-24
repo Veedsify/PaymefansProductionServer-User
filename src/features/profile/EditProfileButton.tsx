@@ -1,10 +1,5 @@
 "use client";
-import {
-  Facebook,
-  Instagram,
-  LucideCamera, Twitter,
-  X
-} from "lucide-react";
+import { Facebook, Instagram, LucideCamera, Twitter, X } from "lucide-react";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import toast from "react-hot-toast";
@@ -55,12 +50,12 @@ function BannerModal({ user, open = false, setOpen }: BannerModalProps) {
   };
 
   const [userData, setUserData] = useState<UserUpdateProfileType>(
-    {} as UserUpdateProfileType
+    {} as UserUpdateProfileType,
   );
   const [usernameCheck, setUsernameCheck] = useState("");
   const { message, canSave, error, isLoading } = useCheckUsername(
     user,
-    usernameCheck
+    usernameCheck,
   );
   const queryClient = useQueryClient();
   const usernameTimeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -68,7 +63,7 @@ function BannerModal({ user, open = false, setOpen }: BannerModalProps) {
   const handleInputChange = (
     e: React.ChangeEvent<
       HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
-    >
+    >,
   ) => {
     if (e.target.name === "bio") {
       if (e.target.value.length > 1000) {
@@ -175,7 +170,7 @@ function BannerModal({ user, open = false, setOpen }: BannerModalProps) {
       const updateProfile = async (formData: FormData) => {
         const response = await axiosInstance.post(
           ROUTE.PROFILE_UPDATE,
-          formData
+          formData,
         );
         setOpen(false);
         queryClient.invalidateQueries({ queryKey: ["userProfileData"] });
@@ -191,7 +186,7 @@ function BannerModal({ user, open = false, setOpen }: BannerModalProps) {
         },
         {
           id: "profile-update-toast",
-        }
+        },
       );
     } catch (error) {
       console.error(error);
@@ -211,6 +206,7 @@ function BannerModal({ user, open = false, setOpen }: BannerModalProps) {
 
   return (
     <div
+      aria-label="button"
       onClick={() => setOpen(false)}
       className={`fixed inset-0 w-full h-full bg-white dark:bg-gray-950 z-[250] flex items-center justify-center transition-all duration-300 ${
         open
