@@ -196,7 +196,7 @@ const StoryReplyInput = ({ story }: StoryReplyInputProps) => {
                         initial={{ opacity: 0, scale: 0.8 }}
                         animate={{ opacity: 1, scale: 1 }}
                         onClick={() => setShowReplyInput(true)}
-                        className="flex items-center px-4 py-2 text-white rounded-full bg-black/50 backdrop-blur-sm gap-2 hover:bg-black/70 transition-colors"
+                        className="flex items-center px-4 py-2 text-white rounded-full bg-transparent transition-colors"
                     >
                         <LucideSend className="w-4 h-4" />
                         <span>Reply</span>
