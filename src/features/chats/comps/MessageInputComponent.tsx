@@ -34,7 +34,23 @@ import {
 } from "../../../components/common/Socket";
 import MessageMediaPreview from "./MessageMediaPreview";
 import LoadingSpinner from "@/components/common/loaders/LoadingSpinner";
+import imageCompression from "browser-image-compression";
+const compressImage = async (file: File) => {
+    const options = {
+        maxSizeMB: 0.8,
+        maxWidthOrHeight: 1440,
+        useWebWorker: true,
+        maxIteration: 10,
+    };
 
+    try {
+        const compressedFile = await imageCompression(file, options);
+        return compressedFile;
+    } catch (error) {
+        console.log(error);
+        return file;
+    }
+};
 interface MessageMediaFile {
     id: string;
     media_id: string;
@@ -209,6 +225,10 @@ const MessageInputComponent = React.memo(
             media_id: string,
         ) => {
             try {
+                const isImage = imageTypes.includes(file.type);
+                if (isImage) {
+                    file = await compressImage(file);
+                }
                 const response = await axios.put(presignedUrl, file, {
                     headers: {
                         "Content-Type": file.type,
@@ -278,7 +298,6 @@ const MessageInputComponent = React.memo(
                 const files = pendingFiles.map((item) => item.file!);
                 const mediaIds = pendingFiles.map((item) => item.media_id);
 
-                console.log("🔗 Requesting presigned URLs...", mediaIds);
                 const presignedData = await getPresignedUrls(files, mediaIds);
 
                 // Step 2: Mark files as uploading
@@ -291,7 +310,6 @@ const MessageInputComponent = React.memo(
                 );
 
                 // Step 3: Upload files to S3 sequentially and save each one immediately
-                console.log("⬆️ Uploading files to S3 sequentially...");
                 let uploadCount = 0;
                 for (const data of presignedData) {
                     uploadCount++;
