@@ -24,6 +24,8 @@ html,
 body {
     font-family: "Bricolage Grotesque", sans-serif;
     -moz-osx-font-smoothing: grayscale;
+    font-size: 16px;
+    box-sizing: border-box;
 }
 input {
     font-size: inherit;
