@@ -7,6 +7,7 @@ import {
     type FormEvent,
     type MouseEvent,
     useEffect,
+    useRef,
     useState,
 } from "react";
 import toast from "react-hot-toast";
@@ -24,6 +25,7 @@ const Register = () => {
     const [loading, setLoading] = useState<boolean>(false);
     const [showPassword, setShowPassword] = useState(false);
     const { setUser, user } = useUser();
+    const countryRef = useRef<HTMLDivElement>(null);
     const router = useRouter();
     const UserInputCaptured = (
         e: ChangeEvent<HTMLInputElement | HTMLSelectElement>,
@@ -38,17 +40,17 @@ const Register = () => {
 
     useEffect(() => {
         const handleClickOutside = (event: Event) => {
-            const target = event.currentTarget as HTMLElement;
             if (
-                !target.closest("#location") // Adjust the selector as needed
+                countryRef.current &&
+                !countryRef.current.contains(event.target as Node)
             ) {
                 setCountryList(false);
             }
         };
 
-        window.addEventListener("click", handleClickOutside);
+        document.addEventListener("mousedown", handleClickOutside);
         return () => {
-            window.removeEventListener("click", handleClickOutside);
+            document.removeEventListener("mousedown", handleClickOutside);
         };
     }, []);
 
@@ -287,7 +289,10 @@ const Register = () => {
                                 readOnly
                             />
                             {countryList && (
-                                <div className="absolute top-full left-0 right-0 z-50 mt-1 p-2 overflow-y-auto bg-white/95 backdrop-blur-md rounded-xl max-h-60 border border-white/20 shadow-xl">
+                                <div
+                                    ref={countryRef}
+                                    className="absolute top-full left-0 right-0 z-50 mt-1 p-2 overflow-y-auto bg-white/95 backdrop-blur-md rounded-xl max-h-60 border border-white/20 shadow-xl"
+                                >
                                     {countries.map((country, index) => (
                                         <button
                                             onClick={selectCountry}
