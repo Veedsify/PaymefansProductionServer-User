@@ -30,7 +30,7 @@
 
 html,
 body {
-  font-family: 'Bricolage Grotesque Variable', sans-serif;
+  font-family: 'Rethink Sans Variable', sans-serif;
   -moz-osx-font-smoothing: grayscale;
 }
 
@@ -57,6 +57,7 @@ img {
   min-width: 0;
   /* fix flex/grid Safari bug */
 }
+
 @keyframes slideDown {
   from {
     max-height: 100%;

@@ -78,7 +78,9 @@ class SocketManager {
 
       // Initialize new socket
       this.socket = io(this.config.url, {
-        query: { username: normalizedUsername },
+        extraHeaders: {
+          "X-Username": normalizedUsername,
+        },
         path: this.config.path,
         reconnection: true,
         reconnectionAttempts: this.config.reconnectionAttempts,
