@@ -5,6 +5,8 @@
       "name": "client",
       "dependencies": {
         "@fontsource-variable/bricolage-grotesque": "^5.2.10",
+        "@fontsource-variable/geist": "^5.2.8",
+        "@fontsource-variable/reddit-sans": "^5.2.7",
         "@fontsource-variable/rethink-sans": "^5.2.8",
         "@next/bundle-analyzer": "^15.5.4",
         "@tanstack/react-query": "^5.84.0",
@@ -85,6 +87,10 @@
     "@emnapi/wasi-threads": ["@emnapi/wasi-threads@1.1.0", "", { "dependencies": { "tslib": "^2.4.0" } }, "sha512-WI0DdZ8xFSbgMjR1sFsKABJ/C5OnRrjT06JXbZKexJGrDuPTzZdDYfFlsgcCXCyf+suG5QU2e/y1Wo2V/OapLQ=="],
 
     "@fontsource-variable/bricolage-grotesque": ["@fontsource-variable/bricolage-grotesque@5.2.10", "", {}, "sha512-5EDsCqgGpKVcJWE4sg9ydli+t5WM97mISYw5lla/Ev4z71FwXh1oN0YUU8xjkRW9+wBCGD9R+ntAvI8G4bUFJg=="],
+
+    "@fontsource-variable/geist": ["@fontsource-variable/geist@5.2.8", "", {}, "sha512-cJ6m9e+8MQ5dCYJsLylfZrgBh6KkG4bOLckB35Tr9J/EqdkEM6QllH5PxqP1dhTvFup+HtMRPuz9xOjxXJggxw=="],
+
+    "@fontsource-variable/reddit-sans": ["@fontsource-variable/reddit-sans@5.2.7", "", {}, "sha512-JT4joaX85iEZ74B3mMLZh/OFotUdhPwuqAQB1l2XNcOv99VzOUe4eAehlmx1wP3fK3TSxqGb6FFraYPU5y9/3Q=="],
 
     "@fontsource-variable/rethink-sans": ["@fontsource-variable/rethink-sans@5.2.8", "", {}, "sha512-al4seUEA9sN3D7//lASAPUWPtehLIkKHQRxskZwTUHd3hOpfyjJWmXLOXYQwYAS5h4OhZ2D9S/3N73MzTJ5ecg=="],
 

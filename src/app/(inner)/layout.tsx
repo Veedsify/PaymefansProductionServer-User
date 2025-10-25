@@ -1,4 +1,4 @@
-import "@fontsource-variable/rethink-sans";
+import "@fontsource-variable/geist";
 import "../globals.css";
 import type { Metadata } from "next";
 import type React from "react";
@@ -10,14 +10,13 @@ import Loader from "@/components/common/loaders/Loader";
 import LayoutWithWishlist from "@/components/layout/LayoutWithWishlist";
 import MenuButtons from "@/components/modals/MenuButtons";
 import GuestLoginModal from "@/features/guest/GuestLoginModal";
+import CombinedProviders from "@/providers/CombinedProviders";
+import QueryProvider from "@/providers/QueryProvider";
 const SideBar = dynamic(() => import("@/components/common/global/SideBar"), {});
 const SideModels = dynamic(() => import("@/features/models/comps/SideModels"));
 const PostComponentPreview = dynamic(
   () => import("@/features/post/FullComponentPreview")
 );
-import CombinedProviders from "@/providers/CombinedProviders";
-import QueryProvider from "@/providers/QueryProvider";
-import SupportHelp from "@/features/support/SupportHelp";
 
 export const metadata: Metadata = {
   title: "Paymefans",
