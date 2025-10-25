@@ -49,7 +49,7 @@ class SocketManager {
       console.error("Cannot connect socket: no username provided");
       return null;
     }
-    const normalizedUsername = encodeURIComponent(username.trim());
+    const normalizedUsername = username.trim();
 
     // Early return if already connected with the same username
     if (this.socket?.connected && this.currentUsername === normalizedUsername) {
