@@ -37,6 +37,22 @@ const Register = () => {
     };
 
     useEffect(() => {
+        const handleClickOutside = (event: Event) => {
+            const target = event.currentTarget as HTMLElement;
+            if (
+                !target.closest("#location") // Adjust the selector as needed
+            ) {
+                setCountryList(false);
+            }
+        };
+
+        window.addEventListener("click", handleClickOutside);
+        return () => {
+            window.removeEventListener("click", handleClickOutside);
+        };
+    }, []);
+
+    useEffect(() => {
         // Update user state in the context only when userData changes:
         if (userData) {
             setUser(userData);

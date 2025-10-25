@@ -20,16 +20,13 @@
 
 @custom-variant dark (&:where(.dark, .dark *));
 
-@media only screen and (max-width: 768px) {
-    html {
-        font-size: 92%;
-    }
-}
-
 html,
 body {
     font-family: "Bricolage Grotesque", sans-serif;
     -moz-osx-font-smoothing: grayscale;
+}
+input {
+    font-size: inherit;
 }
 
 ::selection {
