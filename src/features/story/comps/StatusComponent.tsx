@@ -17,7 +17,7 @@ import StatusMediaPanel from "@/features/story/comps/StatusMediaPanel";
 import type { SelectMoreProps } from "@/types/Components";
 import { type StoryType, useStoryStore } from "../../../contexts/StoryContext";
 import axiosServer from "@/utils/Axios";
-import imageCompression from "browser-image-compression";
+
 const StoryCaptionComponent = dynamic(() => import("./StoryCaptionComponent"), {
     ssr: false,
 });
@@ -130,8 +130,11 @@ function StatusComponent() {
         };
 
         try {
-            const compressedFile = await imageCompression(file, options);
-            return compressedFile;
+          // Lazy load image compression to reduce main bundle size
+          const imageCompression = (await import("browser-image-compression"))
+            .default;
+          const compressedFile = await imageCompression(file, options);
+          return compressedFile;
         } catch (error) {
             console.log(error);
             return file;

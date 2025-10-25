@@ -1,6 +1,7 @@
 "use client";
 
-import React, { useState } from "react";
+import type React from "react";
+import { useState } from "react";
 import { LucideEye } from "lucide-react";
 import type { postAudienceDataProps2 } from "@/types/Components";
 import type { ModelSignUpData, FormErrors } from "../../types";

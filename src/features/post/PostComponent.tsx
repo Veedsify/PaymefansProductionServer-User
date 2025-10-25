@@ -20,7 +20,8 @@ import QuickPostActions from "./QuickPostActions";
 import FormatName from "@/lib/FormatName";
 import { cn } from "@/components/ui/cn";
 import { useGuestModal } from "@/contexts/GuestModalContext";
-import { usePostActions, usePostPermissions } from "@/hooks";
+import usePostActions from "@/features/posts/hooks/usePostActions";
+import usePostPermissions from "@/features/posts/hooks/usePostPermissions";
 
 // Cache socket instance to prevent recreation on every render
 let socketInstance: ReturnType<typeof getSocket> | null = null;

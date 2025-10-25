@@ -28,7 +28,7 @@ type ModalContextType = {
   setModal: () => void;
 };
 
-export const useModalContext = create<ModalContextType>((set) => ({
+const useModalContext = create<ModalContextType>((set) => ({
   modalState: false,
   setModal: () =>
     set((state) => ({

@@ -105,7 +105,7 @@ export interface Conversation {
   unread_count: number;
 }
 
-export interface LastMessage {
+interface LastMessage {
   id: string;
   message_id: string;
   content: string;
@@ -141,7 +141,7 @@ export interface SendMessageData {
 }
 
 // Media Types
-export interface MediaFile {
+interface MediaFile {
   id: string;
   url: string;
   type: "image" | "video";
@@ -151,7 +151,7 @@ export interface MediaFile {
   name: string;
 }
 
-export interface Attachment {
+interface Attachment {
   id: string;
   url: string;
   type: "image" | "video";
@@ -218,7 +218,7 @@ export interface AnalyticsData {
 }
 
 // Error Types
-export interface ApiError {
+interface ApiError {
   message: string;
   code: string;
   details?: any;

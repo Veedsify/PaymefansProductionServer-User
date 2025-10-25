@@ -10,7 +10,7 @@ import {
     useRef,
     useState,
 } from "react";
-import type { Socket } from "socket.io-client";
+// Socket type will be imported dynamically
 import { connectSocket } from "@/components/common/Socket";
 import { postRegex, profileRegex } from "@/constants/regex";
 import type { AuthUserProps } from "@/features/user/types/user";
@@ -51,7 +51,7 @@ export const AuthContextProvider = ({
     const ref = useRef<number>(0);
     const isPostPage = postRegex.test(location);
     const isProfilePage = !isPostPage && profileRegex.test(location);
-    let socket: Socket | null;
+    let socket: any | null;
     let intervalId: NodeJS.Timeout | undefined;
 
     // Standardized guest user object
@@ -100,9 +100,11 @@ export const AuthContextProvider = ({
             const res = await axiosInstance.get(`/auth/retrieve`);
             const userData = res.data && (res.data.user as AuthUserProps);
             if (userData) {
-                socket = connectSocket({
-                    username: userData?.username,
-                    userid: userData?.user_id,
+                connectSocket({
+                  username: userData?.username,
+                  userid: userData?.user_id,
+                }).then((socketInstance) => {
+                  socket = socketInstance;
                 });
                 setIsGuest(false);
                 setUser(userData);
@@ -167,9 +169,11 @@ export const AuthContextProvider = ({
                 setIsLoading(false);
 
                 // Start activity heartbeat
-                socket = connectSocket({
-                    username: user.username,
-                    userid: user.user_id,
+                connectSocket({
+                  username: user.username,
+                  userid: user.user_id,
+                }).then((socketInstance) => {
+                  socket = socketInstance;
                 });
                 intervalId = setInterval(() => {
                     if (socket?.connected) {

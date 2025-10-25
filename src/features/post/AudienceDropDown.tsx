@@ -1,4 +1,4 @@
-import { PostAudienceDataProps } from "@/types/Components";
+import type { PostAudienceDataProps } from "@/types/Components";
 import { LucideChevronDown, LucideChevronUp } from "lucide-react";
 import Image from "next/image";
 import React from "react";

@@ -14,7 +14,7 @@ import numeral from "numeral";
 import toast from "react-hot-toast";
 import { useCartStore } from "@/contexts/StoreContext";
 import { useWishlistStore } from "@/contexts/WishlistContext";
-import { useWishlist } from "@/hooks";
+import { useWishlist } from "@/features/store/hooks/useWishlist";
 import {
   useClearWishlist,
   useToggleWishlist,

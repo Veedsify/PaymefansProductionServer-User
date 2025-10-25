@@ -15,7 +15,7 @@ import numeral from "numeral";
 import { useState } from "react";
 import { useAuthContext } from "@/contexts/UserUseContext";
 import type { StreamStatsProp } from "@/types/Components";
-import { LiveStreamSocket } from "@/hooks";
+import LiveStreamSocket from "@/hooks/utilities/LiveStreamSocket";
 
 const StreamStats = ({
   streamData,

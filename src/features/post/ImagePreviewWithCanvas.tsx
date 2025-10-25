@@ -1,8 +1,8 @@
-import { AnimatePresence, motion } from "framer-motion";
+// Removed framer-motion import to reduce bundle size
 import Image from "next/image";
 import React, { memo, Suspense } from "react";
 import Loader from "../../components/common/loaders/LoadingAnimation";
-import { type UserProfile } from "../../providers";
+import type { UserProfile } from "../media/mediaPreviewTypes";
 import UserProfileOverlay from "./UserProfileOverlay";
 import { cn } from "@/components/ui/cn";
 
@@ -24,21 +24,14 @@ export const ImagePreview = memo(
     return (
       <Suspense
         fallback={
-          <AnimatePresence>
-            <motion.div
-              className="absolute inset-0 z-10 flex items-center justify-center bg-black/20"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0, transition: { duration: 0.2 } }}
-            >
-              <Loader />
-            </motion.div>
-          </AnimatePresence>
+          <div className="absolute inset-0 z-10 flex items-center justify-center bg-black/20 animate-in fade-in duration-200">
+            <Loader />
+          </div>
         }
       >
-        <motion.div
-          onHoverStart={() => setShowProfile(true)}
-          onHoverEnd={() => setShowProfile(false)}
+        <div
+          onMouseEnter={() => setShowProfile(true)}
+          onMouseLeave={() => setShowProfile(false)}
           onTouchStart={() => setShowProfile((prev) => !prev)} // Toggle on touch
         >
           {userProfile && showProfile && (
@@ -62,7 +55,7 @@ export const ImagePreview = memo(
               msUserSelect: "none",
             }}
           />
-        </motion.div>
+        </div>
       </Suspense>
     );
   }

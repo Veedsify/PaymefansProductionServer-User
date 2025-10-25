@@ -15,7 +15,7 @@ import {
 
 import LoadingSpinner from "@/components/common/loaders/LoadingSpinner";
 import { useNotificationCount } from "./hooks/useNotifications";
-import { useNotifications } from "./hooks";
+import { useNotifications } from "./hooks/useNotifications";
 
 interface NotificationHeaderProps {
   children: string;
@@ -144,7 +144,7 @@ const NotificationItem = React.memo(function NotificationItem({
   );
 });
 
-export function NotificationBody() {
+function NotificationBody() {
   const [page, setPage] = useState(1);
   const {
     notifications,

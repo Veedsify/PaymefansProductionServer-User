@@ -3,7 +3,7 @@ import { Loader2, X } from "lucide-react";
 import { useState } from "react";
 import toast from "react-hot-toast";
 import { useCartStore } from "@/contexts/StoreContext";
-import { useCheckout } from "@/hooks";
+import { useCheckout } from "@/features/store/hooks/useCheckout";
 
 type ShippingAddress = {
   name: string;

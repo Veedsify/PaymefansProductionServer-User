@@ -11,7 +11,7 @@ import axiosInstance from "@/utils/Axios";
 import { LockedMediaOverlay } from "./LockedMediaOverlay";
 import HLSVideoPlayer from "./videoplayer";
 import LoadingSpinner from "@/components/common/loaders/LoadingSpinner";
-import { useMediaActions } from "@/hooks";
+import useMediaActions from "@/features/posts/hooks/useMediaActions";
 
 interface MediaPanelMediaCardProps {
   media: MediaDataTypeOtherProps;
@@ -98,7 +98,7 @@ const MediaPanelImageCardOther = React.memo(
         <div className="overflow-hidden select-none grid grid-cols-2 rounded-xl lg:grid-cols-3 gap-1">
           {allMedia.map((media, index) => (
             <div
-              key={index}
+              key={`index-${index}-media-${media.id}`}
               className="aspect-[4/3] md:aspect-square overflow-hidden relative"
             >
               <MediaPanelMediaCard
@@ -114,6 +114,7 @@ const MediaPanelImageCardOther = React.memo(
           {loading && <LoadingSpinner />}
           {hasMore && !loading && (
             <button
+              type="button"
               className="px-4 py-2 text-sm font-bold bg-gray-200 rounded-lg col-span-3"
               onClick={fetchAdditionalData}
             >

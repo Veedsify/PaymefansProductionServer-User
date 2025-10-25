@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import type React from "react";
 import { LucideChevronUp } from "lucide-react";
 import dynamic from "next/dynamic";
 import LoadingSpinner from "@/components/common/loaders/LoadingSpinner";
@@ -23,7 +23,7 @@ interface ChatMessageListProps {
   onScroll: () => void;
 }
 
-export const ChatMessageList: React.FC<ChatMessageListProps> = ({
+const ChatMessageList: React.FC<ChatMessageListProps> = ({
   messages,
   receiver,
   conversationId,

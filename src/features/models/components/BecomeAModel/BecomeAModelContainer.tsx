@@ -1,13 +1,13 @@
 "use client";
 
-import React from "react";
+import type React from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useModelSignup } from "../../hooks/useModelSignup";
 import ModelSignupForm from "./ModelSignupForm";
 import LoadingSpinner from "@/components/common/loaders/LoadingSpinner";
 
-const BecomeAModelContainer: React.FC = () => {
+export const BecomeAModelContainer: React.FC = () => {
   const {
     formData,
     isSubmitting,

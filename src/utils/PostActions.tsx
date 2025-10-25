@@ -1,12 +1,12 @@
 "use client";
 import { useQueryClient } from "@tanstack/react-query";
 import {
-  LucideEye,
-  LucideEyeOff,
-  LucidePen,
-  LucideShare,
-  LucideTrash,
-  Repeat2,
+    LucideEye,
+    LucideEyeOff,
+    LucidePen,
+    LucideShare,
+    LucideTrash,
+    Repeat2,
 } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
 import { type MouseEvent, useCallback } from "react";
@@ -19,50 +19,50 @@ import axiosInstance from "./Axios";
 import { getToken } from "./Cookie";
 
 const QuickPostActionHooks = ({ options }: QuickPostActionsProps) => {
-  const { user, isGuest } = useAuthContext();
-  const queryClient = useQueryClient();
-  const router = useRouter();
-  const path = usePathname();
-  const handleDelete = (e: MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault();
-    swal({
-      title: "Are you sure?",
-      text: "Once deleted, you will not be able to recover this post!",
-      icon: "/icons/error.svg",
-      buttons: ["Cancel", "Delete"],
-      dangerMode: true,
-    }).then(async (willDelete) => {
-      if (willDelete) {
-        try {
-          toast.loading(POST_CONFIG.POST_DELETING_STATUS);
-          const deletePost = await axiosInstance.delete(
-            `/post/${options.post_id}`,
-          );
-          if (deletePost.status === 200) {
-            toast.dismiss();
-            toast.success(POST_CONFIG.POST_DELETED_SUCCESS_MSG);
-            queryClient.invalidateQueries({
-              queryKey: ["personal-posts"],
-            });
-            if (path.startsWith("/profile")) {
-              window.location.reload();
-            } else {
-              window.location.href = "/profile";
+    const { user, isGuest } = useAuthContext();
+    const queryClient = useQueryClient();
+    const router = useRouter();
+    const path = usePathname();
+    const handleDelete = (e: MouseEvent<HTMLButtonElement>) => {
+        e.preventDefault();
+        swal({
+            title: "Are you sure?",
+            text: "Once deleted, you will not be able to recover this post!",
+            icon: "/icons/error.svg",
+            buttons: ["Cancel", "Delete"],
+            dangerMode: true,
+        }).then(async (willDelete) => {
+            if (willDelete) {
+                try {
+                    toast.loading(POST_CONFIG.POST_DELETING_STATUS);
+                    const deletePost = await axiosInstance.delete(
+                        `/post/${options.post_id}`,
+                    );
+                    if (deletePost.status === 200) {
+                        toast.dismiss();
+                        toast.success(POST_CONFIG.POST_DELETED_SUCCESS_MSG);
+                        queryClient.invalidateQueries({
+                            queryKey: ["personal-posts"],
+                        });
+                        if (path.startsWith("/profile")) {
+                            window.location.reload();
+                        } else {
+                            window.location.href = "/profile";
+                        }
+                    }
+                } catch (error) {
+                    console.log(error);
+                    swal("Something went wrong!", {
+                        icon: "error",
+                    });
+                }
             }
-          }
-        } catch (error) {
-          console.log(error);
-          swal("Something went wrong!", {
-            icon: "error",
-          });
-        }
-      }
-    });
-  };
+        });
+    };
 
-  const handleSetvisibility = (e: MouseEvent<HTMLButtonElement>) => {
-    const modal = document.createElement("div");
-    modal.innerHTML = `
+    const handleSetvisibility = (e: MouseEvent<HTMLButtonElement>) => {
+        const modal = document.createElement("div");
+        modal.innerHTML = `
       <div class="fixed z-[200] inset-0 bg-black/50 flex items-center justify-center"
           id="modal-bg"
       >
@@ -70,95 +70,101 @@ const QuickPostActionHooks = ({ options }: QuickPostActionsProps) => {
               <h1 class="mb-5 text-lg font-semibold dark:text-white">Set visibility</h1>
               <select class="p-3 mt-2 text-black bg-transparent border border-collapse w-72 rounded-md dark:border-slate-700 dark:bg-slate-900 dark:text-white" name="visibility" id="visibility">
                   ${
-                    user && user.is_model && user.Model?.verification_status
-                      ? `
+                      user && user.is_model && user.Model?.verification_status
+                          ? `
                       <option value="public" ${
-                        options.post_audience == "public" ? "selected" : ""
+                          options.post_audience === "public" ? "selected" : ""
                       }>Public</option>
                       <option value="subscribers" ${
-                        options.post_audience == "subscribers" ? "selected" : ""
+                          options.post_audience === "subscribers"
+                              ? "selected"
+                              : ""
                       }>Subscribers</option>
                       <option value="price" ${
-                        options.post_audience == "price" ? "selected" : ""
+                          options.post_audience === "price" ? "selected" : ""
                       }>Price</option>
                       `
-                      : `
+                          : `
                       <option value="public" ${
-                        options.post_audience == "public" ? "selected" : ""
+                          options.post_audience === "public" ? "selected" : ""
                       }>Public</option>
                       `
                   }
               </select>
               <div id="price-input-container" style="display: ${
-                options.post_audience === "price" ? "block" : "none"
+                  options.post_audience === "price" ? "block" : "none"
               };">
                 <label for="price-input" class="block mt-4 mb-2 text-sm font-medium text-gray-700 dark:text-gray-200">Set Price</label>
                 <input type="number" min="1" step="any" id="price-input" class="p-3 text-black bg-transparent border border-gray-300 w-72 rounded-md dark:border-slate-700 dark:bg-slate-900 dark:text-white" placeholder="Enter price" value="${
-                  options.price ?? ""
+                    options.price ?? ""
                 }" />
               </div>
           </div>
       </div>
     `;
 
-    // Add dynamic show/hide for price input
-    const visibility = modal.querySelector("#visibility") as HTMLSelectElement;
-    const priceInputContainer = modal.querySelector(
-      "#price-input-container",
-    ) as HTMLDivElement;
+        // Add dynamic show/hide for price input
+        const visibility = modal.querySelector(
+            "#visibility",
+        ) as HTMLSelectElement;
+        const priceInputContainer = modal.querySelector(
+            "#price-input-container",
+        ) as HTMLDivElement;
 
-    visibility.addEventListener("change", () => {
-      if (visibility.value === "price") {
-        priceInputContainer.style.display = "block";
-      } else {
-        priceInputContainer.style.display = "none";
-      }
-    });
-    document.body.appendChild(modal);
-    modal.addEventListener("click", (e) => {
-      const modalBg = document.getElementById("modal-bg");
-      if (e.target === modalBg) {
-        modal.remove();
-      }
-    });
-    visibility.addEventListener("change", async (e) => {
-      try {
-        const setVisibility = await axiosInstance.put(
-          `/post/update/audience/${options.post_id}`,
-          {
-            visibility: visibility.value,
-          },
-        );
-        if (setVisibility.status === 200) {
-          toast.success(POST_CONFIG.QUICK_ACTION_CONFIG.VISIBILITY_SUCCESSFUL);
-
-          if (visibility.value === "private") {
-            modal.remove();
-            router.push("/profile");
-            router.refresh();
-          }
-          modal.remove();
-          router.refresh();
-        }
-      } catch (error) {
-        console.log(error);
-        modal.remove();
-        swal("Something went wrong!", {
-          icon: "error",
+        visibility.addEventListener("change", () => {
+            if (visibility.value === "price") {
+                priceInputContainer.style.display = "block";
+            } else {
+                priceInputContainer.style.display = "none";
+            }
         });
-      }
-    });
-  };
+        document.body.appendChild(modal);
+        modal.addEventListener("click", (e) => {
+            const modalBg = document.getElementById("modal-bg");
+            if (e.target === modalBg) {
+                modal.remove();
+            }
+        });
+        visibility.addEventListener("change", async (e) => {
+            try {
+                const setVisibility = await axiosInstance.put(
+                    `/post/update/audience/${options.post_id}`,
+                    {
+                        visibility: visibility.value,
+                    },
+                );
+                if (setVisibility.status === 200) {
+                    toast.success(
+                        POST_CONFIG.QUICK_ACTION_CONFIG.VISIBILITY_SUCCESSFUL,
+                    );
 
-  const ShareThisPost = (e: MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault();
-    swal({
-      title: "Share this post",
-      content: {
-        element: "div",
-        attributes: {
-          className: "space-y-6",
-          innerHTML: `
+                    if (visibility.value === "private") {
+                        modal.remove();
+                        router.push("/profile");
+                        router.refresh();
+                    }
+                    modal.remove();
+                    router.refresh();
+                }
+            } catch (error) {
+                console.log(error);
+                modal.remove();
+                swal("Something went wrong!", {
+                    icon: "error",
+                });
+            }
+        });
+    };
+
+    const ShareThisPost = (e: MouseEvent<HTMLButtonElement>) => {
+        e.preventDefault();
+        swal({
+            title: "Share this post",
+            content: {
+                element: "div",
+                attributes: {
+                    className: "space-y-6",
+                    innerHTML: `
             <div class="flex flex-wrap gap-4">
               <button onclick="window.open('https://twitter.com/intent/tweet?url=${process.env.NEXT_PUBLIC_SERVER_URL}/posts/${options.post_id}')"
                 class="flex items-center space-x-2 px-4 py-2 rounded-lg text-white bg-[#1DA1F2] hover:bg-[#1a8cd8] transition-colors">
@@ -202,88 +208,91 @@ const QuickPostActionHooks = ({ options }: QuickPostActionsProps) => {
               </div>
             </div>
           `,
+                },
+            },
+            closeOnEsc: true,
+            closeOnClickOutside: true,
+        });
+    };
+
+    const repostThisPost = useCallback(async () => {
+        try {
+            const repost = await axiosInstance.post(
+                `/post/repost/${options.post_id}`,
+                {},
+            );
+            if (repost.status === 200 && repost.data.error === false) {
+                toast.success(repost.data.message, {
+                    id: "repost",
+                });
+                router.refresh();
+            }
+            if (repost.status === 200 && repost.data.error) {
+                toast.error(repost.data.message, {
+                    id: "repost-error",
+                });
+            }
+        } catch (error: any) {
+            swal(error.response.data.message, {
+                icon: "info",
+            });
+        }
+    }, [router, options.post_id]);
+
+    const ownerOptions: (OwnerOption | null)[] = [
+        user?.is_model
+            ? {
+                  name: "Edit Post",
+                  icon: <LucidePen className="mr-2" size={14} />,
+                  link: new URL(
+                      `/posts/edit/${options.post_id}`,
+                      window.location.href,
+                  ),
+              }
+            : null,
+        {
+            name: "Set visibility",
+            icon: <LucideEye className="mr-2" size={16} />,
+            func: handleSetvisibility,
         },
-      },
-      closeOnEsc: true,
-      closeOnClickOutside: true,
-    });
-  };
+        {
+            name: "Repost",
+            icon: <Repeat2 className="mr-2" size={16} />,
+            func: repostThisPost,
+        },
+        {
+            name: "Share",
+            icon: <LucideShare className="mr-2" size={16} />,
+            func: ShareThisPost,
+        },
+        {
+            name: "Delete",
+            icon: <LucideTrash className="mr-2" size={16} />,
+            func: handleDelete,
+        },
+    ].filter((option) => option !== null);
 
-  const repostThisPost = useCallback(async () => {
-    try {
-      const repost = await axiosInstance.post(
-        `/post/repost/${options.post_id}`,
-        {},
-      );
-      if (repost.status === 200 && repost.data.error === false) {
-        toast.success(repost.data.message, {
-          id: "repost",
-        });
-        router.refresh();
-      }
-      if (repost.status === 200 && repost.data.error) {
-        toast.error(repost.data.message, {
-          id: "repost-error",
-        });
-      }
-    } catch (error: any) {
-      swal(error.response.data.message, {
-        icon: "info",
-      });
-    }
-  }, [router, options.post_id]);
+    const publicOptions = [
+        !isGuest
+            ? {
+                  name: "Repost",
+                  icon: <Repeat2 className="mr-2" size={16} />,
+                  func: repostThisPost,
+              }
+            : null,
+        {
+            name: "Share",
+            icon: <LucideShare className="mr-2" size={16} />,
+            func: ShareThisPost,
+        },
+    ].filter((option) => option !== null) as {
+        name: string;
+        icon: React.ReactNode;
+        link?: string;
+        func?: (e: MouseEvent<HTMLButtonElement>) => void;
+    }[];
 
-  const ownerOptions: (OwnerOption | null)[] = [
-    user?.is_model
-      ? {
-          name: "Edit Post",
-          icon: <LucidePen className="mr-2" size={14} />,
-          link: new URL(`/posts/edit/${options.post_id}`, window.location.href),
-        }
-      : null,
-    {
-      name: "Set visibility",
-      icon: <LucideEye className="mr-2" size={16} />,
-      func: handleSetvisibility,
-    },
-    {
-      name: "Repost",
-      icon: <Repeat2 className="mr-2" size={16} />,
-      func: repostThisPost,
-    },
-    {
-      name: "Share",
-      icon: <LucideShare className="mr-2" size={16} />,
-      func: ShareThisPost,
-    },
-    {
-      name: "Delete",
-      icon: <LucideTrash className="mr-2" size={16} />,
-      func: handleDelete,
-    },
-  ].filter((option) => option !== null);
-
-  const publicOptions = [
-    !isGuest
-      ? {
-          name: "Repost",
-          icon: <Repeat2 className="mr-2" size={16} />,
-          func: repostThisPost,
-        }
-      : null,
-    {
-      name: "Share",
-      icon: <LucideShare className="mr-2" size={16} />,
-      func: ShareThisPost,
-    },
-  ].filter((option) => option !== null) as {
-    name: string;
-    icon: React.ReactNode;
-    link?: string;
-    func?: (e: MouseEvent<HTMLButtonElement>) => void;
-  }[];
-
-  return { ownerOptions, publicOptions };
+    return { ownerOptions, publicOptions };
 };
 
 export default QuickPostActionHooks;

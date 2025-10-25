@@ -9,7 +9,7 @@ export interface Attachment {
   preview?: string; // For local preview before upload
 }
 
-export interface MessageData {
+interface MessageData {
   text: string;
   attachments: Attachment[];
   isActive: boolean;
@@ -20,7 +20,7 @@ export interface Messages {
   subscribers: MessageData;
 }
 
-export interface EditingMode {
+interface EditingMode {
   followers: boolean;
   subscribers: boolean;
 }

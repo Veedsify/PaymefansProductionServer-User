@@ -46,4 +46,3 @@ export function SkeletonPost({
   );
 }
 
-export default SkeletonPost;

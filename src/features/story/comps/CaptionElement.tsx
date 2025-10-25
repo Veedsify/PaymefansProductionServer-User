@@ -40,8 +40,8 @@ const CaptionElement = ({ element }: { element: any }) => {
         return `🔗 ${urlObj.hostname}...`;
       } catch {
         // Fallback for invalid URLs or relative URLs
-        const match = url.match(/^https?:\/\/(?:www\.)?([^\/\?#]+)/);
-        const domain = match ? match[1] : url.split(/[\/\?#]/)[0];
+        const match = url.match(/^https?:\/\/(?:www\.)?([^/?#]+)/);
+        const domain = match ? match[1] : url.split(/[/?#]/)[0];
         return `🔗 ${domain}...`;
       }
     }

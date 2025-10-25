@@ -6,7 +6,7 @@ import LoadingPost from "../../components/common/loaders/LoadingPost";
 const PostComponent = dynamic(() => import("./PostComponent"), { ssr: true });
 import { fmt } from "@/constants/path";
 import dynamic from "next/dynamic";
-import { useHomeFeedInfinite } from "@/hooks";
+import useHomeFeedInfinite from "@/features/posts/hooks/useHomeFeedInfinite";
 
 const HomePostComponent = () => {
   const {

@@ -34,8 +34,11 @@ import {
 } from "../../../components/common/Socket";
 import MessageMediaPreview from "./MessageMediaPreview";
 import LoadingSpinner from "@/components/common/loaders/LoadingSpinner";
-import imageCompression from "browser-image-compression";
+
+// Lazy load image compression to reduce main bundle size
 const compressImage = async (file: File) => {
+    const imageCompression = (await import("browser-image-compression"))
+        .default;
     const options = {
         maxSizeMB: 0.8,
         maxWidthOrHeight: 1440,
@@ -184,7 +187,6 @@ const MessageInputComponent = React.memo(
 
         useEffect(() => {
             if (!socket) return;
-            console.warn("Socket", socket);
             const handleConnect = () => getSocket();
             const handleDisconnect = () => disconnectSocket();
             const handleConnectError = () => disconnectSocket();

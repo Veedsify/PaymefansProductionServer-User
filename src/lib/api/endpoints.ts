@@ -207,5 +207,5 @@ export const ENDPOINTS = {
   },
 } as const;
 
-export type EndpointKey = keyof typeof ENDPOINTS;
-export type EndpointPath = string;
+type EndpointKey = keyof typeof ENDPOINTS;
+type EndpointPath = string;

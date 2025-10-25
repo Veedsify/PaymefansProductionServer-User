@@ -1,5 +1,4 @@
 "use client";
-import Hls from "hls.js";
 import {
   LucidePause,
   LucidePlay,
@@ -33,7 +32,7 @@ const HlsViewer = memo(
     showControls = false,
   }: VideoPlayerProps) => {
     const videoRef = useRef<HTMLVideoElement>(null);
-    const hlsRef = useRef<Hls | null>(null);
+    const hlsRef = useRef<any | null>(null);
     const mp4Ref = useRef<HTMLVideoElement>(null);
     const isMp4 = streamUrl.endsWith(".mp4");
     const { ref, inView } = useInView({
@@ -84,28 +83,43 @@ const HlsViewer = memo(
       const video = videoRef.current;
       if (!video) return;
 
-      if (Hls.isSupported()) {
-        const hls = new Hls({
-          enableWorker: true,
-          lowLatencyMode: true,
-        });
-        hls.loadSource(streamUrl);
-        hls.attachMedia(video);
-        hlsRef.current = hls;
+      // Dynamically import HLS.js only when needed
+      const initializeHLS = async () => {
+        try {
+          const Hls = (await import("hls.js")).default;
 
-        hls.on(Hls.Events.ERROR, (event, data) => {
-          if (data.fatal) {
-            console.error("HLS fatal error:", data);
+          if (Hls.isSupported()) {
+            const hls = new Hls({
+              enableWorker: true,
+              lowLatencyMode: true,
+            });
+            hls.loadSource(streamUrl);
+            hls.attachMedia(video);
+            hlsRef.current = hls;
+
+            hls.on(Hls.Events.ERROR, (event, data) => {
+              if (data.fatal) {
+                console.error("HLS fatal error:", data);
+              }
+            });
+
+            return () => {
+              hls.destroy();
+              hlsRef.current = null;
+            };
+          } else if (video.canPlayType("application/vnd.apple.mpegurl")) {
+            video.src = streamUrl;
           }
-        });
+        } catch (error) {
+          console.error("Failed to load HLS.js:", error);
+          // Fallback to native HLS support
+          if (video.canPlayType("application/vnd.apple.mpegurl")) {
+            video.src = streamUrl;
+          }
+        }
+      };
 
-        return () => {
-          hls.destroy();
-          hlsRef.current = null;
-        };
-      } else if (video.canPlayType("application/vnd.apple.mpegurl")) {
-        video.src = streamUrl;
-      }
+      initializeHLS();
     }, [streamUrl, isMp4]);
 
     // Manual play/pause toggle

@@ -32,8 +32,8 @@ export interface UserProfile {
 }
 
 // Media loading state reducer
-export type MediaState = { loaded: Set<number>; errors: Set<number> };
-export type MediaAction =
+type MediaState = { loaded: Set<number>; errors: Set<number> };
+type MediaAction =
   | { type: "LOAD_SUCCESS"; index: number }
   | { type: "LOAD_ERROR"; index: number }
   | { type: "RESET" };

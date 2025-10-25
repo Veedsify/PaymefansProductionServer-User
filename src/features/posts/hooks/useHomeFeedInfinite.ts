@@ -1,7 +1,7 @@
 "use client";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import ROUTE from "@/config/routes";
-import { type PostData } from "@/types/Components";
+import type { PostData } from "@/types/Components";
 import axiosInstance from "@/utils/Axios";
 
 interface HomeFeedResponse {

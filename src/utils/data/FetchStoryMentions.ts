@@ -1,7 +1,7 @@
 import axiosInstance from "@/utils/Axios";
 import { getToken } from "@/utils/Cookie";
 
-export interface StoryMentionUser {
+interface StoryMentionUser {
   id: number;
   user_id: string;
   username: string;
@@ -18,7 +18,7 @@ export interface StoryMention {
   mentioned_user: StoryMentionUser;
 }
 
-export interface FetchStoryMentionsResponse {
+interface FetchStoryMentionsResponse {
   error: boolean;
   message: string;
   data: {
@@ -27,7 +27,7 @@ export interface FetchStoryMentionsResponse {
   };
 }
 
-export interface AddStoryMentionsResponse {
+interface AddStoryMentionsResponse {
   error: boolean;
   message: string;
   data: {

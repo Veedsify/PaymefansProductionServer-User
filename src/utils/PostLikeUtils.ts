@@ -1,20 +1,20 @@
 // utils/PostLikeUtils.ts
 import axiosInstance from "@/utils/Axios";
 
-export interface PostLikeData {
+interface PostLikeData {
   postId: string;
   likeCount: number;
   isLiked: boolean;
 }
 
-export interface LikePostResponse {
+interface LikePostResponse {
   success: boolean;
   isLiked: boolean;
   likeCount: number;
   message: string;
 }
 
-export interface MultipleLikeDataResponse {
+interface MultipleLikeDataResponse {
   success: boolean;
   data: Record<string, { count: number; isLiked: boolean }>;
 }
@@ -35,7 +35,7 @@ export const likePost = async (postId: string): Promise<LikePostResponse> => {
 /**
  * Get like data for a single post
  */
-export const getPostLikeData = async (
+const getPostLikeData = async (
   postId: string,
 ): Promise<PostLikeData> => {
   try {
@@ -58,7 +58,7 @@ export const getPostLikeData = async (
 /**
  * Get like data for multiple posts efficiently
  */
-export const getMultiplePostsLikeData = async (
+const getMultiplePostsLikeData = async (
   postIds: string[],
 ): Promise<Record<string, { count: number; isLiked: boolean }>> => {
   try {

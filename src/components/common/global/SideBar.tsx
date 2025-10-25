@@ -1,5 +1,4 @@
 "use client";
-import { motion } from "framer-motion";
 import {
   LogOutIcon,
   LucideGroup,
@@ -387,19 +386,9 @@ const LogOutModal: React.FC<{ onClose: () => void }> = ({ onClose }) => {
       className="fixed inset-0 bg-black/50 flex items-center justify-center z-[300]"
       onClick={onClose}
     >
-      <motion.div
-        initial={{
-          scale: 0.6,
-          opacity: 0,
-          transformOrigin: "center",
-        }}
-        animate={{
-          scale: 1,
-          opacity: 1,
-          transformOrigin: "center",
-        }}
+      <div
         onClick={(e) => e.stopPropagation()}
-        className="w-full max-w-sm p-6 mx-4 bg-white dark:bg-gray-900 rounded-xl"
+        className="w-full max-w-sm p-6 mx-4 bg-white dark:bg-gray-900 rounded-xl animate-in zoom-in-95 fade-in duration-200"
       >
         <div className="flex items-center justify-center w-12 h-12 mx-auto mb-4 bg-red-100 rounded-full dark:bg-red-900/30">
           <LogOutIcon className="text-red-600 dark:text-red-400" />
@@ -427,7 +416,7 @@ const LogOutModal: React.FC<{ onClose: () => void }> = ({ onClose }) => {
             )}
           </button>
         </div>
-      </motion.div>
+      </div>
     </div>
   );
 };

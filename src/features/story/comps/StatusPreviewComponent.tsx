@@ -8,7 +8,7 @@ import { useAuthContext } from "@/contexts/UserUseContext";
 import { StoryPauseProvider } from "@/contexts/StoryPauseContext";
 import StoriesHeader from "./StatusHeader";
 import StoryPreviewControlls from "./StatusPreviewControls";
-import StatusPreviewSlide from "./StatusPreviewSlide";
+import StatusPreviewSlide from "./StatusPreviewSlide/index";
 import { Zoom } from "swiper/modules";
 import { QueryClient, useQueryClient } from "@tanstack/react-query";
 

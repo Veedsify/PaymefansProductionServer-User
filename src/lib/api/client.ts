@@ -475,4 +475,3 @@ export const useApi = () => {
   };
 };
 
-export default useApi;

@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { useApi } from "@/lib/api";
+import { useApi } from "@/lib/api/client";
 import { getSocket } from "@/components/common/Socket";
 import type { ChatMessage } from "@/lib/api/types";
 

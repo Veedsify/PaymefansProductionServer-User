@@ -28,7 +28,10 @@ import MentionDropdown from "./components/MentionDropdown";
 import MentionList from "./components/MentionList";
 import ExistingMediaPreview from "./ExistingMediaPreview";
 import dynamic from "next/dynamic";
-import { useMentions, usePostAudience, usePostEditor, usePostInitialization } from "@/hooks";
+import useMentions from "@/features/posts/hooks/useMentions";
+import usePostAudience from "@/features/posts/hooks/usePostAudience";
+import usePostEditor from "@/features/posts/hooks/usePostEditor";
+import usePostInitialization from "@/features/posts/hooks/usePostInitialization";
 const PostMediaPreview = dynamic(() => import("./PostMediaPreview"), {
   ssr: true,
 });

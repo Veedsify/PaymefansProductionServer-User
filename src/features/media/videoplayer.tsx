@@ -1,5 +1,4 @@
-"use client";;
-import Hls from "hls.js";
+"use client";
 import {
   LucideLoaderCircle,
   LucideMaximize,
@@ -47,7 +46,7 @@ const VideoPlayer = ({
   userProfile,
 }: VideoPlayerProps) => {
   const videoRef = useRef<HTMLVideoElement>(null);
-  const hlsRef = useRef<Hls | null>(null);
+  const hlsRef = useRef<any | null>(null);
   const { ref: intersectionRef, inView } = useInView({ threshold: 0.5 });
   const controlsTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -118,55 +117,74 @@ const VideoPlayer = ({
       });
       return;
     }
-    if (Hls.isSupported()) {
-      const hls = new Hls({
-        // Reduce initial loading time
-        startPosition: 0,
-        enableWorker: true,
-        lowLatencyMode: true,
-        // Faster loading configurations
-        backBufferLength: 20, // Reduce back buffer for faster start
-        maxBufferLength: 30,
-        maxBufferSize: 40 * 1000 * 1000, // 40MB
-        // Prioritize faster loading over quality initially
-        capLevelToPlayerSize: true,
-        // Enable progressive loading
-        progressive: true,
-        // Reduce manifest loading time
-        manifestLoadingTimeOut: 10000,
-        manifestLoadingMaxRetry: 2,
-        manifestLoadingRetryDelay: 500,
-      });
-      hls.loadSource(streamUrl);
-      hls.attachMedia(video);
-      hlsRef.current = hls;
-      hls.on(Hls.Events.MANIFEST_PARSED, () => {
-        const levels = hls.levels
-          .filter((level) => level.height !== undefined)
-          .sort((a, b) => (b.height || 0) - (a.height || 0))
-          .map((level, index) => ({
-            index: hls.levels.length - 1 - index,
-            label: GetResolution(level.height),
-            height: level.height,
-          }));
-        const quality = localStorage.getItem("selectedQuality");
-        setSelectedQuality(
-          quality ? parseInt(quality) : levels[0]?.index ?? -1
-        );
-        setQualityLevels([...levels, { index: -1, label: "Auto" }]);
-        setIsLoading(false);
-      });
-      hls.on(Hls.Events.ERROR, (event, data) => {
-        console.log("HLS Error:", data);
-      });
-      return () => hls.destroy();
-    } else if (video.canPlayType("application/vnd.apple.mpegurl")) {
-      video.src = streamUrl;
-      video.load();
-      video.addEventListener("loadeddata", () => {
-        setIsLoading(false);
-      });
-    }
+    // Dynamically import HLS.js only when needed
+    const initializeHLS = async () => {
+      try {
+        const Hls = (await import("hls.js")).default;
+
+        if (Hls.isSupported()) {
+          const hls = new Hls({
+            // Reduce initial loading time
+            startPosition: 0,
+            enableWorker: true,
+            lowLatencyMode: true,
+            // Faster loading configurations
+            backBufferLength: 20, // Reduce back buffer for faster start
+            maxBufferLength: 30,
+            maxBufferSize: 40 * 1000 * 1000, // 40MB
+            // Prioritize faster loading over quality initially
+            capLevelToPlayerSize: true,
+            // Enable progressive loading
+            progressive: true,
+            // Reduce manifest loading time
+            manifestLoadingTimeOut: 10000,
+            manifestLoadingMaxRetry: 2,
+            manifestLoadingRetryDelay: 500,
+          });
+          hls.loadSource(streamUrl);
+          hls.attachMedia(video);
+          hlsRef.current = hls;
+          hls.on(Hls.Events.MANIFEST_PARSED, () => {
+            const levels = hls.levels
+              .filter((level) => level.height !== undefined)
+              .sort((a, b) => (b.height || 0) - (a.height || 0))
+              .map((level, index) => ({
+                index: hls.levels.length - 1 - index,
+                label: GetResolution(level.height),
+                height: level.height,
+              }));
+            const quality = localStorage.getItem("selectedQuality");
+            setSelectedQuality(
+              quality ? parseInt(quality) : levels[0]?.index ?? -1
+            );
+            setQualityLevels([...levels, { index: -1, label: "Auto" }]);
+            setIsLoading(false);
+          });
+          hls.on(Hls.Events.ERROR, (event, data) => {
+            console.log("HLS Error:", data);
+          });
+          return () => hls.destroy();
+        } else if (video.canPlayType("application/vnd.apple.mpegurl")) {
+          video.src = streamUrl;
+          video.load();
+          video.addEventListener("loadeddata", () => {
+            setIsLoading(false);
+          });
+        }
+      } catch (error) {
+        console.error("Failed to load HLS.js:", error);
+        // Fallback to native HLS support
+        if (video.canPlayType("application/vnd.apple.mpegurl")) {
+          video.src = streamUrl;
+          video.load();
+          video.addEventListener("loadeddata", () => {
+            setIsLoading(false);
+          });
+        }
+      }
+    };
+
+    initializeHLS();
   }, [streamUrl]);
   // Handle buffering events
   useEffect(() => {

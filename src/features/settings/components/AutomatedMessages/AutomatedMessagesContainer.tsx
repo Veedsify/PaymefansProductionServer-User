@@ -1,6 +1,7 @@
 "use client";
 
-import React, { useState } from "react";
+import type React from "react";
+import { useState } from "react";
 import { AlertCircle, Check, Save, UserPlus, Users, X } from "lucide-react";
 import { useAutomatedMessages } from "../../hooks/useAutomatedMessages";
 import MessageCard from "./MessageCard";

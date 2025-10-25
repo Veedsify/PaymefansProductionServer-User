@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import type React from "react";
 import { countries } from "@/lib/Locations";
 import type { ModelSignUpData, FormErrors } from "../../types";
 

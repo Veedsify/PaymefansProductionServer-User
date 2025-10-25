@@ -22,7 +22,7 @@ export interface FormErrors {
   audience?: string;
 }
 
-export const GENDER_OPTIONS: Omit<postAudienceDataProps2, "icon">[] = [
+const GENDER_OPTIONS: Omit<postAudienceDataProps2, "icon">[] = [
   {
     id: 1,
     name: "Male",

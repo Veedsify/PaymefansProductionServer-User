@@ -11,7 +11,7 @@ import axiosInstance from "@/utils/Axios";
 import { LockedMediaOverlay } from "./LockedMediaOverlay";
 import HLSVideoPlayer from "./videoplayer";
 import LoadingSpinner from "@/components/common/loaders/LoadingSpinner";
-import { useMediaActions } from "@/hooks";
+import useMediaActions from "@/features/posts/hooks/useMediaActions";
 
 interface PrivateMediaPanelMediaCardProps {
   media: MediaDataTypeOtherProps;

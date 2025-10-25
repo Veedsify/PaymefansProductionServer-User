@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import type React from "react";
 import LoadingSpinner from "@/components/common/loaders/LoadingSpinner";
 
 interface ModelPaymentHandlerProps {

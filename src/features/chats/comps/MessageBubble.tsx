@@ -1,5 +1,5 @@
 "use client";
-import { motion } from "framer-motion";
+// Removed framer-motion import to reduce bundle size
 import type React from "react";
 import { useCallback, useEffect, useMemo, useRef } from "react";
 import { useInView } from "react-intersection-observer";
@@ -149,16 +149,13 @@ const MessageBubble: React.FC<MessageBubbleProps> = ({
   );
 
   return (
-    <motion.div
-      initial={{ opacity: 0, x: isSender ? 50 : -50 }}
-      animate={{ opacity: 1, x: 0 }}
-      transition={{ type: "spring", stiffness: 300, damping: 30 }}
-      className={`flex items-center w-full ${
+    <div
+      className={`flex items-center w-full animate-in slide-in-from-right-4 fade-in duration-300 ${
         isSender ? "justify-end" : "justify-start"
       }`}
     >
       {Bubble}
-    </motion.div>
+    </div>
   );
 };
 

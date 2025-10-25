@@ -1,6 +1,6 @@
 "use client";;
 import { useQuery } from "@tanstack/react-query";
-import { type ReactNode } from "react";
+import type { ReactNode } from "react";
 import ConfigProvider from "@/contexts/ConfigContext";
 import GetLocationContext from "@/contexts/GetLocationContext";
 import { MessagesConversationProvider } from "@/contexts/MessageConversationContext";

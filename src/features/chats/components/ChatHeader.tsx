@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import type React from "react";
 import { LucideArrowLeft, LucideGrip, LucideVerified } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -13,7 +13,7 @@ interface ChatHeaderProps {
   onBack: () => void;
 }
 
-export const ChatHeader: React.FC<ChatHeaderProps> = ({
+const ChatHeader: React.FC<ChatHeaderProps> = ({
   receiver,
   conversationId,
   onBack,
