@@ -15,7 +15,7 @@ const ParentalGuide = ({ setAcceptedTerms }: ParentalGuideProps) => {
 
   return (
     <div className="fixed inset-0 z-[200] flex items-center justify-center bg-black/80 backdrop-blur-sm">
-      <div className="w-full max-w-lg p-10 mx-4 bg-white border border-gray-300 shadow-2xl dark:bg-gray-800 rounded-2xl dark:border-gray-700">
+      <div className="w-full max-w-lg p-5 max-h-[450px] overflow-y-scroll py-6 md:p-10 mx-4 bg-white border border-gray-300 shadow-2xl dark:bg-gray-800r rounded-xl md:rounded-2xl dark:border-gray-700">
         <div className="mb-8 text-center">
           <Image
             src="/site/logo.svg"
@@ -27,11 +27,11 @@ const ParentalGuide = ({ setAcceptedTerms }: ParentalGuideProps) => {
           <div className="w-12 h-1 mx-auto mb-4 bg-red-500"></div>
         </div>
 
-        <h2 className="mb-4 text-2xl font-bold text-center text-gray-800 dark:text-white">
+        <h2 className="mb-4 md:text-2xl font-bold text-center text-gray-800 dark:text-white">
           Age Restricted Sensitive Content
         </h2>
 
-        <div className="text-base text-gray-700 dark:text-gray-300 space-y-5">
+        <div className="text-sm md:text-base text-gray-700 dark:text-gray-300 space-y-5">
           <p>
             Access to this website (Paymefans) is strictly regulated. By
             entering, you acknowledge that you have read, understood, and agree
@@ -51,7 +51,7 @@ const ParentalGuide = ({ setAcceptedTerms }: ParentalGuideProps) => {
           </div>
         </div>
 
-        <div className="mt-6 text-sm text-center text-gray-600 dark:text-gray-400">
+        <div className="mt-6 text-xs md:text-sm text-center text-gray-600 dark:text-gray-400">
           By continuing, you agree to our{" "}
           <Link
             href="/terms"
@@ -71,13 +71,13 @@ const ParentalGuide = ({ setAcceptedTerms }: ParentalGuideProps) => {
         <div className="flex justify-center mt-8 gap-4">
           <button
             onClick={handleCancelClick}
-            className="px-8 py-2 font-semibold text-white bg-gray-500 rounded-lg shadow-md cursor-pointer hover:bg-gray-600 transition transform hover:scale-105 duration-200"
+            className="md:px-8 md:py-2 px-6 py-1 text-sm font-semibold text-white bg-gray-500 rounded-lg shadow-md cursor-pointer hover:bg-gray-600 transition transform hover:scale-105 duration-200"
           >
             Cancel
           </button>
           <button
             onClick={() => setAcceptedTerms(true)}
-            className="px-8 py-2 font-semibold text-white rounded-lg shadow-md cursor-pointer bg-primary-dark-pink transition transform hover:scale-105 duration-200"
+            className="md:px-8 md:py-2 px-6 py-1 text-sm font-semibold text-white rounded-lg shadow-md cursor-pointer bg-primary-dark-pink transition transform hover:scale-105 duration-200"
           >
             Enter
           </button>
