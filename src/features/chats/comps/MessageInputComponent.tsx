@@ -377,15 +377,18 @@ const MessageInputComponent = React.memo(
       }
     }, [messageMediaFiles.length]);
 
-    // SSE connection for video processing status
+    // SSE connection for video processing status - only connect when there are processing videos
     useEffect(() => {
-      if (!user?.id) return;
-
-      console.log("🔌 Connecting to message media SSE...", user.id);
+      // Only connect SSE if there is a video in "processing" state
+      const hasProcessingVideo = messageMediaFiles.some(
+        (m) => m.media_type === "video" && m.media_state === "processing"
+      );
+      if (!user?.id || !hasProcessingVideo) return;
 
       const evtSource = new EventSource(
         process.env.NEXT_PUBLIC_TS_EXPRESS_URL +
-          `/events/message-media-state?userId=${user?.id}`
+          `/events/message-media-state?userId=${user?.id}`,
+        { withCredentials: true }
       );
 
       evtSource.onopen = () => {
@@ -399,28 +402,19 @@ const MessageInputComponent = React.memo(
       evtSource.addEventListener(
         "message-processing-complete",
         (event: MessageEvent) => {
-          console.log(
-            "📥 SSE message-processing-complete received:",
-            event.data
-          );
           try {
             if (event.data) {
               const data = JSON.parse(event.data);
               console.log("✅ Updating media state for:", data.mediaId);
 
-              // Check if media file exists and show toast outside setState
               setMessageMediaFiles((prev) => {
                 const mediaFile = prev.find((m) => m.media_id === data.mediaId);
-
-                // Only update if the media file exists in current state
                 if (!mediaFile) {
                   console.log(
                     "⚠️ Media file not found in current state, ignoring event"
                   );
                   return prev;
                 }
-
-                // Schedule toast for next tick to avoid setState during render
                 if (mediaFile.media_state === "processing") {
                   setTimeout(() => {
                     toast.success("Video processing completed!", {
@@ -428,7 +422,6 @@ const MessageInputComponent = React.memo(
                     });
                   }, 0);
                 }
-
                 const updated = prev.map((m) =>
                   m.media_id === data.mediaId
                     ? {
@@ -457,7 +450,7 @@ const MessageInputComponent = React.memo(
         console.log("🔌 Closing SSE connection");
         evtSource.close();
       };
-    }, [user?.id]);
+    }, [user?.id, messageMediaFiles]);
 
     // Validate environment variables on mount
     useEffect(() => {

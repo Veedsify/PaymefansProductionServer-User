@@ -149,7 +149,7 @@ const ConversationCard = React.memo(
           !isLast && "border-b",
           isUnread
             ? "bg-indigo-50 dark:bg-indigo-900/30 font-medium"
-            : "bg-white dark:bg-gray-950",
+            : "bg-white dark:bg-gray-950"
         )}
       >
         {/* Profile Image with Active Status */}
@@ -194,7 +194,7 @@ const ConversationCard = React.memo(
               }
               className="font-semibold text-gray-900 truncate dark:text-gray-100"
             >
-              <span className="flex items-center truncate gap-1">
+              <span className="flex items-center truncate gap-1 text-sm">
                 {FormatName(conversation.receiver.name)}
                 {isVerified && (
                   <LucideVerified size={16} className="text-yellow-500" />
@@ -227,7 +227,7 @@ const ConversationCard = React.memo(
           </div>
 
           {/* Message Preview */}
-          <div className="text-sm text-gray-600 truncate dark:text-gray-300">
+          <div className="text-xs text-gray-600 truncate dark:text-gray-300">
             <Link
               href={`/chats/${conversation.conversation_id}`}
               onClick={(e) => e.stopPropagation()}

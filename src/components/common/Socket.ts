@@ -1,132 +1,175 @@
-import { io, type Socket } from "socket.io-client";
+import { io, SocketOptions, type Socket } from "socket.io-client";
 
-let socket: Socket | null = null;
-let heartbeatInterval: NodeJS.Timeout | null = null;
-let currentUsername: string | null = null;
-let isConnecting = false;
+interface SocketConfig extends SocketOptions {
+  url: string;
+  path: string;
+  reconnectionAttempts: number;
+  reconnectionDelay: number;
+  timeout: number;
+  heartbeatIntervalMs: number;
+  transports?: ("websocket" | "polling")[];
+  reconnection?: boolean;
+}
 
-/**
- * Connects the socket with the given username.
- * If already connected with the same user, does nothing.
- * If connected with a different user, disconnects and reconnects.
- */
-export const connectSocket = (username?: string | null): Socket | null => {
-  // Normalize username
-  const normalizedUsername = username || null;
+const defaultConfig: SocketConfig = {
+  url: process.env.NEXT_PUBLIC_TS_EXPRESS_URL_DIRECT || "",
+  path: "/socket.io",
+  transports: ["websocket", "polling"],
+  reconnection: true,
+  reconnectionAttempts: 5,
+  reconnectionDelay: 500,
+  retries: 5,
+  timeout: 5000,
+  heartbeatIntervalMs: 5000,
+};
 
-  // If already connected with the same username, do nothing
-  if (socket?.connected && currentUsername === normalizedUsername) {
-    return socket;
+// Singleton socket manager class
+class SocketManager {
+  private socket: Socket | null = null;
+  private heartbeatInterval: NodeJS.Timeout | null = null;
+  private currentUsername: string | null = null;
+  private isConnecting = false;
+  private config: SocketConfig;
+
+  constructor(config: SocketConfig) {
+    this.config = config;
+    this.validateConfig();
   }
 
-  // If trying to connect without a username
-  if (!normalizedUsername) {
-    console.error("Cannot connect socket: no username provided");
-    return null;
+  // Validate configuration to prevent runtime errors
+  private validateConfig(): void {
+    if (!this.config.url) {
+      throw new Error("Socket URL is not defined in environment variables");
+    }
   }
 
-  // Avoid multiple simultaneous connection attempts
-  if (isConnecting) {
-    console.warn("Socket is already connecting...");
-    return socket;
-  }
+  // Connects the socket with the given username
+  public connect(username?: string | null): Socket | null {
+    if (!username) {
+      console.error("Cannot connect socket: no username provided");
+      return null;
+    }
+    const normalizedUsername = encodeURIComponent(username.trim());
 
-  try {
-    isConnecting = true;
-
-    // If there's an existing socket, disconnect it first
-    if (socket) {
-      socket.removeAllListeners();
-      socket.disconnect();
+    // Early return if already connected with the same username
+    if (this.socket?.connected && this.currentUsername === normalizedUsername) {
+      return this.socket;
     }
 
-    // Update current username
-    currentUsername = normalizedUsername;
+    // Prevent connection without a username
+    if (!normalizedUsername) {
+      console.error("Cannot connect socket: no username provided");
+      return null;
+    }
 
-    // Create new socket connection
-    socket = io(process.env.NEXT_PUBLIC_TS_EXPRESS_URL_DIRECT as string, {
-      query: { username: normalizedUsername },
-      path: "/socket.io",
-      // Avoid unnecessary forceNew; we're manually managing singleton
-      reconnection: true,
-      reconnectionAttempts: Infinity,
-      reconnectionDelay: 1000,
-      timeout: 20000,
-    });
+    // Prevent concurrent connection attempts
+    if (this.isConnecting) {
+      console.warn("Socket is already connecting...");
+      return this.socket;
+    }
 
-    // Connection established
-    socket?.on("connect", () => {
-      isConnecting = false;
+    try {
+      this.isConnecting = true;
 
-      // Start heartbeat
-      if (heartbeatInterval) clearInterval(heartbeatInterval);
-      heartbeatInterval = setInterval(() => {
-        if (socket?.connected && currentUsername) {
-          socket?.emit("still-active", currentUsername);
-        }
-      }, 5000);
-    });
+      // Clean up existing socket
+      this.disconnect();
 
-    // Handle disconnect
-    socket?.on("disconnect", (reason) => {
-      isConnecting = false;
-      if (heartbeatInterval) {
-        clearInterval(heartbeatInterval);
-        heartbeatInterval = null;
+      this.currentUsername = normalizedUsername;
+
+      // Initialize new socket
+      this.socket = io(this.config.url, {
+        query: { username: normalizedUsername },
+        path: this.config.path,
+        reconnection: true,
+        reconnectionAttempts: this.config.reconnectionAttempts,
+        reconnectionDelay: this.config.reconnectionDelay,
+        timeout: this.config.timeout,
+      });
+
+      // Handle connection
+      this.socket.on("connect", () => {
+        this.isConnecting = false;
+        console.log(`Socket connected for user: ${normalizedUsername}`);
+
+        // Start heartbeat
+        this.startHeartbeat();
+      });
+
+      // Handle disconnection
+      this.socket.on("disconnect", (reason) => {
+        this.isConnecting = false;
+        this.stopHeartbeat();
+        console.log(`Socket disconnected: ${reason}`);
+      });
+
+      // Handle connection errors
+      this.socket.on("connect_error", (error) => {
+        this.isConnecting = false;
+        console.error(`Socket connection error: ${error.message}`);
+      });
+
+      return this.socket;
+    } catch (error) {
+      this.isConnecting = false;
+      console.error("Failed to connect socket:", error);
+      this.disconnect();
+      return null;
+    }
+  }
+
+  // Starts the heartbeat interval
+  private startHeartbeat(): void {
+    this.stopHeartbeat(); // Ensure no existing interval
+    if (!this.currentUsername) return;
+
+    this.heartbeatInterval = setInterval(() => {
+      if (this.socket?.connected && this.currentUsername) {
+        this.socket.emit("still-active", this.currentUsername);
       }
-      console.log("Socket disconnected:", reason);
-    });
-
-    // Handle connection errors
-    socket?.on("connect_error", (error) => {
-      isConnecting = false;
-      console.error("Socket connection error:", error);
-      // Socket.io will retry automatically based on config above
-    });
-
-    return socket;
-  } catch (error) {
-    isConnecting = false;
-    console.error("Failed to connect socket:", error);
-    disconnectSocket();
-    return null;
-  }
-};
-
-/**
- * Returns the current socket instance.
- * If no active connection, returns null.
- * Use this only to access the socket after ensuring connection via connectSocket.
- */
-export const getSocket = (): Socket | null => {
-  if (socket && socket.connected) {
-    return socket;
-  }
-  return null; // Don't create new socket — force use of connectSocket
-};
-
-/**
- * Gracefully disconnects the socket.
- */
-const disconnectSocket = () => {
-  if (heartbeatInterval) {
-    clearInterval(heartbeatInterval);
-    heartbeatInterval = null;
+    }, this.config.heartbeatIntervalMs);
   }
 
-  if (socket) {
-    socket.removeAllListeners();
-    socket.disconnect();
-    socket = null;
+  // Stops the heartbeat interval
+  private stopHeartbeat(): void {
+    if (this.heartbeatInterval) {
+      clearInterval(this.heartbeatInterval);
+      this.heartbeatInterval = null;
+    }
   }
 
-  currentUsername = null;
-  isConnecting = false;
-};
+  // Returns the current socket instance
+  public getSocket(): Socket | null {
+    return this.socket?.connected ? this.socket : null;
+  }
 
-/**
- * Checks if the socket is currently connected.
- */
-export const isSocketConnected = (): boolean => {
-  return socket?.connected || false;
-};
+  // Checks if the socket is connected
+  public isConnected(): boolean {
+    return this.socket?.connected ?? false;
+  }
+
+  // Gracefully disconnects the socket
+  public disconnect(): void {
+    this.stopHeartbeat();
+
+    if (this.socket) {
+      // Check if socket is still connected before calling methods
+      if (this.socket.connected) {
+        this.socket.removeAllListeners();
+        this.socket.disconnect();
+      }
+      this.socket = null;
+    }
+
+    this.currentUsername = null;
+    this.isConnecting = false;
+  }
+}
+
+// Export singleton instance
+const socketManager = new SocketManager(defaultConfig);
+
+export const connectSocket = (username?: string | null): Socket | null =>
+  socketManager.connect(username);
+export const getSocket = (): Socket | null => socketManager.getSocket();
+export const isSocketConnected = (): boolean => socketManager.isConnected();
+export const disconnectSocket = (): void => socketManager.disconnect();
