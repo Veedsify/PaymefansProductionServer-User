@@ -229,16 +229,18 @@ const AddPoints = () => {
 
   return (
     <div>
-      <div className="flex items-start mb-3 gap-2">
+      <div className="flex items-start mb-3 gap-2 ">
         <div className="text-4xl">{symbol}</div>
-        <div className="flex-1">
+        <div className="text-[60px] md:text-[128px]">
           <input
             type="text"
             value={value}
             onChange={handleChange}
             pattern="^\d*\.?\d*$"
             placeholder="0"
-            className="w-full p-0 text-6xl font-bold border-none outline-none md:text-9xl"
+            name="price-input"
+            id="price-input"
+            className="w-full  font-bold border-none outline-none  flex-1"
             inputMode="decimal"
           />
         </div>

@@ -37,6 +37,12 @@ const nextConfig: NextConfig = {
       },
       {
         protocol: "http",
+        hostname: "127.0.0.1",
+        port: "3009",
+        pathname: "/**",
+      },
+      {
+        protocol: "http",
         hostname: "localhost",
         port: "3000",
         pathname: "/uploads/**",
@@ -69,6 +75,11 @@ const nextConfig: NextConfig = {
       {
         protocol: "https",
         hostname: "flagcdn.com",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "api.paymefans.com",
         pathname: "/**",
       },
       {
