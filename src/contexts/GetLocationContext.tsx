@@ -207,22 +207,27 @@ export default function GetLocationContext({
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/80 z-[200] flex items-center justify-center p-4"
+            className="fixed inset-0 bg-black/80 z-[200] flex items-center justify-center p-2 sm:p-4"
           >
             <motion.div
               initial={{ scale: 0.9, opacity: 0, y: 20 }}
               animate={{ scale: 1, opacity: 1, y: 0 }}
               exit={{ scale: 0.9, opacity: 0, y: 20 }}
               transition={{ type: "spring", duration: 0.5 }}
-              className="w-full max-w-md overflow-hidden bg-white shadow-2xl dark:bg-gray-900 rounded-2xl"
+              className="w-full max-w-md overflow-hidden bg-white shadow-2xl dark:bg-gray-900 rounded-2xl sm:rounded-2xl "
+              style={{
+                maxHeight: "100vh",
+                minHeight: "0",
+                height: "auto",
+              }}
             >
               {/* Header */}
-              <div className="relative p-6 text-white bg-gradient-to-br from-purple-500 to-purple-600">
+              <div className="relative p-4 sm:p-6 text-white bg-gradient-to-br from-purple-500 to-purple-600">
                 <motion.button
                   whileHover={{ scale: 1.1 }}
                   whileTap={{ scale: 0.9 }}
                   onClick={handleLocationDecline}
-                  className="absolute p-1 rounded-full top-4 right-4 hover:bg-white/20 transition-colors"
+                  className="absolute p-1 rounded-full top-3 right-3 sm:top-4 sm:right-4 hover:bg-white/20 transition-colors"
                 >
                   <X className="w-5 h-5" />
                 </motion.button>
@@ -231,7 +236,7 @@ export default function GetLocationContext({
                   initial={{ scale: 0 }}
                   animate={{ scale: 1 }}
                   transition={{ delay: 0.2, type: "spring" }}
-                  className="flex items-center justify-center w-16 h-16 mx-auto mb-4 rounded-full bg-white/20"
+                  className="flex items-center justify-center w-14 h-14 sm:w-16 sm:h-16 mx-auto mb-3 sm:mb-4 rounded-full bg-white/20"
                 >
                   <MapPin className="w-8 h-8" />
                 </motion.div>
@@ -240,7 +245,7 @@ export default function GetLocationContext({
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.3 }}
-                  className="mb-2 text-2xl font-bold text-center"
+                  className="mb-1 sm:mb-2 text-xl sm:text-2xl font-bold text-center"
                 >
                   {user?.is_model
                     ? "Share Your Location"
@@ -251,7 +256,7 @@ export default function GetLocationContext({
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.4 }}
-                  className="text-center text-white/90"
+                  className="text-center text-white/90 text-sm sm:text-base"
                 >
                   {user?.is_model
                     ? "Let others find you nearby"
@@ -260,12 +265,12 @@ export default function GetLocationContext({
               </div>
 
               {/* Content */}
-              <div className="p-6">
+              <div className="p-4 sm:p-6">
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.5 }}
-                  className="mb-6 space-y-4"
+                  className="mb-4 sm:mb-6 space-y-3 sm:space-y-4"
                 >
                   {benefits.map((benefit, index) => (
                     <motion.div
@@ -273,16 +278,16 @@ export default function GetLocationContext({
                       initial={{ opacity: 0, x: -20 }}
                       animate={{ opacity: 1, x: 0 }}
                       transition={{ delay: 0.6 + index * 0.1 }}
-                      className="flex items-start space-x-3"
+                      className="flex items-start space-x-2 sm:space-x-3"
                     >
-                      <div className="flex items-center justify-center flex-shrink-0 w-10 h-10 text-blue-600 bg-blue-100 rounded-full">
+                      <div className="flex items-center justify-center flex-shrink-0 w-8 h-8 sm:w-10 sm:h-10 text-blue-600 bg-blue-100 rounded-full">
                         {benefit.icon}
                       </div>
                       <div>
-                        <h3 className="mb-1 font-semibold text-gray-900 dark:text-white">
+                        <h3 className="mb-0.5 sm:mb-1 font-semibold text-gray-900 dark:text-white text-sm sm:text-base">
                           {benefit.title}
                         </h3>
-                        <p className="text-sm text-gray-600 dark:text-white">
+                        <p className="text-xs sm:text-sm text-gray-600 dark:text-white">
                           {benefit.description}
                         </p>
                       </div>
@@ -295,9 +300,9 @@ export default function GetLocationContext({
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ delay: 0.9 }}
-                  className="p-3 mb-6 rounded-lg bg-gray-50 dark:bg-gray-800"
+                  className="p-2 sm:p-3 mb-4 sm:mb-6 rounded-lg bg-gray-50 dark:bg-gray-800"
                 >
-                  <p className="text-xs text-center text-gray-600 dark:text-white">
+                  <p className="text-[10px] sm:text-xs text-center text-gray-600 dark:text-white">
                     🔒{" "}
                     {user?.is_model
                       ? "Your exact location is never shared. We only show your general area to help with matching."
@@ -310,14 +315,14 @@ export default function GetLocationContext({
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 1.0 }}
-                  className="space-y-3"
+                  className="space-y-2 sm:space-y-3"
                 >
                   <motion.button
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
                     onClick={handleLocationAccept}
                     disabled={isLoading || locationStatus === "granted"}
-                    className="flex items-center justify-center w-full px-6 py-3 font-semibold text-white rounded-lg bg-primary-dark-pink hover:from-blue-600 hover:to-purple-700 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed space-x-2"
+                    className="flex items-center justify-center w-full px-4 sm:px-6 py-2 sm:py-3 font-semibold text-white rounded-lg bg-primary-dark-pink hover:from-blue-600 hover:to-purple-700 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed space-x-2 text-sm sm:text-base"
                   >
                     {isLoading ? (
                       <>
@@ -354,7 +359,7 @@ export default function GetLocationContext({
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
                       onClick={handleLocationDecline}
-                      className="w-full px-6 py-3 font-semibold text-gray-700 border border-gray-300 rounded-lg hover:border-gray-400 dark:text-white transition-all duration-200"
+                      className="w-full px-4 sm:px-6 py-2 sm:py-3 font-semibold text-gray-700 border border-gray-300 rounded-lg hover:border-gray-400 dark:text-white transition-all duration-200 text-sm sm:text-base"
                     >
                       Maybe Later
                     </motion.button>
@@ -365,9 +370,9 @@ export default function GetLocationContext({
                   <motion.div
                     initial={{ opacity: 0, scale: 0.9 }}
                     animate={{ opacity: 1, scale: 1 }}
-                    className="p-3 mt-4 border border-red-200 rounded-lg bg-red-50"
+                    className="p-2 sm:p-3 mt-3 sm:mt-4 border border-red-200 rounded-lg bg-red-50"
                   >
-                    <p className="text-sm text-center text-red-600">
+                    <p className="text-xs sm:text-sm text-center text-red-600">
                       Location access was denied. You can enable it later in
                       your browser settings.
                     </p>
