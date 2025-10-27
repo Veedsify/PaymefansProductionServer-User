@@ -618,15 +618,15 @@ const MessageInputComponent = React.memo(
                 setMessageMediaFiles([]); // Clear message media files
 
                 // Ensure socket connection
-                if (!socket?.connected) {
-                    socket?.connect();
-                    await new Promise((resolve) => setTimeout(resolve, 1000));
-                    if (!socket?.connected) {
-                        toast.error(
-                            "Connection lost. Please refresh and try again.",
-                        );
-                        return;
-                    }
+                if (!isSocketConnected) {
+                  socket?.connect();
+                  await new Promise((resolve) => setTimeout(resolve, 1000));
+                  if (!isSocketConnected) {
+                    toast.error(
+                      "Connection lost. Please refresh and try again."
+                    );
+                    return;
+                  }
                 }
 
                 // Emit message with timeout
@@ -656,6 +656,7 @@ const MessageInputComponent = React.memo(
                         }, 300);
                     });
                 } catch (socketError: any) {
+                    console.error("❌ Socket error on message send:", socketError);
                     if (socketError.message === "Message send timeout") {
                         toast.error(
                             "Message is taking longer than expected. It may still be sent. Please wait before trying again.",

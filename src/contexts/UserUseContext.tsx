@@ -11,11 +11,7 @@ import {
     useState,
 } from "react";
 // Socket type will be imported dynamically
-import {
-  connectSocket,
-  disconnectSocket,
-  getSocket,
-} from "@/components/common/Socket";
+import { connectSocket } from "@/components/common/Socket";
 import { postRegex, profileRegex } from "@/constants/regex";
 import type { AuthUserProps } from "@/features/user/types/user";
 import axiosInstance, { AuthFailureError } from "@/utils/Axios";
@@ -78,148 +74,130 @@ export const AuthContextProvider = ({
     }, []);
 
     const fetchUser = useCallback(async () => {
-        if (ref.current !== 0) {
-            return;
+      if (ref.current !== 0) {
+        return;
+      }
+
+      // Check if we have a token before making the request
+      const token = document.cookie
+        .split("; ")
+        .find((row) => row.startsWith("token="))
+        ?.split("=")[1];
+
+      if (!token) {
+        setGuestUser();
+        ref.current += 1;
+
+        if (!isProfilePage && !isPostPage) {
+          router.push("/login");
+        }
+        return null;
+      }
+
+      setIsLoading(true);
+
+      try {
+        const res = await axiosInstance.get(`/auth/retrieve`);
+        const userData = res.data && (res.data.user as AuthUserProps);
+        if (userData) {
+          if (userData.username && userData.user_id) {
+            connectSocket({
+              username: userData?.username,
+              userid: userData?.user_id,
+            });
+          }
+          setIsGuest(false);
+          setUser(userData);
+        } else {
+          setGuestUser();
         }
 
-        // Check if we have a token before making the request
-        const token = document.cookie
-            .split("; ")
-            .find((row) => row.startsWith("token="))
-            ?.split("=")[1];
+        setIsLoading(false);
+        ref.current += 1;
+        return userData;
+      } catch (err: unknown) {
+        const axiosError = err as AxiosError;
 
-        if (!token) {
-            setGuestUser();
-            ref.current += 1;
-
-            if (!isProfilePage && !isPostPage) {
-                router.push("/login");
-            }
-            return null;
+        // Handle AuthFailureError specifically (from failed token refresh)
+        if (err instanceof AuthFailureError) {
+          console.log("Authentication failed - setting guest user");
+          setGuestUser();
+          ref.current += 1;
+          return null;
         }
 
-        setIsLoading(true);
+        // For 401 errors from initial auth call, also set guest
+        if (axiosError?.response?.status === 401) {
+          console.log("401 error - setting guest user");
+          setGuestUser();
+          ref.current += 1;
 
-        try {
-            const res = await axiosInstance.get(`/auth/retrieve`);
-            const userData = res.data && (res.data.user as AuthUserProps);
-            if (userData) {
-                connectSocket({
-                  username: userData?.username,
-                  userid: userData?.user_id,
-                }).then((socketInstance) => {
-                  socket = socketInstance;
-                });
-                setIsGuest(false);
-                setUser(userData);
-            } else {
-                setGuestUser();
-            }
-
-            setIsLoading(false);
-            ref.current += 1;
-            return userData;
-        } catch (err: unknown) {
-            const axiosError = err as AxiosError;
-
-            // Handle AuthFailureError specifically (from failed token refresh)
-            if (err instanceof AuthFailureError) {
-                console.log("Authentication failed - setting guest user");
-                setGuestUser();
-                ref.current += 1;
-                return null;
-            }
-
-            // For 401 errors from initial auth call, also set guest
-            if (axiosError?.response?.status === 401) {
-                console.log("401 error - setting guest user");
-                setGuestUser();
-                ref.current += 1;
-
-                if (!isProfilePage && !isPostPage) {
-                    router.push("/login");
-                }
-                return null;
-            }
-
-            // For other errors, also set guest user
-            if (axiosError?.response?.status !== 401) {
-                setGuestUser();
-                ref.current += 1;
-
-                if (!isProfilePage && !isPostPage) {
-                    router.push("/login");
-                }
-            } else {
-                // For other 401 errors, let the Axios interceptor handle it
-                setIsLoading(false);
-            }
-
-            return null;
+          if (!isProfilePage && !isPostPage) {
+            router.push("/login");
+          }
+          return null;
         }
+
+        // For other errors, also set guest user
+        if (axiosError?.response?.status !== 401) {
+          setGuestUser();
+          ref.current += 1;
+
+          if (!isProfilePage && !isPostPage) {
+            router.push("/login");
+          }
+        } else {
+          // For other 401 errors, let the Axios interceptor handle it
+          setIsLoading(false);
+        }
+
+        return null;
+      }
     }, [router, isProfilePage, isPostPage, setGuestUser]);
 
     // Single useEffect for auth initialization and socket management
     useEffect(() => {
-        let isMounted = true;
-        let intervalId: NodeJS.Timeout | undefined;
+      let isMounted = true;
+      let intervalId: NodeJS.Timeout | undefined;
 
-        const initialize = async () => {
-            if (!isMounted) return;
+      const initialize = async () => {
+        if (!isMounted) return;
 
-            // If user is already set, just manage socket
-            if (user && user.username !== "guest") {
-                setIsGuest(false);
-                setIsLoading(false);
-
-                // Start activity heartbeat
-                connectSocket({
-                  username: user.username,
-                  userid: user.user_id,
-                }).then((socketInstance) => {
-                  socket = socketInstance;
-                });
-                intervalId = setInterval(() => {
-                    if (socket?.connected) {
-                        socket.emit("still-active", user.username);
-                    }
-                }, 10000);
-                return;
+        // If user is already set, just manage socket
+        if (user && user.username !== "guest") {
+          setIsGuest(false);
+          setIsLoading(false);
+          // Start activity heartbeat
+          connectSocket({
+            username: user.username,
+            userid: user.user_id,
+          }).then((socketInstance) => {
+            socket = socketInstance;
+          });
+          intervalId = setInterval(() => {
+            if (socket?.connected) {
+              socket.emit("still-active", user.username);
             }
+          }, 10000);
+          return;
+        }
 
-            // If no user, try to fetch
-            if (!user) {
-                await fetchUser();
-            }
-        };
+        // If no user, try to fetch
+        if (!user) {
+          await fetchUser();
+        }
+      };
 
-        initialize();
-
-        return () => {
-            isMounted = false;
-            if (intervalId) {
-                clearInterval(intervalId);
-            }
-        };
-    }, [user?.username, fetchUser]);
-
-    useEffect(() => {
-      if (!socket) return;
-      const handleConnect = () => getSocket();
-      const handleDisconnect = () => disconnectSocket();
-      const handleConnectError = () => disconnectSocket();
-
-      socket.on("connect", handleConnect);
-      socket.on("disconnect", handleDisconnect);
-      socket.on("connect_error", handleConnectError);
+      initialize();
 
       return () => {
-        socket.off("connect", handleConnect);
-        socket.off("disconnect", handleDisconnect);
-        socket.off("connect_error", handleConnectError);
-        socket.disconnect();
+        isMounted = false;
+        if (intervalId) {
+          clearInterval(intervalId);
+        }
       };
-    }, [socket]);
+    }, [user?.username, fetchUser]);
+
     const value = { user, setUser, isGuest, isLoading, setGuestUser };
     return (
         <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
