@@ -217,6 +217,7 @@ export const AuthContextProvider = ({
         socket.off("connect", handleConnect);
         socket.off("disconnect", handleDisconnect);
         socket.off("connect_error", handleConnectError);
+        socket.disconnect();
       };
     }, [socket]);
     const value = { user, setUser, isGuest, isLoading, setGuestUser };
