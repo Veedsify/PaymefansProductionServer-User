@@ -93,47 +93,23 @@ const ChooseUserName = () => {
                     );
 
                     const data = createUser.data;
-                    console.log("Registration response:", data); // Debug log
 
                     // Handle email verification flow for new registrations
                     if (data.requiresVerification && data.email) {
-                        toast.success(
-                            "Account created! Please check your email for verification code.",
-                            {
-                                id: "register",
-                            },
-                        );
-                        setUser(null);
-                        localStorage.setItem("verifyEmail", data.email);
-                        router.push("/verify-email");
-                        return;
+                      toast.success(
+                        "Account created! Please check your email for verification code.",
+                        {
+                          id: "register",
+                        }
+                      );
+                      setUser(null);
+                      localStorage.setItem("verifyEmail", data.email);
+                      router.push("/verify-email");
+                      return;
                     }
 
-                    // Handle two-factor authentication flow (shouldn't happen during registration)
-                    if (data.tfa) {
-                        toast.success(REGISTER_CONFIG.REGISTER_SUCCESSFUL_MSG, {
-                            id: "register",
-                        });
-                        setUser(null);
-                        localStorage.setItem("tfaEmail", user?.email || "");
-                        router.push("/verify-tfa");
-                        return;
-                    }
-
-                    // Handle successful registration with token (old flow - shouldn't happen now)
-                    if (!data.tfa && data.token && data.user) {
-                        toast.success(REGISTER_CONFIG.REGISTER_SUCCESSFUL_MSG, {
-                            id: "register",
-                        });
-                        setUser(null);
-                        router.push("/");
-                        return;
-                    }
-
-                    // Fallback - something went wrong
-                    toast.dismiss("register");
-                    setUser(null);
-                    router.push("/login");
+                    localStorage.setItem("verifyEmail", data.email);
+                    router.push("/verify-email");
                 }
             } catch (err) {
                 return swal({

@@ -192,48 +192,44 @@ const ConversationSettingsPage = () => {
     };
 
     return (
-        <div className="flex flex-col items-center min-h-dvh">
-            <motion.div
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.4 }}
-                className="w-full overflow-hidden bg-white dark:bg-gray-950"
-            >
-                {/* Profile Section */}
-                <div className="flex items-center p-6 border-b border-gray-200 gap-4 dark:border-gray-800">
-                    <div className="relative">
-                        {conversationReceiver.profile_image ? (
-                            <Image
-                                src={conversationReceiver.profile_image}
-                                alt={conversationReceiver.name}
-                                width={64}
-                                height={64}
-                                className="object-cover w-16 h-16 rounded-full shadow-md"
-                            />
-                        ) : (
-                            <div className="flex items-center justify-center w-16 h-16 text-xl font-bold text-white rounded-full shadow-md bg-gradient-to-tr from-blue-400 to-indigo-500 dark:from-blue-700 dark:to-indigo-900">
-                                <span>
-                                    {getInitials(conversationReceiver.name)}
-                                </span>
-                            </div>
-                        )}
-                        <ActiveProfileTag
-                            userid={conversationReceiver.username}
-                        />
-                    </div>
-                    <div>
-                        <h2 className="text-lg font-semibold text-gray-800 dark:text-gray-100">
-                            {conversationReceiver.name}
-                        </h2>
-                        <div className="text-sm text-gray-500 dark:text-gray-400">
-                            {conversationReceiver.username}
-                        </div>
-                    </div>
+      <div className="flex flex-col items-center min-h-dvh">
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4 }}
+          className="w-full overflow-hidden bg-white dark:bg-gray-950"
+        >
+          {/* Profile Section */}
+          <div className="flex items-center p-6 border-b border-gray-200 gap-4 dark:border-gray-800">
+            <div className="relative">
+              {conversationReceiver.profile_image ? (
+                <Image
+                  src={conversationReceiver.profile_image}
+                  alt={conversationReceiver.name}
+                  width={64}
+                  height={64}
+                  className="object-cover w-16 h-16 rounded-full shadow-md"
+                />
+              ) : (
+                <div className="flex items-center justify-center w-16 h-16 text-xl font-bold text-white rounded-full shadow-md bg-gradient-to-tr from-blue-400 to-indigo-500 dark:from-blue-700 dark:to-indigo-900">
+                  <span>{getInitials(conversationReceiver.name)}</span>
                 </div>
+              )}
+              <ActiveProfileTag userid={conversationReceiver.username} />
+            </div>
+            <div>
+              <h2 className="text-lg font-semibold text-gray-800 dark:text-gray-100">
+                {conversationReceiver.name}
+              </h2>
+              <div className="text-sm text-gray-500 dark:text-gray-400">
+                {conversationReceiver.username}
+              </div>
+            </div>
+          </div>
 
-                {/* Settings Options */}
-                <div className="p-4">
-                    {/* <div className="mb-4">
+          {/* Settings Options */}
+          <div className="p-4">
+            {/* <div className="mb-4">
             <h3 className="px-2 mb-2 text-sm font-medium text-gray-500 uppercase dark:text-gray-400">
               Notifications & Media
             </h3>
@@ -250,40 +246,42 @@ const ConversationSettingsPage = () => {
             />
           </div> */}
 
-                    <div className="mb-4">
-                        <h3 className="px-2 mb-2 text-sm font-medium text-gray-500 uppercase dark:text-gray-400">
-                            Chat Options
-                        </h3>
-                        <SettingsAction
-                            icon={
-                                <div
-                                    className={`p-1 rounded-full ${
-                                        freeMessageStatus.userEnabled
-                                            ? "bg-green-100 dark:bg-green-900"
-                                            : "bg-gray-100 dark:bg-gray-800"
-                                    }`}
-                                >
-                                    <div
-                                        className={`w-3 h-3 rounded-full ${
-                                            freeMessageStatus.userEnabled
-                                                ? "bg-green-500"
-                                                : "bg-gray-400"
-                                        }`}
-                                    />
-                                </div>
-                            }
-                            label="Free messaging"
-                            description={
-                                freeMessageStatus.bothEnabled
-                                    ? "✅ Free messages enabled (both users agree)"
-                                    : freeMessageStatus.userEnabled
-                                      ? "⏳ You enabled free messages (waiting for other user)"
-                                      : "💰 Enable free messages for this conversation"
-                            }
-                            onClick={handleToggleFreeMessage}
-                            isLoading={isUpdatingFreeMessage}
-                        />
-                        {/* <SettingsAction
+            <div className="mb-4">
+              <h3 className="px-2 mb-2 text-sm font-medium text-gray-500 uppercase dark:text-gray-400">
+                Chat Options
+              </h3>
+              {user && user.is_model && user.Model?.verification_status && (
+                <SettingsAction
+                  icon={
+                    <div
+                      className={`p-1 rounded-full ${
+                        freeMessageStatus.userEnabled
+                          ? "bg-green-100 dark:bg-green-900"
+                          : "bg-gray-100 dark:bg-gray-800"
+                      }`}
+                    >
+                      <div
+                        className={`w-3 h-3 rounded-full ${
+                          freeMessageStatus.userEnabled
+                            ? "bg-green-500"
+                            : "bg-gray-400"
+                        }`}
+                      />
+                    </div>
+                  }
+                  label="Free messaging"
+                  description={
+                    freeMessageStatus.bothEnabled
+                      ? "✅ Free messages enabled (both users agree)"
+                      : freeMessageStatus.userEnabled
+                      ? "⏳ You enabled free messages (waiting for other user)"
+                      : "💰 Enable free messages for this conversation"
+                  }
+                  onClick={handleToggleFreeMessage}
+                  isLoading={isUpdatingFreeMessage}
+                />
+              )}
+              {/* <SettingsAction
               icon={<Star className="text-amber-500 dark:text-amber-400" />}
               label="Starred messages"
               description="View messages you've starred"
@@ -294,54 +292,46 @@ const ConversationSettingsPage = () => {
               description="Find specific messages or content"
               onClick={() => setIsSearching(true)}
             /> */}
-                    </div>
+            </div>
 
-                    <div>
-                        <h3 className="px-2 mb-2 text-sm font-medium text-gray-500 uppercase dark:text-gray-400">
-                            Privacy & Support
-                        </h3>
-                        <SettingsAction
-                            icon={
-                                <Ban className="text-red-500 dark:text-red-400" />
-                            }
-                            label={
-                                isUserBlocked ? "Unblock user" : "Block user"
-                            }
-                            description={
-                                isUserBlocked
-                                    ? "Allow messages from this user"
-                                    : "You won't receive messages from this user"
-                            }
-                            danger={!isUserBlocked}
-                            onClick={() => setIsBlocking(true)}
-                        />
-                        {/* <SettingsAction
+            <div>
+              <h3 className="px-2 mb-2 text-sm font-medium text-gray-500 uppercase dark:text-gray-400">
+                Privacy & Support
+              </h3>
+              <SettingsAction
+                icon={<Ban className="text-red-500 dark:text-red-400" />}
+                label={isUserBlocked ? "Unblock user" : "Block user"}
+                description={
+                  isUserBlocked
+                    ? "Allow messages from this user"
+                    : "You won't receive messages from this user"
+                }
+                danger={!isUserBlocked}
+                onClick={() => setIsBlocking(true)}
+              />
+              {/* <SettingsAction
               icon={<Trash2 className="text-red-600 dark:text-red-400" />}
               label="Delete conversation"
               description="Permanently delete all messages"
               danger
               onClick={() => setIsDeleting(true)}
             /> */}
-                    </div>
-                </div>
-            </motion.div>
+            </div>
+          </div>
+        </motion.div>
 
-            {/* Confirmation Modals */}
-            {isBlocking && (
-                <BlockUserModal
-                    onClose={() => setIsBlocking(false)}
-                    isCurrentlyBlocked={isUserBlocked}
-                    targetUserId={conversationReceiver.id}
-                    onBlockSuccess={(blocked) => setIsUserBlocked(blocked)}
-                />
-            )}
-            {isDeleting && (
-                <DeleteChatModal onClose={() => setIsDeleting(false)} />
-            )}
-            {isSearching && (
-                <SearchModal onClose={() => setIsSearching(false)} />
-            )}
-        </div>
+        {/* Confirmation Modals */}
+        {isBlocking && (
+          <BlockUserModal
+            onClose={() => setIsBlocking(false)}
+            isCurrentlyBlocked={isUserBlocked}
+            targetUserId={conversationReceiver.id}
+            onBlockSuccess={(blocked) => setIsUserBlocked(blocked)}
+          />
+        )}
+        {isDeleting && <DeleteChatModal onClose={() => setIsDeleting(false)} />}
+        {isSearching && <SearchModal onClose={() => setIsSearching(false)} />}
+      </div>
     );
 };
 
