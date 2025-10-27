@@ -191,7 +191,7 @@ const WithdrawalInput = ({ points }: { points: number }) => {
     <div>
       <div className="flex items-start mb-3 gap-2">
         <div className="text-4xl">{currencySymbol}</div>
-        <div className="flex-1">
+        <div className="flex-1 text-6xl md:text-9xl">
           <input
             type="text"
             value={value}

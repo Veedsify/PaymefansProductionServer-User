@@ -28,9 +28,7 @@ import axiosInstance from "@/utils/Axios";
 import GenerateVideoPoster from "@/utils/GenerateVideoPoster";
 import {
     getSocket,
-    connectSocket,
     isSocketConnected,
-    disconnectSocket,
 } from "../../../components/common/Socket";
 import MessageMediaPreview from "./MessageMediaPreview";
 import LoadingSpinner from "@/components/common/loaders/LoadingSpinner";
@@ -119,16 +117,6 @@ const MessageInputComponent = React.memo(
         >([]);
         const [isUploadingMedia, setIsUploadingMedia] = useState(false);
 
-        // Ensure socket is connected when component mounts
-        useEffect(() => {
-            if (user?.username && user?.user_id && !socket?.connected) {
-                connectSocket({
-                    username: user.username,
-                    userid: user.user_id,
-                });
-            }
-        }, [user?.username, user?.user_id, socket?.connected]);
-
         // Calculate upload progress
         const uploadProgress = useMemo(() => {
             if (messageMediaFiles.length === 0)
@@ -184,23 +172,6 @@ const MessageInputComponent = React.memo(
             isBlockedByReceiver,
             isUploadingMedia,
         ]);
-
-        useEffect(() => {
-            if (!socket) return;
-            const handleConnect = () => getSocket();
-            const handleDisconnect = () => disconnectSocket();
-            const handleConnectError = () => disconnectSocket();
-
-            socket.on("connect", handleConnect);
-            socket.on("disconnect", handleDisconnect);
-            socket.on("connect_error", handleConnectError);
-
-            return () => {
-                socket.off("connect", handleConnect);
-                socket.off("disconnect", handleDisconnect);
-                socket.off("connect_error", handleConnectError);
-            };
-        }, [socket]);
 
         // S3 Upload Functions
         const getPresignedUrls = async (files: File[], mediaIds: string[]) => {

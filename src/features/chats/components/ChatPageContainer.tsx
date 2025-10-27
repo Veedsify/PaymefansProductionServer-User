@@ -12,7 +12,7 @@ import ChatHeader from "./ChatHeader";
 import ChatMessageList from "./ChatMessageList";
 import MessageInputComponent from "../comps/MessageInputComponent";
 import LoadingSpinner from "@/components/common/loaders/LoadingSpinner";
-import { connectSocket, getSocket } from "@/components/common/Socket";
+import { getSocket } from "@/components/common/Socket";
 import { useAuthContext } from "@/contexts/UserUseContext";
 
 interface ChatPageContainerProps {
@@ -61,14 +61,8 @@ export const ChatPageContainer: React.FC<ChatPageContainerProps> = ({
 
   useEffect(() => {
     if (user?.username && user?.user_id) {
-      connectSocket({
-        userid: user?.user_id,
-        username: user?.username,
-      }).then((socketInstance) => {
-        if (socketInstance) {
-          socketInstance.emit("join", conversationId);
-        }
-      });
+      socket.emit("join", conversationId);
+      
     }
   }, [conversationId, user?.user_id, user?.username]);
 

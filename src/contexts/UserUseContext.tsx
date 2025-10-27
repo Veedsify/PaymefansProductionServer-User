@@ -11,7 +11,11 @@ import {
     useState,
 } from "react";
 // Socket type will be imported dynamically
-import { connectSocket } from "@/components/common/Socket";
+import {
+  connectSocket,
+  disconnectSocket,
+  getSocket,
+} from "@/components/common/Socket";
 import { postRegex, profileRegex } from "@/constants/regex";
 import type { AuthUserProps } from "@/features/user/types/user";
 import axiosInstance, { AuthFailureError } from "@/utils/Axios";
@@ -199,6 +203,22 @@ export const AuthContextProvider = ({
         };
     }, [user?.username, fetchUser]);
 
+    useEffect(() => {
+      if (!socket) return;
+      const handleConnect = () => getSocket();
+      const handleDisconnect = () => disconnectSocket();
+      const handleConnectError = () => disconnectSocket();
+
+      socket.on("connect", handleConnect);
+      socket.on("disconnect", handleDisconnect);
+      socket.on("connect_error", handleConnectError);
+
+      return () => {
+        socket.off("connect", handleConnect);
+        socket.off("disconnect", handleDisconnect);
+        socket.off("connect_error", handleConnectError);
+      };
+    }, [socket]);
     const value = { user, setUser, isGuest, isLoading, setGuestUser };
     return (
         <AuthContext.Provider value={value}>{children}</AuthContext.Provider>

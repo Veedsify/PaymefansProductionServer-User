@@ -9,7 +9,10 @@ interface SocketConfig {
   reconnectionAttempts: number;
   reconnectionDelay: number;
   timeout: number;
+  autoConnect?: boolean;
   heartbeatIntervalMs: number;
+  reconnectionDelayMax?: number;
+  randomizationFactor?: number;
   transports?: ("websocket" | "polling")[];
   reconnection?: boolean;
 }
@@ -18,9 +21,12 @@ const defaultConfig: SocketConfig = {
   url: process.env.NEXT_PUBLIC_TS_EXPRESS_URL_DIRECT || "",
   path: "/socket.io",
   transports: ["websocket", "polling"],
-  reconnection: true,
-  reconnectionAttempts: 5,
-  reconnectionDelay: 500,
+  autoConnect: false, // Prevents immediate connection; call socket.connect() manually
+  reconnection: true, // Default: true; enables automatic reconnections
+  reconnectionAttempts: Infinity, // Adjust as needed for retry limits
+  reconnectionDelay: 1000, // Initial delay in ms
+  reconnectionDelayMax: 5000, // Maximum delay in ms
+  randomizationFactor: 0.5, // Adds jitter to delays
   timeout: 5000,
   heartbeatIntervalMs: 5000,
 };
@@ -98,6 +104,7 @@ class SocketManager {
           "X-Username": normalizedUsername,
           "X-UserId": normalizedUserid,
         },
+        ...defaultConfig,
         path: this.config.path,
         reconnection: true,
         reconnectionAttempts: this.config.reconnectionAttempts,
