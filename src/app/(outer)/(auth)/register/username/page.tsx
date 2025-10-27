@@ -77,25 +77,23 @@ const ChooseUserName = () => {
             });
             try {
                 if (ref.current?.value) {
-                    const createUser = await axiosInstance.post(
-                        `/auth/signup`,
-                        {
-                            user_id: String(
-                                Math.floor(Math.random() * 1000000),
-                            ),
-                            username: ref.current?.value,
-                            name: user?.name,
-                            email: user?.email,
-                            phone: user?.phone,
-                            location: user?.location,
-                            password: user?.password,
-                        },
-                    );
+                    const response = await axiosInstance.post(`/auth/signup`, {
+                      username: ref.current?.value,
+                      name: user?.name,
+                      email: user?.email,
+                      phone: user?.phone,
+                      location: user?.location,
+                      password: user?.password,
+                    });
 
-                    const data = createUser.data;
-
+                    const registrationData = response.data;
                     // Handle email verification flow for new registrations
-                    if (data.requiresVerification && data.email) {
+                    if (
+                      registrationData &&
+                      registrationData.requiresVerification &&
+                      registrationData.email &&
+                      registrationData.error === false
+                    ) {
                       toast.success(
                         "Account created! Please check your email for verification code.",
                         {
@@ -103,13 +101,20 @@ const ChooseUserName = () => {
                         }
                       );
                       setUser(null);
-                      localStorage.setItem("verifyEmail", data.email);
+                      localStorage.setItem(
+                        "verifyEmail",
+                        registrationData.email
+                      );
                       router.push("/verify-email");
                       return;
+                    } else {
+                      toast.error(
+                        registrationData.message ||
+                          "Registration failed. Please try again.",
+                        { id: "register" }
+                      );
+                      return;
                     }
-
-                    localStorage.setItem("verifyEmail", data.email);
-                    router.push("/verify-email");
                 }
             } catch (err) {
                 return swal({
