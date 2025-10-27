@@ -21,7 +21,6 @@ const defaultConfig: SocketConfig = {
   url: process.env.NEXT_PUBLIC_TS_EXPRESS_URL_DIRECT || "",
   path: "/socket.io",
   transports: ["websocket", "polling"],
-  autoConnect: true, // Prevents immediate connection; call socket.connect() manually
   reconnection: true, // Default: true; enables automatic reconnections
   reconnectionAttempts: Infinity, // Adjust as needed for retry limits
   reconnectionDelay: 10000, // Initial delay in ms
@@ -102,9 +101,7 @@ class SocketManager {
           "X-Username": normalizedUsername,
           "X-UserId": normalizedUserid,
         },
-        autoConnect: this.config.autoConnect,
         randomizationFactor: this.config.randomizationFactor,
-        transports: this.config.transports,
         path: this.config.path,
         reconnection: true,
         reconnectionAttempts: this.config.reconnectionAttempts,
