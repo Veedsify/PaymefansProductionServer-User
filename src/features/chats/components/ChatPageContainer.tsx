@@ -61,8 +61,7 @@ export const ChatPageContainer: React.FC<ChatPageContainerProps> = ({
 
   useEffect(() => {
     if (user?.username && user?.user_id) {
-      socket.emit("join", conversationId);
-      
+      socket?.emit("join", conversationId);
     }
   }, [conversationId, user?.user_id, user?.username]);
 
