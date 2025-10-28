@@ -1,4 +1,5 @@
 "use client";
+import LoadingSpinner from "@/components/common/loaders/LoadingSpinner";
 import { fmt } from "@/constants/path";
 import DynamicPageClient from "@/features/pages/components/DynamicPageClient";
 import axios from "axios";
@@ -46,7 +47,11 @@ export default function Page() {
   }, [page]);
 
   if (!data) {
-    return <div>Loading...</div>;
+    return (
+      <div className="py-20 text-center flex items-center justify-center">
+        <LoadingSpinner size="lg" />
+      </div>
+    );
   }
 
   return <DynamicPageClient pageData={data} />;
