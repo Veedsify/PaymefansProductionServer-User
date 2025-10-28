@@ -393,6 +393,12 @@ const MessageInputComponent = React.memo(
 
                     const statusMap = response.data.data;
 
+                    // Track state changes to show notifications after state update
+                    const stateChanges: Array<{
+                        mediaId: string;
+                        newState: "completed" | "failed";
+                    }> = [];
+
                     setMessageMediaFiles((prev) => {
                         let updated = false;
                         const newState = prev.map((m) => {
@@ -407,12 +413,10 @@ const MessageInputComponent = React.memo(
                                     console.log(
                                         `Polling fallback: Media ${m.media_id} completed`,
                                     );
-                                    toast.success(
-                                        "Video processing completed!",
-                                        {
-                                            id: `media-${m.media_id}`,
-                                        },
-                                    );
+                                    stateChanges.push({
+                                        mediaId: m.media_id,
+                                        newState: "completed",
+                                    });
                                     return {
                                         ...m,
                                         media_state:
@@ -423,8 +427,9 @@ const MessageInputComponent = React.memo(
                                     console.error(
                                         `Polling fallback: Media ${m.media_id} failed`,
                                     );
-                                    toast.error("Video processing failed", {
-                                        id: `media-${m.media_id}`,
+                                    stateChanges.push({
+                                        mediaId: m.media_id,
+                                        newState: "failed",
                                     });
                                     return {
                                         ...m,
@@ -437,6 +442,19 @@ const MessageInputComponent = React.memo(
                         });
 
                         return updated ? newState : prev;
+                    });
+
+                    // Show notifications after state update is complete
+                    stateChanges.forEach(({ mediaId, newState }) => {
+                        if (newState === "completed") {
+                            toast.success("Video processing completed!", {
+                                id: `media-proccessing-completed`,
+                            });
+                        } else if (newState === "failed") {
+                            toast.error("Video processing failed", {
+                                id: `media-${mediaId}`,
+                            });
+                        }
                     });
                 } catch (error) {
                     console.error("Polling fallback error:", error);
