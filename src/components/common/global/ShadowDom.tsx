@@ -63,9 +63,11 @@ export default function ShadowDom({ html }: { html: string }) {
     .keep-styles ol {
         padding-left: 30px;
         margin-bottom: 16px;
+        list-style: disc;
     }
     
     .keep-styles li {
+        list-style-type: inherit;
         margin-bottom: 8px;
     }
     
