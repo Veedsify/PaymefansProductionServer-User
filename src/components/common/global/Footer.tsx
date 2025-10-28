@@ -34,7 +34,7 @@ const Footer = () => {
               </li>
               <li>
                 <Link
-                  href="/about"
+                  href="/s/about-us"
                   className="text-gray-300 hover:text-primary-dark-pink transition-colors duration-200"
                 >
                   About Us
@@ -58,7 +58,7 @@ const Footer = () => {
               </li>
               <li>
                 <Link
-                  href="/s/terms-of-service"
+                  href="/s/terms-and-conditions"
                   className="text-gray-300 hover:text-primary-dark-pink transition-colors duration-200"
                 >
                   Terms of Service

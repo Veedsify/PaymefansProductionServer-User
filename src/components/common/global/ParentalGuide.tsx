@@ -15,7 +15,7 @@ const ParentalGuide = ({ setAcceptedTerms }: ParentalGuideProps) => {
 
   return (
     <div className="fixed inset-0 z-[200] flex items-center justify-center bg-black/80 backdrop-blur-sm">
-      <div className="w-full max-w-lg p-5 max-h-[80vh] md:max-h-max overflow-y-scroll py-6 md:p-10 mx-6 bg-white border border-gray-300 shadow-2xl dark:bg-gray-800r rounded-xl md:rounded-2xl dark:border-gray-700">
+      <div className="w-full max-w-lg p-5 max-h-[80vh] md:max-h-max overflow-y-auto py-6 md:p-10 mx-6 bg-white border border-gray-300 shadow-2xl dark:bg-gray-800r rounded-xl md:rounded-2xl dark:border-gray-700">
         <div className="mb-8 text-center">
           <Image
             src="/site/logo.svg"

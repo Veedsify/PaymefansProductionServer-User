@@ -74,7 +74,7 @@ export default async function RootLayout({
                 <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
                 <meta property="og:image" content="/site/logo.svg" />
             </head>
-            <body className={cn(` dark:bg-black min-h-dvh`, font.variable)}>
+            <body className={cn(`dark:bg-black min-h-dvh`, font.className)}>
                 <QueryProvider>
                     <CombinedProviders>
                         <Loader />
