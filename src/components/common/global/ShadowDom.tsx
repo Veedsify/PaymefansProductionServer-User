@@ -106,39 +106,6 @@ export default function ShadowDom({ html }: { html: string }) {
         margin: 1em 0;
         font-style: italic;
     }
-    
-    /* Dark Mode */
-    @media (prefers-color-scheme: dark) {
-        .keep-styles {
-            background: #18181b;
-            color: #ffffff;
-        }
-    
-        .keep-styles h1,
-        .keep-styles h2,
-        .keep-styles h3,
-        .keep-styles p,
-        .keep-styles strong,
-        .keep-styles em,
-        .keep-styles u,
-        .keep-styles a,
-        .keep-styles code {
-            color: #ffffff;
-        }
-    
-        .keep-styles code {
-            background-color: rgba(255, 255, 255, 0.08);
-        }
-    
-        .keep-styles a {
-            color: #60a5fa;
-        }
-    
-        .keep-styles blockquote {
-            border-left-color: #374151;
-            color: #d1d5db;
-        }
-    }
     `;
 
     // Create wrapper and insert HTML
