@@ -368,6 +368,91 @@ const MessageInputComponent = React.memo(
             }
         }, [messageMediaFiles.length]);
 
+        // Polling fallback for media processing status
+        useEffect(() => {
+            const processingMedia = messageMediaFiles.filter(
+                (m) => m.media_state === "processing",
+            );
+
+            if (processingMedia.length === 0) return;
+
+            const pollInterval = setInterval(async () => {
+                try {
+                    const mediaIds = processingMedia.map((m) => m.media_id);
+                    const response = await axiosInstance.post(
+                        "/conversations/media-status",
+                        {
+                            media_ids: mediaIds,
+                        },
+                    );
+
+                    if (response.data.error) {
+                        console.error("Polling error:", response.data.message);
+                        return;
+                    }
+
+                    const statusMap = response.data.data;
+
+                    setMessageMediaFiles((prev) => {
+                        let updated = false;
+                        const newState = prev.map((m) => {
+                            const status = statusMap[m.media_id];
+                            if (
+                                status &&
+                                m.media_state === "processing" &&
+                                status.media_state !== "processing"
+                            ) {
+                                updated = true;
+                                if (status.media_state === "completed") {
+                                    console.log(
+                                        `Polling fallback: Media ${m.media_id} completed`,
+                                    );
+                                    toast.success(
+                                        "Video processing completed!",
+                                        {
+                                            id: `media-${m.media_id}`,
+                                        },
+                                    );
+                                    return {
+                                        ...m,
+                                        media_state:
+                                            "completed" as MessageMediaFile["media_state"],
+                                        media_url: status.url,
+                                    };
+                                } else if (status.media_state === "failed") {
+                                    console.error(
+                                        `Polling fallback: Media ${m.media_id} failed`,
+                                    );
+                                    toast.error("Video processing failed", {
+                                        id: `media-${m.media_id}`,
+                                    });
+                                    return {
+                                        ...m,
+                                        media_state:
+                                            "failed" as MessageMediaFile["media_state"],
+                                    };
+                                }
+                            }
+                            return m;
+                        });
+
+                        return updated ? newState : prev;
+                    });
+                } catch (error) {
+                    console.error("Polling fallback error:", error);
+                }
+            }, 5000); // Poll every 5 seconds
+
+            console.log(
+                `Polling fallback active: ${processingMedia.length} media items processing`,
+            );
+
+            return () => {
+                clearInterval(pollInterval);
+                console.log("Polling fallback stopped");
+            };
+        }, [messageMediaFiles]);
+
         // SSE connection for video processing status - only connect when there are processing videos
         useEffect(() => {
             // Only connect SSE if there is a video in "processing" state
@@ -619,14 +704,14 @@ const MessageInputComponent = React.memo(
 
                 // Ensure socket connection
                 if (!isSocketConnected) {
-                  socket?.connect();
-                  await new Promise((resolve) => setTimeout(resolve, 1000));
-                  if (!isSocketConnected) {
-                    toast.error(
-                      "Connection lost. Please refresh and try again."
-                    );
-                    return;
-                  }
+                    socket?.connect();
+                    await new Promise((resolve) => setTimeout(resolve, 1000));
+                    if (!isSocketConnected) {
+                        toast.error(
+                            "Connection lost. Please refresh and try again.",
+                        );
+                        return;
+                    }
                 }
 
                 // Emit message with timeout
@@ -656,7 +741,10 @@ const MessageInputComponent = React.memo(
                         }, 300);
                     });
                 } catch (socketError: any) {
-                    console.error("❌ Socket error on message send:", socketError);
+                    console.error(
+                        "❌ Socket error on message send:",
+                        socketError,
+                    );
                     if (socketError.message === "Message send timeout") {
                         toast.error(
                             "Message is taking longer than expected. It may still be sent. Please wait before trying again.",

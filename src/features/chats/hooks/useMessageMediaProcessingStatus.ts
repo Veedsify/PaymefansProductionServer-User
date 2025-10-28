@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { useCallback, useEffect, useMemo } from "react";
 import axiosServer from "@/utils/Axios";
-import { useStoryStore } from "@/contexts/StoryContext";
+import { useChatStore } from "@/contexts/ChatContext";
 
 interface MediaStatus {
     media_id: string;
@@ -18,7 +18,7 @@ interface MediaStatusResponse {
     data: Record<string, MediaStatus>;
 }
 
-interface UseMediaProcessingStatusOptions {
+interface UseMessageMediaProcessingStatusOptions {
     enabled?: boolean;
     pollingInterval?: number;
     onComplete?: (mediaId: string, url: string) => void;
@@ -26,11 +26,11 @@ interface UseMediaProcessingStatusOptions {
 }
 
 /**
- * Hook to poll media processing status as a fallback to SSE
+ * Hook to poll message media processing status as a fallback to SSE
  * Automatically polls when there are processing media and stops when all are completed/failed
  */
-export const useMediaProcessingStatus = (
-    options: UseMediaProcessingStatusOptions = {},
+export const useMessageMediaProcessingStatus = (
+    options: UseMessageMediaProcessingStatusOptions = {},
 ) => {
     const {
         enabled = true,
@@ -39,18 +39,14 @@ export const useMediaProcessingStatus = (
         onFailed,
     } = options;
 
-    const {
-        story: media,
-        updateStoryState,
-        updateStorySlide,
-    } = useStoryStore();
+    const { mediaFiles, updateMediaFileStatus } = useChatStore();
 
     // Get media IDs that are in processing state
     const processingMediaIds = useMemo(() => {
-        return media
-            .filter((item) => item.media_state === "processing")
-            .map((item) => item.media_id);
-    }, [media]);
+        return mediaFiles
+            .filter((item) => item.uploadStatus === "processing")
+            .map((item) => item.id);
+    }, [mediaFiles]);
 
     // Only enable polling if there are processing media
     const shouldPoll = enabled && processingMediaIds.length > 0;
@@ -66,15 +62,18 @@ export const useMediaProcessingStatus = (
                 };
             }
 
-            const response = await axiosServer.post("/stories/media-status", {
-                media_ids: processingMediaIds,
-            });
+            const response = await axiosServer.post(
+                "/conversations/media-status",
+                {
+                    media_ids: processingMediaIds,
+                },
+            );
 
             return response.data;
         }, [processingMediaIds]);
 
     const { data, isError, error, refetch } = useQuery<MediaStatusResponse>({
-        queryKey: ["media-processing-status", processingMediaIds],
+        queryKey: ["message-media-processing-status", processingMediaIds],
         queryFn: fetchMediaStatus,
         enabled: shouldPoll,
         refetchInterval: shouldPoll ? pollingInterval : false,
@@ -92,42 +91,56 @@ export const useMediaProcessingStatus = (
 
         // Update each media item's state
         Object.entries(statusMap).forEach(([mediaId, status]) => {
-            const currentMedia = media.find((m) => m.media_id === mediaId);
+            const currentMedia = mediaFiles.find((m) => m.id === mediaId);
 
             if (!currentMedia) return;
 
+            // Map backend media_state to frontend uploadStatus
+            let uploadStatus: "idle" | "uploading" | "completed" | "error" =
+                "idle";
+            if (status.media_state === "completed") {
+                uploadStatus = "completed";
+            } else if (status.media_state === "failed") {
+                uploadStatus = "error";
+            } else if (status.media_state === "processing") {
+                // Keep as processing in the UI
+                return; // Don't update if still processing
+            }
+
             // Only update if state has changed
-            if (currentMedia.media_state !== status.media_state) {
+            if (currentMedia.uploadStatus !== uploadStatus) {
                 if (status.media_state === "completed") {
                     // Update state and URL for completed media
-                    updateStorySlide(mediaId, {
-                        media_state: "completed",
-                        media_url: status.url,
+                    updateMediaFileStatus(currentMedia.id, "completed", 100, {
+                        id: mediaId,
+                        url: status.url,
+                        name: currentMedia.file.name,
+                        size: currentMedia.file.size,
+                        type: currentMedia.type,
+                        extension:
+                            currentMedia.file.name.split(".").pop() || "",
                     });
 
                     // Call onComplete callback if provided
                     onComplete?.(mediaId, status.url);
 
                     console.log(
-                        `Media ${mediaId} processing completed via polling fallback`,
+                        `Message media ${mediaId} processing completed via polling fallback`,
                     );
                 } else if (status.media_state === "failed") {
                     // Update state for failed media
-                    updateStoryState(mediaId, "failed");
+                    updateMediaFileStatus(currentMedia.id, "error");
 
                     // Call onFailed callback if provided
                     onFailed?.(mediaId);
 
                     console.log(
-                        `Media ${mediaId} processing failed via polling fallback`,
+                        `Message media ${mediaId} processing failed via polling fallback`,
                     );
-                } else if (status.media_state === "processing") {
-                    // Still processing, keep the state
-                    updateStoryState(mediaId, "processing");
                 }
             }
         });
-    }, [data, media, updateStoryState, updateStorySlide, onComplete, onFailed]);
+    }, [data, mediaFiles, updateMediaFileStatus, onComplete, onFailed]);
 
     return {
         isPolling: shouldPoll,
@@ -139,4 +152,4 @@ export const useMediaProcessingStatus = (
     };
 };
 
-export default useMediaProcessingStatus;
+export default useMessageMediaProcessingStatus;
