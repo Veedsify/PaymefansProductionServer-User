@@ -17,6 +17,7 @@ import StatusMediaPanel from "@/features/story/comps/StatusMediaPanel";
 import type { SelectMoreProps } from "@/types/Components";
 import { type StoryType, useStoryStore } from "../../../contexts/StoryContext";
 import axiosServer from "@/utils/Axios";
+import { useMediaProcessingStatus } from "../hooks/useMediaProcessingStatus";
 
 const StoryCaptionComponent = dynamic(() => import("./StoryCaptionComponent"), {
     ssr: false,
@@ -102,6 +103,35 @@ function StatusComponent() {
         return () => evtSource.close();
     }, [user?.id, updateStoryState]);
 
+    // Fallback polling for media processing status (in case SSE fails)
+    const { isPolling, processingCount } = useMediaProcessingStatus({
+        enabled: true,
+        pollingInterval: 5000, // Poll every 5 seconds
+        onComplete: (mediaId, url) => {
+            console.log(
+                `Fallback polling detected completion for media ${mediaId}`,
+            );
+            toast.success("Media processing completed!", {
+                id: `media-${mediaId}`,
+            });
+        },
+        onFailed: (mediaId) => {
+            console.error(
+                `Fallback polling detected failure for media ${mediaId}`,
+            );
+            toast.error("Media processing failed", { id: `media-${mediaId}` });
+        },
+    });
+
+    // Log polling status for debugging
+    useEffect(() => {
+        if (isPolling && processingCount > 0) {
+            console.log(
+                `Polling fallback active: ${processingCount} media items processing`,
+            );
+        }
+    }, [isPolling, processingCount]);
+
     // S3 upload functions
     const getPresignedUrls = async (
         files: File[],
@@ -130,11 +160,11 @@ function StatusComponent() {
         };
 
         try {
-          // Lazy load image compression to reduce main bundle size
-          const imageCompression = (await import("browser-image-compression"))
-            .default;
-          const compressedFile = await imageCompression(file, options);
-          return compressedFile;
+            // Lazy load image compression to reduce main bundle size
+            const imageCompression = (await import("browser-image-compression"))
+                .default;
+            const compressedFile = await imageCompression(file, options);
+            return compressedFile;
         } catch (error) {
             console.log(error);
             return file;
