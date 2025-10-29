@@ -18,19 +18,19 @@ export default function ShadowDom({ html }: { html: string }) {
     
     /* Headings */
     .keep-styles h1 {
-        font-size: 36px;
+        font-size: 28px;
         font-weight: 700;
         margin: 1.2em 0 0.6em;
     }
     
     .keep-styles h2 {
-        font-size: 30px;
+        font-size: 22px;
         font-weight: 600;
         margin: 1.1em 0 0.6em;
     }
     
     .keep-styles h3 {
-        font-size: 24px;
+        font-size: 18px;
         font-weight: 600;
         margin: 1em 0 0.5em;
     }
