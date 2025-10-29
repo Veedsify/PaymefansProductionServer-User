@@ -117,7 +117,7 @@ const GuestLoginModal = () => {
                 width={150}
                 height={30}
                 priority
-                src="/site/logo.svg"
+                src="/site/logos/logo1.png"
                 alt=""
               />
             </div>

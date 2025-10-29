@@ -55,12 +55,12 @@ const SideBar = React.memo(() => {
         <div className="mt-8 mb-16 ">
           <a href="/" className="cursor-pointer">
             <Image
-              className="block h-8 w-36"
+              className="block h-8 w-36 border dark:border-black border-gray-200 rounded-lg"
               width={150}
               height={30}
               priority
               unoptimized
-              src="/site/logos/logo.png"
+              src="/site/logos/logo4.png"
               alt="Logo"
             />
           </a>

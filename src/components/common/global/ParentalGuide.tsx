@@ -18,7 +18,7 @@ const ParentalGuide = ({ setAcceptedTerms }: ParentalGuideProps) => {
       <div className="w-full max-w-lg p-5 max-h-[80vh] md:max-h-max overflow-y-auto py-6 md:p-10 mx-6 bg-white border border-gray-300 shadow-2xl dark:bg-gray-800r rounded-xl md:rounded-2xl dark:border-gray-700">
         <div className="mb-8 text-center">
           <Image
-            src="/site/logo.svg"
+            src="/site/logos/logo1.png"
             alt="PayMeFans Logo"
             width={120}
             height={25}
@@ -54,14 +54,14 @@ const ParentalGuide = ({ setAcceptedTerms }: ParentalGuideProps) => {
         <div className="mt-6 text-xs md:text-sm text-center text-gray-600 dark:text-gray-400">
           By continuing, you agree to our{" "}
           <Link
-            href="/terms"
+            href="/s/terms-and-conditions"
             className="text-red-500 underline hover:text-red-600"
           >
             Terms of Service
           </Link>{" "}
           and{" "}
           <Link
-            href="/privacy"
+            href="/s/privacy-policy"
             className="text-red-500 underline hover:text-red-600"
           >
             Privacy Policy

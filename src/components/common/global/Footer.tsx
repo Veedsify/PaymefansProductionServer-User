@@ -14,7 +14,7 @@ const Footer = () => {
                 width={150}
                 height={25}
                 className="h-auto w-[150px]"
-                src="/site/logo.svg"
+                src="/site/logos/logo1.png"
                 alt="Logo"
               />
             </Link>

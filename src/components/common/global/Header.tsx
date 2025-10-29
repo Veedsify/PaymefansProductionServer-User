@@ -52,9 +52,9 @@ const Header = () => {
             width={240}
             height={80}
             unoptimized
-            src="/site/logos/logo.png"
+            src="/site/logos/logo3.png"
             alt="Logo"
-            className="block h-auto lg:hidden w-32 border-gray-200 rounded-md border-[0.5px]"
+            className="block h-auto lg:hidden w-32 dark:border-black border-gray-200 rounded-md border-[0.5px]"
           />
         </button>
         <ul className="flex items-center ml-auto gap-6 lg:hidden">

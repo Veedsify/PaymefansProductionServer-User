@@ -173,7 +173,7 @@ const Register = () => {
                   height={150}
                   priority
                   className="h-auto w-[150px]"
-                  src="/site/logo.svg"
+                  src="/site/logos/logo1.png"
                   alt="Logo"
                 />
               </Link>

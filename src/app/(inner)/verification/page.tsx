@@ -47,7 +47,7 @@ const Verification = () => {
             />
           </div>
         </div>
-        <h5 className="mx-auto mb-4 text-lg font-bold text-center max-w-96">
+        <h5 className="mx-auto mb-4 text-lg font-bold text-center md:max-w-96">
           Verify your identity by taking a short video
         </h5>
         <p className="mx-auto mb-6 text-sm leading-relaxed text-center max-w-96">

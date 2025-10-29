@@ -129,128 +129,125 @@ const VerifyEmail = () => {
     );
 
     return (
-        <div className="p-5 bg-black min-h-dvh lg:p-0">
-            <div className="items-start justify-center mx-auto lg:grid grid-cols-2">
-                <div className="relative hidden min-h-dvh lg:block">
-                    <Image
-                        width={1200}
-                        height={1200}
-                        priority
-                        src="/images/auth_image.jpeg"
-                        alt="Verify Email Image"
-                        className="absolute inset-0 object-cover w-full h-full"
-                    />
-                    {/* Enhanced gradient overlay */}
-                    <div className="absolute inset-0 bg-gradient-to-r from-black/20 via-black/60 to-black/95"></div>
-                    {/* Secondary gradient for extra depth */}
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent"></div>
-                </div>
-                <div className="h-full lg:p-14 2xl:p-28">
-                    <div className="pt-12 mx-auto mb-16 max-w-screen-xl md:mt-16">
-                        <Link
-                            href="/login"
-                            className="inline-block transition-transform hover:scale-105"
-                        >
-                            <Image
-                                width={150}
-                                height={150}
-                                priority
-                                className="h-auto w-[150px]"
-                                src="/site/logo.svg"
-                                alt="Logo"
-                            />
-                        </Link>
-                    </div>
-
-                    <div className="max-w-lg mb-8">
-                        <h1 className="mb-2 text-3xl font-bold text-white">
-                            Verify your email
-                        </h1>
-                        <p className="mb-6 text-gray-300 leading-relaxed">
-                            We sent a verification code to{" "}
-                            <strong className="text-white">{email}</strong>.
-                            Enter the code below to verify your email and
-                            complete your registration. Check your spam folder
-                            if not received.
-                        </p>
-                    </div>
-
-                    <form
-                        action=""
-                        method="post"
-                        className="flex-1 w-full mb-6"
-                        onSubmit={(e) => {
-                            e.preventDefault();
-                            setLoading(true);
-                            setError("");
-                            debounceSubmitVerificationForm(e);
-                        }}
-                    >
-                        <div className="flex flex-col mb-6 gap-2">
-                            <label
-                                htmlFor="verificationCode"
-                                className="text-sm font-medium text-gray-300"
-                            >
-                                Verification Code
-                            </label>
-                            <input
-                                type="text"
-                                name="verificationCode"
-                                id="verificationCode"
-                                maxLength={6}
-                                onChange={handleCodeInput}
-                                className="block w-full px-4 py-3 text-xl font-medium text-white bg-white/5 border border-white/10 rounded-xl outline-none focus:border-primary-dark-pink/50 focus:ring-2 focus:ring-primary-dark-pink/20 transition-all duration-200 md:max-w-lg backdrop-blur-sm text-center tracking-widest"
-                                placeholder="000000"
-                            />
-                        </div>
-
-                        {(error || loading) && (
-                            <div className="mb-6 md:max-w-lg">
-                                {error && (
-                                    <p className="text-sm font-medium text-red-400 bg-red-400/10 border border-red-400/20 rounded-lg px-3 py-2 mb-2">
-                                        {error}
-                                    </p>
-                                )}
-                                {loading && (
-                                    <LoadingSpinner text="Verifying..." />
-                                )}
-                            </div>
-                        )}
-
-                        <button
-                            type="submit"
-                            disabled={loading}
-                            className="w-full px-4 py-3 text-sm font-semibold text-white rounded-xl bg-gradient-to-r from-primary-dark-pink to-primary-dark-pink/80 md:max-w-lg hover:from-primary-dark-pink/90 hover:to-primary-dark-pink/70 transition-all duration-200 shadow-lg hover:shadow-primary-dark-pink/25 hover:shadow-xl active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
-                        >
-                            Verify Email
-                        </button>
-                    </form>
-
-                    <div className="flex items-center w-full mt-6 md:max-w-lg">
-                        <button
-                            type="button"
-                            onClick={handleResendCode}
-                            disabled={resending}
-                            className="ml-auto text-sm font-medium text-primary-dark-pink hover:text-primary-dark-pink/80 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
-                        >
-                            {resending ? "Resending..." : "Resend Code"}
-                        </button>
-                    </div>
-
-                    <div className="mt-12">
-                        <p className="text-sm font-medium text-gray-300">
-                            Back to{" "}
-                            <Link
-                                href="/login"
-                                className="font-semibold text-primary-dark-pink hover:text-primary-dark-pink/80 transition-colors duration-200"
-                            >
-                                Login
-                            </Link>
-                        </p>
-                    </div>
-                </div>
+      <div className="p-5 bg-black min-h-dvh lg:p-0">
+        <div className="items-start justify-center mx-auto lg:grid grid-cols-2">
+          <div className="relative hidden min-h-dvh lg:block">
+            <Image
+              width={1200}
+              height={1200}
+              priority
+              src="/images/auth_image.jpeg"
+              alt="Verify Email Image"
+              className="absolute inset-0 object-cover w-full h-full"
+            />
+            {/* Enhanced gradient overlay */}
+            <div className="absolute inset-0 bg-gradient-to-r from-black/20 via-black/60 to-black/95"></div>
+            {/* Secondary gradient for extra depth */}
+            <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent"></div>
+          </div>
+          <div className="h-full lg:p-14 2xl:p-28">
+            <div className="pt-12 mx-auto mb-16 max-w-screen-xl md:mt-16">
+              <Link
+                href="/login"
+                className="inline-block transition-transform hover:scale-105"
+              >
+                <Image
+                  width={150}
+                  height={150}
+                  priority
+                  className="h-auto w-[150px]"
+                  src="/site/logos/logo1.png"
+                  alt="Logo"
+                />
+              </Link>
             </div>
+
+            <div className="max-w-lg mb-8">
+              <h1 className="mb-2 text-3xl font-bold text-white">
+                Verify your email
+              </h1>
+              <p className="mb-6 text-gray-300 leading-relaxed">
+                We sent a verification code to{" "}
+                <strong className="text-white">{email}</strong>. Enter the code
+                below to verify your email and complete your registration. Check
+                your spam folder if not received.
+              </p>
+            </div>
+
+            <form
+              action=""
+              method="post"
+              className="flex-1 w-full mb-6"
+              onSubmit={(e) => {
+                e.preventDefault();
+                setLoading(true);
+                setError("");
+                debounceSubmitVerificationForm(e);
+              }}
+            >
+              <div className="flex flex-col mb-6 gap-2">
+                <label
+                  htmlFor="verificationCode"
+                  className="text-sm font-medium text-gray-300"
+                >
+                  Verification Code
+                </label>
+                <input
+                  type="text"
+                  name="verificationCode"
+                  id="verificationCode"
+                  maxLength={6}
+                  onChange={handleCodeInput}
+                  className="block w-full px-4 py-3 text-xl font-medium text-white bg-white/5 border border-white/10 rounded-xl outline-none focus:border-primary-dark-pink/50 focus:ring-2 focus:ring-primary-dark-pink/20 transition-all duration-200 md:max-w-lg backdrop-blur-sm text-center tracking-widest"
+                  placeholder="000000"
+                />
+              </div>
+
+              {(error || loading) && (
+                <div className="mb-6 md:max-w-lg">
+                  {error && (
+                    <p className="text-sm font-medium text-red-400 bg-red-400/10 border border-red-400/20 rounded-lg px-3 py-2 mb-2">
+                      {error}
+                    </p>
+                  )}
+                  {loading && <LoadingSpinner text="Verifying..." />}
+                </div>
+              )}
+
+              <button
+                type="submit"
+                disabled={loading}
+                className="w-full px-4 py-3 text-sm font-semibold text-white rounded-xl bg-gradient-to-r from-primary-dark-pink to-primary-dark-pink/80 md:max-w-lg hover:from-primary-dark-pink/90 hover:to-primary-dark-pink/70 transition-all duration-200 shadow-lg hover:shadow-primary-dark-pink/25 hover:shadow-xl active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
+              >
+                Verify Email
+              </button>
+            </form>
+
+            <div className="flex items-center w-full mt-6 md:max-w-lg">
+              <button
+                type="button"
+                onClick={handleResendCode}
+                disabled={resending}
+                className="ml-auto text-sm font-medium text-primary-dark-pink hover:text-primary-dark-pink/80 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {resending ? "Resending..." : "Resend Code"}
+              </button>
+            </div>
+
+            <div className="mt-12">
+              <p className="text-sm font-medium text-gray-300">
+                Back to{" "}
+                <Link
+                  href="/login"
+                  className="font-semibold text-primary-dark-pink hover:text-primary-dark-pink/80 transition-colors duration-200"
+                >
+                  Login
+                </Link>
+              </p>
+            </div>
+          </div>
         </div>
+      </div>
     );
 };
 

@@ -29,7 +29,7 @@ const Loader = () => {
                         height={720}
                         priority
                         unoptimized
-                        src="/site/logos/logo2.png"
+                        src="/site/logos/logo1.png"
                         alt="Loader"
                         className=" w-32 md:w-[150px] h-[48px]"
                     />

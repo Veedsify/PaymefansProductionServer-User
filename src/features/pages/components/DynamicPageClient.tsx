@@ -19,7 +19,7 @@ const DynamicPageClient: React.FC<DynamicPageClientProps> = ({ pageData }) => {
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2">
             <Image
-              src="/site/logo.svg"
+              src="/site/logos/logo1.png"
               width={32}
               height={32}
               alt="logo"
