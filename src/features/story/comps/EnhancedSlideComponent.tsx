@@ -346,7 +346,7 @@ export const EnhancedSlideComponent = ({
               streamUrl={currentStory?.media_url}
               isOpen={true}
               showControls={true}
-              muted={true}
+              muted={false}
               className="w-full h-full object-contain bg-black rounded-xl"
             />
           )}
