@@ -1,6 +1,13 @@
 import "@fontsource-variable/bricolage-grotesque";
 import QueryProvider from "@/providers/QueryProvider";
 import "../globals.css";
+import { Bricolage_Grotesque } from "next/font/google";
+import { cn } from "@/components/ui/cn";
+const font = Bricolage_Grotesque({
+  subsets: ["latin", "latin-ext"],
+  weight: ["200", "300", "400", "500", "600", "700", "800"],
+  variable: "--font-bricolage-grotesque",
+});
 const OuterLayout = ({ children }: { children: React.ReactNode }) => {
   return (
     <html lang="en">
@@ -31,7 +38,7 @@ const OuterLayout = ({ children }: { children: React.ReactNode }) => {
         <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
         <meta property="og:image" content="/site/logo.svg" />
       </head>
-      <body className="dark:bg-black min-h-dvh">
+      <body className={cn(` dark:bg-black min-h-dvh`, font.className)}>
         <div>
           <QueryProvider>{children}</QueryProvider>
         </div>
