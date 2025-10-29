@@ -1,6 +1,7 @@
 import { Instagram, Twitter, Youtube } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { FaTiktok } from "react-icons/fa";
 
 const Footer = () => {
   return (
@@ -90,6 +91,13 @@ const Footer = () => {
                 className="text-gray-300 hover:text-primary-dark-pink transition-colors duration-200"
               >
                 <Youtube className="w-6 h-6" />
+              </Link>
+              <Link
+                href="https://tiktok.com/@paymefans"
+                target="_blank"
+                className="text-gray-300 hover:text-primary-dark-pink transition-colors duration-200"
+              >
+                <FaTiktok className="w-5 h-5" />
               </Link>
             </div>
           </div>
