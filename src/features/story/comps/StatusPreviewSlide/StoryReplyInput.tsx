@@ -146,7 +146,7 @@ const StoryReplyInput = ({ story }: StoryReplyInputProps) => {
     return (
         <div
             className={cn(
-                `absolute bottom-0 w-full `,
+                `absolute bottom-2 w-full `,
                 showReplyInput ? "z-[600] bg-black" : "z-[100] bg-transparent",
             )}
         >
