@@ -1,23 +1,100 @@
 "use client";
-import axios from "axios";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { type ChangeEvent, FormEvent, useEffect, useState } from "react";
+import {
+  type ChangeEvent,
+  FormEvent,
+  MouseEvent,
+  useEffect,
+  useState,
+} from "react";
 import toast from "react-hot-toast";
-import { LOGIN_CONFIG } from "@/config/config";
 import { getUser } from "@/lib/User";
 import axiosServer from "@/utils/Axios";
+import { useMutation } from "@tanstack/react-query";
 
 const Login = () => {
   const { setUser } = getUser();
   const [code, setCode] = useState("");
+  const [email, setEmail] = useState("");
   const [error, setError] = useState("");
   const router = useRouter();
-  const [loginCredentials, setLoginCredentials] = useState({
-    email: "",
-    password: "",
+
+  const useResetCode = useMutation({
+    mutationFn: async ({ email }: { email: string }) => {
+      const response = await axiosServer.post("/auth/send-reset-code", {
+        email,
+      });
+      return response.data;
+    },
   });
+
+  const usePasswordReset = useMutation({
+    mutationFn: async ({
+      email,
+      code,
+      newPassword,
+    }: {
+      email: string;
+      code: string;
+      newPassword: string;
+    }) => {
+      const response = await axiosServer.post("/auth/reset-password", {
+        email,
+        code,
+        newPassword,
+      });
+      return response.data;
+    },
+  });
+
+  const handleResetPassword = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (!email) return;
+    if (!code) return;
+    const newPassword = e.currentTarget.querySelector(
+      "#password"
+    ) as HTMLInputElement;
+    usePasswordReset.mutate(
+      { email, code, newPassword: newPassword?.value },
+      {
+        onSuccess: (data) => {
+          console.log(data);
+          toast.success(data.message);
+          router.push("/login");
+        },
+        onError: (error: any) => {
+          console.log(error);
+          toast.error(error.response.data.message);
+        },
+      }
+    );
+  };
+
+  const handleSendResetCode = (e: MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    if (!email) {
+      setError("Please enter your email");
+      toast.error("Please enter your email", {
+        id: "field-error",
+      });
+      return;
+    }
+    useResetCode.mutate(
+      { email },
+      {
+        onSuccess: (data) => {
+          console.log(data);
+          toast.success(data.message);
+        },
+        onError: (error: any) => {
+          console.log(error);
+          toast.error(error.response.data.message);
+        },
+      }
+    );
+  };
 
   useEffect(() => {
     document.title = "Login | Paymefans";
@@ -39,6 +116,7 @@ const Login = () => {
       setError("Invalid code format");
     }
   };
+
   return (
     <div className="p-5 bg-black min-h-dvh lg:p-0">
       <div className="items-start justify-center mx-auto lg:grid grid-cols-2">
@@ -88,7 +166,7 @@ const Login = () => {
             method="post"
             className="flex-1 w-full mb-6"
             autoComplete="off"
-            onSubmit={(e) => e.stopPropagation()}
+            onSubmit={handleResetPassword}
             autoFocus={false}
           >
             <div className="flex flex-col mb-6 gap-2">
@@ -102,6 +180,12 @@ const Login = () => {
                 type="email"
                 name="email"
                 id="email"
+                onChange={(e) => {
+                  if (e.target.value.length > 0) {
+                    setError("");
+                  }
+                  setEmail(e.target.value);
+                }}
                 className="block w-full px-4 py-3 text-sm font-medium text-white bg-white/5 border border-white/10 rounded-xl outline-none focus:border-primary-dark-pink/50 focus:ring-2 focus:ring-primary-dark-pink/20 transition-all duration-200 md:max-w-lg backdrop-blur-sm"
                 placeholder="Enter your email address"
               />
@@ -110,6 +194,7 @@ const Login = () => {
             <div className="flex items-center w-full mb-6 md:max-w-lg">
               <button
                 type="button"
+                onClick={handleSendResetCode}
                 className="ml-auto px-4 py-2 text-sm font-medium text-primary-dark-pink bg-primary-dark-pink/10 rounded-lg hover:bg-primary-dark-pink/20 transition-all duration-200 border border-primary-dark-pink/20"
               >
                 Send Reset Code
