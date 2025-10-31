@@ -256,7 +256,7 @@ const GroupCover = ({ handleJoinGroup }: GroupCoverProps) => {
           {/* Join button */}
           <button
             onClick={handleJoinGroup}
-            className="px-8 py-4 text-lg font-semibold text-white rounded-full cursor-pointer w-96  bg-primary-dark-pink hover:bg-gray-800 transition-colors duration-200 active:scale-95 transform"
+            className="px-8 py-4 text-lg font-semibold text-white rounded-full cursor-pointer w-full max-w-96  bg-primary-dark-pink hover:bg-gray-800 transition-colors duration-200 active:scale-95 transform"
           >
             Join Group
           </button>
