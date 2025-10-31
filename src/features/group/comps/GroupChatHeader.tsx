@@ -118,9 +118,7 @@ const GroupChatHeader = ({ groupData }: GroupChatHeaderProps) => {
           )}
         </div>
         <div>
-          <div className="text-lg font-semibold">
-            {groupData?.name || "Loading..."}
-          </div>
+          <div className="font-semibold">{groupData?.name || "Loading..."}</div>
           {groupData && (
             <div className="flex items-center text-sm text-gray-500 gap-2">
               <span>
