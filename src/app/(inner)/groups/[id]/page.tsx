@@ -23,6 +23,53 @@ import {
   type GroupData,
 } from "@/utils/data/GroupAPI";
 
+// Utility function to format date for separators
+const formatDateSeparator = (date: Date): string => {
+  const today = new Date();
+  const yesterday = new Date(today);
+  yesterday.setDate(yesterday.getDate() - 1);
+
+  const messageDate = new Date(date);
+  messageDate.setHours(0, 0, 0, 0);
+  today.setHours(0, 0, 0, 0);
+  yesterday.setHours(0, 0, 0, 0);
+
+  if (messageDate.getTime() === today.getTime()) {
+    return "Today";
+  } else if (messageDate.getTime() === yesterday.getTime()) {
+    return "Yesterday";
+  } else {
+    // Format as "January 15, 2025" or similar
+    return messageDate.toLocaleDateString("en-US", {
+      month: "long",
+      day: "numeric",
+      year: "numeric",
+    });
+  }
+};
+
+// Utility function to group messages by date
+const groupMessagesByDate = (
+  messages: GroupMessage[]
+): Array<{ date: string; messages: GroupMessage[] }> => {
+  const groups: { [key: string]: GroupMessage[] } = {};
+
+  messages.forEach((message) => {
+    const messageDate = new Date(message.created_at || message.timestamp);
+    const dateKey = messageDate.toDateString();
+
+    if (!groups[dateKey]) {
+      groups[dateKey] = [];
+    }
+    groups[dateKey].push(message);
+  });
+
+  return Object.entries(groups).map(([dateKey, msgs]) => ({
+    date: formatDateSeparator(new Date(dateKey)),
+    messages: msgs,
+  }));
+};
+
 const GroupChatPage = () => {
   const params = useParams();
   const groupId = Number(params.id) as number;
@@ -526,13 +573,29 @@ const GroupChatPage = () => {
               </div>
             )}
 
-            {/* Messages */}
-            {messages.map((message) => (
-              <GroupMessageBubble
-                key={message.id}
-                message={message}
-                isSender={message.senderId === user?.id}
-              />
+            {/* Messages grouped by date */}
+            {groupMessagesByDate(messages).map((group, groupIndex) => (
+              <div key={`date-group-${groupIndex}`} className="space-y-4">
+                {/* Date separator */}
+                <div className="flex items-center justify-center py-2">
+                  <div className="flex items-center w-full max-w-md">
+                    <div className="flex-1 h-px bg-gray-300"></div>
+                    <span className="px-4 text-xs font-medium text-gray-500 uppercase tracking-wide">
+                      {group.date}
+                    </span>
+                    <div className="flex-1 h-px bg-gray-300"></div>
+                  </div>
+                </div>
+
+                {/* Messages for this date */}
+                {group.messages.map((message) => (
+                  <GroupMessageBubble
+                    key={message.id}
+                    message={message}
+                    isSender={message.senderId === user?.id}
+                  />
+                ))}
+              </div>
             ))}
 
             {/* Typing indicator */}

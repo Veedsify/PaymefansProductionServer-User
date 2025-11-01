@@ -85,7 +85,10 @@ const GroupMessageBubble = ({ isSender, message }: GroupMessageBubbleProps) => {
                   {message.sender.username}
                 </Link>
                 <span className="text-xs opacity-70">
-                  {formatDate(message.created_at)}
+                  {new Date(message.created_at).toLocaleTimeString([], {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                  })}
                 </span>
               </div>
             ) : (
