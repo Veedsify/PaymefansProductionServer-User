@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import BecomeAModel from "@/features/models/comps/BecomeAModel";
+import BecomeAModelContainer from "@/features/models/components/BecomeAModel/BecomeAModelContainer";
 
 export const metadata: Metadata = {
   title: "Become a model",
@@ -7,7 +7,7 @@ export const metadata: Metadata = {
 };
 
 function BecomeAModelPage() {
-  return <BecomeAModel />;
+  return <BecomeAModelContainer />;
 }
 
 export default BecomeAModelPage;

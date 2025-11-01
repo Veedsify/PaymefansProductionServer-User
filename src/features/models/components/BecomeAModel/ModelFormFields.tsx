@@ -30,7 +30,7 @@ const ModelFormFields: React.FC<ModelFormFieldsProps> = ({
         <div
           className={`relative border-1 rounded-lg transition-all duration-200 ${
             focusedField === "firstname"
-              ? "border-primary-dark-pink shadow-lg shadow-primary-dark-pink/20"
+              ? "border-primary-dark-pink shadow-primary-dark-pink/20"
               : formErrors.firstname
               ? "border-red-500"
               : "border-gray-300 dark:border-gray-700"
@@ -44,14 +44,14 @@ const ModelFormFields: React.FC<ModelFormFieldsProps> = ({
             placeholder="First name"
             name="firstname"
             value={formData.firstname || ""}
-            className="w-full p-4 bg-transparent font-semibold outline-none rounded-lg"
+            className="w-full p-3 text-xs md:text-sm md:p-4 bg-transparent outline-none rounded-lg"
             aria-invalid={!!formErrors.firstname}
             aria-describedby={
               formErrors.firstname ? "firstname-error" : undefined
             }
           />
           {focusedField === "firstname" && (
-            <span className="absolute -top-3 left-3 px-2 text-xs font-semibold bg-white dark:bg-gray-900 text-primary-dark-pink">
+            <span className="absolute -top-3 left-3 px-2 text-xs bg-white dark:bg-gray-900 text-primary-dark-pink">
               First Name
             </span>
           )}
@@ -68,7 +68,7 @@ const ModelFormFields: React.FC<ModelFormFieldsProps> = ({
         <div
           className={`relative border rounded-lg transition-all duration-200 ${
             focusedField === "lastname"
-              ? "border-primary-dark-pink shadow-lg shadow-primary-dark-pink/20"
+              ? "border-primary-dark-pink shadow-primary-dark-pink/20"
               : formErrors.lastname
               ? "border-red-500"
               : "border-gray-300 dark:border-gray-700"
@@ -82,14 +82,14 @@ const ModelFormFields: React.FC<ModelFormFieldsProps> = ({
             placeholder="Last name"
             name="lastname"
             value={formData.lastname || ""}
-            className="w-full p-4 bg-transparent font-semibold outline-none rounded-lg"
+            className="w-full p-3 text-xs md:text-sm md:p-4 bg-transparent outline-none rounded-lg"
             aria-invalid={!!formErrors.lastname}
             aria-describedby={
               formErrors.lastname ? "lastname-error" : undefined
             }
           />
           {focusedField === "lastname" && (
-            <span className="absolute -top-3 left-3 px-2 text-xs font-semibold bg-white dark:bg-gray-900 text-primary-dark-pink">
+            <span className="absolute -top-3 left-3 px-2 text-xs bg-white dark:bg-gray-900 text-primary-dark-pink">
               Last Name
             </span>
           )}
@@ -106,7 +106,7 @@ const ModelFormFields: React.FC<ModelFormFieldsProps> = ({
         <div
           className={`relative border rounded-lg transition-all duration-200 ${
             focusedField === "dob"
-              ? "border-primary-dark-pink shadow-lg shadow-primary-dark-pink/20"
+              ? "border-primary-dark-pink shadow-primary-dark-pink/20"
               : formErrors.dob
               ? "border-red-500"
               : "border-gray-300 dark:border-gray-700"
@@ -120,12 +120,12 @@ const ModelFormFields: React.FC<ModelFormFieldsProps> = ({
             name="dob"
             placeholder="Date of Birth"
             defaultValue="2018-01-01"
-            className="w-full p-4 bg-transparent font-semibold outline-none rounded-lg"
+            className="w-full p-3 text-xs md:text-sm md:p-4 bg-transparent outline-none rounded-lg"
             aria-invalid={!!formErrors.dob}
             aria-describedby={formErrors.dob ? "dob-error" : undefined}
           />
           {focusedField === "dob" && (
-            <span className="absolute -top-3 left-3 px-2 text-xs font-semibold bg-white dark:bg-gray-900 text-primary-dark-pink">
+            <span className="absolute -top-3 left-3 px-2 text-xs bg-white dark:bg-gray-900 text-primary-dark-pink">
               Date of Birth
             </span>
           )}
@@ -142,7 +142,7 @@ const ModelFormFields: React.FC<ModelFormFieldsProps> = ({
         <div
           className={`relative border rounded-lg transition-all duration-200 ${
             focusedField === "country"
-              ? "border-primary-dark-pink shadow-lg shadow-primary-dark-pink/20"
+              ? "border-primary-dark-pink shadow-primary-dark-pink/20"
               : formErrors.country
               ? "border-red-500"
               : "border-gray-300 dark:border-gray-700"
@@ -153,7 +153,7 @@ const ModelFormFields: React.FC<ModelFormFieldsProps> = ({
             onFocus={() => onFocus("country")}
             onBlur={onBlur}
             value={formData.country || ""}
-            className="w-full p-4 bg-transparent font-semibold outline-none rounded-lg"
+            className="w-full p-3 text-sm md:p-4 bg-transparent outline-none rounded-lg"
             name="country"
             aria-invalid={!!formErrors.country}
           >
@@ -168,10 +168,9 @@ const ModelFormFields: React.FC<ModelFormFieldsProps> = ({
                 {location.name}
               </option>
             ))}
-            <option value="uk">UK</option>
           </select>
           {focusedField === "country" && (
-            <span className="absolute -top-3 left-3 px-2 text-xs font-semibold bg-white dark:bg-gray-900 text-primary-dark-pink">
+            <span className="absolute -top-3 left-3 px-2 text-xs bg-white dark:bg-gray-900 text-primary-dark-pink">
               Country
             </span>
           )}
@@ -183,13 +182,13 @@ const ModelFormFields: React.FC<ModelFormFieldsProps> = ({
 
       {/* Referral Code */}
       <div className="relative">
-        <p className="mb-2 font-medium text-gray-700 dark:text-gray-200">
+        <p className="mb-2 font-medium text-sm text-gray-700 dark:text-gray-200">
           Do you have a referral code?
         </p>
         <div
           className={`relative border rounded-lg transition-all duration-200 ${
             focusedField === "referral_code"
-              ? "border-primary-dark-pink shadow-lg shadow-primary-dark-pink/20"
+              ? "border-primary-dark-pink shadow-primary-dark-pink/20"
               : formErrors.referral_code
               ? "border-red-500"
               : "border-gray-300 dark:border-gray-700"
@@ -203,14 +202,14 @@ const ModelFormFields: React.FC<ModelFormFieldsProps> = ({
             placeholder="Referral Code : PF-000000"
             name="referral_code"
             value={formData.referral_code || ""}
-            className="w-full p-4 bg-transparent font-semibold outline-none rounded-lg"
+            className="w-full p-3 text-xs md:text-sm md:p-4 bg-transparent outline-none rounded-lg"
             aria-invalid={!!formErrors.referral_code}
             aria-describedby={
               formErrors.referral_code ? "referral_code-error" : undefined
             }
           />
           {focusedField === "referral_code" && (
-            <span className="absolute -top-3 left-3 px-2 text-xs font-semibold bg-white dark:bg-gray-900 text-primary-dark-pink">
+            <span className="absolute -top-3 left-3 px-2 text-xs bg-white dark:bg-gray-900 text-primary-dark-pink">
               Referral Code
             </span>
           )}
@@ -224,11 +223,11 @@ const ModelFormFields: React.FC<ModelFormFieldsProps> = ({
 
       {/* Availability */}
       <div>
-        <p className="mb-2 font-medium text-gray-700 dark:text-gray-200">
+        <p className="mb-2 font-medium text-sm text-gray-700 dark:text-gray-200">
           Are you available hookup?
         </p>
         <div className="flex gap-6">
-          <label className="inline-flex items-center font-medium text-gray-600 cursor-pointer gap-2 dark:text-gray-300">
+          <label className="inline-flex text-xs md:text-sm items-center font-medium text-gray-600 cursor-pointer gap-2 dark:text-gray-300">
             <input
               onChange={onInputChange}
               type="radio"
@@ -239,7 +238,7 @@ const ModelFormFields: React.FC<ModelFormFieldsProps> = ({
             />
             Yes
           </label>
-          <label className="inline-flex items-center font-medium text-gray-600 cursor-pointer gap-2 dark:text-gray-300">
+          <label className="inline-flex text-xs md:text-sm items-center font-medium text-gray-600 cursor-pointer gap-2 dark:text-gray-300">
             <input
               onChange={onInputChange}
               type="radio"

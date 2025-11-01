@@ -372,7 +372,7 @@ const GroupChatInput = ({
   }, []);
 
   return (
-    <div className="p-6 space-y-3 dark:bg-gray-800">
+    <div className="px-4 py-3 md:p-6 space-y-1 dark:bg-gray-800">
       {/* Muted Status Indicator */}
       {isMuted && (
         <div className="flex items-center p-3 bg-red-50 border border-red-200 rounded-lg">
@@ -399,7 +399,7 @@ const GroupChatInput = ({
 
       {/* Attachment Previews */}
       {attachments.length > 0 && (
-        <div className="flex flex-wrap gap-2 p-3 bg-gray-50 rounded-lg dark:bg-gray-700">
+        <div className="flex flex-wrap gap-2 p-1 bg-gray-50 rounded-lg dark:bg-gray-700">
           {attachments.map((attachment) => (
             <div
               key={attachment.id}
@@ -468,55 +468,52 @@ const GroupChatInput = ({
       )}
 
       {/* Message Input */}
-      <div className="flex items-end space-x-2">
-        <div className="flex-grow">
-          <div className="flex items-center space-x-2">
-            <input
-              ref={fileInputRef}
-              type="file"
-              multiple
-              onChange={handleFileSelect}
-              className="hidden"
-              accept={getFileInputAccept()}
-            />
+      <div className="flex items-center gap-4 justify-between w-full">
+        <div className="flex items-center">
+          <input
+            ref={fileInputRef}
+            type="file"
+            multiple
+            onChange={handleFileSelect}
+            className="hidden"
+            accept={getFileInputAccept()}
+          />
 
-            <button
-              onClick={() => fileInputRef.current?.click()}
-              disabled={sendingMessage || uploadingFiles || isMuted}
-              className="p-3 text-gray-500 hover:text-primary-dark-pink hover:bg-gray-100 rounded-md transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-              type="button"
-              aria-label={
-                isMuted
-                  ? "File attachments disabled - you are muted"
-                  : "Attach file"
-              }
-            >
-              <Paperclip className="w-5 h-5" />
-            </button>
-
-            <input
-              onChange={handleTyping}
-              onKeyDown={handleKeyDown}
-              value={messageContent}
-              disabled={uploadingFiles || isMuted || isMediaUploading}
-              className="flex-grow px-4 py-4 border border-gray-300 resize-none rounded-md focus:outline-none focus:border-blue-500 disabled:opacity-50 disabled:bg-gray-100"
-              placeholder={
-                isMuted
-                  ? "You are muted and cannot send messages..."
-                  : uploadingFiles || isMediaUploading
-                  ? "Uploading files..."
-                  : "Type a message..."
-              }
-            />
-          </div>
+          <button
+            onClick={() => fileInputRef.current?.click()}
+            disabled={sendingMessage || uploadingFiles || isMuted}
+            className=" text-gray-500 hover:text-primary-dark-pink hover:bg-gray-100 rounded-md transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            type="button"
+            aria-label={
+              isMuted
+                ? "File attachments disabled - you are muted"
+                : "Attach file"
+            }
+          >
+            <Paperclip className="w-5 h-5" />
+          </button>
         </div>
+        <input
+          onChange={handleTyping}
+          onKeyDown={handleKeyDown}
+          value={messageContent}
+          disabled={uploadingFiles || isMuted || isMediaUploading}
+          className="flex-1 px-4 py-2 w-full block border border-gray-300 resize-none rounded-md focus:outline-none focus:border-blue-500 disabled:opacity-50 disabled:bg-gray-100"
+          placeholder={
+            isMuted
+              ? "You are muted and cannot send messages..."
+              : uploadingFiles || isMediaUploading
+              ? "Uploading files..."
+              : "Type a message..."
+          }
+        />
 
         <button
           disabled={
             sendingMessage || uploadingFiles || isMuted || isMediaUploading
           }
           onClick={handleSendClick}
-          className="px-4 py-4 text-white cursor-pointer bg-primary-dark-pink rounded-md hover:bg-primary-text-dark-pink disabled:bg-gray-500 flex-shrink-0"
+          className="px-2.5 py-2.5 text-white cursor-pointer bg-primary-dark-pink rounded hover:bg-primary-text-dark-pink disabled:bg-gray-500 flex-shrink-0"
           aria-label={
             isMuted
               ? "Cannot send - you are muted"
@@ -529,7 +526,7 @@ const GroupChatInput = ({
           {sendingMessage || uploadingFiles || isMediaUploading ? (
             <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
           ) : (
-            <LucideSendHorizonal className="w-5 h-5" />
+            <LucideSendHorizonal className="w-4 h-4" />
           )}
         </button>
       </div>

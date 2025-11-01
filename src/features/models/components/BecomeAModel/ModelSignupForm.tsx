@@ -8,6 +8,7 @@ import type { ModelSignUpData, FormErrors } from "../../types";
 import ModelFormFields from "./ModelFormFields";
 import GenderSelector from "./GenderSelector";
 import ModelPaymentHandler from "./ModelPaymentHandler";
+import { PiGenderNeuter } from "react-icons/pi";
 
 interface ModelSignupFormProps {
     formData: Partial<ModelSignUpData>;
@@ -35,7 +36,7 @@ const ModelSignupForm: React.FC<ModelSignupFormProps> = ({
     const [selectedGender, setSelectedGender] =
         useState<postAudienceDataProps2>({
             id: 0,
-            icon: <LucideEye size={20} className="inline" />,
+            icon: <PiGenderNeuter size={18} className="inline" />,
             name: "Choose Gender",
         });
 
@@ -44,7 +45,7 @@ const ModelSignupForm: React.FC<ModelSignupFormProps> = ({
     };
 
     return (
-        <div className="p-6 pt-8 pb-16 bg-white dark:bg-gray-950 rounded-2xl">
+        <div className="p-6 pt-8 pb-16 bg-white dark:bg-gray-950 rounded-2xl mb-12">
             <h1 className="block mb-6 text-2xl font-bold text-center text-primary-dark-pink md:hidden">
                 Become a Model
             </h1>

@@ -238,7 +238,7 @@ const GroupCover = ({ handleJoinGroup }: GroupCoverProps) => {
                   }}
                   src={profile.avatar}
                   alt={profile.name}
-                  className={`${profile.size} rounded-full object-cover border-2 border-white shadow-lg hover:scale-110 transition-transform duration-200 cursor-pointer`}
+                  className={`${profile.size} aspect-square rounded-full object-cover border-2 border-white shadow-lg hover:scale-110 transition-transform duration-200 cursor-pointer`}
                 />
               </div>
             ))}

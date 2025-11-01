@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import toast from "react-hot-toast";
 import BlockUserButton from "../user/comps/BlockUserButton";
+import ReportModal from "@/components/ReportModal";
 
 const MoreProfileOptions = ({
   user,
@@ -18,6 +19,7 @@ const MoreProfileOptions = ({
   authUserId: number;
 }) => {
   const [isOpen, setIsOpen] = useState(false);
+  const [isReportModalOpen, setIsReportModalOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
 
   const copyProfileLink = () => {
@@ -42,6 +44,11 @@ const MoreProfileOptions = ({
       document.removeEventListener("click", closeOpen);
     };
   }, []);
+
+  const toggleReportModal = () => {
+    setIsReportModalOpen(!isReportModalOpen);
+    setIsOpen(false);
+  };
 
   return (
     <div className="relative" ref={ref}>
@@ -134,19 +141,25 @@ const MoreProfileOptions = ({
               {authUserId !== user.id && (
                 <>
                   <div className="w-full mx-3 my-1  bg-gray-200  dark:bg-gray-700" />
-                  <Link
-                    href=""
+                  <button
+                    onClick={toggleReportModal}
                     className="flex items-center justify-center w-full px-3 py-1 text-sm bg-red-500 dark:text-gray-300 dark:hover:bg-red-500 text-nowrap rounded-md transition-colors duration-150 text-white gap-3 text-center"
                   >
                     <Ban size={14} />
                     Report User
-                  </Link>
+                  </button>
                 </>
               )}
             </div>
           </motion.div>
         )}
       </AnimatePresence>
+      <ReportModal
+        isOpen={isReportModalOpen}
+        onClose={toggleReportModal}
+        userId={user.id}
+        username={user.username}
+      />
     </div>
   );
 };

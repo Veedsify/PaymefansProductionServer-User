@@ -5,6 +5,7 @@ import { useEffect, useRef, useState } from "react";
 import type { GroupMessage } from "@/contexts/GroupChatContext";
 import { formatDate } from "@/lib/FormatDate";
 import AttachmentRenderer from "./AttachmentRenderer";
+import Link from "next/link";
 
 interface GroupMessageBubbleProps {
   isSender: boolean;
@@ -30,7 +31,7 @@ const GroupMessageBubble = ({ isSender, message }: GroupMessageBubbleProps) => {
   }, []);
 
   const bubbleClasses = `
-    flex flex-col w-full max-w-xs leading-tight p-3 rounded-2xl
+    flex flex-col w-full max-w-xs leading-tight p-2 rounded-xl
     ${
       isSender
         ? "bg-primary-dark-pink text-white rounded-tr-none"
@@ -48,16 +49,20 @@ const GroupMessageBubble = ({ isSender, message }: GroupMessageBubbleProps) => {
   return (
     <div
       ref={messageRef}
-      className={`flex items-start gap-3 ${isSender ? "justify-end" : "justify-start"}`}
+      className={`flex items-start gap-3 ${
+        isSender ? "justify-end" : "justify-start"
+      }`}
     >
       {!isSender && (
-        <Image
-          width={32}
-          height={32}
-          className="object-cover w-8 h-8 rounded-full"
-          src={message.sender.profile_image}
-          alt={`${message.sender.username}'s profile`}
-        />
+        <Link href={`/${message.sender.username}`}>
+          <Image
+            width={32}
+            height={32}
+            className="object-cover w-8 h-8 rounded-full"
+            src={message.sender.profile_image}
+            alt={`${message.sender.username}'s profile`}
+          />
+        </Link>
       )}
 
       <div className="relative">
@@ -65,9 +70,12 @@ const GroupMessageBubble = ({ isSender, message }: GroupMessageBubbleProps) => {
           <div className="flex items-center justify-between mb-1">
             {!isSender ? (
               <div className="flex items-center gap-2">
-                <span className="text-sm font-semibold">
+                <Link
+                  href={`/${message.sender.username}`}
+                  className="text-sm font-semibold" 
+                >
                   {message.sender.username}
-                </span>
+                </Link>
                 <span className="text-xs opacity-70">
                   {formatDate(message.created_at)}
                 </span>

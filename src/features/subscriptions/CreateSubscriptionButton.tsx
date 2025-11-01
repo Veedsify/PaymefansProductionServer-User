@@ -56,7 +56,11 @@ const CreateSubscriptionButton = ({
   return (
     <button
       onClick={handleIfSubscriber}
-      className={`sm:px-4 py-1 px-2 text-sm font-semibold  ${isSubscriber ? " bg-transparent text-black dark:text-white" : "bg-black text-white dark:bg-white dark:text-black"} border border-black dark:border-white rounded `}
+      className={`sm:px-4 py-1 px-2 text-xs md:text-sm font-semibold  ${
+        isSubscriber
+          ? " bg-transparent text-black dark:text-white"
+          : "bg-black text-white dark:bg-white dark:text-black"
+      } border border-black dark:border-white rounded `}
     >
       {isSubscriber ? "Subscribed" : "Subscribe"}
     </button>

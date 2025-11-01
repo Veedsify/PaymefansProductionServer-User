@@ -72,21 +72,21 @@ const PaymentPage = () => {
     );
   } else {
     return (
-      <div className="p-6 py-8 bg-white dark:bg-gray-950 rounded-2xl">
+      <div className="p-6 py-8 mb-12 bg-white dark:bg-gray-950 rounded-2xl">
         <h1 className="block mb-6 text-2xl font-bold text-center text-primary-dark-pink md:hidden">
           Activate Creator Dashboard
         </h1>
 
         <div className="flex items-center max-w-md p-4 py-4 mx-auto mb-4 bg-coins-card-bottom md:max-w-2xl rounded-xl gap-4">
           <span>
-            <LucideInfo className="text-primary-text-dark-pink" size={30} />
+            <LucideInfo className="text-primary-text-dark-pink" size={26} />
           </span>
-          <p className="text-sm font-medium text-primary-text-dark-pink">
+          <p className="text-xs md:text-sm font-medium text-primary-text-dark-pink">
             Activate your creator dashboard to get premium access to Creator
             world and start monetizing your content
           </p>
         </div>
-        <div className="max-w-md mx-auto mb-4 overflow-hidden bg-white shadow-lg dark:bg-gray-800 rounded-xl md:max-w-2xl">
+        <div className="max-w-md mx-auto mb-4 overflow-hidden bg-white border border-black/10 dark:bg-gray-800 rounded-xl md:max-w-2xl">
           <div className="md:flex">
             <div className="w-full p-8">
               <div className="text-sm font-semibold tracking-wide uppercase text-primary-dark-pink">

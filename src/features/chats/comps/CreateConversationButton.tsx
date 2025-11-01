@@ -45,7 +45,7 @@ export default function CreateConversationButton({
       onClick={createConversation}
       className="flex items-center p-1 text-white rounded cursor-pointer bg-primary-dark-pink"
     >
-      <LucideMail className="w-5 h-5" />
+      <LucideMail className="w-4 h-4" />
       {loading && <LoadingSpinner />}
     </button>
   );

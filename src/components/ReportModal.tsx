@@ -4,7 +4,7 @@ import { useState as useReactState } from "react";
 import toast from "react-hot-toast";
 import axiosInstance from "@/utils/Axios";
 import LoadingSpinner from "@/components/common/loaders/LoadingSpinner";
-import { LucideSearch } from "lucide-react";
+import { Bird, LucideSearch } from "lucide-react";
 
 const ReportModal = ({
   isOpen,
@@ -64,8 +64,22 @@ const ReportModal = ({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[200]">
-      <div className="w-full max-w-md p-6 mx-4 bg-white dark:bg-gray-800 rounded-2xl">
+    <div
+      onClick={() => onClose?.()}
+      className="fixed inset-0 bg-black/50 flex items-center justify-center z-[200]"
+    >
+      <div
+        onClick={(e) => e.stopPropagation()}
+        className="w-full max-w-md lg:p-6 p-5 mx-4 bg-white dark:bg-gray-800 rounded-lg
+        sm:mx-4 sm:p-4
+        xs:mx-2 xs:p-3
+        xs:rounded-lg
+        xs:max-w-full
+        xs:h-full
+        xs:overflow-y-auto
+        xs:flex xs:flex-col xs:justify-center
+      "
+      >
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
             Report {username}
@@ -74,7 +88,7 @@ const ReportModal = ({
             onClick={onClose}
             className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700"
           >
-            <LucideSearch size={20} className="rotate-45" />
+            <Bird size={20} className="text-red-500" />
           </button>
         </div>
 
@@ -86,7 +100,7 @@ const ReportModal = ({
             <select
               value={reportType}
               onChange={(e) => setReportType(e.target.value)}
-              className="w-full p-3 text-gray-900 bg-white border border-gray-300 rounded-lg dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
+              className="w-full p-3 text-xs md:text-sm text-gray-900 bg-white border border-gray-300 rounded-lg dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
               required
             >
               <option value="">Select a reason</option>
@@ -108,24 +122,24 @@ const ReportModal = ({
               value={reportReason}
               onChange={(e) => setReportReason(e.target.value)}
               placeholder="Please provide more details about this report..."
-              className="w-full p-3 text-gray-900 bg-white border border-gray-300 rounded-lg resize-none dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
+              className="w-full p-2 placeholder:text-sm md:p-3 text-gray-900 bg-white border border-gray-300 text-xs md:text-sm rounded-lg resize-none dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
               rows={4}
               required
             />
           </div>
 
-          <div className="flex pt-4 gap-3">
+          <div className="flex pt-4 gap-3 flex-col xs:flex-col sm:flex-row">
             <button
               type="button"
               onClick={onClose}
-              className="flex-1 px-4 py-3 text-gray-700 border border-gray-300 rounded-lg dark:border-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700"
+              className="w-full sm:flex-1 text-xs md:text-sm p-2 md:px-4 md:py-3 text-gray-700 border border-gray-300 rounded-lg dark:border-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={isSubmitting}
-              className="flex items-center justify-center flex-1 px-4 py-3 text-white bg-red-600 rounded-lg hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full sm:flex-1 flex items-center text-xs md:text-sm justify-center p-2 md:px-4 md:py-3 text-white bg-red-600 rounded-lg hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {isSubmitting ? <LoadingSpinner /> : "Submit Report"}
             </button>

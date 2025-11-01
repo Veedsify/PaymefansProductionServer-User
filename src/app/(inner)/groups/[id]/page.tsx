@@ -499,7 +499,7 @@ const GroupChatPage = () => {
       <GroupChatHeader groupData={groupData} />
       <div
         ref={messagesContainerRef}
-        className="flex-grow overflow-y-auto p-6 space-y-4 h-auto transition-all max-h-[calc(100vh-215px)]"
+        className="overflow-y-auto p-6 space-y-4 h-auto transition-all flex-1"
         onScroll={handleScroll}
       >
         {messages.length === 0 ? (
@@ -594,7 +594,7 @@ const GroupChatPage = () => {
           </motion.button>
         )}
       </div>
-      <div className="flex-shrink-0 border-t">
+      <div className="border-t">
         <GroupChatInput
           isUserMuted={currentUserMembership?.isMuted}
           mutedUntil={currentUserMembership?.mutedUntil}

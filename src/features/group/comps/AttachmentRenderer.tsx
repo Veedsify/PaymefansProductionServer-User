@@ -71,9 +71,9 @@ const AttachmentRenderer: React.FC<AttachmentRendererProps> = ({
       <Image
         src={attachment.fileUrl}
         alt={attachment.fileName}
-        width={300}
-        height={300}
-        className="object-cover w-full rounded-lg aspect-square group-hover:brightness-90 transition"
+        width={150}
+        height={150}
+        className="object-cover w-full rounded-lg max-w-28 aspect-square group-hover:brightness-90 transition"
         loading="eager"
       />
       <span className="absolute px-2 py-1 text-xs text-gray-700 rounded shadow bottom-2 right-2 bg-white/30 group-hover:bg-primary-dark-pink group-hover:text-white transition">

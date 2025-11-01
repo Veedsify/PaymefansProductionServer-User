@@ -60,7 +60,7 @@ const FollowUserComponent: React.FC<FollowUserProps> = ({ profileuser }) => {
   return (
     <button
       onClick={followProfile}
-      className={`sm:px-4 py-1 px-2 rounded outline text-sm font-semibold ${
+      className={`sm:px-4 py-1 px-2 rounded outline text-xs md:text-sm font-semibold ${
         isFollowing ? "outline outline-black text-color" : "bg-black text-white"
       }`}
     >

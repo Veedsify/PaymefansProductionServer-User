@@ -82,7 +82,7 @@ const GenderSelector: React.FC<GenderSelectorProps> = ({
             <div
                 className={`relative border rounded-lg transition-all duration-200 ${
                     focusedField === "gender"
-                        ? "border-primary-dark-pink shadow-lg shadow-primary-dark-pink/20"
+                        ? "border-primary-dark-pink shadow-primary-dark-pink/20"
                         : formErrors.audience
                           ? "border-red-500"
                           : "border-gray-300 dark:border-gray-700"
@@ -90,12 +90,12 @@ const GenderSelector: React.FC<GenderSelectorProps> = ({
             >
                 <button
                     type="button"
-                    className="w-full p-4 bg-transparent font-semibold outline-none flex items-center justify-between rounded-lg"
+                    className="w-full p-4 bg-transparent outline-none flex items-center justify-between rounded-lg"
                     onClick={() => setIsDropdownOpen(!isDropdownOpen)}
                     onFocus={() => onFocus("gender")}
                     onBlur={onBlur}
                 >
-                    <span className="flex items-center text-sm font-semibold gap-2">
+                    <span className="flex items-center text-xs md:text-sm gap-2">
                         {selectedGender.icon} {selectedGender.name}
                     </span>
                     {isDropdownOpen ? (
@@ -105,7 +105,7 @@ const GenderSelector: React.FC<GenderSelectorProps> = ({
                     )}
                 </button>
                 {focusedField === "gender" && (
-                    <span className="absolute -top-3 left-3 px-2 text-xs font-semibold bg-white dark:bg-gray-900 text-primary-dark-pink">
+                    <span className="absolute -top-3 left-3 px-2 text-xs  bg-white dark:bg-gray-900 text-primary-dark-pink">
                         Gender
                     </span>
                 )}

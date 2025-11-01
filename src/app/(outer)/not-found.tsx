@@ -36,10 +36,10 @@ const NotFound = () => {
       <div>
         <Link
           className="inline-flex items-center justify-center px-3 sm:px-4 text-sm py-2 font-medium text-white rounded-lg gap-2 sm:gap-4 hover:bg-primary-text-dark-pink duration-300 bg-primary-dark-pink"
-          href={"/"}
+          href={"/login"}
         >
           <LucideArrowLeft size={18} />
-          Back Home
+          Back To Login
         </Link>
       </div>
     </div>

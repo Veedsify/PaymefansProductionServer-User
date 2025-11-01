@@ -25,18 +25,18 @@ const font = Bricolage_Grotesque({
     variable: "--font-bricolage-grotesque",
 });
 export const metadata: Metadata = {
-    title: "Paymefans",
-    description: "Paymefans - The Ultimate Fan Experience",
-    icons: {
-        icon: "/icons/favicon.svg",
-        shortcut: "/site/favicon.svg",
+  title: "Paymefans",
+  description: "Paymefans - The Ultimate Fan Experience",
+  icons: {
+    icon: "/icons/favicon.svg",
+    shortcut: "/icons/favicon.svg",
+  },
+  authors: [
+    {
+      name: "Paymefans",
+      url: "https://paymefans.com",
     },
-    authors: [
-        {
-            name: "Paymefans",
-            url: "https://paymefans.com",
-        },
-    ],
+  ],
 };
 
 export const revalidate = 300;
@@ -46,88 +46,88 @@ export default async function RootLayout({
     children: React.ReactNode;
 }>) {
     return (
-        <html lang="en">
-            <head>
-                <link rel="icon" href="/icons/favicon.svg" />
-                <link
-                    rel="apple-touch-icon"
-                    href="/icons/favicon.svg"
-                    sizes="180x180"
-                />
-                <link rel="manifest" href="/webmanifest.json" />
-                <meta name="theme-color" content="#000000" />
-                <meta charSet="utf-8" />
-                <meta
-                    name="viewport"
-                    content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0"
-                />
-                <meta name="mobile-web-app-capable" content="yes" />
-                <meta
-                    name="apple-mobile-web-app-status-bar-style"
-                    content="black-translucent"
-                />
-                <meta
-                    name="description"
-                    content="Paymefans - The Ultimate Fan Experience"
-                />
-                <meta name="format-detection" content="telephone=no" />
-                <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
-                <meta property="og:image" content="/site/logo.svg" />
-            </head>
-            <body className={cn(`dark:bg-black min-h-dvh`, font.className)}>
-                <QueryProvider>
-                    <CombinedProviders>
-                        <Loader />
-                        <Toaster
-                            toastOptions={{
-                                duration: 5000,
-                                style: {
-                                    fontSize: "14px",
-                                    fontWeight: "500",
-                                    border: "1px solid #CC0DF8",
-                                    borderRadius: "100vmax",
-                                },
-                                className:
-                                    "dark:bg-gray-900 dark:text-white dark:border-gray-600",
-                            }}
-                        />
-                        <SonnerToast
-                            richColors
-                            position="top-center"
-                            toastOptions={{
-                                closeButton: true,
-                                duration: 10000,
-                                style: {
-                                    fontSize: "16px",
-                                    borderRadius: "100vmax",
-                                },
-                            }}
-                        />
-                        <div className="relative select-none grid h-dvh lg:grid-cols-8">
-                            <div className="col-span-2">
-                                <SideBar />
-                            </div>
-                            <div className="relative overflow-auto border-r h-dvh col-span-6 border-gray-300">
-                                <Header />
-                                <div className="grid lg:grid-cols-6 pt-[66px] lg:pt-[48px] h-dvh">
-                                    <div className="flex flex-col h-full col-span-3">
-                                        <div className="w-full h-full md:border-r border-black/20 dark:border-slate-800 pb-8 lg:pb-0">
-                                            {children}
-                                        </div>
-                                    </div>
-                                    <LayoutWithWishlist>
-                                        <SideModels />
-                                    </LayoutWithWishlist>
-                                </div>
-                            </div>
-                            <MenuButtons />
-                            {/* <ModalComponent /> */}
-                        </div>
-                        <PostComponentPreview />
-                        <GuestLoginModal />
-                    </CombinedProviders>
-                </QueryProvider>
-            </body>
-        </html>
+      <html lang="en">
+        <head>
+          <link rel="icon" href="/icons/favicon.svg" />
+          <link
+            rel="apple-touch-icon"
+            href="/icons/favicon.svg"
+            sizes="180x180"
+          />
+          <link rel="manifest" href="/webmanifest.json" />
+          <meta name="theme-color" content="#000000" />
+          <meta charSet="utf-8" />
+          <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0"
+          />
+          <meta name="mobile-web-app-capable" content="yes" />
+          <meta
+            name="apple-mobile-web-app-status-bar-style"
+            content="black-translucent"
+          />
+          <meta
+            name="description"
+            content="Paymefans - The Ultimate Fan Experience"
+          />
+          <meta name="format-detection" content="telephone=no" />
+          <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
+          <meta property="og:image" content="/site/logo.svg" />
+        </head>
+        <body className={cn(`dark:bg-black min-h-dvh`, font.className)}>
+          <QueryProvider>
+            <CombinedProviders>
+              <Loader />
+              <Toaster
+                toastOptions={{
+                  duration: 5000,
+                  style: {
+                    fontSize: "14px",
+                    fontWeight: "500",
+                    border: "1px solid #CC0DF8",
+                    borderRadius: "100vmax",
+                  },
+                  className:
+                    "dark:bg-gray-900 dark:text-white dark:border-gray-600",
+                }}
+              />
+              <SonnerToast
+                richColors
+                position="top-center"
+                toastOptions={{
+                  closeButton: true,
+                  duration: 10000,
+                  style: {
+                    fontSize: "16px",
+                    borderRadius: "100vmax",
+                  },
+                }}
+              />
+              <div className="relative select-none grid h-dvh lg:grid-cols-8">
+                <div className="col-span-2">
+                  <SideBar />
+                </div>
+                <div className="relative overflow-auto border-r h-dvh col-span-6 border-gray-300">
+                  <Header />
+                  <div className="grid lg:grid-cols-6 pt-[66px] lg:pt-[48px] h-dvh">
+                    <div className="flex flex-col h-full col-span-3">
+                      <div className="w-full h-full md:border-r border-black/20 dark:border-slate-800">
+                        {children}
+                      </div>
+                    </div>
+                    <LayoutWithWishlist>
+                      <SideModels />
+                    </LayoutWithWishlist>
+                  </div>
+                </div>
+                <MenuButtons />
+                {/* <ModalComponent /> */}
+              </div>
+              <PostComponentPreview />
+              <GuestLoginModal />
+            </CombinedProviders>
+          </QueryProvider>
+        </body>
+      </html>
     );
 }
