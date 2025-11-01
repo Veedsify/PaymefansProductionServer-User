@@ -542,11 +542,16 @@ const GroupChatPage = () => {
   }
 
   return (
-    <div className="flex flex-col h-full">
-      <GroupChatHeader groupData={groupData} />
+    <div className="flex flex-col h-full overflow-hidden">
+      {/* Fixed Header */}
+      <div className="flex-shrink-0">
+        <GroupChatHeader groupData={groupData} />
+      </div>
+
+      {/* Scrollable Messages Container */}
       <div
         ref={messagesContainerRef}
-        className="overflow-y-auto p-6 space-y-4 h-auto transition-all flex-1"
+        className="flex-1 max-h-[calc(100dvh-230px)] overflow-y-auto p-6 space-y-4"
         onScroll={handleScroll}
       >
         {messages.length === 0 ? (
@@ -657,7 +662,9 @@ const GroupChatPage = () => {
           </motion.button>
         )}
       </div>
-      <div className="border-t">
+
+      {/* Fixed Input at Bottom */}
+      <div className="flex-shrink-0 sticky bottom-0 border-t bg-white">
         <GroupChatInput
           isUserMuted={currentUserMembership?.isMuted}
           mutedUntil={currentUserMembership?.mutedUntil}
