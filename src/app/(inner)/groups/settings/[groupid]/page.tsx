@@ -141,7 +141,7 @@ const GroupSettingsPage = () => {
               />
             </div>
             <div>
-              <h1 className="text-lg font-semibold text-gray-900 dark:text-white">
+              <h1 className="text-sm md:text-base font-semibold text-gray-900 dark:text-white">
                 {group?.name}
               </h1>
               <div className="flex items-center text-sm text-gray-500 gap-1 dark:text-gray-400">

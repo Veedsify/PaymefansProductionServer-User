@@ -1,25 +1,26 @@
 "use client";
-
-import { useState as useReactState } from "react";
 import toast from "react-hot-toast";
 import axiosInstance from "@/utils/Axios";
 import LoadingSpinner from "@/components/common/loaders/LoadingSpinner";
 import { Bird, LucideSearch } from "lucide-react";
+import { useState } from "react";
 
 const ReportModal = ({
   isOpen,
   onClose,
   userId,
+  defaultReason,
   username,
 }: {
   isOpen: boolean;
   onClose: () => void;
   userId: number;
+  defaultReason?: string;
   username: string;
 }) => {
-  const [reportType, setReportType] = useReactState("");
-  const [reportReason, setReportReason] = useReactState("");
-  const [isSubmitting, setIsSubmitting] = useReactState(false);
+  const [reportType, setReportType] = useState("");
+  const [reportReason, setReportReason] = useState(defaultReason || "");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const reportTypes = [
     "spam",

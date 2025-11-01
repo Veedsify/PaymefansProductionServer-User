@@ -6,6 +6,8 @@ import type { GroupMessage } from "@/contexts/GroupChatContext";
 import { formatDate } from "@/lib/FormatDate";
 import AttachmentRenderer from "./AttachmentRenderer";
 import Link from "next/link";
+import ReportModal from "@/components/ReportModal";
+import toast from "react-hot-toast";
 
 interface GroupMessageBubbleProps {
   isSender: boolean;
@@ -15,6 +17,7 @@ interface GroupMessageBubbleProps {
 const GroupMessageBubble = ({ isSender, message }: GroupMessageBubbleProps) => {
   const [moreOptions, setMoreOptions] = useState(false);
   const messageRef = useRef<HTMLDivElement>(null);
+  const [openReportModal, setOpenReportModal] = useState(false);
 
   useEffect(() => {
     const handleClick = (e: MouseEvent) => {
@@ -31,7 +34,7 @@ const GroupMessageBubble = ({ isSender, message }: GroupMessageBubbleProps) => {
   }, []);
 
   const bubbleClasses = `
-    flex flex-col w-full max-w-xs leading-tight p-2 rounded-xl
+    flex flex-col w-full max-w-48 md:max-w-60 leading-tight p-2 rounded-xl
     ${
       isSender
         ? "bg-primary-dark-pink text-white rounded-tr-none"
@@ -45,6 +48,11 @@ const GroupMessageBubble = ({ isSender, message }: GroupMessageBubbleProps) => {
     dark:bg-gray-700 dark:border-gray-600 dark:divide-gray-600
     ${isSender ? "right-0" : "left-0"}
   `;
+
+  const handleMessageReport = () => {
+    setOpenReportModal(true);
+    setMoreOptions(false);
+  };
 
   return (
     <div
@@ -72,7 +80,7 @@ const GroupMessageBubble = ({ isSender, message }: GroupMessageBubbleProps) => {
               <div className="flex items-center gap-2">
                 <Link
                   href={`/${message.sender.username}`}
-                  className="text-sm font-semibold" 
+                  className="text-sm font-semibold"
                 >
                   {message.sender.username}
                 </Link>
@@ -164,14 +172,30 @@ const GroupMessageBubble = ({ isSender, message }: GroupMessageBubbleProps) => {
               <ul className="py-1 text-sm text-gray-700 dark:text-gray-200">
                 {["Copy"].map((action) => (
                   <li key={action}>
-                    <button className="w-full px-4 py-2 text-left hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white transition-colors">
+                    <button
+                      onClick={() => {
+                        if (action === "Copy") {
+                          navigator.clipboard.writeText(
+                            message.content as string
+                          );
+                          setMoreOptions(false);
+                          toast.success("Message copied to clipboard", {
+                            id: action,
+                          });
+                        }
+                      }}
+                      className="w-full px-4 py-2 text-left hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white transition-colors"
+                    >
                       {action}
                     </button>
                   </li>
                 ))}
                 {!isSender && (
                   <li>
-                    <button className="w-full px-4 py-2 text-left hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white transition-colors">
+                    <button
+                      onClick={handleMessageReport}
+                      className="w-full px-4 py-2 text-left hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white transition-colors"
+                    >
                       Report
                     </button>
                   </li>
@@ -181,6 +205,13 @@ const GroupMessageBubble = ({ isSender, message }: GroupMessageBubbleProps) => {
           )}
         </AnimatePresence>
       </div>
+      <ReportModal
+        isOpen={openReportModal}
+        onClose={() => setOpenReportModal(false)}
+        userId={message.sender.user_id}
+        defaultReason="Group Message Report: "
+        username={message.sender.username}
+      />
     </div>
   );
 };
